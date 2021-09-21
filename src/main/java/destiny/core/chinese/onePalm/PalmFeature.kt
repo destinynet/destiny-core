@@ -13,10 +13,7 @@ import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.chinese.ChineseDateHour
 import destiny.core.calendar.chinese.IFinalMonthNumber
-import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.EightWordsConfigBuilder
-import destiny.core.calendar.eightwords.EightWordsFeature
-import destiny.core.calendar.eightwords.RisingSignFeature
+import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
@@ -25,12 +22,14 @@ import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
+import javax.cache.Cache
 
 @Serializable
 data class PalmConfig(
   val eightWordsConfig: EightWordsConfig = EightWordsConfig(),
   val positiveImpl: PositiveImpl = PositiveImpl.Gender,
   val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS,
+  val risingSignConfig: RisingSignConfig = RisingSignConfig(),
   val trueRisingSign: Boolean = false,
   val clockwiseHouse: Boolean = true
 ) : java.io.Serializable {
@@ -41,17 +40,17 @@ data class PalmConfig(
   }
 }
 
-fun PalmConfig.PositiveImpl.asDescriptive() : Descriptive = object : Descriptive{
+fun PalmConfig.PositiveImpl.asDescriptive(): Descriptive = object : Descriptive {
   override fun toString(locale: Locale): String {
-    return when(this@asDescriptive) {
-      PalmConfig.PositiveImpl.Gender -> "男順女逆"
+    return when (this@asDescriptive) {
+      PalmConfig.PositiveImpl.Gender        -> "男順女逆"
       PalmConfig.PositiveImpl.GenderYinYang -> "陽男陰女順；陰男陽女逆"
     }
   }
 
   override fun getDescription(locale: Locale): String {
-    return when(this@asDescriptive) {
-      PalmConfig.PositiveImpl.Gender -> "固定男順女逆"
+    return when (this@asDescriptive) {
+      PalmConfig.PositiveImpl.Gender        -> "固定男順女逆"
       PalmConfig.PositiveImpl.GenderYinYang -> "陽男陰女順；陰男陽女逆。"
     }
   }
@@ -71,12 +70,17 @@ class PalmConfigBuilder : Builder<PalmConfig> {
 
   var monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS
 
+  var risingSignConfig : RisingSignConfig = RisingSignConfig()
+  fun risingSign(block: RisingSignConfigBuilder.() -> Unit = {}) {
+    this.risingSignConfig = RisingSignConfigBuilder.risingSign(block)
+  }
+
   var trueRisingSign: Boolean = false
 
   var clockwiseHouse: Boolean = true
 
   override fun build(): PalmConfig {
-    return PalmConfig(eightWordsConfig, positiveImpl, monthAlgo, trueRisingSign, clockwiseHouse)
+    return PalmConfig(eightWordsConfig, positiveImpl, monthAlgo, risingSignConfig, trueRisingSign, clockwiseHouse)
   }
 
   companion object {
@@ -109,8 +113,6 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
     }
 
     val positiveValue = if (positive) 1 else -1
-
-    println("positive = $positive")
 
     val finalMonthNum = IFinalMonthNumber.getFinalMonthNumber(monthNum, leap, dayNum, config.monthAlgo)
 
@@ -159,8 +161,6 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
     // 上升星座
     val trueRising: Branch = risingSignFeature.getModel(lmt, loc).branch
 
-
-
     // 命宮
     val main: Branch = when (config.trueRisingSign) {
       true -> trueRising
@@ -182,6 +182,7 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
  */
 class PalmMetaFeature(private val palmFeature: PersonFeature<PalmConfig, IPalmModel>,
                       private val chineseDateFeature: ChineseDateFeature,
+                      private val hourBranchFeature: IHourBranchFeature,
                       private val julDayResolver: JulDayResolver) : AbstractCachedPersonFeature<PalmConfig, IPalmMetaModel>() {
 
   override val key: String = "palmMetaFeature"
@@ -198,7 +199,7 @@ class PalmMetaFeature(private val palmFeature: PersonFeature<PalmConfig, IPalmMo
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: PalmConfig): IPalmMetaModel {
     val palmModel: IPalmModel = palmFeature.getPersonModel(lmt, loc, gender, name, place, config)
     val cDate = chineseDateFeature.getModel(lmt, loc)
-    val hourBranch = palmModel.hour
+    val hourBranch = hourBranchFeature.getModel(lmt, loc, config.eightWordsConfig.dayHourConfig.hourBranchConfig)
 
     return PalmMetaModel(palmModel, lmt, loc, place, name, ChineseDateHour(cDate, hourBranch))
   }
@@ -206,11 +207,16 @@ class PalmMetaFeature(private val palmFeature: PersonFeature<PalmConfig, IPalmMo
 
 class PalmMetaDescFeature(private val palmMetaFeature : PersonFeature<PalmConfig, IPalmMetaModel>,
                           private val branchDescImpl: IBranchDesc,
-                          private val julDayResolver: JulDayResolver) : AbstractCachedPersonFeature<PalmConfig, IPalmMetaModelDesc>() {
+                          private val julDayResolver: JulDayResolver ,
+                          @Transient
+                          private val palmMetaDescCache : Cache<LmtCacheKey<*>, IPalmMetaModelDesc>) : AbstractCachedPersonFeature<PalmConfig, IPalmMetaModelDesc>() {
 
   override val key: String = "palmMetaDescFeature"
 
   override val defaultConfig: PalmConfig = palmMetaFeature.defaultConfig
+
+  override val lmtPersonCache: Cache<LmtCacheKey<PalmConfig>, IPalmMetaModelDesc>
+    get() = palmMetaDescCache as Cache<LmtCacheKey<PalmConfig>, IPalmMetaModelDesc>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: PalmConfig): IPalmMetaModelDesc {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
@@ -241,6 +247,9 @@ class PalmMetaDescFeature(private val palmMetaFeature : PersonFeature<PalmConfig
     return PalmModelDesc(houseDescriptions, hourPoem, hourContent)
   }
 
+  companion object {
+    const val CACHE_PALM_META_DESC_FEATURE = "palmMetaDescFeatureCache"
+  }
 
 
 }
