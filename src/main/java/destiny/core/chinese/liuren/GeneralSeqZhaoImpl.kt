@@ -15,11 +15,11 @@ import java.util.*
 class GeneralSeqZhaoImpl : IGeneralSeq, Serializable {
 
   override fun toString(locale: Locale): String {
-    return "趙氏六壬"
+    return GeneralSeq.Zhao.asDescriptive().toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "貴青合勾 蛇朱常白 陰空玄后"
+    return GeneralSeq.Zhao.asDescriptive().getDescription(locale)
   }
 
   override fun next(from: General, n: Int): General {

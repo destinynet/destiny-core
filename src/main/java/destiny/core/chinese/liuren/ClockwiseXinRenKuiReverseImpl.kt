@@ -38,11 +38,11 @@ class ClockwiseXinRenKuiReverseImpl(
   }
 
   override fun toString(locale: Locale): String {
-    return "辛壬癸 晝逆夜順"
+    return destiny.core.chinese.liuren.Clockwise.XinRenKuiReverse.asDescriptive().toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "甲乙丙丁戊己庚 皆為晝順夜逆； 辛壬癸 為晝逆夜順"
+    return destiny.core.chinese.liuren.Clockwise.XinRenKuiReverse.asDescriptive().getDescription(locale)
   }
 
   companion object {

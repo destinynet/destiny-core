@@ -16,11 +16,11 @@ import java.util.*
 class GeneralSeqDefaultImpl : IGeneralSeq, Serializable {
 
   override fun toString(locale: Locale): String {
-    return "內定順序"
+    return GeneralSeq.Default.asDescriptive().toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "貴蛇朱合勾青空，白常玄陰后"
+    return GeneralSeq.Default.asDescriptive().getDescription(locale)
   }
 
   override fun next(from: General, n: Int): General {

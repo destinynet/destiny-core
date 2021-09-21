@@ -48,11 +48,11 @@ class GeneralStemBranchLiuren : IGeneralStemBranch, Serializable {
   }
 
   override fun toString(locale: Locale): String {
-    return "《大六壬》"
+    return GeneralStemBranch.Liuren.asDescriptive().toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "壬子天后 癸亥玄武"
+    return GeneralStemBranch.Liuren.asDescriptive().getDescription(locale)
   }
 
   companion object {

@@ -10,6 +10,8 @@ import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IMonthMaster
+import destiny.core.chinese.MonthMaster
+import destiny.core.chinese.asDescriptive
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
@@ -17,11 +19,11 @@ import java.util.*
 class MonthMasterStarPositionImpl(private val starPositionImpl: IStarPosition<*>) : IMonthMaster, Serializable {
 
   override fun toString(locale: Locale): String {
-    return "星體觀測（過中氣）"
+    return MonthMaster.StarPosition.asDescriptive().toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "真實觀測太陽在黃道的度數，判斷月將（太陽星座）"
+    return MonthMaster.StarPosition.asDescriptive().getDescription(locale)
   }
 
   override fun getBranch(lmt: ChronoLocalDateTime<*>, location: ILocation): Branch {

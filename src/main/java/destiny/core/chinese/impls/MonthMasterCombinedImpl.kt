@@ -7,6 +7,8 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IMonthMaster
+import destiny.core.chinese.MonthMaster
+import destiny.core.chinese.asDescriptive
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
@@ -14,11 +16,11 @@ import java.util.*
 class MonthMasterCombinedImpl(val yearMonthImpl: IYearMonth) : IMonthMaster, Serializable {
 
   override fun toString(locale: Locale): String {
-    return "月支六合（過節）"
+    return MonthMaster.Combined.asDescriptive().toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "純粹以八字月支六合取月將"
+    return MonthMaster.Combined.asDescriptive().getDescription(locale)
   }
 
 

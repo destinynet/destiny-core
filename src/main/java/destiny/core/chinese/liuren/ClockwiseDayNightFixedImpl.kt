@@ -30,11 +30,11 @@ class ClockwiseDayNightFixedImpl(private val differentiator: IDayNight) : IClock
   }
 
   override fun toString(locale: Locale): String {
-    return "晝順夜逆"
+    return destiny.core.chinese.liuren.Clockwise.DayNightFixed.asDescriptive().toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "固定為晝順夜逆"
+    return destiny.core.chinese.liuren.Clockwise.DayNightFixed.asDescriptive().getDescription(locale)
   }
 
   companion object {
