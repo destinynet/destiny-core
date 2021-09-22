@@ -3,11 +3,8 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.core.chinese.Branch
+import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.ITianyi
-import destiny.core.chinese.IYinYang
-import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.tools.Domain
 import destiny.tools.Impl
@@ -31,6 +28,7 @@ import java.io.Serializable
       ])
 class TianyiOceanImpl : ITianyi, Serializable {
 
+  override val tianyi: Tianyi = Tianyi.Ocean
 
   /**
    * 甲戊兼牛羊，乙己鼠猴鄉，丙丁豬雞位，壬癸兔蛇藏，

@@ -3,11 +3,8 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.core.chinese.Branch
+import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.ITianyi
-import destiny.core.chinese.IYinYang
-import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.tools.Domain
 import destiny.tools.Impl
@@ -30,6 +27,8 @@ import java.io.Serializable
         Domain(KEY_DIVINE_TIANYI, TianyiZiweiBookImpl.VALUE)
       ])
 class TianyiZiweiBookImpl : ITianyi, Serializable {
+
+  override val tianyi: Tianyi = Tianyi.ZiweiBook
 
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     return when (stem) {

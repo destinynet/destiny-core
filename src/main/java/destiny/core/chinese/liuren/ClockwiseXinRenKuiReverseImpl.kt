@@ -5,6 +5,7 @@ package destiny.core.chinese.liuren
 
 import destiny.core.DayNight
 import destiny.core.astrology.IDayNight
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.Clockwise
@@ -14,7 +15,6 @@ import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Pithy.KEY_CLOCKWISE
 import java.io.Serializable
-import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
 /**
@@ -27,9 +27,9 @@ class ClockwiseXinRenKuiReverseImpl(
   private val dayHourImpl: IDayHour,
   private val differentiator: IDayNight) : IClockwise, Serializable {
 
-  override fun getClockwise(lmt: ChronoLocalDateTime<*>, loc: ILocation): Clockwise {
-    val day = dayHourImpl.getDay(lmt, loc)
-    val dayNight = differentiator.getDayNight(lmt, loc)
+  override fun getClockwise(gmtJulDay: GmtJulDay, loc: ILocation): Clockwise {
+    val day = dayHourImpl.getDay(gmtJulDay, loc)
+    val dayNight = differentiator.getDayNight(gmtJulDay, loc)
 
     return when (day.stem) {
       甲, 乙, 丙, 丁, 戊, 己, 庚 -> if (dayNight == DayNight.DAY) Clockwise.CLOCKWISE else Clockwise.COUNTER

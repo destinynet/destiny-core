@@ -20,6 +20,8 @@ import java.util.*
  */
 interface ITianyi : Descriptive {
 
+  val tianyi: Tianyi
+
   /**
    * 取得天干的天乙貴人、分晝夜
    */
@@ -37,20 +39,10 @@ interface ITianyi : Descriptive {
   }
 
   override fun toString(locale: Locale): String {
-    return try {
-      ResourceBundle.getBundle(javaClass.name, locale).getString("title")
-    } catch (e: MissingResourceException) {
-      javaClass.simpleName
-    }
-
+    return tianyi.toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return try {
-      ResourceBundle.getBundle(javaClass.name, locale).getString("description")
-    } catch (e: MissingResourceException) {
-      javaClass.simpleName
-    }
-
+    return tianyi.getDescription(locale)
   }
 }

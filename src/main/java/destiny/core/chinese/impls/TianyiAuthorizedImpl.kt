@@ -3,11 +3,8 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.core.chinese.Branch
+import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.ITianyi
-import destiny.core.chinese.IYinYang
-import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.tools.Domain
 import destiny.tools.Impl
@@ -22,6 +19,8 @@ import java.io.Serializable
         Domain(KEY_DIVINE_TIANYI , TianyiAuthorizedImpl.VALUE , default = true)
       ])
 class TianyiAuthorizedImpl : ITianyi, Serializable {
+
+  override val tianyi: Tianyi = Tianyi.Authorized
 
   /**
    * 《協紀辨方書》 《蠡海集》

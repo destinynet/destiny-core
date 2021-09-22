@@ -29,11 +29,11 @@ class DayNightSimpleImpl(val julDayResolver: JulDayResolver) : IDayNight, Serial
   }
 
   override fun toString(locale: Locale): String {
-    return "固定晝夜六點為界"
+    return DayNightConfig.DayNightImpl.Simple.asDescriptive().toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "六至十八為白天，其餘為晚上。僅能作為 Test 使用，勿用於 Production 環境"
+    return DayNightConfig.DayNightImpl.Simple.asDescriptive().getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

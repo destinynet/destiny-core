@@ -4,7 +4,9 @@
 package destiny.core.chinese
 
 import destiny.core.Descriptive
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch.*
 import java.time.chrono.ChronoLocalDateTime
 
@@ -17,7 +19,12 @@ import java.time.chrono.ChronoLocalDateTime
 interface IMonthMaster : Descriptive {
 
   /** 取得「月將」的方法  */
-  fun getBranch(lmt: ChronoLocalDateTime<*>, location: ILocation): Branch
+  fun getBranch(gmtJulDay: GmtJulDay, loc: ILocation): Branch
+
+  fun getBranch(lmt: ChronoLocalDateTime<*>, location: ILocation): Branch {
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    return getBranch(gmtJulDay, location)
+  }
 
   companion object {
 
