@@ -9,7 +9,8 @@ import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IMonthMaster
 import destiny.core.chinese.MonthMaster
-import destiny.core.chinese.asDescriptive
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -21,11 +22,11 @@ class MonthMasterCombinedImpl(val yearMonthImpl: IYearMonth) : IMonthMaster, Ser
   }
 
   override fun toString(locale: Locale): String {
-    return MonthMaster.Combined.asDescriptive().toString(locale)
+    return MonthMaster.Combined.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return MonthMaster.Combined.asDescriptive().getDescription(locale)
+    return MonthMaster.Combined.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

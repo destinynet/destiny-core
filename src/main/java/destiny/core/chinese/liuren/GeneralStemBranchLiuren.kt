@@ -10,6 +10,8 @@ import destiny.core.chinese.liuren.General.*
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Pithy.KEY_GENERAL_STEM_BRANCH
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -48,11 +50,11 @@ class GeneralStemBranchLiuren : IGeneralStemBranch, Serializable {
   }
 
   override fun toString(locale: Locale): String {
-    return GeneralStemBranch.Liuren.asDescriptive().toString(locale)
+    return GeneralStemBranch.Liuren.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return GeneralStemBranch.Liuren.asDescriptive().getDescription(locale)
+    return GeneralStemBranch.Liuren.getDescription(locale)
   }
 
   companion object {

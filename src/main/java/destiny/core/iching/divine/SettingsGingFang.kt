@@ -14,6 +14,8 @@ import destiny.core.iching.Symbol.*
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Divine.KEY_DIVINE_HEXSETTINGS
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.util.*
 
 @Impl([Domain(KEY_DIVINE_HEXSETTINGS, SettingsGingFang.VALUE, default = true)])
@@ -42,11 +44,11 @@ class SettingsGingFang : AbstractSettings() {
       坤 to listOf(未, 巳, 卯, 丑, 亥, 酉))
 
   override fun toString(locale: Locale): String {
-    return "京房易之納甲法"
+    return SettingsOfStemBranch.GingFang.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "最多人使用的納甲法"
+    return SettingsOfStemBranch.GingFang.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

@@ -10,6 +10,8 @@ import destiny.core.calendar.Location
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.calendar.eightwords.IMidnight
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.time.LocalDateTime
 import java.util.*
 
@@ -39,7 +41,7 @@ interface ITianyi : Descriptive {
   }
 
   override fun toString(locale: Locale): String {
-    return tianyi.toString(locale)
+    return tianyi.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {

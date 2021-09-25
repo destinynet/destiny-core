@@ -12,7 +12,8 @@ import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IMonthMaster
 import destiny.core.chinese.MonthMaster
-import destiny.core.chinese.asDescriptive
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -24,11 +25,11 @@ class MonthMasterStarPositionImpl(private val starPositionImpl: IStarPosition<*>
   }
 
   override fun toString(locale: Locale): String {
-    return MonthMaster.StarPosition.asDescriptive().toString(locale)
+    return MonthMaster.StarPosition.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return MonthMaster.StarPosition.asDescriptive().getDescription(locale)
+    return MonthMaster.StarPosition.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

@@ -8,6 +8,7 @@ import mu.KotlinLogging
 import java.io.IOException
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.util.*
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
@@ -108,5 +109,21 @@ fun <T> Sequence<T>.chunked(predicate: (T, T) -> Boolean): Sequence<List<T>> {
     if (buffer.isNotEmpty()) {
       yield(buffer)
     }
+  }
+}
+
+inline fun <reified T : Enum<T>> Enum<T>.getTitle(locale: Locale): String {
+  return try {
+    ResourceBundle.getBundle(T::class.java.name, locale).getString("${this.name}.title")
+  }catch (e : MissingResourceException) {
+    this.name
+  }
+}
+
+inline fun <reified T : Enum<T>> Enum<T>.getDescription(locale: Locale): String {
+  return try {
+    ResourceBundle.getBundle(T::class.java.name, locale).getString("${this.name}.description")
+  } catch (e : MissingResourceException) {
+    getTitle(locale)
   }
 }

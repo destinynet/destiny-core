@@ -4,9 +4,7 @@
 package destiny.core.chinese.liuren
 
 import destiny.core.chinese.liuren.General.*
-import destiny.tools.ArrayTools
-import destiny.tools.Domain
-import destiny.tools.Impl
+import destiny.tools.*
 import destiny.tools.converters.Domains.Pithy.KEY_GENERAL_SEQ
 import java.io.Serializable
 import java.util.*
@@ -16,11 +14,11 @@ import java.util.*
 class GeneralSeqDefaultImpl : IGeneralSeq, Serializable {
 
   override fun toString(locale: Locale): String {
-    return GeneralSeq.Default.asDescriptive().toString(locale)
+    return GeneralSeq.Default.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return GeneralSeq.Default.asDescriptive().getDescription(locale)
+    return GeneralSeq.Default.getDescription(locale)
   }
 
   override fun next(from: General, n: Int): General {

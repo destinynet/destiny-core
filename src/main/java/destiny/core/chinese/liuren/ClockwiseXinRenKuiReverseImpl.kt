@@ -14,6 +14,8 @@ import destiny.core.chinese.Stem.*
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Pithy.KEY_CLOCKWISE
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -38,11 +40,11 @@ class ClockwiseXinRenKuiReverseImpl(
   }
 
   override fun toString(locale: Locale): String {
-    return destiny.core.chinese.liuren.Clockwise.XinRenKuiReverse.asDescriptive().toString(locale)
+    return destiny.core.chinese.liuren.Clockwise.XinRenKuiReverse.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return destiny.core.chinese.liuren.Clockwise.XinRenKuiReverse.asDescriptive().getDescription(locale)
+    return destiny.core.chinese.liuren.Clockwise.XinRenKuiReverse.getDescription(locale)
   }
 
   companion object {

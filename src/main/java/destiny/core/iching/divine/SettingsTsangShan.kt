@@ -14,6 +14,8 @@ import destiny.core.iching.Symbol.*
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Divine.KEY_DIVINE_HEXSETTINGS
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.util.*
 
 
@@ -43,11 +45,11 @@ class SettingsTsangShan : AbstractSettings() {
       坤 to listOf(未, 酉, 亥, 丑, 卯, 巳))
 
   override fun toString(locale: Locale): String {
-    return "藏山雷學之藏山卜"
+    return SettingsOfStemBranch.TsangShan.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "藏山雷學是大陸易學家 石銘 及 孫則鳴 等人所提出來的納甲系統，有著另外一套嚴謹的學理在背後支持。詳情可參照《藏山雷學》一書"
+    return SettingsOfStemBranch.TsangShan.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

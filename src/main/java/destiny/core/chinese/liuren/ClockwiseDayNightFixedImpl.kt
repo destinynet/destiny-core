@@ -12,6 +12,8 @@ import destiny.core.chinese.IClockwise
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Pithy.KEY_CLOCKWISE
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -30,11 +32,11 @@ class ClockwiseDayNightFixedImpl(private val differentiator: IDayNight) : IClock
   }
 
   override fun toString(locale: Locale): String {
-    return destiny.core.chinese.liuren.Clockwise.DayNightFixed.asDescriptive().toString(locale)
+    return destiny.core.chinese.liuren.Clockwise.DayNightFixed.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return destiny.core.chinese.liuren.Clockwise.DayNightFixed.asDescriptive().getDescription(locale)
+    return destiny.core.chinese.liuren.Clockwise.DayNightFixed.getDescription(locale)
   }
 
   companion object {
