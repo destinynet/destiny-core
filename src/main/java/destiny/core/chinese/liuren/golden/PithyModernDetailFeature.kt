@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PithyModernDetailConfig(val pithyConfig: PithyConfig = PithyConfig(),
-                                   val question: String = "",
+                                   val question: String? = null,
                                    val method: IPithyDetailModel.Method = IPithyDetailModel.Method.MANUAL): java.io.Serializable
 
 
@@ -27,7 +27,6 @@ class PithyModernDetailFeature(private val pithyCoreFeature: PithyCoreFeature ,
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: PithyModernDetailConfig): IPithyDetailModel {
 
     val coreModel = pithyCoreFeature.getModel(gmtJulDay, loc, config.pithyConfig)
-
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
