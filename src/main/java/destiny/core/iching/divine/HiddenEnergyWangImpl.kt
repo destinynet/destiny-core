@@ -13,6 +13,8 @@ import destiny.core.iching.IHexagram
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Divine.KEY_DIVINE_HIDDEN_ENERGY
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -20,14 +22,6 @@ import java.util.*
 /** 伏神系統，王洪緒之《卜筮正宗》 , 大多數會是 null  */
 @Impl([Domain(KEY_DIVINE_HIDDEN_ENERGY , HiddenEnergyWangImpl.VALUE , default = true)])
 class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
-
-  override fun toString(locale: Locale): String {
-    return NAME
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return NAME
-  }
 
   override fun getStemBranch(hexagram: IHexagram, settings: ISettingsOfStemBranch, lineIndex: Int): StemBranch? {
     val comparator = HexagramDivinationComparator()
@@ -66,6 +60,14 @@ class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
 
   }
 
+  override fun toString(locale: Locale): String {
+    return HiddenEnergy.Wang.getTitle(locale)
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return HiddenEnergy.Wang.getDescription(locale)
+  }
+
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (javaClass != other?.javaClass) return false
@@ -79,6 +81,5 @@ class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
 
   companion object {
     const val VALUE = "wang"
-    private const val NAME = "王洪緒之《卜筮正宗》"
   }
 }

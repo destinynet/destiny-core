@@ -15,6 +15,7 @@ import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.test.Test
+import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
 /**
@@ -82,11 +83,13 @@ abstract class EnumTest {
       getEnumValues(kClass).forEach {
         it.getTitle(locale).also { title ->
           assertNotNull(title)
+          assertNotEquals(title , it.name)
           logger.info { "${it.name} : title($locale) = $title" }
         }
 
         it.getDescription(locale).also { desc ->
           assertNotNull(desc)
+          assertNotEquals(desc , it.name)
           logger.info { "${it.name} : description($locale) = $desc" }
         }
       }

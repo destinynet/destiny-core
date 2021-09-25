@@ -1,15 +1,14 @@
 package destiny.core.chinese.impls
 
 import destiny.core.Descriptive
-import destiny.core.chinese.Branch
+import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.Characters
-import destiny.core.chinese.IYangBlade
-import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Divine.KEY_DIVINE_YANG_BLADE
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -21,11 +20,11 @@ class YangBladeNextBlissImpl : IYangBlade, Descriptive, Serializable {
   }
 
   override fun toString(locale: Locale): String {
-    return "「祿」的下一位"
+    return YangBlade.NextBliss.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "陰干 的羊刃，會落在辰戌丑未 四庫中。"
+    return YangBlade.NextBliss.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {
@@ -62,11 +61,11 @@ class YangBladeRobCashImpl : IYangBlade, Descriptive, Serializable {
   }
 
   override fun toString(locale: Locale): String {
-    return "劫財"
+    return YangBlade.RobCash.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "陰干 的羊刃，會落在 寅巳申亥 四驛馬中。"
+    return YangBlade.RobCash.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

@@ -11,6 +11,8 @@ import destiny.core.iching.IHexagram
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Divine.KEY_DIVINE_HIDDEN_ENERGY
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -19,14 +21,6 @@ import java.util.*
  */
 @Impl([Domain(KEY_DIVINE_HIDDEN_ENERGY, HiddenEnergyGingFangImpl.VALUE)])
 class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
-
-  override fun toString(locale: Locale): String {
-    return NAME
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return NAME
-  }
 
   override fun getStemBranch(hexagram: IHexagram, settings: ISettingsOfStemBranch, lineIndex: Int): StemBranch? {
     val comparator = HexagramDivinationComparator()
@@ -93,7 +87,14 @@ class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
         }
       else -> throw IllegalStateException("impossible")
     }
+  }
 
+  override fun toString(locale: Locale): String {
+    return HiddenEnergy.GingFang.getTitle(locale)
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return HiddenEnergy.GingFang.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {
@@ -108,6 +109,5 @@ class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
 
   companion object {
     const val VALUE = "gf"
-    private const val NAME = "京房之《京房易卦》"
   }
 }
