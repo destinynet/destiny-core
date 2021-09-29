@@ -44,6 +44,7 @@ interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
     get() = EightWordsNullable(year, month, day, hour)
 }
 
+@kotlinx.serialization.Serializable
 data class EightWordsNullable(override val year: IStemBranchOptional,
                               override val month: IStemBranchOptional,
                               override val day: IStemBranchOptional,

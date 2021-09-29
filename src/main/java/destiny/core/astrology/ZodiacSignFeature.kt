@@ -7,6 +7,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
+import destiny.tools.serializers.PointSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable

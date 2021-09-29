@@ -1,5 +1,6 @@
 package destiny.core.calendar
 
+import destiny.tools.serializers.GmtJulDaySerializer
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import java.io.Serializable

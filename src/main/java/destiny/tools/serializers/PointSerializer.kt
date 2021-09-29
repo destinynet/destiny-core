@@ -1,8 +1,9 @@
 /**
  * Created by smallufo on 2021-08-14.
  */
-package destiny.core.astrology
+package destiny.tools.serializers
 
+import destiny.core.astrology.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -27,7 +28,7 @@ object PointSerializer : KSerializer<Point> {
   override fun deserialize(decoder: Decoder): Point {
     val raw = decoder.decodeString()
     return if (raw.startsWith(Planet::class.simpleName!!)) {
-      Planet.fromString(raw.substringAfter("." ))!!
+      Planet.fromString(raw.substringAfter("."))!!
     }
     else if (raw.startsWith(Asteroid::class.simpleName!!)) {
       Asteroid.fromString(raw.substringAfter("."))!!

@@ -1,8 +1,9 @@
 /**
  * Created by smallufo on 2021-08-22.
  */
-package destiny.core.calendar
+package destiny.tools.serializers
 
+import destiny.core.calendar.GmtJulDay
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor

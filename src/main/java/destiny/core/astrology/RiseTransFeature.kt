@@ -8,6 +8,7 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.serializers.PointSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable

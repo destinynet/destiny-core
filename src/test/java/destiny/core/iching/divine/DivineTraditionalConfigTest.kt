@@ -23,7 +23,7 @@ internal class DivineTraditionalConfigTest : AbstractConfigTest<DivineTraditiona
   override val configByFunction: DivineTraditionalConfig = divineTraditionalConfig {
     src = Hexagram.既濟
     dst = Hexagram.未濟
-    settingsOfStemBranch = SettingsOfStemBranch.TsangShan
+    settings = SettingsOfStemBranch.TsangShan
     hiddenEnergy = HiddenEnergy.GingFang
     tianyi = Tianyi.ZiweiBook
     yangBlade = YangBlade.RobCash
@@ -32,7 +32,7 @@ internal class DivineTraditionalConfigTest : AbstractConfigTest<DivineTraditiona
   override val assertion: (String) -> Unit = { raw: String ->
     assertTrue(raw.contains(""""src":\s*"101010"""".toRegex()))
     assertTrue(raw.contains(""""dst":\s*"010101"""".toRegex()))
-    assertTrue(raw.contains(""""settingsOfStemBranch":\s*"TsangShan"""".toRegex()))
+    assertTrue(raw.contains(""""settings":\s*"TsangShan"""".toRegex()))
     assertTrue(raw.contains(""""hiddenEnergy":\s*"GingFang"""".toRegex()))
     assertTrue(raw.contains(""""tianyi":\s*"ZiweiBook"""".toRegex()))
     assertTrue(raw.contains(""""yangBlade":\s*"RobCash"""".toRegex()))

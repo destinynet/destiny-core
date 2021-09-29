@@ -1,8 +1,9 @@
 /**
  * Created by smallufo on 2021-08-19.
  */
-package destiny.core.astrology
+package destiny.tools.serializers
 
+import destiny.core.astrology.LunarStation
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor

@@ -70,7 +70,7 @@ class PithyCoreFeature(private val eightWordsFeature: EightWordsFeature,
                        private val monthMasterMap: Map<MonthMaster, IMonthMaster>,
                        private val clockwiseMap: Map<Clockwise, IClockwise>,
                        private val dayNightFeature: DayNightFeature,
-                       private val tianyiMap: Map<Tianyi, ITianyi>,
+                       private val tianyiImplMap: Map<Tianyi, ITianyi>,
                        private val generalSeqMap: Map<GeneralSeq, IGeneralSeq>,
                        private val generalStemBranchMap: Map<GeneralStemBranch, IGeneralStemBranch>) : AbstractCachedFeature<PithyConfig, IPithyModel>() {
 
@@ -80,7 +80,7 @@ class PithyCoreFeature(private val eightWordsFeature: EightWordsFeature,
 
   private fun core(config: PithyConfig, ew: IEightWords, moonMaster: Branch, dayNight: DayNight, clockwise: destiny.core.chinese.Clockwise): Pithy {
     // 天乙貴人(起點)
-    val tianYi = tianyiMap[config.tianyi]!!.getFirstTianyi(ew.day.stem, dayNight)
+    val tianYi = tianyiImplMap[config.tianyi]!!.getFirstTianyi(ew.day.stem, dayNight)
 
     val steps = when (clockwise) {
       destiny.core.chinese.Clockwise.CLOCKWISE -> config.direction.getAheadOf(tianYi)

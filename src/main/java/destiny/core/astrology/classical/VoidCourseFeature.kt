@@ -11,6 +11,7 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.Feature
+import destiny.tools.serializers.PointSerializer
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import kotlin.math.min

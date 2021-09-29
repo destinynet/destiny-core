@@ -1,4 +1,4 @@
-package destiny.tools.converters
+package destiny.tools.serializers
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -9,6 +9,7 @@ import kotlinx.serialization.encoding.Encoder
 import java.util.*
 
 object LocaleSerializer : KSerializer<Locale> {
+
   override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("locale", PrimitiveKind.STRING)
 
   override fun serialize(encoder: Encoder, value: Locale) {

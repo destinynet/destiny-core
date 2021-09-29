@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2021-09-27.
  */
-package destiny.tools.converters
+package destiny.tools.serializers
 
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram

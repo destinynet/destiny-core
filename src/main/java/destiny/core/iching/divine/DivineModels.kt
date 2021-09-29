@@ -22,12 +22,12 @@ interface ICombined : Serializable {
 }
 
 interface IMeta : Serializable {
-  val settings: ISettingsOfStemBranch
-  val hiddenEnergy: IHiddenEnergy
+  val settings: SettingsOfStemBranch
+  val hiddenEnergy: HiddenEnergy
 }
 
-data class Meta(override val settings: ISettingsOfStemBranch,
-                override val hiddenEnergy: IHiddenEnergy) : IMeta, Serializable
+data class Meta(override val settings: SettingsOfStemBranch,
+                override val hiddenEnergy: HiddenEnergy) : IMeta, Serializable
 
 
 /**
@@ -76,20 +76,22 @@ data class SingleHexagram(
 
 
 /** 純粹組合兩卦 , 沒有其他 卦名、卦辭、日期 等資訊 */
+
 interface ICombinedWithMeta : ICombined, IMeta {
   val srcModel: ISingleHexagram
   val dstModel: ISingleHexagram
   val 變卦對於本卦的六親: List<Relative>
+  val meta: Meta
 }
 
 data class CombinedWithMeta(
   override val srcModel: ISingleHexagram,
   override val dstModel: ISingleHexagram,
   override val 變卦對於本卦的六親: List<Relative>,
-  val meta: Meta) : ICombinedWithMeta,
-  ICombined by Combined(srcModel, dstModel),
-  IMeta by meta,
-  Serializable
+  override val meta: Meta) : ICombinedWithMeta,
+                             ICombined by Combined(srcModel, dstModel),
+                             IMeta by meta,
+                             Serializable
 
 
 interface ISingleHexagramWithName : ISingleHexagram, IHexagramName
@@ -113,8 +115,8 @@ data class CombinedWithMetaName(
   override val srcModel: ISingleHexagramWithName,
   override val dstModel: ISingleHexagramWithName,
   override val 變卦對於本卦的六親: List<Relative>,
-  val meta: Meta) : ICombinedWithMetaName,
-  ICombinedWithMeta by CombinedWithMeta(srcModel, dstModel, 變卦對於本卦的六親, meta), Serializable
+  override val meta: Meta) : ICombinedWithMetaName,
+                             ICombinedWithMeta by CombinedWithMeta(srcModel, dstModel, 變卦對於本卦的六親, meta), Serializable
 
 
 /**
@@ -123,7 +125,9 @@ data class CombinedWithMetaName(
  * 通常用於 書籍、古書 當中卦象對照
  * */
 interface ICombinedWithMetaNameDayMonth : ICombinedWithMetaName, IEightWordsNullableFactory {
+
   val day: StemBranch?
+
   val monthBranch: Branch?
 
   /** 空亡 */
@@ -184,7 +188,6 @@ interface ICombinedWithMetaNameTexts : ICombinedWithMetaName {
   val pairTexts: Pair<IHexagramText, IHexagramText>
 }
 
-
 /**
  * 額外的卦象資訊，對整體卦象輸出沒有影響
  */
@@ -201,7 +204,6 @@ interface IDivineMeta : IMeta {
   val decoratedDateTime: String?
 }
 
-
 data class DivineMeta(
   override val gender: Gender?,
   override val question: String?,
@@ -211,7 +213,7 @@ data class DivineMeta(
   override val place: String?,
   override val decoratedDate: String?,
   override val decoratedDateTime: String?,
-  val meta: Meta,
+  val meta: IMeta,
   val link: String? = null) : IMeta by meta, IDivineMeta, Serializable
 
 
@@ -222,12 +224,11 @@ interface ICombinedFull : ICombinedWithMetaNameDayMonth, ICombinedWithMetaNameTe
 data class CombinedFull(
   private val combinedWithMetaNameDayMonth: ICombinedWithMetaNameDayMonth,
   override val eightWordsNullable: IEightWordsNullable,
-  private val divineMeta: DivineMeta,
+  private val divineMeta: IDivineMeta,
   override val pairTexts: Pair<IHexagramText, IHexagramText>) :
   ICombinedFull,
   ICombinedWithMetaNameDayMonth by combinedWithMetaNameDayMonth,
   IDivineMeta by divineMeta,
-  ICombinedWithMetaNameTexts,
   Serializable {
 
   override val settings
@@ -235,3 +236,4 @@ data class CombinedFull(
   override val hiddenEnergy
     get() = divineMeta.hiddenEnergy
 }
+
