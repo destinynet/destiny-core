@@ -103,7 +103,7 @@ sealed interface IVoidCourse : Descriptive {
 /**
  * The Moon does not complete an exact Ptolemaic aspect with any planet within the next 30 degrees.
  *
- * may be replaced with [VoidCourseFeature.VocHellenistic]
+ * may be replaced with [VoidCourseConfig.VoidCourseImpl.Hellenistic]
  */
 @Impl([Domain(Domains.Astrology.KEY_VOC, VoidCourseHellenistic.VALUE)])
 class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
@@ -160,7 +160,7 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
  * 月亮先離開與 p1交角+6分之後 , VOC 開始
  * 直到碰到 p2 - (月半徑/2 + p2半徑/2) 點，就會進入 p2 交角勢力範圍 , VOC 結束
  *
- * may be replaced with [VoidCourseFeature.VocWilliamWilly]
+ * may be replaced with [VoidCourseConfig.VoidCourseImpl.WilliamLilly]
  */
 @Impl([Domain(Domains.Astrology.KEY_VOC, VoidCourseWilliamLilly.VALUE)])
 class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
@@ -230,7 +230,7 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
  *
  * 月亮(或其他)剛離開與其他星體的「準確」交角，直到進入下一個星座時，都還沒與其他星體形成準確交角
  *
- * may be replaced with [VoidCourseFeature.VocMedieval]
+ * may be replaced with [VoidCourseConfig.VoidCourseImpl.Medieval]
  */
 @Impl([Domain(Domains.Astrology.KEY_VOC, VoidCourseMedieval.VALUE , default = true)])
 class VoidCourseMedieval(private val besiegedImpl: IBesieged,

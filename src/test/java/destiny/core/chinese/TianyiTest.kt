@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese
 
-import destiny.core.chinese.liuren.EnumTest
+import destiny.core.EnumTest
 import kotlin.test.Test
 
 internal class TianyiTest : EnumTest() {

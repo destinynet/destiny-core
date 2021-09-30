@@ -12,7 +12,7 @@ import java.time.chrono.ChronoLocalDateTime
  * 計算此顆星被哪兩顆星包夾
  * 這裡的「包夾」，是中性字眼。代表此星，先前與A星形成交角，後與B星形成交角
  * 也就是說，任何星在任何時候都處於「被包夾」狀態
- * 至於被包夾的好壞，要看星性以及更進一步的交角 [AspectData.Type.APPLYING] / [AspectData.Type.SEPARATING] 決定
+ * 至於被包夾的好壞，要看星性以及更進一步的交角 [IAspectData.Type.APPLYING] / [IAspectData.Type.SEPARATING] 決定
  */
 interface IBesieged {
 

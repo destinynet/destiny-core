@@ -22,7 +22,10 @@ import java.time.chrono.ChronoLocalDateTime
 
 /**
  * @param threeKings : 是否考量三至尊卦 : [Hexagram.蹇] [Hexagram.坎] [Hexagram.屯]
+ *
+ * to be replaced with [HoloFeature]
  */
+@Deprecated("HoloFeature")
 class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
                   val sanYuanImpl: ISanYuan,
                   val numberize: INumberize,
@@ -37,8 +40,8 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
                   override val monthlyHexagramImpl: IMonthlyHexagram = MonthlyHexagramSignImpl.instance,
                   val dailyHexagramService: IDailyHexagramService,
                   val nameFullImpl: IHexNameFull,
-                  override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR,
-                  override val hexChange: IHoloContext.HexChange = IHoloContext.HexChange.DST
+                  override val threeKings: ThreeKingsAlgo? = ThreeKingsAlgo.HALF_YEAR,
+                  override val hexChange: HexChange = HexChange.DST
 ) : IHoloContext, Serializable {
 
   private fun Int.isOdd(): Boolean {
@@ -132,7 +135,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
       // 陽爻
       val firstYear: Triple<Hexagram, Int, Int> = if (!stemBranch.stem.booleanValue) {
         logger.debug("陽爻，元堂，流年逢陰年 必變")
-        if (hexChange == IHoloContext.HexChange.SRC) {
+        if (hexChange == HexChange.SRC) {
           Triple(switch(hex, confinedLine).first, confine(confinedLine + 3), 1)
         } else {
           switch(hex, confinedLine).let { Triple(it.first, it.second, 1) }
@@ -174,7 +177,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
         }
       }
 
-      val seq = if (hexChange == IHoloContext.HexChange.SRC) srcSeq else dstSeq
+      val seq = if (hexChange == HexChange.SRC) srcSeq else dstSeq
       seq.take(9)
         .map { triple: Triple<Hexagram, Int, Int> ->
           Triple(triple.first, triple.second, stemBranch.next(triple.third - 1))
@@ -188,7 +191,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
         .mapIndexed { indexFrom0, hexAndLine ->
           Triple(hexAndLine.first, hexAndLine.second, stemBranch.next(indexFrom0))
         }.map { triple: Triple<Hexagram, Int, IStemBranch> ->
-          if (hexChange == IHoloContext.HexChange.SRC) {
+          if (hexChange == HexChange.SRC) {
             val yearHex = switch(triple.first, triple.second).first
             Triple(yearHex, triple.second, triple.third)
           } else {
@@ -229,8 +232,8 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
 
     val yinYang: IYinYang = threeKings?.let { algo ->
       when (algo) {
-        IHoloContext.ThreeKingsAlgo.HALF_YEAR -> yearHalfYinYang
-        IHoloContext.ThreeKingsAlgo.MONTH_BRANCH -> SimpleBranch[ew.month.branch]
+        ThreeKingsAlgo.HALF_YEAR    -> yearHalfYinYang
+        ThreeKingsAlgo.MONTH_BRANCH -> SimpleBranch[ew.month.branch]
       }
     } ?: yearHalfYinYang
 

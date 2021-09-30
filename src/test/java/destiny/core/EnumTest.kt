@@ -1,7 +1,4 @@
-/**
- * Created by smallufo on 2021-09-25.
- */
-package destiny.core.chinese.liuren
+package destiny.core
 
 import destiny.tools.getDescription
 import destiny.tools.getTitle
@@ -11,12 +8,43 @@ import kotlinx.serialization.descriptors.elementNames
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import mu.KotlinLogging
+import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
-import kotlin.test.Test
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
+
+abstract class EnumTest {
+
+  inline fun <reified T : Enum<T>> getEnumValues(enumClass: KClass<out Enum<T>>): Array<out Enum<T>> = enumClass.java.enumConstants
+
+  inline fun <reified E : Enum<E>> testEnums(
+    kClass: KClass<out Enum<E>>, locales: List<Locale> =
+      listOf(Locale.TRADITIONAL_CHINESE, Locale.SIMPLIFIED_CHINESE, Locale.ENGLISH)
+  ) {
+
+    val logger = KotlinLogging.logger { }
+
+    locales.forEach { locale ->
+      getEnumValues(kClass).forEach {
+        it.getTitle(locale).also { title ->
+          assertNotNull(title)
+          assertNotEquals(title, it.name)
+          logger.info { "${it.name} : title($locale) = $title" }
+        }
+
+        it.getDescription(locale).also { desc ->
+          assertNotNull(desc)
+          assertNotEquals(desc, it.name)
+          logger.info { "${it.name} : description($locale) = $desc" }
+        }
+      }
+    }
+  }
+
+}
+
 
 /**
  * Reflection: Access enum values and valueOf via KClass
@@ -68,32 +96,3 @@ abstract class AbstractEnumTest<T : Enum<*>>(val t: KType) {
   }
 }
 
-abstract class EnumTest {
-
-  inline fun <reified T : Enum<T>> getEnumValues(enumClass: KClass<out Enum<T>>): Array<out Enum<T>> = enumClass.java.enumConstants
-
-  inline fun <reified E : Enum<E>> testEnums(
-    kClass: KClass<out Enum<E>>, locales: List<Locale> =
-      listOf(Locale.TRADITIONAL_CHINESE, Locale.SIMPLIFIED_CHINESE, Locale.ENGLISH)
-  ) {
-
-    val logger = KotlinLogging.logger { }
-
-    locales.forEach { locale ->
-      getEnumValues(kClass).forEach {
-        it.getTitle(locale).also { title ->
-          assertNotNull(title)
-          assertNotEquals(title , it.name)
-          logger.info { "${it.name} : title($locale) = $title" }
-        }
-
-        it.getDescription(locale).also { desc ->
-          assertNotNull(desc)
-          assertNotEquals(desc , it.name)
-          logger.info { "${it.name} : description($locale) = $desc" }
-        }
-      }
-    }
-  }
-
-}

@@ -31,7 +31,7 @@ data class MonthMasterConfig(val impl: Impl = Impl.SunSign ,
 
 @DestinyMarker
 class MonthMasterConfigBuilder : Builder<MonthMasterConfig> {
-  var impl: MonthMasterConfig.Impl = Impl.SunSign
+  var impl: Impl = Impl.SunSign
 
   var monthConfig: MonthConfig = MonthConfig()
   fun month(block: MonthConfigBuilder.() -> Unit = {}) {

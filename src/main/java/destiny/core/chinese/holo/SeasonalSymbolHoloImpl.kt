@@ -6,27 +6,21 @@ import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTerms.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.ISeasonalSymbol
+import destiny.core.chinese.SeasonalSymbolConfig
 import destiny.core.iching.Symbol
 import destiny.core.iching.Symbol.*
 import java.io.Serializable
 import kotlin.math.abs
 
-
-/** 季月，化工 */
-enum class EndSeasonSymbolSpan {
-  FULL_MONTH, // 整月
-  DAYS_18 // 月份「結尾」 18天
-}
-
-
 /**
  * 西方設定：二分二至 為季節的起點
- * @param endSeasonSymbolSpan 若為 [EndSeasonSymbolSpan.DAYS_18] , 每個「季月」「坤、艮」 「結束前」各旺 18天
- * 若其為 [EndSeasonSymbolSpan.FULL_MONTH] , 則 「季月」 的「坤、艮」旺全月
  *
+ * to be replaced by [destiny.core.chinese.SeasonalSymbolFeature]
  */
+@Deprecated("SeasonalSymbolFeature")
 class SeasonalSymbolHoloImpl(val solarTermsImpl: ISolarTerms ,
-                             private val endSeasonSymbolSpan: EndSeasonSymbolSpan) : ISeasonalSymbol, Serializable {
+                             private val endSeasonSymbolSpan: SeasonalSymbolConfig.Impl.Holo.EndSeasonSymbolSpan
+) : ISeasonalSymbol, Serializable {
   override fun getSeasonalSymbol(gmtJulDay: GmtJulDay): Set<Symbol> {
 
     val solarTerms: SolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
@@ -36,8 +30,8 @@ class SeasonalSymbolHoloImpl(val solarTermsImpl: ISolarTerms ,
         solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay).second.second
       }?.takeIf {
         when (endSeasonSymbolSpan) {
-          EndSeasonSymbolSpan.DAYS_18 -> abs(it-gmtJulDay) <= 18
-          EndSeasonSymbolSpan.FULL_MONTH -> true
+          SeasonalSymbolConfig.Impl.Holo.EndSeasonSymbolSpan.DAYS_18    -> abs(it-gmtJulDay) <= 18
+          SeasonalSymbolConfig.Impl.Holo.EndSeasonSymbolSpan.FULL_MONTH -> true
         }
       }
       ?.let { setOf(坤, 艮) }

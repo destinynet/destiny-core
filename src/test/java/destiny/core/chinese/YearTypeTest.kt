@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese
 
-import destiny.core.chinese.liuren.EnumTest
+import destiny.core.EnumTest
 import destiny.tools.getDescription
 import destiny.tools.getTitle
 import java.util.*

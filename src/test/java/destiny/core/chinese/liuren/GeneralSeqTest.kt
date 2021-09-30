@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.liuren
 
+import destiny.core.EnumTest
 import kotlin.test.Test
 
 internal class GeneralSeqTest : EnumTest() {

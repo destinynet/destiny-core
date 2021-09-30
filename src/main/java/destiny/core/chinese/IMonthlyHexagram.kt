@@ -7,11 +7,14 @@ import destiny.core.Descriptive
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTerms.*
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.holo.MonthlyHexagram
 import destiny.core.iching.Hexagram
 import destiny.core.iching.Hexagram.*
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Divine.KEY_MONTH_HEX_IMPL
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -31,11 +34,11 @@ interface IMonthlyHexagram : Descriptive {
 @Impl([Domain(KEY_MONTH_HEX_IMPL, MonthlyHexagramSignImpl.VALUE, default = true)])
 class MonthlyHexagramSignImpl : IMonthlyHexagram, Serializable {
   override fun toString(locale: Locale): String {
-    return "黃道「中氣」切割法"
+    return MonthlyHexagram.Sign.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "「復」卦始於冬至點"
+    return MonthlyHexagram.Sign.getDescription(locale)
   }
 
   override fun getHexagram(solarTerms: SolarTerms): Pair<Hexagram, Pair<SolarTerms, SolarTerms>> {
@@ -90,11 +93,11 @@ class MonthlyHexagramSignImpl : IMonthlyHexagram, Serializable {
 @Impl([Domain(KEY_MONTH_HEX_IMPL, MonthlyHexagramBranchImpl.VALUE)])
 class MonthlyHexagramBranchImpl : IMonthlyHexagram, Serializable {
   override fun toString(locale: Locale): String {
-    return "黃道「節」切分法"
+    return MonthlyHexagram.Branch.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "「復」卦，始於子月，亦即：大雪節"
+    return MonthlyHexagram.Branch.getTitle(locale)
   }
 
   override fun getHexagram(solarTerms: SolarTerms): Pair<Hexagram, Pair<SolarTerms, SolarTerms>> {

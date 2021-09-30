@@ -115,7 +115,7 @@ fun <T> Sequence<T>.chunked(predicate: (T, T) -> Boolean): Sequence<List<T>> {
 inline fun <reified T : Enum<T>> Enum<T>.getTitle(locale: Locale): String {
   return try {
     ResourceBundle.getBundle(T::class.java.name, locale).getString("${this.name}.title")
-  }catch (e : MissingResourceException) {
+  } catch (e: MissingResourceException) {
     this.name
   }
 }

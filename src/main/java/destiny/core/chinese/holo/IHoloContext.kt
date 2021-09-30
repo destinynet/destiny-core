@@ -17,27 +17,11 @@ import java.time.chrono.ChronoLocalDateTime
 
 interface IHoloContext {
 
-  enum class ThreeKingsAlgo {
-    /** 前半年(冬至 to 夏至) 為 陽 , 後半年(夏至 to 冬至) 為 陰 */
-    HALF_YEAR,
-
-    /** 月令地支 的陰陽 */
-    MONTH_BRANCH
-  }
-
   /**
    * 取後天卦 [getHexagramAcquired] 時 ， 是否考量三至尊卦 : [Hexagram.坎] [Hexagram.屯] [Hexagram.蹇]
    */
   val threeKings: ThreeKingsAlgo?
 
-
-  /**
-   * 流年、流月 爻變 , 取本卦，還是，變卦
-   */
-  enum class HexChange {
-    SRC,
-    DST   // 書上所推衍，感覺是變卦
-  }
 
   val hexChange: HexChange
 

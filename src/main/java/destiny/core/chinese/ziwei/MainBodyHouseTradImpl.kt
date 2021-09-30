@@ -70,7 +70,7 @@ class MainBodyHouseTradImpl(val yearMonthImpl: IYearMonth,
     var result = yearMonthImpl.hashCode()
     result = 31 * result + dayHourImpl.hashCode()
     result = 31 * result + chineseDateImpl.hashCode()
-    result = 31 * result + (mainStarsAlgo?.hashCode() ?: 0)
+    result = 31 * result + mainStarsAlgo.hashCode()
     return result
   }
 
