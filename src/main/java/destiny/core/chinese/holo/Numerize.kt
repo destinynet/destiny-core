@@ -5,12 +5,14 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import java.io.Serializable
+import javax.inject.Named
 
 interface INumberize {
   fun getNumber(stem: Stem): Int
   fun getNumber(branch: Branch): Set<Int>
 }
 
+@Named
 class NumberizeImpl : INumberize, Serializable {
   override fun getNumber(stem: Stem): Int {
     return when (stem) {

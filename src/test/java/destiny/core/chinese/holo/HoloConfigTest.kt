@@ -19,13 +19,15 @@ internal class HoloConfigTest : AbstractConfigTest<HoloConfig>() {
 
     seasonalSymbolConfig = SeasonalSymbolConfig(Holo(EndSeasonSymbolSpan.FULL_MONTH)),
     threeKings = ThreeKingsAlgo.MONTH_BRANCH,
-    hexChange = HexChange.SRC
+    hexChange = HexChange.SRC,
+    monthlyHexagram = MonthlyHexagram.Branch
   )
 
   override val configByFunction: HoloConfig = holoConfig {
     seasonalSymbolConfig = SeasonalSymbolConfig(Holo(EndSeasonSymbolSpan.FULL_MONTH))
     threeKings = ThreeKingsAlgo.MONTH_BRANCH
     hexChange = HexChange.SRC
+    monthlyHexagram = MonthlyHexagram.Branch
   }
 
   override val assertion: (String) -> Unit = { raw: String ->
@@ -33,5 +35,6 @@ internal class HoloConfigTest : AbstractConfigTest<HoloConfig>() {
     assertTrue(raw.contains(""""endSeasonSymbolSpan":\s*"FULL_MONTH"""".toRegex()))
     assertTrue(raw.contains(""""threeKings":\s*"MONTH_BRANCH"""".toRegex()))
     assertTrue(raw.contains(""""hexChange":\s*"SRC"""".toRegex()))
+    assertTrue(raw.contains(""""monthlyHexagram":\s*"Branch"""".toRegex()))
   }
 }

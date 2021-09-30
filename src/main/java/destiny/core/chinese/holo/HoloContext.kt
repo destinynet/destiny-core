@@ -146,7 +146,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
       }
 
 
-      /**  [IHoloContext.HexChange.SRC] 設定 */
+      /**  [HexChange.SRC] 設定 */
       val srcSeq = generateSequence(firstYear) { triple ->
         when (triple.third) {
           1 -> {
@@ -160,7 +160,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
         }
       }
 
-      /**  [IHoloContext.HexChange.DST] 設定 */
+      /**  [HexChange.DST] 設定 */
 
 
       val dstSeq = generateSequence(firstYear) { triple ->
