@@ -12,7 +12,6 @@ import destiny.core.calendar.chinese.Yuan
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.holo.IHoloContext.Companion.threeKingHexagrams
 import destiny.core.fengshui.sanyuan.ISanYuan
 import destiny.core.iching.*
 import destiny.core.iching.Symbol.*
@@ -23,6 +22,7 @@ import destiny.core.iching.divine.SettingsOfStemBranch
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
@@ -63,7 +63,7 @@ class HoloConfigBuilder : Builder<HoloConfig> {
 }
 
 
-interface IHoloFeature {
+interface IHoloFeature : PersonFeature<HoloConfig, IHolo> {
 
   /** 天數 */
   fun getHeavenNumber(ew: IEightWords): Int
@@ -298,7 +298,7 @@ interface IHoloFeature {
    * @param yuanTangIndexFrom1 元堂 (1~6)
    * @return Holo卦象 以及 出生之後每個立春的GMT時刻(亦即：原歲數截止時刻 & 新歲數開始時刻 ）
    */
-  fun getHoloHexagramAndAgeList(hex: Hexagram, yuanTangIndexFrom1: Int, initGmtJulDay: GmtJulDay, initStemBranch: IStemBranch, settings: SettingsOfStemBranch, hexChange: HexChange = HexChange.DST): List<HoloLine>
+  fun getHoloHexagramAndAgeList(hex: Hexagram, yuanTangIndexFrom1: Int, initGmtJulDay: GmtJulDay, initStemBranch: IStemBranch, settings: SettingsOfStemBranch = SettingsOfStemBranch.GingFang, hexChange: HexChange = HexChange.DST): List<HoloLine>
 
   /**
    * 取得流年卦 , 陽爻 取 9 年， 陰爻 取 6 年
@@ -332,6 +332,10 @@ interface IHoloFeature {
 
   /** 除了傳回 本命先後天卦，另外傳回 以及此 gmt 時刻 的大運、流年、流月 等資訊 */
   fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: GmtJulDay, name: String? = null, place: String? = null, settings: SettingsOfStemBranch = SettingsOfStemBranch.GingFang): Pair<IHolo, List<IHoloHexagram>>
+
+  companion object {
+    val threeKingHexagrams: Set<Hexagram> = setOf(Hexagram.坎, Hexagram.屯, Hexagram.蹇)
+  }
 }
 
 @Named
