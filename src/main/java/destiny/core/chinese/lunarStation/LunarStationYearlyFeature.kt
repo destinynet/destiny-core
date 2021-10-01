@@ -18,6 +18,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
 import java.time.temporal.ChronoField
+import javax.inject.Named
 
 
 @Serializable
@@ -46,9 +47,11 @@ class YearlyConfigBuilder : Builder<YearlyConfig> {
   }
 }
 
+@Named
 class LunarStationYearlyFeature(private val yearFeature: YearFeature,
                                 private val chineseDateFeature: ChineseDateFeature,
                                 private val julDayResolver: JulDayResolver) : AbstractCachedFeature<YearlyConfig, YearIndex>() {
+
   override val key: String = "lsYearly"
 
   override val defaultConfig: YearlyConfig = YearlyConfig()

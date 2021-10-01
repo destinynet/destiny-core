@@ -14,6 +14,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
 import java.util.*
+import javax.inject.Named
 
 
 @Serializable
@@ -122,11 +123,11 @@ class YearMonthConfigBuilder : Builder<YearMonthConfig> {
 /**
  * 月干支
  */
-class YearMonthFeature(
-  private val starPositionImpl: IStarPosition<*>,
-  private val starTransitImpl: IStarTransit,
-  private val julDayResolver: JulDayResolver
-) : AbstractCachedFeature<YearMonthConfig, IStemBranch>() {
+@Named
+class YearMonthFeature(private val starPositionImpl: IStarPosition<*>,
+                       private val starTransitImpl: IStarTransit,
+                       private val julDayResolver: JulDayResolver) : AbstractCachedFeature<YearMonthConfig, IStemBranch>() {
+
   override val key: String = "month"
 
   override val defaultConfig: YearMonthConfig = YearMonthConfig()

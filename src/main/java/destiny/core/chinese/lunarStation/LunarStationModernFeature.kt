@@ -19,6 +19,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
+import javax.inject.Named
 
 @Serializable
 data class LunarStationModernConfig(val lunarStationConfig: LunarStationConfig = LunarStationConfig(),
@@ -48,6 +49,7 @@ class LunarStationModernConfigBuilder : Builder<LunarStationModernConfig> {
   }
 }
 
+@Named
 class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFeature,
                                 private val hourBranchFeature: IHourBranchFeature,
                                 private val randomService: RandomService,

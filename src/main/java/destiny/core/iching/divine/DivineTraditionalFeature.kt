@@ -19,6 +19,7 @@ import destiny.core.iching.contentProviders.IHexNameShort
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.Feature
 import destiny.tools.serializers.IHexagramSerializer
 import destiny.tools.serializers.LocaleSerializer
 import kotlinx.serialization.Serializable
@@ -74,6 +75,8 @@ class DivineTraditionalConfigBuilder : Builder<DivineTraditionalConfig> {
 /**
  * 傳統、簡易版的排盤，只具備(可能不完整的)八字資料，不具備明確的日期
  */
+interface IDivineTraditionalFeature : Feature<DivineTraditionalConfig, ICombinedWithMetaNameDayMonth>, ICombinedWithMetaNameDayMonthContext
+
 @Named
 class DivineTraditionalFeature(private val eightWordsFeature: EightWordsFeature,
                                private val divineSettingsMap: Map<SettingsOfStemBranch, ISettingsOfStemBranch>,
@@ -81,7 +84,8 @@ class DivineTraditionalFeature(private val eightWordsFeature: EightWordsFeature,
                                private val tianyiImplMap: Map<Tianyi, ITianyi>,
                                private val yangBladeImplMap: Map<YangBlade, IYangBlade>,
                                private val nameShortImpl: IHexNameShort,
-                               private val nameFullImpl: IHexNameFull) : AbstractCachedFeature<DivineTraditionalConfig , ICombinedWithMetaNameDayMonth>(), ICombinedWithMetaNameDayMonthContext {
+                               private val nameFullImpl: IHexNameFull) : AbstractCachedFeature<DivineTraditionalConfig , ICombinedWithMetaNameDayMonth>(), IDivineTraditionalFeature {
+
   override val key: String = "divineTraditionalFeature"
 
   override val defaultConfig: DivineTraditionalConfig = DivineTraditionalConfig()

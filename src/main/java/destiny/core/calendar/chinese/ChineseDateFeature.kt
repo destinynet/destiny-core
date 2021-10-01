@@ -12,8 +12,10 @@ import destiny.core.calendar.eightwords.MidnightFeature
 import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
+import javax.inject.Named
 
 
+@Named
 class ChineseDateFeature(private val chineseDateImpl : IChineseDate,
                          private val dayHourFeature: Feature<DayHourConfig, Pair<StemBranch, StemBranch>>,
                          private val midnightFeature: MidnightFeature,

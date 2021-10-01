@@ -18,11 +18,13 @@ import destiny.tools.Feature
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
+import javax.inject.Named
 
 
 /**
  * 日禽 實作
  */
+@Named
 class LunarStationDailyFeature(private val hourBranchFeature: IHourBranchFeature,
                                private val dayHourFeature: Feature<DayHourConfig, Pair<StemBranch, StemBranch>>,
                                private val midnightFeature: MidnightFeature,

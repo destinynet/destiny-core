@@ -114,9 +114,10 @@ class DayHourConfigBuilder : Builder<DayHourConfig> {
 
 interface IDayHourFeature : Feature<DayHourConfig, Pair<StemBranch, StemBranch>>
 
+
 class DayHourFeature(private val midnightFeature: MidnightFeature,
                      private val hourBranchFeature: IHourBranchFeature,
-                     private val julDayResolver: JulDayResolver) : AbstractCachedFeature<DayHourConfig, Pair<StemBranch, StemBranch>>() {
+                     private val julDayResolver: JulDayResolver) : AbstractCachedFeature<DayHourConfig, Pair<StemBranch, StemBranch>>(), IDayHourFeature {
 
   override val key: String = "dayHour"
 

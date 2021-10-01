@@ -10,6 +10,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.serializers.PointSerializer
 import kotlinx.serialization.Serializable
+import javax.inject.Named
 
 @Serializable
 data class AzimuthConfig(@Serializable(with = PointSerializer::class)
@@ -40,6 +41,7 @@ class AzimuthConfigBuilder : Builder<AzimuthConfig> {
 }
 
 
+@Named
 class AzimuthFeature(val starPositionImpl: IStarPosition<IStarPos>,
                      val azimuthImpl: IAzimuthCalculator) : AbstractCachedFeature<AzimuthConfig, StarPosWithAzimuth>() {
   override val key: String = "azimuth"

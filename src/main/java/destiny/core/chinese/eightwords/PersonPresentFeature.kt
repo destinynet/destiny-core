@@ -16,6 +16,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
 import javax.cache.Cache
+import javax.inject.Named
 
 @Serializable
 data class PersonPresentConfig(val personContextConfig: EightWordsPersonConfig = EightWordsPersonConfig(),
@@ -44,6 +45,7 @@ class PersonPresentConfigBuilder : Builder<PersonPresentConfig> {
 }
 
 
+@Named
 class PersonPresentFeature(private val personContextFeature: PersonContextFeature,
                            private val personLargeFeature: IFortuneLargeFeature,
                            private val yearFeature: YearFeature,

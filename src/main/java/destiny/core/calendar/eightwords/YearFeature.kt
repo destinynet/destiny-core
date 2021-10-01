@@ -12,6 +12,7 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
+import javax.inject.Named
 
 /**
  * 315.0 : 立春
@@ -42,6 +43,7 @@ class YearConfigBuilder : Builder<YearConfig> {
   }
 }
 
+@Named
 class YearFeature(private val starPositionImpl: IStarPosition<*>,
                   private val julDayResolver: JulDayResolver) : AbstractCachedFeature<YearConfig, StemBranch>() {
 

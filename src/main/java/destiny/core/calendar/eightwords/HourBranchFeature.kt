@@ -24,6 +24,7 @@ import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
+import javax.inject.Named
 
 
 /** 時辰切割 */
@@ -153,8 +154,10 @@ interface IHourBranchFeature : Feature<HourBranchConfig, Branch> {
 }
 
 
+@Named
 class HourBranchFeature(private val hourImplMap: Map<HourBranchConfig.HourImpl, IHour>,
                         val julDayResolver: JulDayResolver) : IHourBranchFeature, AbstractCachedFeature<HourBranchConfig, Branch>() {
+
   override val key: String = "hourBranch"
 
   override val defaultConfig: HourBranchConfig = HourBranchConfig()

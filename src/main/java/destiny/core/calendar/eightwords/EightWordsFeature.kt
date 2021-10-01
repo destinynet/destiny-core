@@ -15,6 +15,7 @@ import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import javax.inject.Named
 
 
 @Serializable
@@ -48,10 +49,12 @@ class EightWordsConfigBuilder : Builder<EightWordsConfig> {
   }
 }
 
+@Named
 class EightWordsFeature(private val yearFeature: YearFeature,
                         private val yearMonthFeature: YearMonthFeature,
                         private val dayHourFeature: Feature<DayHourConfig, Pair<StemBranch, StemBranch>>,
                         private val julDayResolver: JulDayResolver) : AbstractCachedFeature<EightWordsConfig, EightWords>() {
+
   override val key: String = "eightWords"
 
   override val defaultConfig: EightWordsConfig = EightWordsConfig()

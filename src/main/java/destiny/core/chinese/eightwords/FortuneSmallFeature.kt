@@ -15,6 +15,7 @@ import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
+import javax.inject.Named
 
 
 @Serializable
@@ -53,6 +54,7 @@ class FortuneSmallConfigBuilder : Builder<FortuneSmallConfig> {
   }
 }
 
+@Named
 class FortuneSmallFeature(private val julDayResolver: JulDayResolver,
                           private val ageNoteImplMap: Map<IntAgeNoteImpl , IntAgeNote>,
                           private val fortuneSmallImplMap: Map<FortuneSmallConfig.Impl, IPersonFortuneSmall>) : AbstractCachedPersonFeature<FortuneSmallConfig, List<FortuneData>>() {

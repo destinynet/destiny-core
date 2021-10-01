@@ -10,6 +10,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.serializers.PointSerializer
 import kotlinx.serialization.Serializable
+import javax.inject.Named
 
 @Serializable
 data class RiseTransConfig(@Serializable(with = PointSerializer::class)
@@ -42,6 +43,7 @@ class RiseTransConfigBuilder : Builder<RiseTransConfig> {
 /**
  * 計算星體對地球表面某點的 東昇、天頂、西落、天底的時刻
  */
+@Named
 class RiseTransFeature(val impl : IRiseTrans) : AbstractCachedFeature<RiseTransConfig, GmtJulDay?>() {
 
   override val key: String = "riseTrans"

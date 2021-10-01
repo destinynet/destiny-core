@@ -20,6 +20,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
+import javax.inject.Named
 
 @Serializable
 data class PithyConfig(val direction: Branch = Branch.子,
@@ -66,6 +67,7 @@ class PithyConfigBuilder : Builder<PithyConfig> {
 }
 
 
+@Named
 class PithyCoreFeature(private val eightWordsFeature: EightWordsFeature,
                        private val monthMasterMap: Map<MonthMaster, IMonthMaster>,
                        private val clockwiseMap: Map<Clockwise, IClockwise>,

@@ -15,6 +15,7 @@ import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 import java.util.*
+import javax.inject.Named
 
 @Serializable
 data class TradChineseRisingSignConfig(
@@ -86,13 +87,13 @@ class RisingSignConfigBuilder : Builder<RisingSignConfig> {
 }
 
 
-class RisingSignFeature(
-  private val houseCuspFeature: IHouseCuspFeature,
-  private val tradChineseRisingSignFeature: TradChineseRisingSignFeature
-) : AbstractCachedFeature<RisingSignConfig, ZodiacSign>() {
+@Named
+class RisingSignFeature(private val houseCuspFeature: IHouseCuspFeature,
+                        private val tradChineseRisingSignFeature: TradChineseRisingSignFeature): AbstractCachedFeature<RisingSignConfig, ZodiacSign>() {
 
   class TradChineseRisingSignFeature(private val starPositionImpl: IStarPosition<*>,
                                      private val dayHourFeature: Feature<DayHourConfig, Pair<StemBranch, StemBranch>>) : AbstractCachedFeature<TradChineseRisingSignConfig, ZodiacSign>() {
+
     override val key: String = "tradChinese"
 
     override val defaultConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig()

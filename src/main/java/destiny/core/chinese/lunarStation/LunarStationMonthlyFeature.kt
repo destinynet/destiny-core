@@ -16,6 +16,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
+import javax.inject.Named
 
 @Serializable
 data class MonthlyConfig(val impl: Impl = Impl.AoHead,
@@ -50,6 +51,7 @@ interface ILunarStationMonthlyFeature : Feature<MonthlyConfig, LunarStation> {
   fun getMonthly(yearStation: LunarStation, monthNumber: Int, impl: MonthlyConfig.Impl): LunarStation
 }
 
+@Named
 class LunarStationMonthlyFeature(private val yearlyFeature: LunarStationYearlyFeature,
                                  private val monthFeature: YearMonthFeature,
                                  private val chineseDateFeature: ChineseDateFeature,

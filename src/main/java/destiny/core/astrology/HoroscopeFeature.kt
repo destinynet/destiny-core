@@ -13,6 +13,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.serializers.PointSerializer
 import kotlinx.serialization.Serializable
+import javax.inject.Named
 
 
 @Serializable
@@ -49,6 +50,7 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
   }
 }
 
+@Named
 class HoroscopeFeature(private val pointPosFuncMap: Map<Point, IPosition<*>> ,
                        private val houseCuspFeature: IHouseCuspFeature,
                        private val voidCourseFeature: IVoidCourseFeature) : AbstractCachedFeature<HoroscopeConfig, IHoroscopeModel>() {

@@ -20,6 +20,7 @@ import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 import javax.cache.Cache
+import javax.inject.Named
 
 @Serializable
 data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContextConfig = EightWordsContextConfig(),
@@ -55,7 +56,9 @@ class PersonConfigBuilder : Builder<EightWordsPersonConfig> {
   }
 }
 
+@Named
 class PersonContextFeature(private val eightWordsContextFeature: EightWordsContextFeature,
+                           @Named("intAge8wImpl")
                            private val intAgeImpl: IIntAge,
                            private val fortuneLargeFeature: IFortuneLargeFeature,
                            private val fortuneSmallFeature: FortuneSmallFeature,

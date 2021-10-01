@@ -14,6 +14,7 @@ import destiny.tools.Feature
 import destiny.tools.serializers.PointSerializer
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
+import javax.inject.Named
 import kotlin.math.min
 
 
@@ -67,6 +68,7 @@ interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourse?> {
 /**
  * 星體空亡
  */
+@Named
 class VoidCourseFeature(private val vocMap: Map<VoidCourseConfig.VoidCourseImpl, IVoidCourse>,
                         private val pointPosFuncMap: Map<Point, IPosition<*>>) : IVoidCourseFeature , AbstractCachedFeature<VoidCourseConfig , VoidCourse?>() {
   

@@ -24,6 +24,7 @@ import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import javax.inject.Named
 
 
 @Serializable
@@ -143,6 +144,7 @@ interface ILunarStationFeature : Feature<LunarStationConfig, ContextModel>{
 /**
  * 禽星排盤
  */
+@Named
 class LunarStationFeature(private val yearlyFeature: LunarStationYearlyFeature,
                           private val monthlyFeature: ILunarStationMonthlyFeature,
                           private val dailyFeature: LunarStationDailyFeature,

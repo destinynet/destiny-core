@@ -22,6 +22,7 @@ import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
+import javax.inject.Named
 
 @Serializable
 data class FortuneLargeConfig(val impl: Impl = Impl.DefaultSpan,
@@ -97,6 +98,7 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
   }
 }
 
+@Named
 class FortuneLargeFeature(private val eightWordsFeature: EightWordsFeature,
                           private val implMap : Map<FortuneLargeConfig.Impl, IPersonFortuneLarge>,
                           private val ageNoteImplMap: Map<IntAgeNoteImpl , IntAgeNote>,

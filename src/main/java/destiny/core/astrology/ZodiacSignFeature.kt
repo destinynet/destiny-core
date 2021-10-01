@@ -9,6 +9,7 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.serializers.PointSerializer
 import kotlinx.serialization.Serializable
+import javax.inject.Named
 
 @Serializable
 data class ZodiacSignConfig(@Serializable(with = PointSerializer::class)
@@ -29,7 +30,9 @@ class ZodiacSignBuilder : Builder<ZodiacSignConfig> {
   }
 }
 
+@Named
 class ZodiacSignFeature(private val zodiacSignImpl : IZodiacSign) : AbstractCachedFeature<ZodiacSignConfig, ZodiacSignModel>() {
+
   override val key: String = "zodiacSign"
 
   override val defaultConfig: ZodiacSignConfig = ZodiacSignConfig()

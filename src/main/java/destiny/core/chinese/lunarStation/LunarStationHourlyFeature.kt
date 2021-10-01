@@ -20,6 +20,7 @@ import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import javax.inject.Named
 
 @Serializable
 data class HourlyConfig(val impl: Impl = Impl.Yuan,
@@ -52,7 +53,7 @@ class HourlyConfigBuilder : Builder<HourlyConfig> {
 }
 
 
-
+@Named
 class LunarStationHourlyFeature(private val dailyFeature: LunarStationDailyFeature,
                                 private val dayHourFeature: Feature<DayHourConfig, Pair<StemBranch, StemBranch>>,
                                 private val julDayResolver: JulDayResolver,

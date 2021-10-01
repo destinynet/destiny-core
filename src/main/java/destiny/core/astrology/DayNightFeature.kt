@@ -13,6 +13,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
 import java.util.*
+import javax.inject.Named
 
 @Serializable
 data class DayNightConfig(val impl : DayNightImpl = DayNightImpl.StarPos ,
@@ -66,6 +67,7 @@ class DayNightConfigBuilder : Builder<DayNightConfig> {
   }
 }
 
+@Named
 class DayNightFeature(private val dayNightImplMap: Map<DayNightImpl, IDayNight>) : AbstractCachedFeature<DayNightConfig, DayNight>() {
 
   override val key: String = "dayNight"

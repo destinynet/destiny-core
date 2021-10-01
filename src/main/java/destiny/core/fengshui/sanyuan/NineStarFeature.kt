@@ -17,6 +17,7 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import javax.inject.Named
 
 @Serializable
 data class NineStarConfig(val scales: List<Scale> = listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR),
@@ -47,6 +48,7 @@ class NineStarConfigBuilder : Builder<NineStarConfig> {
 }
 
 
+@Named
 class NineStarFeature(private val sanYuanImpl: ISanYuan,
                       private val ewFeature : EightWordsFeature,
                       private val starPositionImpl: IStarPosition<IStarPos>,
