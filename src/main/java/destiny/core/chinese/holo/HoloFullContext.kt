@@ -13,6 +13,7 @@ import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
+@Deprecated("HoloFullFeature")
 class HoloFullContext(
   val holoContext: HoloContext,
   val poemParser: IPoemProvider,
