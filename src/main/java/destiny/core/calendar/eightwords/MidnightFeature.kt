@@ -8,12 +8,31 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.tools.AbstractCachedFeature
+import destiny.tools.Feature
 import java.time.chrono.ChronoLocalDateTime
+import javax.inject.Named
+import kotlin.math.absoluteValue
 
+
+interface IMidnightFeature : Feature<DayConfig, GmtJulDay> {
+
+  fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation, impl: DayConfig.MidnightImpl): GmtJulDay
+
+  fun getPrevMidnight(gmtJulDay: GmtJulDay, loc: ILocation, impl: DayConfig.MidnightImpl): GmtJulDay {
+    val nextMidnight = getNextMidnight(gmtJulDay, loc, impl)
+
+    return generateSequence(gmtJulDay - 0.5 to getNextMidnight(gmtJulDay - 0.5, loc, impl)) { pair ->
+      pair.first to getNextMidnight(pair.first - 0.5, loc, impl)
+    }.first { (it.second - nextMidnight).absoluteValue > 0.5 }
+      .second
+  }
+
+}
 
 /** 取得下一個子正的時刻 */
+@Named
 class MidnightFeature(private val midnightImplMap: Map<DayConfig.MidnightImpl, IMidnight>,
-                      private val julDayResolver: JulDayResolver) : AbstractCachedFeature<DayConfig, GmtJulDay>() {
+                      private val julDayResolver: JulDayResolver) : AbstractCachedFeature<DayConfig, GmtJulDay>() , IMidnightFeature {
 
   override val key: String = "midnight"
 
@@ -27,5 +46,9 @@ class MidnightFeature(private val midnightImplMap: Map<DayConfig.MidnightImpl, I
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayConfig): GmtJulDay {
     val resultLmt = midnightImplMap[config.midnight]!!.getNextMidnight(lmt, loc, julDayResolver)
     return TimeTools.getGmtJulDay(resultLmt, loc)
+  }
+
+  override fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation, impl: DayConfig.MidnightImpl): GmtJulDay {
+    return midnightImplMap[impl]!!.getNextMidnight(gmtJulDay, loc)
   }
 }

@@ -54,12 +54,7 @@ interface IHoloContext {
    * @param yearHexagram 該年卦象
    * @param yearYuanTang 該年元堂
    */
-  fun getMonthlyHexagram(
-    yearStem: Stem,
-    yearHexagram: IHexagram,
-    yearYuanTang: Int,
-    gmt: GmtJulDay
-  ): IHoloHexagramWithStemBranch
+  fun getMonthlyHexagram(yearStem: Stem, yearHexagram: IHexagram, yearYuanTang: Int, gmt: GmtJulDay): IHoloHexagramWithStemBranch
 
   /**
    * 取得當下時刻的流日卦象
@@ -67,22 +62,10 @@ interface IHoloContext {
    * @param monthYuanTang 流月元堂 (index start from 1)
    * @param viewGmt 當下的 GMT 時刻
    */
-  fun getDailyHexagram(
-    monthHexagram: IHexagram,
-    monthYuanTang: Int,
-    viewGmt: GmtJulDay,
-    loc: ILocation
-  ): IHoloHexagramWithStemBranch
+  fun getDailyHexagram(monthHexagram: IHexagram, monthYuanTang: Int, viewGmt: GmtJulDay, loc: ILocation): IHoloHexagramWithStemBranch
 
   /** 除了傳回 本命先後天卦，另外傳回 以及此 gmt 時刻 的大運、流年、流月 等資訊 */
-  fun getHoloWithTime(
-    lmt: ChronoLocalDateTime<*>,
-    loc: ILocation,
-    gender: Gender,
-    gmt: GmtJulDay,
-    name: String? = null,
-    place: String? = null
-  ): Pair<IHolo, List<IHoloHexagram>>
+  fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: GmtJulDay, name: String? = null, place: String? = null): Pair<IHolo, List<IHoloHexagram>>
 
   /** 天數 */
   fun getHeavenNumber(ew: IEightWords): Int

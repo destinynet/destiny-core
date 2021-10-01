@@ -23,6 +23,7 @@ import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 import java.util.*
+import javax.inject.Named
 
 
 @Serializable
@@ -114,6 +115,7 @@ class DayHourConfigBuilder : Builder<DayHourConfig> {
 
 interface IDayHourFeature : Feature<DayHourConfig, Pair<StemBranch, StemBranch>>
 
+@Named
 class DayHourFeature(private val midnightFeature: MidnightFeature,
                      private val hourBranchFeature: IHourBranchFeature,
                      private val julDayResolver: JulDayResolver) : AbstractCachedFeature<DayHourConfig, Pair<StemBranch, StemBranch>>() {

@@ -9,9 +9,7 @@ import destiny.core.astrology.IZodiacSign
 import destiny.core.astrology.Planet
 import destiny.core.calendar.*
 import destiny.core.calendar.chinese.Yuan
-import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.EightWordsFeature
-import destiny.core.calendar.eightwords.IEightWords
+import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.holo.IHoloContext.Companion.threeKingHexagrams
@@ -249,7 +247,7 @@ interface IHoloFeature {
    * 後天卦 (with 元堂)
    * @param yinYang 在「三至尊卦」 [threeKingHexagrams] 的情形下，陰陽如何判別？ 是依據切割年份的陰陽 ( [ThreeKingsAlgo.HALF_YEAR] ) , 或是依據 月份地支 判斷的陰陽 ( [ThreeKingsAlgo.MONTH_BRANCH] )
    *  */
-  fun getHexagramAcquired(hexagramCongenital: IHexagram, yuanTang: Int, yinYang: IYinYang, threeKings: ThreeKingsAlgo?): Pair<Hexagram, Int> {
+  fun getHexagramAcquired(hexagramCongenital: IHexagram, yuanTang: Int, yinYang: IYinYang, threeKings: ThreeKingsAlgo? = ThreeKingsAlgo.HALF_YEAR): Pair<Hexagram, Int> {
 
     val newYuanTang = ((yuanTang + 3) % 6).let {
       if (it == 0)
@@ -300,7 +298,7 @@ interface IHoloFeature {
    * @param yuanTangIndexFrom1 元堂 (1~6)
    * @return Holo卦象 以及 出生之後每個立春的GMT時刻(亦即：原歲數截止時刻 & 新歲數開始時刻 ）
    */
-  fun getHoloHexagramAndAgeList(hex: Hexagram, yuanTangIndexFrom1: Int, initGmtJulDay: GmtJulDay, initStemBranch: IStemBranch, settings: SettingsOfStemBranch, hexChange: HexChange): List<HoloLine>
+  fun getHoloHexagramAndAgeList(hex: Hexagram, yuanTangIndexFrom1: Int, initGmtJulDay: GmtJulDay, initStemBranch: IStemBranch, settings: SettingsOfStemBranch, hexChange: HexChange = HexChange.DST): List<HoloLine>
 
   /**
    * 取得流年卦 , 陽爻 取 9 年， 陰爻 取 6 年
@@ -308,8 +306,32 @@ interface IHoloFeature {
    * @param lineIndex 元堂 (1~6)
    * @param stemBranch 第一年的干支
    */
-  fun getYearlyHexagrams(hex: Hexagram, lineIndex: Int, stemBranch: IStemBranch, hexChange: HexChange): Sequence<Triple<Hexagram, Int, IStemBranch>>
+  fun getYearlyHexagrams(hex: Hexagram, lineIndex: Int, stemBranch: IStemBranch, hexChange: HexChange = HexChange.DST): Sequence<Triple<Hexagram, Int, IStemBranch>>
 
+  /**
+   * 列出當年 12 個月的流月卦象
+   * @param yearHexagram 當年卦象
+   */
+  fun getMonthlyHexagrams(yearHexagram: IHoloHexagramWithStemBranch, settings: SettingsOfStemBranch = SettingsOfStemBranch.GingFang): List<IHoloHexagramWithStemBranch>
+
+  /**
+   * 取得當下 gmt 時刻的「月份」卦象
+   * @param yearStem 該年天干
+   * @param yearHexagram 該年卦象
+   * @param yearYuanTang 該年元堂
+   */
+  fun getMonthlyHexagram(yearStem: Stem, yearHexagram: IHexagram, yearYuanTang: Int, gmt: GmtJulDay, settings: SettingsOfStemBranch = SettingsOfStemBranch.GingFang): IHoloHexagramWithStemBranch
+
+  /**
+   * 取得當下時刻的流日卦象
+   * @param monthHexagram 流月卦
+   * @param monthYuanTang 流月元堂 (index start from 1)
+   * @param viewGmt 當下的 GMT 時刻
+   */
+  fun getDailyHexagram(monthHexagram: IHexagram, monthYuanTang: Int, viewGmt: GmtJulDay, loc: ILocation, settings: SettingsOfStemBranch = SettingsOfStemBranch.GingFang, dayHourConfig: DayHourConfig = DayHourConfig()): IHoloHexagramWithStemBranch
+
+  /** 除了傳回 本命先後天卦，另外傳回 以及此 gmt 時刻 的大運、流年、流月 等資訊 */
+  fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: GmtJulDay, name: String? = null, place: String? = null, settings: SettingsOfStemBranch = SettingsOfStemBranch.GingFang): Pair<IHolo, List<IHoloHexagram>>
 }
 
 @Named
@@ -317,6 +339,9 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
                   private val settingsMap : Map<SettingsOfStemBranch, ISettingsOfStemBranch>,
                   private val sanYuanImpl: ISanYuan,
                   private val eightWordsFeature: EightWordsFeature,
+                  private val dayHourFeature: DayHourFeature,
+                  private val hourBranchFeature: IHourBranchFeature,
+                  private val midnightFeature: IMidnightFeature,
                   private val numberize: INumberize,
                   private val yuanGenderImpl: IYuanGender,
                   private val zodiacSignImpl: IZodiacSign,
@@ -682,6 +707,228 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
                 seasonalHexagram, monthlyHexagram,
                 dailyHexagramMap,
                 goldenKey , summaries)
+  }
+
+  /**
+   * 列出當年 12 個月的流月卦象
+   * @param yearHexagram 當年卦象
+   */
+  override fun getMonthlyHexagrams(yearHexagram: IHoloHexagramWithStemBranch, settings: SettingsOfStemBranch): List<IHoloHexagramWithStemBranch> {
+    // 立春開始
+    val springStart = yearHexagram.start
+    return SolarTerms.values()
+      .filter { it.major }  // 只要「節」即可 , 共取出 12 節 , from 立春 to 小寒
+      .foldIndexed(mutableListOf()) { indexFrom0, list, solarTerms ->
+        val lastOddHex: IHoloHexagramWithStemBranch = if (list.isEmpty()) yearHexagram else {
+          if (list.size % 2 == 1)
+            list.last()
+          else
+            list.dropLast(1).last()
+        }
+
+        val lastHex = if (list.isEmpty()) yearHexagram else list.last()
+
+        val (hex, yuanTang, start) = if (indexFrom0 % 2 == 0) {
+          // 單月 (立春 ...)
+          val (hex, yuanTang) = switch(lastOddHex, lastOddHex.yuanTang + 1)
+          val start: GmtJulDay = if (list.isEmpty()) springStart else list.last().endExclusive
+          Triple(hex, yuanTang, start)
+        } else {
+          // 雙月 (驚蟄 ...)
+          val (hex, yuanTang) = switch(lastHex, lastHex.yuanTang + 3)
+          val start: GmtJulDay = list.last().endExclusive
+          Triple(hex, yuanTang, start)
+        }
+
+        val settingsImpl = settingsMap[settings]!!
+
+        val stemBranches: List<StemBranch> = (1..6).map { settingsImpl.getStemBranch(hex, it) }.toList()
+        val end: GmtJulDay = solarTermsImpl.getSolarTermsTime(solarTerms.next().next(), start, true)
+        val holoHex = HoloHexagram(IHoloHexagram.Scale.MONTH, hex, yuanTang, stemBranches, start, end)
+        // 五虎遁年起月訣
+        val monthStem = StemBranchUtils.getMonthStem(yearHexagram.stemBranch.stem, solarTerms.branch)
+        list.add(HoloHexagramWithStemBranch(holoHex, StemBranch[monthStem, solarTerms.branch]))
+        list
+      }
+  }
+
+
+  /**
+   * 取得當下 gmt 時刻的「月份」卦象
+   * @param yearStem 該年天干
+   * @param yearHexagram 該年卦象
+   * @param yearYuanTang 該年元堂
+   */
+  override fun getMonthlyHexagram(yearStem: Stem, yearHexagram: IHexagram, yearYuanTang: Int, gmt: GmtJulDay, settings: SettingsOfStemBranch): IHoloHexagramWithStemBranch {
+    val solarTerms: SolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt)
+
+    val monthNum = solarTerms.branch.getAheadOf(寅) + 1 // 1~12
+
+    val list: List<Pair<IHexagram, Int>> = SolarTerms.values()
+      .filter { it.major }  // 只要「節」即可 , 共取出 12 節 , from 立春 to 小寒
+      .foldIndexed(mutableListOf<Pair<IHexagram, Int>>()) { indexFrom0, list, _ ->
+        val lastOddHex: Pair<IHexagram, Int> = if (list.isEmpty()) yearHexagram to yearYuanTang else {
+          if (list.size % 2 == 1)
+            list.last()
+          else
+            list.dropLast(1).last()
+        }
+
+        val lastHex: Pair<IHexagram, Int> = if (list.isEmpty()) yearHexagram to yearYuanTang else list.last()
+
+        val (hex, yuanTang) = if (indexFrom0 % 2 == 0) {
+          // 單月 (立春 ...)
+          switch(lastOddHex.first, lastOddHex.second + 1)
+        } else {
+          // 雙月 (驚蟄 ...)
+          switch(lastHex.first, lastHex.second + 3)
+        }
+        list.add(hex to yuanTang)
+        list
+      }.toList()
+
+    val (monthHex: IHexagram, monthYuanTang: Int) = list[monthNum - 1]
+
+    val settingsImpl = settingsMap[settings]!!
+    val stemBranches = (1..6).map { settingsImpl.getStemBranch(monthHex, it) }
+    val (start, end) = solarTermsImpl.getMajorSolarTermsGmtBetween(gmt).let { (from, to) ->
+      from.second to to.second
+    }
+
+    val holoHexagram = HoloHexagram(IHoloHexagram.Scale.MONTH, monthHex, monthYuanTang, stemBranches, start, end)
+    // 五虎遁年起月訣
+    val monthStem = StemBranchUtils.getMonthStem(yearStem, solarTerms.branch)
+    return HoloHexagramWithStemBranch(holoHexagram, StemBranch[monthStem, solarTerms.branch])
+  }
+
+  /**
+   * 取得當下時刻的流日卦象
+   * @param monthHexagram 流月卦
+   * @param monthYuanTang 流月元堂 (index start from 1)
+   * @param viewGmt 當下的 GMT 時刻
+   */
+  override fun getDailyHexagram(monthHexagram: IHexagram, monthYuanTang: Int, viewGmt: GmtJulDay, loc: ILocation, settings: SettingsOfStemBranch, dayHourConfig: DayHourConfig): IHoloHexagramWithStemBranch {
+    // 計算此時刻，處於何節氣中 , 開始為何時
+    val (_, startGmt) = solarTermsImpl.getMajorSolarTermsGmtBetween(viewGmt).first
+
+
+    val startSB = dayHourFeature.getModel(startGmt, loc, dayHourConfig).first
+    val viewSB = dayHourFeature.getModel(viewGmt, loc, dayHourConfig).first
+
+    val diffDays: Int = viewSB.getAheadOf(startSB) + 1 // 沒有第零日 , 「節」當日也算第一日
+    logger.debug("從 {} 到 {} , diffDays = {}", startSB, viewSB, diffDays)
+
+    val (dayHex, dayYuanTang) = generateSequence(monthHexagram to confine(monthYuanTang + 1)) {
+      Pair(Hexagram.of(monthHexagram), confine(it.second + 1))
+    }.flatMap { pair ->
+      logger.debug("pair = {}", pair)
+      generateSequence(switch(pair.first, pair.second).first to 1) {
+        it.first to confine(it.second + 1)
+      }.take(6)
+    }.take(diffDays).last()
+
+
+    val settingsImpl = settingsMap[settings]!!
+    val stemBranches = (1..6).map { settingsImpl.getStemBranch(dayHex, it) }
+
+
+    val start: GmtJulDay = if (dayHourConfig.dayConfig.changeDayAfterZi) {
+      hourBranchFeature.getGmtPrevStartOf(viewGmt, loc, 子, julDayResolver, dayHourConfig.hourBranchConfig)
+    } else {
+      midnightFeature.getPrevMidnight(viewGmt, loc, dayHourConfig.dayConfig.midnight)
+    }
+
+    val end: GmtJulDay = if (dayHourConfig.dayConfig.changeDayAfterZi) {
+      hourBranchFeature.getGmtNextStartOf(viewGmt, loc, 子, julDayResolver, dayHourConfig.hourBranchConfig)
+    } else {
+      midnightFeature.getNextMidnight(viewGmt, loc, dayHourConfig.dayConfig.midnight)
+    }
+
+    val holoHex = HoloHexagram(IHoloHexagram.Scale.DAY, dayHex, dayYuanTang, stemBranches, start, end)
+
+    val daySb = dayHourFeature.getModel(viewGmt, loc, dayHourConfig).first
+
+    return HoloHexagramWithStemBranch(holoHex, daySb)
+  } // 流日
+
+  /** 除了傳回 本命先後天卦，另外傳回 以及此 gmt 時刻 的大運、流年、流月 等資訊 */
+  override fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: GmtJulDay, name: String?, place: String?, settings: SettingsOfStemBranch): Pair<IHolo, List<IHoloHexagram>> {
+
+    val holo = getPersonModel(lmt, loc, gender, name, place)
+    val congenitalLines: List<HoloLine> = holo.hexagramCongenital.lines
+    val acquiredLines: List<HoloLine> = holo.hexagramAcquired.lines
+
+    // 現在處於 先天卦 or 後天卦 當中 , FIXME : 排久遠之前的盤，會有問題
+    val mainHexagram: IHoloHexagram? = holo.hexagramCongenital.takeIf {
+      it.contains(gmt)
+    } ?: holo.hexagramAcquired.takeIf {
+      it.contains(gmt)
+    }
+
+
+    val settingsImpl = settingsMap[settings]!!
+
+    // 此時刻的大運 (6 or 9年) 的 卦象(with 元堂)
+    val majorHexagram: IHoloHexagramWithStemBranch? = (holo.hexagramCongenital.let { holoHexagram: IHoloHexagram ->
+      // 先從先天卦找起
+      val lineIndex = congenitalLines.indexOfFirst {
+        it.contains(gmt)
+      } + 1
+      Triple(holoHexagram, lineIndex, if (lineIndex > 0) congenitalLines[lineIndex - 1] else null)
+
+    }.takeIf { (_, lineIndex) -> lineIndex > 0 }
+      ?: holo.hexagramAcquired.let { holoHexagram: IHoloHexagram ->
+        // 再到後天卦尋找
+        val lineIndex = acquiredLines.indexOfFirst {
+          it.contains(gmt)
+        } + 1
+        Triple(holoHexagram, lineIndex, if (lineIndex > 0) acquiredLines[lineIndex - 1] else null)
+      }.takeIf { (_, lineIndex) -> lineIndex > 0 }
+      )?.let { (hex, lineIndex, line: HoloLine?) ->
+        // 大運的干支 , 指的是 先後天卦，走到哪一爻, 該爻的納甲
+        val stemBranch = settingsImpl.getStemBranch(hex, lineIndex)
+        val stemBranches = (1..6).map { settingsImpl.getStemBranch(hex, it) }.toList()
+        val start = line!!.hexagrams.minByOrNull { it.start }!!.start
+        val end = line.hexagrams.maxByOrNull { it.endExclusive }!!.endExclusive
+        val holoHex = HoloHexagram(IHoloHexagram.Scale.MAJOR, hex, lineIndex, stemBranches, start, end)
+        HoloHexagramWithStemBranch(holoHex, stemBranch)
+      }
+
+    // 此時刻的流年卦象 (with 元堂)
+    val yearlyHexagram: IHoloHexagramWithStemBranch? = congenitalLines.plus(acquiredLines).flatMap { holoLine ->
+      // 每條 holoLine 存放 6 or 9 條 流年資訊
+      holoLine.hexagrams
+    }.firstOrNull { hex: IHoloHexagramWithStemBranch ->
+      hex.contains(gmt)
+    }?.let { hex: IHoloHexagramWithStemBranch ->
+      // 流年干支
+      val stemBranch = hex.stemBranch
+      val stemBranches = (1..6).map { settingsImpl.getStemBranch(hex, it) }.toList()
+      val holoHex = HoloHexagram(IHoloHexagram.Scale.YEAR, hex, hex.yuanTang, stemBranches, hex.start, hex.endExclusive)
+      HoloHexagramWithStemBranch(holoHex, stemBranch)
+    }
+
+    // 流月 (depends on 流年)
+    val monthlyHexagram: IHoloHexagramWithStemBranch? = yearlyHexagram?.let { yearly: IHoloHexagramWithStemBranch ->
+      getMonthlyHexagram(yearly.stemBranch.stem, yearly, yearly.yuanTang, gmt)
+    }
+
+    // 流日
+    val dailyHexagram: IHoloHexagramWithStemBranch? = monthlyHexagram?.let { monthly ->
+      getDailyHexagram(monthly, monthly.yuanTang, gmt, loc).also {
+        logger.debug("流日 , start = {}", it.start)
+      }
+    }
+
+    val list: List<IHoloHexagram> = mutableListOf<IHoloHexagram>().apply {
+      mainHexagram?.also { this.add(it) }
+      majorHexagram?.also { this.add(it) }
+      yearlyHexagram?.also { this.add(it) }
+      monthlyHexagram?.also { this.add(it) }
+      dailyHexagram?.also { this.add(it) }
+    }.toList()
+
+    return holo to list
   }
 
   companion object {
