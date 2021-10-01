@@ -15,6 +15,8 @@ import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.PersonFeature
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
+import javax.cache.Cache
+import javax.inject.Inject
 import javax.inject.Named
 
 
@@ -35,6 +37,13 @@ class HoloFullFeature(private val holoFeature: HoloFeature,
                       private val hexTextProvider: IHexagramProvider<IHexagramText>,
                       private val julDayResolver: JulDayResolver) : AbstractCachedPersonFeature<HoloFullConfig, Pair<IPoemHolo, List<HoloFullHexagram>>>(), IHoloFullFeature {
 
+  @Inject
+  private lateinit var holoFullCache: Cache<LmtCacheKey<*>, Pair<*, *>>
+
+  override val lmtPersonCache: Cache<LmtCacheKey<HoloFullConfig>, Pair<IPoemHolo, List<HoloFullHexagram>>>
+    get() {
+      return holoFullCache as Cache<LmtCacheKey<HoloFullConfig> , Pair<IPoemHolo, List<HoloFullHexagram>>>
+    }
 
   override val key: String = "holoFullFeature"
 
@@ -104,5 +113,9 @@ class HoloFullFeature(private val holoFeature: HoloFeature,
     }
   }
 
+
+  companion object {
+    const val CACHE_HOLO_FULL_FEATURE = "holoFullFeatureCache"
+  }
 
 }
