@@ -12,7 +12,6 @@ import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import javax.inject.Named
@@ -52,7 +51,7 @@ class EightWordsConfigBuilder : Builder<EightWordsConfig> {
 @Named
 class EightWordsFeature(private val yearFeature: YearFeature,
                         private val yearMonthFeature: YearMonthFeature,
-                        private val dayHourFeature: Feature<DayHourConfig, Pair<StemBranch, StemBranch>>,
+                        private val dayHourFeature: IDayHourFeature,
                         private val julDayResolver: JulDayResolver) : AbstractCachedFeature<EightWordsConfig, EightWords>() {
 
   override val key: String = "eightWords"

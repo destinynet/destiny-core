@@ -8,16 +8,16 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.DayHourConfig
+import destiny.core.calendar.eightwords.IDayHourFeature
 import destiny.core.calendar.eightwords.MidnightFeature
 import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Feature
 import javax.inject.Named
 
 
 @Named
 class ChineseDateFeature(private val chineseDateImpl : IChineseDate,
-                         private val dayHourFeature: Feature<DayHourConfig, Pair<StemBranch, StemBranch>>,
+                         private val dayHourFeature: IDayHourFeature,
                          private val midnightFeature: MidnightFeature,
                          private val julDayResolver: JulDayResolver) : AbstractCachedFeature<DayHourConfig, ChineseDate>() {
   override val key: String = "chineseDate"
