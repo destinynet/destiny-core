@@ -3,16 +3,20 @@
  */
 package destiny.core.chinese.eightwords
 
-import destiny.core.*
+import destiny.core.Descriptive
+import destiny.core.Gender
+import destiny.core.IBirthDataNamePlace
+import destiny.core.IntAgeNote
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.eightwords.*
+import destiny.core.calendar.eightwords.EightWordsConfig
+import destiny.core.calendar.eightwords.EightWordsFeature
+import destiny.core.calendar.eightwords.IEightWordsContextModel
+import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
-import destiny.core.chinese.eightwords.PersonConfigBuilder.Companion.ewPersonConfig
-import destiny.core.chinese.eightwords.PersonPresentConfigBuilder.Companion.ewPersonPresent
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -94,55 +98,6 @@ interface IPersonFortuneSmall {
 }
 
 /**
- * 類似 [IEightWordsContext]
- * 提供純粹「時間、地點、性別」的切入點 , 不帶其他參數，取得一張個人命盤
- */
-interface IPersonContext : IEightWordsContext {
-
-
-  fun getPersonContextModel(lmt: ChronoLocalDateTime<*>,
-                            location: ILocation,
-                            place: String?,
-                            gender: Gender,
-                            name: String? = null): IPersonContextModel
-
-  fun getPersonContextModel(data: IBirthDataNamePlace): IPersonContextModel {
-    return getPersonContextModel(data.time, data.location, data.place, data.gender, data.name)
-  }
-
-  /** 歲數實作  */
-  val intAgeImpl: IIntAge
-
-  /** 大運 的實作 */
-  val fortuneLargeImpl : IPersonFortuneLarge
-
-  /** 小運 的實作 */
-  val fortuneSmallImpl : IPersonFortuneSmall
-
-  val personContextConfig: EightWordsPersonConfig
-    get() {
-      return ewPersonConfig {
-        ewContextConfig = super.ewContextConfig
-        fortuneLarge {
-          impl = when(this@IPersonContext.fortuneLargeImpl) {
-            is FortuneLargeSpanImpl -> FortuneLargeConfig.Impl.DefaultSpan
-            is FortuneLargeSolarTermsSpanImpl -> FortuneLargeConfig.Impl.SolarTermsSpan
-            else -> throw IllegalArgumentException("not supported")
-          }
-        }
-        fortuneSmall {
-          impl = when(this@IPersonContext.fortuneSmallImpl) {
-            is FortuneSmallHourImpl -> FortuneSmallConfig.Impl.Hour
-            is FortuneSmallStarImpl -> FortuneSmallConfig.Impl.Star
-            is FortuneSmall6GiaImpl -> FortuneSmallConfig.Impl.SixGia
-            else -> throw IllegalArgumentException("not supported")
-          }
-        }
-      }
-    }
-}
-
-/**
  * 將 PersonContext 要呈現的資料都預先計算好（流年、大運...等），
  * 方便未來 View 端直接存取。不用在 View 端計算。
  */
@@ -193,20 +148,3 @@ data class PersonPresentModel(
   override val presentYear: StemBranch) :
   IPersonPresentModel, IPersonContextModel by personContextModel, Serializable
 
-interface IPersonPresentContext : IPersonContext {
-
-  @Deprecated("")
-  fun getPersonPresentModel(lmt: ChronoLocalDateTime<*>,
-                            location: ILocation,
-                            place: String?,
-                            gender: Gender,
-                            name: String?,
-                            viewGmt: ChronoLocalDateTime<*>): IPersonPresentModel
-
-  fun personPresentConfig(viewGmt : GmtJulDay): PersonPresentConfig {
-    return ewPersonPresent {
-      personContextConfig = super.personContextConfig
-      this.viewGmt = viewGmt
-    }
-  }
-}

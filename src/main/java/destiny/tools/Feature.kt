@@ -17,6 +17,7 @@ interface Builder<Model> {
 interface Feature<out Config : Any, Model : Any?> : Serializable {
 
   val key: String
+    get() = javaClass.simpleName
 
   val defaultConfig: Config
 

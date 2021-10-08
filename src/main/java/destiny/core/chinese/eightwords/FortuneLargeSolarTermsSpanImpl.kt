@@ -39,7 +39,7 @@ import kotlin.math.abs
 class FortuneLargeSolarTermsSpanImpl(
   override val eightWordsImpl: IEightWordsStandardFactory,
   /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
-  private val fortuneDirectionImpl: IFortuneDirection,
+  private val fortuneDirectionFeature: IFortuneDirectionFeature,
   /** 歲數實作  */
   private val intAgeImpl: IIntAge,
   private val solarTermsImpl: ISolarTerms,
@@ -62,7 +62,7 @@ class FortuneLargeSolarTermsSpanImpl(
   /** 順推大運 , 取得該命盤的幾條大運 */
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int): List<FortuneData> {
     val eightWords: IEightWords = eightWordsImpl.getEightWords(lmt, loc)
-    val forward = fortuneDirectionImpl.isForward(lmt, loc, gender)
+    val forward = fortuneDirectionFeature.getPersonModel(lmt, loc, gender, null, null)
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
 
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, loc)
@@ -73,7 +73,7 @@ class FortuneLargeSolarTermsSpanImpl(
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, span: Double, ageNoteImpls: List<IntAgeNote>, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): List<FortuneData> {
 
     val eightWords = eightWordsFeature.getModel(lmt, loc, config)
-    val forward = fortuneDirectionImpl.isForward(lmt, loc, gender)
+    val forward = fortuneDirectionFeature.getPersonModel(lmt, loc, gender, null, null)
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
 
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, loc)
@@ -253,7 +253,7 @@ class FortuneLargeSolarTermsSpanImpl(
 
   private fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, eightWords: IEightWords, gender: Gender, targetGmtJulDay: GmtJulDay): IStemBranch {
     // 大運是否順行
-    val fortuneForward = fortuneDirectionImpl.isForward(gmtJulDay, loc, gender)
+    val fortuneForward = fortuneDirectionFeature.getPersonModel(gmtJulDay, loc, gender, null, null)
 
     val diffSeconds = (targetGmtJulDay - gmtJulDay) * SECONDS_OF_DAY
 
@@ -292,7 +292,6 @@ class FortuneLargeSolarTermsSpanImpl(
     if (other !is FortuneLargeSolarTermsSpanImpl) return false
 
     if (eightWordsImpl != other.eightWordsImpl) return false
-    if (fortuneDirectionImpl != other.fortuneDirectionImpl) return false
     if (intAgeImpl != other.intAgeImpl) return false
     if (solarTermsImpl != other.solarTermsImpl) return false
     if (starTransitImpl != other.starTransitImpl) return false
@@ -304,7 +303,6 @@ class FortuneLargeSolarTermsSpanImpl(
 
   override fun hashCode(): Int {
     var result = eightWordsImpl.hashCode()
-    result = 31 * result + fortuneDirectionImpl.hashCode()
     result = 31 * result + intAgeImpl.hashCode()
     result = 31 * result + solarTermsImpl.hashCode()
     result = 31 * result + starTransitImpl.hashCode()
