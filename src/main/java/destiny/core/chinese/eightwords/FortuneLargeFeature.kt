@@ -119,11 +119,11 @@ class FortuneLargeFeature(private val eightWordsFeature: EightWordsFeature,
       ageNoteImplMap[impl]!!
     }.toList()
 
-    return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count, config.span, ageNoteImpls, eightWordsFeature, config.eightWordsConfig)
+    return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count, ageNoteImpls, eightWordsFeature, config)
   }
 
   override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch {
 
-    return implMap[config.impl]!!.getStemBranch(gmtJulDay, loc, gender, julDayResolver.getLocalDateTime(maxOf(gmtJulDay , fromGmtJulDay)), eightWordsFeature, config.eightWordsConfig)
+    return implMap[config.impl]!!.getStemBranch(gmtJulDay, loc, gender, julDayResolver.getLocalDateTime(maxOf(gmtJulDay , fromGmtJulDay)), eightWordsFeature, config)
   }
 }

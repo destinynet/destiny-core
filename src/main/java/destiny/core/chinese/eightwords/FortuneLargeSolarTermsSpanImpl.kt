@@ -17,7 +17,9 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.eightwords.*
+import destiny.core.calendar.eightwords.EightWords
+import destiny.core.calendar.eightwords.EightWordsFeature
+import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import destiny.core.chinese.eightwords.FortuneLargeConfig.Impl.SolarTermsSpan
@@ -26,6 +28,7 @@ import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import kotlin.math.abs
 
 /**
@@ -36,20 +39,12 @@ import kotlin.math.abs
  *
  * 演算法與 [FortuneLargeSpanImpl] 類似
  */
-class FortuneLargeSolarTermsSpanImpl(
-  override val eightWordsImpl: IEightWordsStandardFactory,
-  /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
-  private val fortuneDirectionFeature: IFortuneDirectionFeature,
-  /** 歲數實作  */
-  private val intAgeImpl: IIntAge,
-  private val solarTermsImpl: ISolarTerms,
-  private val starTransitImpl: IStarTransit,
-  /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
-  @Deprecated("use method parameter")
-  override val fortuneMonthSpan: Double = 120.0,
-  /** 歲數註解實作  */
-  @Deprecated("use method parameter")
-  override val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge, IFortuneMonthSpan, Serializable {
+@Named
+class FortuneLargeSolarTermsSpanImpl(private val fortuneDirectionFeature: IFortuneDirectionFeature,
+                                     @Named("intAge8wImpl")
+                                     private val intAgeImpl: IIntAge,
+                                     private val solarTermsImpl: ISolarTerms,
+                                     private val starTransitImpl: IStarTransit) : IPersonFortuneLarge, Serializable {
 
   private fun getAgeMap(toAge: Int,
                         gmtJulDay: GmtJulDay,
@@ -60,25 +55,15 @@ class FortuneLargeSolarTermsSpanImpl(
 
 
   /** 順推大運 , 取得該命盤的幾條大運 */
-  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int): List<FortuneData> {
-    val eightWords: IEightWords = eightWordsImpl.getEightWords(lmt, loc)
+  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, eightWordsFeature: EightWordsFeature, config: FortuneLargeConfig): List<FortuneData> {
+
+    val eightWords = eightWordsFeature.getModel(lmt, loc, config.eightWordsConfig)
     val forward = fortuneDirectionFeature.getPersonModel(lmt, loc, gender, null, null)
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
 
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, loc)
 
-    return getFortuneDataList(eightWords, forward, gmtJulDay, gender, ageMap, count, fortuneMonthSpan, ageNoteImpls)
-  }
-
-  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, span: Double, ageNoteImpls: List<IntAgeNote>, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): List<FortuneData> {
-
-    val eightWords = eightWordsFeature.getModel(lmt, loc, config)
-    val forward = fortuneDirectionFeature.getPersonModel(lmt, loc, gender, null, null)
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-
-    val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, loc)
-
-    return getFortuneDataList(eightWords, forward, gmtJulDay, gender, ageMap, count, span, ageNoteImpls)
+    return getFortuneDataList(eightWords, forward, gmtJulDay, gender, ageMap, count, config.span, ageNoteImpls)
   }
 
 
@@ -232,26 +217,16 @@ class FortuneLargeSolarTermsSpanImpl(
   /**
    * 逆推大運 , 求，未來某時刻，的大運干支為何
    */
-  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>): IStemBranch {
+  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, eightWordsFeature: EightWordsFeature, config: FortuneLargeConfig): IStemBranch {
     val targetGmtJulDay = TimeTools.getGmtJulDay(targetGmt)
     require(targetGmtJulDay > gmtJulDay) { "targetGmt $targetGmt must be after birth's time : $gmtJulDay" }
 
-    val eightWords: IEightWords = eightWordsImpl.getEightWords(gmtJulDay, loc)
+    val eightWords: EightWords = eightWordsFeature.getModel(gmtJulDay, loc, config.eightWordsConfig)
 
-    return getStemBranch(gmtJulDay, loc, eightWords, gender, targetGmtJulDay)
+    return getStemBranch(gmtJulDay, loc, eightWords, gender, targetGmtJulDay, config.span)
   }
 
-
-  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): IStemBranch {
-    val targetGmtJulDay = TimeTools.getGmtJulDay(targetGmt)
-    require(targetGmtJulDay > gmtJulDay) { "targetGmt $targetGmt must be after birth's time : $gmtJulDay" }
-
-    val eightWords: EightWords = eightWordsFeature.getModel(gmtJulDay, loc, config)
-
-    return getStemBranch(gmtJulDay, loc, eightWords, gender, targetGmtJulDay)
-  }
-
-  private fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, eightWords: IEightWords, gender: Gender, targetGmtJulDay: GmtJulDay): IStemBranch {
+  private fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, eightWords: IEightWords, gender: Gender, targetGmtJulDay: GmtJulDay, fortuneMonthSpan: Double): IStemBranch {
     // 大運是否順行
     val fortuneForward = fortuneDirectionFeature.getPersonModel(gmtJulDay, loc, gender, null, null)
 
@@ -286,31 +261,6 @@ class FortuneLargeSolarTermsSpanImpl(
   override fun getDescription(locale: Locale): String {
     return SolarTermsSpan.asDescriptive().getDescription(locale)
   }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is FortuneLargeSolarTermsSpanImpl) return false
-
-    if (eightWordsImpl != other.eightWordsImpl) return false
-    if (intAgeImpl != other.intAgeImpl) return false
-    if (solarTermsImpl != other.solarTermsImpl) return false
-    if (starTransitImpl != other.starTransitImpl) return false
-    if (fortuneMonthSpan != other.fortuneMonthSpan) return false
-    if (ageNoteImpls != other.ageNoteImpls) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    var result = eightWordsImpl.hashCode()
-    result = 31 * result + intAgeImpl.hashCode()
-    result = 31 * result + solarTermsImpl.hashCode()
-    result = 31 * result + starTransitImpl.hashCode()
-    result = 31 * result + fortuneMonthSpan.hashCode()
-    result = 31 * result + ageNoteImpls.hashCode()
-    return result
-  }
-
 
   companion object {
     private val logger = KotlinLogging.logger {}

@@ -11,10 +11,8 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWordsContextModel
-import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import java.io.Serializable
@@ -51,22 +49,11 @@ interface IPersonContextModel : IEightWordsContextModel , IBirthDataNamePlace  {
 }
 
 
-interface IFortuneMonthSpan {
-  val fortuneMonthSpan : Double
-}
-
 /** 推算 大運 演算法 */
 interface IPersonFortuneLarge : Descriptive {
 
-  val eightWordsImpl: IEightWordsStandardFactory
-
-  /** 歲數註解實作  */
-  val ageNoteImpls: List<IntAgeNote>
-
   /** 順推大運 , 取得該命盤的幾條大運 */
-  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int): List<FortuneData>
-  /** 順推大運 , 承上 , 利用 [EightWordsFeature] */
-  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, span: Double, ageNoteImpls: List<IntAgeNote>, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): List<FortuneData>
+  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, eightWordsFeature: EightWordsFeature, config: FortuneLargeConfig): List<FortuneData>
 
   /**
    * 逆推大運
@@ -74,28 +61,9 @@ interface IPersonFortuneLarge : Descriptive {
    * @param targetGmt 目標時刻為此時， 計算此時刻是屬於哪條月大運當中
    * 實際會與 [IPersonContextModel.getStemBranchOfFortuneMonth] 結果相同
    * */
-  fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>): IStemBranch
-  /** 逆推大運 , 承上 , 利用 [EightWordsFeature] */
-  fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): IStemBranch
-
-  fun getStemBranch(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>): IStemBranch {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getStemBranch(gmtJulDay, loc, gender, targetGmt)
-  }
+  fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, eightWordsFeature: EightWordsFeature, config: FortuneLargeConfig): IStemBranch
 }
 
-
-/** 推算小運 */
-interface IPersonFortuneSmall {
-
-  //val ageNoteImpls: List<IntAgeNote>
-
-  /**
-   * 順推小運
-   * 取得幾條小運
-   */
-  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, location: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>): List<FortuneData>
-}
 
 /**
  * 將 PersonContext 要呈現的資料都預先計算好（流年、大運...等），
