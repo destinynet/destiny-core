@@ -13,7 +13,6 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsConfigBuilder
-import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.chinese.IStemBranch
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
@@ -99,8 +98,7 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
 }
 
 @Named
-class FortuneLargeFeature(private val eightWordsFeature: EightWordsFeature,
-                          private val implMap : Map<FortuneLargeConfig.Impl, IPersonFortuneLarge>,
+class FortuneLargeFeature(private val implMap : Map<FortuneLargeConfig.Impl, IPersonFortuneLarge>,
                           private val ageNoteImplMap: Map<IntAgeNoteImpl , IntAgeNote>,
                           private val julDayResolver: JulDayResolver) : IFortuneLargeFeature, AbstractCachedPersonFeature<FortuneLargeConfig, List<FortuneData>>() {
   override val key: String = "fortuneLargeFeature"
@@ -119,11 +117,11 @@ class FortuneLargeFeature(private val eightWordsFeature: EightWordsFeature,
       ageNoteImplMap[impl]!!
     }.toList()
 
-    return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count, ageNoteImpls, eightWordsFeature, config)
+    return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count, ageNoteImpls, config)
   }
 
   override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch {
 
-    return implMap[config.impl]!!.getStemBranch(gmtJulDay, loc, gender, julDayResolver.getLocalDateTime(maxOf(gmtJulDay , fromGmtJulDay)), eightWordsFeature, config)
+    return implMap[config.impl]!!.getStemBranch(gmtJulDay, loc, gender, julDayResolver.getLocalDateTime(maxOf(gmtJulDay , fromGmtJulDay)), config)
   }
 }

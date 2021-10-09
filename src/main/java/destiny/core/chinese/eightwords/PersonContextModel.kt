@@ -11,7 +11,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
@@ -53,7 +52,7 @@ interface IPersonContextModel : IEightWordsContextModel , IBirthDataNamePlace  {
 interface IPersonFortuneLarge : Descriptive {
 
   /** 順推大運 , 取得該命盤的幾條大運 */
-  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, eightWordsFeature: EightWordsFeature, config: FortuneLargeConfig): List<FortuneData>
+  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, config: FortuneLargeConfig): List<FortuneData>
 
   /**
    * 逆推大運
@@ -61,7 +60,7 @@ interface IPersonFortuneLarge : Descriptive {
    * @param targetGmt 目標時刻為此時， 計算此時刻是屬於哪條月大運當中
    * 實際會與 [IPersonContextModel.getStemBranchOfFortuneMonth] 結果相同
    * */
-  fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, eightWordsFeature: EightWordsFeature, config: FortuneLargeConfig): IStemBranch
+  fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, config: FortuneLargeConfig): IStemBranch
 }
 
 

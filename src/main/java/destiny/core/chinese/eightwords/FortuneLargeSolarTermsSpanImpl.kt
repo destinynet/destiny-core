@@ -40,22 +40,20 @@ import kotlin.math.abs
  * 演算法與 [FortuneLargeSpanImpl] 類似
  */
 @Named
-class FortuneLargeSolarTermsSpanImpl(private val fortuneDirectionFeature: IFortuneDirectionFeature,
+class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFeature,
+                                     private val fortuneDirectionFeature: IFortuneDirectionFeature,
                                      @Named("intAge8wImpl")
                                      private val intAgeImpl: IIntAge,
                                      private val solarTermsImpl: ISolarTerms,
                                      private val starTransitImpl: IStarTransit) : IPersonFortuneLarge, Serializable {
 
-  private fun getAgeMap(toAge: Int,
-                        gmtJulDay: GmtJulDay,
-                        gender: Gender,
-                        location: ILocation): Map<Int, Pair<GmtJulDay, GmtJulDay>> {
+  private fun getAgeMap(toAge: Int, gmtJulDay: GmtJulDay, gender: Gender, location: ILocation): Map<Int, Pair<GmtJulDay, GmtJulDay>> {
     return intAgeImpl.getRangesMap(gender, gmtJulDay, location, 1, toAge)
   }
 
 
   /** 順推大運 , 取得該命盤的幾條大運 */
-  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, eightWordsFeature: EightWordsFeature, config: FortuneLargeConfig): List<FortuneData> {
+  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, config: FortuneLargeConfig): List<FortuneData> {
 
     val eightWords = eightWordsFeature.getModel(lmt, loc, config.eightWordsConfig)
     val forward = fortuneDirectionFeature.getPersonModel(lmt, loc, gender, null, null)
@@ -217,7 +215,7 @@ class FortuneLargeSolarTermsSpanImpl(private val fortuneDirectionFeature: IFortu
   /**
    * 逆推大運 , 求，未來某時刻，的大運干支為何
    */
-  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, eightWordsFeature: EightWordsFeature, config: FortuneLargeConfig): IStemBranch {
+  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, config: FortuneLargeConfig): IStemBranch {
     val targetGmtJulDay = TimeTools.getGmtJulDay(targetGmt)
     require(targetGmtJulDay > gmtJulDay) { "targetGmt $targetGmt must be after birth's time : $gmtJulDay" }
 

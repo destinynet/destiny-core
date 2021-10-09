@@ -7,7 +7,6 @@ import destiny.core.Gender
 import destiny.core.IntAgeNote
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.chinese.IStemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -34,14 +33,14 @@ import javax.inject.Named
  * 三日不見紅白事，身旺體壯家業興。
  */
 @Named
-class FortuneLargeBlindImpl: IPersonFortuneLarge, Serializable {
+class FortuneLargeBlindImpl : IPersonFortuneLarge, Serializable {
 
-  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, eightWordsFeature: EightWordsFeature, config: FortuneLargeConfig): List<FortuneData> {
+  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, config: FortuneLargeConfig): List<FortuneData> {
     TODO("Not yet implemented")
   }
 
 
-  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, eightWordsFeature: EightWordsFeature, config: FortuneLargeConfig): IStemBranch {
+  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, config: FortuneLargeConfig): IStemBranch {
     TODO("Not yet implemented")
   }
 
