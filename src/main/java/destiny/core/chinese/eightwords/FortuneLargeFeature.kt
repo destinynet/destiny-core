@@ -5,7 +5,6 @@ package destiny.core.chinese.eightwords
 
 import destiny.core.Descriptive
 import destiny.core.Gender
-import destiny.core.IntAgeNote
 import destiny.core.IntAgeNoteImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -99,9 +98,7 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
 
 @Named
 class FortuneLargeFeature(private val implMap : Map<FortuneLargeConfig.Impl, IPersonFortuneLarge>,
-                          private val ageNoteImplMap: Map<IntAgeNoteImpl , IntAgeNote>,
                           private val julDayResolver: JulDayResolver) : IFortuneLargeFeature, AbstractCachedPersonFeature<FortuneLargeConfig, List<FortuneData>>() {
-  override val key: String = "fortuneLargeFeature"
 
   override val defaultConfig: FortuneLargeConfig = FortuneLargeConfig()
 
@@ -113,11 +110,7 @@ class FortuneLargeFeature(private val implMap : Map<FortuneLargeConfig.Impl, IPe
       FortuneLargeConfig.Impl.SolarTermsSpan -> 18
     }
 
-    val ageNoteImpls: List<IntAgeNote> = config.intAgeNotes.map { impl: IntAgeNoteImpl ->
-      ageNoteImplMap[impl]!!
-    }.toList()
-
-    return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count, ageNoteImpls, config)
+    return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count, config)
   }
 
   override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch {

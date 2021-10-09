@@ -6,7 +6,6 @@ package destiny.core.chinese.eightwords
 import destiny.core.Descriptive
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
-import destiny.core.IntAgeNote
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
@@ -52,7 +51,7 @@ interface IPersonContextModel : IEightWordsContextModel , IBirthDataNamePlace  {
 interface IPersonFortuneLarge : Descriptive {
 
   /** 順推大運 , 取得該命盤的幾條大運 */
-  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, config: FortuneLargeConfig): List<FortuneData>
+  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, config: FortuneLargeConfig): List<FortuneData>
 
   /**
    * 逆推大運

@@ -4,7 +4,6 @@
 package destiny.core.chinese.eightwords
 
 import destiny.core.Gender
-import destiny.core.IntAgeNote
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.IStemBranch
@@ -23,7 +22,7 @@ import javax.inject.Named
 @Named
 class FortuneLargeTradImpl : IPersonFortuneLarge , Serializable {
 
-  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, config: FortuneLargeConfig): List<FortuneData> {
+  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, config: FortuneLargeConfig): List<FortuneData> {
     TODO("Not yet implemented")
   }
 

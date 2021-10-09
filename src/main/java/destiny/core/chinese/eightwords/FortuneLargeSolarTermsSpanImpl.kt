@@ -8,6 +8,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.IntAgeNote
+import destiny.core.IntAgeNoteImpl
 import destiny.core.astrology.Coordinate
 import destiny.core.astrology.IStarTransit
 import destiny.core.astrology.Planet
@@ -24,7 +25,6 @@ import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import destiny.core.chinese.eightwords.FortuneLargeConfig.Impl.SolarTermsSpan
 import mu.KotlinLogging
-import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -44,8 +44,9 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFe
                                      private val fortuneDirectionFeature: IFortuneDirectionFeature,
                                      @Named("intAge8wImpl")
                                      private val intAgeImpl: IIntAge,
+                                     ageNoteImplMap: Map<IntAgeNoteImpl , IntAgeNote>,
                                      private val solarTermsImpl: ISolarTerms,
-                                     private val starTransitImpl: IStarTransit) : IPersonFortuneLarge, Serializable {
+                                     private val starTransitImpl: IStarTransit) : AbstractFortuneLargeImpl(ageNoteImplMap) {
 
   private fun getAgeMap(toAge: Int, gmtJulDay: GmtJulDay, gender: Gender, location: ILocation): Map<Int, Pair<GmtJulDay, GmtJulDay>> {
     return intAgeImpl.getRangesMap(gender, gmtJulDay, location, 1, toAge)
@@ -53,7 +54,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFe
 
 
   /** 順推大運 , 取得該命盤的幾條大運 */
-  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, config: FortuneLargeConfig): List<FortuneData> {
+  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, config: FortuneLargeConfig): List<FortuneData> {
 
     val eightWords = eightWordsFeature.getModel(lmt, loc, config.eightWordsConfig)
     val forward = fortuneDirectionFeature.getPersonModel(lmt, loc, gender, null, null)
@@ -61,7 +62,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFe
 
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, loc)
 
-    return getFortuneDataList(eightWords, forward, gmtJulDay, gender, ageMap, count, config.span, ageNoteImpls)
+    return getFortuneDataList(eightWords, forward, gmtJulDay, gender, ageMap, count, config.span, getAgeNoteImpls(config.intAgeNotes))
   }
 
 
