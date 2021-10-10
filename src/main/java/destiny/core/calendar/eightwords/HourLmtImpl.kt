@@ -19,7 +19,6 @@ import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField.*
 import java.time.temporal.ChronoUnit
 import java.time.temporal.ChronoUnit.DAYS
-import java.util.*
 
 /**
  * 最簡單 , 以當地平均時間來區隔時辰 , 兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時
@@ -125,15 +124,6 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
     } else {
       getLmtPrevStartOf(lmt, loc, currentHour.prev, julDayResolver, config).plus(1, ChronoUnit.HOURS)
     }
-  }
-
-  override fun toString(locale: Locale): String {
-    return HourBranchConfig.HourImpl.LMT.toString(locale)
-  }
-
-
-  override fun getDescription(locale: Locale): String {
-    return HourBranchConfig.HourImpl.LMT.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

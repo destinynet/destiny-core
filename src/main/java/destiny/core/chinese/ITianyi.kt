@@ -4,23 +4,19 @@
 package destiny.core.chinese
 
 import destiny.core.DayNight
-import destiny.core.Descriptive
 import destiny.core.astrology.IDayNight
 import destiny.core.calendar.Location
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.calendar.eightwords.IMidnight
-import destiny.tools.getDescription
-import destiny.tools.getTitle
 import java.time.LocalDateTime
-import java.util.*
 
 /**
  * 天乙貴人
  * CU Draconis (CU Dra / 10 Draconis / HD 121130)
  * 天龍座10，又名天龍座CU
  */
-interface ITianyi : Descriptive {
+interface ITianyi {
 
   val tianyi: Tianyi
 
@@ -40,11 +36,11 @@ interface ITianyi : Descriptive {
     return getFirstTianyi(day.stem, dayNight)
   }
 
-  override fun toString(locale: Locale): String {
-    return tianyi.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return tianyi.getDescription(locale)
-  }
+//  override fun toString(locale: Locale): String {
+//    return tianyi.getTitle(locale)
+//  }
+//
+//  override fun getDescription(locale: Locale): String {
+//    return tianyi.getDescription(locale)
+//  }
 }

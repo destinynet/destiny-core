@@ -14,7 +14,6 @@ import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.*
 import destiny.core.chinese.liuren.*
-import destiny.core.chinese.liuren.Clockwise
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
@@ -80,13 +79,13 @@ class PithyCoreFeature(private val eightWordsFeature: EightWordsFeature,
 
   override val defaultConfig: PithyConfig = PithyConfig()
 
-  private fun core(config: PithyConfig, ew: IEightWords, moonMaster: Branch, dayNight: DayNight, clockwise: destiny.core.chinese.Clockwise): Pithy {
+  private fun core(config: PithyConfig, ew: IEightWords, moonMaster: Branch, dayNight: DayNight, clockwise: destiny.core.Clockwise): Pithy {
     // 天乙貴人(起點)
     val tianYi = tianyiImplMap[config.tianyi]!!.getFirstTianyi(ew.day.stem, dayNight)
 
     val steps = when (clockwise) {
-      destiny.core.chinese.Clockwise.CLOCKWISE -> config.direction.getAheadOf(tianYi)
-      destiny.core.chinese.Clockwise.COUNTER   -> tianYi.getAheadOf(config.direction)
+      destiny.core.Clockwise.CLOCKWISE -> config.direction.getAheadOf(tianYi)
+      destiny.core.Clockwise.COUNTER   -> tianYi.getAheadOf(config.direction)
     }
 
     logger.trace("天乙貴人 (日干 {} + {} ) = {} . 地分 = {} , 順逆 = {} , steps = {}", ew.day.stem, dayNight, tianYi, config.direction, clockwise, steps)

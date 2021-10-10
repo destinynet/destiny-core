@@ -12,10 +12,11 @@ import kotlin.test.assertTrue
 internal class HourBranchConfigTest : AbstractConfigTest<HourBranchConfig>() {
   override val serializer: KSerializer<HourBranchConfig> = HourBranchConfig.serializer()
 
-  override val configByConstructor: HourBranchConfig = HourBranchConfig(HourBranchConfig.HourImpl.TST , TransConfig(discCenter = true,
-                                                                                                                    refraction = false,
-                                                                                                                    temperature = 23.0,
-                                                                                                                    pressure = 1000.0)
+  override val configByConstructor: HourBranchConfig = HourBranchConfig(
+    HourImpl.TST, TransConfig(discCenter = true,
+                              refraction = false,
+                              temperature = 23.0,
+                              pressure = 1000.0)
   )
 
   override val configByFunction: HourBranchConfig = hourBranchConfig {

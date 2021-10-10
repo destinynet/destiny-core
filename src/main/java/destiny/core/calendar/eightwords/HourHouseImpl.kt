@@ -11,7 +11,6 @@ import destiny.core.chinese.Branch
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 
 /**
  * 以地盤每宮的宮首 (house cusp) 當作時辰的中間點
@@ -66,13 +65,13 @@ class HourHouseImpl(val houseCuspImpl: IHouseCusp,
     TODO("Not yet implemented")
   }
 
-  override fun toString(locale: Locale): String {
-    return "占星 分宮法"
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return "內定為 Meridian 分宮法，每宮位時間固定為 2恆星時"
-  }
+//  override fun toString(locale: Locale): String {
+//    return "占星 分宮法"
+//  }
+//
+//  override fun getDescription(locale: Locale): String {
+//    return "內定為 Meridian 分宮法，每宮位時間固定為 2恆星時"
+//  }
 
   companion object {
     val logger = KotlinLogging.logger { }

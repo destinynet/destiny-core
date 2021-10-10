@@ -3,7 +3,6 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.Descriptive
 import destiny.core.astrology.TransConfig
 import destiny.core.astrology.TransConfigBuilder
 import destiny.core.calendar.GmtJulDay
@@ -23,55 +22,26 @@ import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
 import javax.inject.Named
 
 
 /** 時辰切割 */
 @Serializable
 data class HourBranchConfig(val hourImpl : HourImpl = HourImpl.TST,
-                            val transConfig: TransConfig = TransConfig()): java.io.Serializable {
-  enum class HourImpl {
-    TST,
-    LMT
-  }
-}
+                            val transConfig: TransConfig = TransConfig()): java.io.Serializable
 
-fun HourBranchConfig.HourImpl.asDescriptive() = object : Descriptive {
-  override fun toString(locale: Locale): String {
-    return when(this@asDescriptive) {
-      HourBranchConfig.HourImpl.TST -> "真太陽時"
-      HourBranchConfig.HourImpl.LMT -> "以地方平均時（LMT）來區隔"
-    }
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return when(this@asDescriptive) {
-      HourBranchConfig.HourImpl.TST -> "利用太陽過天底 到天頂之間，劃分十二等份，再從太陽過天頂到天底，平均劃分十二等份，依此來切割 12 時辰"
-      HourBranchConfig.HourImpl.LMT -> "兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時"
-    }
-  }
-}
-
-fun HourBranchConfig.HourImpl.toString(locale: Locale): String {
-  return this.asDescriptive().toString(locale)
-}
-
-fun HourBranchConfig.HourImpl.getDescription(locale: Locale): String {
-  return this.asDescriptive().getDescription(locale)
-}
 
 @DestinyMarker
 class HourBranchConfigBuilder : Builder<HourBranchConfig> {
 
-  var hourImpl = HourBranchConfig.HourImpl.TST
+  var hourImpl = HourImpl.TST
 
   var transConfig: TransConfig = TransConfig()
 
   /** true solar time */
   fun tst(block: TransConfigBuilder.() -> Unit = {}) {
     transConfig = TransConfigBuilder.trans(block)
-    hourImpl = HourBranchConfig.HourImpl.TST
+    hourImpl = HourImpl.TST
   }
 
   override fun build(): HourBranchConfig {
@@ -155,7 +125,7 @@ interface IHourBranchFeature : Feature<HourBranchConfig, Branch> {
 
 
 @Named
-class HourBranchFeature(private val hourImplMap: Map<HourBranchConfig.HourImpl, IHour>,
+class HourBranchFeature(private val hourImplMap: Map<HourImpl, IHour>,
                         val julDayResolver: JulDayResolver) : IHourBranchFeature, AbstractCachedFeature<HourBranchConfig, Branch>() {
 
   override val key: String = "hourBranch"

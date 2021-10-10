@@ -5,7 +5,6 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.Descriptive
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -18,7 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
 
 /** 時辰的分界點實作 , SwissEph 的實作是 [HourSolarTransImpl]  */
-interface IHour : Descriptive {
+interface IHour {
 
   fun getHour(gmtJulDay: GmtJulDay, loc: ILocation, config: HourBranchConfig): Branch
 

@@ -21,6 +21,8 @@ import destiny.core.chinese.eightwords.ReactionUtil
 import destiny.tools.AlignTools
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.time.temporal.ChronoField.*
 import java.util.*
 import kotlin.math.abs
@@ -174,7 +176,7 @@ class EightWordsColorCanvas(
 
       config.eightWordsConfig.dayHourConfig.hourBranchConfig.hourImpl.run {
         cc.setText(
-          "時辰劃分：" + toString(Locale.TRADITIONAL_CHINESE), 7, 1, foreColor = null, backColor = null,
+          "時辰劃分：" + getTitle(Locale.TRADITIONAL_CHINESE), 7, 1, foreColor = null, backColor = null,
           title = getDescription(Locale.TRADITIONAL_CHINESE)
         )
       }

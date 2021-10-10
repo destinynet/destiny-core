@@ -27,7 +27,7 @@ internal class NineStarConfigTest : AbstractConfigTest<NineStarConfig>() {
       ),
       dayHourConfig = DayHourConfig(
         DayConfig(changeDayAfterZi = false, midnight = DayConfig.MidnightImpl.CLOCK0),
-        HourBranchConfig(hourImpl = HourBranchConfig.HourImpl.LMT)
+        HourBranchConfig(hourImpl = HourImpl.LMT)
       )
     )
   )
@@ -52,7 +52,7 @@ internal class NineStarConfigTest : AbstractConfigTest<NineStarConfig>() {
           midnight = DayConfig.MidnightImpl.CLOCK0
         }
         hourBranch {
-          hourImpl = HourBranchConfig.HourImpl.LMT
+          hourImpl = HourImpl.LMT
         }
       }
     }

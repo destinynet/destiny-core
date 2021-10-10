@@ -7,6 +7,7 @@ import destiny.core.AbstractConfigTest
 import destiny.core.calendar.eightwords.DayConfig
 import destiny.core.calendar.eightwords.DayHourConfig
 import destiny.core.calendar.eightwords.HourBranchConfig
+import destiny.core.calendar.eightwords.HourImpl
 import destiny.core.chinese.lunarStation.HourlyConfigBuilder.Companion.hourly
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
@@ -18,7 +19,7 @@ internal class HourlyConfigTest : AbstractConfigTest<HourlyConfig>() {
     HourlyConfig.Impl.Fixed,
     DayHourConfig(
       DayConfig(changeDayAfterZi = false, midnight = DayConfig.MidnightImpl.CLOCK0),
-      HourBranchConfig(hourImpl = HourBranchConfig.HourImpl.LMT)
+      HourBranchConfig(hourImpl = HourImpl.LMT)
     )
   )
 
@@ -30,7 +31,7 @@ internal class HourlyConfigTest : AbstractConfigTest<HourlyConfig>() {
         midnight = DayConfig.MidnightImpl.CLOCK0
       }
       hourBranch {
-        hourImpl = HourBranchConfig.HourImpl.LMT
+        hourImpl = HourImpl.LMT
       }
     }
   }

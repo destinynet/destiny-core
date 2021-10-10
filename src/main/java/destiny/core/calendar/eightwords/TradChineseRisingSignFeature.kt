@@ -10,7 +10,7 @@ import javax.inject.Named
 
 @Serializable
 data class TradChineseRisingSignConfig(
-  val hourImpl: HourBranchConfig.HourImpl = HourBranchConfig.HourImpl.TST
+  val hourImpl: HourImpl = HourImpl.TST
 ): java.io.Serializable
 
 @Named

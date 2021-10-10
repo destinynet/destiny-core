@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese
 
+import destiny.core.Clockwise
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools

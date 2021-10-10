@@ -10,8 +10,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.chinese.IChineseDate
-import destiny.core.calendar.eightwords.EightWordsContextConfigBuilder.Companion.ewContext
 import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -64,33 +62,6 @@ interface IEightWordsContextModel : ITimeLoc {
 
   /** 星體交角 */
   val aspectsDataSet: Set<AspectData>
-}
-
-/**
- * 純粹由「時間、地點」切入，不帶其他參數，取得八字盤 (不含「人」的資料）
- */
-interface IEightWordsContext : IEightWordsStandardFactory {
-  val chineseDateImpl: IChineseDate
-  val risingSignImpl: IRisingSign
-
-  @Deprecated("EightWordsContextFeature")
-  fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
-                                location: ILocation,
-                                place: String?): IEightWordsContextModel
-
-  val ewContextConfig: EightWordsContextConfig
-    get() {
-      return ewContext {
-        eightWordsConfig = ewConfig
-        risingSign {
-          impl = when(this@IEightWordsContext.risingSignImpl) {
-            is IHouseCusp -> RisingSignConfig.Impl.HouseCusp
-            else          -> RisingSignConfig.Impl.TradChinese
-          }
-        }
-      }
-    }
-
 }
 
 

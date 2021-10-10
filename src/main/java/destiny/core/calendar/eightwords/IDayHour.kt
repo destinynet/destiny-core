@@ -25,8 +25,8 @@ interface IDayHour : IDay, IHour {
         }
         hourBranch {
           hourImpl = when (this@IDayHour.hourImpl) {
-            is HourSolarTransImpl -> HourBranchConfig.HourImpl.TST
-            is HourLmtImpl        -> HourBranchConfig.HourImpl.LMT
+            is HourSolarTransImpl -> HourImpl.TST
+            is HourLmtImpl        -> HourImpl.LMT
             else                  -> error("no hour")
           }
         }

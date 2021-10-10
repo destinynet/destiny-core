@@ -23,7 +23,7 @@ internal class EightWordsConfigTest : AbstractConfigTest<EightWordsConfig>() {
     ),
     dayHourConfig = DayHourConfig(
       DayConfig(changeDayAfterZi = false , midnight = DayConfig.MidnightImpl.CLOCK0),
-      HourBranchConfig(hourImpl = HourBranchConfig.HourImpl.LMT)
+      HourBranchConfig(hourImpl = HourImpl.LMT)
     )
   )
 
@@ -45,7 +45,7 @@ internal class EightWordsConfigTest : AbstractConfigTest<EightWordsConfig>() {
         midnight = DayConfig.MidnightImpl.CLOCK0
       }
       hourBranch {
-        hourImpl = HourBranchConfig.HourImpl.LMT
+        hourImpl = HourImpl.LMT
       }
     }
   }

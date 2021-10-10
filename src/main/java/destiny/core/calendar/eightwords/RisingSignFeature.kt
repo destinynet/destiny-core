@@ -58,7 +58,7 @@ class RisingSignConfigBuilder : Builder<RisingSignConfig> {
   @DestinyMarker
   class TradChineseRisingSignConfigBuilder : Builder<TradChineseRisingSignConfig> {
 
-    var hourImpl : HourBranchConfig.HourImpl = HourBranchConfig.HourImpl.TST
+    var hourImpl : HourImpl = HourImpl.TST
 
     override fun build(): TradChineseRisingSignConfig {
       return TradChineseRisingSignConfig(hourImpl)

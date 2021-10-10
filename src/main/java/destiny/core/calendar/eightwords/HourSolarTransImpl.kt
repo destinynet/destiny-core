@@ -18,7 +18,6 @@ import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
 
 /**
  * 時辰的劃分實作
@@ -238,14 +237,6 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
     return getDailyBranchMiddleMap(targetDate, loc, julDayResolver, config)[targetBranch]!!
   }
 
-
-  override fun toString(locale: Locale): String {
-    return HourBranchConfig.HourImpl.TST.toString(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return HourBranchConfig.HourImpl.TST.getDescription(locale)
-  }
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true

@@ -14,7 +14,7 @@ internal class DayHourConfigTest : AbstractConfigTest<DayHourConfig>() {
 
   override val configByConstructor: DayHourConfig = DayHourConfig(
     DayConfig(changeDayAfterZi = false , midnight = DayConfig.MidnightImpl.CLOCK0),
-    HourBranchConfig(HourBranchConfig.HourImpl.LMT)
+    HourBranchConfig(HourImpl.LMT)
   )
 
   override val configByFunction = dayHour {
@@ -23,7 +23,7 @@ internal class DayHourConfigTest : AbstractConfigTest<DayHourConfig>() {
       midnight = DayConfig.MidnightImpl.CLOCK0
     }
     hourBranch {
-      hourImpl = HourBranchConfig.HourImpl.LMT
+      hourImpl = HourImpl.LMT
     }
   }
 

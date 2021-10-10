@@ -3,12 +3,12 @@
  */
 package destiny.core.chinese.liuren
 
+import destiny.core.Clockwise
 import destiny.core.DayNight
 import destiny.core.astrology.IDayNight
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDayHour
-import destiny.core.chinese.Clockwise
 import destiny.core.chinese.IClockwise
 import destiny.core.chinese.Stem.*
 import destiny.tools.Domain
