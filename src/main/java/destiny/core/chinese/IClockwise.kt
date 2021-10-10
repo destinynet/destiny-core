@@ -3,13 +3,12 @@
  */
 package destiny.core.chinese
 
-import destiny.core.Descriptive
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
 
-interface IClockwise : Descriptive {
+interface IClockwise {
 
   fun getClockwise(gmtJulDay: GmtJulDay, loc: ILocation): Clockwise
 

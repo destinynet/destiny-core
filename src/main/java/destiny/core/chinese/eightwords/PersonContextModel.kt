@@ -3,7 +3,6 @@
  */
 package destiny.core.chinese.eightwords
 
-import destiny.core.Descriptive
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.GmtJulDay
@@ -48,7 +47,7 @@ interface IPersonContextModel : IEightWordsContextModel , IBirthDataNamePlace  {
 
 
 /** 推算 大運 演算法 */
-interface IPersonFortuneLarge : Descriptive {
+interface IPersonFortuneLarge {
 
   /** 順推大運 , 取得該命盤的幾條大運 */
   fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, config: FortuneLargeConfig): List<FortuneData>

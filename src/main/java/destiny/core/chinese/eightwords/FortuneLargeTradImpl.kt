@@ -9,7 +9,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.chinese.IStemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 import javax.inject.Named
 
 /**
@@ -28,14 +27,6 @@ class FortuneLargeTradImpl : IPersonFortuneLarge , Serializable {
 
   override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, config: FortuneLargeConfig): IStemBranch {
     TODO("Not yet implemented")
-  }
-
-  override fun toString(locale: Locale): String {
-    TODO("not implemented")
-  }
-
-  override fun getDescription(locale: Locale): String {
-    TODO("not implemented")
   }
 
 }

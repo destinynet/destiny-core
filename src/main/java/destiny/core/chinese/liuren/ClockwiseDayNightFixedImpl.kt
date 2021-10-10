@@ -12,10 +12,7 @@ import destiny.core.chinese.IClockwise
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Pithy.KEY_CLOCKWISE
-import destiny.tools.getDescription
-import destiny.tools.getTitle
 import java.io.Serializable
-import java.util.*
 
 /**
  * 推算貴神
@@ -29,14 +26,6 @@ class ClockwiseDayNightFixedImpl(private val differentiator: IDayNight) : IClock
   override fun getClockwise(gmtJulDay: GmtJulDay, loc: ILocation): Clockwise {
     val dayNight = differentiator.getDayNight(gmtJulDay, loc)
     return if (dayNight == DayNight.DAY) Clockwise.CLOCKWISE else Clockwise.COUNTER
-  }
-
-  override fun toString(locale: Locale): String {
-    return destiny.core.chinese.liuren.Clockwise.DayNightFixed.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return destiny.core.chinese.liuren.Clockwise.DayNightFixed.getDescription(locale)
   }
 
   companion object {

@@ -19,10 +19,8 @@ import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
-import destiny.core.chinese.eightwords.FortuneLargeConfig.Impl.DefaultSpan
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import kotlin.math.abs
@@ -246,14 +244,6 @@ class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
       }
       return resultStemBranch
     }
-  }
-
-  override fun toString(locale: Locale): String {
-    return DefaultSpan.asDescriptive().toString(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return DefaultSpan.asDescriptive().getDescription(locale)
   }
 
 

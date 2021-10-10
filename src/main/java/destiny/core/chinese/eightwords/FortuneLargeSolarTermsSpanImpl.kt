@@ -23,10 +23,8 @@ import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
-import destiny.core.chinese.eightwords.FortuneLargeConfig.Impl.SolarTermsSpan
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import kotlin.math.abs
@@ -252,14 +250,6 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFe
     }
   }
 
-
-  override fun toString(locale: Locale): String {
-    return SolarTermsSpan.asDescriptive().toString(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return SolarTermsSpan.asDescriptive().getDescription(locale)
-  }
 
   companion object {
     private val logger = KotlinLogging.logger {}

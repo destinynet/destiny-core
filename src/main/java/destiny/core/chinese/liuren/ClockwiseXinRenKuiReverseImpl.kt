@@ -14,10 +14,7 @@ import destiny.core.chinese.Stem.*
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Pithy.KEY_CLOCKWISE
-import destiny.tools.getDescription
-import destiny.tools.getTitle
 import java.io.Serializable
-import java.util.*
 
 /**
  * 推算貴神
@@ -37,14 +34,6 @@ class ClockwiseXinRenKuiReverseImpl(
       甲, 乙, 丙, 丁, 戊, 己, 庚 -> if (dayNight == DayNight.DAY) Clockwise.CLOCKWISE else Clockwise.COUNTER
       辛, 壬, 癸 -> if (dayNight == DayNight.DAY) Clockwise.COUNTER else Clockwise.CLOCKWISE
     }
-  }
-
-  override fun toString(locale: Locale): String {
-    return destiny.core.chinese.liuren.Clockwise.XinRenKuiReverse.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return destiny.core.chinese.liuren.Clockwise.XinRenKuiReverse.getDescription(locale)
   }
 
   companion object {
