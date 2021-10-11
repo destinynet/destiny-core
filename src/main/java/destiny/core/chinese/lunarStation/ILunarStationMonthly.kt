@@ -67,7 +67,7 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
       }
     }
 
-    const val VALUE = "AO_HEAD"
+    const val VALUE =  "AoHead"
   }
 }
 
@@ -118,6 +118,6 @@ class LunarStationMonthlyAnimalExplained : ILunarStationMonthly, Serializable {
       }
     }
 
-    const val VALUE = "ANIMAL_EXPLAINED"
+    const val VALUE = "AnimalExplained"
   }
 }

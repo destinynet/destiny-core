@@ -1,8 +1,5 @@
 package destiny.core.chinese.lunarStation
 
-import destiny.tools.ILocaleString
-import java.util.*
-
 /**
  * [YearEpoch.EPOCH_1864]
  * 年禽還有一種推法，基本定位為
@@ -27,12 +24,3 @@ enum class YearEpoch {
   EPOCH_1864  // 1864年 甲子虛
 }
 
-fun YearEpoch.toString(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
-}
-
-fun YearEpoch.asLocaleString() = object : ILocaleString {
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(YearEpoch::class.java.name, locale).getString(name)
-  }
-}

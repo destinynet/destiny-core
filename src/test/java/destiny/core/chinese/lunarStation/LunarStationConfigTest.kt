@@ -16,7 +16,7 @@ internal class LunarStationConfigTest : AbstractConfigTest<LunarStationConfig>()
 
   override val configByConstructor: LunarStationConfig = LunarStationConfig(
     yearlyConfig = YearlyConfig(yearType = YearType.YEAR_LUNAR),
-    monthlyConfig = MonthlyConfig(MonthlyConfig.Impl.AnimalExplained),
+    monthlyConfig = MonthlyConfig(MonthlyImpl.AnimalExplained),
     monthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS
   )
 
@@ -25,7 +25,7 @@ internal class LunarStationConfigTest : AbstractConfigTest<LunarStationConfig>()
       yearType = YearType.YEAR_LUNAR
     }
     monthly {
-      impl = MonthlyConfig.Impl.AnimalExplained
+      impl = MonthlyImpl.AnimalExplained
     }
     monthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS
   }

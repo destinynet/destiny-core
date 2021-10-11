@@ -37,6 +37,7 @@ interface ILunarStationContext {
  * 禽星占卜 Context
  * Deprecated for [LunarStationFeature]
  */
+@Deprecated("LunarStationFeature")
 class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
                           override val monthlyImpl: ILunarStationMonthly,
                           override val dailyImpl: ILunarStationDaily,

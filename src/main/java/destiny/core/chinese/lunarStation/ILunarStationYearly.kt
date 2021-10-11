@@ -14,6 +14,7 @@ import java.time.temporal.ChronoField
 /**
  * 二十八星宿值年
  **/
+@Deprecated("LunarStationYearlyFeature")
 interface ILunarStationYearly {
 
   val yearType: YearType
@@ -32,7 +33,10 @@ interface ILunarStationYearly {
 /**
  * 二十八星宿 值年
  * @param yearType 立春 [YearType.YEAR_SOLAR] 換年 或是 陰曆初一 [YearType.YEAR_LUNAR] 換年
+ *
+ * deprecated for [LunarStationYearlyFeature]
  * */
+@Deprecated("LunarStationYearlyFeature")
 class LunarStationYearlyImpl(override val yearType: YearType = YearType.YEAR_SOLAR,
                              override val yearEpoch: YearEpoch = YearEpoch.EPOCH_1564,
                              private val yearImpl: IYear,
