@@ -11,6 +11,7 @@ import destiny.core.calendar.eightwords.HourBranchConfig
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.chinese.Branch
 import destiny.core.chinese.lunarStation.HourlyConfig
+import destiny.core.chinese.lunarStation.HourlyImpl
 import destiny.core.chinese.lunarStation.LunarStationHourlyFeature
 import destiny.tools.location.ReverseGeocodingService
 import java.io.Serializable
@@ -53,7 +54,7 @@ class DailyReportImpl(
     // 每個時辰的 時禽
     val hourLunarStationMap = hourSolarTransImpl.getDailyBranchMiddleMap(lmtStart.toLocalDate(), loc, julDayResolver, HourBranchConfig())
       .map { (b, middleLmt) ->
-        b to lunarStationHourlyFeature.getModel(middleLmt, loc, HourlyConfig(impl = HourlyConfig.Impl.Fixed))
+        b to lunarStationHourlyFeature.getModel(middleLmt, loc, HourlyConfig(impl = HourlyImpl.Fixed))
       }.toMap()
 
     // 12地支

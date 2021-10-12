@@ -26,9 +26,7 @@ enum class MonthlyImpl {
 data class MonthlyConfig(val impl: MonthlyImpl = MonthlyImpl.AoHead,
                          val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS,
                          val yearlyConfig: YearlyConfig = YearlyConfig(),
-                         val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable {
-}
-
+                         val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
 @DestinyMarker
 class MonthlyConfigBuilder : Builder<MonthlyConfig> {
 

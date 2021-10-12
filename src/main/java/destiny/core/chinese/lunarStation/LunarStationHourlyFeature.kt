@@ -22,19 +22,18 @@ import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import javax.inject.Named
 
-@Serializable
-data class HourlyConfig(val impl: Impl = Impl.Yuan,
-                        val dayHourConfig: DayHourConfig = DayHourConfig()): java.io.Serializable {
-
-  enum class Impl {
-    Yuan,   // 《禽星易見》
-    Fixed   // 《剋擇講義》
-  }
+enum class HourlyImpl {
+  Yuan,   // 《禽星易見》
+  Fixed   // 《剋擇講義》
 }
+
+@Serializable
+data class HourlyConfig(val impl: HourlyImpl = HourlyImpl.Yuan,
+                        val dayHourConfig: DayHourConfig = DayHourConfig()): java.io.Serializable
 
 @DestinyMarker
 class HourlyConfigBuilder : Builder<HourlyConfig> {
-  var impl: HourlyConfig.Impl = HourlyConfig.Impl.Yuan
+  var impl: HourlyImpl = HourlyImpl.Yuan
 
   var dayHourConfig: DayHourConfig = DayHourConfig()
   fun dayHour(block: DayHourConfigBuilder.() -> Unit = {}) {
@@ -56,8 +55,7 @@ class HourlyConfigBuilder : Builder<HourlyConfig> {
 @Named
 class LunarStationHourlyFeature(private val dailyFeature: LunarStationDailyFeature,
                                 private val dayHourFeature: IDayHourFeature,
-                                private val julDayResolver: JulDayResolver,
-                                private val implMap: Map<HourlyConfig.Impl, ILunarStationHourly>) : Feature<HourlyConfig, LunarStation> {
+                                private val julDayResolver: JulDayResolver) : Feature<HourlyConfig, LunarStation> {
   override val key: String = "lsHourly"
 
   override val defaultConfig: HourlyConfig = HourlyConfig()
@@ -72,7 +70,7 @@ class LunarStationHourlyFeature(private val dailyFeature: LunarStationDailyFeatu
     //return implMap[config.impl]!!.getHourly(lmt, loc)
 
     return when (config.impl) {
-      HourlyConfig.Impl.Yuan  -> {
+      HourlyImpl.Yuan  -> {
         /**
          * 以「元」之首為定義
          *
@@ -109,7 +107,7 @@ class LunarStationHourlyFeature(private val dailyFeature: LunarStationDailyFeatu
         sundayHourStart.next(hourSteps)
       }
 
-      HourlyConfig.Impl.Fixed -> {
+      HourlyImpl.Fixed -> {
         /**
          * 時禽 ， 固定排列 , 不分七元。 此法簡便易排，民間禽書常用此法。
          *

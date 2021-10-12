@@ -16,7 +16,7 @@ internal class HourlyConfigTest : AbstractConfigTest<HourlyConfig>() {
   override val serializer: KSerializer<HourlyConfig> = HourlyConfig.serializer()
 
   override val configByConstructor: HourlyConfig = HourlyConfig(
-    HourlyConfig.Impl.Fixed,
+    HourlyImpl.Fixed,
     DayHourConfig(
       DayConfig(changeDayAfterZi = false, midnight = DayConfig.MidnightImpl.CLOCK0),
       HourBranchConfig(hourImpl = HourImpl.LMT)
@@ -24,7 +24,7 @@ internal class HourlyConfigTest : AbstractConfigTest<HourlyConfig>() {
   )
 
   override val configByFunction: HourlyConfig = hourly {
-    impl = HourlyConfig.Impl.Fixed
+    impl = HourlyImpl.Fixed
     dayHour {
       day {
         changeDayAfterZi = false

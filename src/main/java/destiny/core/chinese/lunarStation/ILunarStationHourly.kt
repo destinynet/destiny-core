@@ -94,7 +94,7 @@ class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
 
   companion object {
     const val NAME = "《禽星易見》"
-    const val VALUE = "YUAN"
+    const val VALUE = "Yuan"
 
     val yuanSundayHourStartMap = mapOf(
       1 to 虛,
@@ -171,6 +171,6 @@ class LunarStationHourlyFixedImpl(private val dailyImpl: ILunarStationDaily,
 
   companion object {
     const val NAME = "《剋擇講義》"
-    const val VALUE = "FIXED"
+    const val VALUE = "Fixed"
   }
 }
