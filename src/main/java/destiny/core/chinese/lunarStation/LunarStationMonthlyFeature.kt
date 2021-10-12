@@ -9,6 +9,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.EightWordsConfig
+import destiny.core.calendar.eightwords.EightWordsConfigBuilder
 import destiny.core.calendar.eightwords.YearMonthFeature
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
@@ -34,8 +35,19 @@ class MonthlyConfigBuilder : Builder<MonthlyConfig> {
 
   var monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
 
+  var yearlyConfig: YearlyConfig = YearlyConfig()
+
+  fun yearly(block: YearlyConfigBuilder.() -> Unit = {}) {
+    this.yearlyConfig = YearlyConfigBuilder.yearly(block)
+  }
+
+  var ewConfig: EightWordsConfig = EightWordsConfig()
+  fun ewConfig(block: EightWordsConfigBuilder.() -> Unit = {}) {
+    this.ewConfig = EightWordsConfigBuilder.ewConfig(block)
+  }
+
   override fun build(): MonthlyConfig {
-    return MonthlyConfig(impl, monthAlgo)
+    return MonthlyConfig(impl, monthAlgo, yearlyConfig, ewConfig)
   }
 
   companion object {

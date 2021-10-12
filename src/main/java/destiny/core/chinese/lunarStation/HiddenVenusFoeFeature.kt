@@ -57,7 +57,7 @@ class HiddenVenusFoeFeature(private val yearlyFeature: LunarStationYearlyFeature
       chineseDate.leapMonth,
       ew.month.branch,
       chineseDate.day,
-      config.monthAlgo
+      config.monthlyConfig.monthAlgo
     )
 
 

@@ -16,8 +16,7 @@ internal class LunarStationConfigTest : AbstractConfigTest<LunarStationConfig>()
 
   override val configByConstructor: LunarStationConfig = LunarStationConfig(
     yearlyConfig = YearlyConfig(yearType = YearType.YEAR_LUNAR),
-    monthlyConfig = MonthlyConfig(MonthlyImpl.AnimalExplained),
-    monthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS
+    monthlyConfig = MonthlyConfig(MonthlyImpl.AnimalExplained, IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS),
   )
 
   override val configByFunction: LunarStationConfig = lunarStation {
@@ -26,8 +25,8 @@ internal class LunarStationConfigTest : AbstractConfigTest<LunarStationConfig>()
     }
     monthly {
       impl = MonthlyImpl.AnimalExplained
+      monthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS
     }
-    monthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS
   }
 
   override val assertion: (String) -> Unit = { raw ->

@@ -31,8 +31,7 @@ import javax.inject.Named
 data class LunarStationConfig(val yearlyConfig: YearlyConfig = YearlyConfig(),
                               val monthlyConfig: MonthlyConfig = MonthlyConfig(),
                               val hourlyConfig: HourlyConfig = HourlyConfig(),
-                              val ewConfig: EightWordsConfig = EightWordsConfig(),
-                              val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS): java.io.Serializable
+                              val ewConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
 
 @DestinyMarker
 class LunarStationConfigBuilder : Builder<LunarStationConfig> {
@@ -57,10 +56,8 @@ class LunarStationConfigBuilder : Builder<LunarStationConfig> {
     ewConfig = EightWordsConfigBuilder().apply(block).build()
   }
 
-  var monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
-
   override fun build(): LunarStationConfig {
-    return LunarStationConfig(yearlyConfig, monthlyConfig, hourlyConfig, ewConfig, monthAlgo)
+    return LunarStationConfig(yearlyConfig, monthlyConfig, hourlyConfig, ewConfig)
   }
 
   companion object {
@@ -205,7 +202,7 @@ class LunarStationFeature(private val yearlyFeature: LunarStationYearlyFeature,
           val monthBranch = eightWordsFeature.getModel(lmt, loc, config.ewConfig).month.branch
           val chineseDate = chineseDateFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig)
           val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
-            chineseDate.month, chineseDate.leapMonth, monthBranch, chineseDate.day, config.monthAlgo
+            chineseDate.month, chineseDate.leapMonth, monthBranch, chineseDate.day, config.monthlyConfig.monthAlgo
           )
           Scale.MONTH to monthlyFeature.getMonthly(yearlyStation, monthNumber, config.monthlyConfig.impl)
         }
