@@ -9,7 +9,9 @@ import destiny.core.calendar.Location
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.calendar.eightwords.IMidnight
+import destiny.tools.getTitle
 import java.time.LocalDateTime
+import java.util.*
 
 /**
  * 天乙貴人
@@ -36,11 +38,8 @@ interface ITianyi {
     return getFirstTianyi(day.stem, dayNight)
   }
 
-//  override fun toString(locale: Locale): String {
-//    return tianyi.getTitle(locale)
-//  }
-//
-//  override fun getDescription(locale: Locale): String {
-//    return tianyi.getDescription(locale)
-//  }
+  @Deprecated("tianyi.getTitle")
+  fun toString(locale: Locale): String {
+    return tianyi.getTitle(locale)
+  }
 }

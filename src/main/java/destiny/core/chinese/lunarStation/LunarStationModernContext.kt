@@ -12,6 +12,10 @@ import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 
+/**
+ * deprecated for [LunarStationModernFeature]
+ */
+@Deprecated("LunarStationModernFeature")
 interface ILunarStationModernContext : ILunarStationContext {
 
   fun getModernModel(loc: ILocation,
@@ -28,7 +32,9 @@ interface ILunarStationModernContext : ILunarStationContext {
 
 /**
  * 禽星占卜 Modern Context
+ * deprecated for [LunarStationModernFeature]
  */
+@Deprecated("LunarStationModernFeature")
 class LunarStationModernContext(val ctx: ILunarStationContext, val randomService: RandomService, val julDayResolver: JulDayResolver) :
   ILunarStationModernContext, ILunarStationContext by ctx, Serializable {
 

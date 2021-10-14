@@ -38,7 +38,10 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
           cache.put(cacheKey, model)
         }
       }
-    } ?: calculate(gmtJulDay, loc, gender, name, place, config)
+    } ?: run {
+      logger.trace { "${javaClass.simpleName} : No gmtPersonCache" }
+      calculate(gmtJulDay, loc, gender, name, place, config)
+    }
   }
 
   abstract fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: @UnsafeVariance Config): Model
@@ -67,12 +70,16 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
           cache.put(cacheKey, model)
         }
       }
-    } ?: calculate(lmt, loc, gender, name, place, config)
+    } ?: run {
+      logger.trace { "${javaClass.simpleName} : No lmtPersonCache" }
+      calculate(lmt, loc, gender, name, place, config)
+    }
   }
 
   open fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String? ,place: String? ,config: @UnsafeVariance Config) : Model {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return calculate(gmtJulDay, loc, gender, name, place, config)
+    return getPersonModel(gmtJulDay, loc, gender, name, place, config)
+    //return calculate(gmtJulDay, loc, gender, name, place, config)
   }
 
   companion object {

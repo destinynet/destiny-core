@@ -19,6 +19,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
+import javax.cache.Cache
 import javax.inject.Named
 
 @Serializable
@@ -53,11 +54,16 @@ class LunarStationModernConfigBuilder : Builder<LunarStationModernConfig> {
 class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFeature,
                                 private val hourBranchFeature: IHourBranchFeature,
                                 private val randomService: RandomService,
-                                private val julDayResolver: JulDayResolver) : AbstractCachedPersonFeature<LunarStationModernConfig, IModernContextModel>() {
+                                private val julDayResolver: JulDayResolver,
+                                private val lsModernCache : Cache<GmtCacheKey<*>, IModernContextModel>
+) : AbstractCachedPersonFeature<LunarStationModernConfig, IModernContextModel>() {
 
   override val key: String = "lunarStationModern"
 
   override val defaultConfig: LunarStationModernConfig = LunarStationModernConfig()
+
+  override val gmtPersonCache: Cache<GmtCacheKey<LunarStationModernConfig>, IModernContextModel>
+    get() = lsModernCache as Cache<GmtCacheKey<LunarStationModernConfig>, IModernContextModel>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: LunarStationModernConfig): IModernContextModel {
     val created = LocalDateTime.now()
@@ -88,5 +94,7 @@ class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFe
   }
 
 
-
+  companion object {
+    const val CACHE_LUNAR_STATION_MODERN_FEATURE = "lsModernCache"
+  }
 }
