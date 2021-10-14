@@ -55,6 +55,7 @@ class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFe
                                 private val hourBranchFeature: IHourBranchFeature,
                                 private val randomService: RandomService,
                                 private val julDayResolver: JulDayResolver,
+                                @Transient
                                 private val lsModernCache : Cache<GmtCacheKey<*>, IModernContextModel>
 ) : AbstractCachedPersonFeature<LunarStationModernConfig, IModernContextModel>() {
 
