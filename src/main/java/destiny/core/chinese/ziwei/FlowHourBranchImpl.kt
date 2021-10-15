@@ -18,6 +18,8 @@ import java.io.Serializable
 @Impl([Domain(KEY_FLOW_HOUR, FlowHourBranchImpl.VALUE)])
 class FlowHourBranchImpl : IFlowHour, Serializable {
 
+  override val flowHour: FlowHour = FlowHour.Branch
+
   override fun getFlowHour(hour: Branch, flowDayMainHour: Branch): Branch {
     return hour
   }

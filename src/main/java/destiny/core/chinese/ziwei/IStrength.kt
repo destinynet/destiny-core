@@ -15,6 +15,8 @@ import java.util.*
  */
 interface IStrength : Descriptive {
 
+  val strength: Strength
+
   /** 取得一個星體，在 12 個宮位的廟旺表  */
   fun getMapOf(star: ZStar): Map<Branch, Int>
 

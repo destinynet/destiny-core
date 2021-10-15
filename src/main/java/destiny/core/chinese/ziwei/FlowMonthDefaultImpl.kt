@@ -22,6 +22,8 @@ import java.io.Serializable
 @Impl([Domain(KEY_FLOW_MONTH, FlowMonthDefaultImpl.VALUE, default = true)])
 class FlowMonthDefaultImpl : IFlowMonth, Serializable {
 
+  override val flowMonth: FlowMonth = FlowMonth.Default
+
   override fun getFlowMonth(flowYear: Branch, flowMonth: Branch, birthMonth: Int, birthHour: Branch): Branch {
     return Ziwei
       .getFlowYearAnchor(flowYear, birthMonth, birthHour) // 先計算流年斗君

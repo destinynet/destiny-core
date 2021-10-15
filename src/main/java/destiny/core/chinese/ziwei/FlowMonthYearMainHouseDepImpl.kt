@@ -19,6 +19,8 @@ import java.io.Serializable
 @Impl([Domain(KEY_FLOW_MONTH, FlowMonthYearMainHouseDepImpl.VALUE)])
 class FlowMonthYearMainHouseDepImpl : IFlowMonth, Serializable {
 
+  override val flowMonth: FlowMonth = FlowMonth.YearMainHouseDep
+
   /**
    * 以流年的地支當命宮，起流月為正月
    */

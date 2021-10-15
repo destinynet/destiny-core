@@ -8,6 +8,7 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMinor.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -117,14 +118,7 @@ abstract class StrengthAbstractImpl : IStrength, Serializable {
   internal abstract fun getImplMapOf(star: ZStar): Map<Branch, Int>?
 
   override fun toString(locale: Locale): String {
-    return try {
-      ResourceBundle.getBundle(StrengthAbstractImpl::class.java.name, locale).getString(javaClass.simpleName)
-    } catch (e: MissingResourceException) {
-      javaClass.simpleName
-    }
+    return strength.getTitle(locale)
   }
 
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
-  }
 }

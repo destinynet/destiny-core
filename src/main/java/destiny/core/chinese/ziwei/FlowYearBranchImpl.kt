@@ -14,6 +14,8 @@ import java.io.Serializable
 @Impl([Domain(KEY_FLOW_YEAR, FlowYearBranchImpl.VALUE)])
 class FlowYearBranchImpl : IFlowYear, Serializable {
 
+  override val flowYear: FlowYear = FlowYear.Branch
+
   override fun getFlowYear(flowYearBranch: Branch, birthMonth: Int, birthHour: Branch): Branch {
     return flowYearBranch
   }

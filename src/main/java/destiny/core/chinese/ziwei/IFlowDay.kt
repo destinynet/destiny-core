@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
+import destiny.tools.getTitle
 import java.util.*
 
 /**
@@ -20,18 +21,15 @@ import java.util.*
  */
 interface IFlowDay : Descriptive {
 
+  val flowDay: FlowDay
+
   /**
    * @param flowMonthMainHouse 流月命宮
    */
   fun getFlowDay(flowDayBranch: Branch, flowDayNum: Int, flowMonthMainHouse: Branch): Branch
 
   override fun toString(locale: Locale): String {
-    return try {
-      ResourceBundle.getBundle(IFlowDay::class.qualifiedName!!, locale).getString(javaClass.simpleName)
-    } catch (e: MissingResourceException) {
-      javaClass.simpleName
-    }
-
+    return flowDay.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {

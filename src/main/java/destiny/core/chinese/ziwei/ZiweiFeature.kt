@@ -43,6 +43,38 @@ enum class TransFour {
   Ziyun
 }
 
+/** 廟旺弱陷 */
+enum class Strength {
+  FullBook,
+  Middle
+}
+
+/** 流年排法(的命宮) */
+enum class FlowYear {
+  Anchor,
+  Branch
+}
+
+/** 流月 */
+enum class FlowMonth {
+  Default,
+  Fixed,
+  YearMainHouseDep
+}
+
+/** 流日 */
+enum class FlowDay {
+  Branch,
+  FromFlowMonthMainHouse,
+  SkipFlowMonthMainHouse
+}
+
+/** 流時 */
+enum class FlowHour {
+  Branch,
+  MainHouseDep
+}
+
 @Serializable
 data class ZiweiConfig(val stars: Set<@Contextual ZStar> = setOf(*StarMain.values, *StarLucky.values, *StarUnlucky.values),
                        val mainBodyHouse: MainBodyHouse = MainBodyHouse.Trad,
@@ -66,6 +98,16 @@ data class ZiweiConfig(val stars: Set<@Contextual ZStar> = setOf(*StarMain.value
                        val redBeauty: RedBeauty = RedBeauty.RED_BEAUTY_DIFF,
                        /** 四化設定 */
                        val transFour: TransFour = TransFour.FullBook,
+                       /** 廟旺弱陷 */
+                       val strength: Strength = Strength.FullBook,
+                       /** 流年 */
+                       val flowYear: FlowYear = FlowYear.Anchor,
+                       /** 流月 */
+                       val flowMonth: FlowMonth = FlowMonth.Default,
+                       /** 流日 */
+                       val flowDay: FlowDay = FlowDay.Branch,
+                       /** 流時 */
+                       val flowHour: FlowHour = FlowHour.MainHouseDep
 ) : java.io.Serializable
 
 /**

@@ -71,6 +71,9 @@ private val commonPairMap: Map<Pair<ZStar, Branch>, Int> = table
 
 @Impl([Domain(KEY_STRENGTH , StrengthFullBookImpl.VALUE , default = true)])
 class StrengthFullBookImpl : StrengthAbstractImpl() {
+
+  override val strength: Strength = Strength.FullBook
+
   /**
    *             1  2       3    4    5      6          7
    * 南派依序分成 →廟、旺、    得地     、平和、   閒地       、陷    ，等六級。

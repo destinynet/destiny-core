@@ -14,6 +14,8 @@ import java.io.Serializable
 @Impl([Domain(KEY_FLOW_MONTH, FlowMonthFixedImpl.VALUE)])
 class FlowMonthFixedImpl : IFlowMonth, Serializable {
 
+  override val flowMonth: FlowMonth = FlowMonth.Fixed
+
   override fun getFlowMonth(flowYear: Branch, flowMonth: Branch, birthMonth: Int, birthHour: Branch): Branch {
     return 寅.next(flowMonth.getAheadOf(寅))
   }

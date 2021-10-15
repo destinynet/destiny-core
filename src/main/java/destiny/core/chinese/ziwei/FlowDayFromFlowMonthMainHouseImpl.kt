@@ -16,6 +16,8 @@ import java.io.Serializable
 @Impl([Domain(KEY_FLOW_DAY, FlowDayFromFlowMonthMainHouseImpl.VALUE, default = true)])
 class FlowDayFromFlowMonthMainHouseImpl : IFlowDay, Serializable {
 
+  override val flowDay: FlowDay = FlowDay.FromFlowMonthMainHouse
+
   override fun getFlowDay(flowDayBranch: Branch, flowDayNum: Int, flowMonthMainHouse: Branch): Branch {
     return flowMonthMainHouse.next(flowDayNum - 1)
   }

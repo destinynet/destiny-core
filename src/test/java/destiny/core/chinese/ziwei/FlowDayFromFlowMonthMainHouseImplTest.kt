@@ -5,24 +5,12 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch.丑
 import destiny.core.chinese.Branch.子
-import mu.KotlinLogging
-import java.util.*
 import kotlin.test.Test
-import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 
 class FlowDayFromFlowMonthMainHouseImplTest {
 
-  private val logger = KotlinLogging.logger { }
-
   internal var impl: IFlowDay = FlowDayFromFlowMonthMainHouseImpl()
-
-  @Test
-  fun testString() {
-    assertNotNull(impl.toString(Locale.TAIWAN))
-    assertNotNull(impl.toString(Locale.SIMPLIFIED_CHINESE))
-    logger.info("title tw = {} , cn = {}", impl.toString(Locale.TAIWAN), impl.toString(Locale.SIMPLIFIED_CHINESE))
-  }
 
   /**
    * 根據此頁面範例 https://goo.gl/zwWsmO

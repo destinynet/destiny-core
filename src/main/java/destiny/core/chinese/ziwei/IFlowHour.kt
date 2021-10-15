@@ -5,10 +5,13 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
+import destiny.tools.getTitle
 import java.util.*
 
 /** 流時命宮  */
 interface IFlowHour : Descriptive {
+
+  val flowHour: FlowHour
 
   /**
    * @param hour  欲求算的當日時辰
@@ -17,12 +20,7 @@ interface IFlowHour : Descriptive {
   fun getFlowHour(hour: Branch, flowDayMainHour: Branch): Branch
 
   override fun toString(locale: Locale): String {
-    return try {
-      ResourceBundle.getBundle(IFlowHour::class.qualifiedName!!, locale).getString(javaClass.simpleName)
-    } catch (e: MissingResourceException) {
-      javaClass.simpleName
-    }
-
+    return flowHour.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {

@@ -67,6 +67,8 @@ private val commonPairMap: Map<Pair<ZStar, Branch>, Int> = table
 @Impl([Domain(KEY_STRENGTH , StrengthMiddleImpl.VALUE)])
 class StrengthMiddleImpl : StrengthAbstractImpl() {
 
+  override val strength: Strength = Strength.Middle
+
   override fun getImplStrengthOf(star: ZStar, branch: Branch): Int? {
     return commonPairMap[Pair(star, branch)]
   }
