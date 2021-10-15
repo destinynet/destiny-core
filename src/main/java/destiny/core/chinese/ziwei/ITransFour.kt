@@ -27,6 +27,8 @@ import java.util.*
  */
 interface ITransFour : Descriptive {
 
+  val transFour: TransFour
+
   /** 取得「某天干（可能是本命年、大限、或是流年、流月、流日、流時）的某四化」是哪顆星  */
   fun getStarOf(stem: Stem, value: Value): ZStar
 

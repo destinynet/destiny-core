@@ -16,6 +16,8 @@ import java.util.*
 @Impl([Domain(KEY_TRANS_FOUR, TransFourFullBookImpl.VALUE, default = true)])
 class TransFourFullBookImpl : TransFourAbstractImpl() {
 
+  override val transFour: TransFour = TransFour.FullBook
+
   override val table
     get() = dataTable
 

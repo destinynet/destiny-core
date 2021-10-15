@@ -19,7 +19,6 @@ import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
 import destiny.core.calendar.locationOf
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.tools.ILocaleString
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.LocalTime
@@ -253,19 +252,7 @@ interface IZiweiContext {
   }
 }
 
-
 /** [StarUnlucky.火星] ,  [StarUnlucky.鈴星] 設定  */
-
-fun FireBell.asLocaleString() = object : ILocaleString {
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(IZiweiContext::class.java.name, locale).getString(name)
-  }
-}
-
-fun FireBell.toString(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
-}
-
 enum class FireBell {
   /** [StarUnlucky.fun火星_全集] , [StarUnlucky.fun鈴星_全集] : (年支、時支) -> 地支 (福耕老師論點) */
   FIREBELL_COLLECT,
@@ -281,31 +268,8 @@ enum class SkyHorse {
   MONTH;
 }
 
-fun SkyHorse.asLocaleString() = object : ILocaleString {
-  override fun toString(locale: Locale): String {
-    return when (this@asLocaleString) {
-      SkyHorse.YEAR -> "年馬"
-      SkyHorse.MONTH -> "月馬"
-    }
-  }
-}
-
-fun SkyHorse.toString(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
-}
-
 
 /** [StarMinor.天傷]、 [StarMinor.天使] 計算方式  */
-fun HurtAngel.asLocaleString() = object : ILocaleString {
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(IZiweiContext::class.java.name, locale).getString(name)
-  }
-}
-
-fun HurtAngel.toString(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
-}
-
 enum class HurtAngel {
   /** 天傷固定於交友宮 [StarMinor.fun天傷_fixed交友] 、 天使固定疾厄宮 [StarMinor.fun天使_fixed疾厄]  */
   HURT_ANGEL_FIXED,
@@ -316,17 +280,6 @@ enum class HurtAngel {
 
 
 /** 紅艷  */
-fun RedBeauty.asLocaleString() = object : ILocaleString {
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(IZiweiContext::class.java.name, locale).getString(name)
-  }
-}
-
-fun RedBeauty.toString(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
-}
-
-
 enum class RedBeauty {
   /** [StarMinor.fun紅艷_甲乙相異]  */
   RED_BEAUTY_DIFF,

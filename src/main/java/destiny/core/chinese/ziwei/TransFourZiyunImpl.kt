@@ -16,6 +16,8 @@ import java.util.*
 @Impl([Domain(KEY_TRANS_FOUR , TransFourZiyunImpl.VALUE)])
 class TransFourZiyunImpl : TransFourAbstractImpl() {
 
+  override val transFour: TransFour = TransFour.Ziyun
+
   override val table
     get() = dataTable
 

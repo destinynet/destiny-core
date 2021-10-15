@@ -17,13 +17,11 @@ import java.util.*
 @Impl([Domain(KEY_TRANS_FOUR , TransFourDivineImpl.VALUE)])
 class TransFourDivineImpl : TransFourAbstractImpl() {
 
+  override val transFour: TransFour = TransFour.Divine
+
   override val table
     get() = dataTable
 
-
-  override fun toString(locale: Locale): String {
-    return "占驗門"
-  }
 
   override fun getDescription(locale: Locale): String {
     return "占驗門"

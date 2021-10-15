@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Stem
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -44,11 +45,6 @@ abstract class TransFourAbstractImpl : ITransFour, Serializable {
   }
 
   override fun toString(locale: Locale): String {
-    return try {
-      ResourceBundle.getBundle(TransFourAbstractImpl::class.java.name, locale).getString(javaClass.simpleName)
-    } catch (e: MissingResourceException) {
-      javaClass.simpleName
-    }
-
+    return transFour.getTitle(locale)
   }
 }

@@ -28,6 +28,8 @@ import java.util.*
 @Impl([Domain(KEY_TRANS_FOUR, TransFourFullCollectImpl.VALUE)])
 class TransFourFullCollectImpl : TransFourAbstractImpl() {
 
+  override val transFour: TransFour = TransFour.FullCollect
+
   override val table
     get() = dataTable
 

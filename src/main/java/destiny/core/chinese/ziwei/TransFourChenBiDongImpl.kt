@@ -18,6 +18,8 @@ import java.util.*
 @Impl([Domain(KEY_TRANS_FOUR, TransFourChenBiDongImpl.VALUE)])
 class TransFourChenBiDongImpl : TransFourAbstractImpl() {
 
+  override val transFour: TransFour = TransFour.ChenBiDong
+
   override val table
     get() = dataTable
 

@@ -16,6 +16,8 @@ import java.util.*
 @Impl([Domain(KEY_TRANS_FOUR, TransFourMiddleImpl.VALUE)])
 class TransFourMiddleImpl : TransFourAbstractImpl() {
 
+  override val transFour: TransFour = TransFour.Middle
+
   override val table
     get() = dataTable
 

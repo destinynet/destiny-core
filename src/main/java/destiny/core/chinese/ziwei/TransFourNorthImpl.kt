@@ -13,6 +13,8 @@ import java.util.*
 @Impl([Domain(KEY_TRANS_FOUR, TransFourNorthImpl.VALUE)])
 class TransFourNorthImpl : TransFourAbstractImpl() {
 
+  override val transFour: TransFour = TransFour.North
+
   override val table
     get() = dataTable
 
