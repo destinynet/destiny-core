@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.astrology.IPoint
 import destiny.core.chinese.Branch
 
 /**
@@ -23,9 +24,15 @@ sealed class StarYearFront(nameKey: String) : ZStar(nameKey, StarYearFront::clas
   object 吊客 : StarYearFront("吊客")
   object 病符 : StarYearFront("病符")
 
-  companion object {
+  companion object : IPoint<StarYearFront> {
 
-    val values by lazy { arrayOf(歲建, 晦氣, 喪門, 貫索, 官符, 小耗, 歲破, 龍德, 白虎, 天德, 吊客, 病符) }
+    override val values by lazy { arrayOf(歲建, 晦氣, 喪門, 貫索, 官符, 小耗, 歲破, 龍德, 白虎, 天德, 吊客, 病符) }
+
+    override fun fromString(value: String): StarYearFront? {
+      return values.firstOrNull {
+        it.nameKey == value
+      }
+    }
 
     private val list by lazy { listOf(*values) }
 

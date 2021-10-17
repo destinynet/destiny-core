@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
+import destiny.core.astrology.IPoint
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement
@@ -26,10 +27,15 @@ sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.n
   object 胎 : StarLongevity("胎")
   object 養 : StarLongevity("養")
 
-  companion object {
+  companion object : IPoint<StarLongevity> {
 
+    override val values by lazy { arrayOf(長生, 沐浴, 冠帶, 臨官, 帝旺, 衰, 病, 死, 墓, 絕, 胎, 養) }
 
-    val values by lazy { arrayOf(長生, 沐浴, 冠帶, 臨官, 帝旺, 衰, 病, 死, 墓, 絕, 胎, 養) }
+    override fun fromString(value: String): StarLongevity? {
+      return values.firstOrNull {
+        it.nameKey == value
+      }
+    }
 
     private val list by lazy { arrayOf(*values) }
 

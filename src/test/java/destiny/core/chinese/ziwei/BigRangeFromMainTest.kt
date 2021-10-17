@@ -8,26 +8,13 @@ import destiny.core.Gender.男
 import destiny.core.chinese.YinYang.陰
 import destiny.core.chinese.YinYang.陽
 import destiny.core.chinese.ziwei.House.*
-import mu.KotlinLogging
-import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 class BigRangeFromMainTest {
 
-  private val logger = KotlinLogging.logger { }
-
   internal var impl: IBigRange = BigRangeFromMain()
   private var seq: IHouseSeq = HouseSeqDefaultImpl()
-
-  @Test
-  fun testString() {
-    assertNotNull(impl.toString(Locale.TAIWAN))
-    assertNotNull(impl.toString(Locale.SIMPLIFIED_CHINESE))
-    logger.info("title tw = {} , cn = {}", impl.toString(Locale.TAIWAN), impl.toString(Locale.SIMPLIFIED_CHINESE))
-  }
-
 
   @Test
   fun getVageRange() {

@@ -8,7 +8,7 @@ import com.google.common.collect.HashBiMap
 import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.IIntAge
-import destiny.core.IntAgeNote
+import destiny.core.IIntAgeNote
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
@@ -82,7 +82,7 @@ interface IZiweiContext {
   val flowHourImpl: IFlowHour
 
   /** 歲數註解 (西元？ 民國？ or others)  */
-  val ageNoteImpls: List<IntAgeNote>
+  val ageNoteImpls: List<IIntAgeNote>
 
   /** 大限計算方式  */
   val bigRangeImpl: IBigRange
@@ -351,7 +351,7 @@ class ZContext(
   override val flowHourImpl: IFlowHour,
 
   /** 歲數註解 (西元？ 民國？ or others)  */
-  override val ageNoteImpls: List<IntAgeNote>,
+  override val ageNoteImpls: List<IIntAgeNote>,
 
   /** 大限計算方式  */
   override val bigRangeImpl: IBigRange,

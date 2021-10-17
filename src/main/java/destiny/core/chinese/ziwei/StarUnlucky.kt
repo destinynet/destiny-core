@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.astrology.IPoint
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.BranchTools
@@ -23,9 +24,15 @@ sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::cl
   object 地劫 : StarUnlucky("地劫", 時) // 乙
   object 地空 : StarUnlucky("地空", 時) // 乙 (有時又稱天空)
 
-  companion object {
+  companion object : IPoint<StarUnlucky> {
 
-    val values by lazy { arrayOf(擎羊, 陀羅, 火星, 鈴星, 地劫, 地空) }
+    override val values by lazy { arrayOf(擎羊, 陀羅, 火星, 鈴星, 地劫, 地空) }
+
+    override fun fromString(value: String): StarUnlucky? {
+      return values.firstOrNull {
+        it.nameKey == value
+      }
+    }
 
     /** 擎羊 : 年干 -> 地支  */
     val fun擎羊 = { year: Stem ->

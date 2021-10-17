@@ -5,7 +5,7 @@ package destiny.core.chinese.eightwords
 
 import destiny.core.Descriptive
 import destiny.core.Gender
-import destiny.core.IntAgeNoteImpl
+import destiny.core.IntAgeNote
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -25,7 +25,7 @@ import javax.inject.Named
 @Serializable
 data class FortuneLargeConfig(val impl: Impl = Impl.DefaultSpan,
                               val span : Double = 120.0,
-                              val intAgeNotes: List<IntAgeNoteImpl> = listOf(IntAgeNoteImpl.WestYear, IntAgeNoteImpl.Minguo),
+                              val intAgeNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
                               val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable {
   enum class Impl {
     DefaultSpan,    // 傳統、標準大運 (每柱十年)
@@ -59,8 +59,8 @@ class FortuneLargeConfigBuilder : Builder<FortuneLargeConfig> {
 
   var span : Double = 120.0
 
-  var intAgeNotes: List<IntAgeNoteImpl> = listOf(IntAgeNoteImpl.WestYear, IntAgeNoteImpl.Minguo)
-  fun intAgeNotes(impls: List<IntAgeNoteImpl>) {
+  var intAgeNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo)
+  fun intAgeNotes(impls: List<IntAgeNote>) {
     intAgeNotes = impls
   }
 

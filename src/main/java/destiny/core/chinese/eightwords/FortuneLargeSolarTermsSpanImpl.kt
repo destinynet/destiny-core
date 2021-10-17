@@ -7,8 +7,8 @@ import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import destiny.core.Gender
 import destiny.core.IIntAge
+import destiny.core.IIntAgeNote
 import destiny.core.IntAgeNote
-import destiny.core.IntAgeNoteImpl
 import destiny.core.astrology.Coordinate
 import destiny.core.astrology.IStarTransit
 import destiny.core.astrology.Planet
@@ -42,7 +42,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFe
                                      private val fortuneDirectionFeature: IFortuneDirectionFeature,
                                      @Named("intAge8wImpl")
                                      private val intAgeImpl: IIntAge,
-                                     ageNoteImplMap: Map<IntAgeNoteImpl , IntAgeNote>,
+                                     ageNoteImplMap: Map<IntAgeNote , IIntAgeNote>,
                                      private val solarTermsImpl: ISolarTerms,
                                      private val starTransitImpl: IStarTransit) : AbstractFortuneLargeImpl(ageNoteImplMap) {
 
@@ -64,7 +64,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFe
   }
 
 
-  private fun getFortuneDataList(eightWords: IEightWords, forward: Boolean , gmtJulDay: GmtJulDay, gender: Gender, ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>, count: Int, fortuneMonthSpan: Double, ageNoteImpls: List<IntAgeNote>): List<FortuneData> {
+  private fun getFortuneDataList(eightWords: IEightWords, forward: Boolean , gmtJulDay: GmtJulDay, gender: Gender, ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>, count: Int, fortuneMonthSpan: Double, ageNoteImpls: List<IIntAgeNote>): List<FortuneData> {
     //下個大運的干支
     var i = 1
 

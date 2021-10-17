@@ -30,13 +30,17 @@ abstract class EnumTest {
       getEnumValues(kClass).forEach {
         it.getTitle(locale).also { title ->
           assertNotNull(title)
-          assertNotEquals(title, it.name)
+          if (locale.language != "en") {
+            assertNotEquals(title, it.name)
+          }
           logger.info { "${it.name} : title($locale) = $title" }
         }
 
         it.getDescription(locale).also { desc ->
           assertNotNull(desc)
-          assertNotEquals(desc, it.name)
+          if (locale.language != "en") {
+            assertNotEquals(desc, it.name)
+          }
           logger.info { "${it.name} : description($locale) = $desc" }
         }
       }

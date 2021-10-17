@@ -4,7 +4,7 @@
 package destiny.core.chinese.eightwords
 
 import destiny.core.AbstractConfigTest
-import destiny.core.IntAgeNoteImpl
+import destiny.core.IntAgeNote
 import destiny.core.astrology.*
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.eightwords.PersonConfigBuilder.Companion.ewPersonConfig
@@ -37,7 +37,7 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
       "台北市"
     ),
     fortuneLargeConfig = FortuneLargeConfig(FortuneLargeConfig.Impl.SolarTermsSpan, 90.0),
-    fortuneSmallConfig = FortuneSmallConfig(FortuneSmallConfig.Impl.SixGia, 90, intAgeNotes = listOf(IntAgeNoteImpl.Minguo))
+    fortuneSmallConfig = FortuneSmallConfig(FortuneSmallConfig.Impl.SixGia, 90, intAgeNotes = listOf(IntAgeNote.Minguo))
   )
 
   override val configByFunction: EightWordsPersonConfig = ewPersonConfig {
@@ -89,7 +89,7 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
     fortuneSmall {
       impl = FortuneSmallConfig.Impl.SixGia
       count = 90
-      intAgeNotes(listOf(IntAgeNoteImpl.Minguo))
+      intAgeNotes(listOf(IntAgeNote.Minguo))
     }
   }
 

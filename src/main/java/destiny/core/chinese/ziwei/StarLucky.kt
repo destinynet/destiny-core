@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.DayNight
+import destiny.core.astrology.IPoint
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Characters
@@ -28,9 +29,15 @@ sealed class StarLucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::clas
   object 月馬 : StarLucky("月馬", 月)   // 乙級星 (其實就是天馬)
 
 
-  companion object {
+  companion object : IPoint<StarLucky> {
 
-    val values by lazy { arrayOf(文昌, 文曲, 左輔, 右弼, 天魁, 天鉞, 祿存, 天馬) }
+    override val values by lazy { arrayOf(文昌, 文曲, 左輔, 右弼, 天魁, 天鉞, 祿存, 天馬) }
+
+    override fun fromString(value: String): StarLucky? {
+      return values.firstOrNull {
+        it.nameKey == value
+      }
+    }
 
     /** 文昌 : 時支 -> 地支  */
     val fun文昌 = { hour: Branch -> Branch[10 - hour.index] }

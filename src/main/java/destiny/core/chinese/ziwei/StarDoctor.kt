@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
+import destiny.core.astrology.IPoint
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 
@@ -31,9 +32,15 @@ sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name
   object 伏兵 : StarDoctor("伏兵")
   object 官府 : StarDoctor("官府")
 
-  companion object {
+  companion object : IPoint<StarDoctor> {
 
-    val values by lazy { arrayOf(博士, 力士, 青龍, 小耗, 將軍, 奏書, 飛廉, 喜神, 病符, 大耗, 伏兵, 官府) }
+    override val values by lazy { arrayOf(博士, 力士, 青龍, 小耗, 將軍, 奏書, 飛廉, 喜神, 病符, 大耗, 伏兵, 官府) }
+
+    override fun fromString(value: String): StarDoctor? {
+      return values.firstOrNull {
+        it.nameKey == value
+      }
+    }
 
     // 年干、性別、步數
     private val branchGender2Branch = { tuple3: Triple<Stem, Gender, Int> ->

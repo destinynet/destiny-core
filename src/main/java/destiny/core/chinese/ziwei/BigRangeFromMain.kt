@@ -24,6 +24,8 @@ import java.io.Serializable
 @Impl([Domain(KEY_BIG_RANGE, BigRangeFromMain.VALUE, default = true)])
 class BigRangeFromMain : IBigRange, Serializable {
 
+  override val bigRange: BigRange = BigRange.FromMain
+
   override fun getVageRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int> {
     return getAgeRange(house, set, yinYang, gender, houseSeqImpl)
   }

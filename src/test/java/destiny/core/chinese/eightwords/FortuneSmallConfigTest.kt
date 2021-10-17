@@ -4,7 +4,7 @@
 package destiny.core.chinese.eightwords
 
 import destiny.core.AbstractConfigTest
-import destiny.core.IntAgeNoteImpl
+import destiny.core.IntAgeNote
 import destiny.core.chinese.eightwords.FortuneSmallConfigBuilder.Companion.fortuneSmall
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
@@ -14,12 +14,12 @@ internal class FortuneSmallConfigTest : AbstractConfigTest<FortuneSmallConfig>()
   override val serializer: KSerializer<FortuneSmallConfig> = FortuneSmallConfig.serializer()
 
   override val configByConstructor: FortuneSmallConfig =
-    FortuneSmallConfig(FortuneSmallConfig.Impl.Star, 90, listOf(IntAgeNoteImpl.Minguo))
+    FortuneSmallConfig(FortuneSmallConfig.Impl.Star, 90, listOf(IntAgeNote.Minguo))
 
   override val configByFunction: FortuneSmallConfig = fortuneSmall {
     impl = FortuneSmallConfig.Impl.Star
     count = 90
-    intAgeNotes(listOf(IntAgeNoteImpl.Minguo))
+    intAgeNotes(listOf(IntAgeNote.Minguo))
   }
 
   override val assertion: (String) -> Unit = { raw ->

@@ -5,8 +5,8 @@ package destiny.core.chinese.eightwords
 
 import destiny.core.Gender
 import destiny.core.IIntAge
+import destiny.core.IIntAgeNote
 import destiny.core.IntAgeNote
-import destiny.core.IntAgeNoteImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.EightWordsConfig
@@ -26,7 +26,7 @@ import javax.inject.Named
 data class FortuneSmallConfig(val impl: Impl = Impl.Hour,
                               /** 取得幾條小運 */
                               val count: Int = 120,
-                              val intAgeNotes: List<IntAgeNoteImpl> = listOf(IntAgeNoteImpl.WestYear, IntAgeNoteImpl.Minguo),
+                              val intAgeNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
                               val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable {
   enum class Impl {
     Hour,   // 以時柱推算小運
@@ -40,8 +40,8 @@ class FortuneSmallConfigBuilder : Builder<FortuneSmallConfig> {
   var impl: FortuneSmallConfig.Impl = FortuneSmallConfig.Impl.Hour
   var count: Int = 120
 
-  var intAgeNotes: List<IntAgeNoteImpl> = listOf(IntAgeNoteImpl.WestYear, IntAgeNoteImpl.Minguo)
-  fun intAgeNotes(impls: List<IntAgeNoteImpl>) {
+  var intAgeNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo)
+  fun intAgeNotes(impls: List<IntAgeNote>) {
     intAgeNotes = impls
   }
 
@@ -62,13 +62,13 @@ interface IFortuneSmall {
 
   val impl : FortuneSmallConfig.Impl
 
-  fun getFortuneDataList(gmtJulDay: GmtJulDay, loc:ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, config: EightWordsConfig): List<FortuneData>
+  fun getFortuneDataList(gmtJulDay: GmtJulDay, loc:ILocation, gender: Gender, count: Int, ageNoteImpls: List<IIntAgeNote>, config: EightWordsConfig): List<FortuneData>
 }
 
 
 @Named
 class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
-                          private val ageNoteImplMap: Map<IntAgeNoteImpl , IntAgeNote>,
+                          private val ageNoteImplMap: Map<IntAgeNote , IIntAgeNote>,
                           private val fortuneDirectionFeature: IFortuneDirectionFeature,
                           @Named("intAge8wImpl")
                           private val intAgeImpl: IIntAge) : AbstractCachedPersonFeature<FortuneSmallConfig, List<FortuneData>>() {
@@ -87,7 +87,7 @@ class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: FortuneSmallConfig): List<FortuneData> {
 
-    val ageNoteImpls: List<IntAgeNote> = config.intAgeNotes.map { impl: IntAgeNoteImpl ->
+    val ageNoteImpls: List<IIntAgeNote> = config.intAgeNotes.map { impl: IntAgeNote ->
       ageNoteImplMap[impl]!!
     }.toList()
 
@@ -110,7 +110,7 @@ class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
   inner class FortuneSmallHour : IFortuneSmall {
     override val impl: FortuneSmallConfig.Impl = FortuneSmallConfig.Impl.Hour
 
-    override fun getFortuneDataList(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, config: EightWordsConfig): List<FortuneData> {
+    override fun getFortuneDataList(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IIntAgeNote>, config: EightWordsConfig): List<FortuneData> {
       val forward = fortuneDirectionFeature.getPersonModel(gmtJulDay, loc, gender, null, null, config)
       val eightWords = eightWordsFeature.getModel(gmtJulDay, loc, config)
       return implByRangesMap(gmtJulDay, eightWords, gender, loc, count, forward, ageNoteImpls)
@@ -123,7 +123,7 @@ class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
                                 location: ILocation,
                                 count: Int,
                                 forward: Boolean,
-                                ageNoteImpls: List<IntAgeNote>): List<FortuneData> {
+                                ageNoteImpls: List<IIntAgeNote>): List<FortuneData> {
       var sb = eightWords.hour
       return intAgeImpl.getRangesMap(gender, gmtJulDay, location, 1, count).map { (age, pair) ->
         sb = if (forward) sb.next as StemBranch else sb.prev as StemBranch
@@ -144,7 +144,7 @@ class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
 
     override val impl: FortuneSmallConfig.Impl = FortuneSmallConfig.Impl.Star
 
-    override fun getFortuneDataList(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, config: EightWordsConfig): List<FortuneData> {
+    override fun getFortuneDataList(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IIntAgeNote>, config: EightWordsConfig): List<FortuneData> {
       var sb = if (gender == Gender.男) 丙寅.prev else 壬申.next
 
       return intAgeImpl.getRangesMap(gender , gmtJulDay , loc , 1 , count).map { (age , pair) ->
@@ -171,7 +171,7 @@ class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
 
     override val impl: FortuneSmallConfig.Impl = FortuneSmallConfig.Impl.SixGia
 
-    override fun getFortuneDataList(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>, config: EightWordsConfig): List<FortuneData> {
+    override fun getFortuneDataList(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IIntAgeNote>, config: EightWordsConfig): List<FortuneData> {
       val eightWords = eightWordsFeature.getModel(gmtJulDay, loc, config)
       var sb = when (eightWords.day.cycle) {
         StemBranchCycle.甲子 -> if (gender == Gender.男) 丙寅.prev else 壬申.next

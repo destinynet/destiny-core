@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.astrology.IPoint
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 
@@ -31,9 +32,15 @@ sealed class StarMain(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, 
     return nameKey
   }
 
-  companion object {
+  companion object : IPoint<StarMain> {
 
-    val values by lazy { arrayOf(紫微, 天機, 太陽, 武曲, 天同, 廉貞, 天府, 太陰, 貪狼, 巨門, 天相, 天梁, 七殺, 破軍) }
+    override val values by lazy { arrayOf(紫微, 天機, 太陽, 武曲, 天同, 廉貞, 天府, 太陰, 貪狼, 巨門, 天相, 天梁, 七殺, 破軍) }
+
+    override fun fromString(value: String): StarMain? {
+      return values.firstOrNull {
+        it.nameKey == value
+      }
+    }
 
     // （局數 , 日數 , 是否閏月 , 上個月的天數 , 紫微星實作) -> 地支
     private val fun紫微 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> iPurpleBranch.getBranchOfPurpleStar(state, days, leap, prevMonthDays) }

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.astrology.IPoint
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.BranchTools
@@ -38,9 +39,15 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
   object 月煞 : StarGeneralFront("月煞")
   object 亡神 : StarGeneralFront("亡神")
 
-  companion object {
+  companion object : IPoint<StarGeneralFront> {
 
-    val values by lazy { arrayOf(將星, 攀鞍, 歲馹, 息神, 華蓋, 劫煞, 災煞, 天煞, 指背, 咸池, 月煞, 亡神) }
+    override val values by lazy { arrayOf(將星, 攀鞍, 歲馹, 息神, 華蓋, 劫煞, 災煞, 天煞, 指背, 咸池, 月煞, 亡神) }
+
+    override fun fromString(value: String): StarGeneralFront? {
+      return values.firstOrNull {
+        it.nameKey == value
+      }
+    }
 
     private val list by lazy { arrayOf(*values) }
 
