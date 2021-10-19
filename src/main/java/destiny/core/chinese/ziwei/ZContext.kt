@@ -25,6 +25,7 @@ import java.io.Serializable
 import java.time.LocalTime
 import java.util.*
 
+@Deprecated("ZiweiFeature")
 interface IZiweiContext {
 
   fun toConfig() : ZiweiConfig {
@@ -116,6 +117,8 @@ interface IZiweiContext {
 
   /** 紅豔 */
   val redBeauty: RedBeauty
+
+  val transFourImplMap: Map<TransFour, ITransFour>
 
 
   /**
@@ -319,7 +322,7 @@ enum class RedBeauty {
 /**
  * 純粹「設定」，並不包含 生日、性別、出生地 等資訊
  */
-@Deprecated("")
+@Deprecated("ZiweiFeature")
 class ZContext(
 
   override val stars: Collection<ZStar>,
@@ -391,6 +394,8 @@ class ZContext(
 
   private val tianyiImplMap: Map<Tianyi, ITianyi>,
 
+  override val transFourImplMap: Map<TransFour, ITransFour>,
+
   /** 計算虛歲時，需要 [IChineseDate] , 若不提供 , 則無法計算虛歲歲數 (除非有預先算好、傳入) */
   private val chineseDateImpl: IChineseDate? = null,
 
@@ -398,7 +403,7 @@ class ZContext(
   /** 虛歲實作 */
   private val intAgeImpl: IIntAge? = null,
 
-) : IZiweiContext, Serializable {
+  ) : IZiweiContext, Serializable {
 
   /**
    * 本命盤
@@ -655,7 +660,7 @@ class ZContext(
       }
 
     return Builder(
-      this, chineseDate, gender, year, finalMonthNumForMonthStars, hour, dayNight, mainHouse, bodyHouse, mainStar,
+      this.toConfig(), chineseDate, gender, year, finalMonthNumForMonthStars, hour, dayNight, mainHouse, bodyHouse, mainStar,
       bodyStar, 五行, 五行局, branchHouseMap, starBranchMap, starStrengthMap, flowBigVageMap,
       branchSmallRangesMap, flyMap, vageMap
     )

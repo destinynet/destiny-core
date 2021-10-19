@@ -24,7 +24,7 @@ import java.util.*
 class Builder(
 
   /** 設定資料  */
-  val context: IZiweiContext,
+  val config: ZiweiConfig,
   /** 陰曆生日  */
   val chineseDate: ChineseDate,
   /** 性別  */

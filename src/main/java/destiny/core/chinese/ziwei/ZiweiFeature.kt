@@ -7,6 +7,7 @@ import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import destiny.core.DayNight
 import destiny.core.Gender
+import destiny.core.IIntAge
 import destiny.core.IntAgeNote
 import destiny.core.astrology.*
 import destiny.core.calendar.*
@@ -23,11 +24,13 @@ import destiny.core.chinese.Branch.*
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
+import destiny.tools.getTitle
 import destiny.tools.serializers.ZStarSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
+import java.util.*
 import javax.inject.Named
 
 /** 命宮、身宮 演算法  */
@@ -295,7 +298,12 @@ class ZiweiFeature(
   private val houseSeqImplMap: Map<HouseSeq, IHouseSeq>,
   private val prevMonthDaysImpl: IPrevMonthDays,
   private val purpleStarBranchImplMap : Map<PurpleStarBranch, IPurpleStarBranch>,
-  private val tianyiImplMap: Map<Tianyi, ITianyi>
+  private val tianyiImplMap: Map<Tianyi, ITianyi>,
+  private val transFourImplMap: Map<TransFour, ITransFour>,
+  private val strengthImplMap: Map<Strength, IStrength>,
+  private val bigRangeImplMap: Map<BigRange, IBigRange>,
+  @Named("intAgeZiweiImpl")
+  private val intAgeImpl: IIntAge
 ) : AbstractCachedPersonFeature<ZiweiConfig, IPlate>(), IZiweiFeature {
 
   override val defaultConfig: ZiweiConfig = ZiweiConfig()
@@ -544,8 +552,96 @@ class ZiweiFeature(
     logger.debug("stars = {}", config.stars)
     logger.debug("starBranchMap = {}", starBranchMap)
 
-    TODO("Not yet implemented")
+    // 本命四化 : 四化要依據 陰曆初一 還是 節氣立春 劃分
+    val transFourImpl = transFourImplMap[config.transFour]!!
+
+    val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value>
+    if (config.yearType == YearType.YEAR_LUNAR) {
+      trans4Map = getTrans4Map(config.stars, FlowType.本命, lunarYear.stem, transFourImpl)
+    } else {
+      // 立春分年
+      trans4Map = getTrans4Map(config.stars, FlowType.本命, solarYear.stem, transFourImpl)
+      if (lunarYear !== solarYear) {
+        // 如果年 與 陰曆年不同
+        // solar_year=年系星立春為界，故年用 {0} 而非 {1}
+        notesBuilders.add(Pair("solar_year", arrayOf(solarYear, lunarYear)))
+      }
+    }
+    logger.debug("transFourImpl = {} , title = {}", transFourImpl::class.simpleName, config.transFour.getTitle(Locale.TAIWAN))
+    logger.debug("trans4Map = {}", trans4Map)
+
+    // 宮干四化 : 此宮位，因為什麼星，各飛入哪個宮位(地支)
+    // 參考 : http://www.fate123.com.tw/fate-teaching/fate-lesson-5.2.asp
+    val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>> = branchHouseMap.keys.associateWith { sb: StemBranch ->
+
+      ITransFour.Value.values()
+        .map { value ->
+          val flyStar: ZStar = transFourImpl.getStarOf(sb.stem, value)
+          value to flyStar
+        }
+        .filter { (_, flyStar) ->
+          starBranchMap[flyStar] != null
+        }
+        .map { (value, flyStar) ->
+          Triple(value, flyStar, starBranchMap.getValue(flyStar))
+        }
+        .toSet()
+    }
+
+    // 星體強弱表
+    val strengthImpl = strengthImplMap[config.strength]!!
+    val starStrengthMap: Map<ZStar, Int> = config.stars.map { star ->
+      val strength: Int? = strengthImpl.getStrengthOf(star, starBranchMap.getValue(star))
+      star to strength
+    }
+      .filter { it.second != null }
+      .associate { it.first to it.second!! }
+
+    val chineseDate = ChineseDate(cycle, lunarYear, lunarMonth, leapMonth, lunarDays)
+
+    // 計算每個地支的 大限 起訖 「虛歲」時刻
+    val bigRangeImpl = bigRangeImplMap[config.bigRange]!!
+    val flowBigVageMap = bigRangeImpl.getSortedFlowBigVageMap(branchHouseBiMap, 五行局, lunarYear, gender, houseSeqImpl)
+
+    // 小限 mapping
+    val branchSmallRangesMap: Map<Branch, List<Int>> = values()
+      .associateWith { branch ->
+        ISmallRange.getRanges(branch, lunarYear.branch, gender)
+      }
+
+    /**
+     * 歲數 map , 2018-06-03 改 optional . 因為不想在 core 內 , depend on ChineseDateCalendricaImpl
+     * 不然就得開發另一套非常簡易的 [IIntAge] 在此使用
+     */
+    val vageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = optionalVageMap
+
+
+    return Builder(
+      config, chineseDate, gender, year, finalMonthNumForMonthStars, hour, dayNight, mainHouse, bodyHouse, mainStar,
+      bodyStar, 五行, 五行局, branchHouseMap, starBranchMap, starStrengthMap, flowBigVageMap,
+      branchSmallRangesMap, flyMap, vageMap
+    )
+      .appendNotesBuilders(notesBuilders)
+      .appendTrans4Map(trans4Map)
+
   }
+
+  /**
+   * @param stars     取得這些星體
+   * @param flowType  在[本命、大限、流年]... (之一)
+   * @param flowStem  天干為
+   * @return 傳回四化 (若有的話)
+   */
+  private fun getTrans4Map(stars: Collection<ZStar>, flowType: FlowType, flowStem: Stem, transFourImpl: ITransFour): Map<Pair<ZStar, FlowType>, ITransFour.Value> {
+    return stars.map { star ->
+      val key = star to flowType
+      val value: ITransFour.Value? = transFourImpl.getValueOf(star, flowStem)
+      key to value
+    }
+      .filter { it.second != null }
+      .associate { it.first to it.second!! }
+  }
+
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): IPlate {
 
