@@ -18,6 +18,8 @@ class MainBodyHouseAstroImpl(private val risingSignImpl: IRisingSign,
                              private val starPositionImpl: IStarPosition<*>) :
   IMainBodyHouse, Serializable {
 
+  override val mainBodyHouse: MainBodyHouse = MainBodyHouse.Astro
+
   /**
    * 命宮、身宮 、以及「最後要給主星所使用的月數 (若為占星算法，此值為空) 」
    * 占星算法，取上升、月亮 為命宮、身宮， 不會需要「月數」

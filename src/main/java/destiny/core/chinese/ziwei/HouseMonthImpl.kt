@@ -3,10 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.Gender
-import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
-import destiny.core.chinese.StemBranch
 
 /**
  * FinalMonthNum
@@ -15,19 +12,7 @@ import destiny.core.chinese.StemBranch
  */
 abstract class HouseMonthImpl internal constructor(star: ZStar) : HouseAbstractImpl<Int>(star) {
 
-  override fun getBranch(lunarYear: StemBranch,
-                         solarYear: StemBranch,
-                         monthBranch: Branch,
-                         finalMonthNumForMonthStars: Int,
-                         solarTerms: SolarTerms,
-                         days: Int,
-                         hour: Branch,
-                         state: Int,
-                         gender: Gender,
-                         leap: Boolean,
-                         prevMonthDays: Int,
-                         predefinedMainHouse: Branch?,
-                         context: IZiweiContext): Branch {
-    return getBranch(finalMonthNumForMonthStars)
+  override fun getBranch(context: HouseCalContext): Branch {
+    return getBranch(context.finalMonthNumForMonthStars)
   }
 }

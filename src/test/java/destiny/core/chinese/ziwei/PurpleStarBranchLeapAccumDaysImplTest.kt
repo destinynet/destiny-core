@@ -4,24 +4,12 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch.*
-import mu.KotlinLogging
-import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 class PurpleStarBranchLeapAccumDaysImplTest {
 
-  private val logger = KotlinLogging.logger { }
-
   internal var impl = PurpleStarBranchLeapAccumDaysImpl()
-
-  @Test
-  fun testTitle() {
-    assertNotNull(impl.toString(Locale.TAIWAN))
-    assertNotNull(impl.toString(Locale.SIMPLIFIED_CHINESE))
-    logger.info("tw = {} , cn = {}", impl.toString(Locale.TAIWAN), impl.toString(Locale.CHINA))
-  }
 
   @Test
   fun water2() {

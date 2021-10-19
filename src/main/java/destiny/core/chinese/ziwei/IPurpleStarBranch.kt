@@ -5,10 +5,13 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
+import destiny.tools.getTitle
 import java.util.*
 
 /** 求出紫微星的地支  */
 interface IPurpleStarBranch : Descriptive {
+
+  val purpleStarBranch: PurpleStarBranch
 
   /**
    * @param state         局數
@@ -24,12 +27,7 @@ interface IPurpleStarBranch : Descriptive {
   }
 
   override fun toString(locale: Locale): String {
-    return try {
-      ResourceBundle.getBundle(IPurpleStarBranch::class.java.name, locale).getString(javaClass.simpleName)
-    } catch (e: MissingResourceException) {
-      javaClass.simpleName
-    }
-
+    return purpleStarBranch.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {

@@ -3,11 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.Gender
-import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
-import destiny.core.chinese.StemBranch
-import destiny.core.chinese.YearType
 
 /**
  * 利用 年支、月數、時支
@@ -16,20 +12,9 @@ import destiny.core.chinese.YearType
 abstract class HouseYearBranchMonthNumHourBranchMainHouseImpl internal constructor(star: ZStar) :
   HouseAbstractImpl<Triple<Branch, Int, Branch>>(star) {
 
-  override fun getBranch(lunarYear: StemBranch,
-                         solarYear: StemBranch,
-                         monthBranch: Branch,
-                         finalMonthNumForMonthStars: Int,
-                         solarTerms: SolarTerms,
-                         days: Int,
-                         hour: Branch,
-                         state: Int,
-                         gender: Gender,
-                         leap: Boolean,
-                         prevMonthDays: Int,
-                         predefinedMainHouse: Branch?,
-                         context: IZiweiContext): Branch {
-    val yearBranch = if (context.yearType == YearType.YEAR_LUNAR) lunarYear.branch else solarYear.branch
-    return getBranch(Triple(yearBranch, finalMonthNumForMonthStars, hour))
+  override fun getBranch(context: HouseCalContext): Branch {
+    val yearBranch = context.year.branch
+    return getBranch(Triple(yearBranch, context.finalMonthNumForMonthStars, context.hour))
   }
+
 }

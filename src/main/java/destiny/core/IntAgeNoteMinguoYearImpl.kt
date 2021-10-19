@@ -5,13 +5,13 @@ package destiny.core
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver
-import destiny.tools.getTitle
 import java.io.Serializable
 import java.time.temporal.ChronoField
-import java.util.*
 
 /** 民國紀年  */
 class IntAgeNoteMinguoYearImpl(val julDayResolver: JulDayResolver) : IIntAgeNote, Serializable {
+
+  override val intAgeNote: IntAgeNote = IntAgeNote.Minguo
 
   /**
    * 民國元年前，不輸出
@@ -29,14 +29,6 @@ class IntAgeNoteMinguoYearImpl(val julDayResolver: JulDayResolver) : IIntAgeNote
 
   override fun getAgeNote(startAndEnd: Pair<GmtJulDay, GmtJulDay>): String? {
     return getAgeNote(startAndEnd.first)
-  }
-
-  override fun toString(locale: Locale): String {
-    return IntAgeNote.Minguo.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
   }
 
   override fun equals(other: Any?): Boolean {

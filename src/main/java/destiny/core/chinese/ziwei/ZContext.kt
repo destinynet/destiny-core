@@ -19,12 +19,39 @@ import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
 import destiny.core.calendar.locationOf
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.ziwei.ZiweiConfigBuilder.Companion.ziweiConfig
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.LocalTime
 import java.util.*
 
 interface IZiweiContext {
+
+  fun toConfig() : ZiweiConfig {
+    return ziweiConfig {
+      stars = this@IZiweiContext.stars.toSet()
+      mainBodyHouse = mainBodyHouseImpl.mainBodyHouse
+      purpleStarBranch = purpleBranchImpl.purpleStarBranch
+      mainStarsAlgo = this@IZiweiContext.mainStarsAlgo
+      monthStarsAlgo = this@IZiweiContext.monthStarsAlgo
+      yearType = this@IZiweiContext.yearType
+      houseSeq = houseSeqImpl.houseSeq
+      tianyi = tianyiImpl.tianyi
+      fireBell = this@IZiweiContext.fireBell
+      skyHorse = this@IZiweiContext.skyHorse
+      hurtAngel = this@IZiweiContext.hurtAngel
+      redBeauty = this@IZiweiContext.redBeauty
+      transFour = transFourImpl.transFour
+      strength = strengthImpl.strength
+      flowYear = flowYearImpl.flowYear
+      flowMonth = flowMonthImpl.flowMonth
+      flowDay = flowDayImpl.flowDay
+      flowHour = flowHourImpl.flowHour
+      bigRange = bigRangeImpl.bigRange
+      ageNotes = ageNoteImpls.map { it.intAgeNote }
+    }
+  }
+
   val stars: Collection<ZStar>
 
   /** 命宮、身宮 演算法  */
@@ -292,6 +319,7 @@ enum class RedBeauty {
 /**
  * 純粹「設定」，並不包含 生日、性別、出生地 等資訊
  */
+@Deprecated("")
 class ZContext(
 
   override val stars: Collection<ZStar>,
@@ -359,11 +387,17 @@ class ZContext(
   /** 紅豔 */
   override val redBeauty: RedBeauty = RedBeauty.RED_BEAUTY_DIFF,
 
+  private val purpleStarBranchImplMap: Map<PurpleStarBranch, IPurpleStarBranch>,
+
+  private val tianyiImplMap: Map<Tianyi, ITianyi>,
+
   /** 計算虛歲時，需要 [IChineseDate] , 若不提供 , 則無法計算虛歲歲數 (除非有預先算好、傳入) */
   private val chineseDateImpl: IChineseDate? = null,
 
+
   /** 虛歲實作 */
-  private val intAgeImpl: IIntAge? = null
+  private val intAgeImpl: IIntAge? = null,
+
 ) : IZiweiContext, Serializable {
 
   /**
@@ -392,7 +426,7 @@ class ZContext(
     hour: Branch,
     dayNight: DayNight,
     gender: Gender,
-    optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?
+    optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
   ): Builder {
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
@@ -523,19 +557,23 @@ class ZContext(
     // 什麼星，在什麼地支
     val starBranchMap: Map<ZStar, Branch> = stars.map { star ->
       val branch: Branch? = HouseFunctions.map[star]?.getBranch(
-        lunarYear,
-        solarYear,
-        monthBranch,
-        finalMonthNumForMonthStars,
-        solarTerms,
-        lunarDays,
-        hour,
-        五行局,
-        gender,
-        leapMonth,
-        prevMonthDays,
-        mainBranch,
-        this
+        HouseCalContext(
+          lunarYear,
+          solarYear,
+          monthBranch,
+          finalMonthNumForMonthStars,
+          solarTerms,
+          lunarDays,
+          hour,
+          五行局,
+          gender,
+          leapMonth,
+          prevMonthDays,
+          this.toConfig(),
+          mainBranch,
+          purpleStarBranchImplMap,
+          tianyiImplMap
+        )
       )
       star to branch
     }
@@ -685,7 +723,7 @@ class ZContext(
 
 
   companion object {
-    val logger = KotlinLogging.logger { }
+    private val logger = KotlinLogging.logger { }
   }
 
 } // ZContext

@@ -14,9 +14,8 @@ import destiny.core.chinese.Branch
 abstract class HouseYearBranchHourBranchImpl internal constructor(star: ZStar) :
   HouseAbstractImpl<Pair<Branch, Branch>>(star) {
 
-  override fun getBranch(objects: Pair<Branch, Branch>): Branch {
-    throw RuntimeException("error : $objects")
+  override fun getBranch(t: Pair<Branch, Branch>): Branch {
+    throw RuntimeException("error : $t")
   }
-
 
 }

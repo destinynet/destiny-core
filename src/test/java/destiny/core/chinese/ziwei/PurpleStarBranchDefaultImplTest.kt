@@ -6,25 +6,12 @@ package destiny.core.chinese.ziwei
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.午
 import destiny.core.chinese.Branch.未
-import mu.KotlinLogging
-import java.util.*
 import kotlin.test.Test
-import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 
 class PurpleStarBranchDefaultImplTest {
 
-  private val logger = KotlinLogging.logger { }
-
-
   internal var impl: IPurpleStarBranch = PurpleStarBranchDefaultImpl()
-
-  @Test
-  fun testTitle() {
-    assertNotNull(impl.toString(Locale.TAIWAN))
-    assertNotNull(impl.toString(Locale.SIMPLIFIED_CHINESE))
-    logger.info("tw = {} , cn = {}", impl.toString(Locale.TAIWAN), impl.toString(Locale.CHINA))
-  }
 
   /**
    * 計算紫微星所在宮位 , 驗證資料見此教學頁面 http://bit.ly/2oo2hZz

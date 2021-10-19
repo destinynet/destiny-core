@@ -26,6 +26,8 @@ import java.io.Serializable
 @Impl([Domain(Domains.Ziwei.KEY_PURPLE_BRANCH, PurpleStarBranchDefaultImpl.VALUE, default = true)])
 class PurpleStarBranchDefaultImpl : IPurpleStarBranch, Serializable {
 
+  override val purpleStarBranch: PurpleStarBranch = PurpleStarBranch.Default
+
   /**
    * @param state 局數
    * @param day 該月第幾天

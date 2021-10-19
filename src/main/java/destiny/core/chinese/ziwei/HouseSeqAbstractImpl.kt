@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.tools.ArrayTools
+import destiny.tools.getTitle
 import mu.KotlinLogging
 import java.io.Serializable
 import java.util.*
@@ -25,12 +26,7 @@ abstract class HouseSeqAbstractImpl : IHouseSeq, Serializable {
   }
 
   override fun toString(locale: Locale): String {
-    return try {
-      ResourceBundle.getBundle(HouseSeqAbstractImpl::class.java.name, locale).getString(javaClass.simpleName)
-    } catch (e: MissingResourceException) {
-      javaClass.simpleName
-    }
-
+    return houseSeq.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {

@@ -8,6 +8,7 @@ import destiny.core.Descriptive
 /** 12宮的順序  */
 interface IHouseSeq : Descriptive {
 
+  val houseSeq: HouseSeq
 
   /** 從「命宮」開始，依序取得 12宮  */
   val houses: Array<House>

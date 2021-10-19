@@ -3,10 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.Gender
-import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
-import destiny.core.chinese.StemBranch
 
 /**
  * 14 顆主星
@@ -24,28 +21,19 @@ open class HouseMainStarImpl internal constructor(star: StarMain) : HouseAbstrac
     return StarMain.starFuncMap[star]!!.invoke(t.state, t.days, t.leapMonth, t.prevMonthDays, t.purpleStarBranch)
   }
 
-  override fun getBranch(lunarYear: StemBranch,
-                         solarYear: StemBranch,
-                         monthBranch: Branch,
-                         finalMonthNumForMonthStars: Int,
-                         solarTerms: SolarTerms,
-                         days: Int,
-                         hour: Branch,
-                         state: Int,
-                         gender: Gender,
-                         leap: Boolean,
-                         prevMonthDays: Int,
-                         predefinedMainHouse: Branch?,
-                         context: IZiweiContext): Branch {
-    return if (!leap) {
-      getBranch(MainStarData(state, days, false, prevMonthDays, defaultImpl))
-    } else {
-      // 閏月
-      if (days + prevMonthDays == 30) {
-        getBranch(MainStarData(state, 30, true, prevMonthDays, defaultImpl))
+  override fun getBranch(context: HouseCalContext): Branch {
+
+    return context.run {
+      if (!leap) {
+        getBranch(MainStarData(state, days, false, prevMonthDays, defaultImpl))
       } else {
-        // 閏月，且「日數＋前一個月的月數」超過 30天，就啟用注入進來的演算法 . 可能會累加日數
-        getBranch(MainStarData(state, days, true, prevMonthDays, context.purpleBranchImpl))
+        // 閏月
+        if (days + prevMonthDays == 30) {
+          getBranch(MainStarData(state, 30, true, prevMonthDays, defaultImpl))
+        } else {
+          // 閏月，且「日數＋前一個月的月數」超過 30天，就啟用注入進來的演算法 . 可能會累加日數
+          getBranch(MainStarData(state, days, true, prevMonthDays,  purpleStarBranchImplMap[config.purpleStarBranch]!!))
+        }
       }
     }
   }

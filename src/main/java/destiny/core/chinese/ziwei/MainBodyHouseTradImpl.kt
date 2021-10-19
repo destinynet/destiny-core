@@ -33,6 +33,8 @@ class MainBodyHouseTradImpl(val yearMonthImpl: IYearMonth,
                             private val chineseDateImpl: IChineseDate,
                             val mainStarsAlgo: IFinalMonthNumber.MonthAlgo) : IMainBodyHouse, Serializable {
 
+  override val mainBodyHouse: MainBodyHouse = MainBodyHouse.Trad
+
   /** 命宮、身宮 、以及「最後要給主星所使用的月數 (若為占星算法，此值為空) 」 */
   override fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<Branch, Branch , Int?> {
 

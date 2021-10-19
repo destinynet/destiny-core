@@ -11,6 +11,8 @@ import destiny.tools.converters.Domains.Ziwei.KEY_HOUSE_SEQ
 @Impl([Domain(KEY_HOUSE_SEQ, HouseSeqAstroImpl.VALUE)])
 class HouseSeqAstroImpl : HouseSeqAbstractImpl() {
 
+  override val houseSeq: HouseSeq = HouseSeq.Astro
+
   override val houses: Array<House>
     get() = ARRAY
 

@@ -5,12 +5,12 @@ package destiny.core
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver
-import destiny.tools.getTitle
 import java.io.Serializable
 import java.time.temporal.ChronoField
-import java.util.*
 
 class IntAgeNoteWestYearImpl(val julDayResolver: JulDayResolver) : IIntAgeNote, Serializable {
+
+  override val intAgeNote: IntAgeNote = IntAgeNote.WestYear
 
   override fun getAgeNote(gmtJulDay: GmtJulDay): String {
     val start = julDayResolver.getLocalDateTime(gmtJulDay)
@@ -19,14 +19,6 @@ class IntAgeNoteWestYearImpl(val julDayResolver: JulDayResolver) : IIntAgeNote, 
 
   override fun getAgeNote(startAndEnd: Pair<GmtJulDay, GmtJulDay>): String {
     return getAgeNote(startAndEnd.first)
-  }
-
-  override fun toString(locale: Locale): String {
-    return IntAgeNote.WestYear.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
   }
 
   override fun equals(other: Any?): Boolean {

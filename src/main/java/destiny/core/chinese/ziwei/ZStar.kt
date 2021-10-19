@@ -27,7 +27,7 @@ import java.util.*
  * 二、四化 ： 見 [ITransFour]
  *
  */
-abstract class ZStar : Point, Comparable<ZStar>  {
+sealed class ZStar : Point, Comparable<ZStar>  {
 
   val type: Type
 

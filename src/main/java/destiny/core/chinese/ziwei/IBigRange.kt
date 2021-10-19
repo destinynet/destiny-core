@@ -36,15 +36,6 @@ interface IBigRange {
     }.sortedBy { (_, pair) -> pair.first }.toMap()
   }
 
-
-//  override fun toString(locale: Locale): String {
-//    return bigRange.getTitle(locale)
-//  }
-//
-//  override fun getDescription(locale: Locale): String {
-//    return toString(locale)
-//  }
-
   companion object {
 
     val logger = KotlinLogging.logger { }
