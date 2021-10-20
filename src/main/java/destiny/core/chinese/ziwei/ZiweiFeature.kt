@@ -15,10 +15,7 @@ import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
-import destiny.core.calendar.eightwords.DayHourFeature
-import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.IRisingSign
-import destiny.core.calendar.eightwords.YearMonthFeature
+import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.tools.AbstractCachedPersonFeature
@@ -316,6 +313,7 @@ class ZiweiFeature(
   private val risingSignImpl: IRisingSign,
   private val starPositionImpl: IStarPosition<*>,
   private val chineseDateFeature: ChineseDateFeature,
+  private val yearFeature: YearFeature,
   private val yearMonthFeature: YearMonthFeature,
   private val dayHourFeature: DayHourFeature,
   private val houseSeqImplMap: Map<HouseSeq, IHouseSeq>,
@@ -329,6 +327,7 @@ class ZiweiFeature(
   private val flowMonthImplMap: Map<FlowMonth, IFlowMonth>,
   private val flowDayImplMap: Map<FlowDay, IFlowDay>,
   private val flowHourImplMap: Map<FlowHour, IFlowHour>,
+  private val dayNightFeature: DayNightFeature,
   @Named("intAgeZiweiImpl")
   private val intAgeImpl: IIntAge
 ) : AbstractCachedPersonFeature<ZiweiConfig, IPlate>(), IZiweiFeature {
@@ -771,9 +770,80 @@ class ZiweiFeature(
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
 
+    val (命宮地支, 身宮地支, finalMonthNumForMainStars) = getMainBodyHouse(lmt, loc)
+
+    if (config.mainBodyHouse == MainBodyHouse.Astro) {
+      logger.warn("命宮、身宮 採用上升、月亮星座")
+      notesBuilders.add(Pair("main_body_astro", arrayOf()))
+    }
+
+    logger.debug("命宮地支 = {} , 身宮地支 = {}", 命宮地支, 身宮地支)
+
+    val t2 = TimeTools.getDstSecondOffset(lmt, loc)
+    val dst = t2.first
+    val minuteOffset = t2.second / 60
+
+    val cDate = chineseDateFeature.getModel(lmt, loc)
+    val cycle = cDate.cycleOrZero
+    val yinYear = cDate.year
+
+    val monthBranch = yearMonthFeature.getModel(lmt, loc, config.ewConfig.yearMonthConfig).branch
+
+    //val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
+
+    val solarYear = yearFeature.getModel(lmt, loc, config.ewConfig.yearMonthConfig.yearConfig)
+    //val solarYear = yearMonthImpl.getYear(lmt, loc)
+
+    val lunarMonth = cDate.month
+    val solarTerms = yearMonthFeature.solarTermsImpl.getSolarTerms(lmt, loc)
+    //val solarTerms = solarTermsImpl.getSolarTerms(lmt, loc)
+
+    val lunarDays = cDate.day
+
+    val hour = dayHourFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig).second.branch
+    //val hour = dayHourImpl.getHour(lmt, loc)
 
 
-    TODO("Not yet implemented")
+    val hourImpl = config.ewConfig.dayHourConfig.hourBranchConfig.hourImpl
+
+    if (dst) {
+      // 日光節約時間 特別註記
+      notesBuilders.add(Pair("dst", arrayOf()))
+      logger.info("[DST]:校正日光節約時間...")
+      logger.info("lmt = {} , location = {} . location.hasMinuteOffset = {}", lmt, loc, loc.hasMinuteOffset)
+      logger.info("loc tz = {} , minuteOffset = {}", loc.timeZone.id, loc.finalMinuteOffset)
+      logger.info("日光節約時間： {} ,  GMT 時差 : {}", dst, minuteOffset)
+      logger.info("時辰 = {} . hourImpl = {}", hour, config.ewConfig.dayHourConfig.hourBranchConfig.hourImpl)
+    }
+
+    if (hourImpl == HourImpl.TST) {
+      // 如果是真太陽時
+      val hour2: Branch = HourLmtImpl(julDayResolver).getHour(lmt, loc)
+      if (hour != hour2) {
+        // 如果真太陽時與LMT時間不一致，出現提醒
+        notesBuilders.add(Pair("true_solar_time", arrayOf(hour, hour2)))
+      }
+    }
+
+    val dayNight = dayNightFeature.getModel(lmt, loc)
+
+    // 虛歲時刻 , gmt Julian Day
+    val vageMap = intAgeImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, loc), loc, 1, 130)
+
+
+    return getBirthPlate(Pair(命宮地支, 身宮地支), finalMonthNumForMainStars, cycle, yinYear, solarYear, lunarMonth
+                         , cDate.leapMonth, monthBranch, solarTerms, lunarDays, hour, dayNight, gender, vageMap , config)
+      .withLocalDateTime(lmt)
+      .withLocation(loc)
+      .apply {
+        name?.also {
+          withName(it)
+        }
+      }
+      .appendNotesBuilders(notesBuilders).apply {
+        place?.also { withPlace(it) }
+      }.build()
+
   }
 
   companion object {
