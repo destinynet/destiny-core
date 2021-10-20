@@ -256,6 +256,14 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
   fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ZiweiConfig = ZiweiConfig()): Triple<Branch, Branch, Int?>
 
   /**
+   * @param stars     取得這些星體
+   * @param flowType  在[本命、大限、流年]... (之一)
+   * @param flowStem  天干為
+   * @return 傳回四化 (若有的話)
+   */
+  fun getTrans4Map(flowType: FlowType, flowStem: Stem, config: ZiweiConfig): Map<Pair<ZStar, FlowType>, ITransFour.Value>
+
+  /**
    * 本命盤
    *
    * @param mainAndBody 預先計算過的命宮、身宮地支
@@ -284,6 +292,21 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
     optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = null,
     config: ZiweiConfig
   ): Builder
+
+  /** 計算 大限盤  */
+  fun getFlowBig(builder: Builder, flowBig: StemBranch, config:ZiweiConfig): Builder
+
+  /** 計算 流年盤 */
+  fun getFlowYear(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, config: ZiweiConfig): Builder
+
+  /** 計算 流月盤 */
+  fun getFlowMonth(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): Builder
+
+  /** 計算 流日盤 */
+  fun getFlowDay(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): Builder
+
+  /** 計算 流時盤 */
+  fun getFlowHour(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): Builder
 }
 
 @Named
@@ -302,6 +325,10 @@ class ZiweiFeature(
   private val transFourImplMap: Map<TransFour, ITransFour>,
   private val strengthImplMap: Map<Strength, IStrength>,
   private val bigRangeImplMap: Map<BigRange, IBigRange>,
+  private val flowYearImplMap: Map<FlowYear, IFlowYear>,
+  private val flowMonthImplMap: Map<FlowMonth, IFlowMonth>,
+  private val flowDayImplMap: Map<FlowDay, IFlowDay>,
+  private val flowHourImplMap: Map<FlowHour, IFlowHour>,
   @Named("intAgeZiweiImpl")
   private val intAgeImpl: IIntAge
 ) : AbstractCachedPersonFeature<ZiweiConfig, IPlate>(), IZiweiFeature {
@@ -553,25 +580,26 @@ class ZiweiFeature(
     logger.debug("starBranchMap = {}", starBranchMap)
 
     // 本命四化 : 四化要依據 陰曆初一 還是 節氣立春 劃分
-    val transFourImpl = transFourImplMap[config.transFour]!!
 
-    val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value>
-    if (config.yearType == YearType.YEAR_LUNAR) {
-      trans4Map = getTrans4Map(config.stars, FlowType.本命, lunarYear.stem, transFourImpl)
-    } else {
-      // 立春分年
-      trans4Map = getTrans4Map(config.stars, FlowType.本命, solarYear.stem, transFourImpl)
-      if (lunarYear !== solarYear) {
-        // 如果年 與 陰曆年不同
-        // solar_year=年系星立春為界，故年用 {0} 而非 {1}
-        notesBuilders.add(Pair("solar_year", arrayOf(solarYear, lunarYear)))
+    val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> =
+      if (config.yearType == YearType.YEAR_LUNAR) {
+        getTrans4Map(FlowType.本命, lunarYear.stem, config)
+      } else {
+        // 立春分年
+        getTrans4Map(FlowType.本命, solarYear.stem, config).also {
+          if (lunarYear !== solarYear) {
+            // 如果年 與 陰曆年不同
+            // solar_year=年系星立春為界，故年用 {0} 而非 {1}
+            notesBuilders.add(Pair("solar_year", arrayOf(solarYear, lunarYear)))
+          }
+        }
       }
-    }
-    logger.debug("transFourImpl = {} , title = {}", transFourImpl::class.simpleName, config.transFour.getTitle(Locale.TAIWAN))
+    logger.debug("transFour = {} , title = {}", config.transFour, config.transFour.getTitle(Locale.TAIWAN))
     logger.debug("trans4Map = {}", trans4Map)
 
     // 宮干四化 : 此宮位，因為什麼星，各飛入哪個宮位(地支)
     // 參考 : http://www.fate123.com.tw/fate-teaching/fate-lesson-5.2.asp
+    val transFourImpl = transFourImplMap[config.transFour]!!
     val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>> = branchHouseMap.keys.associateWith { sb: StemBranch ->
 
       ITransFour.Value.values()
@@ -627,19 +655,114 @@ class ZiweiFeature(
   }
 
   /**
-   * @param stars     取得這些星體
    * @param flowType  在[本命、大限、流年]... (之一)
    * @param flowStem  天干為
    * @return 傳回四化 (若有的話)
    */
-  private fun getTrans4Map(stars: Collection<ZStar>, flowType: FlowType, flowStem: Stem, transFourImpl: ITransFour): Map<Pair<ZStar, FlowType>, ITransFour.Value> {
-    return stars.map { star ->
+  override fun getTrans4Map(flowType: FlowType, flowStem: Stem, config: ZiweiConfig): Map<Pair<ZStar, FlowType>, ITransFour.Value> {
+    return config.stars.map { star ->
       val key = star to flowType
-      val value: ITransFour.Value? = transFourImpl.getValueOf(star, flowStem)
+      val value: ITransFour.Value? = transFourImplMap[config.transFour]!!.getValueOf(star, flowStem)
       key to value
     }
       .filter { it.second != null }
       .associate { it.first to it.second!! }
+  }
+
+  /** 計算 大限盤  */
+  override fun getFlowBig(builder: Builder, flowBig: StemBranch, config: ZiweiConfig): Builder {
+    // 在此大限中，每個地支，對應到哪個宮位
+
+    val branchHouseMap = values().associateWith { branch ->
+      val steps = branch.getAheadOf(flowBig.branch)
+
+      houseSeqImplMap[config.houseSeq]!!.prev(House.命宮, steps)
+    }
+
+    // 大限四化
+    val trans4Map = getTrans4Map(FlowType.大限, flowBig.stem, config)
+    return builder
+      .withFlowBig(flowBig, branchHouseMap)
+      .appendTrans4Map(trans4Map)
+  }
+
+  /** 計算 流年盤  */
+  override fun getFlowYear(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, config: ZiweiConfig): Builder {
+    // 流年命宮
+
+    val yearlyMain = flowYearImplMap[config.flowYear]!!.getFlowYear(flowYear.branch, builder.birthMonthNum, builder.birthHour)
+
+    val branchHouseMap = values().associateWith { branch ->
+      val steps = branch.getAheadOf(yearlyMain)
+      houseSeqImplMap[config.houseSeq]!!.prev(House.命宮, steps)
+    }
+
+    // 流年四化
+    val trans4Map = getTrans4Map(FlowType.流年, flowYear.stem, config)
+
+    return getFlowBig(builder, flowBig, config)
+      .withFlowYear(flowYear, branchHouseMap)
+      .appendTrans4Map(trans4Map)
+  }
+
+  /** 計算 流月盤  */
+  override fun getFlowMonth(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): Builder {
+
+    // 流月命宮
+    val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
+
+    val branchHouseMap = values().associateWith { branch ->
+      val steps = branch.getAheadOf(monthlyMain)
+      houseSeqImplMap[config.houseSeq]!!.prev(House.命宮, steps)
+    }
+
+    // 流月四化
+    val trans4Map = getTrans4Map(FlowType.流月, flowMonth.stem, config)
+
+    return getFlowYear(builder, flowBig, flowYear, config)
+      .withFlowMonth(flowMonth, branchHouseMap)
+      .appendTrans4Map(trans4Map)
+  }
+
+  /** 計算 流日盤  */
+  override fun getFlowDay(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): Builder {
+    // 流月命宮
+    val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
+
+    // 流日命宮
+    val dailyMain = flowDayImplMap[config.flowDay]!!.getFlowDay(flowDay.branch, flowDayNum, monthlyMain)
+    val branchHouseMap = values().associateWith { branch ->
+      val steps = branch.getAheadOf(dailyMain)
+      houseSeqImplMap[config.houseSeq]!!.prev(House.命宮, steps)
+    }
+
+    // 流日四化
+    val trans4Map = getTrans4Map(FlowType.流日, flowDay.stem, config)
+    return getFlowMonth(builder, flowBig, flowYear, flowMonth, config)
+      .withFlowDay(flowDay, branchHouseMap)
+      .appendTrans4Map(trans4Map)
+  }
+
+  /** 計算 流時盤 */
+  override fun getFlowHour(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): Builder {
+    // 流月命宮
+    val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
+    // 流日命宮
+    val dailyMain = flowDayImplMap[config.flowDay]!!.getFlowDay(flowDay.branch, flowDayNum, monthlyMain)
+    // 流時命宮
+    val hourlyMain = flowHourImplMap[config.flowHour]!!.getFlowHour(flowHour.branch, dailyMain)
+
+    val branchHouseMap = values().associateWith { branch ->
+      val steps = branch.getAheadOf(hourlyMain)
+      houseSeqImplMap[config.houseSeq]!!.prev(House.命宮, steps)
+    }
+
+    // 流時四化
+    val trans4Map = getTrans4Map(FlowType.流時, flowHour.stem, config)
+
+    return getFlowDay(builder, flowBig, flowYear, flowMonth, flowDay, flowDayNum, config)
+      .withFlowHour(flowHour, branchHouseMap)
+      .appendTrans4Map(trans4Map)
   }
 
 

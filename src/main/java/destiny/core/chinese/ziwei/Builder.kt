@@ -163,6 +163,8 @@ class Builder(
       )
     }.toSet()
 
+
+
   } // builder init
 
   fun withName(name: String): Builder {
@@ -399,6 +401,8 @@ class Builder(
       }.toString()
       listOf(line1, line2, line3)
     }
+
+
 
     val plate = Plate(
       name, chineseDate, localDateTime, year, location, place, dayNight, gender, mainHouse, bodyHouse, mainStar,
