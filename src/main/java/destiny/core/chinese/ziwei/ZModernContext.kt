@@ -45,6 +45,7 @@ interface IZiweiModernContext : IZiweiContext, IEightWordsStandardFactory {
   }
 }
 
+@Deprecated("ZiweiFeature")
 class ZModernContext(
   val context: IZiweiContext,
   override val chineseDateImpl: IChineseDate,

@@ -118,7 +118,7 @@ data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::clas
                        /** [StarLucky.天魁] , [StarLucky.天鉞] (貴人) 算法  */
                        val tianyi: Tianyi = Tianyi.ZiweiBook,
                        /** 火鈴 */
-                       val fireBell: FireBell = FireBell.FIREBELL_BOOK,
+                       val fireBell: FireBell = FireBell.FIREBELL_COLLECT,
                        /** 天馬 */
                        val skyHorse: SkyHorse = SkyHorse.YEAR,
                        /** 天使天傷 */
@@ -176,7 +176,7 @@ class ZiweiConfigBuilder : destiny.tools.Builder<ZiweiConfig> {
   var tianyi: Tianyi = Tianyi.ZiweiBook
 
   /** 火鈴 */
-  var fireBell: FireBell = FireBell.FIREBELL_BOOK
+  var fireBell: FireBell = FireBell.FIREBELL_COLLECT
 
   /** 天馬 */
   var skyHorse: SkyHorse = SkyHorse.YEAR
@@ -247,7 +247,7 @@ class ZiweiConfigBuilder : destiny.tools.Builder<ZiweiConfig> {
  * to replace [IZiweiContext]
  */
 
-interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
+interface IZiweiFeature : PersonFeature<ZiweiConfig, Builder> {
 
   /** 取命宮、身宮地支  */
   fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ZiweiConfig = ZiweiConfig()): Triple<Branch, Branch, Int?>
@@ -330,11 +330,11 @@ class ZiweiFeature(
   private val dayNightFeature: DayNightFeature,
   @Named("intAgeZiweiImpl")
   private val intAgeImpl: IIntAge
-) : AbstractCachedPersonFeature<ZiweiConfig, IPlate>(), IZiweiFeature {
+) : AbstractCachedPersonFeature<ZiweiConfig, Builder>(), IZiweiFeature {
 
   override val defaultConfig: ZiweiConfig = ZiweiConfig()
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): IPlate {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): Builder {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getPersonModel(lmt, loc, gender, name, place, config)
   }
@@ -360,6 +360,7 @@ class ZiweiFeature(
 
         val mainHouse = Ziwei.getMainHouseBranch(finalMonthNumForMainStars, hour)
         val bodyHouse = Ziwei.getBodyHouseBranch(finalMonthNumForMainStars, hour)
+        logger.trace { "命 = $mainHouse , 身 = $bodyHouse" }
 
         Triple(mainHouse, bodyHouse, finalMonthNumForMainStars)
       }
@@ -765,12 +766,12 @@ class ZiweiFeature(
   }
 
 
-  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): IPlate {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): Builder {
 
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
 
-    val (命宮地支, 身宮地支, finalMonthNumForMainStars) = getMainBodyHouse(lmt, loc)
+    val (命宮地支, 身宮地支, finalMonthNumForMainStars) = getMainBodyHouse(lmt, loc, config)
 
     if (config.mainBodyHouse == MainBodyHouse.Astro) {
       logger.warn("命宮、身宮 採用上升、月亮星座")
@@ -831,6 +832,8 @@ class ZiweiFeature(
     val vageMap = intAgeImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, loc), loc, 1, 130)
 
 
+
+
     return getBirthPlate(Pair(命宮地支, 身宮地支), finalMonthNumForMainStars, cycle, yinYear, solarYear, lunarMonth
                          , cDate.leapMonth, monthBranch, solarTerms, lunarDays, hour, dayNight, gender, vageMap , config)
       .withLocalDateTime(lmt)
@@ -842,7 +845,7 @@ class ZiweiFeature(
       }
       .appendNotesBuilders(notesBuilders).apply {
         place?.also { withPlace(it) }
-      }.build()
+      }//.build()
 
   }
 
