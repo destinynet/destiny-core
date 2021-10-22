@@ -28,6 +28,8 @@ import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
+import javax.cache.Cache
+import javax.inject.Inject
 import javax.inject.Named
 
 /** 命宮、身宮 演算法  */
@@ -134,7 +136,7 @@ data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::clas
                        /** 流月 */
                        val flowMonth: FlowMonth = FlowMonth.Default,
                        /** 流日 */
-                       val flowDay: FlowDay = FlowDay.Branch,
+                       val flowDay: FlowDay = FlowDay.FromFlowMonthMainHouse,
                        /** 流時 */
                        val flowHour: FlowHour = FlowHour.MainHouseDep,
                        /** 大限計算方式 */
@@ -200,7 +202,7 @@ class ZiweiConfigBuilder : destiny.tools.Builder<ZiweiConfig> {
   var flowMonth: FlowMonth = FlowMonth.Default
 
   /** 流日 */
-  var flowDay: FlowDay = FlowDay.Branch
+  var flowDay: FlowDay = FlowDay.FromFlowMonthMainHouse
 
   /** 流時 */
   var flowHour: FlowHour = FlowHour.MainHouseDep
@@ -250,7 +252,7 @@ class ZiweiConfigBuilder : destiny.tools.Builder<ZiweiConfig> {
 interface IZiweiFeature : PersonFeature<ZiweiConfig, Builder> {
 
   /** 取命宮、身宮地支  */
-  fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ZiweiConfig = ZiweiConfig()): Triple<Branch, Branch, Int?>
+  fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ZiweiConfig): Triple<Branch, Branch, Int?>
 
   /**
    * @param stars     取得這些星體
@@ -331,6 +333,12 @@ class ZiweiFeature(
   @Named("intAgeZiweiImpl")
   private val intAgeImpl: IIntAge
 ) : AbstractCachedPersonFeature<ZiweiConfig, Builder>(), IZiweiFeature {
+
+  @Inject
+  private lateinit var ziweiCache: Cache<LmtCacheKey<*>, Pair<*, *>>
+
+  override val lmtPersonCache: Cache<LmtCacheKey<ZiweiConfig>, Builder>
+    get() = ziweiCache as Cache<LmtCacheKey<ZiweiConfig>, Builder>
 
   override val defaultConfig: ZiweiConfig = ZiweiConfig()
 
@@ -851,5 +859,6 @@ class ZiweiFeature(
 
   companion object {
     private val logger = KotlinLogging.logger { }
+    const val CACHE_ZIWEI_FEATURE = "ziweiFeatureCache"
   }
 }
