@@ -4,7 +4,7 @@
 package destiny.core.chinese.onePalm
 
 import destiny.core.AbstractConfigTest
-import destiny.core.calendar.chinese.IFinalMonthNumber
+import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.chinese.onePalm.PalmConfigBuilder.Companion.palmConfig
 import kotlinx.serialization.KSerializer
@@ -15,13 +15,13 @@ internal class PalmConfigTest : AbstractConfigTest<PalmConfig>() {
   override val serializer: KSerializer<PalmConfig> = PalmConfig.serializer()
 
   override val configByConstructor: PalmConfig = PalmConfig(EightWordsConfig(),
-                                                            PalmConfig.PositiveImpl.GenderYinYang,
-                                                            IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS,
+                                                            PositiveImpl.GenderYinYang,
+                                                            MonthAlgo.MONTH_SOLAR_TERMS,
                                                             trueRisingSign = true,
                                                             clockwiseHouse = false)
   override val configByFunction: PalmConfig = palmConfig {
-    positiveImpl = PalmConfig.PositiveImpl.GenderYinYang
-    monthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
+    positiveImpl = PositiveImpl.GenderYinYang
+    monthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
     trueRisingSign = true
     clockwiseHouse = false
   }

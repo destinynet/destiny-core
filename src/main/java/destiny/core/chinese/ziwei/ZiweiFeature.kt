@@ -14,7 +14,7 @@ import destiny.core.calendar.*
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.chinese.IFinalMonthNumber
-import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
+import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.values
@@ -100,6 +100,10 @@ enum class BigRange {
   SkipMain
 }
 
+enum class ChineseDateImpl {
+  Civil
+}
+
 @Serializable
 data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::class) ZStar> = setOf(*StarMain.values, *StarLucky.values, *StarUnlucky.values),
                        /** 命宮、身宮 演算法  */
@@ -147,6 +151,8 @@ data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::clas
                        val ewConfig: EightWordsConfig = EightWordsConfig(),
                        /** 晝夜區分 */
                        val dayNightConfig: DayNightConfig = DayNightConfig(),
+                       /** 曆法 */
+                       val chineseDateImpl: ChineseDateImpl = ChineseDateImpl.Civil
 ) : java.io.Serializable
 
 
@@ -229,6 +235,8 @@ class ZiweiConfigBuilder : destiny.tools.Builder<ZiweiConfig> {
     this.dayNightConfig = DayNightConfigBuilder.dayNight(block)
   }
 
+  var chineseDateImpl: ChineseDateImpl = defaultConfig.chineseDateImpl
+
   override fun build(): ZiweiConfig {
     return ZiweiConfig(
       stars,
@@ -252,7 +260,8 @@ class ZiweiConfigBuilder : destiny.tools.Builder<ZiweiConfig> {
       bigRange,
       ageNotes,
       ewConfig,
-      dayNightConfig
+      dayNightConfig,
+      chineseDateImpl
     )
   }
 

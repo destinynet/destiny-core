@@ -8,6 +8,7 @@ import destiny.core.astrology.LunarStation.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
+import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.StemBranch
@@ -58,7 +59,7 @@ class HiddenVenusFoeAnimalStar(private val yearlyImpl: ILunarStationYearly,
                                val yearMonthImpl: IYearMonth,
                                private val chineseDateImpl: IChineseDate,
                                private val dayHourImpl: IDayHour,
-                               val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS) :
+                               val monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS) :
   IHiddenVenusFoe, Serializable {
 
   override fun getHiddenVenusFoe(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Pair<Scale, Scale>> {

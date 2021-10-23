@@ -3,35 +3,15 @@
  */
 package destiny.core.calendar.chinese
 
-import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
-import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo.*
+import destiny.core.calendar.chinese.MonthAlgo.*
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.寅
-import destiny.tools.ILocaleString
-import java.util.*
 
-fun MonthAlgo.asLocaleString() = object : ILocaleString {
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(IFinalMonthNumber::class.java.name, locale).getString(name)
-  }
-}
-
-fun MonthAlgo.toString(locale: Locale) : String {
-  return this.asLocaleString().toString(locale)
-}
 
 /**
  * 將一個陰曆、或是節氣日期，轉換成「月份數字」的演算法
  */
 interface IFinalMonthNumber {
-
-  /** 月份演算法  */
-  enum class MonthAlgo {
-    MONTH_FIXED_THIS,   // 不論有無閏月，一律固定當作本月
-    MONTH_LEAP_NEXT,    // 若閏月，一律當作下月 (全書)
-    MONTH_LEAP_SPLIT15, // 若閏月，15日(含)之前當本月，之後當下月
-    MONTH_SOLAR_TERMS;  // 節氣盤
-  }
 
   companion object {
 

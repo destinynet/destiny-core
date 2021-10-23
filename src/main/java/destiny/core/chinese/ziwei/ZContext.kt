@@ -15,7 +15,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
-import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
+import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.locationOf
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
@@ -470,7 +470,7 @@ class ZContext(
         finalMonthNumForMainStars
       )
       when {
-        MonthAlgo.MONTH_SOLAR_TERMS === mainStarsAlgo -> // 命身宮用節氣計算，故用 {0}月={1} 而非 {2}{3}月
+        MonthAlgo.MONTH_SOLAR_TERMS === mainStarsAlgo  -> // 命身宮用節氣計算，故用 {0}月={1} 而非 {2}{3}月
           notesBuilders.add(
             Pair(
               "mainStarsAlgo_month_solar_terms",
@@ -480,7 +480,7 @@ class ZContext(
               )
             )
           )
-        MonthAlgo.MONTH_LEAP_NEXT === mainStarsAlgo -> // 命身宮於閏{0}月視為下月={1}
+        MonthAlgo.MONTH_LEAP_NEXT === mainStarsAlgo    -> // 命身宮於閏{0}月視為下月={1}
           notesBuilders.add(Pair("mainStarsAlgo_month_leap_next", arrayOf(lunarMonth, finalMonthNumForMainStars)))
         MonthAlgo.MONTH_LEAP_SPLIT15 === mainStarsAlgo -> // 命身宮於閏月月中切割,故用{0}月
           notesBuilders.add(Pair("mainStarsAlgo_month_leap_split15", arrayOf(finalMonthNumForMainStars)))
@@ -493,7 +493,7 @@ class ZContext(
         finalMonthNumForMonthStars
       )
       when {
-        MonthAlgo.MONTH_SOLAR_TERMS === monthStarsAlgo -> // 月系星以節氣計算，故月用 {0}={1} 而非 {2}
+        MonthAlgo.MONTH_SOLAR_TERMS === monthStarsAlgo  -> // 月系星以節氣計算，故月用 {0}={1} 而非 {2}
           notesBuilders.add(
             Pair(
               "monthStarsAlgo_solar_month",
@@ -503,7 +503,7 @@ class ZContext(
               )
             )
           )
-        MonthAlgo.MONTH_LEAP_NEXT === monthStarsAlgo -> // 月系星於閏{0}月視為下月{1}
+        MonthAlgo.MONTH_LEAP_NEXT === monthStarsAlgo    -> // 月系星於閏{0}月視為下月{1}
           notesBuilders.add(
             Pair("monthStarsAlgo_month_leap_next", arrayOf(lunarMonth, finalMonthNumForMonthStars))
           )

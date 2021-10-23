@@ -6,6 +6,7 @@ import destiny.core.astrology.LunarStation
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
+import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.IEightWordsFactory
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import java.io.Serializable
@@ -23,7 +24,7 @@ interface ILunarStationContext {
   val hourlyImpl: ILunarStationHourly
 
   val eightWordsImpl: IEightWordsFactory
-  val monthAlgo: IFinalMonthNumber.MonthAlgo
+  val monthAlgo: MonthAlgo
 
   fun getScaleMap(lmt: ChronoLocalDateTime<*>, loc: ILocation, scales: List<Scale> = listOf(YEAR, MONTH, DAY, HOUR)): Map<Scale, LunarStation>
 
@@ -45,9 +46,9 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
 
                           override val eightWordsImpl: IEightWordsStandardFactory,
                           val chineseDateImpl: IChineseDate,
-                          override val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS) : ILunarStationContext,
-                                                                                                                                 IHiddenVenusFoe,
-                                                                                                                                 Serializable {
+                          override val monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS) : ILunarStationContext,
+                                                                                             IHiddenVenusFoe,
+                                                                                             Serializable {
 
 
   /** 暗金伏斷 */

@@ -8,6 +8,8 @@ import destiny.core.chinese.Branch
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Palm.KEY_POSITIVE_IMPL
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -19,11 +21,11 @@ class PositiveGenderImpl : IPositive, Serializable {
   }
 
   override fun toString(locale: Locale): String {
-    return PalmConfig.PositiveImpl.Gender.asDescriptive().toString(locale)
+    return PositiveImpl.Gender.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return PalmConfig.PositiveImpl.Gender.asDescriptive().getDescription(locale)
+    return PositiveImpl.Gender.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

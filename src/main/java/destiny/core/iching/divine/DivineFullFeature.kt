@@ -69,6 +69,7 @@ class DivineFullFeature(private val divineTraditionalFeature: DivineTraditionalF
                         private val hexagramNameFull: IHexNameFull,
                         private val hexagramNameShort: IHexNameShort,
                         private val hexExpressionImpl: IHexagramExpression,
+                        @Named("hexImageFileImpl")
                         private val hexImageImpl: IHexProvider<String, String>,
                         private val hexJudgement: IHexJudgement) : IDivineFullFeature, AbstractCachedPersonFeature<DivineFullConfig, ICombinedFull>(){
 

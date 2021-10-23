@@ -3,16 +3,12 @@
  */
 package destiny.core.chinese.onePalm
 
-import destiny.core.Descriptive
 import destiny.core.Gender
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.chinese.ChineseDateFeature
-import destiny.core.calendar.chinese.ChineseDateHour
-import destiny.core.calendar.chinese.IFinalMonthNumber
+import destiny.core.calendar.chinese.*
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
 import destiny.tools.AbstractCachedPersonFeature
@@ -21,42 +17,23 @@ import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 import javax.cache.Cache
 import javax.inject.Named
+
+enum class PositiveImpl {
+  Gender,
+  GenderYinYang
+}
 
 @Serializable
 data class PalmConfig(
   val eightWordsConfig: EightWordsConfig = EightWordsConfig(),
   val positiveImpl: PositiveImpl = PositiveImpl.Gender,
-  val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS,
+  val monthAlgo: MonthAlgo = MonthAlgo.MONTH_FIXED_THIS,
   val risingSignConfig: RisingSignConfig = RisingSignConfig(),
   val trueRisingSign: Boolean = false,
   val clockwiseHouse: Boolean = true
-) : java.io.Serializable {
-
-  enum class PositiveImpl {
-    Gender,
-    GenderYinYang
-  }
-}
-
-fun PalmConfig.PositiveImpl.asDescriptive(): Descriptive = object : Descriptive {
-  override fun toString(locale: Locale): String {
-    return when (this@asDescriptive) {
-      PalmConfig.PositiveImpl.Gender        -> "男順女逆"
-      PalmConfig.PositiveImpl.GenderYinYang -> "陽男陰女順；陰男陽女逆"
-    }
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return when (this@asDescriptive) {
-      PalmConfig.PositiveImpl.Gender        -> "固定男順女逆"
-      PalmConfig.PositiveImpl.GenderYinYang -> "陽男陰女順；陰男陽女逆。"
-    }
-  }
-}
-
+) : java.io.Serializable
 
 @DestinyMarker
 class PalmConfigBuilder : Builder<PalmConfig> {
@@ -67,9 +44,9 @@ class PalmConfigBuilder : Builder<PalmConfig> {
     this.eightWordsConfig = EightWordsConfigBuilder.ewConfig(block)
   }
 
-  var positiveImpl: PalmConfig.PositiveImpl = PalmConfig.PositiveImpl.Gender
+  var positiveImpl: PositiveImpl = PositiveImpl.Gender
 
-  var monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS
+  var monthAlgo: MonthAlgo = MonthAlgo.MONTH_FIXED_THIS
 
   var risingSignConfig : RisingSignConfig = RisingSignConfig()
   fun risingSign(block: RisingSignConfigBuilder.() -> Unit = {}) {
@@ -110,8 +87,8 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
   /** 沒帶入節氣資料 */
   fun getPalmWithoutSolarTerms(gender: Gender, yearBranch: Branch, leap: Boolean, monthNum: Int, dayNum: Int, hourBranch: Branch, config: PalmConfig): IPalmModel {
     val positive = when (config.positiveImpl) {
-      PalmConfig.PositiveImpl.Gender        -> gender == Gender.男
-      PalmConfig.PositiveImpl.GenderYinYang -> gender === Gender.男 && yearBranch.index % 2 == 0 || gender === Gender.女 && yearBranch.index % 2 == 1
+      PositiveImpl.Gender        -> gender == Gender.男
+      PositiveImpl.GenderYinYang -> gender === Gender.男 && yearBranch.index % 2 == 0 || gender === Gender.女 && yearBranch.index % 2 == 1
     }
 
     val positiveValue = if (positive) 1 else -1
@@ -141,8 +118,8 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
     val ew = eightWordsFeature.getModel(lmt, loc)
 
     val positive = when (config.positiveImpl) {
-      PalmConfig.PositiveImpl.Gender        -> gender == Gender.男
-      PalmConfig.PositiveImpl.GenderYinYang -> gender === Gender.男 && ew.year.branch.index % 2 == 0 || gender === Gender.女 && ew.year.branch.index % 2 == 1
+      PositiveImpl.Gender        -> gender == Gender.男
+      PositiveImpl.GenderYinYang -> gender === Gender.男 && ew.year.branch.index % 2 == 0 || gender === Gender.女 && ew.year.branch.index % 2 == 1
     }
 
     val positiveValue = if (positive) 1 else -1

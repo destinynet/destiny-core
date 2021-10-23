@@ -6,6 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
+import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
@@ -31,7 +32,8 @@ import java.time.chrono.ChronoLocalDateTime
 class MainBodyHouseTradImpl(val yearMonthImpl: IYearMonth,
                             val dayHourImpl: IDayHour,
                             private val chineseDateImpl: IChineseDate,
-                            val mainStarsAlgo: IFinalMonthNumber.MonthAlgo) : IMainBodyHouse, Serializable {
+                            val mainStarsAlgo: MonthAlgo
+) : IMainBodyHouse, Serializable {
 
   override val mainBodyHouse: MainBodyHouse = MainBodyHouse.Trad
 

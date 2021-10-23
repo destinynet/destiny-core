@@ -8,6 +8,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.chinese.IFinalMonthNumber
+import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsConfigBuilder
 import destiny.core.calendar.eightwords.YearMonthFeature
@@ -25,7 +26,7 @@ enum class MonthlyImpl {
 
 @Serializable
 data class MonthlyConfig(val impl: MonthlyImpl = MonthlyImpl.AoHead,
-                         val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS,
+                         val monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS,
                          val yearlyConfig: YearlyConfig = YearlyConfig(),
                          val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
 @DestinyMarker
@@ -33,7 +34,7 @@ class MonthlyConfigBuilder : Builder<MonthlyConfig> {
 
   var impl: MonthlyImpl = MonthlyImpl.AoHead
 
-  var monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
+  var monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
 
   var yearlyConfig: YearlyConfig = YearlyConfig()
 

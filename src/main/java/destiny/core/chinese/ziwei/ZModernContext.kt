@@ -21,6 +21,7 @@ import java.time.chrono.ChronoLocalDateTime
 /**
  * 具備現代資訊（經緯度、時區）的紫微 Context
  */
+@Deprecated("ZiweiFeature")
 interface IZiweiModernContext : IZiweiContext, IEightWordsStandardFactory {
 
   val chineseDateImpl: IChineseDate

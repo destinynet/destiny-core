@@ -5,7 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.AbstractConfigTest
 import destiny.core.IntAgeNote
-import destiny.core.calendar.chinese.IFinalMonthNumber
+import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.chinese.Tianyi
 import destiny.core.chinese.YearType
 import destiny.core.chinese.ziwei.ZiweiConfigBuilder.Companion.ziweiConfig
@@ -23,8 +23,8 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     ),
     MainBodyHouse.Astro,
     PurpleStarBranch.LeapAccumDays,
-    IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS,
-    IFinalMonthNumber.MonthAlgo.MONTH_LEAP_SPLIT15,
+    MonthAlgo.MONTH_SOLAR_TERMS,
+    MonthAlgo.MONTH_LEAP_SPLIT15,
     YearType.YEAR_SOLAR,
     HouseSeq.Astro,
     Tianyi.Ocean,
@@ -49,8 +49,8 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     )
     mainBodyHouse = MainBodyHouse.Astro
     purpleStarBranch = PurpleStarBranch.LeapAccumDays
-    mainStarsAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
-    monthStarsAlgo = IFinalMonthNumber.MonthAlgo.MONTH_LEAP_SPLIT15
+    mainStarsAlgo = MonthAlgo.MONTH_SOLAR_TERMS
+    monthStarsAlgo = MonthAlgo.MONTH_LEAP_SPLIT15
     yearType = YearType.YEAR_SOLAR
     houseSeq = HouseSeq.Astro
     tianyi = Tianyi.Ocean

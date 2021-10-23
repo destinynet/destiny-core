@@ -4,7 +4,7 @@
 package destiny.core.chinese.lunarStation
 
 import destiny.core.AbstractConfigTest
-import destiny.core.calendar.chinese.IFinalMonthNumber
+import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.chinese.YearType
 import destiny.core.chinese.lunarStation.LunarStationConfigBuilder.Companion.lunarStation
 import kotlinx.serialization.KSerializer
@@ -16,7 +16,7 @@ internal class LunarStationConfigTest : AbstractConfigTest<LunarStationConfig>()
 
   override val configByConstructor: LunarStationConfig = LunarStationConfig(
     yearlyConfig = YearlyConfig(yearType = YearType.YEAR_LUNAR),
-    monthlyConfig = MonthlyConfig(MonthlyImpl.AnimalExplained, IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS),
+    monthlyConfig = MonthlyConfig(MonthlyImpl.AnimalExplained, MonthAlgo.MONTH_FIXED_THIS),
   )
 
   override val configByFunction: LunarStationConfig = lunarStation {
@@ -25,7 +25,7 @@ internal class LunarStationConfigTest : AbstractConfigTest<LunarStationConfig>()
     }
     monthly {
       impl = MonthlyImpl.AnimalExplained
-      monthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS
+      monthAlgo = MonthAlgo.MONTH_FIXED_THIS
     }
   }
 

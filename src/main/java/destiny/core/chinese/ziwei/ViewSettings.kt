@@ -4,9 +4,32 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.calendar.eightwords.Direction
-import destiny.tools.ILocaleString
 import java.io.Serializable
-import java.util.*
+
+/** 宮干四化「自化」 顯示選項  */
+enum class SelfTransFour {
+
+  /** 不顯示  */
+  SELF_TRANS_FOUR_NONE,
+
+  /** 文字顯示  */
+  SELF_TRANS_FOUR_TEXT,
+
+  /** 箭頭朝外  */
+  SELF_TRANS_FOUR_ARROW;
+}
+
+/** 宮干四化「化入對宮」的顯示選項  */
+enum class OppoTransFour {
+  /** 不顯示  */
+  OPPO_TRANS_FOUR_NONE,
+
+  /** 朝內(對宮) 箭頭 , 四化星靠近本宮 */
+  OPPO_TRANS_FOUR_ARROW_FROM,
+
+  /** 朝內(對宮) 箭頭 , 四化星靠近對宮 */
+  OPPO_TRANS_FOUR_ARROW_TO
+}
 
 data class ViewSettings(
   /** 宮干四化「自化」 顯示選項  */
@@ -40,50 +63,5 @@ data class ViewSettings(
   /** 顯示 歲前12星  */
   val showYearFront: Boolean = true
 
-  ) : Serializable {
-  /** 宮干四化「自化」 顯示選項  */
-  enum class SelfTransFour  {
+) : Serializable
 
-    /** 不顯示  */
-    SELF_TRANS_FOUR_NONE,
-
-    /** 文字顯示  */
-    SELF_TRANS_FOUR_TEXT,
-
-    /** 箭頭朝外  */
-    SELF_TRANS_FOUR_ARROW;
-  }
-
-  /** 宮干四化「化入對宮」的顯示選項  */
-  enum class OppoTransFour {
-    /** 不顯示  */
-    OPPO_TRANS_FOUR_NONE,
-
-    /** 朝內(對宮) 箭頭 , 四化星靠近本宮 */
-    OPPO_TRANS_FOUR_ARROW_FROM,
-
-    /** 朝內(對宮) 箭頭 , 四化星靠近對宮 */
-    OPPO_TRANS_FOUR_ARROW_TO
-
-  }
-}
-
-fun ViewSettings.SelfTransFour.asLocaleString() = object : ILocaleString {
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(ViewSettings::class.qualifiedName!!, locale).getString(name)
-  }
-}
-
-fun ViewSettings.SelfTransFour.toString(locale: Locale) : String {
-  return this.asLocaleString().toString(locale)
-}
-
-fun ViewSettings.OppoTransFour.asLocaleString() = object : ILocaleString {
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(ViewSettings::class.qualifiedName!!, locale).getString(name)
-  }
-}
-
-fun ViewSettings.OppoTransFour.toString(locale: Locale) : String {
-  return this.asLocaleString().toString(locale)
-}
