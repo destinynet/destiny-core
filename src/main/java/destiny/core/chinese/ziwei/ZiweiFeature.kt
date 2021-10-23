@@ -17,7 +17,7 @@ import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
-import destiny.core.chinese.Branch.*
+import destiny.core.chinese.Branch.values
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
@@ -144,74 +144,90 @@ data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::clas
                        /** 歲運註記 */
                        val ageNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
                        /** 八字設定 設定 */
-                       val ewConfig: EightWordsConfig = EightWordsConfig()
+                       val ewConfig: EightWordsConfig = EightWordsConfig(),
+                       /** 晝夜區分 */
+                       val dayNightConfig: DayNightConfig = DayNightConfig(),
 ) : java.io.Serializable
 
 
 @DestinyMarker
 class ZiweiConfigBuilder : destiny.tools.Builder<ZiweiConfig> {
 
-  var stars: Set<@Contextual ZStar> = setOf(*StarMain.values, *StarLucky.values, *StarUnlucky.values)
+  private val defaultConfig: ZiweiConfig = ZiweiConfig()
+
+  var stars: Set<@Contextual ZStar> = defaultConfig.stars
 
   /** 命宮、身宮 演算法  */
-  var mainBodyHouse: MainBodyHouse = MainBodyHouse.Trad
+  var mainBodyHouse: MainBodyHouse = defaultConfig.mainBodyHouse
 
   /** 紫微星，在閏月時，該如何處理  */
-  var purpleStarBranch: PurpleStarBranch = PurpleStarBranch.Default
+  var purpleStarBranch: PurpleStarBranch = defaultConfig.purpleStarBranch
 
   /**
    * 命宮、身宮、紫微等14顆主星 對於月份，如何計算 . 若 [mainBodyHouse] 為占星實作 [MainBodyHouse.Astro] , 此值會被忽略
    * 注意，此值可能為 null , 因為若是 '命宮、身宮 演算法' 是占星實作的話 , client 端會把此值填為 null
    * */
-  var mainStarsAlgo: MonthAlgo? = MonthAlgo.MONTH_FIXED_THIS
+  var mainStarsAlgo: MonthAlgo? = defaultConfig.mainStarsAlgo
 
   /** 月系星，如何計算月令  */
-  var monthStarsAlgo: MonthAlgo = MonthAlgo.MONTH_FIXED_THIS
+  var monthStarsAlgo: MonthAlgo = defaultConfig.monthStarsAlgo
 
   /** 年系星系 , 初一為界，還是 [destiny.core.calendar.SolarTerms.立春] 為界 */
-  var yearType: YearType = YearType.YEAR_LUNAR
+  var yearType: YearType = defaultConfig.yearType
 
   /** 宮位名字  */
-  var houseSeq: HouseSeq = HouseSeq.Default
+  var houseSeq: HouseSeq = defaultConfig.houseSeq
 
   /** [StarLucky.天魁] , [StarLucky.天鉞] (貴人) 算法  */
-  var tianyi: Tianyi = Tianyi.ZiweiBook
+  var tianyi: Tianyi = defaultConfig.tianyi
 
   /** 火鈴 */
-  var fireBell: FireBell = FireBell.FIREBELL_COLLECT
+  var fireBell: FireBell = defaultConfig.fireBell
 
   /** 天馬 */
-  var skyHorse: SkyHorse = SkyHorse.YEAR
+  var skyHorse: SkyHorse = defaultConfig.skyHorse
 
   /** 天使天傷 */
-  var hurtAngel: HurtAngel = HurtAngel.HURT_ANGEL_FIXED
+  var hurtAngel: HurtAngel = defaultConfig.hurtAngel
 
   /** 紅豔 */
-  var redBeauty: RedBeauty = RedBeauty.RED_BEAUTY_DIFF
+  var redBeauty: RedBeauty = defaultConfig.redBeauty
 
   /** 四化設定 */
-  var transFour: TransFour = TransFour.FullBook
+  var transFour: TransFour = defaultConfig.transFour
 
   /** 廟旺弱陷 */
-  var strength: Strength = Strength.FullBook
+  var strength: Strength = defaultConfig.strength
 
   /** 流年 */
-  var flowYear: FlowYear = FlowYear.Anchor
+  var flowYear: FlowYear = defaultConfig.flowYear
 
   /** 流月 */
-  var flowMonth: FlowMonth = FlowMonth.Default
+  var flowMonth: FlowMonth = defaultConfig.flowMonth
 
   /** 流日 */
-  var flowDay: FlowDay = FlowDay.FromFlowMonthMainHouse
+  var flowDay: FlowDay = defaultConfig.flowDay
 
   /** 流時 */
-  var flowHour: FlowHour = FlowHour.MainHouseDep
+  var flowHour: FlowHour = defaultConfig.flowHour
 
   /** 大限計算方式 */
-  var bigRange: BigRange = BigRange.FromMain
+  var bigRange: BigRange = defaultConfig.bigRange
 
   /** 歲運註記 */
-  var ageNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo)
+  var ageNotes: List<IntAgeNote> = defaultConfig.ageNotes
+
+  /** 八字設定 */
+  var ewConfig: EightWordsConfig = defaultConfig.ewConfig
+  fun ewConfig(block: EightWordsConfigBuilder.() -> Unit = {}) {
+    this.ewConfig = EightWordsConfigBuilder.ewConfig(block)
+  }
+
+  /** 晝夜區分 */
+  var dayNightConfig: DayNightConfig = defaultConfig.dayNightConfig
+  fun dayNightConfig(block: DayNightConfigBuilder.() -> Unit = {}) {
+    this.dayNightConfig = DayNightConfigBuilder.dayNight(block)
+  }
 
   override fun build(): ZiweiConfig {
     return ZiweiConfig(
@@ -234,7 +250,9 @@ class ZiweiConfigBuilder : destiny.tools.Builder<ZiweiConfig> {
       flowDay,
       flowHour,
       bigRange,
-      ageNotes
+      ageNotes,
+      ewConfig,
+      dayNightConfig
     )
   }
 
@@ -255,7 +273,6 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, Builder> {
   fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ZiweiConfig): Triple<Branch, Branch, Int?>
 
   /**
-   * @param stars     取得這些星體
    * @param flowType  在[本命、大限、流年]... (之一)
    * @param flowStem  天干為
    * @return 傳回四化 (若有的話)
@@ -286,7 +303,7 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, Builder> {
     solarTerms: SolarTerms,
     lunarDays: Int,
     hour: Branch,
-    dayNight: DayNight = (if (listOf(卯, 辰, 巳, 午, 未, 申).contains(hour)) DayNight.DAY else DayNight.NIGHT),
+    dayNight: DayNight,
     gender: Gender,
     optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = null,
     config: ZiweiConfig
@@ -779,14 +796,15 @@ class ZiweiFeature(
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
 
-    val (命宮地支, 身宮地支, finalMonthNumForMainStars) = getMainBodyHouse(lmt, loc, config)
+    // 命宮地支, 身宮地支
+    val (mainBranch, bodyBranch, finalMonthNumForMainStars) = getMainBodyHouse(lmt, loc, config)
 
     if (config.mainBodyHouse == MainBodyHouse.Astro) {
       logger.warn("命宮、身宮 採用上升、月亮星座")
       notesBuilders.add(Pair("main_body_astro", arrayOf()))
     }
 
-    logger.debug("命宮地支 = {} , 身宮地支 = {}", 命宮地支, 身宮地支)
+    logger.debug("命宮地支 = {} , 身宮地支 = {}", mainBranch, bodyBranch)
 
     val t2 = TimeTools.getDstSecondOffset(lmt, loc)
     val dst = t2.first
@@ -798,20 +816,14 @@ class ZiweiFeature(
 
     val monthBranch = yearMonthFeature.getModel(lmt, loc, config.ewConfig.yearMonthConfig).branch
 
-    //val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
-
     val solarYear = yearFeature.getModel(lmt, loc, config.ewConfig.yearMonthConfig.yearConfig)
-    //val solarYear = yearMonthImpl.getYear(lmt, loc)
 
     val lunarMonth = cDate.month
     val solarTerms = yearMonthFeature.solarTermsImpl.getSolarTerms(lmt, loc)
-    //val solarTerms = solarTermsImpl.getSolarTerms(lmt, loc)
 
     val lunarDays = cDate.day
 
     val hour = dayHourFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig).second.branch
-    //val hour = dayHourImpl.getHour(lmt, loc)
-
 
     val hourImpl = config.ewConfig.dayHourConfig.hourBranchConfig.hourImpl
 
@@ -834,15 +846,12 @@ class ZiweiFeature(
       }
     }
 
-    val dayNight = dayNightFeature.getModel(lmt, loc)
+    val dayNight = dayNightFeature.getModel(lmt, loc, config.dayNightConfig)
 
     // 虛歲時刻 , gmt Julian Day
     val vageMap = intAgeImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, loc), loc, 1, 130)
 
-
-
-
-    return getBirthPlate(Pair(命宮地支, 身宮地支), finalMonthNumForMainStars, cycle, yinYear, solarYear, lunarMonth
+    return getBirthPlate(Pair(mainBranch, bodyBranch), finalMonthNumForMainStars, cycle, yinYear, solarYear, lunarMonth
                          , cDate.leapMonth, monthBranch, solarTerms, lunarDays, hour, dayNight, gender, vageMap , config)
       .withLocalDateTime(lmt)
       .withLocation(loc)

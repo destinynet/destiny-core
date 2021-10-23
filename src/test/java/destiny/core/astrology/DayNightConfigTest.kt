@@ -12,7 +12,7 @@ internal class DayNightConfigTest : AbstractConfigTest<DayNightConfig>() {
   override val serializer: KSerializer<DayNightConfig> = DayNightConfig.serializer()
 
   override val configByConstructor: DayNightConfig = DayNightConfig(
-    impl = DayNightConfig.DayNightImpl.Half, TransConfig(
+    impl = DayNightImpl.Half, TransConfig(
       discCenter = true,
       refraction = false,
       temperature = 23.0,
@@ -21,7 +21,7 @@ internal class DayNightConfigTest : AbstractConfigTest<DayNightConfig>() {
   )
 
   override val configByFunction: DayNightConfig = dayNight {
-    impl = DayNightConfig.DayNightImpl.Half
+    impl = DayNightImpl.Half
     trans {
       discCenter = true
       refraction = false

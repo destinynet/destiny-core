@@ -6,6 +6,7 @@ package destiny.core.chinese.liuren.golden
 import destiny.core.DayNight
 import destiny.core.astrology.DayNightConfig
 import destiny.core.astrology.DayNightFeature
+import destiny.core.astrology.DayNightImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.EightWordsConfig
@@ -26,7 +27,7 @@ data class PithyConfig(val direction: Branch = Branch.子,
                        val eightWordsConfig: EightWordsConfig = EightWordsConfig(),
                        val monthMaster : MonthMaster = MonthMaster.StarPosition,
                        val clockwise: Clockwise = Clockwise.XinRenKuiReverse,
-                       val dayNightConfig : DayNightConfig = DayNightConfig(impl = DayNightConfig.DayNightImpl.StarPos),
+                       val dayNightConfig : DayNightConfig = DayNightConfig(impl = DayNightImpl.StarPos),
                        val tianyi: Tianyi = Tianyi.LiurenPithy,
                        val generalSeq : GeneralSeq = GeneralSeq.Default,
                        val generalStemBranch : GeneralStemBranch = GeneralStemBranch.Pithy
@@ -46,7 +47,7 @@ class PithyConfigBuilder : Builder<PithyConfig> {
 
   var clockwise: Clockwise = Clockwise.XinRenKuiReverse
 
-  var dayNightConfig : DayNightConfig = DayNightConfig(impl = DayNightConfig.DayNightImpl.StarPos)
+  var dayNightConfig : DayNightConfig = DayNightConfig(impl = DayNightImpl.StarPos)
 
   var tianyi: Tianyi = Tianyi.LiurenPithy
 

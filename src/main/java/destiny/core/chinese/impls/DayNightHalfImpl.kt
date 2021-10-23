@@ -10,6 +10,8 @@ import destiny.core.calendar.ILocation
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.KEY_DAY_NIGHT
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -33,11 +35,11 @@ class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight, Seria
 
 
   override fun toString(locale: Locale): String {
-    return DayNightConfig.DayNightImpl.Half.asDescriptive().toString(locale)
+    return DayNightImpl.Half.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return DayNightConfig.DayNightImpl.Half.asDescriptive().getDescription(locale)
+    return DayNightImpl.Half.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

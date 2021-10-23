@@ -5,6 +5,7 @@ package destiny.core.chinese.liuren.golden
 
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.DayNightConfig
+import destiny.core.astrology.DayNightImpl
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.chinese.Branch
 import destiny.core.chinese.MonthMaster
@@ -25,7 +26,7 @@ internal class PithyConfigTest : AbstractConfigTest<PithyConfig>() {
     eightWordsConfig = EightWordsConfig(),
     monthMaster = MonthMaster.Combined,
     clockwise = Clockwise.DayNightFixed,
-    dayNightConfig = DayNightConfig(impl = DayNightConfig.DayNightImpl.Half),
+    dayNightConfig = DayNightConfig(impl = DayNightImpl.Half),
     tianyi = Tianyi.ZiweiBook,
     generalSeq = GeneralSeq.Zhao,
     generalStemBranch = GeneralStemBranch.Liuren
@@ -34,7 +35,7 @@ internal class PithyConfigTest : AbstractConfigTest<PithyConfig>() {
     direction = Branch.丑
     monthMaster = MonthMaster.Combined
     clockwise = Clockwise.DayNightFixed
-    dayNightConfig = DayNightConfig(impl = DayNightConfig.DayNightImpl.Half)
+    dayNightConfig = DayNightConfig(impl = DayNightImpl.Half)
     tianyi = Tianyi.ZiweiBook
     generalSeq = GeneralSeq.Zhao
     generalStemBranch = GeneralStemBranch.Liuren

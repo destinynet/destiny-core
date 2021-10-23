@@ -11,6 +11,8 @@ import destiny.core.calendar.TimeTools
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.KEY_DAY_NIGHT
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.time.temporal.ChronoField
 import java.util.*
@@ -29,11 +31,11 @@ class DayNightSimpleImpl(val julDayResolver: JulDayResolver) : IDayNight, Serial
   }
 
   override fun toString(locale: Locale): String {
-    return DayNightConfig.DayNightImpl.Simple.asDescriptive().toString(locale)
+    return DayNightImpl.Simple.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return DayNightConfig.DayNightImpl.Simple.asDescriptive().getDescription(locale)
+    return DayNightImpl.Simple.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {
