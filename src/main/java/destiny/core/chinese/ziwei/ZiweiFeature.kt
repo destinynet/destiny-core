@@ -12,7 +12,7 @@ import destiny.core.IntAgeNote
 import destiny.core.astrology.*
 import destiny.core.calendar.*
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.chinese.ChineseDateFeature
+import destiny.core.calendar.chinese.IChineseDateFeature
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.*
@@ -26,6 +26,8 @@ import destiny.tools.serializers.ZStarSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
+import java.time.LocalTime
+import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 import javax.cache.Cache
@@ -332,6 +334,18 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, Builder> {
 
   /** 計算 流時盤 */
   fun getFlowHour(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): Builder
+
+  /**
+   * @param cycle     cycle
+   * @param flowYear  流年
+   * @param flowMonth 流月
+   * @param leap      是否閏月
+   * @return 該流月的日子 (陰曆＋陽曆＋干支）
+   */
+  fun getDaysOfMonth(cycle: Int, flowYear: StemBranch, flowMonth: Int, leap: Boolean): List<Triple<ChineseDate, ChronoLocalDate, StemBranch>>
+
+  /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「虛歲」各別是幾歲 ,   */
+  fun getYearsOfFlowBig(builder: Builder, flowBig: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>>
 }
 
 @Named
@@ -340,7 +354,7 @@ class ZiweiFeature(
   @Named("houseCuspImpl")
   private val risingSignImpl: IRisingSign,
   private val starPositionImpl: IStarPosition<*>,
-  private val chineseDateFeature: ChineseDateFeature,
+  private val chineseDateFeature: IChineseDateFeature,
   private val yearFeature: YearFeature,
   private val yearMonthFeature: YearMonthFeature,
   private val dayHourFeature: DayHourFeature,
@@ -799,6 +813,51 @@ class ZiweiFeature(
       .appendTrans4Map(trans4Map)
   }
 
+
+  /**
+   * @param cycle     cycle
+   * @param flowYear  流年
+   * @param flowMonth 流月
+   * @param leap      是否閏月
+   * @return 該流月的日子 (陰曆＋陽曆＋干支）
+   */
+  override fun getDaysOfMonth(cycle: Int, flowYear: StemBranch, flowMonth: Int, leap: Boolean): List<Triple<ChineseDate, ChronoLocalDate, StemBranch>> {
+    val days = chineseDateFeature.getDaysOf(cycle, flowYear, flowMonth, leap)
+
+    val list =  mutableListOf<Triple<ChineseDate, ChronoLocalDate, StemBranch>>()
+
+    for (i in 1..days) {
+      val yinDate = ChineseDate(cycle, flowYear, flowMonth, leap, i)
+
+      val yangDate = chineseDateFeature.getYangDate(yinDate)
+      val lmtJulDay = (TimeTools.getGmtJulDay(yangDate.atTime(LocalTime.MIDNIGHT)).value + 0.5).toInt()
+      val index = (lmtJulDay - 11) % 60
+      val sb = StemBranch[index]
+      list.add(Triple(yinDate, yangDate, sb))
+    }
+    return list
+  }
+
+  /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「虛歲」各別是幾歲 ,   */
+  override fun getYearsOfFlowBig(builder: Builder, flowBig: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>> {
+    val birthYear = builder.chineseDate.year
+    val birthCycle = builder.chineseDate.cycleOrZero
+
+    val bigRangeImpl = bigRangeImplMap[config.bigRange]!!
+
+    val (first, second) = bigRangeImpl.getVageRange(builder.branchHouseMap.getValue(flowBig), builder.state, birthYear.stem, builder.gender, houseSeqImplMap[config.houseSeq]!!)
+
+    // 再把虛歲轉換成干支
+    return (first .. second).map { vAge ->
+      val sb = birthYear.next(vAge - 1) // 虛歲 (vAge) 轉換為年 , 要減一 . 虛歲
+      val cycle: Int = if (sb.index >= birthYear.index) {
+        birthCycle + (vAge - 1) / 60
+      } else {
+        birthCycle + (vAge - 1) / 60 + 1
+      }
+      Triple(cycle , sb , vAge)
+    }.toList()
+  }
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): Builder {
 
