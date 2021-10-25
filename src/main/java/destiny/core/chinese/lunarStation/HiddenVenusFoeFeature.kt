@@ -26,6 +26,7 @@ import javax.inject.Named
 /**
  * 暗金伏斷
  */
+
 @Named
 class HiddenVenusFoeFeature(private val yearlyFeature: LunarStationYearlyFeature,
                             private val monthlyFeature: ILunarStationMonthlyFeature,

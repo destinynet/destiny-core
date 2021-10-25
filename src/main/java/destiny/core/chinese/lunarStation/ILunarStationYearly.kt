@@ -13,6 +13,8 @@ import java.time.temporal.ChronoField
 
 /**
  * 二十八星宿值年
+ *
+ * deprecated by [LunarStationYearlyFeature]
  **/
 @Deprecated("LunarStationYearlyFeature")
 interface ILunarStationYearly {
