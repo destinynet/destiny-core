@@ -53,6 +53,41 @@ enum class HouseSeq {
   Taiyi
 }
 
+/** [StarUnlucky.火星] ,  [StarUnlucky.鈴星] 設定  */
+enum class FireBell {
+  /** [StarUnlucky.fun火星_全集] , [StarUnlucky.fun鈴星_全集] : (年支、時支) -> 地支 (福耕老師論點) */
+  FIREBELL_COLLECT,
+
+  /** [StarUnlucky.fun火星_全書] , [StarUnlucky.fun鈴星_全書] : 年支 -> 地支 . 中州派 : 火鈴的排法按中州派僅以生年支算落宮，不按生時算落宮  */
+  FIREBELL_BOOK;
+}
+
+
+/** 天馬，要用 年馬 還是 月馬 */
+enum class SkyHorse {
+  YEAR,
+  MONTH;
+}
+
+/** [StarMinor.天傷]、 [StarMinor.天使] 計算方式  */
+enum class HurtAngel {
+  /** 天傷固定於交友宮 [StarMinor.fun天傷_fixed交友] 、 天使固定疾厄宮 [StarMinor.fun天使_fixed疾厄]  */
+  HURT_ANGEL_FIXED,
+
+  /** 陽順陰逆 [StarMinor.fun天傷_陽順陰逆] 、 [StarMinor.fun天使_陽順陰逆]  */
+  HURT_ANGEL_YINYANG;
+}
+
+
+/** 紅艷  */
+enum class RedBeauty {
+  /** [StarMinor.fun紅艷_甲乙相異]  */
+  RED_BEAUTY_DIFF,
+
+  /** [StarMinor.fun紅艷_甲乙相同]  */
+  RED_BEAUTY_SAME;
+}
+
 /** 四化設定 */
 enum class TransFour {
   ChenBiDong,
@@ -274,10 +309,6 @@ class ZiweiConfigBuilder : destiny.tools.Builder<ZiweiConfig> {
   }
 }
 
-/**
- * to replace [IZiweiContext]
- */
-
 interface IZiweiFeature : PersonFeature<ZiweiConfig, Builder> {
 
   /** 取命宮、身宮地支  */
@@ -375,6 +406,7 @@ class ZiweiFeature(
 ) : AbstractCachedPersonFeature<ZiweiConfig, Builder>(), IZiweiFeature {
 
   @Inject
+  @Transient
   private lateinit var ziweiCache: Cache<LmtCacheKey<*>, Pair<*, *>>
 
   override val lmtPersonCache: Cache<LmtCacheKey<ZiweiConfig>, Builder>
@@ -462,8 +494,8 @@ class ZiweiFeature(
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
 
     /**
-     * 14主星的「月數」 [IZiweiContext.mainStarsAlgo]
-     * 與「月系星」的月數 [IZiweiContext.monthStarsAlgo]
+     * 14主星的「月數」 [ZiweiConfig.mainStarsAlgo]
+     * 與「月系星」的月數 [ZiweiConfig.monthStarsAlgo]
      * 可以分開設定 , 故，這裡產生兩個 finalMonthNum
      */
 
