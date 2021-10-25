@@ -15,7 +15,10 @@ import java.time.chrono.ChronoLocalDateTime
 
 /**
  * 二十八宿 禽星占卜 Context
+ *
+ * Deprecated for [LunarStationFeature]
  */
+@Deprecated("LunarStationFeature")
 interface ILunarStationContext {
 
   val yearlyImpl: ILunarStationYearly

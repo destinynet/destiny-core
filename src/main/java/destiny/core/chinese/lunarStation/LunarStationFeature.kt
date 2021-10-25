@@ -90,7 +90,7 @@ interface ILunarStationFeature : Feature<LunarStationConfig, ContextModel>{
      * 木亥火寅地，金生與巳同。
      * 彼禽算外圈，我禽算內圈。
      */
-    fun startBranch(planet: Planet): Branch {
+    private fun startBranch(planet: Planet): Branch {
       return when (planet) {
         Planet.SUN                    -> Branch.午
         Planet.MOON                   -> Branch.未
