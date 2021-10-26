@@ -7,9 +7,7 @@ package destiny.core.calendar.chinese
 import destiny.core.Descriptive
 import destiny.core.calendar.CalType
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.eightwords.IDayHour
-import destiny.core.calendar.eightwords.MidnightFeature
 import destiny.core.chinese.StemBranch
 import org.threeten.extra.chrono.JulianDate
 import java.time.LocalDate
@@ -40,13 +38,51 @@ interface IChineseDate : Descriptive {
                           localDate.get(ChronoField.DAY_OF_MONTH))
   }
 
-  fun getChineseDate(lmt: ChronoLocalDateTime<*>, loc: ILocation, day: StemBranch, hour: StemBranch, midnightFeature: MidnightFeature, cdaz: Boolean , julDayResolver: JulDayResolver): ChineseDate
-
   /**
    * 最完整的「陽曆轉陰曆」演算法
    * 必須另外帶入 地點、日干支紀算法、時辰劃分法、子正計算方式、是否子初換日 5個參數
    */
   fun getChineseDate(lmt: ChronoLocalDateTime<*>, location: ILocation, dayHourImpl: IDayHour): ChineseDate
+
+  /** 計算子時狀況 */
+  fun calculateZi(lmt: ChronoLocalDateTime<*>, lmtDate: ChineseDate, nextDate: ChineseDate, prevDate: ChineseDate, nextMidnightLmt: ChronoLocalDateTime<*>, nextMidnightDay: ChineseDate, changeDayAfterZi: Boolean): ChineseDate {
+    return if (changeDayAfterZi) {
+      // 如果是子初換日
+      if (lmt.get(ChronoField.HOUR_OF_DAY) >= 12) {
+        // 而且是 24點之前 : 那就是「下一日」
+        nextDate
+      } else {
+        // 過了 0 點
+        lmtDate
+      }
+    } else {
+      // 子正換日 : 要計算「子正」在 24 時之前或是之後
+      if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >= 12) {
+        // 「子正」在 24時之前
+        if (lmt.get(ChronoField.HOUR_OF_DAY) >= 12) {
+          // LMT 在 24時之前 (LMT1 + LMT2)
+          if (lmtDate.day == nextMidnightDay.day)
+            lmtDate // LMT1
+          else
+            nextDate // LMT2
+        } else
+          lmtDate // LMT3 + LMT4
+      } else {
+        // 「子正」在 0時 之後
+        if (lmt.get(ChronoField.HOUR_OF_DAY) >= 12) {
+          // LMT 在 24時之前 (LMT1 + LMT2)
+          lmtDate
+        } else {
+          // LMT 在 0時之後 (LMT3 + LMT4)
+          if (lmtDate.day == nextMidnightDay.day) {
+            prevDate // LMT3
+          } else
+            lmtDate // LMT4
+        }
+
+      } // 「子正」在 0時 之後
+    } // 子正換日
+  }
 
 
 

@@ -8,12 +8,14 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.DayHourConfig
-import destiny.core.calendar.eightwords.IDayHourFeature
+import destiny.core.calendar.eightwords.IHourBranchFeature
 import destiny.core.calendar.eightwords.MidnightFeature
+import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
 import java.time.chrono.ChronoLocalDate
+import java.time.temporal.ChronoUnit
 import javax.inject.Named
 
 
@@ -32,7 +34,7 @@ interface IChineseDateFeature : Feature<DayHourConfig, ChineseDate> {
 
 @Named
 class ChineseDateFeature(private val chineseDateImpl : IChineseDate,
-                         private val dayHourFeature: IDayHourFeature,
+                         private val hourBranchFeature: IHourBranchFeature,
                          private val midnightFeature: MidnightFeature,
                          private val julDayResolver: JulDayResolver) : AbstractCachedFeature<DayHourConfig, ChineseDate>() , IChineseDateFeature {
   override val key: String = "chineseDate"
@@ -56,10 +58,31 @@ class ChineseDateFeature(private val chineseDateImpl : IChineseDate,
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: DayHourConfig): ChineseDate {
 
-    val (day: StemBranch, hour: StemBranch) = dayHourFeature.getModel(gmtJulDay, loc, config)
+    val hour = hourBranchFeature.getModel(gmtJulDay, loc, config.hourBranchConfig)
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
-    return chineseDateImpl.getChineseDate(lmt, loc, day, hour, midnightFeature, config.dayConfig.changeDayAfterZi, julDayResolver)
+    return if (hour != Branch.子) {
+      // 不是子時，直接傳回今日的日期即可
+      chineseDateImpl.getChineseDate(lmt.toLocalDate())
+    } else {
+      // 子時，要判定是子正之前，還是子正之後
+
+      // 目前這個 LMT 的農曆日期
+      val lmtDate = chineseDateImpl.getChineseDate(lmt.toLocalDate())
+      // 後一天
+      val nextDate = chineseDateImpl.getChineseDate(lmt.toLocalDate().plus(1, ChronoUnit.DAYS))
+      // 前一天
+      val prevDate = chineseDateImpl.getChineseDate(lmt.toLocalDate().minus(1, ChronoUnit.DAYS))
+
+      val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc), loc, julDayResolver)
+
+      // 下個子正的農曆日期
+      val nextMidnightDay = chineseDateImpl.getChineseDate(nextMidnightLmt.toLocalDate())
+
+      chineseDateImpl.calculateZi(lmt, lmtDate, nextDate, prevDate, nextMidnightLmt, nextMidnightDay, config.dayConfig.changeDayAfterZi)
+    }
+
+    //return chineseDateImpl.getChineseDate(lmt, loc, day, hour, midnightFeature, config.dayConfig.changeDayAfterZi, julDayResolver)
   }
 }
