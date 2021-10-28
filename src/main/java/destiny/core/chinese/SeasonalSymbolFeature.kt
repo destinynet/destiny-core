@@ -21,10 +21,10 @@ import javax.inject.Named
 import kotlin.math.abs
 
 @Serializable
-data class SeasonalSymbolConfig(val impl: Impl = Impl.Chinese) {
+data class SeasonalSymbolConfig(val impl: Impl = Impl.Chinese) : java.io.Serializable {
 
   @Serializable
-  sealed class Impl {
+  sealed class Impl : java.io.Serializable {
 
     @Serializable
     @SerialName("Chinese")

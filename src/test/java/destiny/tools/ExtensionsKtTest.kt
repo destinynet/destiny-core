@@ -3,6 +3,7 @@
  */
 package destiny.tools
 
+import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -31,7 +32,7 @@ class ExtensionsKtTest {
 
     sequenceOf<String?>(null, null).also { seq ->
       assertNull(seq.firstNotNullResult { it })
-      assertNull(seq.map { it }.firstNotNullResult { it?.toLowerCase() })
+      assertNull(seq.map { it }.firstNotNullResult { it?.lowercase(Locale.getDefault()) })
     }
   }
 }

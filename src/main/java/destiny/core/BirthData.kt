@@ -59,12 +59,12 @@ data class BirthData(
                     ) : IBirthData, ITimeLoc by timeLoc {
 
   constructor(time: ChronoLocalDateTime<*>, location: ILocation, gender: Gender) : this(TimeLoc(time, location), gender)
+
+  constructor(birthData: IBirthData): this(TimeLoc(birthData.time , birthData.location), birthData.gender)
 }
 
 /** 承上 , mutable 版本 */
 interface IBirthDataMutable : IBirthData , ITimeLocMutable {
-  override var time: ChronoLocalDateTime<*>
-  override var location: ILocation
   override var gender: Gender
 }
 
@@ -90,4 +90,6 @@ data class BirthDataNamePlace(
 
   constructor(gender: Gender, time: ChronoLocalDateTime<*>, location: ILocation, name: String?, place: String?)
     : this(BirthData(TimeLoc(time, location), gender), name, place)
+
+  constructor(bdnp: IBirthDataNamePlace) : this(BirthData(bdnp), bdnp.name, bdnp.place)
 }

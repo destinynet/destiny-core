@@ -13,6 +13,7 @@ import destiny.core.iching.IHexagramText
 import destiny.core.iching.contentProviders.IHexagramProvider
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.PersonFeature
+import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 import javax.cache.Cache
@@ -20,8 +21,9 @@ import javax.inject.Inject
 import javax.inject.Named
 
 
+@Serializable
 data class HoloFullConfig(val viewGmtJulDay: GmtJulDay = GmtJulDay.now(),
-                          val holoConfig: HoloConfig = HoloConfig())
+                          val holoConfig: HoloConfig = HoloConfig()): java.io.Serializable
 
 interface IHoloFullFeature : PersonFeature<HoloFullConfig, Pair<IPoemHolo, List<HoloFullHexagram>>> {
 
@@ -37,7 +39,7 @@ class HoloFullFeature(private val holoFeature: HoloFeature,
                       private val hexTextProvider: IHexagramProvider<IHexagramText>,
                       private val julDayResolver: JulDayResolver) : AbstractCachedPersonFeature<HoloFullConfig, Pair<IPoemHolo, List<HoloFullHexagram>>>(), IHoloFullFeature {
 
-  @Inject
+  @Inject @Transient
   private lateinit var holoFullCache: Cache<LmtCacheKey<*>, Pair<*, *>>
 
   override val lmtPersonCache: Cache<LmtCacheKey<HoloFullConfig>, Pair<IPoemHolo, List<HoloFullHexagram>>>

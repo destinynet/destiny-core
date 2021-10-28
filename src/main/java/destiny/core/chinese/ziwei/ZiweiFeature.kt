@@ -142,7 +142,8 @@ enum class ChineseDateImpl {
 }
 
 @Serializable
-data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::class) ZStar> = setOf(*StarMain.values, *StarLucky.values, *StarUnlucky.values),
+data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::class) ZStar> = setOf(*StarMain.values, *StarMinor.values, *StarLucky.values, *StarUnlucky.values,
+                                                                                                  *StarDoctor.values, *StarGeneralFront.values, *StarLongevity.values, *StarYearFront.values),
                        /** 命宮、身宮 演算法  */
                        val mainBodyHouse: MainBodyHouse = MainBodyHouse.Trad,
                        /** 紫微星，在閏月時，該如何處理  */
