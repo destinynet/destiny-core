@@ -4,12 +4,15 @@
 package destiny.core.astrology.classical.rules
 
 import destiny.core.Gender
-import destiny.core.astrology.*
+import destiny.core.astrology.Centric
+import destiny.core.astrology.Coordinate
+import destiny.core.astrology.HouseSystem
+import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
-interface IClassicalContext : IPersonHoroscopeContext {
+interface IClassicalContext {
 
   fun getPatternAndComments(lmt: ChronoLocalDateTime<*>,
                             loc: ILocation,

@@ -37,7 +37,6 @@ class DailyReportImpl(
   private val lunarStationHourlyFeature: LunarStationHourlyFeature,
   val voidCourseImpl: IVoidCourse,
   val pointPosFuncMap: Map<Point, IPosition<*>>,
-  val horoContext: IHoroscopeContext
 ) : IDailyReport, Serializable {
 
   private fun getList(lmtStart: ChronoLocalDateTime<*>,
@@ -189,7 +188,6 @@ class DailyReportImpl(
     if (reverseGeocodingService != other.reverseGeocodingService) return false
     if (julDayResolver != other.julDayResolver) return false
     if (voidCourseImpl != other.voidCourseImpl) return false
-    if (horoContext != other.horoContext) return false
 
     return true
   }
@@ -203,7 +201,6 @@ class DailyReportImpl(
     result = 31 * result + reverseGeocodingService.hashCode()
     result = 31 * result + julDayResolver.hashCode()
     result = 31 * result + voidCourseImpl.hashCode()
-    result = 31 * result + horoContext.hashCode()
     return result
   }
 

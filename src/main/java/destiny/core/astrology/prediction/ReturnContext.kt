@@ -5,12 +5,12 @@
 package destiny.core.astrology.prediction
 
 import destiny.core.astrology.*
-import destiny.core.astrology.classical.IVoidCourse
 import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
+import destiny.tools.Feature
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -32,7 +32,7 @@ interface IReturnContext : Conversable, IDiscrete {
   fun getReturnHoroscope(natalLmt: ChronoLocalDateTime<*>, natalLoc: ILocation, nowLmt: ChronoLocalDateTime<*>, nowLoc: ILocation): IHoroscopeModel {
     val natalGmtJulDay = TimeTools.getGmtJulDay(natalLmt, natalLoc)
     val nowGmtJulDay = TimeTools.getGmtJulDay(nowLmt, nowLoc)
-    return getReturnHoroscope(natalGmtJulDay , natalLoc ,  nowGmtJulDay , nowLoc)
+    return getReturnHoroscope(natalGmtJulDay, natalLoc, nowGmtJulDay, nowLoc)
   }
 }
 
@@ -54,11 +54,7 @@ class ReturnContext(
   private val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator,
   /** 計算星體到黃道幾度的時刻，的介面  */
   private var starTransitImpl: IStarTransit,
-  private val houseCuspImpl: IHouseCusp,
-  private val vocMap: Map<VoidCourseConfig.VoidCourseImpl, IVoidCourse>,
-  private val pointPosFuncMap: Map<Point, IPosition<*>>,
-  private val voidCourseImpl: IVoidCourse,
-  private val besiegedImpl: IBesieged,
+  private val horoscopeFeature: Feature<HoroscopeConfig, IHoroscopeModel>,
   private val julDayResolver: JulDayResolver
 ) : IReturnContext, Serializable {
 
@@ -71,12 +67,17 @@ class ReturnContext(
     val convergentLmt = TimeTools.getLmtFromGmt(convergentGmt, nowLoc)
 
 
+    val config = HoroscopeConfig(
+      setOf(*Planet.array, *Axis.array, LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN),
+      HouseSystem.PLACIDUS,
+      Coordinate.ECLIPTIC,
+      Centric.GEO,
+      0.0,
+      1013.25,
+      VoidCourseConfig.VoidCourseImpl.Medieval
+    )
 
-    val config = HoroscopeConfig(IHoroscopeContext.defaultPoints, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC, Centric.GEO, 0.0, 1013.25, VoidCourseConfig.VoidCourseImpl.Medieval)
-
-    val horoscopeContext = HoroscopeContext(houseCuspImpl, vocMap, pointPosFuncMap, voidCourseImpl, config)
-    return horoscopeContext.getHoroscope(convergentLmt, nowLoc)
-
+    return horoscopeFeature.getModel(convergentLmt, nowLoc, config)
   }
 
 
