@@ -17,8 +17,9 @@ import java.time.chrono.ChronoLocalDateTime
 /**
  * 與「人」無關的星盤資料
  * 沒有性別 [destiny.core.Gender]
- *
+ * deprecated for [HoroscopeFeature]
  */
+@Deprecated("HoroscopeFeature")
 interface IHoroscopeContext : Serializable {
 
   val pointPosFuncMap: Map<Point, IPosition<*>>
@@ -50,6 +51,10 @@ interface IHoroscopeContext : Serializable {
   }
 }
 
+/**
+ * deprecated for [HoroscopeFeature]
+ */
+@Deprecated("HoroscopeFeature")
 class HoroscopeContext(val houseCuspImpl: IHouseCusp,
                        private val vocMap: Map<VoidCourseConfig.VoidCourseImpl, IVoidCourse>,
                        override val pointPosFuncMap: Map<Point, IPosition<*>>,

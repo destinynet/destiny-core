@@ -55,7 +55,7 @@ class RefranationImpl(private val aspectsCalculator: IAspectsCalculator,
     }.firstOrNull { (_, type) -> type === IAspectData.Type.APPLYING }
       ?.let { (applyingAspect, _) -> applyingAspect }
       ?.let { applyingAspect ->
-        logger.info("兩星 : {} {} 正在接近此角度 {}", planet, otherPoint, applyingAspect)
+        logger.debug("兩星 : {} {} 正在接近此角度 {}", planet, otherPoint, applyingAspect)
 
         /** 「先」臨陣脫逃者，是誰，這裡強調「先」，因為有可能在 Perfect 交角之前，雙方都臨陣脫逃。 */
         val refranator: Point? = relativeTransitImpl.getRelativeTransit(
@@ -82,7 +82,7 @@ class RefranationImpl(private val aspectsCalculator: IAspectsCalculator,
           }
         }?.let { perfectAspectGmt ->
           perfectAspectGmt.let {
-            logger.info("準確形成交角 ({}) 度 於 {}", applyingAspect.degree, perfectAspectGmt)
+            logger.debug("準確形成交角 ({}) 度 於 {}", applyingAspect.degree, perfectAspectGmt)
 
             val nextStationaryGmtJulDay1 = retrogradeImpl.getNextStationary(planet, horoscope.gmtJulDay, true)
             val nextStationaryGmtJulDay2 = retrogradeImpl.getNextStationary(otherPoint, horoscope.gmtJulDay, true)

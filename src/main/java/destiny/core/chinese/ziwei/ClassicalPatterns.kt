@@ -451,7 +451,6 @@ val p日照雷門 = object : PatternSingleImpl() {
       && it.dayNight == DayNight.DAY
       && it.starMap[太陽]?.stemBranch?.branch == 卯
     ) {
-      println("日照雷門 , 太陽卯， 天梁 = ${it.starMap[天梁]?.stemBranch?.branch}")
       日照雷門
     } else
       null
