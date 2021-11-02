@@ -4,28 +4,36 @@
  */
 package destiny.core.astrology
 
+import destiny.core.EnumTest
+import destiny.tools.getTitle
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
 
-class CentricTest {
+class CentricTest : EnumTest() {
+
+  @Test
+  fun testString() {
+    testEnums(Centric::class)
+  }
+
   @Test
   fun testCentric() {
-    assertEquals("地表", Centric.TOPO.toString(Locale.TAIWAN))
-    assertEquals("日心", Centric.HELIO.toString(Locale.TAIWAN))
-    assertEquals("質心", Centric.BARY.toString(Locale.TAIWAN))
+    assertEquals("地表", Centric.TOPO.getTitle(Locale.TAIWAN))
+    assertEquals("日心", Centric.HELIO.getTitle(Locale.TAIWAN))
+    assertEquals("質心", Centric.BARY.getTitle(Locale.TAIWAN))
 
-    assertEquals("TopoCentric", Centric.TOPO.toString(Locale.ENGLISH))
+    assertEquals("TopoCentric", Centric.TOPO.getTitle(Locale.ENGLISH))
 
     for (each in Centric.values()) {
       assertNotNull(each.toString())
       assertNotSame('!', each.toString()[0])
 
       val locale = Locale.ENGLISH
-      assertNotNull(each.toString(locale))
-      assertNotSame('!', each.toString(locale)[0])
+      assertNotNull(each.getTitle(locale))
+      assertNotSame('!', each.getTitle(locale)[0])
     }
   }
 }
