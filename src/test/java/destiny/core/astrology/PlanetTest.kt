@@ -6,10 +6,13 @@ package destiny.core.astrology
 
 
 import destiny.core.astrology.Planet.Companion.aheadOf
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.*
 
 class PlanetTest {
+
+  private val logger = KotlinLogging.logger { }
 
   /** 測試從 "sun" 取得 Planet.SUN  */
   @Test
@@ -60,12 +63,12 @@ class PlanetTest {
   @Test
   fun testPlanets() {
 
-    for (planet in Planet.array) {
+    for (planet in Planet.values) {
       assertNotNull(planet)
       assertNotNull(planet.toString(Locale.TAIWAN))
     }
 
-    val points = setOf<Point>(*Planet.array, *FixedStar.array) as Collection<Point>
+    val points = setOf<Point>(*Planet.values, *FixedStar.values) as Collection<Point>
     println(points)
   }
 
@@ -114,5 +117,13 @@ class PlanetTest {
       assertTrue(true)
     }
 
+  }
+
+  @Test
+  fun testStringConvert() {
+    Planet.values.forEach { star ->
+      logger.info { "$star = ${star.toString(Locale.ENGLISH)}" }
+      assertSame(star, Planet.fromString(star.toString(Locale.ENGLISH)))
+    }
   }
 }

@@ -3,11 +3,15 @@
  */
 package destiny.core.astrology
 
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 class ArabicTest {
+
+  private val logger = KotlinLogging.logger { }
 
   @Test
   fun testLocaleString() {
@@ -46,5 +50,13 @@ class ArabicTest {
     assertEquals("必", Arabic.Necessity.getAbbreviation(Locale.SIMPLIFIED_CHINESE))
     assertEquals("勇", Arabic.Courage.getAbbreviation(Locale.SIMPLIFIED_CHINESE))
     assertEquals("仇", Arabic.Nemesis.getAbbreviation(Locale.SIMPLIFIED_CHINESE))
+  }
+
+  @Test
+  fun testStringConvert() {
+    Arabic.values.forEach { star ->
+      logger.info { "$star = ${star.toString(Locale.ENGLISH)}" }
+      assertSame(star, Arabic.fromString(star.toString(Locale.ENGLISH)))
+    }
   }
 }

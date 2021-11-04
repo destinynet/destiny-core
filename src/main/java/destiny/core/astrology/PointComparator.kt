@@ -5,7 +5,6 @@
 package destiny.core.astrology
 
 import java.io.Serializable
-import java.util.*
 
 /**
  * 對不同的 Point 做排序的動作 , 優先權： 行星 , 交點 , 小行星 , 恆星 , 阿拉伯點 , 漢堡
@@ -23,7 +22,7 @@ class PointComparator : Comparator<Point>, Serializable {
 
   override fun compare(p1: Point, p2: Point): Int {
     if (p1 is Planet && p2 is Planet) {
-      return Planet.array.indexOf(p1) - Planet.array.indexOf(p2)
+      return Planet.values.indexOf(p1) - Planet.values.indexOf(p2)
     }
 
     val p1class = p1.javaClass

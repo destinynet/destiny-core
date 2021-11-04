@@ -5,6 +5,7 @@
 package destiny.core.astrology
 
 import java.util.*
+import kotlin.reflect.KClass
 
 /** 恆星  */
 sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey, Star::class.qualifiedName!!), Comparable<FixedStar> {
@@ -69,22 +70,26 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
     if (this == other)
       return 0
 
-    return array.indexOf(this) - array.indexOf(other)
+    return values.indexOf(this) - values.indexOf(other)
   }
 
 
-  companion object {
+  companion object : IPoint<FixedStar> {
 
-    val array by lazy {
-      arrayOf(REGULUS, SPICA, ALGOL, ALDEBARAN, RIGEL,
-              CAPELLA, BETELGEUSE, SIRIUS, CANOPUS, POLLUX,
-              PROCYON, PRAESEPE, ALPHARD, ARCTURUS, ANTARES,
-              VEGA, ALTAIR, FOMALHAUT, DENEB)
+    override val type: KClass<out Point> = FixedStar::class
+
+    override val values by lazy {
+      arrayOf(
+        REGULUS, SPICA, ALGOL, ALDEBARAN, RIGEL,
+        CAPELLA, BETELGEUSE, SIRIUS, CANOPUS, POLLUX,
+        PROCYON, PRAESEPE, ALPHARD, ARCTURUS, ANTARES,
+        VEGA, ALTAIR, FOMALHAUT, DENEB
+      )
     }
-    val list by lazy { listOf(*array) }
+    val list by lazy { listOf(*values) }
 
-    fun fromString(value : String) : FixedStar? {
-      return array.firstOrNull {
+    override fun fromString(value: String): FixedStar? {
+      return values.firstOrNull {
         it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
       }
     }

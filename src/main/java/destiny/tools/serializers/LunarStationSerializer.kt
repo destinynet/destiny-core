@@ -22,6 +22,6 @@ class LunarStationSerializer : KSerializer<LunarStation> {
 
   override fun deserialize(decoder: Decoder): LunarStation {
     val raw = decoder.decodeString()
-    return LunarStation.values.first { it.nameKey == raw }
+    return LunarStation.list.first { it.nameKey == raw }
   }
 }

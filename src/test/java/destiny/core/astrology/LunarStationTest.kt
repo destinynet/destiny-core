@@ -18,7 +18,7 @@ internal class LunarStationTest {
 
   @Test
   fun testSerialize() {
-    LunarStation.values.forEach { ls ->
+    LunarStation.list.forEach { ls ->
       Json.encodeToString(ls).also { raw ->
         logger.trace { "$ls = $raw" }
         val decoded = Json.decodeFromString<LunarStation>(raw)
@@ -82,6 +82,14 @@ internal class LunarStationTest {
       assertTrue(station.animal.toString(Locale.TAIWAN).length == 1)
       assertTrue(station.animal.toString(Locale.SIMPLIFIED_CHINESE).length == 1)
       assertNotNull(station.animal.toString(Locale.ENGLISH))
+    }
+  }
+
+  @Test
+  fun testStringConvert() {
+    LunarStation.values.forEach { star ->
+      logger.info { "$star = ${star.toString(Locale.TRADITIONAL_CHINESE)}" }
+      assertSame(star, LunarStation.fromString(star.toString(Locale.TRADITIONAL_CHINESE)))
     }
   }
 }

@@ -15,10 +15,10 @@ package destiny.core.astrology
  * 目前繼承圖如下 :
  *                         [Star]
  *                           |
- *     +-----------+---------+------------+-----------------+
- *     |           |         |            |                 |
- * [Planet]  [Asteroid]  [FixedStar]  [LunarPoint] (A)  [Hamburger]
- *    行星     小行星         恆星        日月交點            漢堡虛星
+ *     +-----------+---------+------------+-----------------+--------------+---------------+
+ *     |           |         |            |                 |              |               |
+ * [Planet]  [Asteroid]  [FixedStar]  [LunarPoint] (A)  [Hamburger]     [Arabic]     [LunarStation]
+ *    行星     小行星         恆星        日月交點            漢堡虛星        阿拉伯點         二十八宿
  *                                        |
  *                                        |
  *                               +--------+--------+
@@ -29,7 +29,7 @@ package destiny.core.astrology
  *
  *</pre>
  */
-abstract class Star(nameKey: String, abbrKey: String?, resource: String, unicode: Char? = null) : Point(nameKey, resource, abbrKey, unicode) {
+sealed class Star(nameKey: String, abbrKey: String?, resource: String, unicode: Char? = null) : Point(nameKey, resource, abbrKey, unicode) {
 
-  internal constructor(nameKey: String, resource: String) : this(nameKey, null, resource, null)
+  constructor(nameKey: String, resource: String) : this(nameKey, null, resource, null)
 }

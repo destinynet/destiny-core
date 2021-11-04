@@ -16,13 +16,16 @@ import destiny.tools.ArrayTools
 import destiny.tools.serializers.LunarStationSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
+import kotlin.reflect.KClass
 
 /** 二十八宿 */
 @Serializable(with = LunarStationSerializer::class)
-sealed class LunarStation(val news: News,
-                          nameKey: String,
-                          val animal: Animal,
-                          val planet: Planet) : Star(nameKey, LunarStation::class.java.name), ILoop<LunarStation> {
+sealed class LunarStation(
+  val news: News,
+  nameKey: String,
+  val animal: Animal,
+  val planet: Planet
+) : Star(nameKey, LunarStation::class.java.name), ILoop<LunarStation> {
   object 角 : LunarStation(EAST, "角", Animal.蛟, JUPITER)
   object 亢 : LunarStation(EAST, "亢", Animal.龍, VENUS)
   object 氐 : LunarStation(EAST, "氐", Animal.貉, SATURN)
@@ -56,23 +59,43 @@ sealed class LunarStation(val news: News,
   object 軫 : LunarStation(SOUTH, "軫", Animal.蚓, MERCURY)
 
   /** 角木蛟 , 亢金龍 ... 這樣的完整名稱 :  星 + 行星星曜 + 動物 , 共三字元 */
-  fun getFullName(locale: Locale) : String {
+  fun getFullName(locale: Locale): String {
     return "${this.toString(locale)}${this.planet.getAbbreviation(locale)}${this.animal.toString(locale)}"
   }
 
   override fun next(n: Int): LunarStation {
-    val thisIndex = values.indexOf(this)
+    val thisIndex = list.indexOf(this)
     return get(thisIndex + n)
   }
 
-  companion object {
+  companion object : IPoint<LunarStation> {
+
+    override val type: KClass<out Point> = LunarStation::class
+
     operator fun get(index: Int): LunarStation {
-      return ArrayTools[values.toTypedArray(), index]
+      return ArrayTools[list.toTypedArray(), index]
     }
 
-    val values: List<LunarStation> by lazy {
-      LunarStation::class.sealedSubclasses.map { k ->
-        k.objectInstance as LunarStation
+    override val values by lazy {
+      arrayOf(
+        角, 亢, 氐, 房, 心, 尾, 箕,
+        斗, 牛, 女, 虛, 危, 室, 壁,
+        奎, 婁, 胃, 昴, 畢, 觜, 參,
+        井, 鬼, 柳, 星, 張, 翼, 軫
+      )
+    }
+
+    val list: List<LunarStation> by lazy {
+      values.asList()
+//      LunarStation::class.sealedSubclasses.map { k ->
+//        k.objectInstance as LunarStation
+//      }
+    }
+
+    override fun fromString(value: String): LunarStation? {
+      return values.firstOrNull {
+        // 不能用 英文比 , 因為 壁,畢 兩者相同
+        it.toString(Locale.TRADITIONAL_CHINESE).equals(value, ignoreCase = true)
       }
     }
   }

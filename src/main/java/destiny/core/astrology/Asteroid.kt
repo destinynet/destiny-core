@@ -5,6 +5,7 @@
 package destiny.core.astrology
 
 import java.util.*
+import kotlin.reflect.KClass
 
 sealed class Asteroid(nameKey: String,
                       abbrKey: String,
@@ -34,17 +35,20 @@ sealed class Asteroid(nameKey: String,
     if (this == other)
       return 0
 
-    return array.indexOf(this) - array.indexOf(other)
+    return values.indexOf(this) - values.indexOf(other)
   }
 
-  companion object {
-    val array by lazy {
+  companion object : IPoint<Asteroid> {
+
+    override val type: KClass<out Point> = Asteroid::class
+
+    override val values by lazy {
       arrayOf(CERES, PALLAS, JUNO, VESTA, CHIRON, PHOLUS)
     }
-    val list by lazy { listOf(*array) }
+    val list by lazy { listOf(*values) }
 
-    fun fromString(value : String) : Asteroid? {
-      return array.firstOrNull {
+    override fun fromString(value : String) : Asteroid? {
+      return values.firstOrNull {
         it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
       }
     }

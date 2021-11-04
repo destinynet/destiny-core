@@ -5,17 +5,18 @@
 package destiny.core.astrology
 
 import java.util.*
+import kotlin.reflect.KClass
 
 
 /** 漢堡學派 Uranian Astrology  */
-sealed class Hamburger (nameKey: String) : Star(nameKey, Star::class.qualifiedName!!), Comparable<Hamburger> {
+sealed class Hamburger(nameKey: String) : Star(nameKey, Star::class.qualifiedName!!), Comparable<Hamburger> {
 
-  object CUPIDO   : Hamburger("Hamburger.CUPIDO")
-  object HADES    : Hamburger("Hamburger.HADES")
-  object ZEUS     : Hamburger("Hamburger.ZEUS")
-  object KRONOS   : Hamburger("Hamburger.KRONOS")
-  object APOLLON  : Hamburger("Hamburger.APOLLON")
-  object ADMETOS  : Hamburger("Hamburger.ADMETOS")
+  object CUPIDO : Hamburger("Hamburger.CUPIDO")
+  object HADES : Hamburger("Hamburger.HADES")
+  object ZEUS : Hamburger("Hamburger.ZEUS")
+  object KRONOS : Hamburger("Hamburger.KRONOS")
+  object APOLLON : Hamburger("Hamburger.APOLLON")
+  object ADMETOS : Hamburger("Hamburger.ADMETOS")
   object VULKANUS : Hamburger("Hamburger.VULKANUS")
   object POSEIDON : Hamburger("Hamburger.POSEIDON")
 
@@ -23,22 +24,27 @@ sealed class Hamburger (nameKey: String) : Star(nameKey, Star::class.qualifiedNa
     if (this == other)
       return 0
 
-    return array.indexOf(this) - array.indexOf(other)
+    return values.indexOf(this) - values.indexOf(other)
   }
 
 
-  companion object {
-    val array by lazy {
-      arrayOf(CUPIDO, HADES, ZEUS, KRONOS, APOLLON, ADMETOS,
-              VULKANUS, POSEIDON)
+  companion object : IPoint<Hamburger> {
+
+    override val type: KClass<out Point> = Hamburger::class
+
+    override val values by lazy {
+      arrayOf(
+        CUPIDO, HADES, ZEUS, KRONOS, APOLLON, ADMETOS,
+        VULKANUS, POSEIDON
+      )
     }
 
     val list by lazy {
-      listOf(*array)
+      listOf(*values)
     }
 
-    fun fromString(value : String) : Hamburger? {
-      return array.firstOrNull {
+    override fun fromString(value: String): Hamburger? {
+      return values.firstOrNull {
         it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
       }
     }

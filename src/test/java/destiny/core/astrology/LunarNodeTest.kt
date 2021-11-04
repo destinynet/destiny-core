@@ -45,4 +45,12 @@ class LunarNodeTest {
     assertSame(LunarNode.SOUTH_MEAN, LunarNode.of(News.NorthSouth.SOUTH, NodeType.MEAN))
     assertSame(LunarNode.SOUTH_TRUE, LunarNode.of(News.NorthSouth.SOUTH, NodeType.TRUE))
   }
+
+  @Test
+  fun testStringConvert() {
+    LunarNode.values.forEach { star ->
+      logger.info { "$star = ${star.toString(Locale.ENGLISH)}" }
+      assertSame(star, LunarNode.fromString(star.toString(Locale.ENGLISH)))
+    }
+  }
 }

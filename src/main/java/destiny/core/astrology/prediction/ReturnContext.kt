@@ -68,7 +68,7 @@ class ReturnContext(
 
 
     val config = HoroscopeConfig(
-      setOf(*Planet.array, *Axis.array, LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN),
+      setOf(*Planet.values, *Axis.array, LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN),
       HouseSystem.PLACIDUS,
       Coordinate.ECLIPTIC,
       Centric.GEO,

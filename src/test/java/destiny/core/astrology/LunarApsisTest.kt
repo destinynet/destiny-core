@@ -7,6 +7,7 @@ import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 
@@ -17,15 +18,23 @@ class LunarApsisTest {
   @Test
   fun testToString() {
 
-    for (each in LunarApsis.array) {
+    for (each in LunarApsis.values) {
       assertNotNull(each)
       assertNotNull(each.toString())
       logger.info("{}", each.toString())
     }
 
-    val set =  LunarApsis.array.map { it.toString(Locale.TAIWAN) }.toSet()
+    val set = LunarApsis.values.map { it.toString(Locale.TAIWAN) }.toSet()
     assertTrue(set.contains("遠地點"))
     assertTrue(set.contains("近地點"))
+  }
+
+  @Test
+  fun testStringConvert() {
+    LunarApsis.values.forEach { star ->
+      logger.info { "$star = ${star::class.simpleName}" }
+      assertSame(star, LunarApsis.fromString(star::class.simpleName!!))
+    }
   }
 
 }

@@ -9,6 +9,8 @@ import destiny.core.News.NorthSouth.NORTH
 import destiny.core.News.NorthSouth.SOUTH
 import destiny.core.astrology.NodeType.MEAN
 import destiny.core.astrology.NodeType.TRUE
+import java.util.*
+import kotlin.reflect.KClass
 
 sealed class LunarNode(nameKey: String,
                        abbrKey: String,
@@ -52,7 +54,9 @@ sealed class LunarNode(nameKey: String,
     return inner_values.indexOf(this) - inner_values.indexOf(other)
   }
 
-  companion object {
+  companion object : IPoint<LunarNode> {
+
+    override val type: KClass<out Point> = LunarNode::class
 
     private val inner_values by lazy {
       arrayOf(NORTH_TRUE, NORTH_MEAN, SOUTH_TRUE, SOUTH_MEAN)
@@ -61,6 +65,15 @@ sealed class LunarNode(nameKey: String,
     val meanArray by lazy { arrayOf(NORTH_MEAN, SOUTH_MEAN) }
     val trueList by lazy { listOf(*trueArray) }
     val meanList by lazy { listOf(*meanArray) }
+
+    override val values: Array<LunarNode> by lazy { meanArray }
+
+    override fun fromString(value: String): LunarNode? {
+      return values.firstOrNull {
+        it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
+      }
+    }
+
 
     fun of(northSouth: News.NorthSouth, nodeType: NodeType): LunarNode {
       return inner_values.first {

@@ -4,13 +4,13 @@
  */
 package destiny.core.astrology
 
+import mu.KotlinLogging
 import java.util.*
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNotSame
+import kotlin.test.*
 
 class FixedStarTest {
+
+  private val logger = KotlinLogging.logger { }
 
   @Test
   fun testFixedStar() {
@@ -26,11 +26,11 @@ class FixedStarTest {
     //assertEquals("Ald", FixedStar.ALDEBARAN.getAbbreviation(Locale.FRANCE))
 
 
-    FixedStar.array.forEach {
+    FixedStar.values.forEach {
       assertNotNull(it)
     }
 
-    for (each in FixedStar.array) {
+    for (each in FixedStar.values) {
       assertNotNull(each.toString())
       assertNotSame('!', each.toString()[0])
 
@@ -44,6 +44,14 @@ class FixedStarTest {
 
       assertNotNull(each.getAbbreviation(locale))
       assertNotSame('!', each.getAbbreviation(locale)[0])
+    }
+  }
+
+  @Test
+  fun testStringConvert() {
+    FixedStar.values.forEach { star ->
+      logger.info { "$star = ${star.toString(Locale.ENGLISH)}" }
+      assertSame(star, FixedStar.fromString(star.toString(Locale.ENGLISH)))
     }
   }
 }

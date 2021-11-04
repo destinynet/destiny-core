@@ -99,7 +99,7 @@ interface IBesieged {
    * @param classical 是否只取得 classical 之星 (true = 過濾三王星)
    */
   private fun getPlanetsExcept(planet: Planet, classical: Boolean): List<Planet> {
-    return Planet.array.filter { it !== planet }.filter {
+    return Planet.values.filter { it !== planet }.filter {
       if (classical) {
         !arrayOf(Planet.URANUS, Planet.NEPTUNE, Planet.PLUTO).contains(it)
       } else

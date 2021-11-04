@@ -13,7 +13,7 @@ internal class HabitatAoHeadImplTest {
 
   @Test
   fun testHabitats() {
-    LunarStation.values.forEach { ls ->
+    LunarStation.list.forEach { ls ->
       val habitats = impl.getHabitats(ls)
       assertTrue(habitats.isNotEmpty())
       println("$ls(${ls.animal}) : ${habitats.joinToString(",")}")

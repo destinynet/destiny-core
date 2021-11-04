@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.astrology.IPoint
+import destiny.core.astrology.Point
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.BranchTools
@@ -11,6 +12,7 @@ import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ZStar.Type.*
+import kotlin.reflect.KClass
 
 /**
  * 六兇星
@@ -25,6 +27,8 @@ sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::cl
   object 地空 : StarUnlucky("地空", 時) // 乙 (有時又稱天空)
 
   companion object : IPoint<StarUnlucky> {
+
+    override val type: KClass<out Point> = StarUnlucky::class
 
     override val values by lazy { arrayOf(擎羊, 陀羅, 火星, 鈴星, 地劫, 地空) }
 

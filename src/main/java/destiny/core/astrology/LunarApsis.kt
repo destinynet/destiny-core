@@ -6,6 +6,7 @@ package destiny.core.astrology
 
 import destiny.core.astrology.Apsis.APHELION
 import destiny.core.astrology.Apsis.PERIHELION
+import kotlin.reflect.KClass
 
 
 enum class MeanOscu {
@@ -57,14 +58,22 @@ sealed class LunarApsis(nameKey: String, abbrKey: String,
   override fun compareTo(other: LunarApsis): Int {
     if (this == other)
       return 0
-    return array.indexOf(this) - array.indexOf(other)
+    return values.indexOf(this) - values.indexOf(other)
   }
 
-  companion object {
-    val array by lazy { arrayOf(APOGEE_MEAN, APOGEE_OSCU, PERIGEE_MEAN, PERIGEE_OSCU) }
+  companion object : IPoint<LunarApsis> {
 
-    fun fromString(value : String) : LunarApsis? {
-      return array.firstOrNull { it::class.simpleName == value }
+    override val type: KClass<out Point> = LunarApsis::class
+
+    val trueArray by lazy { arrayOf(APOGEE_OSCU, PERIGEE_OSCU) }
+    val meanArray by lazy { arrayOf(APOGEE_MEAN, PERIGEE_MEAN) }
+    val trueList by lazy { listOf(*trueArray) }
+    val meanList by lazy { listOf(*meanArray) }
+
+    override val values by lazy { meanArray }
+
+    override fun fromString(value : String) : LunarApsis? {
+      return values.firstOrNull { it::class.simpleName == value }
     }
   }
 }

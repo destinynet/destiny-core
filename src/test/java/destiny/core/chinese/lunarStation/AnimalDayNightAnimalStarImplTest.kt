@@ -13,7 +13,7 @@ internal class AnimalDayNightAnimalStarImplTest {
 
   @Test
   fun testDayNight() {
-    LunarStation.values.forEach { ls ->
+    LunarStation.list.forEach { ls ->
       assertNotNull(impl.getDayNight(ls))
     }
   }

@@ -5,12 +5,14 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.DayNight
 import destiny.core.astrology.IPoint
+import destiny.core.astrology.Point
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Characters
 import destiny.core.chinese.ITianyi
 import destiny.core.chinese.Stem
 import destiny.core.chinese.ziwei.ZStar.Type.*
+import kotlin.reflect.KClass
 
 /**
  * 八吉星
@@ -30,6 +32,8 @@ sealed class StarLucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::clas
 
 
   companion object : IPoint<StarLucky> {
+
+    override val type: KClass<out Point> = StarLucky::class
 
     override val values by lazy { arrayOf(文昌, 文曲, 左輔, 右弼, 天魁, 天鉞, 祿存, 天馬) }
 

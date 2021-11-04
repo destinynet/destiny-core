@@ -3,10 +3,14 @@
  */
 package destiny.core.astrology
 
-sealed class Arabic(nameKey: String, abbrKey: String, unicode: Char? = null) : Star(nameKey, abbrKey, Star::class.java.name, unicode), Comparable<Arabic> {
+import java.util.*
+import kotlin.reflect.KClass
+
+sealed class Arabic(nameKey: String, abbrKey: String, unicode: Char? = null) : Star(nameKey, abbrKey, Star::class.java.name, unicode),
+                                                                               Comparable<Arabic> {
 
   /** 福點 (幸運點) Part of Fortune */
-  object Fortune : Arabic("Arabic.Fortune", "Arabic.Fortune_ABBR" , '⊗')
+  object Fortune : Arabic("Arabic.Fortune", "Arabic.Fortune_ABBR", '⊗')
 
   /** 精神點 Part of Spirit */
   object Spirit : Arabic("Arabic.Spirit", "Arabic.Spirit_ABBR")
@@ -31,13 +35,22 @@ sealed class Arabic(nameKey: String, abbrKey: String, unicode: Char? = null) : S
     if (this == other)
       return 0
 
-    return array.indexOf(this) - array.indexOf(other)
+    return values.indexOf(this) - values.indexOf(other)
   }
 
-  companion object {
-    val array by lazy {
+  companion object : IPoint<Arabic> {
+
+    override val type: KClass<out Point> = Arabic::class
+
+    override val values by lazy {
       arrayOf(Fortune, Spirit, Eros, Victory, Necessity, Courage, Nemesis)
     }
-    val list by lazy { listOf(*array) }
+    val list by lazy { listOf(*values) }
+
+    override fun fromString(value: String): Arabic? {
+      return values.firstOrNull {
+        it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
+      }
+    }
   }
 }

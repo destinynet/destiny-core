@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import java.util.*
+import kotlin.reflect.KClass
 
 sealed class Planet(nameKey: String,
                     abbrKey: String,
@@ -23,16 +24,18 @@ sealed class Planet(nameKey: String,
   override fun compareTo(other: Planet): Int {
     if (this === other)
       return 0
-    return array.indexOf(this) - array.indexOf(other)
+    return values.indexOf(this) - values.indexOf(other)
   }
 
-  companion object {
+  companion object : IPoint<Planet> {
+
+    override val type: KClass<out Point> = Planet::class
 
     val classicalArray by lazy { arrayOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN) }
     val classicalList by lazy { listOf(*classicalArray) }
 
-    val array by lazy { arrayOf(*classicalArray, URANUS, NEPTUNE, PLUTO) }
-    val list by lazy { listOf(*array) }
+    override val values by lazy { arrayOf(*classicalArray, URANUS, NEPTUNE, PLUTO) }
+    val list by lazy { listOf(*values) }
 
     private val weekPlanets by lazy {
       arrayOf(SUN, MOON, MARS, MERCURY, JUPITER, VENUS, SATURN)
@@ -51,8 +54,8 @@ sealed class Planet(nameKey: String,
 
     private fun Planet.weekIndex() = weekPlanets.indexOf(this)
 
-    fun fromString(value: String): Planet? {
-      return array.firstOrNull {
+    override fun fromString(value: String): Planet? {
+      return values.firstOrNull {
         it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
       }
     }
