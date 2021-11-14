@@ -28,7 +28,7 @@ data class HoloFullConfig(val viewGmtJulDay: GmtJulDay = GmtJulDay.now(),
 interface IHoloFullFeature : PersonFeature<HoloFullConfig, Pair<IPoemHolo, List<HoloFullHexagram>>> {
 
   /** 取得 先天卦、後天卦 , 元氣、化工 等資訊 */
-  fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?): IPoemHolo
+  fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: HoloConfig = HoloConfig()): IPoemHolo
 }
 
 @Named
@@ -68,8 +68,8 @@ class HoloFullFeature(private val holoFeature: HoloFeature,
     )
   }
 
-  override fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?): IPoemHolo {
-    val holo: IHolo = holoFeature.getPersonModel(lmt, loc, gender, name, place)
+  override fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: HoloConfig): IPoemHolo {
+    val holo: IHolo = holoFeature.getPersonModel(lmt, loc, gender, name, place, config)
 
     val locale = Locale.TAIWAN
 
@@ -90,7 +90,7 @@ class HoloFullFeature(private val holoFeature: HoloFeature,
 
     val locale = Locale.TAIWAN
 
-    holoFeature.getHoloWithTime(lmt, loc, gender, config.viewGmtJulDay, name, place, config.holoConfig.divineTraditionalConfig.settings).let { (holo: IHolo, list: List<IHoloHexagram>) ->
+    holoFeature.getHoloWithTime(lmt, loc, gender, config.viewGmtJulDay, name, place, config.holoConfig).let { (holo: IHolo, list: List<IHoloHexagram>) ->
 
       val hexagramCongenital = getCongenital(holo, locale)
       val hexagramAcquired = getAcquired(holo, locale)

@@ -331,7 +331,7 @@ interface IHoloFeature : PersonFeature<HoloConfig, IHolo> {
   fun getDailyHexagram(monthHexagram: IHexagram, monthYuanTang: Int, viewGmt: GmtJulDay, loc: ILocation, settings: SettingsOfStemBranch = SettingsOfStemBranch.GingFang, dayHourConfig: DayHourConfig = DayHourConfig()): IHoloHexagramWithStemBranch
 
   /** 除了傳回 本命先後天卦，另外傳回 以及此 gmt 時刻 的大運、流年、流月 等資訊 */
-  fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: GmtJulDay, name: String? = null, place: String? = null, settings: SettingsOfStemBranch = SettingsOfStemBranch.GingFang): Pair<IHolo, List<IHoloHexagram>>
+  fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: GmtJulDay, name: String? = null, place: String? = null, config: HoloConfig = HoloConfig()): Pair<IHolo, List<IHoloHexagram>>
 
   companion object {
     val threeKingHexagrams: Set<Hexagram> = setOf(Hexagram.坎, Hexagram.屯, Hexagram.蹇)
@@ -856,9 +856,9 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
   } // 流日
 
   /** 除了傳回 本命先後天卦，另外傳回 以及此 gmt 時刻 的大運、流年、流月 等資訊 */
-  override fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: GmtJulDay, name: String?, place: String?, settings: SettingsOfStemBranch): Pair<IHolo, List<IHoloHexagram>> {
+  override fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: GmtJulDay, name: String?, place: String?, config: HoloConfig): Pair<IHolo, List<IHoloHexagram>> {
 
-    val holo = getPersonModel(lmt, loc, gender, name, place)
+    val holo = getPersonModel(lmt, loc, gender, name, place, config)
     val congenitalLines: List<HoloLine> = holo.hexagramCongenital.lines
     val acquiredLines: List<HoloLine> = holo.hexagramAcquired.lines
 
@@ -870,7 +870,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
     }
 
 
-    val settingsImpl = settingsMap[settings]!!
+    val settingsImpl = settingsMap[config.divineTraditionalConfig.settings]!!
 
     // 此時刻的大運 (6 or 9年) 的 卦象(with 元堂)
     val majorHexagram: IHoloHexagramWithStemBranch? = (holo.hexagramCongenital.let { holoHexagram: IHoloHexagram ->
