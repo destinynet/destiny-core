@@ -22,7 +22,7 @@ class AspectEffectiveModern(
   val aspectOrbsPlanetImpl: IAspectOrbsPlanet = AspectOrbsPlanetDefaultImpl()
 ) : IAspectEffective, Serializable {
 
-  override val applicableAspects: Collection<Aspect> = Aspect.values().toList()
+  override val applicableAspects: Set<Aspect> = Aspect.values().toSet()
 
 
   /** 直接比對度數是否形成交角，不考慮星體  */

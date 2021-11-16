@@ -74,8 +74,8 @@ interface IYearMonth : IYear, IMonth, Descriptive {
           southernHemisphereOpposition = this@IYearMonth.southernHemisphereOpposition
           hemisphereBy = this@IYearMonth.hemisphereBy
           monthImpl = when (this@IYearMonth) {
-            is YearMonthSolarTermsStarPositionImpl -> MonthConfig.MonthImpl.SolarTerms
-            is YearMonthSunSignImpl                -> MonthConfig.MonthImpl.SunSign
+            is YearMonthSolarTermsStarPositionImpl -> MonthImpl.SolarTerms
+            is YearMonthSunSignImpl                -> MonthImpl.SunSign
             else                                   -> error("no month")
           }
         }

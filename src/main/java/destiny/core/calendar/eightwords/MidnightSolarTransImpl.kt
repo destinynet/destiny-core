@@ -14,6 +14,8 @@ import destiny.core.calendar.ILocation
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -35,11 +37,11 @@ class MidnightSolarTransImpl(private val riseTransImpl: IRiseTrans,
 
 
   override fun toString(locale: Locale): String {
-    return DayConfig.MidnightImpl.NADIR.toString(locale)
+    return MidnightImpl.NADIR.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return DayConfig.MidnightImpl.NADIR.getDescription(locale)
+    return MidnightImpl.NADIR.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

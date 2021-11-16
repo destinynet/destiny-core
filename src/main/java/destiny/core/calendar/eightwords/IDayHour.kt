@@ -18,8 +18,8 @@ interface IDayHour : IDay, IHour {
         day {
           changeDayAfterZi = this@IDayHour.changeDayAfterZi
           midnight = when (this@IDayHour.midnightImpl) {
-            is MidnightSolarTransImpl -> DayConfig.MidnightImpl.NADIR
-            is MidnightLmtImpl        -> DayConfig.MidnightImpl.CLOCK0
+            is MidnightSolarTransImpl -> MidnightImpl.NADIR
+            is MidnightLmtImpl        -> MidnightImpl.CLOCK0
             else                      -> error("no midnight")
           }
         }

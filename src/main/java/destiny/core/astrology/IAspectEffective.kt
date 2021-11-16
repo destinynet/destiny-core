@@ -8,7 +8,7 @@ import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 /** 一個星盤當中，兩顆星體，是否形成某交角  */
 interface IAspectEffective {
 
-  val applicableAspects : Collection<Aspect>
+  val applicableAspects : Set<Aspect>
 
   /**
    * 取得這兩星是否形成此有效交角

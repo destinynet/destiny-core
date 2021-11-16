@@ -17,7 +17,7 @@ internal class YearMonthConfigTest : AbstractConfigTest<YearMonthConfig>() {
     MonthConfig(
       southernHemisphereOpposition = true,
       hemisphereBy = HemisphereBy.DECLINATION,
-      monthImpl = MonthConfig.MonthImpl.SunSign
+      monthImpl = MonthImpl.SunSign
     )
   )
 
@@ -28,7 +28,7 @@ internal class YearMonthConfigTest : AbstractConfigTest<YearMonthConfig>() {
     month {
       southernHemisphereOpposition = true
       hemisphereBy = HemisphereBy.DECLINATION
-      monthImpl = MonthConfig.MonthImpl.SunSign
+      monthImpl = MonthImpl.SunSign
     }
   }
 

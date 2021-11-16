@@ -142,14 +142,14 @@ interface IPlate : Serializable {
   }
 
   /** 取得此星，的四化值 (maybe null) */
-  fun getTransFourValue(star: ZStar, type: FlowType = FlowType.本命): ITransFour.Value? {
+  fun getTransFourValue(star: ZStar, type: FlowType = FlowType.MAIN): ITransFour.Value? {
     return tranFours[star]?.let { m -> m[type] }
   }
 
   /**
    * 取得此四化星，在哪一宮位
    * */
-  fun getTransFourHouseOf(value: ITransFour.Value, type: FlowType = FlowType.本命): HouseData {
+  fun getTransFourHouseOf(value: ITransFour.Value, type: FlowType = FlowType.MAIN): HouseData {
     val star = tranFours.entries.first { (_, map) ->
       map.any { (t, v) -> t == type && v == value }
     }.key
@@ -309,6 +309,6 @@ data class Plate(
 
   /** 本命盤中，此地支的宮位名稱是什麼  */
   override val branchHouseMap: Map<Branch, House> by lazy {
-    branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.本命) }.toMap()
+    branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.MAIN) }.toMap()
   }
 }

@@ -51,7 +51,7 @@ data class HouseData(
   /** 傳回各個流運的宮位名稱對照 , 不傳回本命  */
   val flowHouseMapWithoutBirth: Map<FlowType, House>
     get() = flowHouseMap
-      .filter { it.key != FlowType.本命 }
+      .filter { it.key != FlowType.MAIN }
       .toMap().toSortedMap()
 
   val vageRanges: Pair<Int, Int>

@@ -146,7 +146,7 @@ class Builder(
      *  本命 -> 財帛
      */
     stemBranchHouseMap.entries.associate { e ->
-      val m = mutableMapOf(FlowType.本命 to stemBranchHouseMap.getValue(e.key))
+      val m = mutableMapOf(FlowType.MAIN to stemBranchHouseMap.getValue(e.key))
       e.key.branch to m
     }.toSortedMap().toMap(branchFlowHouseMap)
 
@@ -213,11 +213,11 @@ class Builder(
    * @param map     地支「在該大限」與宮位的對照表
    */
   fun withFlowBig(flowBig: StemBranch, map: Map<Branch, House>): Builder {
-    this.flowBranchMap[FlowType.大限] = flowBig
+    this.flowBranchMap[FlowType.SECTION] = flowBig
 
     map.forEach { (branch, _) ->
       branchFlowHouseMap.computeIfPresent(branch) { _, m ->
-        m[FlowType.大限] = map.getValue(branch)
+        m[FlowType.SECTION] = map.getValue(branch)
         m
       }
     }
@@ -231,10 +231,10 @@ class Builder(
    * @param map      地支「在該流年」與宮位的對照表
    */
   fun withFlowYear(flowYear: StemBranch, map: Map<Branch, House>): Builder {
-    this.flowBranchMap[FlowType.流年] = flowYear
+    this.flowBranchMap[FlowType.YEAR] = flowYear
     map.forEach { (branch, _) ->
       branchFlowHouseMap.computeIfPresent(branch) { _, m ->
-        m[FlowType.流年] = map.getValue(branch)
+        m[FlowType.YEAR] = map.getValue(branch)
         m
       }
     }
@@ -292,10 +292,10 @@ class Builder(
    * @param map       地支「在該流月」與宮位的對照表
    */
   fun withFlowMonth(flowMonth: StemBranch, map: Map<Branch, House>): Builder {
-    this.flowBranchMap[FlowType.流月] = flowMonth
+    this.flowBranchMap[FlowType.MONTH] = flowMonth
     map.forEach { (branch, _) ->
       branchFlowHouseMap.computeIfPresent(branch) { _, m ->
-        m[FlowType.流月] = map.getValue(branch)
+        m[FlowType.MONTH] = map.getValue(branch)
         m
       }
     }
@@ -309,10 +309,10 @@ class Builder(
    * @param map     地支「在該流日」與宮位的對照表
    */
   fun withFlowDay(flowDay: StemBranch, map: Map<Branch, House>): Builder {
-    this.flowBranchMap[FlowType.流日] = flowDay
+    this.flowBranchMap[FlowType.DAY] = flowDay
     map.forEach { (branch, _) ->
       branchFlowHouseMap.computeIfPresent(branch) { _, m ->
-        m[FlowType.流日] = map.getValue(branch)
+        m[FlowType.DAY] = map.getValue(branch)
         m
       }
     }
@@ -326,10 +326,10 @@ class Builder(
    * @param map      地支「在該流時」與宮位的對照表
    */
   fun withFlowHour(flowHour: StemBranch, map: Map<Branch, House>): Builder {
-    this.flowBranchMap[FlowType.流時] = flowHour
+    this.flowBranchMap[FlowType.HOUR] = flowHour
     map.forEach { (branch, _) ->
       branchFlowHouseMap.computeIfPresent(branch) { _, m ->
-        m[FlowType.流時] = map.getValue(branch)
+        m[FlowType.HOUR] = map.getValue(branch)
         m
       }
     }

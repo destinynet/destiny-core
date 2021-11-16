@@ -8,6 +8,8 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.util.*
 
 /**
@@ -30,11 +32,11 @@ class YearMonthSunSignImpl(private val ymSolarTermsStarPositionImpl: YearMonthSo
   }
 
   override fun toString(locale: Locale): String {
-    return MonthConfig.MonthImpl.SunSign.toString(Locale.TAIWAN)
+    return MonthImpl.SunSign.getTitle(Locale.TAIWAN)
   }
 
   override fun getDescription(locale: Locale): String {
-    return MonthConfig.MonthImpl.SunSign.getDescription(locale)
+    return MonthImpl.SunSign.getDescription(locale)
   }
 
   override fun getMonth(gmtJulDay: GmtJulDay, location: ILocation): IStemBranch {

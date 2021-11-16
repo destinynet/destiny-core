@@ -39,7 +39,7 @@ class ClassicalFeature(private val horoscopeFeature: HoroscopeFeature,
 
     val locale = Locale.TAIWAN
 
-    return Planet.classicalList.map { planet ->
+    return Planet.classicalList.associateWith { planet ->
       val list = factories.flatMap { factory ->
         factory.getPatterns(planet, h)
       }.map { pattern ->
@@ -48,8 +48,8 @@ class ClassicalFeature(private val horoscopeFeature: HoroscopeFeature,
         pattern to descriptor.getDescription(locale)
       }
 
-      planet to list
-    }.toMap()
+      list
+    }
   }
 
   companion object {

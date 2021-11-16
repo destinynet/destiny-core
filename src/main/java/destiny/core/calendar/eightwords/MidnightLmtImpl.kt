@@ -12,6 +12,8 @@ import destiny.core.calendar.TimeTools
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField.*
@@ -49,11 +51,11 @@ class MidnightLmtImpl(private val julDayResolver: JulDayResolver) : IMidnight, S
   }
 
   override fun toString(locale: Locale): String {
-    return DayConfig.MidnightImpl.CLOCK0.toString(locale)
+    return MidnightImpl.CLOCK0.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return DayConfig.MidnightImpl.CLOCK0.getDescription(locale)
+    return MidnightImpl.CLOCK0.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

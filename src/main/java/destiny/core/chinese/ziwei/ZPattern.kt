@@ -54,7 +54,7 @@ fun IPlate.三方四正有祿存(branch: Branch = this.mainHouse.branch) =
 fun IPlate.三方四正有祿權科星(branch: Branch = this.mainHouse.branch): Boolean =
   this.三方四正(branch).flatMap { b ->
     this.getHouseDataOf(b).stars.map { star: ZStar ->
-      this.tranFours[star]?.get(FlowType.本命)
+      this.tranFours[star]?.get(FlowType.MAIN)
     }
   }.any { value: ITransFour.Value? -> setOf(祿, 權, 科).contains(value) }
 

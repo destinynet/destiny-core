@@ -7,8 +7,8 @@ package destiny.core.astrology
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IRisingSign
-import destiny.core.calendar.eightwords.RisingSignConfig
-import destiny.core.calendar.eightwords.toString
+import destiny.core.calendar.eightwords.RisingSignImpl
+import destiny.tools.getTitle
 import java.util.*
 
 /**
@@ -60,7 +60,7 @@ interface IHouseCusp : IRisingSign {
   }
 
   override fun toString(locale: Locale): String {
-    return RisingSignConfig.Impl.HouseCusp.toString(locale)
+    return RisingSignImpl.HouseCusp.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {

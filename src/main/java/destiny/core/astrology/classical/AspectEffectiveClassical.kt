@@ -27,7 +27,7 @@ class AspectEffectiveClassical(
   /** 符合交角的評分，內定從幾分開始算起 */
   private val defaultThreshold: Double = 0.6) : IAspectEffective, Serializable {
 
-  override val applicableAspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)
+  override val applicableAspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
 
   private fun getAngleDiff(deg1: ZodiacDegree, deg2: ZodiacDegree, angle: Double): Double {
     return abs(deg1.getAngle(deg2) - angle)

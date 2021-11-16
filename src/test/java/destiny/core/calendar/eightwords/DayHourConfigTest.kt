@@ -13,14 +13,14 @@ internal class DayHourConfigTest : AbstractConfigTest<DayHourConfig>() {
   override val serializer: KSerializer<DayHourConfig> = DayHourConfig.serializer()
 
   override val configByConstructor: DayHourConfig = DayHourConfig(
-    DayConfig(changeDayAfterZi = false , midnight = DayConfig.MidnightImpl.CLOCK0),
+    DayConfig(changeDayAfterZi = false , midnight = MidnightImpl.CLOCK0),
     HourBranchConfig(HourImpl.LMT)
   )
 
   override val configByFunction = dayHour {
     day {
       changeDayAfterZi = false
-      midnight = DayConfig.MidnightImpl.CLOCK0
+      midnight = MidnightImpl.CLOCK0
     }
     hourBranch {
       hourImpl = HourImpl.LMT

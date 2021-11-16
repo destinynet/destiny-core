@@ -142,7 +142,7 @@ class EightWordsColorCanvas(
 
       var x = 0
 
-      if (config.eightWordsConfig.yearMonthConfig.monthConfig.monthImpl == MonthConfig.MonthImpl.SunSign) {
+      if (config.eightWordsConfig.yearMonthConfig.monthConfig.monthImpl == MonthImpl.SunSign) {
         val monthDesc =
           ChineseStringTools.toBiggerDigits(120) + "月柱法" + "（" + model.starPosMap.getValue(Planet.SUN).sign + "）"
         cc.setText(monthDesc, 5, 1, "FF0000")
@@ -154,7 +154,7 @@ class EightWordsColorCanvas(
       if (location.northSouth == News.NorthSouth.SOUTH) {
 
         config.eightWordsConfig.yearMonthConfig.monthConfig.run {
-          if (monthImpl==MonthConfig.MonthImpl.SolarTerms) {
+          if (monthImpl== MonthImpl.SolarTerms) {
             cc.setText("南半球", 5, x + 35, "FF0000")
             cc.setText("月令：" + if (southernHemisphereOpposition) "對沖" else "不對沖", 5, x + 41)
           }
@@ -169,7 +169,7 @@ class EightWordsColorCanvas(
 
       config.eightWordsConfig.dayHourConfig.dayConfig.midnight.run {
         cc.setText(
-          "子正是：" + toString(Locale.TRADITIONAL_CHINESE), 6, 1, foreColor = null, backColor = null,
+          "子正是：" + getTitle(Locale.TRADITIONAL_CHINESE), 6, 1, foreColor = null, backColor = null,
           title = getDescription(Locale.TRADITIONAL_CHINESE)
         )
       }
@@ -189,7 +189,7 @@ class EightWordsColorCanvas(
       cc.setText("命宮：", risingLine, 1, foreColor = null, backColor = null, title = "命宮")
 
       cc.setText(mainHouse, risingLine, 7, foreColor = "FF0000", backColor =  null, title = mainHouse)
-      cc.setText("（" + config.risingSignConfig.impl.toString(Locale.TAIWAN) + "）", risingLine, 19)
+      cc.setText("（" + config.risingSignConfig.impl.getTitle(Locale.TAIWAN) + "）", risingLine, 19)
 
       val linkLine = 9
       if (linkUrl != null) {

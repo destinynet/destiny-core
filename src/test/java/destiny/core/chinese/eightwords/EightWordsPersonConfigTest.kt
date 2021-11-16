@@ -20,23 +20,23 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
       EightWordsConfig(
         YearMonthConfig(
           YearConfig(270.0),
-          MonthConfig(true , HemisphereBy.DECLINATION ,MonthConfig.MonthImpl.SunSign)
+          MonthConfig(true, HemisphereBy.DECLINATION, MonthImpl.SunSign)
         ),
         DayHourConfig(
-          DayConfig(changeDayAfterZi = false , DayConfig.MidnightImpl.CLOCK0),
+          DayConfig(changeDayAfterZi = false , MidnightImpl.CLOCK0),
           HourBranchConfig(HourImpl.LMT)
         )
       ),
       RisingSignConfig(
         HouseConfig(HouseSystem.EQUAL, Coordinate.SIDEREAL),
         TradChineseRisingSignConfig(HourImpl.LMT),
-        RisingSignConfig.Impl.TradChinese
+        RisingSignImpl.TradChinese
       ),
       ZodiacSignConfig(Planet.SUN),
       HouseConfig(HouseSystem.EQUAL, Coordinate.SIDEREAL),
       "台北市"
     ),
-    fortuneLargeConfig = FortuneLargeConfig(FortuneLargeConfig.Impl.SolarTermsSpan, 90.0),
+    fortuneLargeConfig = FortuneLargeConfig(FortuneLargeImpl.SolarTermsSpan, 90.0),
     fortuneSmallConfig = FortuneSmallConfig(FortuneSmallConfig.Impl.SixGia, 90, intAgeNotes = listOf(IntAgeNote.Minguo))
   )
 
@@ -50,14 +50,14 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
           month {
             southernHemisphereOpposition = true
             hemisphereBy = HemisphereBy.DECLINATION
-            monthImpl = MonthConfig.MonthImpl.SunSign
+            monthImpl = MonthImpl.SunSign
           }
         }
 
         dayHour {
           day {
             changeDayAfterZi = false
-            midnight = DayConfig.MidnightImpl.CLOCK0
+            midnight = MidnightImpl.CLOCK0
           }
           hourBranch {
             hourImpl = HourImpl.LMT
@@ -83,7 +83,7 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
       place = "台北市"
     }
     fortuneLarge {
-      impl = FortuneLargeConfig.Impl.SolarTermsSpan
+      impl = FortuneLargeImpl.SolarTermsSpan
       span = 90.0
     }
     fortuneSmall {

@@ -16,9 +16,9 @@ import kotlin.math.absoluteValue
 
 interface IMidnightFeature : Feature<DayConfig, GmtJulDay> {
 
-  fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation, impl: DayConfig.MidnightImpl): GmtJulDay
+  fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation, impl: MidnightImpl): GmtJulDay
 
-  fun getPrevMidnight(gmtJulDay: GmtJulDay, loc: ILocation, impl: DayConfig.MidnightImpl): GmtJulDay {
+  fun getPrevMidnight(gmtJulDay: GmtJulDay, loc: ILocation, impl: MidnightImpl): GmtJulDay {
     val nextMidnight = getNextMidnight(gmtJulDay, loc, impl)
 
     return generateSequence(gmtJulDay - 0.5 to getNextMidnight(gmtJulDay - 0.5, loc, impl)) { pair ->
@@ -31,7 +31,7 @@ interface IMidnightFeature : Feature<DayConfig, GmtJulDay> {
 
 /** 取得下一個子正的時刻 */
 @Named
-class MidnightFeature(private val midnightImplMap: Map<DayConfig.MidnightImpl, IMidnight>,
+class MidnightFeature(private val midnightImplMap: Map<MidnightImpl, IMidnight>,
                       private val julDayResolver: JulDayResolver) : AbstractCachedFeature<DayConfig, GmtJulDay>() , IMidnightFeature {
 
   override val key: String = "midnight"
@@ -48,7 +48,7 @@ class MidnightFeature(private val midnightImplMap: Map<DayConfig.MidnightImpl, I
     return TimeTools.getGmtJulDay(resultLmt, loc)
   }
 
-  override fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation, impl: DayConfig.MidnightImpl): GmtJulDay {
+  override fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation, impl: MidnightImpl): GmtJulDay {
     return midnightImplMap[impl]!!.getNextMidnight(gmtJulDay, loc)
   }
 }

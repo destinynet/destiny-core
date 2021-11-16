@@ -3,7 +3,6 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.Descriptive
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -22,50 +21,25 @@ import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
-import java.util.*
 import javax.inject.Named
 
+enum class MidnightImpl {
+  CLOCK0, // 當地時間手錶零時
+  NADIR   // 太陽劃過天底(子午線)
+}
 
 @Serializable
 data class DayConfig(val changeDayAfterZi: Boolean = true ,
                      val midnight: MidnightImpl = MidnightImpl.NADIR): java.io.Serializable {
-  enum class MidnightImpl {
-    CLOCK0, // 當地時間手錶零時
-    NADIR   // 太陽劃過天底(子午線)
-  }
 }
 
-
-fun DayConfig.MidnightImpl.asDescriptive() = object : Descriptive {
-  override fun toString(locale: Locale): String {
-    return when (this@asDescriptive) {
-      DayConfig.MidnightImpl.CLOCK0 -> "以地方平均時（LMT）夜半零時來判定"
-      DayConfig.MidnightImpl.NADIR  -> "太陽過天底"
-    }
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return when (this@asDescriptive) {
-      DayConfig.MidnightImpl.CLOCK0 -> "晚上零時就是子正，不校正經度差以及真太陽時"
-      DayConfig.MidnightImpl.NADIR  -> "以太陽過當地『天底』的時刻為『子正』"
-    }
-  }
-}
-
-fun DayConfig.MidnightImpl.toString(locale: Locale): String {
-  return this.asDescriptive().toString(locale)
-}
-
-fun DayConfig.MidnightImpl.getDescription(locale: Locale): String {
-  return this.asDescriptive().getDescription(locale)
-}
 
 @DestinyMarker
 class DayConfigBuilder : Builder<DayConfig> {
 
   var changeDayAfterZi: Boolean = true
 
-  var midnight : DayConfig.MidnightImpl = DayConfig.MidnightImpl.NADIR
+  var midnight : MidnightImpl = MidnightImpl.NADIR
 
   override fun build() : DayConfig {
     return DayConfig(changeDayAfterZi, midnight)

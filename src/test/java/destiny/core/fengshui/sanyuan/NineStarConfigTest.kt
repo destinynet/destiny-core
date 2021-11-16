@@ -22,11 +22,11 @@ internal class NineStarConfigTest : AbstractConfigTest<NineStarConfig>() {
         MonthConfig(
           southernHemisphereOpposition = true,
           hemisphereBy = HemisphereBy.DECLINATION,
-          monthImpl = MonthConfig.MonthImpl.SunSign
+          monthImpl = MonthImpl.SunSign
         )
       ),
       dayHourConfig = DayHourConfig(
-        DayConfig(changeDayAfterZi = false, midnight = DayConfig.MidnightImpl.CLOCK0),
+        DayConfig(changeDayAfterZi = false, midnight = MidnightImpl.CLOCK0),
         HourBranchConfig(hourImpl = HourImpl.LMT)
       )
     )
@@ -42,14 +42,14 @@ internal class NineStarConfigTest : AbstractConfigTest<NineStarConfig>() {
         month {
           southernHemisphereOpposition = true
           hemisphereBy = HemisphereBy.DECLINATION
-          monthImpl = MonthConfig.MonthImpl.SunSign
+          monthImpl = MonthImpl.SunSign
         }
       }
 
       dayHour {
         day {
           changeDayAfterZi = false
-          midnight = DayConfig.MidnightImpl.CLOCK0
+          midnight = MidnightImpl.CLOCK0
         }
         hourBranch {
           hourImpl = HourImpl.LMT

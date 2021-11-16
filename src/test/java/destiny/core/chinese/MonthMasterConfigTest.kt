@@ -6,6 +6,7 @@ package destiny.core.chinese
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.eightwords.HemisphereBy
 import destiny.core.calendar.eightwords.MonthConfig
+import destiny.core.calendar.eightwords.MonthImpl
 import destiny.core.chinese.MonthMasterConfigBuilder.Companion.monthMaster
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
@@ -15,7 +16,7 @@ internal class MonthMasterConfigTest : AbstractConfigTest<MonthMasterConfig>() {
   override val serializer: KSerializer<MonthMasterConfig> = MonthMasterConfig.serializer()
 
   override val configByConstructor: MonthMasterConfig = MonthMasterConfig(
-    MonthMasterConfig.Impl.Combined, MonthConfig(true, HemisphereBy.DECLINATION, MonthConfig.MonthImpl.SunSign)
+    MonthMasterConfig.Impl.Combined, MonthConfig(true, HemisphereBy.DECLINATION, MonthImpl.SunSign)
   )
 
   override val configByFunction: MonthMasterConfig = monthMaster {
@@ -24,7 +25,7 @@ internal class MonthMasterConfigTest : AbstractConfigTest<MonthMasterConfig>() {
     month {
       southernHemisphereOpposition = true
       hemisphereBy = HemisphereBy.DECLINATION
-      monthImpl = MonthConfig.MonthImpl.SunSign
+      monthImpl = MonthImpl.SunSign
     }
   }
 

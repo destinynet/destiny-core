@@ -3,7 +3,6 @@
  */
 package destiny.core.chinese.eightwords
 
-import destiny.core.Descriptive
 import destiny.core.Gender
 import destiny.core.IntAgeNote
 import destiny.core.calendar.GmtJulDay
@@ -19,43 +18,23 @@ import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 import javax.inject.Named
 
+enum class FortuneLargeImpl {
+  DefaultSpan,    // 傳統、標準大運 (每柱十年)
+  SolarTermsSpan  // 節氣星座過運法 (每柱五年)
+}
+
 @Serializable
-data class FortuneLargeConfig(val impl: Impl = Impl.DefaultSpan,
+data class FortuneLargeConfig(val impl: FortuneLargeImpl = FortuneLargeImpl.DefaultSpan,
                               val span : Double = 120.0,
                               val intAgeNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
-                              val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable {
-  enum class Impl {
-    DefaultSpan,    // 傳統、標準大運 (每柱十年)
-    SolarTermsSpan  // 節氣星座過運法 (每柱五年)
-  }
-}
-
-fun FortuneLargeConfig.Impl.asDescriptive() = object : Descriptive {
-  override fun toString(locale: Locale): String {
-    return when(this@asDescriptive) {
-      FortuneLargeConfig.Impl.DefaultSpan -> "傳統「節」過運"
-      FortuneLargeConfig.Impl.SolarTermsSpan -> "「節」＋「氣（星座）」過運"
-    }
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return when(this@asDescriptive) {
-      FortuneLargeConfig.Impl.DefaultSpan -> "太陽過黃道節氣的「節」來劃分大運，傳統此法一柱約十年。"
-      FortuneLargeConfig.Impl.SolarTermsSpan -> "除了傳統法，額外考量「星座」（意即：中氣）過運。通常一柱大運為五年。"
-    }
-  }
-}
-
-
-
+                              val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
 
 @DestinyMarker
 class FortuneLargeConfigBuilder : Builder<FortuneLargeConfig> {
 
-  var impl: FortuneLargeConfig.Impl = FortuneLargeConfig.Impl.DefaultSpan
+  var impl: FortuneLargeImpl = FortuneLargeImpl.DefaultSpan
 
   var span : Double = 120.0
 
@@ -97,7 +76,7 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
 }
 
 @Named
-class FortuneLargeFeature(private val implMap : Map<FortuneLargeConfig.Impl, IPersonFortuneLarge>,
+class FortuneLargeFeature(private val implMap : Map<FortuneLargeImpl, IPersonFortuneLarge>,
                           private val julDayResolver: JulDayResolver) : IFortuneLargeFeature, AbstractCachedPersonFeature<FortuneLargeConfig, List<FortuneData>>() {
 
   override val defaultConfig: FortuneLargeConfig = FortuneLargeConfig()
@@ -106,8 +85,8 @@ class FortuneLargeFeature(private val implMap : Map<FortuneLargeConfig.Impl, IPe
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
     val count = when (config.impl) {
-      FortuneLargeConfig.Impl.DefaultSpan    -> 9
-      FortuneLargeConfig.Impl.SolarTermsSpan -> 18
+      FortuneLargeImpl.DefaultSpan    -> 9
+      FortuneLargeImpl.SolarTermsSpan -> 18
     }
 
     return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count, config)

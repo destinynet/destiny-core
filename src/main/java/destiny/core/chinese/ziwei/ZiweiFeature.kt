@@ -664,10 +664,10 @@ class ZiweiFeature(
 
     val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> =
       if (config.yearType == YearType.YEAR_LUNAR) {
-        getTrans4Map(FlowType.本命, lunarYear.stem, config)
+        getTrans4Map(FlowType.MAIN, lunarYear.stem, config)
       } else {
         // 立春分年
-        getTrans4Map(FlowType.本命, solarYear.stem, config).also {
+        getTrans4Map(FlowType.MAIN, solarYear.stem, config).also {
           if (lunarYear !== solarYear) {
             // 如果年 與 陰曆年不同
             // solar_year=年系星立春為界，故年用 {0} 而非 {1}
@@ -761,7 +761,7 @@ class ZiweiFeature(
     }
 
     // 大限四化
-    val trans4Map = getTrans4Map(FlowType.大限, flowBig.stem, config)
+    val trans4Map = getTrans4Map(FlowType.SECTION, flowBig.stem, config)
     return builder
       .withFlowBig(flowBig, branchHouseMap)
       .appendTrans4Map(trans4Map)
@@ -779,7 +779,7 @@ class ZiweiFeature(
     }
 
     // 流年四化
-    val trans4Map = getTrans4Map(FlowType.流年, flowYear.stem, config)
+    val trans4Map = getTrans4Map(FlowType.YEAR, flowYear.stem, config)
 
     return getFlowBig(builder, flowBig, config)
       .withFlowYear(flowYear, branchHouseMap)
@@ -798,7 +798,7 @@ class ZiweiFeature(
     }
 
     // 流月四化
-    val trans4Map = getTrans4Map(FlowType.流月, flowMonth.stem, config)
+    val trans4Map = getTrans4Map(FlowType.MONTH, flowMonth.stem, config)
 
     return getFlowYear(builder, flowBig, flowYear, config)
       .withFlowMonth(flowMonth, branchHouseMap)
@@ -818,7 +818,7 @@ class ZiweiFeature(
     }
 
     // 流日四化
-    val trans4Map = getTrans4Map(FlowType.流日, flowDay.stem, config)
+    val trans4Map = getTrans4Map(FlowType.DAY, flowDay.stem, config)
     return getFlowMonth(builder, flowBig, flowYear, flowMonth, config)
       .withFlowDay(flowDay, branchHouseMap)
       .appendTrans4Map(trans4Map)
@@ -839,7 +839,7 @@ class ZiweiFeature(
     }
 
     // 流時四化
-    val trans4Map = getTrans4Map(FlowType.流時, flowHour.stem, config)
+    val trans4Map = getTrans4Map(FlowType.HOUR, flowHour.stem, config)
 
     return getFlowDay(builder, flowBig, flowYear, flowMonth, flowDay, flowDayNum, config)
       .withFlowHour(flowHour, branchHouseMap)

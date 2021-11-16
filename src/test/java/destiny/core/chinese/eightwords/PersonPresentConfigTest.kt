@@ -20,7 +20,7 @@ internal class PersonPresentConfigTest : AbstractConfigTest<PersonPresentConfig>
         EightWordsConfig(
           YearMonthConfig(
             YearConfig(270.0),
-            MonthConfig(true, HemisphereBy.DECLINATION, MonthConfig.MonthImpl.SunSign)
+            MonthConfig(true, HemisphereBy.DECLINATION, MonthImpl.SunSign)
           )
         )
       )
@@ -39,7 +39,7 @@ internal class PersonPresentConfigTest : AbstractConfigTest<PersonPresentConfig>
             month {
               southernHemisphereOpposition = true
               hemisphereBy = HemisphereBy.DECLINATION
-              monthImpl = MonthConfig.MonthImpl.SunSign
+              monthImpl = MonthImpl.SunSign
             }
           }
         }

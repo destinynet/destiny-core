@@ -3,7 +3,6 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.Descriptive
 import destiny.core.astrology.IStarPosition
 import destiny.core.astrology.IStarTransit
 import destiny.core.calendar.*
@@ -13,9 +12,15 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
-import java.util.*
 import javax.inject.Named
 
+enum class MonthImpl {
+  /** 標準, 節氣劃分月令 */
+  SolarTerms,
+
+  /** 120柱月令 */
+  SunSign
+}
 
 @Serializable
 data class MonthConfig(
@@ -30,38 +35,8 @@ data class MonthConfig(
 
   val monthImpl: MonthImpl = MonthImpl.SolarTerms
 ) : java.io.Serializable {
-  enum class MonthImpl {
-    /** 標準, 節氣劃分月令 */
-    SolarTerms,
-
-    /** 120柱月令 */
-    SunSign
-  }
 }
 
-fun MonthConfig.MonthImpl.asDescriptive() = object : Descriptive {
-  override fun toString(locale: Locale): String {
-    return when (this@asDescriptive) {
-      MonthConfig.MonthImpl.SolarTerms -> "傳統年月"
-      MonthConfig.MonthImpl.SunSign    -> "120柱月令"
-    }
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return when (this@asDescriptive) {
-      MonthConfig.MonthImpl.SolarTerms -> "以「節氣」的「節」來切割月份"
-      MonthConfig.MonthImpl.SunSign    -> "以節氣加星座 劃分月令：節氣的「節」與「氣」之間，屬於上一個星座，天干不變，地支退一位"
-    }
-  }
-}
-
-fun MonthConfig.MonthImpl.toString(locale: Locale): String {
-  return this.asDescriptive().toString(locale)
-}
-
-fun MonthConfig.MonthImpl.getDescription(locale: Locale): String {
-  return this.asDescriptive().getDescription(locale)
-}
 
 class MonthConfigBuilder : Builder<MonthConfig> {
 
@@ -75,7 +50,7 @@ class MonthConfigBuilder : Builder<MonthConfig> {
    */
   var hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
 
-  var monthImpl: MonthConfig.MonthImpl = MonthConfig.MonthImpl.SolarTerms
+  var monthImpl: MonthImpl = MonthImpl.SolarTerms
 
   override fun build(): MonthConfig {
     return MonthConfig(southernHemisphereOpposition, hemisphereBy, monthImpl)
@@ -150,8 +125,8 @@ class YearMonthFeature(private val starPositionImpl: IStarPosition<*>,
     )
 
     return when (config.monthConfig.monthImpl) {
-      MonthConfig.MonthImpl.SolarTerms -> originalMonth
-      MonthConfig.MonthImpl.SunSign    -> {
+      MonthImpl.SolarTerms -> originalMonth
+      MonthImpl.SunSign    -> {
         // 目前的節氣
         val solarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
 

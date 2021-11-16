@@ -8,6 +8,8 @@ import destiny.core.astrology.IStarPosition
 import destiny.core.astrology.IStarTransit
 import destiny.core.calendar.*
 import destiny.core.chinese.IStemBranch
+import destiny.tools.getDescription
+import destiny.tools.getTitle
 import mu.KotlinLogging
 import java.util.*
 
@@ -29,11 +31,11 @@ class YearMonthSolarTermsStarPositionImpl(
 ) : IYearMonth, IYear by yearImpl{
 
   override fun toString(locale: Locale): String {
-    return MonthConfig.MonthImpl.SolarTerms.toString(Locale.TAIWAN)
+    return MonthImpl.SolarTerms.getTitle(Locale.TAIWAN)
   }
 
   override fun getDescription(locale: Locale): String {
-    return MonthConfig.MonthImpl.SolarTerms.getDescription(locale)
+    return MonthImpl.SolarTerms.getDescription(locale)
   }
 
   val solarTermsImpl: ISolarTerms by lazy {

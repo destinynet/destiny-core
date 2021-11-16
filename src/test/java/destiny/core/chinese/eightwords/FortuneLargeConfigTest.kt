@@ -13,10 +13,10 @@ internal class FortuneLargeConfigTest : AbstractConfigTest<FortuneLargeConfig>()
 
   override val serializer: KSerializer<FortuneLargeConfig> = FortuneLargeConfig.serializer()
 
-  override val configByConstructor: FortuneLargeConfig = FortuneLargeConfig(FortuneLargeConfig.Impl.SolarTermsSpan, 90.0, listOf(IntAgeNote.Minguo))
+  override val configByConstructor: FortuneLargeConfig = FortuneLargeConfig(FortuneLargeImpl.SolarTermsSpan, 90.0, listOf(IntAgeNote.Minguo))
 
   override val configByFunction: FortuneLargeConfig = fortuneLarge {
-    impl = FortuneLargeConfig.Impl.SolarTermsSpan
+    impl = FortuneLargeImpl.SolarTermsSpan
     span = 90.0
     intAgeNotes(listOf(IntAgeNote.Minguo))
   }
