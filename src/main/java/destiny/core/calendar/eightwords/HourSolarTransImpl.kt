@@ -17,6 +17,7 @@ import destiny.tools.converters.Domains.KEY_HOUR
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 
 /**
@@ -226,8 +227,19 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
     val currentBranch: Branch = getHour(lmt, loc, config)
 
     val (targetDate , targetBranch) = lmt.toLocalDate().let { localDate ->
-      if (currentBranch == 子 && !next)
-        localDate.minus(1, ChronoUnit.DAYS) to 亥
+      if (currentBranch == 子) {
+        if (!next) {
+          localDate.minus(1, ChronoUnit.DAYS) to 亥
+        } else {
+          if (lmt.get(ChronoField.HOUR_OF_DAY) > 12) {
+            localDate.plus(1, ChronoUnit.DAYS) to 丑
+          } else {
+            localDate to ( if (next) currentBranch.next else currentBranch.prev )
+          }
+        }
+      }
+//      if (currentBranch == 子 && !next)
+//        localDate.minus(1, ChronoUnit.DAYS) to 亥
       else if (currentBranch == 亥 && next)
         localDate.plus(1 , ChronoUnit.DAYS) to 子
       else
