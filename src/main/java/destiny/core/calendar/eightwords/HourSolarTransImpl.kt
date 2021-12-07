@@ -238,8 +238,6 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
           }
         }
       }
-//      if (currentBranch == 子 && !next)
-//        localDate.minus(1, ChronoUnit.DAYS) to 亥
       else if (currentBranch == 亥 && next)
         localDate.plus(1 , ChronoUnit.DAYS) to 子
       else
