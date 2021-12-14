@@ -14,12 +14,12 @@ class ExtensionsKtTest {
   fun firstNotNullResult_iterable() {
     listOf(null, 'A', 'B').also { list ->
       assertEquals('A', list.firstNotNullResult { it })
-      assertEquals('a', list.firstNotNullResult { it?.toLowerCase() })
+      assertEquals('a', list.firstNotNullResult { it?.lowercaseChar() })
     }
 
     listOf<Char?>(null, null).also { list ->
       assertNull(list.firstNotNullResult { it })
-      assertNull(list.firstNotNullResult { it?.toLowerCase() })
+      assertNull(list.firstNotNullResult { it?.lowercaseChar() })
     }
   }
 
@@ -27,7 +27,7 @@ class ExtensionsKtTest {
   fun firstNotNullResult_sequence() {
     sequenceOf(null, 'A', 'B').also { seq ->
       assertEquals('A', seq.firstNotNullResult { it })
-      assertEquals('a', seq.firstNotNullResult { it?.toLowerCase() })
+      assertEquals('a', seq.firstNotNullResult { it?.lowercaseChar() })
     }
 
     sequenceOf<String?>(null, null).also { seq ->

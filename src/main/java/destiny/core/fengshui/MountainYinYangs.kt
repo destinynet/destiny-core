@@ -106,21 +106,21 @@ class MountainYinYangTrilogyImpl : IMountainYinYang, Serializable {
   override fun getYinYang(m: Mountain): Boolean {
     return when (m.mnt) {
       is SealedMnt.MntBranch -> {
-        return when (BranchTools.trilogy(m.mnt.branch)) {
+        when (BranchTools.trilogy(m.mnt.branch)) {
           FiveElement.水, FiveElement.火 -> true
           FiveElement.木, FiveElement.金 -> false
           FiveElement.土 -> throw IllegalStateException("三合不可能為土 : ${m.mnt.branch}")
         }
       }
       is SealedMnt.MntStem -> {
-        return when (m.mnt.stem.fiveElement) {
+        when (m.mnt.stem.fiveElement) {
           FiveElement.水, FiveElement.木 -> true
           FiveElement.火, FiveElement.金 -> false
           FiveElement.土 -> throw IllegalStateException("24山的天干不會有土 : ${m.mnt.stem}")
         }
       }
       is SealedMnt.MntSymbol -> {
-        return when (m.mnt.symbol) {
+        when (m.mnt.symbol) {
           Symbol.乾, Symbol.坤 -> true
           Symbol.艮, Symbol.巽 -> false
           else -> throw IllegalStateException("24山無此八卦 : ${m.mnt.symbol}")

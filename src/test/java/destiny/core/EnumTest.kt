@@ -2,8 +2,8 @@ package destiny.core
 
 import destiny.tools.getDescription
 import destiny.tools.getTitle
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.descriptors.SerialKind
 import kotlinx.serialization.descriptors.elementNames
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
@@ -56,19 +56,26 @@ abstract class EnumTest {
  */
 
 fun KType.enumValueOf(name: String, serializer: KSerializer<Any?> = serializer(this)): Enum<*> {
-  if (serializer.descriptor.kind != SerialKind.ENUM) throw error("enumValueOf must be used on enum")
+//  if (serializer.descriptor.kind != SerialKind.ENUM) {
+//    throw error("enumValueOf must be used on enum")
+//  }
   return Json.decodeFromString(serializer, "\"$name\"") as Enum<*>
 }
 
+@OptIn(ExperimentalSerializationApi::class)
 fun KType.enumValuesName(serializer: KSerializer<Any?> = serializer(this)): List<String> {
-  if (serializer.descriptor.kind != SerialKind.ENUM) throw error("enumValuesName must be used on enum")
+//  if (serializer.descriptor.kind != SerialKind.ENUM) {
+//    throw error("enumValuesName must be used on enum")
+//  }
   val enumName = serializer.descriptor.serialName
   return serializer.descriptor.elementNames.map { it.removePrefix(enumName) }
 }
 
 
 fun KType.enumValues(serializer: KSerializer<Any?> = serializer(this)): List<Enum<*>> {
-  if (serializer.descriptor.kind != SerialKind.ENUM) throw error("enumValues must be used on enum")
+//  if (serializer.descriptor.kind != SerialKind.ENUM) {
+//    throw error("enumValues must be used on enum")
+//  }
   return enumValuesName(serializer).map { enumValueOf(it, serializer) }
 }
 
