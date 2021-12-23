@@ -9,9 +9,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Dizang(/** 六十甲子 */
-                  val stemBranch: StemBranch ,
+                  val stemBranch: StemBranch,
                   /** 七言絕句 , 四句話 */
-                  val poems: List<String>,
+                  val poem: List<String>,
                   val scene : String,
-                  val shortDescs : List<String> ,
+                  val shortDescs : List<String>,
                   val fullDescs : List<String>) : java.io.Serializable
