@@ -15,6 +15,7 @@ import destiny.tools.canvas.ColorCanvas
 import mu.KotlinLogging
 import org.apache.commons.lang3.StringUtils
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoField
 import java.util.*
 
 class PersonContextColorCanvas(private val config: PersonPresentConfig,
@@ -99,16 +100,17 @@ class PersonContextColorCanvas(private val config: PersonPresentConfig,
         val fortuneData = dataList[i - 1]
         val selected = fortuneData.stemBranch == model.selectedFortuneLarge
 
-        val startFortune = fortuneData.startFortuneAgeNotes.firstOrNull()?:""
 
         val stemBranch = fortuneData.stemBranch
         val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, julDayResolver)
+        // 顯示西元年份
+        val startFortuneWestYear = startFortuneLmt.get(ChronoField.YEAR_OF_ERA).toString()
 
         val bgColor = if (selected) "DDD" else null
         val triColumn = ColorCanvas(10, 6, ChineseStringTools.NULL_CHAR, null, bgColor)
 
-        triColumn.setText(StringUtils.center(startFortune, 6, ' '), 1, 1, foreColor = "green", backColor = null,
-          title = "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
+        triColumn.setText(StringUtils.center(startFortuneWestYear, 6, ' '), 1, 1, foreColor = "green", backColor = null,
+                          title = "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
         // 加上月
         val monthDay = startFortuneLmt.toLocalDate().let { value ->
           monthFormatter.format(value)
