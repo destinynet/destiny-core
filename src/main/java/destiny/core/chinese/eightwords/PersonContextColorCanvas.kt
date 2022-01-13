@@ -51,7 +51,6 @@ class PersonContextColorCanvas(private val config: PersonPresentConfig,
 
     add(ewContextColorCanvas.eightWordsColorCanvas, 11, 9) // 純粹八字盤
 
-
     val 右方大運直 = ColorCanvas(9, 24, ChineseStringTools.NULL_CHAR)
     val 下方大運橫 = ColorCanvas(10, 70, ChineseStringTools.NULL_CHAR)
 
@@ -71,7 +70,6 @@ class PersonContextColorCanvas(private val config: PersonPresentConfig,
       }
       val endFortune = ChineseStringTools.toBiggerDigits(fortuneData.endFortuneAge)
       val stemBranch = fortuneData.stemBranch
-
 
       val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, julDayResolver)
       val endFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.endFortuneGmtJulDay, model.location, julDayResolver)
@@ -153,14 +151,15 @@ class PersonContextColorCanvas(private val config: PersonPresentConfig,
 
           val selected = fortuneData.stemBranch == model.selectedFortuneLarge
 
-          val startFortune = fortuneData.startFortuneAgeNotes.firstOrNull() ?: ""
           val stemBranch = fortuneData.stemBranch
           val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, julDayResolver)
+          // 顯示西元年份
+          val startFortuneWestYear = startFortuneLmt.get(ChronoField.YEAR_OF_ERA).toString()
 
           val bgColor = if (selected) "DDD" else null
           val triColumnShort = ColorCanvas(5, 6, ChineseStringTools.NULL_CHAR, null, bgColor)
 
-          val title = StringUtils.center(startFortune, 6, ' ')
+          val title = StringUtils.center(startFortuneWestYear, 6, ' ')
           triColumnShort.setText(title, 1, 1, foreColor = "green", backColor = null, title = "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
 
           val reaction = reactionsUtil.getReaction(stemBranch.stem, eightWords.day.stem)
