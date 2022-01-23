@@ -101,19 +101,31 @@ class PersonContextColorCanvas(private val config: PersonPresentConfig,
 
         val stemBranch = fortuneData.stemBranch
         val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, julDayResolver)
-        // 顯示西元年份
-        val startFortuneWestYear = startFortuneLmt.get(ChronoField.YEAR_OF_ERA).toString()
+
 
         val bgColor = if (selected) "DDD" else null
         val triColumn = ColorCanvas(10, 6, ChineseStringTools.NULL_CHAR, null, bgColor)
 
-        triColumn.setText(StringUtils.center(startFortuneWestYear, 6, ' '), 1, 1, foreColor = "green", backColor = null,
-                          title = "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
-        // 加上月
-        val monthDay = startFortuneLmt.toLocalDate().let { value ->
-          monthFormatter.format(value)
+        // 年/月
+        triColumn.run {
+          // 西元年份
+          val startFortuneWestYear = startFortuneLmt.get(ChronoField.YEAR_OF_ERA).toString()
+          setText(
+            StringUtils.center(startFortuneWestYear, 6, ' '), 1, 1, foreColor = "green", backColor = null,
+            title = "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt)
+          )
+
+          // 加上月份
+          val monthDay = startFortuneLmt.toLocalDate().let { value ->
+            monthFormatter.format(value)
+          }
+          setText(
+            StringUtils.center(monthDay, 6, ' '), 2, 1, foreColor = "green", backColor = null,
+            title = "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt)
+          )
         }
-        triColumn.setText(StringUtils.center(monthDay, 6, ' '), 2, 1, foreColor = "green", backColor = null, title = null)
+
+
         if (showNaYin) {
           NaYin.getNaYin(stemBranch.stem, stemBranch.branch)?.also { naYin ->
             val name = naYin.name

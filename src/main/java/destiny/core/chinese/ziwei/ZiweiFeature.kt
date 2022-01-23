@@ -934,7 +934,7 @@ class ZiweiFeature(
       logger.info("[DST]:校正日光節約時間...")
       logger.info("lmt = {} , location = {} . location.hasMinuteOffset = {}", lmt, loc, loc.hasMinuteOffset)
       logger.info("loc tz = {} , minuteOffset = {}", loc.timeZone.id, loc.finalMinuteOffset)
-      logger.info("日光節約時間： {} ,  GMT 時差 : {}", dst, minuteOffset)
+      logger.info("有日光節約時間 ,  GMT 時差 : {}", minuteOffset)
       logger.info("時辰 = {} . hourImpl = {}", hour, config.ewConfig.dayHourConfig.hourBranchConfig.hourImpl)
     }
 

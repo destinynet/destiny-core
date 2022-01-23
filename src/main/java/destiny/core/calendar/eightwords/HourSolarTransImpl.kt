@@ -176,8 +176,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
         val oneUnit4 = (previousNadir - prevMeridian) / 12.0
         when {
           丑to午.contains(eb) -> previousNadir + oneUnit3 * ((eb.index - 1) * 2 + 1)  // ex : 目前寅時 , 計算「上一個丑時」
-          eb == 子 -> prevMeridian + oneUnit4 * 11  // ex : 目前寅時 , 計算「上一個子時」
-          else -> throw RuntimeException("error")
+          else -> prevMeridian + oneUnit4 * 11  // ex : 目前寅時 , 計算「上一個子時」
         }
       }
     } else {

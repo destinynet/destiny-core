@@ -8,7 +8,7 @@ package destiny.core.iching
 /**
  * 周易卦序Comparator
  */
-class HexagramDefaultComparator : destiny.core.iching.AbstractHexagramSequence(), Comparator<IHexagram> {
+class HexagramDefaultComparator : AbstractHexagramSequence(), Comparator<IHexagram> {
 
   override val map: Map<Hexagram, Int>
     get() = mapOf(

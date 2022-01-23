@@ -43,7 +43,7 @@ class AzimuthConfigBuilder : Builder<AzimuthConfig> {
 
 @Named
 class AzimuthFeature(val starPositionImpl: IStarPosition<IStarPos>,
-                     val azimuthImpl: IAzimuthCalculator) : AbstractCachedFeature<AzimuthConfig, StarPosWithAzimuth>() {
+                     private val azimuthImpl: IAzimuthCalculator) : AbstractCachedFeature<AzimuthConfig, StarPosWithAzimuth>() {
   override val key: String = "azimuth"
 
   override val defaultConfig: AzimuthConfig = AzimuthConfig()

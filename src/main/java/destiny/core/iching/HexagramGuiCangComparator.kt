@@ -5,7 +5,7 @@
 package destiny.core.iching
 
 /** 歸藏卦序  */
-class HexagramGuiCangComparator : destiny.core.iching.AbstractHexagramSequence(), Comparator<IHexagram> {
+class HexagramGuiCangComparator : AbstractHexagramSequence(), Comparator<IHexagram> {
 
   override val map: Map<Hexagram, Int>
     get() = mapOf(

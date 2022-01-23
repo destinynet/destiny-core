@@ -30,8 +30,7 @@ enum class MidnightImpl {
 
 @Serializable
 data class DayConfig(val changeDayAfterZi: Boolean = true ,
-                     val midnight: MidnightImpl = MidnightImpl.NADIR): java.io.Serializable {
-}
+                     val midnight: MidnightImpl = MidnightImpl.NADIR): java.io.Serializable
 
 
 @DestinyMarker

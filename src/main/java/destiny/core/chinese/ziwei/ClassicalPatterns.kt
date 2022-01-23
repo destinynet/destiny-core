@@ -2307,7 +2307,7 @@ val p祿衰馬困 = object : PatternMultipleImpl() {
  */
 val p名不利達 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
-    return it.getHouseDataOf(it.mainHouse.branch).stars.intersect(listOf(文昌, 文曲))
+    return it.getHouseDataOf(it.mainHouse.branch).stars.intersect(setOf(文昌, 文曲))
       .takeIf { stars -> stars.isNotEmpty() }  // 命宮 有 文昌 或 文曲
       ?.takeIf { _ ->
         val 命宮有四煞 = it.火鈴().plus(it.羊陀()).contains(it.mainHouse.branch)
@@ -2391,7 +2391,7 @@ val p月同遇煞 = object : PatternSingleImpl() {
         }.contains(忌)     // 太陰 , 天同 其中一個化忌
       }
       ?.takeIf { stars ->
-        stars.intersect(StarUnlucky.values.toList()).isNotEmpty()   // 惡星同宮 (暫不考量拱、對宮）
+        stars.intersect(StarUnlucky.values.toSet()).isNotEmpty()   // 惡星同宮 (暫不考量拱、對宮）
       }
       ?.let { 月同遇煞 }
   }

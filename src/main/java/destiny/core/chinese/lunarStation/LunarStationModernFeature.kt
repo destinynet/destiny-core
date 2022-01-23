@@ -81,7 +81,7 @@ class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFe
         loc,
         config.lunarStationConfig.ewConfig.dayHourConfig.hourBranchConfig
       )[hourBranch]!!
-      IModernContextModel.Method.SPECIFIED   -> specifiedTime ?: throw IllegalArgumentException("specifiedTime is null ")
+      IModernContextModel.Method.SPECIFIED   -> throw IllegalArgumentException("specifiedTime is null ")
       IModernContextModel.Method.RANDOM_TIME -> randomService.getRandomTime(
         LocalDate.now()
           .minusYears(60), LocalDate.now()

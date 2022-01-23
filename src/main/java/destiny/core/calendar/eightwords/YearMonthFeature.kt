@@ -34,8 +34,7 @@ data class MonthConfig(
   val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR,
 
   val monthImpl: MonthImpl = MonthImpl.SolarTerms
-) : java.io.Serializable {
-}
+) : java.io.Serializable
 
 
 class MonthConfigBuilder : Builder<MonthConfig> {
