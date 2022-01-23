@@ -8,6 +8,7 @@ import destiny.core.astrology.classical.rules.Misc.VoidCourse
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.Feature
@@ -17,23 +18,23 @@ import mu.KotlinLogging
 import javax.inject.Named
 import kotlin.math.min
 
+enum class VoidCourseImpl {
+  Hellenistic,
+  Medieval,
+  WilliamLilly
+}
 
 @Serializable
 data class VoidCourseConfig(@Serializable(with = PointSerializer::class)
                             val planet: Planet = Planet.MOON,
                             val centric: Centric = Centric.GEO,
                             val vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval): java.io.Serializable{
-  enum class VoidCourseImpl {
-    Hellenistic,
-    Medieval,
-    WilliamLilly
-  }
 }
 
 class VoidCourseConfigBuilder : Builder<VoidCourseConfig> {
   var planet: Planet = Planet.MOON
   var centric: Centric = Centric.GEO
-  var impl: VoidCourseConfig.VoidCourseImpl = VoidCourseConfig.VoidCourseImpl.Medieval
+  var impl: VoidCourseImpl = VoidCourseImpl.Medieval
 
   override fun build(): VoidCourseConfig {
     return VoidCourseConfig(planet, centric, impl)
@@ -69,8 +70,9 @@ interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourse?> {
  * 星體空亡
  */
 @Named
-class VoidCourseFeature(private val vocMap: Map<VoidCourseConfig.VoidCourseImpl, IVoidCourse>,
-                        private val pointPosFuncMap: Map<Point, IPosition<*>>) : IVoidCourseFeature , AbstractCachedFeature<VoidCourseConfig , VoidCourse?>() {
+class VoidCourseFeature(private val vocMap: Map<VoidCourseImpl, IVoidCourse>,
+                        private val pointPosFuncMap: Map<Point, IPosition<*>>,
+                        private val julDayResolver: JulDayResolver) : IVoidCourseFeature , AbstractCachedFeature<VoidCourseConfig , VoidCourse?>() {
   
   override val key: String = "voidCourse"
 
@@ -92,10 +94,10 @@ class VoidCourseFeature(private val vocMap: Map<VoidCourseConfig.VoidCourseImpl,
         ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay!! < toGmt }
         ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay!! > fromGmt }
         ?.let { nextAspectData ->
-          logger.trace { "接下來將在 ${IVoidCourse.julDayResolver.getLocalDateTime(nextAspectData.gmtJulDay!!)} 與 ${nextAspectData.points} 形成 ${nextAspectData.aspect}" }
+          logger.trace { "接下來將在 ${julDayResolver.getLocalDateTime(nextAspectData.gmtJulDay!!)} 與 ${nextAspectData.points} 形成 ${nextAspectData.aspect}" }
 
           val nextTime: GmtJulDay = nextAspectData.gmtJulDay!! + 0.01
-          logger.trace { "推進計算時刻 ${IVoidCourse.julDayResolver.getLocalDateTime(nextTime)}" }
+          logger.trace { "推進計算時刻 ${julDayResolver.getLocalDateTime(nextTime)}" }
           getModel(nextTime , loc , config)?:getNextVoc(nextTime)
         }
     }
@@ -104,13 +106,13 @@ class VoidCourseFeature(private val vocMap: Map<VoidCourseConfig.VoidCourseImpl,
       val gmtVoc: VoidCourse? = getModel(gmt, loc , config)
 
       return if (gmtVoc == null) {
-        logger.trace { "沒有 VOC : ${IVoidCourse.julDayResolver.getLocalDateTime(gmt)} " }
+        logger.trace { "沒有 VOC : ${julDayResolver.getLocalDateTime(gmt)} " }
 
         getNextVoc(gmt)?.takeIf { nextVoc ->
           nextVoc.beginGmt < toGmt
         }
       } else {
-        logger.trace { "免進下一步，直接得到 VOC , 開始於 ${gmtVoc.beginGmt.let { IVoidCourse.julDayResolver.getLocalDateTime(it) }}" }
+        logger.trace { "免進下一步，直接得到 VOC , 開始於 ${gmtVoc.beginGmt.let { julDayResolver.getLocalDateTime(it) }}" }
         gmtVoc
       }
     }

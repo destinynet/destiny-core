@@ -5,7 +5,7 @@
 package destiny.core.astrology.prediction
 
 import destiny.core.astrology.*
-import destiny.core.astrology.classical.VoidCourseConfig
+import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -74,7 +74,7 @@ class ReturnContext(
       Centric.GEO,
       0.0,
       1013.25,
-      VoidCourseConfig.VoidCourseImpl.Medieval
+      VoidCourseImpl.Medieval
     )
 
     return horoscopeFeature.getModel(convergentLmt, nowLoc, config)

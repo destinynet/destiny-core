@@ -4,7 +4,8 @@
 package destiny.core.calendar
 
 import destiny.core.astrology.*
-import destiny.core.astrology.classical.IVoidCourse
+import destiny.core.astrology.classical.IVoidCourseFeature
+import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.astrology.eclipse.ISolarEclipse
 import destiny.core.calendar.eightwords.HourBranchConfig
@@ -35,7 +36,8 @@ class DailyReportImpl(
   val reverseGeocodingService: ReverseGeocodingService,
   val julDayResolver: JulDayResolver,
   private val lunarStationHourlyFeature: LunarStationHourlyFeature,
-  val voidCourseImpl: IVoidCourse,
+  //@Deprecated("") val voidCourseImpl: IVoidCourse,
+  private val voidCourseFeature : IVoidCourseFeature,
   val pointPosFuncMap: Map<Point, IPosition<*>>,
 ) : IDailyReport, Serializable {
 
@@ -156,16 +158,16 @@ class DailyReportImpl(
     }
 
     // 月亮空亡
-    voidCourseImpl.getVoidCourses(
-      fromGmtJulDay, toGmtJulDay, loc, pointPosFuncMap, relativeTransitImpl, planet = Planet.MOON
-    ).forEach { voc ->
-      if (voc.beginGmt > fromGmtJulDay) {
-        set.add(TimeDesc.VoidMoon.Begin(voc, loc))
+
+    voidCourseFeature.getVoidCourses(fromGmtJulDay, toGmtJulDay, loc, relativeTransitImpl, VoidCourseConfig())
+      .forEach { voc ->
+        if (voc.beginGmt > fromGmtJulDay) {
+          set.add(TimeDesc.VoidMoon.Begin(voc, loc))
+        }
+        if (voc.endGmt < toGmtJulDay) {
+          set.add(TimeDesc.VoidMoon.End(voc, loc))
+        }
       }
-      if (voc.endGmt < toGmtJulDay) {
-        set.add(TimeDesc.VoidMoon.End(voc, loc))
-      }
-    }
 
     return set.toList()
   }
@@ -188,7 +190,7 @@ class DailyReportImpl(
     if (eclipseImpl != other.eclipseImpl) return false
     if (reverseGeocodingService != other.reverseGeocodingService) return false
     if (julDayResolver != other.julDayResolver) return false
-    if (voidCourseImpl != other.voidCourseImpl) return false
+    //if (voidCourseImpl != other.voidCourseImpl) return false
 
     return true
   }
@@ -201,7 +203,7 @@ class DailyReportImpl(
     result = 31 * result + eclipseImpl.hashCode()
     result = 31 * result + reverseGeocodingService.hashCode()
     result = 31 * result + julDayResolver.hashCode()
-    result = 31 * result + voidCourseImpl.hashCode()
+    //result = 31 * result + voidCourseImpl.hashCode()
     return result
   }
 

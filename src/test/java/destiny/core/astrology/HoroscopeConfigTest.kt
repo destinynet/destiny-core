@@ -5,7 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.HoroscopeConfigBuilder.Companion.horoscope
-import destiny.core.astrology.classical.VoidCourseConfig
+import destiny.core.astrology.classical.VoidCourseImpl
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
 
@@ -19,7 +19,7 @@ internal class HoroscopeConfigTest : AbstractConfigTest<HoroscopeConfig>() {
     centric = Centric.TOPO,
     temperature = 23.0,
     pressure = 1000.0,
-    vocImpl = VoidCourseConfig.VoidCourseImpl.Hellenistic,
+    vocImpl = VoidCourseImpl.Hellenistic,
     place = "台北市"
   )
 
@@ -30,7 +30,7 @@ internal class HoroscopeConfigTest : AbstractConfigTest<HoroscopeConfig>() {
     centric = Centric.TOPO
     temperature = 23.0
     pressure = 1000.0
-    vocImpl = VoidCourseConfig.VoidCourseImpl.Hellenistic
+    vocImpl = VoidCourseImpl.Hellenistic
     place = "台北市"
   }
 

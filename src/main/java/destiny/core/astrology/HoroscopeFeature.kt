@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
+import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -24,7 +25,7 @@ data class HoroscopeConfig(
   val centric: Centric = Centric.GEO,
   val temperature: Double = 0.0,
   val pressure: Double = 1013.25,
-  val vocImpl: VoidCourseConfig.VoidCourseImpl = VoidCourseConfig.VoidCourseImpl.Medieval,
+  val vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval,
   val place: String? = null
 ): java.io.Serializable
 
@@ -36,7 +37,7 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
   var centric: Centric = Centric.GEO
   var temperature: Double = 0.0
   var pressure: Double = 1013.25
-  var vocImpl: VoidCourseConfig.VoidCourseImpl = VoidCourseConfig.VoidCourseImpl.Medieval
+  var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval
   var place: String? = null
 
   override fun build(): HoroscopeConfig {

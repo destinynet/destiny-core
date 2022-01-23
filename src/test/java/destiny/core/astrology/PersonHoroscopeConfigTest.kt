@@ -6,7 +6,7 @@ package destiny.core.astrology
 import destiny.core.AbstractConfigTest
 import destiny.core.Gender
 import destiny.core.astrology.PersonHoroscopeConfigBuilder.Companion.personHoroscope
-import destiny.core.astrology.classical.VoidCourseConfig
+import destiny.core.astrology.classical.VoidCourseImpl
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
 
@@ -22,7 +22,7 @@ internal class PersonHoroscopeConfigTest : AbstractConfigTest<PersonHoroscopeCon
       centric = Centric.TOPO,
       temperature = 23.0,
       pressure = 1000.0,
-      vocImpl = VoidCourseConfig.VoidCourseImpl.Hellenistic,
+      vocImpl = VoidCourseImpl.Hellenistic,
       place = "台北市"
     ), Gender.女, "小明"
   )
@@ -35,7 +35,7 @@ internal class PersonHoroscopeConfigTest : AbstractConfigTest<PersonHoroscopeCon
       centric = Centric.TOPO
       temperature = 23.0
       pressure = 1000.0
-      vocImpl = VoidCourseConfig.VoidCourseImpl.Hellenistic
+      vocImpl = VoidCourseImpl.Hellenistic
       place = "台北市"
     }
     gender = Gender.女

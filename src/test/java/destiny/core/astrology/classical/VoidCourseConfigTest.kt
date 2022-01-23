@@ -13,12 +13,12 @@ import kotlin.test.assertTrue
 internal class VoidCourseConfigTest : AbstractConfigTest<VoidCourseConfig>() {
   override val serializer: KSerializer<VoidCourseConfig> = VoidCourseConfig.serializer()
 
-  override val configByConstructor: VoidCourseConfig = VoidCourseConfig(Planet.VENUS, Centric.TOPO, VoidCourseConfig.VoidCourseImpl.WilliamLilly)
+  override val configByConstructor: VoidCourseConfig = VoidCourseConfig(Planet.VENUS, Centric.TOPO, VoidCourseImpl.WilliamLilly)
 
   override val configByFunction: VoidCourseConfig = voidCourse {
     planet = Planet.VENUS
     centric = Centric.TOPO
-    impl = VoidCourseConfig.VoidCourseImpl.WilliamLilly
+    impl = VoidCourseImpl.WilliamLilly
   }
 
   override val assertion: (String) -> Unit = { raw ->
