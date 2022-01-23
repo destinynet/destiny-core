@@ -72,7 +72,7 @@ interface IHourBranchFeature : Feature<HourBranchConfig, Branch> {
   /**
    * 取得「前一個」此地支的開始時刻
    */
-  fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver,config: HourBranchConfig): GmtJulDay {
+  fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver, config: HourBranchConfig): GmtJulDay {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     val resultLmt: ChronoLocalDateTime<*> = getLmtPrevStartOf(lmt, loc, eb, config)
     return TimeTools.getGmtJulDay(resultLmt, loc)

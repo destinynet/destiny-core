@@ -13,6 +13,10 @@ import destiny.core.calendar.eightwords.EightWords
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsConfigBuilder
 import destiny.core.calendar.eightwords.EightWordsFeature
+import destiny.core.fengshui.sanyuan.NineStarFunctions.getDayCenterStar
+import destiny.core.fengshui.sanyuan.NineStarFunctions.getHourCenterStar
+import destiny.core.fengshui.sanyuan.NineStarFunctions.getMonthCenterStar
+import destiny.core.fengshui.sanyuan.NineStarFunctions.getYearCenterStar
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import kotlinx.serialization.Serializable
@@ -71,23 +75,22 @@ class NineStarFeature(private val sanYuanImpl: ISanYuan,
     return config.scales.map { scale ->
       when (scale) {
         Scale.YEAR -> {
-          val center = INineStar.getYearCenterStar(yuan, eightWords.year)
-          NineStarModel(eightWords.year, scale, center, INineStar.getYearStarMap(center))
+          val center = getYearCenterStar(yuan, eightWords.year)
+          NineStarModel(eightWords.year, scale, center, NineStarFunctions.getYearStarMap(center))
         }
         Scale.MONTH -> {
-          val center = INineStar.getMonthCenterStar(eightWords.year.branch, eightWords.month.branch)
-          NineStarModel(eightWords.month, scale, center, INineStar.getMonthStarMap(eightWords.year.branch, eightWords.month.branch))
+          val center = getMonthCenterStar(eightWords.year.branch, eightWords.month.branch)
+          NineStarModel(eightWords.month, scale, center, NineStarFunctions.getMonthStarMap(eightWords.year.branch, eightWords.month.branch))
         }
         Scale.DAY -> {
-          val center = INineStar.getDayCenterStar(zodiacDegree, eightWords.day)
-          NineStarModel(eightWords.day, scale, center, INineStar.getDayStarMap(zodiacDegree, eightWords.day))
+          val center = getDayCenterStar(zodiacDegree, eightWords.day)
+          NineStarModel(eightWords.day, scale, center, NineStarFunctions.getDayStarMap(zodiacDegree, eightWords.day))
         }
         Scale.HOUR -> {
-          val center = INineStar.getHourCenterStar(zodiacDegree, eightWords.day.branch, eightWords.hour.branch)
-          NineStarModel(eightWords.hour, scale, center, INineStar.getHourStarMap(zodiacDegree, eightWords.day.branch, eightWords.hour.branch))
+          val center = getHourCenterStar(zodiacDegree, eightWords.day.branch, eightWords.hour.branch)
+          NineStarModel(eightWords.hour, scale, center, NineStarFunctions.getHourStarMap(zodiacDegree, eightWords.day.branch, eightWords.hour.branch))
         }
       }
     }.toList()
-
   }
 }

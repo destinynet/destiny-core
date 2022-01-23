@@ -8,7 +8,7 @@ import destiny.core.astrology.classical.IVoidCourse
 import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.astrology.eclipse.ISolarEclipse
 import destiny.core.calendar.eightwords.HourBranchConfig
-import destiny.core.calendar.eightwords.IHour
+import destiny.core.calendar.eightwords.IHourBranchFeature
 import destiny.core.chinese.Branch
 import destiny.core.chinese.lunarStation.HourlyConfig
 import destiny.core.chinese.lunarStation.HourlyImpl
@@ -27,7 +27,7 @@ interface IDailyReport {
 }
 
 class DailyReportImpl(
-  val hourSolarTransImpl: IHour,
+  val hourBranchFeature: IHourBranchFeature,
   val riseTransImpl: IRiseTrans,
   val relativeTransitImpl: IRelativeTransit,
   val solarTermsImpl: ISolarTerms,
@@ -45,13 +45,14 @@ class DailyReportImpl(
                       locale: Locale): List<TimeDesc> {
     val set = TreeSet<TimeDesc>()
 
+
     // 每個時辰開始時刻 (子初可能是前一晚）
-    val hourStartMap = hourSolarTransImpl.getDailyBranchStartMap(lmtStart.toLocalDate() , loc , julDayResolver, HourBranchConfig())
+    val hourStartMap = hourBranchFeature.getDailyBranchStartMap(lmtStart.toLocalDate(), loc, HourBranchConfig())
       .mapValues { (_,v) -> v as LocalDateTime }
 
 
     // 每個時辰的 時禽
-    val hourLunarStationMap = hourSolarTransImpl.getDailyBranchMiddleMap(lmtStart.toLocalDate(), loc, julDayResolver, HourBranchConfig())
+    val hourLunarStationMap = hourBranchFeature.getDailyBranchMiddleMap(lmtStart.toLocalDate(), loc, HourBranchConfig())
       .map { (b, middleLmt) ->
         b to lunarStationHourlyFeature.getModel(middleLmt, loc, HourlyConfig(impl = HourlyImpl.Fixed))
       }.toMap()
@@ -180,7 +181,7 @@ class DailyReportImpl(
     if (this === other) return true
     if (other !is DailyReportImpl) return false
 
-    if (hourSolarTransImpl != other.hourSolarTransImpl) return false
+    if (hourBranchFeature != other.hourBranchFeature) return false
     if (riseTransImpl != other.riseTransImpl) return false
     if (relativeTransitImpl != other.relativeTransitImpl) return false
     if (solarTermsImpl != other.solarTermsImpl) return false
@@ -193,7 +194,7 @@ class DailyReportImpl(
   }
 
   override fun hashCode(): Int {
-    var result = hourSolarTransImpl.hashCode()
+    var result = hourBranchFeature.hashCode()
     result = 31 * result + riseTransImpl.hashCode()
     result = 31 * result + relativeTransitImpl.hashCode()
     result = 31 * result + solarTermsImpl.hashCode()

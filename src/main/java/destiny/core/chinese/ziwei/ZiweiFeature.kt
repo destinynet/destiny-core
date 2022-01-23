@@ -390,6 +390,7 @@ class ZiweiFeature(
   private val yearFeature: YearFeature,
   private val yearMonthFeature: YearMonthFeature,
   private val dayHourFeature: DayHourFeature,
+  private val hourBranchFeature: IHourBranchFeature,
   private val houseSeqImplMap: Map<HouseSeq, IHouseSeq>,
   private val prevMonthDaysImpl: IPrevMonthDays,
   private val purpleStarBranchImplMap : Map<PurpleStarBranch, IPurpleStarBranch>,
@@ -940,7 +941,9 @@ class ZiweiFeature(
 
     if (hourImpl == HourImpl.TST) {
       // 如果是真太陽時
-      val hour2: Branch = HourLmtImpl(julDayResolver).getHour(lmt, loc)
+
+      val hour2: Branch = hourBranchFeature.getModel(lmt, loc, HourBranchConfig(hourImpl = HourImpl.LMT))
+
       if (hour != hour2) {
         // 如果真太陽時與LMT時間不一致，出現提醒
         notesBuilders.add(Pair("true_solar_time", arrayOf(hour, hour2)))
