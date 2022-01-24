@@ -29,14 +29,13 @@ interface IDailyReport {
 
 class DailyReportImpl(
   val hourBranchFeature: IHourBranchFeature,
-  val riseTransImpl: IRiseTrans,
+  private val riseTransFeature: IRiseTransFeature,
   val relativeTransitImpl: IRelativeTransit,
   val solarTermsImpl: ISolarTerms,
   val eclipseImpl: IEclipseFactory,
   val reverseGeocodingService: ReverseGeocodingService,
   val julDayResolver: JulDayResolver,
   private val lunarStationHourlyFeature: LunarStationHourlyFeature,
-  //@Deprecated("") val voidCourseImpl: IVoidCourse,
   private val voidCourseFeature : IVoidCourseFeature,
   val pointPosFuncMap: Map<Point, IPosition<*>>,
 ) : IDailyReport, Serializable {
@@ -74,7 +73,7 @@ class DailyReportImpl(
     val listTransPoints: List<TimeDesc> = TransPoint.values().flatMap { tp ->
       listOf(Planet.SUN, Planet.MOON).map { planet ->
         TimeDesc.TypeTransPoint(
-          riseTransImpl.getLmtTrans(lmtStart, planet, tp, loc, julDayResolver) as LocalDateTime,
+          riseTransFeature.getLmtTrans(lmtStart, planet, tp, loc, julDayResolver, TransConfig()) as LocalDateTime,
           planet.toString(Locale.TAIWAN) + tp.toString(Locale.TAIWAN),
           planet,
           tp
@@ -184,7 +183,6 @@ class DailyReportImpl(
     if (other !is DailyReportImpl) return false
 
     if (hourBranchFeature != other.hourBranchFeature) return false
-    if (riseTransImpl != other.riseTransImpl) return false
     if (relativeTransitImpl != other.relativeTransitImpl) return false
     if (solarTermsImpl != other.solarTermsImpl) return false
     if (eclipseImpl != other.eclipseImpl) return false
@@ -197,7 +195,6 @@ class DailyReportImpl(
 
   override fun hashCode(): Int {
     var result = hourBranchFeature.hashCode()
-    result = 31 * result + riseTransImpl.hashCode()
     result = 31 * result + relativeTransitImpl.hashCode()
     result = 31 * result + solarTermsImpl.hashCode()
     result = 31 * result + eclipseImpl.hashCode()

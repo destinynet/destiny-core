@@ -5,9 +5,8 @@
  */
 package destiny.core.astrology
 
-import destiny.core.calendar.*
-import mu.KotlinLogging
-import java.time.chrono.ChronoLocalDateTime
+import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.ILocation
 
 /**
  * 計算星體對地球表面某點的 東昇、天頂、西落、天底的時刻
@@ -27,75 +26,4 @@ interface IRiseTrans {
                         location: ILocation,
                         transConfig: TransConfig = TransConfig()): GmtJulDay?
 
-  /**
-   * 來源、目標時間都是 GMT
-   */
-  fun getGmtTrans(fromGmt: ChronoLocalDateTime<*>,
-                  star: Star,
-                  point: TransPoint,
-                  location: ILocation,
-                  julDayResolver: JulDayResolver,transConfig: TransConfig): ChronoLocalDateTime<*>? {
-    val fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt)
-
-    return getGmtTransJulDay(fromGmtJulDay, star, point, location, transConfig)?.let { julDayResolver.getLocalDateTime(it) }
-  }
-
-  /**
-   * 來源、目標時間都是 LMT
-   */
-  fun getLmtTrans(fromLmtTime: ChronoLocalDateTime<*>, star: Star, point: TransPoint, location: ILocation,
-                  julDayResolver: JulDayResolver,transConfig: TransConfig = TransConfig()): ChronoLocalDateTime<*>? {
-    val fromGmtTime = TimeTools.getGmtFromLmt(fromLmtTime, location)
-
-    return getGmtTrans(fromGmtTime, star, point, location, julDayResolver, transConfig)
-      ?.let { TimeTools.getLmtFromGmt(it, location) }
-  }
-
-
-  /**
-   * 取得某段時間（LMT）之內，某星體的通過某 Point 的時刻（GMT）
-   */
-  fun getPeriodStarRiseTransGmtJulDay(fromLmtTime: ChronoLocalDateTime<*>,
-                                      toLmtTime: ChronoLocalDateTime<*>,
-                                      star: Star,
-                                      point: TransPoint,
-                                      location: Location,
-                                      transConfig: TransConfig): List<GmtJulDay> {
-    val fromGmtJulDay = TimeTools.getGmtJulDay(TimeTools.getGmtFromLmt(fromLmtTime, location))
-    val toGmtJulDay = TimeTools.getGmtJulDay(TimeTools.getGmtFromLmt(toLmtTime, location))
-
-    return generateSequence(getGmtTransJulDay(fromGmtJulDay, star, point, location,transConfig)) {
-      getGmtTransJulDay(it + 0.01, star, point, location, transConfig)
-    }.takeWhile { it < toGmtJulDay }
-      .toList()
-  }
-
-  /**
-   * 取得某段時間（LMT）之內，某星體的通過某 Point 的時刻（LMT）
-   * @param fromLmtTime 開始時間
-   * @param toLmtTime 結束時間
-   * @param star 星體
-   * @param point 接觸點 : RISING , MERIDIAN , SETTING , NADIR
-   * @param location 地點
-   * [TransConfig.discCenter] 是否是星體中心（只影響 日、月），通常設為 false
-   * [TransConfig.refraction] 是否考量濛氣差 , 通常設為 true
-   * @return List <Time> in LMT
-   * */
-  fun getPeriodStarRiseTransTime(fromLmtTime: ChronoLocalDateTime<*>,
-                                 toLmtTime: ChronoLocalDateTime<*>,
-                                 star: Star,
-                                 point: TransPoint,
-                                 location: Location,
-                                 revJulDayFunc: (Double) -> ChronoLocalDateTime<*>,
-                                 transConfig: TransConfig = TransConfig()): List<ChronoLocalDateTime<*>> {
-    return getPeriodStarRiseTransGmtJulDay(fromLmtTime, toLmtTime, star, point, location, transConfig)
-      .map { gmtJulDay ->
-        val gmt = revJulDayFunc.invoke(gmtJulDay.value)
-        TimeTools.getLmtFromGmt(gmt, location)
-      }.toList()
-  }
-
-  companion object {
-    val logger = KotlinLogging.logger {  }
-  }
 }

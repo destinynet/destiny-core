@@ -5,11 +5,15 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
+import destiny.core.calendar.TimeTools
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.Feature
 import destiny.tools.serializers.PointSerializer
 import kotlinx.serialization.Serializable
+import java.time.chrono.ChronoLocalDateTime
 import javax.inject.Named
 
 @Serializable
@@ -40,11 +44,40 @@ class RiseTransConfigBuilder : Builder<RiseTransConfig> {
   }
 }
 
+interface IRiseTransFeature : Feature<RiseTransConfig, GmtJulDay?> {
+
+  /**
+   * 來源、目標時間都是 GMT
+   */
+  fun getGmtTrans(
+    fromGmt: ChronoLocalDateTime<*>, star: Star, point: TransPoint, loc: ILocation,
+    julDayResolver: JulDayResolver, transConfig: TransConfig = TransConfig()
+  ): ChronoLocalDateTime<*>? {
+    val fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt)
+
+    return getModel(fromGmtJulDay, loc, RiseTransConfig(star, point, transConfig))?.let { julDayResolver.getLocalDateTime(it) }
+  }
+
+  /**
+   * 來源、目標時間都是 LMT
+   */
+  fun getLmtTrans(
+    fromLmtTime: ChronoLocalDateTime<*>, star: Star, point: TransPoint, loc: ILocation,
+    julDayResolver: JulDayResolver, transConfig: TransConfig = TransConfig()
+  ): ChronoLocalDateTime<*>? {
+    val fromGmtJulDay = TimeTools.getGmtJulDay(fromLmtTime, loc)
+
+    return getModel(fromGmtJulDay, loc, RiseTransConfig(star, point, transConfig))?.let { resultGmt ->
+      TimeTools.getLmtFromGmt(resultGmt, loc, julDayResolver)
+    }
+  }
+}
+
 /**
  * 計算星體對地球表面某點的 東昇、天頂、西落、天底的時刻
  */
 @Named
-class RiseTransFeature(val impl : IRiseTrans) : AbstractCachedFeature<RiseTransConfig, GmtJulDay?>() {
+class RiseTransFeature(val impl : IRiseTrans) : IRiseTransFeature, AbstractCachedFeature<RiseTransConfig, GmtJulDay?>() {
 
   override val key: String = "riseTrans"
 
