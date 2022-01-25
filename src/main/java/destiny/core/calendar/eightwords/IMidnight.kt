@@ -5,7 +5,6 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.Descriptive
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -14,7 +13,7 @@ import java.time.chrono.ChronoLocalDateTime
 import kotlin.math.absoluteValue
 
 /** 定義「子正」的介面，是要以當地手錶 0時 為子正，亦或是太陽過當地天底 ... 或是其他實作  */
-interface IMidnight : Descriptive {
+interface IMidnight {
 
   /** 取得下一個「子正」的 GMT 時刻  */
   fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation): GmtJulDay

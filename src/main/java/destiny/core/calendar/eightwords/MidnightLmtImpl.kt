@@ -9,21 +9,14 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains
-import destiny.tools.getDescription
-import destiny.tools.getTitle
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField.*
 import java.time.temporal.ChronoUnit
-import java.util.*
 
 /**
  * 純粹以地方平均時（手錶時間）來判定
  */
-@Impl([Domain(Domains.KEY_MIDNIGHT, MidnightLmtImpl.VALUE)])
 class MidnightLmtImpl(private val julDayResolver: JulDayResolver) : IMidnight, Serializable {
 
   override fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation): GmtJulDay {
@@ -49,28 +42,4 @@ class MidnightLmtImpl(private val julDayResolver: JulDayResolver) : IMidnight, S
       .with(SECOND_OF_MINUTE, 0)
       .with(NANO_OF_SECOND, 0)
   }
-
-  override fun toString(locale: Locale): String {
-    return MidnightImpl.CLOCK0.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return MidnightImpl.CLOCK0.getDescription(locale)
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
-
-  companion object {
-    const val VALUE: String = "lmt"
-  }
-
 }

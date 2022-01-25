@@ -5,7 +5,6 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.JulDayResolver
 
-
 class DayHourSolarTransImpl(override val changeDayAfterZi: Boolean,
                             override val midnightImpl: IMidnight,
                             hourImpl: HourSolarTransImpl,
@@ -27,7 +26,4 @@ class DayHourSolarTransImpl(override val changeDayAfterZi: Boolean,
     return result
   }
 
-  companion object {
-    const val VALUE = "default"
-  }
 }

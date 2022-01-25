@@ -7,16 +7,9 @@ import destiny.core.DayNight
 import destiny.core.astrology.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.KEY_DAY_NIGHT
-import destiny.tools.getDescription
-import destiny.tools.getTitle
 import java.io.Serializable
-import java.util.*
 
 
-@Impl([Domain(KEY_DAY_NIGHT, DayNightHalfImpl.VALUE)])
 class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight, Serializable {
 
   // TODO : 極區內可能不適用
@@ -32,33 +25,4 @@ class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight, Seria
       DayNight.NIGHT
     }
   }
-
-
-  override fun toString(locale: Locale): String {
-    return DayNightImpl.Half.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return DayNightImpl.Half.getDescription(locale)
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-
-    other as DayNightHalfImpl
-
-    if (riseTransImpl != other.riseTransImpl) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return riseTransImpl.hashCode()
-  }
-
-  companion object {
-    const val VALUE: String = "half"
-  }
-
 }

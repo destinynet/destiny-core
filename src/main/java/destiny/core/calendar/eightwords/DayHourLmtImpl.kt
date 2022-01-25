@@ -26,7 +26,4 @@ class DayHourLmtImpl(override val changeDayAfterZi: Boolean,
     return result
   }
 
-  companion object {
-    const val VALUE = "lmt"
-  }
 }

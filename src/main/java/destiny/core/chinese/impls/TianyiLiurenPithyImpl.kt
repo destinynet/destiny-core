@@ -3,14 +3,12 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.core.chinese.*
+import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.ITianyi
+import destiny.core.chinese.IYinYang
+import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Divine.KEY_DIVINE_TIANYI
-import destiny.tools.converters.Domains.Pithy.KEY_LIUREN_PITHY_TIANYI
-import destiny.tools.converters.Domains.Ziwei.KEY_TIANYI
 import java.io.Serializable
 
 /**
@@ -32,14 +30,7 @@ import java.io.Serializable
  * 六辛日旦治勝光（午），暮治功曹（寅）；
  * 壬癸日旦治太乙（巳），暮治太沖（卯）
  */
-@Impl([
-        Domain(KEY_LIUREN_PITHY_TIANYI, TianyiLiurenPithyImpl.VALUE, true),
-        Domain(KEY_TIANYI, TianyiLiurenPithyImpl.VALUE),
-        Domain(KEY_DIVINE_TIANYI, TianyiLiurenPithyImpl.VALUE)
-      ])
 class TianyiLiurenPithyImpl : ITianyi, Serializable {
-
-  override val tianyi: Tianyi = Tianyi.LiurenPithy
 
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     return when (stem) {
@@ -54,19 +45,4 @@ class TianyiLiurenPithyImpl : ITianyi, Serializable {
       辛 -> if (yinYang.booleanValue) 午 else 寅
     }
   }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
-  companion object {
-    const val VALUE = "liurenPithy"
-  }
-
 }

@@ -8,20 +8,12 @@ import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranch.*
 import destiny.core.chinese.liuren.General
 import destiny.core.chinese.liuren.General.*
-import destiny.core.chinese.liuren.GeneralStemBranch
 import destiny.core.chinese.liuren.IGeneralStemBranch
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Pithy.KEY_GENERAL_STEM_BRANCH
-import destiny.tools.getDescription
-import destiny.tools.getTitle
 import java.io.Serializable
-import java.util.*
 
 /**
  * 金口訣：壬子玄武 癸亥天后
  */
-@Impl([Domain(KEY_GENERAL_STEM_BRANCH, GeneralStemBranchPithy.VALUE, default = true)])
 class GeneralStemBranchPithy : IGeneralStemBranch, Serializable {
 
   private val map = mapOf(
@@ -50,17 +42,5 @@ class GeneralStemBranchPithy : IGeneralStemBranch, Serializable {
   override fun get(branch: Branch): General {
     return map.filter { it.value.branch == branch }
       .keys.first()
-  }
-
-  override fun toString(locale: Locale): String {
-    return GeneralStemBranch.Pithy.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return GeneralStemBranch.Pithy.getDescription(locale)
-  }
-
-  companion object {
-    const val VALUE = "pithy"
   }
 }

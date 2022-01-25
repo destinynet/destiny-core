@@ -5,7 +5,6 @@
 package destiny.core.astrology
 
 import destiny.core.DayNight
-import destiny.core.Descriptive
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
@@ -14,7 +13,7 @@ import java.time.chrono.ChronoLocalDateTime
 /**
  * 區分日夜的介面
  */
-interface IDayNight : Descriptive {
+interface IDayNight {
 
   fun getDayNight(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig = TransConfig(discCenter = false, refraction = true)): DayNight
 

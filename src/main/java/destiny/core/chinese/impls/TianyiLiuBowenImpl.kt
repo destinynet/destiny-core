@@ -3,12 +3,11 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.core.chinese.*
+import destiny.core.chinese.Branch
+import destiny.core.chinese.ITianyi
+import destiny.core.chinese.IYinYang
+import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Divine.KEY_DIVINE_TIANYI
-import destiny.tools.converters.Domains.Pithy.KEY_LIUREN_PITHY_TIANYI
 import java.io.Serializable
 
 
@@ -25,13 +24,7 @@ import java.io.Serializable
  * 前一字為晝貴，後一字為夜貴。
  * 前述天乙貴人歌訣係明代先賢根據「劉基」所留傳而著述
  */
-@Impl([
-      Domain(KEY_LIUREN_PITHY_TIANYI , TianyiLiuBowenImpl.VALUE),
-      Domain(KEY_DIVINE_TIANYI, TianyiLiuBowenImpl.VALUE)
-      ])
 class TianyiLiuBowenImpl : ITianyi, Serializable {
-
-  override val tianyi: Tianyi = Tianyi.LiuBowen
 
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     return when (stem) {
@@ -46,20 +39,4 @@ class TianyiLiuBowenImpl : ITianyi, Serializable {
       辛 -> if (yinYang.booleanValue) Branch.寅 else Branch.午
     }
   }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
-  companion object {
-    const val VALUE = "liuBowen"
-  }
-
-
 }

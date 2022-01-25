@@ -3,24 +3,15 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.core.chinese.*
+import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.ITianyi
+import destiny.core.chinese.IYinYang
+import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Divine.KEY_DIVINE_TIANYI
-import destiny.tools.converters.Domains.Pithy.KEY_LIUREN_PITHY_TIANYI
-import destiny.tools.converters.Domains.Ziwei.KEY_TIANYI
 import java.io.Serializable
 
-@Impl([
-        Domain(KEY_LIUREN_PITHY_TIANYI , TianyiAuthorizedImpl.VALUE),
-        Domain(KEY_TIANYI , TianyiAuthorizedImpl.VALUE),
-        Domain(KEY_DIVINE_TIANYI , TianyiAuthorizedImpl.VALUE , default = true)
-      ])
 class TianyiAuthorizedImpl : ITianyi, Serializable {
-
-  override val tianyi: Tianyi = Tianyi.Authorized
 
   /**
    * 《協紀辨方書》 《蠡海集》
@@ -60,19 +51,4 @@ class TianyiAuthorizedImpl : ITianyi, Serializable {
       辛 -> if (yinYang.booleanValue) 寅 else 午
     }
   }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
-  companion object {
-    const val VALUE = "authorized"
-  }
-
 }

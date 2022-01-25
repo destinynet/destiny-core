@@ -11,9 +11,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.KEY_HOUR
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -26,7 +23,6 @@ import java.time.temporal.ChronoUnit
  * 再從太陽過天頂到天底，平均劃分十二等份
  * 依此來切割 12 時辰
  */
-@Impl([Domain(KEY_HOUR, HourSolarTransImpl.VALUE, default = true)])
 class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
                          private val star: Star = Planet.SUN) : IHour, Serializable {
 
@@ -247,23 +243,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
   }
 
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is HourSolarTransImpl) return false
-
-    if (star != other.star) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-
-    return star.hashCode()
-  }
-
-
   companion object {
-    const val VALUE = "solar"
     private val logger = KotlinLogging.logger {}
   }
 

@@ -3,14 +3,12 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.core.chinese.*
+import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.ITianyi
+import destiny.core.chinese.IYinYang
+import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Divine.KEY_DIVINE_TIANYI
-import destiny.tools.converters.Domains.Pithy.KEY_LIUREN_PITHY_TIANYI
-import destiny.tools.converters.Domains.Ziwei.KEY_TIANYI
 import java.io.Serializable
 
 /**
@@ -21,14 +19,7 @@ import java.io.Serializable
  * 並釋說：“日用上一字，夜用下一字。
  * 如甲戊日日占應用牛字，便從天盤丑上起貴人，是為陽貴。甲戊日夜占，應用羊字，便從天盤未上起貴人，是為陰貴……”。
  */
-@Impl([
-      Domain(KEY_LIUREN_PITHY_TIANYI , TianyiOceanImpl.VALUE),
-      Domain(KEY_TIANYI , TianyiOceanImpl.VALUE),
-      Domain(KEY_DIVINE_TIANYI, TianyiOceanImpl.VALUE)
-      ])
 class TianyiOceanImpl : ITianyi, Serializable {
-
-  override val tianyi: Tianyi = Tianyi.Ocean
 
   /**
    * 甲戊兼牛羊，乙己鼠猴鄉，丙丁豬雞位，壬癸兔蛇藏，
@@ -48,19 +39,4 @@ class TianyiOceanImpl : ITianyi, Serializable {
 
     }
   }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
-  companion object {
-    const val VALUE = "ocean"
-  }
-
 }

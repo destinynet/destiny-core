@@ -7,18 +7,11 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranch.*
 import destiny.core.chinese.liuren.General.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Pithy.KEY_GENERAL_STEM_BRANCH
-import destiny.tools.getDescription
-import destiny.tools.getTitle
 import java.io.Serializable
-import java.util.*
 
 /**
  * 大六壬：壬子天后 癸亥玄武
  */
-@Impl([Domain(KEY_GENERAL_STEM_BRANCH, GeneralStemBranchLiuren.VALUE)])
 class GeneralStemBranchLiuren : IGeneralStemBranch, Serializable {
 
   private val map = mapOf(
@@ -47,17 +40,5 @@ class GeneralStemBranchLiuren : IGeneralStemBranch, Serializable {
   override fun get(branch: Branch): General {
     return map.filter { it.value.branch == branch }
       .keys.first()
-  }
-
-  override fun toString(locale: Locale): String {
-    return GeneralStemBranch.Liuren.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return GeneralStemBranch.Liuren.getDescription(locale)
-  }
-
-  companion object {
-    const val VALUE = "liuren"
   }
 }
