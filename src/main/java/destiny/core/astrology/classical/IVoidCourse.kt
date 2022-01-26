@@ -11,9 +11,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains
 import mu.KotlinLogging
 import java.io.Serializable
 import java.util.*
@@ -105,7 +102,6 @@ sealed interface IVoidCourse : Descriptive {
  *
  * may be replaced with [VoidCourseConfig.VoidCourseImpl.Hellenistic]
  */
-@Impl([Domain(Domains.Astrology.KEY_VOC, VoidCourseHellenistic.VALUE)])
 class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
                             private val starPositionImpl: IStarPosition<*>) : IVoidCourse, Serializable {
   override fun getVoidCourse(
@@ -141,7 +137,6 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
   }
   companion object {
     val logger = KotlinLogging.logger {  }
-    const val VALUE = "Hellenistic"
   }
 }
 
@@ -162,7 +157,6 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
  *
  * may be replaced with [VoidCourseConfig.VoidCourseImpl.WilliamLilly]
  */
-@Impl([Domain(Domains.Astrology.KEY_VOC, VoidCourseWilliamLilly.VALUE)])
 class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
                              private val starPositionImpl: IStarPosition<*>,
                              private val starTransitImpl: IStarTransit) : IVoidCourse, Serializable {
@@ -220,7 +214,6 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
 
   companion object {
     val logger = KotlinLogging.logger {  }
-    const val VALUE = "WilliamLilly"
   }
 }
 
@@ -232,7 +225,6 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
  *
  * may be replaced with [VoidCourseConfig.VoidCourseImpl.Medieval]
  */
-@Impl([Domain(Domains.Astrology.KEY_VOC, VoidCourseMedieval.VALUE , default = true)])
 class VoidCourseMedieval(private val besiegedImpl: IBesieged,
                          private val starPositionImpl: IStarPosition<*>,
                          private val starTransitImpl: IStarTransit) : IVoidCourse, Serializable {
@@ -264,9 +256,5 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
           }
         }
       }
-  }
-
-  companion object {
-    const val VALUE = "Medieval"
   }
 }

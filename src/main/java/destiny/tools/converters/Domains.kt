@@ -3,10 +3,8 @@
  */
 package destiny.tools.converters
 
-import destiny.core.calendar.eightwords.IRisingSign
 import destiny.core.chinese.IClockwise
 import destiny.core.chinese.IMonthlyHexagram
-import destiny.core.chinese.ITianyi
 import destiny.core.chinese.IYangBlade
 import destiny.core.chinese.onePalm.IPositive
 import destiny.core.chinese.ziwei.*
@@ -15,8 +13,6 @@ import destiny.core.iching.divine.ISettingsOfStemBranch
 
 object Domains {
 
-  /** 命宮（上升星座）的實作 [IRisingSign] */
-  const val KEY_RISING_SIGN = "rs"
 
   /** 易卦 */
   object Divine {
@@ -26,9 +22,6 @@ object Domains {
 
     /** 伏神設定 [IHiddenEnergy] */
     const val KEY_DIVINE_HIDDEN_ENERGY = "hiddenEnergy"
-
-    /** 貴人 [ITianyi] */
-    const val KEY_DIVINE_TIANYI = "id_tianyi"
 
     /** 羊刃 [IYangBlade] */
     const val KEY_DIVINE_YANG_BLADE = "id_yangBlade"
@@ -100,12 +93,5 @@ object Domains {
     }
 
     const val KEY_HIDDEN_VENUS_FOE = "lsHvf"
-  }
-
-  /** 占星相關 */
-  object Astrology {
-
-    /** 空亡 */
-    const val KEY_VOC = "voc"
   }
 }

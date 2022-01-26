@@ -7,9 +7,6 @@ package destiny.core.astrology
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IRisingSign
-import destiny.core.calendar.eightwords.RisingSignImpl
-import destiny.tools.getTitle
-import java.util.*
 
 /**
  * 取得宮首在「黃道」上幾度的介面<BR></BR>
@@ -37,8 +34,8 @@ interface IHouseCusp : IRisingSign {
   /**
    * 取得所有宮（1~12）的宮首，是什麼星座 , 以及宮首在該星座的度數
    */
-  fun getHouseSignsAndDegrees(gmtJulDay: GmtJulDay, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate = Coordinate.ECLIPTIC): Map<Int , Pair<ZodiacSign , Double>> {
-    return getHouseCuspMap(gmtJulDay, location, houseSystem, coordinate).map { (houseIndex , zodiacDegree) ->
+  fun getHouseSignsAndDegrees(gmtJulDay: GmtJulDay, loc: ILocation, houseSystem: HouseSystem, coordinate: Coordinate = Coordinate.ECLIPTIC): Map<Int , Pair<ZodiacSign , Double>> {
+    return getHouseCuspMap(gmtJulDay, loc, houseSystem, coordinate).map { (houseIndex , zodiacDegree) ->
       houseIndex to zodiacDegree.signDegree
     }.toMap()
   }
@@ -47,24 +44,16 @@ interface IHouseCusp : IRisingSign {
    * 承上，只取星座
    * 取得所有宮（1~12）的宮首，是什麼星座
    */
-  fun getHouseSigns(gmtJulDay: GmtJulDay, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate = Coordinate.ECLIPTIC): Map<Int , ZodiacSign> {
-    return getHouseSignsAndDegrees(gmtJulDay, location, houseSystem, coordinate).map { (houseIndex , pair) ->
+  fun getHouseSigns(gmtJulDay: GmtJulDay, loc: ILocation, houseSystem: HouseSystem, coordinate: Coordinate = Coordinate.ECLIPTIC): Map<Int , ZodiacSign> {
+    return getHouseSignsAndDegrees(gmtJulDay, loc, houseSystem, coordinate).map { (houseIndex , pair) ->
       houseIndex to pair.first
     }.toMap()
   }
 
 
   /** 取得「上升星座」 (分宮法/HouseSystem  或許不需要)  */
-  override fun getRisingSign(gmtJulDay: GmtJulDay, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): ZodiacSign {
-    return getHouseSigns(gmtJulDay, location, houseSystem, coordinate).getValue(1)
-  }
-
-  override fun toString(locale: Locale): String {
-    return RisingSignImpl.HouseCusp.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
+  override fun getRisingSign(gmtJulDay: GmtJulDay, loc: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): ZodiacSign {
+    return getHouseSigns(gmtJulDay, loc, houseSystem, coordinate).getValue(1)
   }
 
 }
