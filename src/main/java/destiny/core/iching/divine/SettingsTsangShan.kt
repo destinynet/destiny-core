@@ -11,16 +11,9 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.core.iching.Symbol
 import destiny.core.iching.Symbol.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Divine.KEY_DIVINE_HEXSETTINGS
-import destiny.tools.getDescription
-import destiny.tools.getTitle
-import java.util.*
 
 
-@Impl([Domain(KEY_DIVINE_HEXSETTINGS, SettingsTsangShan.VALUE)])
-class SettingsTsangShan : AbstractSettings() {
+class SettingsTsangShan : AbstractSettings(SettingsOfStemBranch.TsangShan) {
 
   override val symbolStemMap: Map<Symbol, List<Stem>>
     get() = mapOf(
@@ -43,24 +36,6 @@ class SettingsTsangShan : AbstractSettings() {
       坎 to listOf(子, 戌, 申, 午, 辰, 寅),
       艮 to listOf(寅, 子, 戌, 申, 午, 辰),
       坤 to listOf(未, 酉, 亥, 丑, 卯, 巳))
-
-  override fun toString(locale: Locale): String {
-    return SettingsOfStemBranch.TsangShan.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return SettingsOfStemBranch.TsangShan.getDescription(locale)
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
 
   companion object {
     const val VALUE = "ts"

@@ -7,6 +7,7 @@ import destiny.core.Descriptive
 
 /** 羊刃 */
 interface IYangBlade : Descriptive {
+
   fun getYangBlade(stem: Stem): Branch
 }
 

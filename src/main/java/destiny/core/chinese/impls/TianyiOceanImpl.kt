@@ -3,12 +3,11 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.core.chinese.Branch
+import destiny.core.Descriptive
+import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.ITianyi
-import destiny.core.chinese.IYinYang
-import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
+import destiny.tools.asDescriptive
 import java.io.Serializable
 
 /**
@@ -19,7 +18,9 @@ import java.io.Serializable
  * 並釋說：“日用上一字，夜用下一字。
  * 如甲戊日日占應用牛字，便從天盤丑上起貴人，是為陽貴。甲戊日夜占，應用羊字，便從天盤未上起貴人，是為陰貴……”。
  */
-class TianyiOceanImpl : ITianyi, Serializable {
+class TianyiOceanImpl : ITianyi,
+                        Descriptive by Tianyi.Ocean.asDescriptive(),
+                        Serializable {
 
   /**
    * 甲戊兼牛羊，乙己鼠猴鄉，丙丁豬雞位，壬癸兔蛇藏，

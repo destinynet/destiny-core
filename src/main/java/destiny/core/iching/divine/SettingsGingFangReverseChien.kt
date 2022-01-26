@@ -11,15 +11,8 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.core.iching.Symbol
 import destiny.core.iching.Symbol.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Divine.KEY_DIVINE_HEXSETTINGS
-import destiny.tools.getDescription
-import destiny.tools.getTitle
-import java.util.*
 
-@Impl([Domain(KEY_DIVINE_HEXSETTINGS, SettingsGingFangReverseChien.VALUE)])
-class SettingsGingFangReverseChien : AbstractSettings() {
+class SettingsGingFangReverseChien : AbstractSettings(SettingsOfStemBranch.GingFangReverseChien) {
 
   override val symbolStemMap: Map<Symbol, List<Stem>>
     get() = mapOf(
@@ -42,24 +35,6 @@ class SettingsGingFangReverseChien : AbstractSettings() {
       坎 to listOf(寅, 辰, 午, 申, 戌, 子),
       艮 to listOf(辰, 午, 申, 戌, 子, 寅),
       坤 to listOf(未, 巳, 卯, 丑, 亥, 酉))
-
-  override fun toString(locale: Locale): String {
-    return SettingsOfStemBranch.GingFangReverseChien.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return SettingsOfStemBranch.GingFangReverseChien.getDescription(locale)
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
 
   companion object {
     const val VALUE = "gfr"

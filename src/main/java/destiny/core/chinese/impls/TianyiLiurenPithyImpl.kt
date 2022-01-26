@@ -3,12 +3,11 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.core.chinese.Branch
+import destiny.core.Descriptive
+import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.ITianyi
-import destiny.core.chinese.IYinYang
-import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
+import destiny.tools.asDescriptive
 import java.io.Serializable
 
 /**
@@ -30,19 +29,21 @@ import java.io.Serializable
  * 六辛日旦治勝光（午），暮治功曹（寅）；
  * 壬癸日旦治太乙（巳），暮治太沖（卯）
  */
-class TianyiLiurenPithyImpl : ITianyi, Serializable {
+class TianyiLiurenPithyImpl : ITianyi,
+                              Descriptive by Tianyi.LiurenPithy.asDescriptive(),
+                              Serializable {
 
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     return when (stem) {
       甲, 戊, 庚 -> if (yinYang.booleanValue) 丑 else 未
 
-      乙, 己 -> if (yinYang.booleanValue) 子 else 申
+      乙, 己    -> if (yinYang.booleanValue) 子 else 申
 
-      丙, 丁 -> if (yinYang.booleanValue) 亥 else 酉
+      丙, 丁    -> if (yinYang.booleanValue) 亥 else 酉
 
-      壬, 癸 -> if (yinYang.booleanValue) 巳 else 卯
+      壬, 癸    -> if (yinYang.booleanValue) 巳 else 卯
 
-      辛 -> if (yinYang.booleanValue) 午 else 寅
+      辛       -> if (yinYang.booleanValue) 午 else 寅
     }
   }
 }

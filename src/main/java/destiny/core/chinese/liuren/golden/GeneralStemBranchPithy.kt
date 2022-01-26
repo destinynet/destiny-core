@@ -3,18 +3,23 @@
  */
 package destiny.core.chinese.liuren.golden
 
+import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranch.*
 import destiny.core.chinese.liuren.General
 import destiny.core.chinese.liuren.General.*
+import destiny.core.chinese.liuren.GeneralStemBranch
 import destiny.core.chinese.liuren.IGeneralStemBranch
+import destiny.tools.asDescriptive
 import java.io.Serializable
 
 /**
  * 金口訣：壬子玄武 癸亥天后
  */
-class GeneralStemBranchPithy : IGeneralStemBranch, Serializable {
+class GeneralStemBranchPithy : IGeneralStemBranch,
+                               Descriptive by GeneralStemBranch.Pithy.asDescriptive(),
+                               Serializable {
 
   private val map = mapOf(
     貴人 to 己丑,

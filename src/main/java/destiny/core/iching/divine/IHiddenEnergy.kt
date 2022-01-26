@@ -11,6 +11,7 @@ import destiny.core.iching.IHexagram
 
 /** 伏神介面  */
 interface IHiddenEnergy : Descriptive {
+
   /**
    * 取得第幾爻的伏神
    * @param lineIndex 1 <= lineIndex <=6

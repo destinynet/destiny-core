@@ -3,6 +3,7 @@
  */
 package destiny.tools
 
+import destiny.core.Descriptive
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
 import java.io.IOException
@@ -108,6 +109,18 @@ fun <T> Sequence<T>.chunked(predicate: (T, T) -> Boolean): Sequence<List<T>> {
     }
     if (buffer.isNotEmpty()) {
       yield(buffer)
+    }
+  }
+}
+
+inline fun <reified T : Enum<T>> Enum<T>.asDescriptive() : Descriptive {
+  return object : Descriptive {
+    override fun toString(locale: Locale): String {
+      return this@asDescriptive.getTitle(locale)
+    }
+
+    override fun getDescription(locale: Locale): String {
+      return this@asDescriptive.getDescription(locale)
     }
   }
 }

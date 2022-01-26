@@ -5,24 +5,21 @@
  */
 package destiny.core.iching.divine
 
+import destiny.core.Descriptive
 import destiny.core.chinese.StemBranch
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Divine.KEY_DIVINE_HIDDEN_ENERGY
-import destiny.tools.getDescription
-import destiny.tools.getTitle
+import destiny.tools.asDescriptive
 import java.io.Serializable
-import java.util.*
 
 /**
  * 伏神系統，京房之《京房易卦》 , 一定不會傳回 null
  */
-@Impl([Domain(KEY_DIVINE_HIDDEN_ENERGY, HiddenEnergyGingFangImpl.VALUE)])
-class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
+class HiddenEnergyGingFangImpl : IHiddenEnergy,
+                                 Descriptive by HiddenEnergy.GingFang.asDescriptive(),
+                                 Serializable {
 
-  override fun getStemBranch(hexagram: IHexagram, settings: ISettingsOfStemBranch, lineIndex: Int): StemBranch? {
+  override fun getStemBranch(hexagram: IHexagram, settings: ISettingsOfStemBranch, lineIndex: Int): StemBranch {
     val comparator = HexagramDivinationComparator()
 
     /* 1 <= 卦序 <= 64 */
@@ -52,7 +49,7 @@ class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
     //System.out.println("首宮卦:" + 首宮卦 + " , 對宮首卦為:" + 對宮首卦);
 
     when {
-      hexagram == 首宮卦 ->
+      hexagram == 首宮卦     ->
         /**
          * 如果是八純卦，則往(先天八卦的)對宮尋找伏神
          * 乾 <-> 坤
@@ -76,7 +73,7 @@ class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
          * 如果四爻變 , 五爻變 , 四爻又變(遊魂卦)
          */
         return settings.getStemBranch(首宮卦, lineIndex)
-      宮序 == 8 ->
+      宮序 == 8             ->
         /**
          * 如果下三爻再變 (歸魂卦)
          */
@@ -85,26 +82,8 @@ class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
         } else {
           settings.getStemBranch(首宮卦, lineIndex)
         }
-      else -> throw IllegalStateException("impossible")
+      else                -> throw IllegalStateException("impossible")
     }
-  }
-
-  override fun toString(locale: Locale): String {
-    return HiddenEnergy.GingFang.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return HiddenEnergy.GingFang.getDescription(locale)
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
   }
 
   companion object {

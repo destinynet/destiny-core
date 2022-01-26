@@ -5,10 +5,12 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.Descriptive
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
+import destiny.tools.asDescriptive
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField.*
@@ -17,7 +19,9 @@ import java.time.temporal.ChronoUnit
 /**
  * 純粹以地方平均時（手錶時間）來判定
  */
-class MidnightLmtImpl(private val julDayResolver: JulDayResolver) : IMidnight, Serializable {
+class MidnightLmtImpl(private val julDayResolver: JulDayResolver) : IMidnight ,
+                                                                    Descriptive by MidnightImpl.CLOCK0.asDescriptive(),
+                                                                    Serializable {
 
   override fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation): GmtJulDay {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)

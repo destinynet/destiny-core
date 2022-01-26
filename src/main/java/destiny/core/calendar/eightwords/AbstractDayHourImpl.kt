@@ -15,7 +15,7 @@ import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
 
 abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
-                                   val julDayResolver: JulDayResolver) : IDayHour , IHour by hourImpl , Serializable {
+                                   val julDayResolver: JulDayResolver) : IDayHour, IHour by hourImpl, Serializable {
 
   /**
    * Note : 2017-10-27 : gmtJulDay 版本不方便計算，很 buggy , 改以呼叫 LMT 版本來實作

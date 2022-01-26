@@ -4,13 +4,17 @@
 package destiny.core.chinese.impls
 
 import destiny.core.DayNight
+import destiny.core.Descriptive
 import destiny.core.astrology.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.tools.asDescriptive
 import java.io.Serializable
 
 
-class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight, Serializable {
+class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight,
+                                                                Descriptive by DayNightImpl.Half.asDescriptive(),
+                                                                Serializable {
 
   // TODO : 極區內可能不適用
   override fun getDayNight(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): DayNight {

@@ -3,16 +3,20 @@
  */
 package destiny.core.chinese.liuren
 
+import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranch.*
 import destiny.core.chinese.liuren.General.*
+import destiny.tools.asDescriptive
 import java.io.Serializable
 
 /**
  * 大六壬：壬子天后 癸亥玄武
  */
-class GeneralStemBranchLiuren : IGeneralStemBranch, Serializable {
+class GeneralStemBranchLiuren : IGeneralStemBranch,
+                                Descriptive by GeneralStemBranch.Liuren.asDescriptive(),
+                                Serializable {
 
   private val map = mapOf(
     貴人 to 己丑,

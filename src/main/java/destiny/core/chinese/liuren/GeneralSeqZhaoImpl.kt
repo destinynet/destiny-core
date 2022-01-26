@@ -3,11 +3,15 @@
  */
 package destiny.core.chinese.liuren
 
+import destiny.core.Descriptive
 import destiny.core.chinese.liuren.General.*
 import destiny.tools.ArrayTools
+import destiny.tools.asDescriptive
 import java.io.Serializable
 
-class GeneralSeqZhaoImpl : IGeneralSeq, Serializable {
+class GeneralSeqZhaoImpl : IGeneralSeq,
+                           Descriptive by GeneralSeq.Zhao.asDescriptive(),
+                           Serializable {
 
   override fun next(from: General, n: Int): General {
     return get(getIndex(from) + n)

@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.Descriptive
 import destiny.core.astrology.Coordinate
 import destiny.core.astrology.HouseSystem
 import destiny.core.astrology.ZodiacSign
@@ -14,7 +15,7 @@ import java.time.chrono.ChronoLocalDateTime
 /**
  * 計算上升星座（八字命宮）
  */
-interface IRisingSign {
+interface IRisingSign : Descriptive {
 
   fun getRisingSign(gmtJulDay: GmtJulDay, loc: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): ZodiacSign
 

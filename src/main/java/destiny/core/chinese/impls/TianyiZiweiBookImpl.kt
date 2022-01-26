@@ -3,12 +3,11 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.core.chinese.Branch
+import destiny.core.Descriptive
+import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.ITianyi
-import destiny.core.chinese.IYinYang
-import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
+import destiny.tools.asDescriptive
 import java.io.Serializable
 
 /**
@@ -19,19 +18,21 @@ import java.io.Serializable
  *
  * 截圖 http://imgur.com/1rmn11a
  */
-class TianyiZiweiBookImpl : ITianyi, Serializable {
+class TianyiZiweiBookImpl : ITianyi,
+                            Descriptive by Tianyi.ZiweiBook.asDescriptive(),
+                            Serializable {
 
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     return when (stem) {
       甲, 戊, 庚 -> if (yinYang.booleanValue) 丑 else 未
 
-      乙, 己 -> if (yinYang.booleanValue) 子 else 申
+      乙, 己    -> if (yinYang.booleanValue) 子 else 申
 
-      丙, 丁 -> if (yinYang.booleanValue) 亥 else 酉
+      丙, 丁    -> if (yinYang.booleanValue) 亥 else 酉
 
-      壬, 癸 -> if (yinYang.booleanValue) 卯 else 巳
+      壬, 癸    -> if (yinYang.booleanValue) 卯 else 巳
 
-      辛 -> if (yinYang.booleanValue) 午 else 寅
+      辛       -> if (yinYang.booleanValue) 午 else 寅
     }
   }
 }

@@ -10,13 +10,8 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.holo.MonthlyHexagram
 import destiny.core.iching.Hexagram
 import destiny.core.iching.Hexagram.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Divine.KEY_MONTH_HEX_IMPL
-import destiny.tools.getDescription
-import destiny.tools.getTitle
+import destiny.tools.asDescriptive
 import java.io.Serializable
-import java.util.*
 
 /**
  * 12消息卦，兩種設定
@@ -31,15 +26,9 @@ interface IMonthlyHexagram : Descriptive {
  * 冬至點起為 [Hexagram.復] 卦
  * 此為黃道「中氣」正切演算法，亦是 太陽星座劃分法
  */
-@Impl([Domain(KEY_MONTH_HEX_IMPL, MonthlyHexagramSignImpl.VALUE, default = true)])
-class MonthlyHexagramSignImpl : IMonthlyHexagram, Serializable {
-  override fun toString(locale: Locale): String {
-    return MonthlyHexagram.Sign.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return MonthlyHexagram.Sign.getDescription(locale)
-  }
+class MonthlyHexagramSignImpl : IMonthlyHexagram,
+                                Descriptive by MonthlyHexagram.Sign.asDescriptive(),
+                                Serializable {
 
   override fun getHexagram(solarTerms: SolarTerms): Pair<Hexagram, Pair<SolarTerms, SolarTerms>> {
     return if (solarTerms.major) {
@@ -51,20 +40,7 @@ class MonthlyHexagramSignImpl : IMonthlyHexagram, Serializable {
     }
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
-
   companion object {
-
-    const val VALUE = "sign"
 
     val instance = MonthlyHexagramSignImpl()
 
@@ -90,15 +66,9 @@ class MonthlyHexagramSignImpl : IMonthlyHexagram, Serializable {
  * 子月 為 [Hexagram.復] 卦
  * 意味：以節氣的「節」，也是地支月份 來劃分
  */
-@Impl([Domain(KEY_MONTH_HEX_IMPL, MonthlyHexagramBranchImpl.VALUE)])
-class MonthlyHexagramBranchImpl : IMonthlyHexagram, Serializable {
-  override fun toString(locale: Locale): String {
-    return MonthlyHexagram.Branch.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return MonthlyHexagram.Branch.getTitle(locale)
-  }
+class MonthlyHexagramBranchImpl : IMonthlyHexagram,
+                                  Descriptive by MonthlyHexagram.Branch.asDescriptive(),
+                                  Serializable {
 
   override fun getHexagram(solarTerms: SolarTerms): Pair<Hexagram, Pair<SolarTerms, SolarTerms>> {
     val hex: Hexagram = map.getValue(solarTerms.branch)
@@ -110,20 +80,8 @@ class MonthlyHexagramBranchImpl : IMonthlyHexagram, Serializable {
     return hex to between
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
 
   companion object {
-
-    const val VALUE = "branch"
 
     val instance = MonthlyHexagramBranchImpl()
 

@@ -4,13 +4,14 @@
 package destiny.core.chinese
 
 import destiny.core.DayNight
+import destiny.core.Descriptive
 
 /**
  * 天乙貴人
  * CU Draconis (CU Dra / 10 Draconis / HD 121130)
  * 天龍座10，又名天龍座CU
  */
-interface ITianyi {
+interface ITianyi : Descriptive {
 
   /**
    * 取得天干的天乙貴人、分晝夜

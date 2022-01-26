@@ -4,32 +4,10 @@
 package destiny.tools.converters
 
 import destiny.core.chinese.IClockwise
-import destiny.core.chinese.IMonthlyHexagram
-import destiny.core.chinese.IYangBlade
 import destiny.core.chinese.onePalm.IPositive
 import destiny.core.chinese.ziwei.*
-import destiny.core.iching.divine.IHiddenEnergy
-import destiny.core.iching.divine.ISettingsOfStemBranch
 
 object Domains {
-
-
-  /** 易卦 */
-  object Divine {
-
-    /** 納甲設定 [ISettingsOfStemBranch] */
-    const val KEY_DIVINE_HEXSETTINGS = "hexSet"
-
-    /** 伏神設定 [IHiddenEnergy] */
-    const val KEY_DIVINE_HIDDEN_ENERGY = "hiddenEnergy"
-
-    /** 羊刃 [IYangBlade] */
-    const val KEY_DIVINE_YANG_BLADE = "id_yangBlade"
-
-    /** 12消息卦 , 冬至點開始 or 子月開始 [IMonthlyHexagram] */
-    const val KEY_MONTH_HEX_IMPL = "monthHexImpl"
-
-  }
 
   /** 紫微 */
   object Ziwei {

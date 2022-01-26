@@ -3,11 +3,10 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.core.chinese.Branch
-import destiny.core.chinese.ITianyi
-import destiny.core.chinese.IYinYang
-import destiny.core.chinese.Stem
+import destiny.core.Descriptive
+import destiny.core.chinese.*
 import destiny.core.chinese.Stem.*
+import destiny.tools.asDescriptive
 import java.io.Serializable
 
 
@@ -24,19 +23,21 @@ import java.io.Serializable
  * 前一字為晝貴，後一字為夜貴。
  * 前述天乙貴人歌訣係明代先賢根據「劉基」所留傳而著述
  */
-class TianyiLiuBowenImpl : ITianyi, Serializable {
+class TianyiLiuBowenImpl : ITianyi,
+                           Descriptive by Tianyi.LiuBowen.asDescriptive(),
+                           Serializable {
 
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     return when (stem) {
       甲, 戊, 庚 -> if (yinYang.booleanValue) Branch.丑 else Branch.未
 
-      乙, 己 -> if (yinYang.booleanValue) Branch.子 else Branch.申
+      乙, 己    -> if (yinYang.booleanValue) Branch.子 else Branch.申
 
-      丙, 丁 -> if (yinYang.booleanValue) Branch.亥 else Branch.酉
+      丙, 丁    -> if (yinYang.booleanValue) Branch.亥 else Branch.酉
 
-      壬, 癸 -> if (yinYang.booleanValue) Branch.卯 else Branch.巳
+      壬, 癸    -> if (yinYang.booleanValue) Branch.卯 else Branch.巳
 
-      辛 -> if (yinYang.booleanValue) Branch.寅 else Branch.午
+      辛       -> if (yinYang.booleanValue) Branch.寅 else Branch.午
     }
   }
 }

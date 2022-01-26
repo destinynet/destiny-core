@@ -5,23 +5,20 @@
  */
 package destiny.core.iching.divine
 
+import destiny.core.Descriptive
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.SimpleBranch
 import destiny.core.chinese.StemBranch
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Divine.KEY_DIVINE_HIDDEN_ENERGY
-import destiny.tools.getDescription
-import destiny.tools.getTitle
+import destiny.tools.asDescriptive
 import java.io.Serializable
-import java.util.*
 
 
 /** 伏神系統，王洪緒之《卜筮正宗》 , 大多數會是 null  */
-@Impl([Domain(KEY_DIVINE_HIDDEN_ENERGY , HiddenEnergyWangImpl.VALUE , default = true)])
-class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
+class HiddenEnergyWangImpl : IHiddenEnergy,
+                             Descriptive by HiddenEnergy.Wang.asDescriptive(),
+                             Serializable {
 
   override fun getStemBranch(hexagram: IHexagram, settings: ISettingsOfStemBranch, lineIndex: Int): StemBranch? {
     val comparator = HexagramDivinationComparator()
@@ -58,24 +55,6 @@ class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
     return settings.getStemBranch(首宮卦, lineIndex)
       .takeIf { sb -> lackingFiveElement.contains(SimpleBranch.getFiveElement(sb.branch)) }
 
-  }
-
-  override fun toString(locale: Locale): String {
-    return HiddenEnergy.Wang.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return HiddenEnergy.Wang.getDescription(locale)
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
   }
 
 

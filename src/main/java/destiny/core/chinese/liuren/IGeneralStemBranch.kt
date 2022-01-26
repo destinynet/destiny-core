@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.liuren
 
+import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 
@@ -10,7 +11,7 @@ import destiny.core.chinese.StemBranch
  * 金口訣：壬子玄武 癸亥天后
  * 大六壬：壬子天后 癸亥玄武
  */
-interface IGeneralStemBranch {
+interface IGeneralStemBranch : Descriptive {
 
   fun getStemBranch(general: General): StemBranch
 
