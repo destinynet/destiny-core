@@ -4,7 +4,7 @@
 package destiny.tools.converters
 
 import com.google.common.base.Enums
-import com.google.common.base.Optional
+import org.apache.commons.lang3.EnumUtils
 
 object ParserCommons {
 
@@ -25,8 +25,6 @@ object ParserCommons {
    */
   fun <E : Enum<E>> parseEnum(key: String, clazz: Class<E>, map: Map<String, String>): E? {
 
-    val value: Optional<E> = map[key]?.let { name -> Enums.getIfPresent(clazz, name) } ?: Optional.absent()
-    return value.orNull()
+    return map[key]?.trim()?.let { name -> EnumUtils.getEnumIgnoreCase(clazz, name) }
   }
-
 }

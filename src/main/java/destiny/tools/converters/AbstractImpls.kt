@@ -46,6 +46,18 @@ interface MapConverterWithDefault<T> : MapConverter<T> {
   }
 }
 
+abstract class EnumMapConverterWithDefault<T : Enum<T>>(override val key: String,
+                                                        override val defaultImpl: T) : MapConverterWithDefault<T> {
+
+  override fun getMap(context: T): Map<String, String> {
+    return mapOf(key to context.name)
+  }
+
+  override fun getContext(map: Map<String, String>): T? {
+    return ParserCommons.parseEnum(key, defaultImpl::class.java, map)
+  }
+}
+
 interface IAbstractImpls<T> : MapConverterWithDefault<T> {
 
   val impls: List<T>
