@@ -5,28 +5,8 @@ package destiny.tools.converters
 
 import destiny.core.chinese.IClockwise
 import destiny.core.chinese.onePalm.IPositive
-import destiny.core.chinese.ziwei.*
 
 object Domains {
-
-  /** 紫微 */
-  object Ziwei {
-
-    /** 紫微流年 [IFlowYear] */
-    const val KEY_FLOW_YEAR = "flowYear"
-
-    /** 紫微流月 [IFlowMonth] */
-    const val KEY_FLOW_MONTH = "flowMonth"
-
-    /** 紫微流日 [IFlowDay] */
-    const val KEY_FLOW_DAY = "flowDay"
-
-    /** 紫微流時 [IFlowHour] */
-    const val KEY_FLOW_HOUR = "flowHour"
-
-    /** 紫微起大運 [IBigRange] */
-    const val KEY_BIG_RANGE = "bigRange"
-  }
 
   /** 金口訣 */
   object Pithy {

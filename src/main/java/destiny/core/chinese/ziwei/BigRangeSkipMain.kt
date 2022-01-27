@@ -3,21 +3,19 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.Descriptive
 import destiny.core.Gender
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.ziwei.House.命宮
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Ziwei.KEY_BIG_RANGE
+import destiny.tools.asDescriptive
 import java.io.Serializable
 
 /**
  * 鄰宮起大限
  */
-@Impl([Domain(KEY_BIG_RANGE, BigRangeSkipMain.VALUE)])
-class BigRangeSkipMain : IBigRange, Serializable {
-
-  override val bigRange: BigRange = BigRange.SkipMain
+class BigRangeSkipMain : IBigRange,
+                         Descriptive by BigRange.SkipMain.asDescriptive(),
+                         Serializable {
 
   override fun getVageRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int> {
     return getAgeRange(house, set, yinYang, gender, houseSeqImpl)
@@ -35,20 +33,6 @@ class BigRangeSkipMain : IBigRange, Serializable {
     val fromRange = set + steps * 10
     val toRange = set + steps * 10 + 9
     return Pair(fromRange, toRange)
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
-  companion object {
-    const val VALUE = "skipMain"
   }
 
 }

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.Descriptive
 import destiny.core.Gender
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IYinYang
@@ -10,9 +11,7 @@ import destiny.core.chinese.StemBranch
 import mu.KotlinLogging
 
 /** 起大限  */
-interface IBigRange {
-
-  val bigRange: BigRange
+interface IBigRange : Descriptive {
 
   /** 取得此 house 的大限起訖時刻 , 傳回「虛歲」 (vAge)  */
   fun getVageRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int>

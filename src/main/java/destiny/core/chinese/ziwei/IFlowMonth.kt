@@ -5,8 +5,6 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
-import destiny.tools.getTitle
-import java.util.*
 
 /**
  * 計算流月命宮
@@ -20,8 +18,6 @@ import java.util.*
  */
 interface IFlowMonth : Descriptive {
 
-  val flowMonth: FlowMonth
-
   /**
    * @param flowYear   流年
    * @param flowMonth  欲求算的流月
@@ -31,11 +27,4 @@ interface IFlowMonth : Descriptive {
    */
   fun getFlowMonth(flowYear: Branch, flowMonth: Branch, birthMonth: Int, birthHour: Branch): Branch
 
-  override fun toString(locale: Locale): String {
-    return flowMonth.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
-  }
 }

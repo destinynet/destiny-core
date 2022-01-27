@@ -3,10 +3,9 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.Descriptive
 import destiny.core.chinese.Branch
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Ziwei.KEY_FLOW_DAY
+import destiny.tools.asDescriptive
 import java.io.Serializable
 
 /**
@@ -14,26 +13,12 @@ import java.io.Serializable
  *
  * 說明頁面 : https://519843.blogspot.tw/2017/03/blog-post_29.html
  */
-@Impl([Domain(KEY_FLOW_DAY, FlowDayBranchImpl.VALUE)])
-class FlowDayBranchImpl : IFlowDay, Serializable {
-
-  override val flowDay: FlowDay = FlowDay.Branch
+class FlowDayBranchImpl : IFlowDay,
+                          Descriptive by FlowDay.Branch.asDescriptive(),
+                          Serializable {
 
   override fun getFlowDay(flowDayBranch: Branch, flowDayNum: Int, flowMonthMainHouse: Branch): Branch {
     return flowDayBranch
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
-  companion object {
-    const val VALUE = "fixed"
-  }
 }

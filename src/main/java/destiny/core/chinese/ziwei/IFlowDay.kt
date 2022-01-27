@@ -5,8 +5,6 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
-import destiny.tools.getTitle
-import java.util.*
 
 /**
  * 計算流日命宮
@@ -21,18 +19,9 @@ import java.util.*
  */
 interface IFlowDay : Descriptive {
 
-  val flowDay: FlowDay
-
   /**
    * @param flowMonthMainHouse 流月命宮
    */
   fun getFlowDay(flowDayBranch: Branch, flowDayNum: Int, flowMonthMainHouse: Branch): Branch
 
-  override fun toString(locale: Locale): String {
-    return flowDay.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
-  }
 }
