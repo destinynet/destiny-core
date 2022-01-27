@@ -3,14 +3,14 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMinor.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
-import destiny.tools.getTitle
+import destiny.tools.asDescriptive
 import java.io.Serializable
-import java.util.*
 
 
 /**
@@ -93,7 +93,9 @@ private val commonPairMap: Map<Pair<ZStar, Branch>, Int> = commonTable
   .mapValues { it -> it.component2().map { it.third }.first() }
 
 
-abstract class StrengthAbstractImpl : IStrength, Serializable {
+abstract class StrengthAbstractImpl(override val strength: Strength) : IStrength,
+                                                                       Descriptive by strength.asDescriptive(),
+                                                                       Serializable {
 
   /** 取得一個星體，在 12 個宮位的廟旺表  */
   override fun getMapOf(star: ZStar): Map<Branch, Int> {
@@ -116,9 +118,4 @@ abstract class StrengthAbstractImpl : IStrength, Serializable {
 
   /** 取得「某顆星」於 12地支的廟旺表  */
   internal abstract fun getImplMapOf(star: ZStar): Map<Branch, Int>?
-
-  override fun toString(locale: Locale): String {
-    return strength.getTitle(locale)
-  }
-
 }

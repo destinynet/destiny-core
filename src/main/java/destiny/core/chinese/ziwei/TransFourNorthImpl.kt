@@ -5,32 +5,11 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Ziwei.KEY_TRANS_FOUR
-import java.util.*
 
-@Impl([Domain(KEY_TRANS_FOUR, TransFourNorthImpl.VALUE)])
-class TransFourNorthImpl : TransFourAbstractImpl() {
-
-  override val transFour: TransFour = TransFour.North
+class TransFourNorthImpl : TransFourAbstractImpl(TransFour.North) {
 
   override val table
     get() = dataTable
-
-  override fun getDescription(locale: Locale): String {
-    return "北派、神數派"
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
 
   companion object {
     /** 北派 , 神數  */

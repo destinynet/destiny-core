@@ -3,11 +3,10 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.寅
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains
+import destiny.tools.asDescriptive
 import mu.KotlinLogging
 import java.io.Serializable
 
@@ -23,10 +22,9 @@ import java.io.Serializable
  * 若差數為偶數，則倍數與差數相加而得一新的數字，
  * 下一步起寅宮並順時針數到上一步驟得出的數目，此一落宮點便是紫微星的位置；
  */
-@Impl([Domain(Domains.Ziwei.KEY_PURPLE_BRANCH, PurpleStarBranchDefaultImpl.VALUE, default = true)])
-class PurpleStarBranchDefaultImpl : IPurpleStarBranch, Serializable {
-
-  override val purpleStarBranch: PurpleStarBranch = PurpleStarBranch.Default
+class PurpleStarBranchDefaultImpl : IPurpleStarBranch,
+                                    Descriptive by PurpleStarBranch.Default.asDescriptive(),
+                                    Serializable {
 
   /**
    * @param state 局數
@@ -64,20 +62,10 @@ class PurpleStarBranchDefaultImpl : IPurpleStarBranch, Serializable {
     }
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is PurpleStarBranchDefaultImpl) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
 
 
   companion object {
 
-    const val VALUE = "default"
     private val logger = KotlinLogging.logger { }
   }
 

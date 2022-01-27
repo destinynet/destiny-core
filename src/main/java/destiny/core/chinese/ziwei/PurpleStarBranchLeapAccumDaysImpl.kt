@@ -3,11 +3,10 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains
+import destiny.tools.asDescriptive
 import mu.KotlinLogging
 import java.io.Serializable
 
@@ -18,10 +17,9 @@ import java.io.Serializable
  *
  * 參考此表格 :  http://imgur.com/87sHQOq
  */
-@Impl([Domain(Domains.Ziwei.KEY_PURPLE_BRANCH, PurpleStarBranchLeapAccumDaysImpl.VALUE)])
-class PurpleStarBranchLeapAccumDaysImpl : IPurpleStarBranch, Serializable {
-
-  override val purpleStarBranch: PurpleStarBranch = PurpleStarBranch.LeapAccumDays
+class PurpleStarBranchLeapAccumDaysImpl : IPurpleStarBranch,
+                                          Descriptive by PurpleStarBranch.LeapAccumDays.asDescriptive(),
+                                          Serializable {
 
   /**
    * @param state 局數
@@ -80,20 +78,10 @@ class PurpleStarBranchLeapAccumDaysImpl : IPurpleStarBranch, Serializable {
     return fireMap.getValue(newDays)
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is PurpleStarBranchLeapAccumDaysImpl) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
-
   companion object {
-    const val VALUE = "accumDays"
+
     private val logger = KotlinLogging.logger { }
+
     private val woodMap = mapOf(
       31 to 寅,
       32 to 亥,

@@ -12,18 +12,6 @@ object Domains {
   /** 紫微 */
   object Ziwei {
 
-    /** 紫微星，閏月該如何處理 [IPurpleStarBranch] */
-    const val KEY_PURPLE_BRANCH = "purpleBranch"
-
-    /** 宮位名字、順序 [IHouseSeq] */
-    const val KEY_HOUSE_SEQ = "houseSeq"
-
-    /** 四化 [ITransFour] */
-    const val KEY_TRANS_FOUR = "transFour"
-
-    /** 星體強弱 [IStrength] */
-    const val KEY_STRENGTH = "strength"
-
     /** 紫微流年 [IFlowYear] */
     const val KEY_FLOW_YEAR = "flowYear"
 

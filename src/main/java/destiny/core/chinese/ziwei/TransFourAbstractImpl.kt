@@ -3,10 +3,10 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.Descriptive
 import destiny.core.chinese.Stem
-import destiny.tools.getTitle
+import destiny.tools.asDescriptive
 import java.io.Serializable
-import java.util.*
 
 /**
  * 參考文件
@@ -33,7 +33,9 @@ import java.util.*
  * （3）北派沿用《全集》的左輔右弼化科。可是，庚干卻是天同化科和天相化忌。天同化科而不化忌的原因除了是限隨《全書》之外，
  *    也有可能是「天同福星不化忌」之說所影響。另外，天相化忌是其他派別沒有出現過的，相傳這是由其他術數的原理中推敲出來的結果。
  */
-abstract class TransFourAbstractImpl : ITransFour, Serializable {
+abstract class TransFourAbstractImpl(override val transFour: TransFour) : ITransFour,
+                                                                          Descriptive by transFour.asDescriptive(),
+                                                                          Serializable {
 
   protected abstract val table: Collection<Triple<Stem, ITransFour.Value, ZStar>>
 
@@ -42,9 +44,5 @@ abstract class TransFourAbstractImpl : ITransFour, Serializable {
       .filter { it.first == stem && it.second == value}
       .map { it.third }
       .first()
-  }
-
-  override fun toString(locale: Locale): String {
-    return transFour.getTitle(locale)
   }
 }

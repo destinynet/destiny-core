@@ -5,37 +5,16 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Ziwei.KEY_TRANS_FOUR
-import java.util.*
 
 /**
  * 陳泌棟 修訂版
  * facebook https://www.facebook.com/profile.php?id=100000155929301
  * 文件 https://www.facebook.com/groups/402420733203833/permalink/2127829883996234/
  */
-@Impl([Domain(KEY_TRANS_FOUR, TransFourChenBiDongImpl.VALUE)])
-class TransFourChenBiDongImpl : TransFourAbstractImpl() {
-
-  override val transFour: TransFour = TransFour.ChenBiDong
+class TransFourChenBiDongImpl : TransFourAbstractImpl(TransFour.ChenBiDong) {
 
   override val table
     get() = dataTable
-
-  override fun getDescription(locale: Locale): String {
-    return "陳泌棟 修訂版"
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is TransFourChenBiDongImpl) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
 
   companion object {
     private val dataTable = listOf(

@@ -8,9 +8,6 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Ziwei.KEY_STRENGTH
 
 /**
  * 此顆星，於此地支中，強度為何
@@ -64,10 +61,7 @@ private val commonPairMap: Map<Pair<ZStar, Branch>, Int> = table
  *
  * 亦即是此表格 https://goo.gl/ZHYgh9 中的綠色(南派)
  */
-@Impl([Domain(KEY_STRENGTH , StrengthMiddleImpl.VALUE)])
-class StrengthMiddleImpl : StrengthAbstractImpl() {
-
-  override val strength: Strength = Strength.Middle
+class StrengthMiddleImpl : StrengthAbstractImpl(Strength.Middle) {
 
   override fun getImplStrengthOf(star: ZStar, branch: Branch): Int? {
     return commonPairMap[Pair(star, branch)]
@@ -75,19 +69,5 @@ class StrengthMiddleImpl : StrengthAbstractImpl() {
 
   override fun getImplMapOf(star: ZStar): Map<Branch, Int>? {
     return commonStarMap[star]?.toMap()
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
-  companion object {
-    const val VALUE = "middle"
   }
 }

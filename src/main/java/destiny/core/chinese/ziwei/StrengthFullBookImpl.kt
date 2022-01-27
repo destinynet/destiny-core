@@ -10,9 +10,6 @@ import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.火星
 import destiny.core.chinese.ziwei.StarUnlucky.鈴星
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Ziwei.KEY_STRENGTH
 
 /**
  * 全書派
@@ -69,10 +66,7 @@ private val commonPairMap: Map<Pair<ZStar, Branch>, Int> = table
   .mapValues { it -> it.component2().map { it.third }.first() }
 
 
-@Impl([Domain(KEY_STRENGTH , StrengthFullBookImpl.VALUE , default = true)])
-class StrengthFullBookImpl : StrengthAbstractImpl() {
-
-  override val strength: Strength = Strength.FullBook
+class StrengthFullBookImpl : StrengthAbstractImpl(Strength.FullBook) {
 
   /**
    *             1  2       3    4    5      6          7
@@ -87,19 +81,4 @@ class StrengthFullBookImpl : StrengthAbstractImpl() {
   override fun getImplMapOf(star: ZStar): Map<Branch, Int>? {
     return commonStarMap[star]?.toMap()
   }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
-  companion object {
-    const val VALUE = "fullBook"
-  }
-
 }

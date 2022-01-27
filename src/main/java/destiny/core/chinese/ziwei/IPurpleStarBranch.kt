@@ -5,13 +5,9 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
-import destiny.tools.getTitle
-import java.util.*
 
 /** 求出紫微星的地支  */
 interface IPurpleStarBranch : Descriptive {
-
-  val purpleStarBranch: PurpleStarBranch
 
   /**
    * @param state         局數
@@ -24,13 +20,5 @@ interface IPurpleStarBranch : Descriptive {
   /** 傳入的不是閏月，因此傳遞回去的 prevMonthDays 也不重要，傳回 0 即可  */
   fun getBranchOfPurpleStarNonLeap(state: Int, day: Int): Branch {
     return getBranchOfPurpleStar(state, day, false, 0)
-  }
-
-  override fun toString(locale: Locale): String {
-    return purpleStarBranch.getTitle(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
   }
 }

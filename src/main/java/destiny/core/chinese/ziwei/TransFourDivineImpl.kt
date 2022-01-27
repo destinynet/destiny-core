@@ -5,37 +5,15 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Ziwei.KEY_TRANS_FOUR
-import java.util.*
 
 /**
  * 占驗門
  * http://mestrong1978.pixnet.net/blog/post/96901556-紫微斗數-簡述
  */
-@Impl([Domain(KEY_TRANS_FOUR , TransFourDivineImpl.VALUE)])
-class TransFourDivineImpl : TransFourAbstractImpl() {
-
-  override val transFour: TransFour = TransFour.Divine
+class TransFourDivineImpl : TransFourAbstractImpl(TransFour.Divine) {
 
   override val table
     get() = dataTable
-
-
-  override fun getDescription(locale: Locale): String {
-    return "占驗門"
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
 
 
   companion object {
