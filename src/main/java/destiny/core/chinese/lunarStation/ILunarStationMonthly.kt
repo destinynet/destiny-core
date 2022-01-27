@@ -5,9 +5,7 @@ import destiny.core.astrology.LunarStation
 import destiny.core.astrology.LunarStation.*
 import destiny.core.astrology.Planet
 import destiny.core.astrology.Planet.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains
+import destiny.tools.asDescriptive
 import java.io.Serializable
 import java.util.*
 
@@ -37,20 +35,12 @@ interface ILunarStationMonthly : Descriptive {
  *
  * A(參籌秘書) 與 B 兩歌訣其實是同一套算法
  */
-@Impl(
-  [
-    Domain(Domains.LunarStation.MonthImpl.KEY_GENERAL, LunarStationMonthlyAoHead.VALUE, true),
-    Domain(Domains.LunarStation.MonthImpl.KEY_SELECT, LunarStationMonthlyAoHead.VALUE)
-  ]
-)
-class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
+class LunarStationMonthlyAoHead : ILunarStationMonthly,
+                                  Descriptive by MonthlyImpl.AoHead.asDescriptive(),
+                                  Serializable {
 
   override fun getMonthly(yearStation: LunarStation, monthNumber: Int): LunarStation {
     return getFirstMonth(yearStation.planet).next(monthNumber - 1)
-  }
-
-  override fun toString(locale: Locale): String {
-    return "《鰲頭通書》"
   }
 
   companion object {
@@ -66,8 +56,6 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
         else -> throw IllegalArgumentException("No such pair")
       }
     }
-
-    const val VALUE =  "AoHead"
   }
 }
 
@@ -87,13 +75,9 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
  * 金星值年，正月起胃。
  * 土星值年，正月起角。
  */
-@Impl(
-  [
-    Domain(Domains.LunarStation.MonthImpl.KEY_GENERAL, LunarStationMonthlyAnimalExplained.VALUE),
-    Domain(Domains.LunarStation.MonthImpl.KEY_SELECT, LunarStationMonthlyAnimalExplained.VALUE, true)
-  ]
-)
-class LunarStationMonthlyAnimalExplained : ILunarStationMonthly, Serializable {
+class LunarStationMonthlyAnimalExplained : ILunarStationMonthly,
+                                           Descriptive by MonthlyImpl.AnimalExplained.asDescriptive(),
+                                           Serializable {
 
   override fun getMonthly(yearStation: LunarStation, monthNumber: Int): LunarStation {
     return getFirstMonth(yearStation.planet).next(monthNumber - 1)
@@ -117,7 +101,5 @@ class LunarStationMonthlyAnimalExplained : ILunarStationMonthly, Serializable {
         else -> throw IllegalArgumentException("No such pair")
       }
     }
-
-    const val VALUE = "AnimalExplained"
   }
 }

@@ -5,15 +5,14 @@ package destiny.core.chinese.liuren
 
 import destiny.core.Clockwise
 import destiny.core.DayNight
+import destiny.core.Descriptive
 import destiny.core.astrology.IDayNight
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.IClockwise
 import destiny.core.chinese.Stem.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.Pithy.KEY_CLOCKWISE
+import destiny.tools.asDescriptive
 import java.io.Serializable
 
 /**
@@ -21,10 +20,10 @@ import java.io.Serializable
  * 甲乙丙丁戊己庚 皆為晝順夜逆； 辛壬癸 為晝逆夜順
  * XinRenKui Reverse
  */
-@Impl([Domain(KEY_CLOCKWISE, ClockwiseXinRenKuiReverseImpl.VALUE, default = true)])
-class ClockwiseXinRenKuiReverseImpl(
-  private val dayHourImpl: IDayHour,
-  private val differentiator: IDayNight) : IClockwise, Serializable {
+class ClockwiseXinRenKuiReverseImpl(private val dayHourImpl: IDayHour,
+                                    private val differentiator: IDayNight) : IClockwise,
+                                                                             Descriptive by destiny.core.chinese.liuren.Clockwise.XinRenKuiReverse.asDescriptive(),
+                                                                             Serializable {
 
   override fun getClockwise(gmtJulDay: GmtJulDay, loc: ILocation): Clockwise {
     val day = dayHourImpl.getDay(gmtJulDay, loc)
