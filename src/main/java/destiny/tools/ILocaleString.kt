@@ -4,9 +4,10 @@
  */
 package destiny.tools
 
+import java.io.Serializable
 import java.util.*
 
-interface ILocaleString {
+interface ILocaleString : Serializable {
 
   fun toString(locale: Locale = Locale.getDefault()): String
 }

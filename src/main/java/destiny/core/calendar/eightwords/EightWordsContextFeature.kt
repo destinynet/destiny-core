@@ -74,8 +74,6 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
                                @Transient
                                private val ewContextFeatureCache : Cache<LmtCacheKey<*>, IEightWordsContextModel>) : AbstractCachedFeature<EightWordsContextConfig , IEightWordsContextModel>() {
 
-  data class CacheKey(val lmt: ChronoLocalDateTime<*>, val loc: ILocation, val config: EightWordsContextConfig) : java.io.Serializable
-
   override val key: String = "ewContext"
 
   override val defaultConfig: EightWordsContextConfig = EightWordsContextConfig()
