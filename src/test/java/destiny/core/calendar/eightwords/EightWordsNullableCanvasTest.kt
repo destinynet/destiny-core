@@ -31,7 +31,7 @@ class EightWordsNullableCanvasTest {
 
   @Test
   fun 不完整_只有月支以及日柱_R2L() {
-    val ewn = EightWordsNullable(StemBranchOptional.empty(), StemBranchOptional[null, Branch.丑], StemBranch.丙寅, StemBranchOptional.empty())
+    val ewn = EightWordsNullable.of(StemBranchOptional.empty(), StemBranchOptional[null, Branch.丑], StemBranch.丙寅, StemBranchOptional.empty())
     EightWordsNullableCanvas(ewn, Direction.R2L).also {
       assertTrue(it.toString().contains("　丙　　"))
       assertTrue(it.toString().contains("　寅丑　"))
@@ -41,7 +41,7 @@ class EightWordsNullableCanvasTest {
 
   @Test
   fun 不完整_只有月支以及日柱_L2R() {
-    val ewn = EightWordsNullable(StemBranchOptional.empty(), StemBranchOptional[null, Branch.丑], StemBranch.丙寅, StemBranchOptional.empty())
+    val ewn = EightWordsNullable.of(StemBranchOptional.empty(), StemBranchOptional[null, Branch.丑], StemBranch.丙寅, StemBranchOptional.empty())
     EightWordsNullableCanvas(ewn, Direction.L2R).also {
       assertTrue(it.toString().contains("　　丙　"))
       assertTrue(it.toString().contains("　丑寅　"))

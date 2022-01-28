@@ -151,6 +151,16 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
       return ArrayTools[values(), index]
     }
 
+    fun of(stem: Stem?, branch: Branch?): StemBranch? {
+      return stem?.let { s ->
+        branch?.takeIf { b ->
+          s.index % 2 == b.index % 2
+        }?.let { b ->
+          get(s, b)
+        }
+      }
+    }
+
     operator fun get(stem: Stem, branch: Branch): StemBranch {
 
       require(Stem.getIndex(stem) % 2 == Branch.getIndex(branch) % 2) {

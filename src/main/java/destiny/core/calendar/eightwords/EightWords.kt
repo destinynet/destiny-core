@@ -4,6 +4,8 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.Scale
+import destiny.core.calendar.eightwords.EightWords.Companion.getIntList
+import destiny.core.calendar.eightwords.EightWordsNullable.Companion.getIntList
 import destiny.core.chinese.*
 import destiny.tools.ChineseStringTools
 import java.io.Serializable
@@ -31,6 +33,14 @@ interface IEightWordsNullable {
   }
 }
 
+fun IEightWordsNullable.getInts(): List<Int> {
+  return if (this is EightWordsNullable) {
+    return this.getIntList()
+  } else {
+    (this as EightWords).getIntList()
+  }
+}
+
 interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
   override val year: StemBranch
   override val month: IStemBranch
@@ -41,15 +51,15 @@ interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
     get() = listOf(year, month, day, hour)
 
   override val eightWordsNullable: IEightWordsNullable
-    get() = EightWordsNullable(year, month, day, hour)
+    get() = EightWordsNullable.of(year, month, day, hour)
 }
 
 @kotlinx.serialization.Serializable
-data class EightWordsNullable(override val year: IStemBranchOptional,
-                              override val month: IStemBranchOptional,
-                              override val day: IStemBranchOptional,
-                              override val hour: IStemBranchOptional) : IEightWordsNullable, IEightWordsNullableFactory,
-  Serializable {
+data class EightWordsNullable private constructor(override val year: IStemBranchOptional,
+                                                  override val month: IStemBranchOptional,
+                                                  override val day: IStemBranchOptional,
+                                                  override val hour: IStemBranchOptional) : IEightWordsNullable, IEightWordsNullableFactory, Serializable {
+
 
   override val eightWordsNullable: EightWordsNullable
     get() = this
@@ -76,6 +86,27 @@ data class EightWordsNullable(override val year: IStemBranchOptional,
 
   companion object {
 
+    fun of(yStem: Stem?, yBranch: Branch?, mStem: Stem?, mBranch: Branch?, dStem: Stem?, dBranch: Branch?, hStem: Stem?, hBranch: Branch?) : IEightWordsNullable {
+      return StemBranch.of(yStem, yBranch)?.let { year ->
+        StemBranch.of(mStem, mBranch)?.let { month ->
+          StemBranch.of(dStem, dBranch)?.let { day ->
+            StemBranch.of(hStem, hBranch)?.let { hour ->
+              EightWords(year, month, day, hour)
+            }
+          }
+        }
+      } ?: EightWordsNullable(
+        StemBranchOptional(yStem, yBranch),
+        StemBranchOptional(mStem, mBranch),
+        StemBranchOptional(dStem, dBranch),
+        StemBranchOptional(hStem, hBranch)
+      )
+    }
+
+    fun of(year: IStemBranchOptional, month: IStemBranchOptional , day: IStemBranchOptional, hour: IStemBranchOptional) : IEightWordsNullable {
+      return of(year.stem , year.branch , month.stem, month.branch, day.stem, day.branch, hour.stem, hour.branch)
+    }
+
     fun empty(): EightWordsNullable {
       return EightWordsNullable(StemBranchOptional.empty(),
                                 StemBranchOptional.empty(),
@@ -95,21 +126,18 @@ data class EightWordsNullable(override val year: IStemBranchOptional,
         hour.branch?.indexFromOne ?: 0)
     }
 
-    fun getFromIntList(list: List<Int>): EightWordsNullable {
+    fun getFromIntList(list: List<Int>): IEightWordsNullable {
       require(list.size == 8)
-      val yearStem = if (list[0] == 0) null else Stem[list[0] - 1]
-      val yearBranch = if (list[1] == 0) null else Branch[list[1] - 1]
-      val monthStem = if (list[2] == 0) null else Stem[list[2] - 1]
-      val monthBranch = if (list[3] == 0) null else Branch[list[3] - 1]
-      val dayStem = if (list[4] == 0) null else Stem[list[4] - 1]
-      val dayBranch = if (list[5] == 0) null else Branch[list[5] - 1]
-      val hourStem = if (list[6] == 0) null else Stem[list[6] - 1]
-      val hourBranch = if (list[7] == 0) null else Branch[list[7] - 1]
-      return EightWordsNullable(
-        StemBranchOptional[yearStem, yearBranch],
-        StemBranchOptional[monthStem, monthBranch],
-        StemBranchOptional[dayStem, dayBranch],
-        StemBranchOptional[hourStem, hourBranch])
+      val yStem = if (list[0] == 0) null else Stem[list[0] - 1]
+      val yBranch = if (list[1] == 0) null else Branch[list[1] - 1]
+      val mStem = if (list[2] == 0) null else Stem[list[2] - 1]
+      val mBranch = if (list[3] == 0) null else Branch[list[3] - 1]
+      val dStem = if (list[4] == 0) null else Stem[list[4] - 1]
+      val dBranch = if (list[5] == 0) null else Branch[list[5] - 1]
+      val hStem = if (list[6] == 0) null else Stem[list[6] - 1]
+      val hBranch = if (list[7] == 0) null else Branch[list[7] - 1]
+
+      return of(yStem, yBranch, mStem, mBranch, dStem, dBranch, hStem, hBranch)
     }
   }
 }

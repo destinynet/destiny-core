@@ -19,7 +19,7 @@ internal class DivineFullConfigTest : AbstractConfigTest<DivineFullConfig>() {
   override val serializer: KSerializer<DivineFullConfig> = DivineFullConfig.serializer()
 
   override val configByConstructor: DivineFullConfig = DivineFullConfig(
-    eightWordsNullable = EightWordsNullable(
+    eightWordsNullable = EightWordsNullable.of(
       StemBranchOptional(甲, null),
       StemBranchOptional(null, 亥),
       StemBranchOptional(丙, 寅),
@@ -30,7 +30,7 @@ internal class DivineFullConfigTest : AbstractConfigTest<DivineFullConfig>() {
   )
 
   override val configByFunction: DivineFullConfig = divineFullConfig {
-    eightWordsNullable = EightWordsNullable(
+    eightWordsNullable = EightWordsNullable.of(
       StemBranchOptional(甲, null),
       StemBranchOptional(null, 亥),
       StemBranchOptional(丙, 寅),

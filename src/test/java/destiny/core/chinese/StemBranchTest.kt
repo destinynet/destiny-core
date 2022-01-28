@@ -22,6 +22,15 @@ class StemBranchTest {
   }
 
   @Test
+  fun testOf() {
+    assertSame(甲子 ,  StemBranch.of(甲, 子))
+    assertNull(StemBranch.of(甲, 丑))
+    assertNull(StemBranch.of(甲, null))
+    assertNull(StemBranch.of(null, 子))
+    assertNull(StemBranch.of(null, null))
+  }
+
+  @Test
   fun testList() {
     StemBranch.values().joinToString(",") { it.toString() }.let { println(it) }
   }
