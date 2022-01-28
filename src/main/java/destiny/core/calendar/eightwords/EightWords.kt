@@ -4,8 +4,6 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.Scale
-import destiny.core.calendar.eightwords.EightWords.Companion.getIntList
-import destiny.core.calendar.eightwords.EightWordsNullable.Companion.getIntList
 import destiny.core.chinese.*
 import destiny.tools.ChineseStringTools
 import java.io.Serializable
@@ -13,7 +11,7 @@ import java.io.Serializable
 /**
  * 八字資料結構，可以包含 null 值
  */
-interface IEightWordsNullable {
+sealed interface IEightWordsNullable {
   val year: IStemBranchOptional
   val month: IStemBranchOptional
   val day: IStemBranchOptional
@@ -34,10 +32,32 @@ interface IEightWordsNullable {
 }
 
 fun IEightWordsNullable.getInts(): List<Int> {
-  return if (this is EightWordsNullable) {
-    return this.getIntList()
-  } else {
-    (this as EightWords).getIntList()
+
+  return when(this) {
+    is IEightWords -> {
+      listOf(
+        year.stem.indexFromOne,
+        year.branch.indexFromOne,
+        month.stem.indexFromOne,
+        month.branch.indexFromOne,
+        day.stem.indexFromOne,
+        day.branch.indexFromOne,
+        hour.stem.indexFromOne,
+        hour.branch.indexFromOne
+      )
+    }
+    is EightWordsNullable -> {
+      listOf(
+        year.stem?.indexFromOne ?: 0,
+        year.branch?.indexFromOne ?: 0,
+        month.stem?.indexFromOne ?: 0,
+        month.branch?.indexFromOne ?: 0,
+        day.stem?.indexFromOne ?: 0,
+        day.branch?.indexFromOne ?: 0,
+        hour.stem?.indexFromOne ?: 0,
+        hour.branch?.indexFromOne ?: 0
+      )
+    }
   }
 }
 
@@ -114,18 +134,6 @@ data class EightWordsNullable private constructor(override val year: IStemBranch
                                 StemBranchOptional.empty())
     }
 
-    fun EightWordsNullable.getIntList(): List<Int> {
-      return listOf(
-        year.stem?.indexFromOne ?: 0,
-        year.branch?.indexFromOne ?: 0,
-        month.stem?.indexFromOne ?: 0,
-        month.branch?.indexFromOne ?: 0,
-        day.stem?.indexFromOne ?: 0,
-        day.branch?.indexFromOne ?: 0,
-        hour.stem?.indexFromOne ?: 0,
-        hour.branch?.indexFromOne ?: 0)
-    }
-
     fun getFromIntList(list: List<Int>): IEightWordsNullable {
       require(list.size == 8)
       val yStem = if (list[0] == 0) null else Stem[list[0] - 1]
@@ -182,18 +190,4 @@ data class EightWords(override val year: StemBranch,
       hour.branch + day.branch + month.branch + year.branch)
   }
 
-  companion object {
-    fun EightWords.getIntList(): List<Int> {
-      return listOf(
-        year.stem.indexFromOne,
-        year.branch.indexFromOne,
-        month.stem.indexFromOne,
-        month.branch.indexFromOne,
-        day.stem.indexFromOne,
-        day.branch.indexFromOne,
-        hour.stem.indexFromOne,
-        hour.branch.indexFromOne
-                   )
-    }
-  }
 }

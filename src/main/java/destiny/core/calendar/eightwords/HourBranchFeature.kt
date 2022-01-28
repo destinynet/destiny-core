@@ -24,6 +24,10 @@ import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
 import javax.inject.Named
 
+enum class HourImpl {
+  TST,
+  LMT
+}
 
 /** 時辰切割 */
 @Serializable

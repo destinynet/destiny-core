@@ -28,8 +28,7 @@ enum class VoidCourseImpl {
 data class VoidCourseConfig(@Serializable(with = PointSerializer::class)
                             val planet: Planet = Planet.MOON,
                             val centric: Centric = Centric.GEO,
-                            val vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval): java.io.Serializable{
-}
+                            val vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval): java.io.Serializable
 
 class VoidCourseConfigBuilder : Builder<VoidCourseConfig> {
   var planet: Planet = Planet.MOON
