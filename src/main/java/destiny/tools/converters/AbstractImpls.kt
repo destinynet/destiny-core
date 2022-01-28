@@ -58,6 +58,32 @@ abstract class EnumMapConverterWithDefault<T : Enum<T>>(override val key: String
   }
 }
 
+abstract class BooleanConverterWithDefault(override val key: String,
+                                           override val defaultImpl: Boolean,
+                                           val trueString : String = true.toString(),
+                                           val falseString : String = false.toString()) : MapConverterWithDefault<Boolean> {
+
+  override fun getMap(context: Boolean): Map<String, String> {
+    return mapOf(key to context.toString())
+  }
+
+  override fun getContext(map: Map<String, String>): Boolean? {
+    return map[key]?.toBoolean()
+  }
+}
+
+abstract class DoubleConverterWithDefault(override val key: String,
+                                          override val defaultImpl: Double) : MapConverterWithDefault<Double> {
+
+  override fun getMap(context: Double): Map<String, String> {
+    return mapOf(key to context.toString())
+  }
+
+  override fun getContext(map: Map<String, String>): Double? {
+    return map[key]?.toDouble()
+  }
+}
+
 interface IAbstractImpls<T> : MapConverterWithDefault<T> {
 
   val impls: List<T>
