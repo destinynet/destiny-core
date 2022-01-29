@@ -15,6 +15,7 @@ import kotlin.reflect.KType
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
+
 abstract class EnumTest {
 
   inline fun <reified T : Enum<T>> getEnumValues(enumClass: KClass<out Enum<T>>): Array<out Enum<T>> = enumClass.java.enumConstants

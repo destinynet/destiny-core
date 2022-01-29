@@ -10,6 +10,7 @@ import java.io.IOException
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.*
+import kotlin.reflect.KClass
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
@@ -140,3 +141,9 @@ inline fun <reified T : Enum<T>> Enum<T>.getDescription(locale: Locale): String 
     getTitle(locale)
   }
 }
+
+fun <T : Enum<T>> KClass<out Enum<T>>.getValues(): Array<out Enum<T>> {
+  return this.java.enumConstants
+}
+
+inline fun <reified T : Enum<T>> iterator(): Iterator<T> = enumValues<T>().iterator()
