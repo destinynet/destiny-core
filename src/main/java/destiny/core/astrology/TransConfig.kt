@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.tools.Builder
+import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
 
 
@@ -13,6 +14,7 @@ data class TransConfig(val discCenter: Boolean = false,
                        val temperature: Double = 0.0,
                        val pressure: Double = 1013.25): java.io.Serializable
 
+@DestinyMarker
 class TransConfigBuilder : Builder<TransConfig> {
 
   var discCenter: Boolean = false
