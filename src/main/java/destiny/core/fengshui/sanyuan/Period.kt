@@ -1,5 +1,6 @@
 package destiny.core.fengshui.sanyuan
 
+import destiny.core.fengshui.sanyuan.NineStar.Companion.toStar
 import destiny.tools.ArrayTools
 import kotlinx.serialization.Serializable
 
@@ -26,6 +27,10 @@ value class Period private constructor(val value: Int) : Comparable<Period> {
 
   operator fun minus(count: Int): Period {
     return (this.value - count).toPeriod()
+  }
+
+  fun toNineStar() : NineStar {
+    return value.toStar()
   }
 
   companion object {

@@ -14,7 +14,7 @@ import java.io.Serializable
 
 interface IPeriod {
   // 元運 , 其值只能為 1~9
-  val period: Int
+  val period: Period
 }
 
 
@@ -70,16 +70,16 @@ interface IChartMnt : IPeriod {
     val yyImpl = MountainYinYangEmptyImpl()
     return gateMap.mapValues { (_,m) ->
       val symbol = compass.getSymbol(m)
-      val start: Int = getChartBlockFromSymbol(symbol).period
+      val start = getChartBlockFromSymbol(symbol).period
 
-      val mappingMountain = SymbolAcquired.getSymbol(start)?.let {
+      val mappingMountain = SymbolAcquired.getSymbol(start.value)?.let {
         VoidFunctions.getMappingMountain(m, it)
       }?:m
 
       val reversed = !yyImpl.getYinYang(mappingMountain)
 
       val steps = FlyingStar.symbolPeriods.indexOf(symbol)
-      val finalValue: Int = FlyingStar.getValue(start, steps, reversed)
+      val finalValue = FlyingStar.getValue(start, steps, reversed)
       m to (finalValue == period)
     }
   } // 城門訣
@@ -108,13 +108,13 @@ interface IChartMntPresenter : IChartMnt, IChartPresenter {
 }
 
 /** 元運 + 何山（何向）+ 是否用替 */
-data class ChartMnt(override val period: Int,
+data class ChartMnt(override val period: Period,
                     override val mnt: Mountain,
                     override val replacement: Boolean,
                     override val blocks: List<ChartBlock>) : IChartMnt, Serializable
 
 /** 元運 + 座山的度數 （可推導出 座山)  */
-data class ChartDegree(override val period: Int,
+data class ChartDegree(override val period: Period,
                        override val degree: Double,
                        override val replacement: Boolean,
                        override val blocks: List<ChartBlock>) : IChartDegree, Serializable {
@@ -126,7 +126,7 @@ data class ChartDegree(override val period: Int,
 /**
  * 描述一個三元玄空挨星、九宮格盤
  */
-data class ChartMntPresenter(override val period: Int,
+data class ChartMntPresenter(override val period: Period,
                              override val mnt: Mountain,
                              val view: Symbol,
                              override val replacement: Boolean,

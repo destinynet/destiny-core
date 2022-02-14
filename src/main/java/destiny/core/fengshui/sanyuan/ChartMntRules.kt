@@ -3,6 +3,7 @@
  */
 package destiny.core.fengshui.sanyuan
 
+import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
 import destiny.core.iching.Symbol
 import destiny.core.iching.SymbolAcquired
 import kotlin.math.abs
@@ -50,15 +51,15 @@ object ChartMntRules {
       ?.takeIf { it === MntDirSpec.雙星到向 }
       ?.takeIf { beneathSameOrigin(chart) == null } // 去除伏吟 6局
       ?.let {
-      val set147 = listOf(1, 4, 7)
-      val set258 = listOf(2, 5, 8)
-      val set369 = listOf(3, 6, 9)
+      val set147 = listOf(1.toPeriod(), 4.toPeriod(), 7.toPeriod())
+      val set258 = listOf(2.toPeriod(), 5.toPeriod(), 8.toPeriod())
+      val set369 = listOf(3.toPeriod(), 6.toPeriod(), 9.toPeriod())
 
       val sets = listOf(set147, set258, set369)
-      val set: List<Int> = sets.first { list -> list.contains(chart.period) }
+      val set: List<Period> = sets.first { list -> list.contains(chart.period) }
 
       val 離乾震 = listOf(Symbol.離, Symbol.乾, Symbol.震)
-      val 離宮ints: Set<Int> = 離乾震
+      val 離宮ints: Set<Period> = 離乾震
         .map { symbol -> chart.getChartBlockFromSymbol(symbol) }
         .map { chartBlock -> chartBlock.dir }
         .toSet()
@@ -101,8 +102,8 @@ object ChartMntRules {
    * 若排凶龍，形巒相背，則必主人財二絕。
    */
   fun contTriplet(chart: IChartMnt): ChartPattern.連珠三般卦? {
-    fun distance(v1: Int, v2: Int): Int {
-      return abs(v1 - v2).let { abs ->
+    fun distance(v1: Period, v2: Period): Int {
+      return abs(v1.value - v2.value).let { abs ->
         when {
           abs <= 6 -> abs
           abs == 8 -> 1 // 1 & 9
@@ -133,12 +134,12 @@ object ChartMntRules {
    * 因此，在「父母三般卦」局中，向星的當令星所在方位必須有水加持，才能使吉運生效，否則有可能出現由吉變凶的情況。
    */
   fun parentTriplet(chart: IChartMnt): ChartPattern.父母三般卦? {
-    val set1 = setOf(1, 4, 7)
-    val set2 = setOf(2, 5, 8)
-    val set3 = setOf(3, 6, 9)
+    val set1 = setOf(1.toPeriod(), 4.toPeriod(), 7.toPeriod())
+    val set2 = setOf(2.toPeriod(), 5.toPeriod(), 8.toPeriod())
+    val set3 = setOf(3.toPeriod(), 6.toPeriod(), 9.toPeriod())
 
     return Symbol.values().all {
-      val blockNums: Set<Int> = chart.getChartBlockFromSymbol(it).let { chartBlock ->
+      val blockNums: Set<Period> = chart.getChartBlockFromSymbol(it).let { chartBlock ->
         setOf(chartBlock.period, chartBlock.mnt, chartBlock.dir)
       }
       blockNums.containsAll(set1) || blockNums.containsAll(set2) || blockNums.containsAll(set3)
@@ -166,8 +167,9 @@ object ChartMntRules {
    *  */
   fun match10(chart: IChartMnt): ChartPattern.合十? {
     return when {
-      chart.blocks.all { block -> block.period + block.mnt == 10 } -> ChartPattern.合十(MntDir.山)
-      chart.blocks.all { block -> block.period + block.dir == 10 } -> ChartPattern.合十(MntDir.向)
+      // FIXME : Period(1)
+      chart.blocks.all { block -> block.period.value + block.mnt.value == 10 } -> ChartPattern.合十(MntDir.山)
+      chart.blocks.all { block -> block.period.value + block.dir.value == 10 } -> ChartPattern.合十(MntDir.向)
       else -> null
     }
   }
@@ -193,10 +195,10 @@ object ChartMntRules {
    * */
   fun beneathSameOrigin(chart: IChartMnt): ChartPattern.伏吟元旦盤? {
     return when {
-      chart.blocks.all { block -> SymbolAcquired.getSymbolNullable(block.mnt) == block.symbol } ->
+      chart.blocks.all { block -> SymbolAcquired.getSymbolNullable(block.mnt.value) == block.symbol } ->
         ChartPattern.伏吟元旦盤(MntDir.山)
       chart.blocks.all { block ->
-        SymbolAcquired.getSymbolNullable(block.dir) == block.symbol
+        SymbolAcquired.getSymbolNullable(block.dir.value) == block.symbol
       } -> ChartPattern.伏吟元旦盤(
         MntDir.向
       )
@@ -226,9 +228,9 @@ object ChartMntRules {
   fun reversed(chart: IChartMnt): ChartPattern.反吟? {
     return chart.getCenterBlock().let { cb ->
       val block巽 = chart.getChartBlockFromSymbol(Symbol.巽)
-      if (cb.mnt == 5 && block巽.mnt == 6)
+      if (cb.mnt.value == 5 && block巽.mnt.value == 6)
         ChartPattern.反吟(MntDir.山)
-      else if (cb.dir == 5 && block巽.dir == 6)
+      else if (cb.dir.value == 5 && block巽.dir.value == 6)
         ChartPattern.反吟(MntDir.向)
       else
         null
@@ -244,8 +246,9 @@ object ChartMntRules {
   fun match10(chartBlock: ChartBlock): BlockPattern.合十? {
     return chartBlock.period.let {
       when {
-        it + chartBlock.mnt == 10 -> BlockPattern.合十(MntDir.山)
-        it + chartBlock.dir == 10 -> BlockPattern.合十(MntDir.向)
+        // FIXME : 用 Period(1) 來取代 10
+        it.value + chartBlock.mnt.value == 10 -> BlockPattern.合十(MntDir.山)
+        it.value + chartBlock.dir.value == 10 -> BlockPattern.合十(MntDir.向)
         else -> null
       }
     }
@@ -272,8 +275,8 @@ object ChartMntRules {
   fun beneathSameOrigin(chartBlock: ChartBlock): BlockPattern.伏吟元旦盤? {
     return chartBlock.let {
       when {
-        SymbolAcquired.getSymbol(it.mnt) === it.symbol -> BlockPattern.伏吟元旦盤(MntDir.山)
-        SymbolAcquired.getSymbol(it.dir) === it.symbol -> BlockPattern.伏吟元旦盤(MntDir.向)
+        SymbolAcquired.getSymbol(it.mnt.value) === it.symbol -> BlockPattern.伏吟元旦盤(MntDir.山)
+        SymbolAcquired.getSymbol(it.dir.value) === it.symbol -> BlockPattern.伏吟元旦盤(MntDir.向)
         else -> null
       }
     }
@@ -329,8 +332,8 @@ object ChartMntRules {
   fun reversed(block: ChartBlock): BlockPattern.反吟元旦盤? {
     return block.symbol?.let { symbol ->
       when {
-        (SymbolAcquired.getIndex(symbol) + block.mnt) == 10 -> BlockPattern.反吟元旦盤(MntDir.山)
-        (SymbolAcquired.getIndex(symbol) + block.dir) == 10 -> BlockPattern.反吟元旦盤(MntDir.向)
+        (SymbolAcquired.getIndex(symbol) + block.mnt.value) == 10 -> BlockPattern.反吟元旦盤(MntDir.山)
+        (SymbolAcquired.getIndex(symbol) + block.dir.value) == 10 -> BlockPattern.反吟元旦盤(MntDir.向)
         else -> null
       }
     }

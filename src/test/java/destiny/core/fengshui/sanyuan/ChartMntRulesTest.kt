@@ -4,6 +4,7 @@
 package destiny.core.fengshui.sanyuan
 
 import destiny.core.fengshui.Mountain
+import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
 import destiny.core.iching.Symbol
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,7 +19,7 @@ class ChartMntRulesTest {
   fun 八純卦() {
     val shouldBeEmpty = (1..9).flatMap { period ->
       Mountain.values().mapNotNull { mnt ->
-        ChartMntContext.getChartMnt(period , mnt).let { chart ->
+        ChartMntContext.getChartMnt(period.toPeriod() , mnt).let { chart ->
           ChartMntRules.pure(chart)?.let { chart }
         }
       }
@@ -28,7 +29,7 @@ class ChartMntRulesTest {
 
     val matches = (1..9).flatMap { period ->
       Mountain.values().mapNotNull { mnt ->
-        ChartMntContext.getChartMnt(period , mnt , replaceImpl).let { chart ->
+        ChartMntContext.getChartMnt(period.toPeriod() , mnt , replaceImpl).let { chart ->
           ChartMntRules.pure(chart)?.let { chart }
         }
       }
@@ -47,7 +48,7 @@ class ChartMntRulesTest {
 
     val matches: List<IChartMnt> = (1..9).flatMap { period ->
       Mountain.values().mapNotNull { mnt ->
-        ChartMntContext.getChartMnt(period, mnt).let { chart ->
+        ChartMntContext.getChartMnt(period.toPeriod(), mnt).let { chart ->
           ChartMntRules.robbery(chart)?.let {
             //println("$period 運 $mnt 山 :  ${it.symbol} : ${it.map}")
             chart
@@ -58,50 +59,50 @@ class ChartMntRulesTest {
 
     assertEquals(42 , matches.size)
     // 真打劫 21局
-    matches.contains(ChartMntContext.getChartMnt(1, Mountain.子))
-    matches.contains(ChartMntContext.getChartMnt(1, Mountain.癸))
-    matches.contains(ChartMntContext.getChartMnt(1, Mountain.辰))
-    matches.contains(ChartMntContext.getChartMnt(1, Mountain.庚))
-    matches.contains(ChartMntContext.getChartMnt(2, Mountain.壬))
-    matches.contains(ChartMntContext.getChartMnt(2, Mountain.酉))
-    matches.contains(ChartMntContext.getChartMnt(2, Mountain.辛))
-    matches.contains(ChartMntContext.getChartMnt(3, Mountain.子))
-    matches.contains(ChartMntContext.getChartMnt(3, Mountain.癸))
-    matches.contains(ChartMntContext.getChartMnt(4, Mountain.壬))
-    matches.contains(ChartMntContext.getChartMnt(4, Mountain.辰))
-    matches.contains(ChartMntContext.getChartMnt(6, Mountain.子))
-    matches.contains(ChartMntContext.getChartMnt(6, Mountain.癸))
-    matches.contains(ChartMntContext.getChartMnt(7, Mountain.壬))
-    matches.contains(ChartMntContext.getChartMnt(8, Mountain.子))
-    matches.contains(ChartMntContext.getChartMnt(8, Mountain.癸))
-    matches.contains(ChartMntContext.getChartMnt(8, Mountain.庚))
-    matches.contains(ChartMntContext.getChartMnt(9, Mountain.巽))
-    matches.contains(ChartMntContext.getChartMnt(9, Mountain.巳))
-    matches.contains(ChartMntContext.getChartMnt(9, Mountain.酉))
-    matches.contains(ChartMntContext.getChartMnt(9, Mountain.辛))
+    matches.contains(ChartMntContext.getChartMnt(1.toPeriod(), Mountain.子))
+    matches.contains(ChartMntContext.getChartMnt(1.toPeriod(), Mountain.癸))
+    matches.contains(ChartMntContext.getChartMnt(1.toPeriod(), Mountain.辰))
+    matches.contains(ChartMntContext.getChartMnt(1.toPeriod(), Mountain.庚))
+    matches.contains(ChartMntContext.getChartMnt(2.toPeriod(), Mountain.壬))
+    matches.contains(ChartMntContext.getChartMnt(2.toPeriod(), Mountain.酉))
+    matches.contains(ChartMntContext.getChartMnt(2.toPeriod(), Mountain.辛))
+    matches.contains(ChartMntContext.getChartMnt(3.toPeriod(), Mountain.子))
+    matches.contains(ChartMntContext.getChartMnt(3.toPeriod(), Mountain.癸))
+    matches.contains(ChartMntContext.getChartMnt(4.toPeriod(), Mountain.壬))
+    matches.contains(ChartMntContext.getChartMnt(4.toPeriod(), Mountain.辰))
+    matches.contains(ChartMntContext.getChartMnt(6.toPeriod(), Mountain.子))
+    matches.contains(ChartMntContext.getChartMnt(6.toPeriod(), Mountain.癸))
+    matches.contains(ChartMntContext.getChartMnt(7.toPeriod(), Mountain.壬))
+    matches.contains(ChartMntContext.getChartMnt(8.toPeriod(), Mountain.子))
+    matches.contains(ChartMntContext.getChartMnt(8.toPeriod(), Mountain.癸))
+    matches.contains(ChartMntContext.getChartMnt(8.toPeriod(), Mountain.庚))
+    matches.contains(ChartMntContext.getChartMnt(9.toPeriod(), Mountain.巽))
+    matches.contains(ChartMntContext.getChartMnt(9.toPeriod(), Mountain.巳))
+    matches.contains(ChartMntContext.getChartMnt(9.toPeriod(), Mountain.酉))
+    matches.contains(ChartMntContext.getChartMnt(9.toPeriod(), Mountain.辛))
 
     // 假打劫 , 亦有 21局
-    matches.contains(ChartMntContext.getChartMnt(1, Mountain.卯))
-    matches.contains(ChartMntContext.getChartMnt(1, Mountain.乙))
-    matches.contains(ChartMntContext.getChartMnt(1, Mountain.乾))
-    matches.contains(ChartMntContext.getChartMnt(1, Mountain.亥))
-    matches.contains(ChartMntContext.getChartMnt(2, Mountain.甲))
-    matches.contains(ChartMntContext.getChartMnt(2, Mountain.午))
-    matches.contains(ChartMntContext.getChartMnt(2, Mountain.丁))
-    matches.contains(ChartMntContext.getChartMnt(3, Mountain.丙))
-    matches.contains(ChartMntContext.getChartMnt(4, Mountain.午))
-    matches.contains(ChartMntContext.getChartMnt(4, Mountain.丁))
-    matches.contains(ChartMntContext.getChartMnt(6, Mountain.丙))
-    matches.contains(ChartMntContext.getChartMnt(6, Mountain.戌))
-    matches.contains(ChartMntContext.getChartMnt(7, Mountain.午))
-    matches.contains(ChartMntContext.getChartMnt(7, Mountain.丁))
-    matches.contains(ChartMntContext.getChartMnt(8, Mountain.卯))
-    matches.contains(ChartMntContext.getChartMnt(8, Mountain.乙))
-    matches.contains(ChartMntContext.getChartMnt(8, Mountain.丙))
-    matches.contains(ChartMntContext.getChartMnt(9, Mountain.甲))
-    matches.contains(ChartMntContext.getChartMnt(9, Mountain.午))
-    matches.contains(ChartMntContext.getChartMnt(9, Mountain.丁))
-    matches.contains(ChartMntContext.getChartMnt(9, Mountain.戌))
+    matches.contains(ChartMntContext.getChartMnt(1.toPeriod(), Mountain.卯))
+    matches.contains(ChartMntContext.getChartMnt(1.toPeriod(), Mountain.乙))
+    matches.contains(ChartMntContext.getChartMnt(1.toPeriod(), Mountain.乾))
+    matches.contains(ChartMntContext.getChartMnt(1.toPeriod(), Mountain.亥))
+    matches.contains(ChartMntContext.getChartMnt(2.toPeriod(), Mountain.甲))
+    matches.contains(ChartMntContext.getChartMnt(2.toPeriod(), Mountain.午))
+    matches.contains(ChartMntContext.getChartMnt(2.toPeriod(), Mountain.丁))
+    matches.contains(ChartMntContext.getChartMnt(3.toPeriod(), Mountain.丙))
+    matches.contains(ChartMntContext.getChartMnt(4.toPeriod(), Mountain.午))
+    matches.contains(ChartMntContext.getChartMnt(4.toPeriod(), Mountain.丁))
+    matches.contains(ChartMntContext.getChartMnt(6.toPeriod(), Mountain.丙))
+    matches.contains(ChartMntContext.getChartMnt(6.toPeriod(), Mountain.戌))
+    matches.contains(ChartMntContext.getChartMnt(7.toPeriod(), Mountain.午))
+    matches.contains(ChartMntContext.getChartMnt(7.toPeriod(), Mountain.丁))
+    matches.contains(ChartMntContext.getChartMnt(8.toPeriod(), Mountain.卯))
+    matches.contains(ChartMntContext.getChartMnt(8.toPeriod(), Mountain.乙))
+    matches.contains(ChartMntContext.getChartMnt(8.toPeriod(), Mountain.丙))
+    matches.contains(ChartMntContext.getChartMnt(9.toPeriod(), Mountain.甲))
+    matches.contains(ChartMntContext.getChartMnt(9.toPeriod(), Mountain.午))
+    matches.contains(ChartMntContext.getChartMnt(9.toPeriod(), Mountain.丁))
+    matches.contains(ChartMntContext.getChartMnt(9.toPeriod(), Mountain.戌))
   }
 
   @Test
@@ -109,7 +110,7 @@ class ChartMntRulesTest {
     val matches =
       (1..9).flatMap{  period ->
         Mountain.values().mapNotNull { mnt ->
-          ChartMntContext.getChartMnt(period, mnt).let { chart ->
+          ChartMntContext.getChartMnt(period.toPeriod(), mnt).let { chart ->
             ChartMntRules.contTriplet(chart)?.let {
               // 「連珠三般卦」必是上山下水的格局
               assertSame(MntDirSpec.上山下水 , chart.getMntDirSpec())
@@ -131,7 +132,7 @@ class ChartMntRulesTest {
     val matches: List<Pair<Int, Mountain>> =
       (1..9).flatMap{  period ->
         Mountain.values().mapNotNull { mnt ->
-          ChartMntContext.getChartMnt(period, mnt).let { chart ->
+          ChartMntContext.getChartMnt(period.toPeriod(), mnt).let { chart ->
             ChartMntRules.parentTriplet(chart)?.let {
               // 「父母三般卦」必是上山下水的格局
               assertSame(MntDirSpec.上山下水 , chart.getMntDirSpec())
@@ -163,19 +164,19 @@ class ChartMntRulesTest {
    * */
   @Test
   fun 全局合十() {
-    ChartMntContext.getChartMnt(7, Mountain.子).also {
+    ChartMntContext.getChartMnt(7.toPeriod(), Mountain.子).also {
       assertEquals(ChartPattern.合十(MntDir.山), ChartMntRules.match10(it))
     }
 
     // 另一範例： 七運，午山子向 , 向盤合十
-    ChartMntContext.getChartMnt(7, Mountain.午).also {
+    ChartMntContext.getChartMnt(7.toPeriod(), Mountain.午).also {
       assertEquals(ChartPattern.合十(MntDir.向), ChartMntRules.match10(it))
     }
 
     // 印出全部 (共24局)
     (1..9).forEach { period ->
       Mountain.values().forEach { mnt ->
-        ChartMntContext.getChartMnt(period, mnt).let { chart ->
+        ChartMntContext.getChartMnt(period.toPeriod(), mnt).let { chart ->
           ChartMntRules.match10(chart).let { rule ->
             rule?.let {
               println("合十 : $period 運 , $mnt 山 ${mnt.opposite} 向 ")
@@ -203,14 +204,14 @@ class ChartMntRulesTest {
   @Test
   fun 全局伏吟_元旦盤() {
 
-    ChartMntContext.getChartMnt(7, Mountain.庚).also {
+    ChartMntContext.getChartMnt(7.toPeriod(), Mountain.庚).also {
       assertEquals(ChartPattern.伏吟元旦盤(MntDir.向), ChartMntRules.beneathSameOrigin(it))
     }
 
     // 印出全部 (共24局)
     (1..9).forEach { period ->
       Mountain.values().forEach { mnt ->
-        ChartMntContext.getChartMnt(period, mnt).let { chart ->
+        ChartMntContext.getChartMnt(period.toPeriod(), mnt).let { chart ->
           ChartMntRules.beneathSameOrigin(chart)?.let {
             println("伏吟 : $period 運 , $mnt 山 ${mnt.opposite} 向 : ${it.mntDir}盤 伏吟")
           }
@@ -236,14 +237,14 @@ class ChartMntRulesTest {
   @Test
   fun 全局反吟() {
 
-    ChartMntContext.getChartMnt(7, Mountain.卯).also {
+    ChartMntContext.getChartMnt(7.toPeriod(), Mountain.卯).also {
       assertEquals(ChartPattern.反吟(MntDir.山), ChartMntRules.reversed(it))
     }
 
     // 印出全部 (共24局)
     (1..9).forEach { period ->
       Mountain.values().forEach { mnt ->
-        ChartMntContext.getChartMnt(period, mnt).let { chart ->
+        ChartMntContext.getChartMnt(period.toPeriod(), mnt).let { chart ->
           ChartMntRules.reversed(chart).let { rule ->
             rule?.let {
               println("反吟 : $period 運 , $mnt 山 ${mnt.opposite} 向 , ${it.mntDir}星 全局反吟")
@@ -274,7 +275,7 @@ class ChartMntRulesTest {
    */
   @Test
   fun 單宮合十() {
-    ChartMntContext.getChartMnt(8, Mountain.卯).also {
+    ChartMntContext.getChartMnt(8.toPeriod(), Mountain.卯).also {
       assertEquals(BlockPattern.合十(MntDir.山), ChartMntRules.match10(it.getChartBlockFromSymbol(Symbol.震)))
     }
   }
@@ -296,7 +297,7 @@ class ChartMntRulesTest {
    */
   @Test
   fun 單宮伏吟元旦盤() {
-    ChartMntContext.getChartMnt(7, Mountain.卯).also {
+    ChartMntContext.getChartMnt(7.toPeriod(), Mountain.卯).also {
       assertEquals(BlockPattern.伏吟元旦盤(MntDir.向), ChartMntRules.beneathSameOrigin(it.getChartBlockFromSymbol(Symbol.兌)))
     }
   }
@@ -319,18 +320,18 @@ class ChartMntRulesTest {
    */
   @Test
   fun 單宮伏吟天盤() {
-    ChartMntContext.getChartMnt(7, Mountain.卯).also {
+    ChartMntContext.getChartMnt(7.toPeriod(), Mountain.卯).also {
       assertEquals(BlockPattern.伏吟天盤(MntDir.向), ChartMntRules.beneathSameSky(it.getChartBlockFromSymbol(Symbol.乾)))
       assertEquals(BlockPattern.伏吟天盤(MntDir.山), ChartMntRules.beneathSameSky(it.getChartBlockFromSymbol(Symbol.巽)))
     }
 
     // 另一範例 : 一運之艮山坤向，艮方向星與運星伏吟，發生 於 坐向二宮。
-    ChartMntContext.getChartMnt(1, Mountain.艮).also {
+    ChartMntContext.getChartMnt(1.toPeriod(), Mountain.艮).also {
       assertEquals(BlockPattern.伏吟天盤(MntDir.向), ChartMntRules.beneathSameSky(it.getChartBlockFromSymbol(Symbol.艮)))
     }
 
     // 另一範例 : 二運之子山午向，震宮之山星與運星伏吟，發生於非坐向二宮。
-    ChartMntContext.getChartMnt(2, Mountain.子).also {
+    ChartMntContext.getChartMnt(2.toPeriod(), Mountain.子).also {
       assertEquals(BlockPattern.伏吟天盤(MntDir.山), ChartMntRules.beneathSameSky(it.getChartBlockFromSymbol(Symbol.震)))
     }
   }
@@ -352,18 +353,18 @@ class ChartMntRulesTest {
    */
   @Test
   fun `單宮反吟(元旦盤)`() {
-    ChartMntContext.getChartMnt(8, Mountain.卯).also {
+    ChartMntContext.getChartMnt(8.toPeriod(), Mountain.卯).also {
       assertEquals(BlockPattern.反吟元旦盤(MntDir.山), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.離)))
     }
 
     // 另一範例： 艮山坤向： 五運 山方山星 與 向方向星 犯反吟
-    ChartMntContext.getChartMnt(5, Mountain.艮).also {
+    ChartMntContext.getChartMnt(5.toPeriod(), Mountain.艮).also {
       assertEquals(BlockPattern.反吟元旦盤(MntDir.山), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.艮)))
       assertEquals(BlockPattern.反吟元旦盤(MntDir.向), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.坤)))
     }
 
     // 另一範例： 申山寅向： 五運 山方向星 與 向方山星 犯反吟
-    ChartMntContext.getChartMnt(5, Mountain.申).also {
+    ChartMntContext.getChartMnt(5.toPeriod(), Mountain.申).also {
       assertEquals(BlockPattern.反吟元旦盤(MntDir.山), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.坤)))
       assertEquals(BlockPattern.反吟元旦盤(MntDir.向), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.艮)))
     }

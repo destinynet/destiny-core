@@ -10,7 +10,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.StemBranch
 import destiny.core.fengshui.sanyuan.NineStar.*
-import destiny.core.fengshui.sanyuan.NineStar.Companion.toStar
+import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
 import destiny.core.iching.Symbol
 
 
@@ -23,18 +23,18 @@ object NineStarFunctions {
   // ================ 年 ================
 
   /** 年紫白入中 */
-  private fun getYearCenter(yuan: Yuan, year: StemBranch): Int {
+  private fun getYearCenter(yuan: Yuan, year: StemBranch): Period {
     val steps = year.getAheadOf(StemBranch.甲子)
     return when (yuan) {
-      Yuan.UP  -> FlyingStar.getValue(1, steps, true)
-      Yuan.MID -> FlyingStar.getValue(4, steps, true)
-      Yuan.LOW -> FlyingStar.getValue(7, steps, true)
+      Yuan.UP  -> FlyingStar.getValue(1.toPeriod(), steps, true)
+      Yuan.MID -> FlyingStar.getValue(4.toPeriod(), steps, true)
+      Yuan.LOW -> FlyingStar.getValue(7.toPeriod(), steps, true)
     }
   }
 
   /** 年紫白入中 */
   fun getYearCenterStar(yuan: Yuan, year: StemBranch): NineStar {
-    return getYearCenter(yuan, year).toStar()
+    return getYearCenter(yuan, year).toNineStar()
   }
 
   /**
@@ -190,3 +190,4 @@ object NineStarFunctions {
   }
 
 }
+

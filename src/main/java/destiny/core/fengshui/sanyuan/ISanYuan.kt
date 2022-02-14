@@ -9,6 +9,7 @@ import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.Yuan
 import destiny.core.chinese.StemBranch
+import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalTime
@@ -49,12 +50,12 @@ interface ISanYuan {
     }
 
     /** 年紫白入中 */
-    fun getCenter(yuan: Yuan, year: StemBranch): Int {
+    fun getCenter(yuan: Yuan, year: StemBranch): Period {
       val steps = year.getAheadOf(StemBranch.甲子)
       return when (yuan) {
-        Yuan.UP -> FlyingStar.getValue(1, steps, true)
-        Yuan.MID -> FlyingStar.getValue(4, steps, true)
-        Yuan.LOW -> FlyingStar.getValue(7, steps, true)
+        Yuan.UP  -> FlyingStar.getValue(1.toPeriod(), steps, true)
+        Yuan.MID -> FlyingStar.getValue(4.toPeriod(), steps, true)
+        Yuan.LOW -> FlyingStar.getValue(7.toPeriod(), steps, true)
       }
     }
   }

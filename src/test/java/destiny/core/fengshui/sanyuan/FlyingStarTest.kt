@@ -3,46 +3,47 @@
  */
 package destiny.core.fengshui.sanyuan
 
+import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
 import kotlin.test.Test
-import kotlin.test.assertSame
+import kotlin.test.assertEquals
 
 class FlyingStarTest {
 
   @Test
   fun testGetValue_順推() {
-    assertSame(5, FlyingStar.getValue(5, 0))
-    assertSame(6, FlyingStar.getValue(5, 1))
-    assertSame(9, FlyingStar.getValue(5, 4))
-    assertSame(1, FlyingStar.getValue(5, 5))
-    assertSame(9, FlyingStar.getValue(5, 13))
-    assertSame(9, FlyingStar.getValue(5, 22))
+    assertEquals(5.toPeriod(), FlyingStar.getValue(5.toPeriod(), 0))
+    assertEquals(6.toPeriod(), FlyingStar.getValue(5.toPeriod(), 1))
+    assertEquals(9.toPeriod(), FlyingStar.getValue(5.toPeriod(), 4))
+    assertEquals(1.toPeriod(), FlyingStar.getValue(5.toPeriod(), 5))
+    assertEquals(9.toPeriod(), FlyingStar.getValue(5.toPeriod(), 13))
+    assertEquals(9.toPeriod(), FlyingStar.getValue(5.toPeriod(), 22))
 
-    assertSame(1, FlyingStar.getValue(1, 0))
-    assertSame(2, FlyingStar.getValue(1, 1))
-    assertSame(9, FlyingStar.getValue(1, 8))
-    assertSame(1, FlyingStar.getValue(1, 9))
-    assertSame(9, FlyingStar.getValue(1, 17))
-    assertSame(1, FlyingStar.getValue(1, 18))
-    assertSame(1, FlyingStar.getValue(1, 27))
+    assertEquals(1.toPeriod(), FlyingStar.getValue(1.toPeriod(), 0))
+    assertEquals(2.toPeriod(), FlyingStar.getValue(1.toPeriod(), 1))
+    assertEquals(9.toPeriod(), FlyingStar.getValue(1.toPeriod(), 8))
+    assertEquals(1.toPeriod(), FlyingStar.getValue(1.toPeriod(), 9))
+    assertEquals(9.toPeriod(), FlyingStar.getValue(1.toPeriod(), 17))
+    assertEquals(1.toPeriod(), FlyingStar.getValue(1.toPeriod(), 18))
+    assertEquals(1.toPeriod(), FlyingStar.getValue(1.toPeriod(), 27))
   }
 
   @Test
   fun testGetValue_逆推() {
-    assertSame(5, FlyingStar.getValue(5, 0, true))
-    assertSame(4, FlyingStar.getValue(5, 1, true))
-    assertSame(1, FlyingStar.getValue(5, 4, true))
-    assertSame(9, FlyingStar.getValue(5, 5, true))
-    assertSame(5, FlyingStar.getValue(5, 9, true))
-    assertSame(1, FlyingStar.getValue(5, 13, true))
-    assertSame(9, FlyingStar.getValue(5, 14, true))
-    assertSame(9, FlyingStar.getValue(5, 23, true))
+    assertEquals(5.toPeriod(), FlyingStar.getValue(5.toPeriod(), 0, true))
+    assertEquals(4.toPeriod(), FlyingStar.getValue(5.toPeriod(), 1, true))
+    assertEquals(1.toPeriod(), FlyingStar.getValue(5.toPeriod(), 4, true))
+    assertEquals(9.toPeriod(), FlyingStar.getValue(5.toPeriod(), 5, true))
+    assertEquals(5.toPeriod(), FlyingStar.getValue(5.toPeriod(), 9, true))
+    assertEquals(1.toPeriod(), FlyingStar.getValue(5.toPeriod(), 13, true))
+    assertEquals(9.toPeriod(), FlyingStar.getValue(5.toPeriod(), 14, true))
+    assertEquals(9.toPeriod(), FlyingStar.getValue(5.toPeriod(), 23, true))
 
-    assertSame(1, FlyingStar.getValue(1, 0, true))
-    assertSame(9, FlyingStar.getValue(1, 1, true))
-    assertSame(2, FlyingStar.getValue(1, 8, true))
-    assertSame(1, FlyingStar.getValue(1, 9, true))
-    assertSame(9, FlyingStar.getValue(1, 10, true))
-    assertSame(1, FlyingStar.getValue(1, 18, true))
-    assertSame(1, FlyingStar.getValue(1, 27, true))
+    assertEquals(1.toPeriod(), FlyingStar.getValue(1.toPeriod(), 0, true))
+    assertEquals(9.toPeriod(), FlyingStar.getValue(1.toPeriod(), 1, true))
+    assertEquals(2.toPeriod(), FlyingStar.getValue(1.toPeriod(), 8, true))
+    assertEquals(1.toPeriod(), FlyingStar.getValue(1.toPeriod(), 9, true))
+    assertEquals(9.toPeriod(), FlyingStar.getValue(1.toPeriod(), 10, true))
+    assertEquals(1.toPeriod(), FlyingStar.getValue(1.toPeriod(), 18, true))
+    assertEquals(1.toPeriod(), FlyingStar.getValue(1.toPeriod(), 27, true))
   }
 }

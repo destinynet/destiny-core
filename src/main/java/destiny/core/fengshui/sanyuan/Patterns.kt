@@ -36,7 +36,7 @@ sealed class ChartPattern : IPattern, Serializable {
   /** 七星打劫 , 必定是 [MntDirSpec.雙星到向] 的情形 */
   data class 七星打劫(
     val symbol: Symbol,         // 必定只會有「離」「坎」兩個可能 . 「離」為真打劫；「坎」為假打劫
-    val map: Map<Symbol, Int>   // 乾->1 , 震->4 , 離->7 這樣的 mapping
+    val map: Map<Symbol, Period>   // 乾->1 , 震->4 , 離->7 這樣的 mapping
   ) : ChartPattern()
 
   object 八純卦 : ChartPattern() //大凶格局

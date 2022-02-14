@@ -14,7 +14,7 @@ import destiny.core.iching.SymbolAcquired
 object ChartMntContext {
 
   /** 取得 [IChartMnt] 的實作 [ChartMnt] */
-  fun getChartMnt(period: Int,
+  fun getChartMnt(period: Period,
                   mountain: Mountain,
                   replacementImpl: IReplacement? = null): IChartMnt {
 
@@ -37,7 +37,7 @@ object ChartMntContext {
 
 
   /** 取得 [IChartMntPresenter] 的實作 [ChartMntPresenter] */
-  fun getChartPresenter(period: Int,
+  fun getChartPresenter(period: Period,
                         mnt : Mountain,
                         view: Symbol,
                         replacementImpl: IReplacement? = null) : IChartMntPresenter {
@@ -50,18 +50,13 @@ object ChartMntContext {
   /**
    *  取得 山、向 的運 (入中宮者) , 以及，是否逆行
    */
-  private fun getStart(period: Int, mountain: Mountain, replacementImpl: IReplacement?): Pair<Int, Boolean> {
+  private fun getStart(period: Period, mountain: Mountain, replacementImpl: IReplacement?): Pair<Period, Boolean> {
     val symbol: Symbol = 地盤.getSymbol(mountain)
 
-    val defaultStart = (period + symbolPeriods.indexOf(symbol)).let {
-      if (it > 9)
-        it - 9
-      else
-        it
-    }
+    val defaultStart = (period + symbolPeriods.indexOf(symbol))
 
     // 原始配卦
-    val srcSymbol: Symbol? = SymbolAcquired.getSymbolNullable(defaultStart)
+    val srcSymbol: Symbol? = SymbolAcquired.getSymbolNullable(defaultStart.value)
     val reversed = isReversed(srcSymbol, mountain)
 
     if (replacementImpl == null) {
@@ -77,7 +72,7 @@ object ChartMntContext {
         if (!repStar.enabled) {
           Pair(defaultStart, reversed)
         } else {
-          val newStart = repStar.period.value
+          val newStart = repStar.period
           Pair(newStart, reversed)
         }
       }

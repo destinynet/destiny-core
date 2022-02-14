@@ -6,7 +6,6 @@
 package destiny.core.iching
 
 import destiny.core.iching.Symbol.*
-import java.util.*
 
 /**
  * <pre>
@@ -92,7 +91,7 @@ class SymbolAcquired internal constructor() : Comparator<Symbol> {
      * 若傳入 0 則傳回離卦
      * 傳入 10 , 則傳回坎卦 (10 % 9 = 1)
      */
-    fun getSymbol(index: Int) : Symbol ? {
+    fun getSymbol(index: Int): Symbol? {
       val reminder = index % 9
       return when {
         reminder == 5 -> null

@@ -5,6 +5,7 @@
  */
 package destiny.core.fengshui.sanyuan
 
+import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
 import destiny.core.iching.Symbol
 
 import java.io.Serializable
@@ -19,10 +20,17 @@ data class ChartBlock(
   val symbol: Symbol?,
 
   /** 山盤 , 1~9 */
-  val mnt: Int,
+  val mnt: Period,
 
   /** 向盤 , 1~9 */
-  val dir: Int,
+  val dir: Period,
 
   /** 元運 , 1~9 */
-  val period: Int) : Serializable
+  val period: Period) : Serializable {
+
+    companion object {
+      fun of(symbol: Symbol? , mnt: Int , dir: Int , period: Int) : ChartBlock {
+        return ChartBlock(symbol, mnt.toPeriod(), dir.toPeriod(), period.toPeriod())
+      }
+    }
+  }

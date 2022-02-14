@@ -5,16 +5,18 @@ package destiny.core.fengshui.sanyuan
 
 import destiny.core.calendar.chinese.Yuan
 import destiny.core.chinese.StemBranch
+import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 class ISanYuanTest {
 
   @Test
   fun testCenter() {
-    assertSame(1 , ISanYuan.getCenter(Yuan.LOW , StemBranch.己卯))
-    assertSame(5 , ISanYuan.getCenter(Yuan.LOW , StemBranch.乙亥))
-    assertSame(8 , ISanYuan.getCenter(Yuan.LOW , StemBranch.己亥)) // 2019
+    assertEquals(1.toPeriod() , ISanYuan.getCenter(Yuan.LOW , StemBranch.己卯))
+    assertEquals(5.toPeriod() , ISanYuan.getCenter(Yuan.LOW , StemBranch.乙亥))
+    assertEquals(8.toPeriod() , ISanYuan.getCenter(Yuan.LOW , StemBranch.己亥)) // 2019
   }
 
 
