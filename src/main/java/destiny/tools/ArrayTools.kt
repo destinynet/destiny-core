@@ -7,15 +7,13 @@ object ArrayTools {
 
   operator fun <T> get(array: Array<T>, index: Int): T {
     val length = array.size
-    return when {
-      index < 0 -> get(array, (index % length).let {
-        if (it < 0)
-          it + length
-        else
-          it
-      })
-      index >= length -> get(array, index % length)
-      else -> array[index]
+
+    return if (index in 0 until length) {
+      array[index]
+    } else {
+      val newId = (index % length)
+        .let { v -> if (v < 0) v + length else v }
+      array[newId]
     }
   }
 }

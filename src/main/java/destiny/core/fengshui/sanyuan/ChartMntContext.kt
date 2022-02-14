@@ -77,7 +77,7 @@ object ChartMntContext {
         if (!repStar.enabled) {
           Pair(defaultStart, reversed)
         } else {
-          val newStart = repStar.period
+          val newStart = repStar.period.value
           Pair(newStart, reversed)
         }
       }
