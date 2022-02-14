@@ -8,8 +8,10 @@ import destiny.core.calendar.chinese.Yuan
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.StemBranch.*
 import destiny.core.fengshui.sanyuan.NineStar.*
+import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
 import destiny.core.iching.Symbol.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 class NineStarFunctionsTest {
@@ -30,9 +32,9 @@ class NineStarFunctionsTest {
    */
   @Test
   fun testMingChinDynasty() {
-    assertSame(1, NineStarFunctions.getYearCenterStar(Yuan.UP, 甲子).period)
-    assertSame(4, NineStarFunctions.getYearCenterStar(Yuan.MID, 甲子).period)
-    assertSame(7, NineStarFunctions.getYearCenterStar(Yuan.LOW, 甲子).period)
+    assertEquals(1.toPeriod(), NineStarFunctions.getYearCenterStar(Yuan.UP, 甲子).period)
+    assertEquals(4.toPeriod(), NineStarFunctions.getYearCenterStar(Yuan.MID, 甲子).period)
+    assertEquals(7.toPeriod(), NineStarFunctions.getYearCenterStar(Yuan.LOW, 甲子).period)
   }
 
   /**
@@ -40,14 +42,14 @@ class NineStarFunctionsTest {
    */
   @Test
   fun testGetYearStar() {
-    assertSame(NineStar.of(6), NineStarFunctions.getYearStar(貪狼, 坎))
-    assertSame(NineStar.of(7), NineStarFunctions.getYearStar(貪狼, 坤))
-    assertSame(NineStar.of(8), NineStarFunctions.getYearStar(貪狼, 震))
-    assertSame(NineStar.of(9), NineStarFunctions.getYearStar(貪狼, 巽))
-    assertSame(NineStar.of(2), NineStarFunctions.getYearStar(貪狼, 乾))
-    assertSame(NineStar.of(3), NineStarFunctions.getYearStar(貪狼, 兌))
-    assertSame(NineStar.of(4), NineStarFunctions.getYearStar(貪狼, 艮))
-    assertSame(NineStar.of(5), NineStarFunctions.getYearStar(貪狼, 離))
+    assertSame(NineStar.of(6.toPeriod()), NineStarFunctions.getYearStar(貪狼, 坎))
+    assertSame(NineStar.of(7.toPeriod()), NineStarFunctions.getYearStar(貪狼, 坤))
+    assertSame(NineStar.of(8.toPeriod()), NineStarFunctions.getYearStar(貪狼, 震))
+    assertSame(NineStar.of(9.toPeriod()), NineStarFunctions.getYearStar(貪狼, 巽))
+    assertSame(NineStar.of(2.toPeriod()), NineStarFunctions.getYearStar(貪狼, 乾))
+    assertSame(NineStar.of(3.toPeriod()), NineStarFunctions.getYearStar(貪狼, 兌))
+    assertSame(NineStar.of(4.toPeriod()), NineStarFunctions.getYearStar(貪狼, 艮))
+    assertSame(NineStar.of(5.toPeriod()), NineStarFunctions.getYearStar(貪狼, 離))
 
     assertSame(廉貞, NineStarFunctions.getYearStar(右弼, 坎))
     assertSame(武曲, NineStarFunctions.getYearStar(右弼, 坤))
