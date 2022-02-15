@@ -36,7 +36,7 @@ class ChartMntRulesTest {
     }
     println(matches.size)
     matches.forEach { chart ->
-      println("${chart.period}運 ${chart.mnt}山${chart.mnt.opposite}向")
+      println("${chart.period.value}運 ${chart.mnt}山${chart.mnt.opposite}向")
     }
   }
 
