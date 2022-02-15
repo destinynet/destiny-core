@@ -46,6 +46,12 @@ interface MapConverterWithDefault<T> : MapConverter<T> {
   }
 }
 
+abstract class EnumMapConverter<T: Enum<T>>(override val key: String) : MapConverter<T> {
+  override fun getMap(context: T): Map<String, String> {
+    return mapOf(key to context.name)
+  }
+}
+
 abstract class EnumMapConverterWithDefault<T : Enum<T>>(override val key: String,
                                                         override val defaultImpl: T) : MapConverterWithDefault<T> {
 

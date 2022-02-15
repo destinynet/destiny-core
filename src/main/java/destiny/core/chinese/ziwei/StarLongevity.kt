@@ -29,6 +29,14 @@ sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.n
   object 胎 : StarLongevity("胎")
   object 養 : StarLongevity("養")
 
+  override fun compareTo(other: ZStar): Int {
+    return if (other is StarLongevity) {
+      values.indexOf(this) - values.indexOf(other)
+    } else {
+      super.compareTo(other)
+    }
+  }
+
   companion object : IPoint<StarLongevity> {
 
     override val type: KClass<out Point> = StarLongevity::class

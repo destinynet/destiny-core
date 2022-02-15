@@ -34,6 +34,14 @@ sealed class StarMain(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, 
     return nameKey
   }
 
+  override fun compareTo(other: ZStar): Int {
+    return if (other is StarMain) {
+      values.indexOf(this) - values.indexOf(other)
+    } else {
+      super.compareTo(other)
+    }
+  }
+
   companion object : IPoint<StarMain> {
 
     override val type: KClass<out Point> = StarMain::class

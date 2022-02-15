@@ -4,6 +4,7 @@
 package destiny.tools.converters
 
 import com.google.common.base.Enums
+import destiny.tools.StringTools.decodeToFinalUrl
 import org.apache.commons.lang3.EnumUtils
 
 object ParserCommons {
@@ -25,6 +26,6 @@ object ParserCommons {
    */
   fun <E : Enum<E>> parseEnum(key: String, clazz: Class<E>, map: Map<String, String>): E? {
 
-    return map[key]?.trim()?.let { name -> EnumUtils.getEnumIgnoreCase(clazz, name) }
+    return map[key]?.trim()?.let { name -> EnumUtils.getEnumIgnoreCase(clazz, name.decodeToFinalUrl()) }
   }
 }

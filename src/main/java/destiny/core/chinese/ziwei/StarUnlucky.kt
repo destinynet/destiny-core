@@ -26,6 +26,14 @@ sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::cl
   object 地劫 : StarUnlucky("地劫", 時) // 乙
   object 地空 : StarUnlucky("地空", 時) // 乙 (有時又稱天空)
 
+  override fun compareTo(other: ZStar): Int {
+    return if (other is StarUnlucky) {
+      values.indexOf(this) - values.indexOf(other)
+    } else {
+      super.compareTo(other)
+    }
+  }
+
   companion object : IPoint<StarUnlucky> {
 
     override val type: KClass<out Point> = StarUnlucky::class

@@ -71,6 +71,14 @@ sealed class StarMinor(nameKey: String, type: Type) : ZStar(nameKey, ZStar::clas
 
   object 紅艷 : StarMinor("紅艷", 年干)
 
+  override fun compareTo(other: ZStar): Int {
+    return if (other is StarMinor) {
+      values.indexOf(this) - values.indexOf(other)
+    } else {
+      super.compareTo(other)
+    }
+  }
+
   companion object : IPoint<StarMinor> {
 
     override val type: KClass<out Point> = StarMinor::class

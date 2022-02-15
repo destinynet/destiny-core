@@ -30,6 +30,13 @@ sealed class StarLucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::clas
   object 年馬 : StarLucky("年馬", 年支) // 乙級星 (其實就是天馬)
   object 月馬 : StarLucky("月馬", 月)   // 乙級星 (其實就是天馬)
 
+  override fun compareTo(other: ZStar): Int {
+    return if (other is StarLucky) {
+      values.indexOf(this) - values.indexOf(other)
+    } else {
+      super.compareTo(other)
+    }
+  }
 
   companion object : IPoint<StarLucky> {
 

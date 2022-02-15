@@ -34,6 +34,14 @@ sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name
   object 伏兵 : StarDoctor("伏兵")
   object 官府 : StarDoctor("官府")
 
+  override fun compareTo(other: ZStar): Int {
+    return if (other is StarDoctor) {
+      values.indexOf(this) - values.indexOf(other)
+    } else {
+      super.compareTo(other)
+    }
+  }
+
   companion object : IPoint<StarDoctor> {
 
     override val type: KClass<out Point> = StarDoctor::class

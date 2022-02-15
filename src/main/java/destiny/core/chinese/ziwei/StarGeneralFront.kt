@@ -41,6 +41,14 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
   object 月煞 : StarGeneralFront("月煞")
   object 亡神 : StarGeneralFront("亡神")
 
+  override fun compareTo(other: ZStar): Int {
+    return if (other is StarGeneralFront) {
+      values.indexOf(this) - values.indexOf(other)
+    } else {
+      super.compareTo(other)
+    }
+  }
+
   companion object : IPoint<StarGeneralFront> {
 
     override val type: KClass<out Point> = StarGeneralFront::class
