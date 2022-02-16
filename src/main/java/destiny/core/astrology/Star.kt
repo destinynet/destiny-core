@@ -13,8 +13,8 @@ package destiny.core.astrology
  * 日月交點 [LunarPoint]
  * <pre>
  * 目前繼承圖如下 :
- *                         [Star]
- *                           |
+ *                                      [Star]
+ *                                        |
  *     +-----------+---------+------------+-----------------+--------------+---------------+
  *     |           |         |            |                 |              |               |
  * [Planet]  [Asteroid]  [FixedStar]  [LunarPoint] (A)  [Hamburger]     [Arabic]     [LunarStation]

@@ -9,12 +9,20 @@ import java.util.*
 import kotlin.test.*
 
 
+// TODO : AbstractPointTest
 class LunarNodeTest {
 
   private val logger = KotlinLogging.logger {  }
 
   @Test
-  fun testToString() {
+  fun testCompare() {
+    LunarNode.values.toList().shuffled().sorted().zip(LunarNode.values).forEach { (p1, p2) ->
+      assertSame(p1, p2)
+    }
+  }
+
+  @Test
+  fun testToStringLocale() {
     assertEquals("北交點" , LunarNode.NORTH_MEAN.toString(Locale.TAIWAN))
     assertEquals("北交點" , LunarNode.NORTH_TRUE.toString(Locale.TAIWAN))
 

@@ -8,6 +8,7 @@ import destiny.core.astrology.IAspectData.Type
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.AlignTools
 import java.io.Serializable
+import java.util.*
 import kotlin.math.abs
 
 
@@ -81,7 +82,7 @@ data class AspectData(private val angleData: IAngleData,
   override fun toString(): String {
     val typeString = type?.toString()
       ?.substring(0, 1) ?: "?"
-    return StringBuilder("[$typeString] $points $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度").apply {
+    return StringBuilder("[$typeString] [${points.joinToString(", ") {it.toString(Locale.TRADITIONAL_CHINESE)}}] $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度").apply {
       score?.also { score: Double ->
         val s = (score * 100).toString()
           .take(5)

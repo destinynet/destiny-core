@@ -41,6 +41,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 
+// TODO : AbstractPointTest : 旬空(nameKey = '陽空') 無法反查字串
 class StarMinorTest {
 
   private val logger = KotlinLogging.logger { }

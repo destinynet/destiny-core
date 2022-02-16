@@ -38,7 +38,7 @@ sealed class Asteroid(nameKey: String,
     return values.indexOf(this) - values.indexOf(other)
   }
 
-  companion object : IPoint<Asteroid> {
+  companion object : IPoints<Asteroid> {
 
     override val type: KClass<out Point> = Asteroid::class
 
@@ -47,9 +47,9 @@ sealed class Asteroid(nameKey: String,
     }
     val list by lazy { listOf(*values) }
 
-    override fun fromString(value : String) : Asteroid? {
+    override fun fromString(value: String, locale: Locale) : Asteroid? {
       return values.firstOrNull {
-        it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
+        it.toString(locale).equals(value, ignoreCase = true)
       }
     }
   }

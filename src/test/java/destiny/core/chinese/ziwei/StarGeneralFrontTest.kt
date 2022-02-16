@@ -3,30 +3,12 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.astrology.getAbbreviation
-import destiny.core.astrology.toString
+import destiny.core.astrology.AbstractPointTest
 import destiny.core.chinese.Branch.*
-import mu.KotlinLogging
-import java.util.*
 import kotlin.test.Test
-import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 
-class StarGeneralFrontTest {
-
-  private val logger = KotlinLogging.logger {  }
-
-  @Test
-  fun testToString() {
-    for (star in StarGeneralFront.values) {
-      assertNotNull(star.toString())
-      assertNotNull(star.toString(Locale.TAIWAN))
-      assertNotNull(star.toString(Locale.CHINA))
-      logger.info("tw = {}({}) , cn = {}({})",
-        star.toString(Locale.TAIWAN), star.getAbbreviation(Locale.TAIWAN),
-        star.toString(Locale.CHINA), star.getAbbreviation(Locale.CHINA))
-    }
-  }
+class StarGeneralFrontTest : AbstractPointTest(StarGeneralFront::class) {
 
   @Test
   fun testFun() {

@@ -54,7 +54,7 @@ sealed class LunarNode(nameKey: String,
     return inner_values.indexOf(this) - inner_values.indexOf(other)
   }
 
-  companion object : IPoint<LunarNode> {
+  companion object : IPoints<LunarNode> {
 
     override val type: KClass<out Point> = LunarNode::class
 
@@ -68,9 +68,9 @@ sealed class LunarNode(nameKey: String,
 
     override val values: Array<LunarNode> by lazy { meanArray }
 
-    override fun fromString(value: String): LunarNode? {
+    override fun fromString(value: String, locale: Locale): LunarNode? {
       return values.firstOrNull {
-        it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
+        it.toString(locale).equals(value, ignoreCase = true)
       }
     }
 

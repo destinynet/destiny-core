@@ -4,19 +4,15 @@
  */
 package destiny.core.astrology
 
-import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertSame
 
-class HamburgerTest {
-
-  private val logger = KotlinLogging.logger { }
+class HamburgerTest : AbstractPointTest(Hamburger::class) {
 
   @Test
-  fun testHamburger() {
+  fun testToStringLocale() {
 
     Hamburger.values.forEach {
       assertNotNull(it)
@@ -29,11 +25,4 @@ class HamburgerTest {
     assertEquals("Ze", Hamburger.ZEUS.getAbbreviation(locale))
   }
 
-  @Test
-  fun testStringConvert() {
-    Hamburger.values.forEach { star ->
-      logger.info { "$star = ${star.toString(Locale.ENGLISH)}" }
-      assertSame(star, Hamburger.fromString(star.toString(Locale.ENGLISH)))
-    }
-  }
 }

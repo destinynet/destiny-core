@@ -15,6 +15,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 
+// TODO : AbstractPointTest : 年馬(nameKey = '年馬') 無法反查字串 , shuffle error
 class StarLuckyTest {
 
   private val logger = KotlinLogging.logger { }

@@ -25,7 +25,7 @@ sealed class LunarStation(
   nameKey: String,
   val animal: Animal,
   val planet: Planet
-) : Star(nameKey, LunarStation::class.java.name), ILoop<LunarStation> {
+) : Star(nameKey, LunarStation::class.java.name), ILoop<LunarStation>, Comparable<LunarStation> {
   object 角 : LunarStation(EAST, "角", Animal.蛟, JUPITER)
   object 亢 : LunarStation(EAST, "亢", Animal.龍, VENUS)
   object 氐 : LunarStation(EAST, "氐", Animal.貉, SATURN)
@@ -58,6 +58,13 @@ sealed class LunarStation(
   object 翼 : LunarStation(SOUTH, "翼", Animal.蛇, MARS)
   object 軫 : LunarStation(SOUTH, "軫", Animal.蚓, MERCURY)
 
+  override fun compareTo(other: LunarStation): Int {
+    if (this == other)
+      return 0
+
+    return values.indexOf(this) - values.indexOf(other)
+  }
+
   /** 角木蛟 , 亢金龍 ... 這樣的完整名稱 :  星 + 行星星曜 + 動物 , 共三字元 */
   fun getFullName(locale: Locale): String {
     return "${this.toString(locale)}${this.planet.getAbbreviation(locale)}${this.animal.toString(locale)}"
@@ -68,7 +75,7 @@ sealed class LunarStation(
     return get(thisIndex + n)
   }
 
-  companion object : IPoint<LunarStation> {
+  companion object : IPoints<LunarStation> {
 
     override val type: KClass<out Point> = LunarStation::class
 
@@ -92,7 +99,7 @@ sealed class LunarStation(
 //      }
     }
 
-    override fun fromString(value: String): LunarStation? {
+    override fun fromString(value: String, locale: Locale): LunarStation? {
       return values.firstOrNull {
         // 不能用 英文比 , 因為 壁,畢 兩者相同
         it.toString(Locale.TRADITIONAL_CHINESE).equals(value, ignoreCase = true)

@@ -27,7 +27,7 @@ sealed class Planet(nameKey: String,
     return values.indexOf(this) - values.indexOf(other)
   }
 
-  companion object : IPoint<Planet> {
+  companion object : IPoints<Planet> {
 
     override val type: KClass<out Point> = Planet::class
 
@@ -54,9 +54,9 @@ sealed class Planet(nameKey: String,
 
     private fun Planet.weekIndex() = weekPlanets.indexOf(this)
 
-    override fun fromString(value: String): Planet? {
+    override fun fromString(value: String, locale: Locale): Planet? {
       return values.firstOrNull {
-        it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
+        it.toString(locale).equals(value, ignoreCase = true)
       }
     }
   }

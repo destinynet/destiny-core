@@ -74,7 +74,7 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
   }
 
 
-  companion object : IPoint<FixedStar> {
+  companion object : IPoints<FixedStar> {
 
     override val type: KClass<out Point> = FixedStar::class
 
@@ -88,9 +88,9 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
     }
     val list by lazy { listOf(*values) }
 
-    override fun fromString(value: String): FixedStar? {
+    override fun fromString(value: String, locale: Locale): FixedStar? {
       return values.firstOrNull {
-        it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
+        it.toString(locale).equals(value, ignoreCase = true)
       }
     }
   }

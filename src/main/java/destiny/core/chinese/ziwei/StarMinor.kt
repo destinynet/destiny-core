@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.Gender
 import destiny.core.Gender.女
 import destiny.core.Gender.男
-import destiny.core.astrology.IPoint
+import destiny.core.astrology.IPoints
 import destiny.core.astrology.Point
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
@@ -19,6 +19,7 @@ import destiny.core.chinese.ziwei.StarLucky.Companion.fun左輔_月數
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun文昌
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun文曲
 import destiny.core.chinese.ziwei.ZStar.Type.*
+import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -79,7 +80,7 @@ sealed class StarMinor(nameKey: String, type: Type) : ZStar(nameKey, ZStar::clas
     }
   }
 
-  companion object : IPoint<StarMinor> {
+  companion object : IPoints<StarMinor> {
 
     override val type: KClass<out Point> = StarMinor::class
 
@@ -88,7 +89,7 @@ sealed class StarMinor(nameKey: String, type: Type) : ZStar(nameKey, ZStar::clas
               天才, 天壽, 三台, 八座, 恩光, 天貴, 天使, 天傷, 陽空, 陰空, 正空, 傍空, 紅艷)
     }
 
-    override fun fromString(value: String): StarMinor? {
+    override fun fromString(value: String, locale: Locale): StarMinor? {
       return values.firstOrNull {
         it.nameKey == value
       }

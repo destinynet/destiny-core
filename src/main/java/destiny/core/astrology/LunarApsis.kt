@@ -6,6 +6,7 @@ package destiny.core.astrology
 
 import destiny.core.astrology.Apsis.APHELION
 import destiny.core.astrology.Apsis.PERIHELION
+import java.util.*
 import kotlin.reflect.KClass
 
 
@@ -61,7 +62,7 @@ sealed class LunarApsis(nameKey: String, abbrKey: String,
     return values.indexOf(this) - values.indexOf(other)
   }
 
-  companion object : IPoint<LunarApsis> {
+  companion object : IPoints<LunarApsis> {
 
     override val type: KClass<out Point> = LunarApsis::class
 
@@ -72,7 +73,7 @@ sealed class LunarApsis(nameKey: String, abbrKey: String,
 
     override val values by lazy { meanArray }
 
-    override fun fromString(value : String) : LunarApsis? {
+    override fun fromString(value: String, locale: Locale) : LunarApsis? {
       return values.firstOrNull { it::class.simpleName == value }
     }
   }

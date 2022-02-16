@@ -38,7 +38,7 @@ sealed class Arabic(nameKey: String, abbrKey: String, unicode: Char? = null) : S
     return values.indexOf(this) - values.indexOf(other)
   }
 
-  companion object : IPoint<Arabic> {
+  companion object : IPoints<Arabic> {
 
     override val type: KClass<out Point> = Arabic::class
 
@@ -47,9 +47,9 @@ sealed class Arabic(nameKey: String, abbrKey: String, unicode: Char? = null) : S
     }
     val list by lazy { listOf(*values) }
 
-    override fun fromString(value: String): Arabic? {
+    override fun fromString(value: String, locale: Locale): Arabic? {
       return values.firstOrNull {
-        it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
+        it.toString(locale).equals(value, ignoreCase = true)
       }
     }
   }

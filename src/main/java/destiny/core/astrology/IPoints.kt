@@ -3,14 +3,15 @@
  */
 package destiny.core.astrology
 
+import java.util.*
 import kotlin.reflect.KClass
 
 
-interface IPoint<T:Point> {
+interface IPoints<T:Point> {
 
   val type : KClass<out Point>
 
   val values: Array<T>
 
-  fun fromString(value: String): T?
+  fun fromString(value: String, locale: Locale = Locale.ENGLISH): T?
 }

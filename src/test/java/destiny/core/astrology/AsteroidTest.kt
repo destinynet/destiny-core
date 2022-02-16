@@ -3,15 +3,11 @@
  */
 package destiny.core.astrology
 
-import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertSame
 
-internal class AsteroidTest {
-
-  private val logger = KotlinLogging.logger { }
+internal class AsteroidTest : AbstractPointTest(Asteroid::class) {
 
   @Test
   fun testName_cn() {
@@ -44,13 +40,5 @@ internal class AsteroidTest {
     assertEquals("灶神星", Asteroid.VESTA.toString(locale))
     assertEquals("凯龙星", Asteroid.CHIRON.toString(locale))
     assertEquals("人龙星", Asteroid.PHOLUS.toString(locale))
-  }
-
-  @Test
-  fun testStringConvert() {
-    Asteroid.values.forEach { star ->
-      logger.info { "$star = ${star.toString(Locale.ENGLISH)}" }
-      assertSame(star, Asteroid.fromString(star.toString(Locale.ENGLISH)))
-    }
   }
 }

@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Gender.女
 import destiny.core.Gender.男
+import destiny.core.astrology.AbstractPointTest
 import destiny.core.astrology.getAbbreviation
 import destiny.core.astrology.toString
 import destiny.core.chinese.Branch.*
@@ -16,16 +17,13 @@ import destiny.core.chinese.ziwei.StarLongevity.Companion.fun沐浴
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun胎
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun長生
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun養
-import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 
-class StarLongevityTest {
+class StarLongevityTest : AbstractPointTest(StarLongevity::class) {
 
-  private val logger = KotlinLogging.logger { }
 
   @Test
   fun testToString() {
@@ -43,18 +41,6 @@ class StarLongevityTest {
     assertEquals("养", StarLongevity.養.getAbbreviation(Locale.SIMPLIFIED_CHINESE))
   }
 
-  @Test
-  fun testToStrings() {
-    for (star in StarLongevity.values) {
-      assertNotNull(star.toString())
-
-      assertNotNull(star.toString(Locale.TAIWAN))
-      assertNotNull(star.toString(Locale.CHINA))
-      logger.info("tw = {}({}) , cn = {}({})",
-        star.toString(Locale.TAIWAN), star.getAbbreviation(Locale.TAIWAN),
-        star.toString(Locale.CHINA), star.getAbbreviation(Locale.CHINA))
-    }
-  }
 
   @Test
   fun testRun() {

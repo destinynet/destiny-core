@@ -4,13 +4,14 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
-import destiny.core.astrology.IPoint
+import destiny.core.astrology.IPoints
 import destiny.core.astrology.Point
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.IYinYang
+import java.util.*
 import kotlin.reflect.KClass
 
 /** 長生 12 神煞  */
@@ -37,13 +38,13 @@ sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.n
     }
   }
 
-  companion object : IPoint<StarLongevity> {
+  companion object : IPoints<StarLongevity> {
 
     override val type: KClass<out Point> = StarLongevity::class
 
     override val values by lazy { arrayOf(長生, 沐浴, 冠帶, 臨官, 帝旺, 衰, 病, 死, 墓, 絕, 胎, 養) }
 
-    override fun fromString(value: String): StarLongevity? {
+    override fun fromString(value: String, locale: Locale): StarLongevity? {
       return values.firstOrNull {
         it.nameKey == value
       }

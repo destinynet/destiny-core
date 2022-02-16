@@ -3,13 +3,14 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.astrology.IPoint
+import destiny.core.astrology.IPoints
 import destiny.core.astrology.Point
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.BranchTools
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.FiveElement.*
+import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -49,13 +50,13 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
     }
   }
 
-  companion object : IPoint<StarGeneralFront> {
+  companion object : IPoints<StarGeneralFront> {
 
     override val type: KClass<out Point> = StarGeneralFront::class
 
     override val values by lazy { arrayOf(將星, 攀鞍, 歲馹, 息神, 華蓋, 劫煞, 災煞, 天煞, 指背, 咸池, 月煞, 亡神) }
 
-    override fun fromString(value: String): StarGeneralFront? {
+    override fun fromString(value: String, locale: Locale): StarGeneralFront? {
       return values.firstOrNull {
         it.nameKey == value
       }

@@ -4,10 +4,11 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
-import destiny.core.astrology.IPoint
+import destiny.core.astrology.IPoints
 import destiny.core.astrology.Point
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
+import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -42,13 +43,13 @@ sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name
     }
   }
 
-  companion object : IPoint<StarDoctor> {
+  companion object : IPoints<StarDoctor> {
 
     override val type: KClass<out Point> = StarDoctor::class
 
     override val values by lazy { arrayOf(博士, 力士, 青龍, 小耗, 將軍, 奏書, 飛廉, 喜神, 病符, 大耗, 伏兵, 官府) }
 
-    override fun fromString(value: String): StarDoctor? {
+    override fun fromString(value: String, locale: Locale): StarDoctor? {
       return values.firstOrNull {
         it.nameKey == value
       }

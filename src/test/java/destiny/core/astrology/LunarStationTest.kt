@@ -8,13 +8,10 @@ import destiny.core.chinese.toString
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging
 import java.util.*
 import kotlin.test.*
 
-internal class LunarStationTest {
-
-  private val logger = KotlinLogging.logger { }
+internal class LunarStationTest : AbstractPointTest(LunarStation::class) {
 
   @Test
   fun testSerialize() {
@@ -85,11 +82,4 @@ internal class LunarStationTest {
     }
   }
 
-  @Test
-  fun testStringConvert() {
-    LunarStation.values.forEach { star ->
-      logger.info { "$star = ${star.toString(Locale.TRADITIONAL_CHINESE)}" }
-      assertSame(star, LunarStation.fromString(star.toString(Locale.TRADITIONAL_CHINESE)))
-    }
-  }
 }

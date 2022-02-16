@@ -6,25 +6,10 @@ package destiny.core.astrology
 
 
 import destiny.core.astrology.Planet.Companion.aheadOf
-import mu.KotlinLogging
 import java.util.*
 import kotlin.test.*
 
-class PlanetTest {
-
-  private val logger = KotlinLogging.logger { }
-
-  /** 測試從 "sun" 取得 Planet.SUN  */
-  @Test
-  fun testGetPlanetFromString() {
-
-    assertSame(Planet.MOON, Planet.fromString("MOON"))
-
-    assertSame(Planet.SUN, Planet.fromString("sun"))
-    assertSame(Planet.SUN, Planet.fromString("SUN"))
-    assertSame(Planet.SUN, Planet.fromString("Sun"))
-    assertNull(Planet.fromString("xxx"))
-  }
+class PlanetTest : AbstractPointTest(Planet::class) {
 
   /** 將 太陽 up-case 再 down-cast , 比對 equality 以及 same  */
   @Test
@@ -46,9 +31,8 @@ class PlanetTest {
     }
   }
 
-
   @Test
-  fun testPlanet() {
+  fun testToStringLocale() {
     assertEquals("太陽", Planet.SUN.toString(Locale.TAIWAN))
     assertEquals("太阳", Planet.SUN.toString(Locale.SIMPLIFIED_CHINESE))
     assertEquals("Sun", Planet.SUN.toString(Locale.ENGLISH))
@@ -58,18 +42,6 @@ class PlanetTest {
     val locale = Locale.ENGLISH
     assertEquals("Sun", Planet.SUN.toString(locale))
     assertEquals("Su", Planet.SUN.getAbbreviation(locale))
-  }
-
-  @Test
-  fun testPlanets() {
-
-    for (planet in Planet.values) {
-      assertNotNull(planet)
-      assertNotNull(planet.toString(Locale.TAIWAN))
-    }
-
-    val points = setOf<Point>(*Planet.values, *FixedStar.values) as Collection<Point>
-    println(points)
   }
 
   @Test
@@ -84,6 +56,7 @@ class PlanetTest {
     assertTrue(Planet.URANUS < Planet.NEPTUNE)
     assertTrue(Planet.NEPTUNE < Planet.PLUTO)
   }
+
 
   @Test
   fun testAheadOf() {
@@ -106,24 +79,17 @@ class PlanetTest {
     try {
       assertEquals(6, Planet.PLUTO.aheadOf(Planet.SATURN))
       fail()
-    } catch (ignored : IllegalArgumentException) {
+    } catch (ignored: IllegalArgumentException) {
       assertTrue(true)
     }
 
     try {
       assertEquals(6, Planet.SATURN.aheadOf(Planet.PLUTO))
       fail()
-    } catch (ignored : IllegalArgumentException) {
+    } catch (ignored: IllegalArgumentException) {
       assertTrue(true)
     }
 
   }
 
-  @Test
-  fun testStringConvert() {
-    Planet.values.forEach { star ->
-      logger.info { "$star = ${star.toString(Locale.ENGLISH)}" }
-      assertSame(star, Planet.fromString(star.toString(Locale.ENGLISH)))
-    }
-  }
 }

@@ -3,19 +3,16 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.astrology.AbstractPointTest
 import destiny.core.astrology.getAbbreviation
 import destiny.core.astrology.toString
 import destiny.core.chinese.Branch.*
-import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 
-class StarYearFrontTest {
-
-  private val logger = KotlinLogging.logger { }
+class StarYearFrontTest : AbstractPointTest(StarYearFront::class) {
 
   @Test
   fun testToString() {
@@ -29,18 +26,6 @@ class StarYearFrontTest {
     assertEquals("龍", StarYearFront.龍德.getAbbreviation(Locale.TAIWAN))
     assertEquals("龙", StarYearFront.龍德.getAbbreviation(Locale.SIMPLIFIED_CHINESE))
     //assertEquals("龍", StarYearFront.龍德.getAbbreviation(Locale.ENGLISH))
-  }
-
-  @Test
-  fun testToStrings() {
-    for (star in StarYearFront.values) {
-      assertNotNull(star.toString())
-      assertNotNull(star.toString(Locale.TAIWAN))
-      assertNotNull(star.toString(Locale.CHINA))
-      logger.info("tw = {}({}) , cn = {}({})",
-        star.toString(Locale.TAIWAN), star.getAbbreviation(Locale.TAIWAN),
-        star.toString(Locale.CHINA), star.getAbbreviation(Locale.CHINA))
-    }
   }
 
   /**

@@ -28,7 +28,7 @@ sealed class Hamburger(nameKey: String) : Star(nameKey, Star::class.qualifiedNam
   }
 
 
-  companion object : IPoint<Hamburger> {
+  companion object : IPoints<Hamburger> {
 
     override val type: KClass<out Point> = Hamburger::class
 
@@ -43,9 +43,9 @@ sealed class Hamburger(nameKey: String) : Star(nameKey, Star::class.qualifiedNam
       listOf(*values)
     }
 
-    override fun fromString(value: String): Hamburger? {
+    override fun fromString(value: String, locale: Locale): Hamburger? {
       return values.firstOrNull {
-        it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
+        it.toString(locale).equals(value, ignoreCase = true)
       }
     }
 

@@ -10,13 +10,20 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-
+// TODO : AbstractPointTest
 class LunarApsisTest {
 
   private val logger = KotlinLogging.logger { }
 
   @Test
-  fun testToString() {
+  fun testCompare() {
+    LunarApsis.values.toList().shuffled().sorted().zip(LunarApsis.values).forEach { (p1, p2) ->
+      assertSame(p1, p2)
+    }
+  }
+
+  @Test
+  fun testToStringLocale() {
 
     for (each in LunarApsis.values) {
       assertNotNull(each)
