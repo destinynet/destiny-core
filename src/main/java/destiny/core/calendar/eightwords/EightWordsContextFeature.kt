@@ -12,7 +12,6 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
-import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 import javax.cache.Cache
 
@@ -155,7 +154,6 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
   }
 
   companion object {
-    private val logger = KotlinLogging.logger {  }
     const val CACHE_EIGHTWORDS_CONTEXT_FEATURE = "ewContextFeatureCache"
   }
 }

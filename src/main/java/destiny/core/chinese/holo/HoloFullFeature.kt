@@ -22,7 +22,7 @@ import javax.inject.Named
 
 
 @Serializable
-data class HoloFullConfig(val viewGmtJulDay: GmtJulDay = GmtJulDay.now(),
+data class HoloFullConfig(val viewGmtJulDay: GmtJulDay = GmtJulDay.nowCeiling(),
                           val holoConfig: HoloConfig = HoloConfig()): java.io.Serializable
 
 interface IHoloFullFeature : PersonFeature<HoloFullConfig, Pair<IPoemHolo, List<HoloFullHexagram>>> {

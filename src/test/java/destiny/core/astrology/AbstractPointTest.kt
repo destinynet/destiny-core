@@ -56,13 +56,13 @@ abstract class AbstractPointTest(private val kClass: KClass<out Point>) {
 
     companion?.objectInstance?.takeIf { it is IPoints<*> }
       ?.let { it as IPoints<*> }
-      ?.let { iPoint ->
+      ?.let { iPoints: IPoints<*> ->
         kClass.sealedSubclasses.map { it.objectInstance }.forEach { p ->
           assertNotNull(p)
 
           locales.map { it to p.toString(it) }
             .map { (locale, string) ->
-              Triple(locale, string, iPoint.fromString(string, locale))
+              Triple(locale, string, iPoints.fromString(string, locale))
             }.filter { (_, _, point) -> point != null }
             .map { (locale, string, point) -> Triple(locale, string, point!!) }
             .also { list ->
@@ -70,11 +70,11 @@ abstract class AbstractPointTest(private val kClass: KClass<out Point>) {
               logger.debug { "list size = ${list.size}" }
               list.forEach { (locale, string, point) ->
 
-                assertNull(iPoint.fromString("$string X"))
+                assertNull(iPoints.fromString("$string X"))
                 if (locale == Locale.ENGLISH) {
-                  assertSame(p, iPoint.fromString(string))
-                  assertSame(p, iPoint.fromString(string.lowercase(Locale.ENGLISH)))
-                  assertSame(p, iPoint.fromString(string.uppercase(Locale.ENGLISH)))
+                  assertSame(p, iPoints.fromString(string))
+                  assertSame(p, iPoints.fromString(string.lowercase(Locale.ENGLISH)))
+                  assertSame(p, iPoints.fromString(string.uppercase(Locale.ENGLISH)))
                   logger.info { "OK [$locale] '$string' | '${string.lowercase(Locale.ENGLISH)}' | '${string.uppercase(Locale.ENGLISH)}' -> $point" }
                 } else {
                   assertSame(p, point)
@@ -93,14 +93,14 @@ abstract class AbstractPointTest(private val kClass: KClass<out Point>) {
 
     companion?.objectInstance?.takeIf { it is IPoints<*> }
       .let { it as IPoints<*> }
-      .let { iPoint ->
+      .let { iPoints: IPoints<*> ->
         val shuffled: List<Comparable<Point>> = kClass.sealedSubclasses
           .mapNotNull { it.objectInstance }
           .filter { it is Comparable<*> }
           .map { it as Comparable<Point> }
           .shuffled()
 
-        sortedSetOf(*shuffled.toTypedArray()).toList().zip(iPoint.values).forEach { (p1, p2) ->
+        sortedSetOf(*shuffled.toTypedArray()).toList().zip(iPoints.values).forEach { (p1, p2) ->
           logger.trace { "${p1::class} = $p1 , ${p2::class} = $p2" }
           assertTrue(p1 == p2)
           assertTrue(p1 === p2)

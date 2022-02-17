@@ -4,6 +4,7 @@ import destiny.tools.serializers.GmtJulDaySerializer
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import java.io.Serializable
+import kotlin.math.ceil
 
 @JvmInline
 @kotlinx.serialization.Serializable(with = GmtJulDaySerializer::class)
@@ -16,6 +17,10 @@ value class GmtJulDay(val value: Double) : Comparable<GmtJulDay>, Serializable {
 
     fun now() : GmtJulDay {
       return Clock.System.now().toGmtJulDay()
+    }
+
+    fun nowCeiling() : GmtJulDay {
+      return ceil(now().value).toGmtJulDay()
     }
   }
 

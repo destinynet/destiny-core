@@ -20,7 +20,7 @@ import javax.inject.Named
 
 @Serializable
 data class PersonPresentConfig(val personContextConfig: EightWordsPersonConfig = EightWordsPersonConfig(),
-                               val viewGmt: GmtJulDay = GmtJulDay.now()) : java.io.Serializable
+                               val viewGmt: GmtJulDay = GmtJulDay.nowCeiling()) : java.io.Serializable
 
 @DestinyMarker
 class PersonPresentConfigBuilder : Builder<PersonPresentConfig> {
@@ -31,7 +31,11 @@ class PersonPresentConfigBuilder : Builder<PersonPresentConfig> {
     personContextConfig = PersonConfigBuilder.ewPersonConfig(block)
   }
 
-  var viewGmt: GmtJulDay = GmtJulDay.now()
+  /**
+   * 內定讓 viewGmt 取整數 GmtJulDay+1 (明日) , 因此，接連兩次 ewPersonPresent{} , 應該會出現相同的 config 物件
+   * 增加 cache 效率
+   */
+  var viewGmt: GmtJulDay = GmtJulDay.nowCeiling()
 
   override fun build(): PersonPresentConfig {
     return PersonPresentConfig(personContextConfig, viewGmt)
