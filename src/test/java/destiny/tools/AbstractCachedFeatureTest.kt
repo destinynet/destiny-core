@@ -3,7 +3,6 @@
  */
 package destiny.tools
 
-import destiny.tools.AbstractCachedFeature.Companion.fixError
 import destiny.tools.AbstractCachedFeature.Companion.grainDay
 import destiny.tools.AbstractCachedFeature.Companion.grainHour
 import destiny.tools.AbstractCachedFeature.Companion.grainMinute
@@ -12,22 +11,8 @@ import org.junit.jupiter.api.Nested
 import java.time.LocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
 
 internal class AbstractCachedFeatureTest {
-
-  @Test
-  fun fixErrorTest() {
-    assertEquals(LocalDateTime.of(2021, 2, 17, 18, 30, 0), LocalDateTime.of(2021, 2, 17, 18, 29, 59, 999_990_001).fixError())
-    assertEquals(LocalDateTime.of(2021, 2, 17, 18, 0, 0), LocalDateTime.of(2021, 2, 17, 17, 59, 59, 999_990_001).fixError())
-    assertNotEquals(LocalDateTime.of(2021, 2, 17, 18, 0, 0), LocalDateTime.of(2021, 2, 17, 17, 59, 59, 999_990_000).fixError())
-    assertNotEquals(LocalDateTime.of(2021, 2, 17, 18, 0, 0), LocalDateTime.of(2021, 2, 17, 17, 59, 59, 999_989_999).fixError())
-
-    assertEquals(LocalDateTime.of(2021, 2, 17, 18, 30, 0), LocalDateTime.of(2021, 2, 17, 18, 30, 0, 9999).fixError())
-    assertEquals(LocalDateTime.of(2021, 2, 17, 18, 0, 0), LocalDateTime.of(2021, 2, 17, 18, 0, 0, 1).fixError())
-    assertEquals(LocalDateTime.of(2021, 2, 17, 18, 0, 0), LocalDateTime.of(2021, 2, 17, 18, 0, 0, 9999).fixError())
-    assertNotEquals(LocalDateTime.of(2021, 2, 17, 18, 0, 0), LocalDateTime.of(2021, 2, 17, 18, 0, 0, 10000).fixError())
-  }
 
   @Nested
   inner class GrainTest {

@@ -9,6 +9,7 @@ import destiny.core.astrology.toString
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
+import destiny.core.calendar.fixError
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.NaYin
@@ -405,7 +406,7 @@ class Builder(
 
 
     val plate = Plate(
-      name, chineseDate, localDateTime, year, location, place, dayNight, gender, mainHouse, bodyHouse, mainStar,
+      name, chineseDate, localDateTime?.fixError(), year, location, place, dayNight, gender, mainHouse, bodyHouse, mainStar,
       bodyStar, fiveElement, state, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
       vageMap, summaries
     )

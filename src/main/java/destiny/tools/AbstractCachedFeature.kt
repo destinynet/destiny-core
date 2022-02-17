@@ -6,11 +6,11 @@ package destiny.tools
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.fixError
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
-import java.time.temporal.ChronoUnit
 import javax.cache.Cache
 
 
@@ -99,15 +99,6 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
   companion object {
     private val logger = KotlinLogging.logger { }
 
-    fun ChronoLocalDateTime<*>.fixError(): ChronoLocalDateTime<out ChronoLocalDate> {
-      return if (this.get(ChronoField.SECOND_OF_MINUTE) == 59 && this.get(ChronoField.NANO_OF_SECOND) > 999_990_000) {
-        this.with(ChronoField.NANO_OF_SECOND, 0).plus(1, ChronoUnit.SECONDS)
-      } else if (this.get(ChronoField.SECOND_OF_MINUTE) == 0 && this.get(ChronoField.NANO_OF_SECOND) < 10000) {
-        this.with(ChronoField.NANO_OF_SECOND, 0)
-      } else {
-        this
-      }
-    }
 
     fun ChronoLocalDateTime<*>.grainSecond(): ChronoLocalDateTime<out ChronoLocalDate> {
       return this.with(ChronoField.MICRO_OF_SECOND, 0)

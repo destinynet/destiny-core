@@ -418,3 +418,13 @@ object TimeTools {
   }
 
 }
+
+fun ChronoLocalDateTime<*>.fixError(): ChronoLocalDateTime<out ChronoLocalDate> {
+  return if (this.get(SECOND_OF_MINUTE) == 59 && this.get(NANO_OF_SECOND) > 999_990_000) {
+    this.with(NANO_OF_SECOND, 0).plus(1, ChronoUnit.SECONDS)
+  } else if (this.get(SECOND_OF_MINUTE) == 0 && this.get(NANO_OF_SECOND) < 10000) {
+    this.with(NANO_OF_SECOND, 0)
+  } else {
+    this
+  }
+}
