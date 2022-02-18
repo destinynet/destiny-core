@@ -62,6 +62,7 @@ class PersonPresentFeature(private val personContextFeature: PersonContextFeatur
 
   override val defaultConfig: PersonPresentConfig = PersonPresentConfig()
 
+  @Suppress("UNCHECKED_CAST")
   override val gmtPersonCache: Cache<GmtCacheKey<PersonPresentConfig>, IPersonPresentModel>
     get() = ewPersonPresentFeatureCache as Cache<GmtCacheKey<PersonPresentConfig>, IPersonPresentModel>
 

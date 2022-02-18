@@ -15,9 +15,9 @@ import destiny.core.calendar.eightwords.EightWordsContextFeature
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
+import destiny.tools.CacheGrain
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
-import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 import javax.cache.Cache
 import javax.inject.Named
@@ -75,7 +75,9 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
     return getPersonModel(lmt, loc, gender, name, place, config)
   }
 
+  override var lmtCacheGrain: CacheGrain? = CacheGrain.MINUTE
 
+  @Suppress("UNCHECKED_CAST")
   override val lmtPersonCache: Cache<LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
     get() = ewPersonFeatureCache as Cache<LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
 
@@ -93,7 +95,6 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
   }
 
   companion object {
-    private val logger = KotlinLogging.logger { }
     const val CACHE_EIGHTWORDS_PERSON_FEATURE = "ewPersonFeatureCache"
   }
 }
