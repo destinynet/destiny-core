@@ -16,27 +16,17 @@ import javax.cache.Cache
 
 abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<Config, Model> {
 
-  enum class CacheGrain {
-    SECOND,
-    MINUTE,
-    HOUR,
-    DAY
-  }
-
   data class GmtCacheKey<Config>(
     val gmtJulDay: GmtJulDay,
     val loc: ILocation,
     val config: Config
-  )
-
-  var lmtCacheGrain: CacheGrain? = null
+  ) : java.io.Serializable
 
   open val gmtCache: Cache<GmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: @UnsafeVariance Config): Model {
     return gmtCache?.let { cache ->
-      // TODO cache grain
       val cacheKey = GmtCacheKey(gmtJulDay, loc, config)
       cache[cacheKey]?.also {
         logger.trace { "GMT cache hit" }
@@ -57,7 +47,9 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
     val lmt: ChronoLocalDateTime<*>,
     val loc: ILocation,
     val config: Config
-  )
+  ) : java.io.Serializable
+
+  open var lmtCacheGrain: CacheGrain? = null
 
   open val lmtCache: Cache<LmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
@@ -116,5 +108,7 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
       return this.grainHour().with(ChronoField.HOUR_OF_DAY, 0)
         .with(ChronoField.SECOND_OF_MINUTE, 1) // 額外加一秒，避免計算時 round off error
     }
+
   }
+
 }

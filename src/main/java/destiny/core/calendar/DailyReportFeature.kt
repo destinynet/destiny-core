@@ -17,6 +17,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.lunarStation.*
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
+import destiny.tools.CacheGrain
 import destiny.tools.DestinyMarker
 import destiny.tools.location.ReverseGeocodingService
 import destiny.tools.serializers.LocaleSerializer
@@ -27,6 +28,7 @@ import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 import java.util.*
+import javax.cache.Cache
 import javax.inject.Named
 
 
@@ -81,11 +83,19 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
                          private val eclipseImpl: IEclipseFactory,
                          private val voidCourseFeature: VoidCourseFeature,
                          private val reverseGeocodingService: ReverseGeocodingService,
-                         private val julDayResolver: JulDayResolver) : AbstractCachedFeature<DailyReportConfig, List<TimeDesc>>() {
+                         private val julDayResolver: JulDayResolver,
+                         @Transient
+                         private val dailyReportFeatureCache: Cache<LmtCacheKey<*>, List<TimeDesc>>) : AbstractCachedFeature<DailyReportConfig, List<TimeDesc>>() {
 
   override val key: String = "dailyReport"
 
   override val defaultConfig: DailyReportConfig = DailyReportConfig()
+
+  @Suppress("UNCHECKED_CAST")
+  override val lmtCache: Cache<LmtCacheKey<DailyReportConfig>, List<TimeDesc>>
+    get() = dailyReportFeatureCache as Cache<LmtCacheKey<DailyReportConfig>, List<TimeDesc>>
+
+  override var lmtCacheGrain: CacheGrain? = CacheGrain.HOUR
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: DailyReportConfig): List<TimeDesc> {
 
@@ -237,5 +247,6 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
 
   companion object {
     private val logger = KotlinLogging.logger { }
+    const val CACHE_DAILY_REPORT_FEATURE = "dailyReportFeatureCache"
   }
 }

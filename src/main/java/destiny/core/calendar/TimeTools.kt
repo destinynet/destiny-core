@@ -164,12 +164,12 @@ object TimeTools {
   }
 
   fun getLmtFromGmt(gmt: ChronoLocalDateTime<*>, loc: ILocation): ChronoLocalDateTime<*> {
-    return if (loc.hasMinuteOffset) {
+    return (if (loc.hasMinuteOffset) {
       val secOffset = loc.finalMinuteOffset * 60
       gmt.plus(secOffset.toLong(), ChronoUnit.SECONDS).atZone(loc.timeZone.toZoneId()).toLocalDateTime()
     } else {
       getLmtFromGmt(gmt, loc.timeZone.toZoneId())
-    }
+    }).fixError()
   }
 
 
@@ -420,9 +420,9 @@ object TimeTools {
 }
 
 fun ChronoLocalDateTime<*>.fixError(): ChronoLocalDateTime<out ChronoLocalDate> {
-  return if (this.get(SECOND_OF_MINUTE) == 59 && this.get(NANO_OF_SECOND) > 999_990_000) {
+  return if (this.get(SECOND_OF_MINUTE) == 59 && this.get(NANO_OF_SECOND) > 999_900_000) {
     this.with(NANO_OF_SECOND, 0).plus(1, ChronoUnit.SECONDS)
-  } else if (this.get(SECOND_OF_MINUTE) == 0 && this.get(NANO_OF_SECOND) < 10000) {
+  } else if (this.get(SECOND_OF_MINUTE) == 0 && this.get(NANO_OF_SECOND) < 100000) {
     this.with(NANO_OF_SECOND, 0)
   } else {
     this

@@ -18,10 +18,7 @@ import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.values
-import destiny.tools.AbstractCachedPersonFeature
-import destiny.tools.DestinyMarker
-import destiny.tools.PersonFeature
-import destiny.tools.getTitle
+import destiny.tools.*
 import destiny.tools.serializers.ZStarSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -409,12 +406,14 @@ class ZiweiFeature(
 
   @Inject
   @Transient
-  private lateinit var ziweiCache: Cache<LmtCacheKey<*>, Pair<*, *>>
+  private lateinit var ziweiCache: Cache<LmtCacheKey<*>, Builder>
 
   override val lmtPersonCache: Cache<LmtCacheKey<ZiweiConfig>, Builder>
     get() = ziweiCache as Cache<LmtCacheKey<ZiweiConfig>, Builder>
 
   override val defaultConfig: ZiweiConfig = ZiweiConfig()
+
+  override var lmtCacheGrain: CacheGrain? = CacheGrain.MINUTE
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): Builder {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)

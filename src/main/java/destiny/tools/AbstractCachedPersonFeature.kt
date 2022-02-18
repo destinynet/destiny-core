@@ -7,6 +7,11 @@ import destiny.core.Gender
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.fixError
+import destiny.tools.AbstractCachedFeature.Companion.grainDay
+import destiny.tools.AbstractCachedFeature.Companion.grainHour
+import destiny.tools.AbstractCachedFeature.Companion.grainMinute
+import destiny.tools.AbstractCachedFeature.Companion.grainSecond
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 import javax.cache.Cache
@@ -21,7 +26,7 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
     val name: String?,
     val place: String?,
     val config: Config
-  )
+  ) : java.io.Serializable
 
   open val gmtPersonCache: Cache<GmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
@@ -53,26 +58,41 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
     val name: String?,
     val place: String?,
     val config: Config
-  )
+  ) : java.io.Serializable
+
+  open var lmtCacheGrain: CacheGrain? = null
 
   open val lmtPersonCache: Cache<LmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
 
   override fun getPersonModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: @UnsafeVariance Config): Model {
+
+    val errorFixedLmt = lmt.fixError()
+
     return lmtPersonCache?.let { cache ->
-      val cacheKey = LmtCacheKey(lmt, loc, gender, name, place, config)
+
+      val newLmt = lmtCacheGrain?.let { grain ->
+        when (grain) {
+          CacheGrain.SECOND -> errorFixedLmt.grainSecond()
+          CacheGrain.MINUTE -> errorFixedLmt.grainMinute()
+          CacheGrain.HOUR   -> errorFixedLmt.grainHour()
+          CacheGrain.DAY    -> errorFixedLmt.grainDay()
+        }
+      } ?: errorFixedLmt
+
+      val cacheKey = LmtCacheKey(newLmt, loc, gender, name, place, config)
       cache[cacheKey]?.also {
         logger.trace { "LMT cache hit" }
       }?: run {
         logger.trace { "LMT cache miss" }
-        calculate(lmt, loc, gender, name, place, config)?.also { model: Model ->
+        calculate(newLmt, loc, gender, name, place, config)?.also { model: Model ->
           logger.trace { "put ${model!!::class.simpleName}(${model.hashCode()}) into LMT cache" }
           cache.put(cacheKey, model)
         }
       }
     } ?: run {
       logger.trace { "${javaClass.simpleName} : No lmtPersonCache" }
-      calculate(lmt, loc, gender, name, place, config)
+      calculate(errorFixedLmt, loc, gender, name, place, config)
     }
   }
 

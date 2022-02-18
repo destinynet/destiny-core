@@ -10,6 +10,7 @@ import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
+import destiny.tools.CacheGrain
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -79,6 +80,8 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
 
   override val lmtCache: Cache<LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
     get() = ewContextFeatureCache as Cache<LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
+
+  override var lmtCacheGrain: CacheGrain? = CacheGrain.SECOND
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsContextConfig): IEightWordsContextModel {
 
