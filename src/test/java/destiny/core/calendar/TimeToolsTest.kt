@@ -28,15 +28,15 @@ class TimeToolsTest {
 
   @Test
   fun fixErrorTest() {
-    assertEquals(LocalDateTime.of(2021, 2, 17, 18, 30, 0), LocalDateTime.of(2021, 2, 17, 18, 29, 59, 999_990_001).fixError())
-    assertEquals(LocalDateTime.of(2021, 2, 17, 18, 0, 0), LocalDateTime.of(2021, 2, 17, 17, 59, 59, 999_990_001).fixError())
-    assertNotEquals(LocalDateTime.of(2021, 2, 17, 18, 0, 0), LocalDateTime.of(2021, 2, 17, 17, 59, 59, 999_990_000).fixError())
-    assertNotEquals(LocalDateTime.of(2021, 2, 17, 18, 0, 0), LocalDateTime.of(2021, 2, 17, 17, 59, 59, 999_989_999).fixError())
+    assertEquals(LocalDateTime.of(2022, 2, 17, 18, 30, 0), LocalDateTime.of(2022, 2, 17, 18, 29, 59, 999_990_001).fixError())
+    assertEquals(LocalDateTime.of(2022, 2, 17, 18, 0, 0), LocalDateTime.of(2022, 2, 17, 17, 59, 59, 999_990_001).fixError())
+    assertNotEquals(LocalDateTime.of(2022, 2, 17, 18, 0, 0), LocalDateTime.of(2022, 2, 17, 17, 59, 59, 999_990_000).fixError())
+    assertNotEquals(LocalDateTime.of(2022, 2, 17, 18, 0, 0), LocalDateTime.of(2022, 2, 17, 17, 59, 59, 999_989_999).fixError())
 
-    assertEquals(LocalDateTime.of(2021, 2, 17, 18, 30, 0), LocalDateTime.of(2021, 2, 17, 18, 30, 0, 9999).fixError())
-    assertEquals(LocalDateTime.of(2021, 2, 17, 18, 0, 0), LocalDateTime.of(2021, 2, 17, 18, 0, 0, 1).fixError())
-    assertEquals(LocalDateTime.of(2021, 2, 17, 18, 0, 0), LocalDateTime.of(2021, 2, 17, 18, 0, 0, 9999).fixError())
-    assertNotEquals(LocalDateTime.of(2021, 2, 17, 18, 0, 0), LocalDateTime.of(2021, 2, 17, 18, 0, 0, 10000).fixError())
+    assertEquals(LocalDateTime.of(2022, 2, 17, 18, 30, 0), LocalDateTime.of(2022, 2, 17, 18, 30, 0, 9999).fixError())
+    assertEquals(LocalDateTime.of(2022, 2, 17, 18, 0, 0), LocalDateTime.of(2022, 2, 17, 18, 0, 0, 1).fixError())
+    assertEquals(LocalDateTime.of(2022, 2, 17, 18, 0, 0), LocalDateTime.of(2022, 2, 17, 18, 0, 0, 9999).fixError())
+    assertNotEquals(LocalDateTime.of(2022, 2, 17, 18, 0, 0), LocalDateTime.of(2022, 2, 17, 18, 0, 0, 10000).fixError())
   }
 
   @Test

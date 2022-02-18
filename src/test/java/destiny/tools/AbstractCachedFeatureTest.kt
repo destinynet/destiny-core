@@ -16,26 +16,26 @@ internal class AbstractCachedFeatureTest {
 
   @Nested
   inner class GrainTest {
-    private val lmt = LocalDateTime.of(2021, 2, 17, 12, 31, 10, 123456)
+    private val lmt = LocalDateTime.of(2022, 2, 17, 12, 31, 10, 123456)
 
     @Test
     fun testGrainSecond() {
-      assertEquals(LocalDateTime.of(2021, 2, 17, 12, 31, 10), lmt.grainSecond())
+      assertEquals(LocalDateTime.of(2022, 2, 17, 12, 31, 10), lmt.grainSecond())
     }
 
     @Test
     fun testGrainMinute() {
-      assertEquals(LocalDateTime.of(2021, 2, 17, 12, 31), lmt.grainMinute())
+      assertEquals(LocalDateTime.of(2022, 2, 17, 12, 31), lmt.grainMinute())
     }
 
     @Test
     fun testGrainHour() {
-      assertEquals(LocalDateTime.of(2021, 2, 17, 12, 0), lmt.grainHour())
+      assertEquals(LocalDateTime.of(2022, 2, 17, 12, 0), lmt.grainHour())
     }
 
     @Test
     fun testGrainDay() {
-      assertEquals(LocalDateTime.of(2021, 2, 17, 0, 0, 1), lmt.grainDay())
+      assertEquals(LocalDateTime.of(2022, 2, 17, 0, 0, 1), lmt.grainDay())
     }
   }
 

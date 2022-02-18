@@ -1,5 +1,6 @@
 package destiny.core.fengshui.sanyuan
 
+import destiny.core.ILoop
 import destiny.core.fengshui.sanyuan.NineStar.Companion.toStar
 import destiny.tools.ArrayTools
 import kotlinx.serialization.Serializable
@@ -7,26 +8,12 @@ import kotlinx.serialization.Serializable
 /**
  * 運 (1~9)
  */
-@JvmInline
 @Serializable
-value class Period private constructor(val value: Int) : Comparable<Period> {
-  init {
-    require(value >= 1)
-    require(value <= 9)
-  }
+enum class Period constructor(val value: Int) : ILoop<Period> , Comparable<Period> {
+  P1(1), P2(2), P3(3), P4(4), P5(5), P6(6), P7(7), P8(8), P9(9);
 
-  override fun compareTo(other: Period): Int {
-    return if (value == other.value)
-      0
-    else if (value - other.value < 0) -1 else 1
-  }
-
-  operator fun plus(count: Int): Period {
-    return (this.value + count).toPeriod()
-  }
-
-  operator fun minus(count: Int): Period {
-    return (this.value - count).toPeriod()
+  override fun next(n: Int): Period {
+    return (value + n).toPeriod()
   }
 
   fun toNineStar() : NineStar {
@@ -35,12 +22,8 @@ value class Period private constructor(val value: Int) : Comparable<Period> {
 
   companion object {
 
-    private val array by lazy {
-      arrayOf(Period(1), Period(2), Period(3), Period(4), Period(5), Period(6), Period(7), Period(8), Period(9))
-    }
-
     fun Int.toPeriod(): Period {
-      return ArrayTools[array, this - 1]
+      return ArrayTools[values(), this - 1]
     }
 
     fun of(value: Int): Period {
