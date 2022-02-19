@@ -3,8 +3,9 @@
  */
 package destiny.core
 
-import destiny.core.calendar.eightwords.assertAndCompareDecoded
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import org.junit.jupiter.api.TestInstance
@@ -24,6 +25,32 @@ abstract class AbstractConfigTest<T> {
 
   protected val logger = KotlinLogging.logger { }
 
+  private inline fun <T> assertAndCompareDecoded(format: Json, config: T, assertion: (String) -> Unit, serializer: KSerializer<T>) {
+    val raw = format.encodeToString(serializer, config)
+    val logger = KotlinLogging.logger { }
+    logger.info { raw }
+    assertion(raw)
+    val decoded: T = format.decodeFromString(serializer, raw)
+    assertEquals(config, decoded)
+  }
+
+  private inline fun <reified T> assertAndCompareDecoded(format: Json, config: T, assertion: (String) -> Unit) {
+    val raw = format.encodeToString(config)
+    assertion(raw)
+    val decoded = format.decodeFromString<T>(raw)
+    assertEquals(config, decoded)
+  }
+
+  private val prettyJson = Json {
+    encodeDefaults = true
+    prettyPrint = true
+  }
+
+  private val condenseJson = Json {
+    encodeDefaults = true
+    prettyPrint = false
+  }
+
   @Test
   fun testEquals() {
     assertEquals(configByConstructor, configByFunction)
@@ -31,18 +58,9 @@ abstract class AbstractConfigTest<T> {
 
   @Test
   fun testSerialize() {
-    Json {
-      encodeDefaults = true
-      prettyPrint = true
-    }.also { format ->
-      assertAndCompareDecoded(format, configByConstructor, assertion, serializer)
-    }
-
-    Json {
-      encodeDefaults = true
-      prettyPrint = false
-    }.also { format ->
-      assertAndCompareDecoded(format, configByFunction, assertion, serializer)
-    }
+    assertAndCompareDecoded(prettyJson, configByConstructor, assertion, serializer)
+    assertAndCompareDecoded(condenseJson, configByFunction, assertion, serializer)
   }
 }
+
+
