@@ -68,7 +68,6 @@ class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFe
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: LunarStationModernConfig): IModernContextModel {
     val created = LocalDateTime.now()
-    val hourBranch = randomService.randomEnum(Branch::class.java)
 
     val specifiedTime = config.specifiedGmtJulDay?.let {
       TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
@@ -80,7 +79,7 @@ class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFe
         created.toLocalDate(),
         loc,
         config.lunarStationConfig.ewConfig.dayHourConfig.hourBranchConfig
-      )[hourBranch]!!
+      )[randomService.randomEnum(Branch::class.java)]!!
       IModernContextModel.Method.SPECIFIED   -> throw IllegalArgumentException("specifiedTime is null ")
       IModernContextModel.Method.RANDOM_TIME -> randomService.getRandomTime(
         LocalDate.now()
