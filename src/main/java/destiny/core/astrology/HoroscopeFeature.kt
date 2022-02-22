@@ -14,6 +14,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.serializers.PointSerializer
 import kotlinx.serialization.Serializable
+import javax.cache.Cache
 import javax.inject.Named
 
 
@@ -54,10 +55,15 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
 @Named
 class HoroscopeFeature(private val pointPosFuncMap: Map<Point, IPosition<*>> ,
                        private val houseCuspFeature: IHouseCuspFeature,
-                       private val voidCourseFeature: IVoidCourseFeature) : AbstractCachedFeature<HoroscopeConfig, IHoroscopeModel>() {
+                       private val voidCourseFeature: IVoidCourseFeature,
+                       private val horoscopeFeatureCache : Cache<GmtCacheKey<*>, IHoroscopeModel>) : AbstractCachedFeature<HoroscopeConfig, IHoroscopeModel>() {
   override val key: String = "horoscope"
 
   override val defaultConfig: HoroscopeConfig = HoroscopeConfig()
+
+  @Suppress("UNCHECKED_CAST")
+  override val gmtCache: Cache<GmtCacheKey<HoroscopeConfig>, IHoroscopeModel>
+    get() = horoscopeFeatureCache as Cache<GmtCacheKey<HoroscopeConfig>, IHoroscopeModel>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: HoroscopeConfig): IHoroscopeModel {
 
@@ -73,5 +79,9 @@ class HoroscopeFeature(private val pointPosFuncMap: Map<Point, IPosition<*>> ,
     val vocMap: Map<Planet, Misc.VoidCourse> = voidCourseFeature.getVocMap(gmtJulDay, loc, config.points, VoidCourseConfig(vocImpl = config.vocImpl))
 
     return HoroscopeModel(gmtJulDay, loc, config, positionMap, cuspDegreeMap, vocMap)
+  }
+
+  companion object {
+    const val CACHE_HOROSCOPE_FEATURE = "horoscopeFeatureCache"
   }
 }

@@ -26,6 +26,7 @@ class ClassicalFeature(private val horoscopeFeature: HoroscopeFeature,
 
   override val defaultConfig: HoroscopeConfig = HoroscopeConfig()
 
+  @Suppress("UNCHECKED_CAST")
   override val gmtCache: Cache<GmtCacheKey<HoroscopeConfig>, Map<Planet, List<Pair<IPlanetPattern, String>>>>
     get() = classicalRulesCache as Cache<GmtCacheKey<HoroscopeConfig>, Map<Planet, List<Pair<IPlanetPattern, String>>>>
 
