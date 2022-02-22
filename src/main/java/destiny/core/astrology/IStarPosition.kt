@@ -22,6 +22,8 @@ interface IStarPosition<out T : IStarPos> {
 
   fun getPosition(star: Star, gmtJulDay: GmtJulDay, centric: Centric, coordinate: Coordinate): T
 
+  fun getPositions(stars: Iterable<Star>, gmtJulDay: GmtJulDay, centric: Centric, coordinate: Coordinate): Map<Star, T>
+
   /** 同樣是求 Position , 但多傳入地點、溫度、壓力 等資料 , 在此直接 discard 掉  */
   fun getPosition(star: Star,
                   gmtJulDay: GmtJulDay,
