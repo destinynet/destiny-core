@@ -56,6 +56,7 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
 class HoroscopeFeature(private val pointPosFuncMap: Map<Point, IPosition<*>> ,
                        private val houseCuspFeature: IHouseCuspFeature,
                        private val voidCourseFeature: IVoidCourseFeature,
+                       @Transient
                        private val horoscopeFeatureCache : Cache<GmtCacheKey<*>, IHoroscopeModel>) : AbstractCachedFeature<HoroscopeConfig, IHoroscopeModel>() {
   override val key: String = "horoscope"
 
