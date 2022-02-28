@@ -21,7 +21,7 @@ abstract class EnumTest {
   inline fun <reified T : Enum<T>> getEnumValues(enumClass: KClass<out Enum<T>>): Array<out Enum<T>> = enumClass.java.enumConstants
 
   inline fun <reified E : Enum<E>> testEnums(
-    kClass: KClass<out Enum<E>>, locales: List<Locale> =
+    kClass: KClass<out Enum<E>>, ensureNameTitleNotEqual: Boolean = true, locales: List<Locale> =
       listOf(Locale.TRADITIONAL_CHINESE, Locale.SIMPLIFIED_CHINESE, Locale.ENGLISH)
   ) {
 
@@ -31,16 +31,21 @@ abstract class EnumTest {
       getEnumValues(kClass).forEach {
         it.getTitle(locale).also { title ->
           assertNotNull(title)
-          if (locale.language != "en") {
-            assertNotEquals(title, it.name)
+          if (ensureNameTitleNotEqual) {
+            if (locale.language != "en") {
+              assertNotEquals(title, it.name)
+            }
           }
+
           logger.info { "${it.name} : title($locale) = $title" }
         }
 
         it.getDescription(locale).also { desc ->
           assertNotNull(desc)
-          if (locale.language != "en") {
-            assertNotEquals(desc, it.name)
+          if (ensureNameTitleNotEqual) {
+            if (locale.language != "en") {
+              assertNotEquals(desc, it.name)
+            }
           }
           logger.info { "${it.name} : description($locale) = $desc" }
         }

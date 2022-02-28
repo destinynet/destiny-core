@@ -39,13 +39,6 @@ enum class Reaction  {
       }
     }
 
-  override fun toString(): String {
-    return name
-  }
-
-  fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(Reaction::class.java.name, locale).getString(name)
-  }
 
   /** 縮寫  */
   fun getAbbreviation(locale: Locale): String {
