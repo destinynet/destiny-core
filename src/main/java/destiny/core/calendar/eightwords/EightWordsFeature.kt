@@ -11,9 +11,11 @@ import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
+import destiny.tools.CacheGrain
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import javax.cache.Cache
 import javax.inject.Named
 
 
@@ -52,24 +54,35 @@ class EightWordsConfigBuilder : Builder<EightWordsConfig> {
 class EightWordsFeature(private val yearFeature: YearFeature,
                         private val yearMonthFeature: YearMonthFeature,
                         private val dayHourFeature: IDayHourFeature,
-                        private val julDayResolver: JulDayResolver) : AbstractCachedFeature<EightWordsConfig, EightWords>() {
+                        private val julDayResolver: JulDayResolver,
+                        @Transient
+                        private val ewFeatureLmtCache : Cache<LmtCacheKey<*> , IEightWords>) : AbstractCachedFeature<EightWordsConfig, IEightWords>() {
 
   override val key: String = "eightWords"
 
   override val defaultConfig: EightWordsConfig = EightWordsConfig()
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsConfig): EightWords {
+  @Suppress("UNCHECKED_CAST")
+  override val lmtCache: Cache<LmtCacheKey<EightWordsConfig>, IEightWords>
+    get() = ewFeatureLmtCache as Cache<LmtCacheKey<EightWordsConfig>, IEightWords>
+
+  override var lmtCacheGrain: CacheGrain? = CacheGrain.SECOND
+
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsConfig): IEightWords {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc , julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: EightWordsConfig): EightWords {
-
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: EightWordsConfig): IEightWords {
     val year: StemBranch = yearFeature.getModel(lmt, loc, config.yearMonthConfig.yearConfig)
     val month: IStemBranch = yearMonthFeature.getModel(lmt, loc, config.yearMonthConfig)
 
     val (day, hour) = dayHourFeature.getModel(lmt, loc, config.dayHourConfig)
 
     return EightWords(year, month, day, hour)
+  }
+
+  companion object {
+    const val CACHE_EIGHTWORDS_FEATURE_LMT = "ewFeatureLmtCache"
   }
 }

@@ -78,6 +78,7 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
 
   override val defaultConfig: EightWordsContextConfig = EightWordsContextConfig()
 
+  @Suppress("UNCHECKED_CAST")
   override val lmtCache: Cache<LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
     get() = ewContextFeatureCache as Cache<LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
 

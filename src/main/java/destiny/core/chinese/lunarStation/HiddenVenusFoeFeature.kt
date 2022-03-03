@@ -14,8 +14,8 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.chinese.IFinalMonthNumber
-import destiny.core.calendar.eightwords.EightWords
 import destiny.core.calendar.eightwords.EightWordsFeature
+import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.tools.AbstractCachedFeature
@@ -51,7 +51,7 @@ class HiddenVenusFoeFeature(private val yearlyFeature: LunarStationYearlyFeature
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: LunarStationConfig): Set<Pair<Scale, Scale>> {
     val yearly = yearlyFeature.getModel(lmt, loc, config.yearlyConfig).station
-    val ew: EightWords = eightWordsFeature.getModel(lmt, loc, config.ewConfig)
+    val ew: IEightWords = eightWordsFeature.getModel(lmt, loc, config.ewConfig)
     val chineseDate = chineseDateFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig)
     val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
       chineseDate.month,

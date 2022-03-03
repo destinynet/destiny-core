@@ -18,7 +18,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.eightwords.EightWords
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.IStemBranch
@@ -218,7 +217,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFe
     val targetGmtJulDay = TimeTools.getGmtJulDay(targetGmt)
     require(targetGmtJulDay > gmtJulDay) { "targetGmt $targetGmt must be after birth's time : $gmtJulDay" }
 
-    val eightWords: EightWords = eightWordsFeature.getModel(gmtJulDay, loc, config.eightWordsConfig)
+    val eightWords: IEightWords = eightWordsFeature.getModel(gmtJulDay, loc, config.eightWordsConfig)
 
     return getStemBranch(gmtJulDay, loc, eightWords, gender, targetGmtJulDay, config.span)
   }
