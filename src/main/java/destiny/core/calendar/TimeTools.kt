@@ -223,6 +223,11 @@ object TimeTools {
     return Pair(isDst(lmt, loc), getSecondsOffset(lmt, loc))
   }
 
+  /** 承上，傳回 minute offset */
+  fun getDstMinuteOffset(lmt: ChronoLocalDateTime<*>, loc: ILocation): Pair<Boolean, Int> {
+    return Pair(isDst(lmt, loc), getSecondsOffset(lmt, loc) / 60)
+  }
+
   // ======================================== misc methods ========================================
 
   /** 西元年份 to 甲子 (不考慮節氣 / 初一) */
