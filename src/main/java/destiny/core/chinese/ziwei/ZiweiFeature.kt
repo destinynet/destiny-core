@@ -907,9 +907,9 @@ class ZiweiFeature(
 
     logger.debug("命宮地支 = {} , 身宮地支 = {}", mainBranch, bodyBranch)
 
-    val t2 = TimeTools.getDstSecondOffset(lmt, loc)
+    val t2 = TimeTools.getDstAndOffset(lmt, loc)
     val dst = t2.first
-    val minuteOffset = t2.second / 60
+    val minuteOffset = t2.second.inWholeMinutes
 
     val cDate = chineseDateFeature.getModel(lmt, loc)
     val cycle = cDate.cycleOrZero

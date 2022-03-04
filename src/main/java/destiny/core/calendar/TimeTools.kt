@@ -19,6 +19,8 @@ import java.time.temporal.JulianFields.JULIAN_DAY
 import java.time.zone.ZoneRulesException
 import java.util.*
 import kotlin.math.abs
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 object TimeTools {
 
@@ -186,17 +188,21 @@ object TimeTools {
   /**
    * @return 此時刻，此 TimeZone ，是否有日光節約時間
    */
-  private fun isDst(lmt: ChronoLocalDateTime<*>, tz: TimeZone): Boolean {
+  fun isDst(lmt: ChronoLocalDateTime<*>, tz: TimeZone): Boolean {
     val zdt = lmt.atZone(tz.toZoneId())
     return zdt.zone.rules.isDaylightSavings(zdt.toInstant())
   }
 
-  private fun isDst(lmt: ChronoLocalDateTime<*>, loc: ILocation): Boolean {
+  fun isDst(lmt: ChronoLocalDateTime<*>, loc: ILocation): Boolean {
     return isDst(lmt, loc.timeZone)
   }
 
   fun getSecondsOffset(lmt: ChronoLocalDateTime<*>, zoneId: ZoneId): Int {
     return lmt.atZone(zoneId).offset.totalSeconds
+  }
+
+  fun getOffset(lmt: ChronoLocalDateTime<*>, zoneId: ZoneId): kotlin.time.Duration {
+    return lmt.atZone(zoneId).offset.totalSeconds.toDuration(DurationUnit.SECONDS)
   }
 
   /**
@@ -209,24 +215,27 @@ object TimeTools {
     return getSecondsOffset(lmt, tz.toZoneId())
   }
 
+  private fun getOffset(lmt: ChronoLocalDateTime<*>, tz: TimeZone): kotlin.time.Duration {
+    return getOffset(lmt, tz.toZoneId())
+  }
+
   /**
    * @return 取得此地點、此時刻，與 GMT 的「秒差」 (不論是否有日光節約時間）
    */
-  fun getSecondsOffset(lmt: ChronoLocalDateTime<*>, loc: ILocation): Int {
+  private fun getSecondsOffset(lmt: ChronoLocalDateTime<*>, loc: ILocation): Int {
     return getSecondsOffset(lmt, loc.timeZone)
   }
 
-  /**
-   * @return 確認此時刻，是否有DST。不論是否有沒有DST，都傳回與GMT誤差幾秒
-   */
-  fun getDstSecondOffset(lmt: ChronoLocalDateTime<*>, loc: ILocation): Pair<Boolean, Int> {
-    return Pair(isDst(lmt, loc), getSecondsOffset(lmt, loc))
+  fun getOffset(lmt: ChronoLocalDateTime<*>, loc: ILocation): kotlin.time.Duration {
+    return getOffset(lmt, loc.timeZone)
   }
 
-  /** 承上，傳回 minute offset */
-  fun getDstMinuteOffset(lmt: ChronoLocalDateTime<*>, loc: ILocation): Pair<Boolean, Int> {
-    return Pair(isDst(lmt, loc), getSecondsOffset(lmt, loc) / 60)
+  /** @return 確認此時刻，是否有DST。不論是否有沒有DST，都傳回與GMT誤差幾秒 */
+  fun getDstAndOffset(lmt: ChronoLocalDateTime<*>, loc: ILocation): Pair<Boolean, kotlin.time.Duration> {
+    return Pair(isDst(lmt, loc), getOffset(lmt, loc))
   }
+
+
 
   // ======================================== misc methods ========================================
 
@@ -407,7 +416,7 @@ object TimeTools {
    */
   fun getLongitudeTime(lmt: ChronoLocalDateTime<*>, location: ILocation): ChronoLocalDateTime<*> {
     val absLng = abs(location.lng)
-    val secondsOffset = getDstSecondOffset(lmt, location).second.toDouble()
+    val secondsOffset = getOffset(lmt, location).inWholeSeconds
     val zoneSecondOffset = abs(secondsOffset)
     val longitudeSecondOffset = absLng * 4.0 * 60.0 // 經度與GMT的時差 (秒) , 一分鐘四度
 

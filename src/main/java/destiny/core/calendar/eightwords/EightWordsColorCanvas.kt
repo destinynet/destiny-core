@@ -113,7 +113,8 @@ class EightWordsColorCanvas(
       val placeCanvas = ColorCanvas(1, 44, ChineseStringTools.NULL_CHAR)
       placeCanvas.setText("地點：", 1, 1)
       placeCanvas.setText(config.place?:"", 1, 7, null, null, url, config.place, false, null)
-      val minuteOffset = location.minuteOffset ?: (TimeTools.getDstSecondOffset(lmt, location).second / 60)
+
+      val minuteOffset = location.minuteOffset ?: (TimeTools.getOffset(lmt, location).inWholeSeconds.toInt())
 
       minuteOffset.also {
         val absValue = abs(it)
@@ -162,7 +163,7 @@ class EightWordsColorCanvas(
       }
 
       cc.setText("日光節約：", 5, x + 19)
-      val isDst = TimeTools.getDstSecondOffset(lmt, location).first
+      val isDst = TimeTools.isDst(lmt, location)
       val dstString = if (isDst) "有" else "無"
       cc.setText(dstString, 5, x + 29, foreColor = if (isDst) "FF0000" else "", backColor =  "", title = null)
 

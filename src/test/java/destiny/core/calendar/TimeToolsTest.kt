@@ -7,6 +7,9 @@ import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.calendar.TimeTools.yearToStemBranch
 import destiny.core.chinese.StemBranch
 import mu.KotlinLogging
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import java.lang.Boolean.FALSE
 import java.lang.Boolean.TRUE
 import java.time.*
@@ -14,12 +17,16 @@ import java.time.chrono.ChronoLocalDateTime
 import java.time.chrono.ChronoZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
+import java.util.stream.Stream
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertSame
+import kotlin.time.DurationUnit.HOURS
+import kotlin.time.toDuration
 
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TimeToolsTest {
 
   private val asiaTaipeiZoneId = ZoneId.of("Asia/Taipei")
@@ -304,148 +311,152 @@ class TimeToolsTest {
    * 台灣
    * https://blog.yorkxin.org/2014/07/11/dst-in-taiwan-study
    */
-  @Test
-  fun getDstSecondOffset_Taiwan() {
-    val loc = locationOf(Locale.TAIWAN)
-
+  fun dstAndOffsetTaiwan() = Stream.of(
     // 民國41年（西元1952年）	日光節約時間	3月1日至10月31日
-    var year = 1952
-    // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 2, 28, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1952, 2, 28, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 3, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1952, 3, 1, 12, 0)),
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 10, 31, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1952, 10, 31, 12, 0)),
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 11, 1, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1952, 11, 1, 12, 0)),
 
     //民國42年至43年（西元1953-1954年）	日光節約時間	4月1日至10月31日
-    year = 1953
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1953, 3, 31, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1953, 4, 1, 12, 0)),
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 10, 31, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1953, 10, 31, 12, 0)),
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 11, 1, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1953, 11, 1, 12, 0)),
 
-    year = 1954
+
+    // 1954年
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1954, 3, 31, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1954, 4, 1, 12, 0)),
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 10, 31, 12, 0), loc))
-    // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 11, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1954, 10, 31, 12, 0)),
+    // 日光節約時間結束 , 隔天中午，時區回到 +8
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1954, 11, 1, 12, 0)),
+
 
     //民國44年至45年（西元1955-1956年）	日光節約時間	4月1日至9月30日
-    year = 1955
+    // 1955
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1955, 3, 31, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1955, 4, 1, 12, 0)),
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc))
-    // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1955, 9, 30, 12, 0)),
+    // 日光節約時間結束 , 隔天中午，時區回到 +8
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1955, 10, 1, 12, 0)),
 
-    year = 1956
+    // 1956
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1956, 3, 31, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1956, 4, 1, 12, 0)),
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc))
-    // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1956, 9, 30, 12, 0)),
+    // 日光節約時間結束 , 隔天中午，時區回到 +8
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1956, 10, 1, 12, 0)),
 
     // 民國46年至48年（西元1957-1959年）	夏令時間	4月1日至9月30日
-    year = 1957
+    // year = 1957
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1957, 3, 31, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1957, 4, 1, 12, 0)),
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc))
-    // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1957, 9, 30, 12, 0)),
+    // 日光節約時間結束 , 隔天中午，時區回到 +8
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1957, 10, 1, 12, 0)),
 
-    year = 1958
+    // year = 1958
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1958, 3, 31, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1958, 4, 1, 12, 0)),
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc))
-    // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1958, 9, 30, 12, 0)),
+    // 日光節約時間結束 , 隔天中午，時區回到 +8
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1958, 10, 1, 12, 0)),
 
-    year = 1959
+    // year = 1959
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1959, 3, 31, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1959, 4, 1, 12, 0)),
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc))
-    // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc))
-
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1959, 9, 30, 12, 0)),
+    // 日光節約時間結束 , 隔天中午，時區回到 +8
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1959, 10, 1, 12, 0)),
 
     // 民國49年至50年（西元1960-1961年）	夏令時間	6月1日至9月30日
-    year = 1960
+    // year = 1960
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 5, 31, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1960, 5, 31, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 6, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1960, 6, 1, 12, 0)),
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc))
-    // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1960, 9, 30, 12, 0)),
+    // 日光節約時間結束 , 隔天中午，時區回到 +8
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1960, 10, 1, 12, 0)),
 
-    year = 1961
+    // year = 1961
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 5, 31, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1961, 5, 31, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 6, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1961, 6, 1, 12, 0)),
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc))
-    // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc))
-
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1961, 9, 30, 12, 0)),
+    // 日光節約時間結束 , 隔天中午，時區回到 +8
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1961, 10, 1, 12, 0)),
 
     // 民國63年至64年（西元1974-1975年）	日光節約時間	4月1日至9月30日
-    year = 1974
+    // year = 1974
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 3, 30, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1974, 3, 31, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1974, 4, 1, 12, 0)),
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc))
-    // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1974, 9, 30, 12, 0)),
+    // 日光節約時間結束 , 隔天中午，時區回到 +8
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1974, 10, 1, 12, 0)),
 
-    year = 1975
+    // year = 1975
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 3, 30, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1975, 3, 31, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1975, 4, 1, 12, 0)),
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc))
-    // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1975, 9, 30, 12, 0)),
+    // 日光節約時間結束 , 隔天中午，時區回到 +8
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1975, 10, 1, 12, 0)),
 
     // 民國68年（西元1979年）	日光節約時間	7月1日至9月30日
-    year = 1979
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 6, 30, 12, 0), loc))
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1979, 6, 30, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 7, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1979, 7, 1, 12, 0)),
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair(TRUE, 9 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc))
-    // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair(FALSE, 8 * 60 * 60), TimeTools.getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc))
+    Triple(TRUE, 9.toDuration(HOURS), LocalDateTime.of(1979, 9, 30, 12, 0)),
+    // 日光節約時間結束 , 隔天中午，時區回到 +8
+    Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1979, 10, 1, 12, 0)),
+  )
+
+  @ParameterizedTest
+  @MethodSource
+  fun dstAndOffsetTaiwan(row: Triple<Boolean, kotlin.time.Duration, ChronoLocalDateTime<*>>) {
+    val loc = locationOf(Locale.TAIWAN)
+
+    val (dst, dur, lmt) = row
+
+    assertEquals(dst, TimeTools.isDst(lmt, loc))
+    assertEquals(dur, TimeTools.getOffset(lmt, loc))
   }
 
 

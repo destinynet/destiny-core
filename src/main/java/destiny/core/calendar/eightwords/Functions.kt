@@ -32,7 +32,7 @@ fun getYear(
   else
     (1 - lmt.get(ChronoField.YEAR) - 1984) % 60
 
-  val gmtSecondsOffset = TimeTools.getDstSecondOffset(lmt, loc).second.toDouble()
+  val gmtSecondsOffset = TimeTools.getOffset(lmt, loc).inWholeSeconds
 
   val gmtSecondsOffsetInt = gmtSecondsOffset.toInt()
   val gmtNanoOffset = ((gmtSecondsOffset - gmtSecondsOffsetInt) * 1000000000).toInt()

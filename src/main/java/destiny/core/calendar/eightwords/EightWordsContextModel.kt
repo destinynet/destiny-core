@@ -108,8 +108,8 @@ data class EightWordsContextModel(
   override val gmtMinuteOffset: Int
 
   init {
-    val (first, second) = TimeTools.getDstSecondOffset(time, location)
+    val (first, second) = TimeTools.getDstAndOffset(time, location)
     this.dst = first
-    this.gmtMinuteOffset = second / 60
+    this.gmtMinuteOffset = second.inWholeMinutes.toInt()
   }
 }
