@@ -38,10 +38,30 @@ interface IPersonContextModel : IEightWordsContextModel , IBirthDataNamePlace  {
 
     return if (gmtJulDay < fortuneDataLarges[0].startFortuneGmtJulDay)
       eightWords.month // 還未上運 ，傳回 月干支
-    else fortuneDataLarges.firstOrNull {
-      gmtJulDay > it.startFortuneGmtJulDay &&
-        it.endFortuneGmtJulDay > gmtJulDay
-    }?.stemBranch
+    else fortuneDataLarges.firstOrNull { gmtJulDay > it.startFortuneGmtJulDay && it.endFortuneGmtJulDay > gmtJulDay }?.stemBranch
+  }
+
+  private fun getAgeMapOfFortuneLarge(fortuneData: FortuneData): Map<Int, Pair<GmtJulDay, GmtJulDay>> {
+    return ageMap.filter { (_, pair) ->
+      val (ageStart, ageEnd) = pair
+      val head = ageStart < fortuneData.startFortuneGmtJulDay && ageEnd > fortuneData.startFortuneGmtJulDay
+      val between = ageStart > fortuneData.startFortuneGmtJulDay && ageEnd < fortuneData.endFortuneGmtJulDay
+      val tail = ageStart < fortuneData.endFortuneGmtJulDay && ageEnd > fortuneData.endFortuneGmtJulDay
+      head || between || tail
+    }.toMap()
+  }
+
+  fun getAgeMapOfFortuneLarge(gmtJulDay: GmtJulDay) : Map<Int, Pair<GmtJulDay, GmtJulDay>>? {
+    return if (gmtJulDay < fortuneDataLarges[0].startFortuneGmtJulDay) {
+      ageMap.filter { (_ , pair) ->
+        val (_, ageEnd) = pair
+        ageEnd < fortuneDataLarges[0].startFortuneGmtJulDay
+      }
+    } else {
+      fortuneDataLarges.firstOrNull { gmtJulDay > it.startFortuneGmtJulDay && it.endFortuneGmtJulDay > gmtJulDay }?.let { fortuneData ->
+        getAgeMapOfFortuneLarge(fortuneData)
+      }
+    }
   }
 }
 
