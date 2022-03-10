@@ -14,7 +14,6 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.display
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
-import destiny.core.chinese.NaYin
 import destiny.core.chinese.Stem
 import destiny.core.chinese.eightwords.IHiddenStems
 import destiny.core.chinese.eightwords.ReactionUtil
@@ -270,7 +269,7 @@ class EightWordsColorCanvas(
     }
 
     if (showNaYin) {
-      NaYin.getNaYin(stemBranch.stem, stemBranch.branch)?.also { naYin ->
+      stemBranch.naYin?.also { naYin ->
         val name = naYin.name
         pillar.setText(name[0].toString(), 5, 5, "plum")
         pillar.setText(name[1].toString(), 6, 5, "plum")

@@ -13,6 +13,9 @@ import destiny.tools.ArrayTools
 interface IStemBranch : IStemBranchOptional, ILoop<IStemBranch> {
   override val stem: Stem
   override val branch: Branch
+
+  val naYin : NaYin?
+
 }
 
 enum class StemBranchCycle(val sb: StemBranch) {
@@ -135,6 +138,9 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
   /** 哪一「旬」 */
   val cycle: StemBranchCycle
     get() = getCycle(this)
+
+  override val naYin: NaYin
+    get() = NaYin.getNaYin(stem, branch)!!
 
 
   override fun toString(): String {

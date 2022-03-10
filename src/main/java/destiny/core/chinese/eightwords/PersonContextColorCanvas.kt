@@ -9,7 +9,6 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.Direction
 import destiny.core.calendar.eightwords.EightWordsColorCanvas
 import destiny.core.calendar.eightwords.TimeLine
-import destiny.core.chinese.NaYin
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
 import mu.KotlinLogging
@@ -127,7 +126,7 @@ class PersonContextColorCanvas(private val config: PersonPresentConfig,
 
 
         if (showNaYin) {
-          NaYin.getNaYin(stemBranch.stem, stemBranch.branch)?.also { naYin ->
+          stemBranch.naYin?.also { naYin ->
             val name = naYin.name
             triColumn.setText(name[0].toString(), 4, 5, "plum")
             triColumn.setText(name[1].toString(), 5, 5, "plum")

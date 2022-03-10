@@ -170,6 +170,8 @@ enum class StemBranchUnconstrained(override val stem: Stem,
     return values().indexOf(sbu)
   }
 
+  override val naYin: NaYin?
+    get() = NaYin.getNaYin(stem, branch)
 
 
 
