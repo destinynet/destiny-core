@@ -87,7 +87,7 @@ class DivineFullFeature(private val divineTraditionalFeature: DivineTraditionalF
     val embedded = divineTraditionalFeature.getCombinedWithMetaNameDayMonth(ewNullable, config)
 
     val decoratedDate = DateDecorator.getOutputString(lmt.toLocalDate(), Locale.TAIWAN)
-    val decoratedDateTime = TimeSecDecorator.getOutputString(lmt, Locale.TAIWAN)
+    val decoratedDateTime = DateHourMinSecDecorator.getOutputString(lmt, Locale.TAIWAN)
 
     val meta = Meta(config.settings, config.hiddenEnergy)
 

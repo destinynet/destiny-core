@@ -4,7 +4,6 @@
  */
 package destiny.core.calendar
 
-import mu.KotlinLogging
 import org.threeten.extra.chrono.JulianEra
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -13,15 +12,11 @@ import java.time.chrono.IsoEra
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class TimeSecDecoratorChineseTest {
-
-  private val logger = KotlinLogging.logger {  }
-
+class DateHourMinSecDecoratorTradChineseTest {
 
   @Test
   fun testGetOutputString() {
-    val decorator = TimeSecDecoratorChinese()
-
+    val decorator = DateHourMinSecDecoratorTradChinese
 
     decorator.getOutputString(LocalDateTime.of(2000, 1, 1, 0, 0, 0)).also {
       assertEquals("西元　2000年01月01日　00時00分 00.00秒", it)
@@ -32,19 +27,19 @@ class TimeSecDecoratorChineseTest {
     }
 
     decorator.getOutputString(JulianDateTime.of(2000, 1, 1, 0, 0, 0)).also {
-      assertEquals("西元　2000年01月01日　00時00分 00.00秒" , it)
+      assertEquals("西元　2000年01月01日　00時00分 00.00秒", it)
     }
 
     decorator.getOutputString(JulianDateTime.of(-2000, 1, 1, 0, 0, 0)).also {
-      assertEquals("西元前2001年01月01日　00時00分 00.00秒" , it)
+      assertEquals("西元前2001年01月01日　00時00分 00.00秒", it)
     }
 
     JulianDateTime.of(2000, 1, 1, 0, 0, 0).toLocalDate().era.also {
-      assertEquals(JulianEra.AD , it)
+      assertEquals(JulianEra.AD, it)
     }
 
     JulianDateTime.of(-2000, 1, 1, 0, 0, 0).toLocalDate().era.also {
-      assertEquals(JulianEra.BC , it)
+      assertEquals(JulianEra.BC, it)
     }
   }
 

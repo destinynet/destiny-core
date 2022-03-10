@@ -63,7 +63,7 @@ class InstantTest {
 
     logger.info(
       "Greg 前一秒 : {}",
-      TimeSecDecorator.getOutputString(instant2.atZone(ZoneId.of("GMT")).toLocalDateTime(), Locale.TAIWAN)
+      DateHourMinSecDecorator.getOutputString(instant2.atZone(ZoneId.of("GMT")).toLocalDateTime(), Locale.TAIWAN)
     )
 
     assertEquals(LocalDateTime.of(1582, 10, 14, 23, 59, 59).toEpochSecond(ZoneOffset.UTC), instant2.epochSecond)

@@ -3,8 +3,8 @@
  */
 package destiny.core.chinese.eightwords
 
+import destiny.core.calendar.DateHourMinSecDecoratorTradChinese
 import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.TimeSecDecoratorChinese
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.Direction
 import destiny.core.calendar.eightwords.EightWordsColorCanvas
@@ -212,7 +212,7 @@ class PersonContextColorCanvas(private val config: PersonPresentConfig,
     private val logger = KotlinLogging.logger { }
     private val monthFormatter = DateTimeFormatter.ofPattern("MM月")
     private val monthDayFormatter = DateTimeFormatter.ofPattern("MMdd")
-    private val timeDecorator = TimeSecDecoratorChinese()
+    private val timeDecorator = DateHourMinSecDecoratorTradChinese
   }
 
 }

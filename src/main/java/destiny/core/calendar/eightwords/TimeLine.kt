@@ -104,7 +104,7 @@ class TimeLine(val model: IEightWordsContextModel,
   companion object {
     private val logger = KotlinLogging.logger { }
     private val monthDayFormatter = DateTimeFormatter.ofPattern("MMdd")
-    private val timeDecorator = TimeSecDecoratorChinese()
+    private val timeDecorator = DateHourMinSecDecoratorTradChinese
   }
 
 }

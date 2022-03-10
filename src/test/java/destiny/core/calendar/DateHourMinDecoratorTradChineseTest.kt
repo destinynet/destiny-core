@@ -10,11 +10,11 @@ import java.time.chrono.IsoEra
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class TimeMinDecoratorChineseTest {
+class DateHourMinDecoratorTradChineseTest {
 
   @Test
   fun getOutputString() {
-    val decorator = TimeMinDecoratorChinese()
+    val decorator = DateHourMinDecoratorTradChinese
 
     decorator.getOutputString(LocalDateTime.of(2000, 1, 1, 0, 0, 0)).also {
       assertEquals("西元　2000年01月01日　00時00分" , it)

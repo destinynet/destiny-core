@@ -14,7 +14,7 @@ class DateDecoratorChineseTest {
 
   @Test
   fun getOutputString() {
-    val decorator : Decorator<ChronoLocalDate> = DateDecoratorChinese()
+    val decorator : Decorator<ChronoLocalDate> = DateDecoratorChinese
     assertEquals("西元　2000年01月01日" ,   decorator.getOutputString(LocalDate.of(2000 , 1 , 1)))
     assertEquals("西元　 999年01月01日" ,   decorator.getOutputString(LocalDate.of(999 , 1 , 1)))
     assertEquals("西元　  10年01月01日" ,   decorator.getOutputString(LocalDate.of(10 , 1 , 1)))

@@ -15,10 +15,11 @@ import java.util.*
 object DateDecorator {
 
   private val implMap = mapOf<Locale, Decorator<ChronoLocalDate>>(
-    Locale.TAIWAN to DateDecoratorChinese(),
-    Locale.SIMPLIFIED_CHINESE to DateDecoratorChinese(),
-    Locale.ENGLISH to DateDecoratorEnglish()
-                                                                 )
+    Locale.TAIWAN to DateDecoratorChinese,
+    Locale.SIMPLIFIED_CHINESE to DateDecoratorChinese,
+    Locale.ENGLISH to DateDecoratorEnglish,
+    Locale.JAPAN to DateDecoratorJapan
+  )
 
   fun getOutputString(date: ChronoLocalDate, locale: Locale): String {
     val bestMatchingLocale = LocaleTools.getBestMatchingLocale(locale, implMap.keys) ?: implMap.keys.first()
@@ -31,10 +32,10 @@ object DateDecorator {
  * 西元　2000年01月01日
  * 西元前2000年12月31日
  */
-class DateDecoratorChinese : Decorator<ChronoLocalDate>, Serializable {
+object DateDecoratorChinese : Decorator<ChronoLocalDate>, Serializable {
   override fun getOutputString(value: ChronoLocalDate): String {
 
-    return with(StringBuilder()) {
+    return buildString {
       append("西元")
       if (value.era === IsoEra.BCE || value.era === org.threeten.extra.chrono.JulianEra.BC) {
         append("前")
@@ -44,13 +45,13 @@ class DateDecoratorChinese : Decorator<ChronoLocalDate>, Serializable {
       append(AlignTools.alignRight(value.get(YEAR_OF_ERA), 4)).append("年")
       append(if (value.get(MONTH_OF_YEAR) < 10) "0" else "").append(value.get(MONTH_OF_YEAR)).append("月")
       append(if (value.get(DAY_OF_MONTH) < 10) "0" else "").append(value.get(DAY_OF_MONTH)).append("日")
-    }.toString()
+    }
   }
 }
 
-class DateDecoratorEnglish : Decorator<ChronoLocalDate>, Serializable {
+object DateDecoratorEnglish : Decorator<ChronoLocalDate>, Serializable {
   override fun getOutputString(value: ChronoLocalDate): String {
-    return with(StringBuilder()) {
+    return buildString {
       append(value.get(YEAR_OF_ERA))
       if (value.era === IsoEra.CE)
         append("AD")
@@ -61,7 +62,22 @@ class DateDecoratorEnglish : Decorator<ChronoLocalDate>, Serializable {
       append(if (value.get(MONTH_OF_YEAR) < 10) "0" else "").append(value.get(MONTH_OF_YEAR))
       append("/")
       append(if (value.get(DAY_OF_MONTH) < 10) "0" else "").append(value.get(DAY_OF_MONTH))
-    }.toString()
+    }
+  }
+}
+
+object DateDecoratorJapan : Decorator<ChronoLocalDate>, Serializable {
+  override fun getOutputString(value: ChronoLocalDate): String {
+    return buildString {
+      append("西暦")
+      if (value.era === IsoEra.BCE)
+        append("前")
+      else
+        append("　")
+      append(AlignTools.alignRight(value.get(YEAR_OF_ERA), 4)).append("年")
+      append(if (value.get(MONTH_OF_YEAR) < 10) "0" else "").append(value.get(MONTH_OF_YEAR)).append("月")
+      append(if (value.get(DAY_OF_MONTH) < 10) "0" else "").append(value.get(DAY_OF_MONTH)).append("日")
+    }
   }
 
 }
