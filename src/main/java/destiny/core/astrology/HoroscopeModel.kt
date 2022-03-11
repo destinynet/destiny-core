@@ -205,7 +205,7 @@ interface IHoroscopeModel : ITimeLoc {
     return positionMap[point]
   }
 
-  fun getStarPosition(star : Star) : IStarPositionWithAzimuth? {
+  fun getStarPosition(star: Star): IStarPositionWithAzimuth? {
     return positionMap[star]?.takeIf { it is IStarPositionWithAzimuth }?.let { it as IStarPositionWithAzimuth }
   }
 
@@ -214,9 +214,15 @@ interface IHoroscopeModel : ITimeLoc {
     return getPosition(point)?.lngDeg?.sign
   }
 
+  fun getHouse(index: Int): House {
+    return House(index, getCuspDegree(index), positionMap.filter { (p, _) ->
+      getHouse(p) == index
+    })
+  }
+
   companion object {
 
-    fun getHouse(degree: ZodiacDegree , cuspDegreeMap: Map<Int, ZodiacDegree>) : Int {
+    fun getHouse(degree: ZodiacDegree, cuspDegreeMap: Map<Int, ZodiacDegree>): Int {
       return (1..11).firstOrNull { house ->
         if ((abs(cuspDegreeMap.getValue(house + 1).value - cuspDegreeMap.getValue(house).value) < 180)) {
           //沒有切換360度的問題
@@ -226,14 +232,14 @@ interface IHoroscopeModel : ITimeLoc {
           cuspDegreeMap.getValue(house).value <= degree.value && degree.value < cuspDegreeMap.getValue(house + 1).value + 360 ||
             cuspDegreeMap.getValue(house).value <= degree.value + 360 && degree.value < cuspDegreeMap.getValue(house + 1).value
         }
-      } ?:12
+      } ?: 12
     }
 
     /**
      * 取得此兩顆星，對於此交角 Aspect 的誤差是幾度
      * 例如兩星交角 175 度 , Aspect = 沖 (180) , 則 誤差 5 度
      */
-    fun getAspectError(positionMap: Map<Point, IPos> , p1:Point , p2:Point , aspect: Aspect) : Double? {
+    fun getAspectError(positionMap: Map<Point, IPos>, p1: Point, p2: Point, aspect: Aspect): Double? {
       return positionMap[p1]?.let { p1Pos ->
         positionMap[p2]?.let { p2Pos ->
           val angle = p1Pos.lngDeg.getAngle(p2Pos.lngDeg)
@@ -261,10 +267,11 @@ data class HoroscopeModel(
   override val positionMap: Map<Point, IPosWithAzimuth>,
 
   /** 地盤 12宮 (1~12) , 每宮宮首在黃道幾度*/
-  override val cuspDegreeMap: Map<Int, ZodiacDegree> ,
+  override val cuspDegreeMap: Map<Int, ZodiacDegree>,
 
   /** 行星空亡表 */
-  override val vocMap: Map<Planet, Misc.VoidCourse>) : IHoroscopeModel, Serializable {
+  override val vocMap: Map<Planet, Misc.VoidCourse>
+) : IHoroscopeModel, Serializable {
 
   override val time: ChronoLocalDateTime<*>
     get() = TimeTools.getLmtFromGmt(gmtJulDay, location, JulDayResolver1582CutoverImpl())
@@ -303,4 +310,5 @@ interface IPersonHoroscopeModel : IHoroscopeModel {
 data class PersonHoroscopeModel(
   private val horoscopeModel: IHoroscopeModel,
   override val gender: Gender,
-  override val name: String?) : IPersonHoroscopeModel, IHoroscopeModel by horoscopeModel
+  override val name: String?
+) : IPersonHoroscopeModel, IHoroscopeModel by horoscopeModel
