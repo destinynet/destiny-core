@@ -217,7 +217,8 @@ interface IHoroscopeModel : ITimeLoc {
   fun getHouse(index: Int): House {
     return House(index, getCuspDegree(index), positionMap.filter { (p, _) ->
       getHouse(p) == index
-    })
+    }.toList().sortedBy { (_, v) -> v.lng }
+    )
   }
 
   companion object {
