@@ -26,6 +26,7 @@ sealed class LunarStation(
   val animal: Animal,
   val planet: Planet
 ) : Star(nameKey, LunarStation::class.java.name), ILoop<LunarStation>, Comparable<LunarStation> {
+
   object 角 : LunarStation(EAST, "角", Animal.蛟, JUPITER)
   object 亢 : LunarStation(EAST, "亢", Animal.龍, VENUS)
   object 氐 : LunarStation(EAST, "氐", Animal.貉, SATURN)

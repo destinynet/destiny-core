@@ -10,6 +10,12 @@ import kotlin.test.assertEquals
 class ChineseStringToolsTest {
 
   @Test
+  fun tesTtoBiggerDigits() {
+    assertEquals("０", ChineseStringTools.toBiggerDigits(0))
+    assertEquals("１", ChineseStringTools.toBiggerDigits(1))
+  }
+
+  @Test
   fun testReplaceToBiggerDigits() {
     assertEquals("哈囉１２３" , ChineseStringTools.replaceToBiggerDigits("哈囉123"))
     assertEquals("１哈２囉３" , ChineseStringTools.replaceToBiggerDigits("1哈2囉3"))

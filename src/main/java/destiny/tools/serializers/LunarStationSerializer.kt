@@ -12,7 +12,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 
-class LunarStationSerializer : KSerializer<LunarStation> {
+object LunarStationSerializer : KSerializer<LunarStation> {
 
   override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("LunarStation" , PrimitiveKind.STRING)
 

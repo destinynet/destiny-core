@@ -51,6 +51,9 @@ interface IPersonContextModel : IEightWordsContextModel , IBirthDataNamePlace  {
     }.toMap()
   }
 
+  /**
+   * 此時刻 [gmtJulDay] 處於的大運中 , 所包含流年歲數的起訖時刻
+   */
   fun getAgeMapOfFortuneLarge(gmtJulDay: GmtJulDay) : Map<Int, Pair<GmtJulDay, GmtJulDay>>? {
     return if (gmtJulDay < fortuneDataLarges[0].startFortuneGmtJulDay) {
       ageMap.filter { (_ , pair) ->

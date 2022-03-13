@@ -20,15 +20,4 @@ class IntAgeNoteWestYearImpl(val julDayResolver: JulDayResolver) : IIntAgeNote, 
   override fun getAgeNote(startAndEnd: Pair<GmtJulDay, GmtJulDay>): String {
     return getAgeNote(startAndEnd.first)
   }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is IntAgeNoteWestYearImpl) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
 }
