@@ -113,7 +113,7 @@ class EightWordsColorCanvas(
       placeCanvas.setText("地點：", 1, 1)
       placeCanvas.setText(config.place?:"", 1, 7, null, null, url, config.place, false, null)
 
-      val minuteOffset = location.minuteOffset ?: (TimeTools.getOffset(lmt, location).inWholeSeconds.toInt())
+      val minuteOffset = location.minuteOffset ?: (TimeTools.getOffset(lmt, location).inWholeMinutes.toInt())
 
       minuteOffset.also {
         val absValue = abs(it)
