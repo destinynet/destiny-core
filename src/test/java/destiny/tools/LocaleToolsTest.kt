@@ -26,6 +26,8 @@ class LocaleToolsTest {
 
     assertEquals(Locale("zh" , "TW" , "TAIPEI"), LocaleTools.getLocale("zh_TW_TAIPEI"))
     assertEquals(Locale("zh" , "TW" , "TAIPEI"), LocaleTools.getLocale("zh_TW_TAIPEI#ABC"))
+
+    assertEquals(Locale("zh" , "HK"), LocaleTools.getLocale("zh_HK_#Hant"))
   }
 
   @Test
