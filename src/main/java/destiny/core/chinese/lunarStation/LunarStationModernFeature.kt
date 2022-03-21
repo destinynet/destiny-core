@@ -17,8 +17,6 @@ import destiny.tools.random.RandomService
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.chrono.ChronoLocalDate
-import java.time.chrono.ChronoLocalDateTime
 import javax.cache.Cache
 import javax.inject.Named
 
@@ -69,18 +67,18 @@ class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFe
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: LunarStationModernConfig): IModernContextModel {
     val created = LocalDateTime.now()
 
-    val specifiedTime = config.specifiedGmtJulDay?.let {
-      TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-    }
+    val time = when(config.method) {
+      IModernContextModel.Method.NOW -> created
 
-    val time: ChronoLocalDateTime<out ChronoLocalDate> = specifiedTime ?: when(config.method) {
-      IModernContextModel.Method.NOW         -> created
       IModernContextModel.Method.RANDOM_HOUR -> hourBranchFeature.getDailyBranchMiddleMap(
         created.toLocalDate(),
         loc,
         config.lunarStationConfig.ewConfig.dayHourConfig.hourBranchConfig
       )[randomService.randomEnum(Branch::class.java)]!!
-      IModernContextModel.Method.SPECIFIED   -> throw IllegalArgumentException("specifiedTime is null ")
+      IModernContextModel.Method.SPECIFIED   -> {
+        config.specifiedGmtJulDay?.let { TimeTools.getLmtFromGmt(it, loc, julDayResolver) }
+          ?: throw IllegalArgumentException("specifiedTime is null")
+      }
       IModernContextModel.Method.RANDOM_TIME -> randomService.getRandomTime(
         LocalDate.now()
           .minusYears(60), LocalDate.now()
