@@ -81,7 +81,7 @@ interface IPersonFortuneLarge {
    * @param targetGmt 目標時刻為此時， 計算此時刻是屬於哪條月大運當中
    * 實際會與 [IPersonContextModel.getStemBranchOfFortuneMonth] 結果相同
    * */
-  fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, config: FortuneLargeConfig): IStemBranch
+  fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, config: FortuneLargeConfig): IStemBranch?
 }
 
 
@@ -117,7 +117,7 @@ interface IPersonPresentModel : IPersonContextModel {
   val viewChineseDate: ChineseDate
 
   /** 目前所處於的大運 */
-  val selectedFortuneLarge: IStemBranch
+  val selectedFortuneLarge: IStemBranch?
 
   /** 承上 , 十年流年 */
   val selectedFortuneLargeYears: List<StemBranch>
@@ -131,7 +131,7 @@ data class PersonPresentModel(
   private val personContextModel: IPersonContextModel,
   override val viewGmt: ChronoLocalDateTime<*>,
   override val viewChineseDate: ChineseDate,
-  override val selectedFortuneLarge: IStemBranch,
+  override val selectedFortuneLarge: IStemBranch?,
   override val selectedFortuneLargeYears: List<StemBranch>,
   override val presentYear: StemBranch) :
   IPersonPresentModel, IPersonContextModel by personContextModel, Serializable

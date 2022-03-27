@@ -67,9 +67,9 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
    * @param fromGmtJulDay 計算此時刻是屬於哪條月大運當中
    * 實際會與 [IPersonContextModel.getStemBranchOfFortuneMonth] 結果相同
    * */
-  fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch
+  fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch?
 
-  fun getStemBranch(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch {
+  fun getStemBranch(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch? {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getStemBranch(gmtJulDay, loc, gender, fromGmtJulDay, config)
   }
@@ -92,7 +92,7 @@ class FortuneLargeFeature(private val implMap : Map<FortuneLargeImpl, IPersonFor
     return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count, config)
   }
 
-  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch {
+  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch? {
 
     return implMap[config.impl]!!.getStemBranch(gmtJulDay, loc, gender, julDayResolver.getLocalDateTime(maxOf(gmtJulDay , fromGmtJulDay)), config)
   }

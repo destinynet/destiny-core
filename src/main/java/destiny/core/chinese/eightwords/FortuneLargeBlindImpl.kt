@@ -37,7 +37,7 @@ class FortuneLargeBlindImpl : IPersonFortuneLarge, Serializable {
     TODO("Not yet implemented")
   }
 
-  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, config: FortuneLargeConfig): IStemBranch {
+  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, config: FortuneLargeConfig): IStemBranch? {
     TODO("Not yet implemented")
   }
 

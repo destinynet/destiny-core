@@ -35,10 +35,10 @@ class PersonContextSimpleEventCanvas(model: IPersonPresentModel, direction: Dire
     val fortuneDataList: List<FortuneData> = model.fortuneDataLarges
 
     // 選定的大運
-    val selectedFortuneLarge: IStemBranch = model.selectedFortuneLarge
+    val selectedFortuneLarge: IStemBranch? = model.selectedFortuneLarge
 
     // 九條大運 canvas , 寬度 4x9=36
-    val fortuneDataCanvases = fortuneDataList.map { getFortuneDataPillar(it, selectedFortuneLarge) }.let {
+    val fortuneDataCanvases: List<ColorCanvas> = fortuneDataList.map { getFortuneDataPillar(it, selectedFortuneLarge) }.let {
       if (direction === Direction.R2L)
         it.reversed()
       else
@@ -81,7 +81,7 @@ class PersonContextSimpleEventCanvas(model: IPersonPresentModel, direction: Dire
 
   }
 
-  private fun getFortuneDataPillar(fortuneData: FortuneData, selected: IStemBranch): ColorCanvas {
+  private fun getFortuneDataPillar(fortuneData: FortuneData, selected: IStemBranch?): ColorCanvas {
     return ColorCanvas(3, 4).apply {
       val foreColor = if (fortuneData.stemBranch != selected) null else "white"
       val bgColor = if (fortuneData.stemBranch != selected) null else "BLUE"

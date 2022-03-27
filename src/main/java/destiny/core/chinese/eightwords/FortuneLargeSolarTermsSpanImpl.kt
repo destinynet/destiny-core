@@ -213,13 +213,15 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFe
   /**
    * 逆推大運 , 求，未來某時刻，的大運干支為何
    */
-  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, config: FortuneLargeConfig): IStemBranch {
+  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, config: FortuneLargeConfig): IStemBranch? {
     val targetGmtJulDay = TimeTools.getGmtJulDay(targetGmt)
-    require(targetGmtJulDay > gmtJulDay) { "targetGmt $targetGmt must be after birth's time : $gmtJulDay" }
-
-    val eightWords: IEightWords = eightWordsFeature.getModel(gmtJulDay, loc, config.eightWordsConfig)
-
-    return getStemBranch(gmtJulDay, loc, eightWords, gender, targetGmtJulDay, config.span)
+    return if (targetGmtJulDay < gmtJulDay) {
+      logger.warn { "targetGmt $targetGmtJulDay must be after birth's time : $gmtJulDay" }
+      null
+    } else {
+      val eightWords: IEightWords = eightWordsFeature.getModel(gmtJulDay, loc, config.eightWordsConfig)
+      getStemBranch(gmtJulDay, loc, eightWords, gender, targetGmtJulDay, config.span)
+    }
   }
 
   private fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, eightWords: IEightWords, gender: Gender, targetGmtJulDay: GmtJulDay, fortuneMonthSpan: Double): IStemBranch {
