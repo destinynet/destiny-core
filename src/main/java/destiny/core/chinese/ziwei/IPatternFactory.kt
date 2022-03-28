@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Descriptive
 import destiny.core.IPattern
+import destiny.core.Paragraph
 import destiny.core.chinese.Branch
 import java.io.Serializable
 import java.util.*
@@ -20,12 +21,6 @@ interface IPatternContext {
   }
 
   val target: Target
-}
-
-
-sealed class Paragraph(open val content: String) : Serializable {
-  data class Normal(override val content: String) : Paragraph(content)
-  data class Scripture(override val content: String) : Paragraph(content)
 }
 
 
