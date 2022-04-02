@@ -11,6 +11,7 @@ interface TimeZoneService {
 
 
   /** 嘗試從經緯度，尋找 TimeZone  */
+  @Throws(Exception::class)
   fun getTimeZoneId(lat: Double, lng: Double): String?
 
   fun getTimeZoneId(latLng : ILatLng) : String ? {

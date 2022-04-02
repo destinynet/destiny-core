@@ -9,6 +9,7 @@ import java.util.*
 interface ITimeZone {
 
   /** 從經緯度查詢 timezone  */
+  @Throws(Exception::class)
   suspend fun getTimeZoneId(lat: Double, lng: Double): String?
 
   suspend fun getTimeZone(lat: Double, lng: Double): TimeZone? {
