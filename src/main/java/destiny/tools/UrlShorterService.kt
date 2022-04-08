@@ -7,6 +7,7 @@ package destiny.tools
 interface UrlShorterService {
 
   /** 提供 UrlShorter 的單一進入點，處理 Exceptions  */
+  @Throws(Exception::class)
   fun getShortUrl(longUrl: String): String
 
   fun resetUrlShorters()
