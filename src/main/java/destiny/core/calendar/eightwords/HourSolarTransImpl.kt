@@ -5,7 +5,10 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.astrology.*
+import destiny.core.astrology.IRiseTrans
+import destiny.core.astrology.Planet
+import destiny.core.astrology.TransConfig
+import destiny.core.astrology.TransPoint
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -23,8 +26,7 @@ import java.time.temporal.ChronoUnit
  * 再從太陽過天頂到天底，平均劃分十二等份
  * 依此來切割 12 時辰
  */
-class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
-                         private val star: Star = Planet.SUN) : IHour, Serializable {
+class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Serializable {
 
   private var transConfig = TransConfig(discCenter = true, refraction = true, temperature = 0.0, pressure = 1013.25)
 
