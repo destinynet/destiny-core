@@ -376,30 +376,32 @@ class Builder(
         .toMap()
 
       val locale = Locale.TAIWAN
-      val line1 = StringBuilder().apply {
+
+      val line1 = buildString {
         append("命宮在")
         append(mainHouse.branch).append(",")
 
         append(StarMain.紫微.toString(Locale.getDefault())).append("在")
-        starMap[StarMain.紫微]?.also { 紫微house: HouseData ->
-          append(紫微house.stemBranch.branch)
-          append("(").append(紫微house.house).append("宮)")
+        starMap[StarMain.紫微]?.also { ziweiHouse: HouseData ->
+          append(ziweiHouse.stemBranch.branch)
+          append("(").append(ziweiHouse.house).append("宮)")
         }
-      }.toString()
+      }
 
-      val line2 = StringBuilder().apply {
-        val 納音 = NaYin.getDesc(mainHouse, locale)
-        append(納音 + " " + fiveElement.toString() + state + "局")
-      }.toString()
+      val line2 = buildString {
+        val naYin = NaYin.getDesc(mainHouse, locale)
+        append(naYin + " " + fiveElement.toString() + state + "局")
+      }
 
-
-      val line3 = StringBuilder().apply {
+      val line3 = buildString {
         append("命主：")
         append(mainStar.toString(locale))
         append("，")
         append("身主：")
         append(bodyStar.toString(locale))
-      }.toString()
+      }
+
+
       listOf(line1, line2, line3)
     }
 
