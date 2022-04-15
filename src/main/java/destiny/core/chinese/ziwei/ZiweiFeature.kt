@@ -405,7 +405,7 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
   fun getDaysOfMonth(cycle: Int, flowYear: StemBranch, flowMonth: Int, leap: Boolean): List<Triple<ChineseDate, ChronoLocalDate, StemBranch>>
 
   /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「虛歲」各別是幾歲 ,   */
-  fun getYearsOfFlowBig(builder: Builder, flowBig: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>>
+  fun getYearsOfFlowBig(plate: IPlate, flowBig: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>>
 }
 
 @Named
@@ -437,7 +437,7 @@ class ZiweiFeature(
 
   @Inject
   @Transient
-  private lateinit var ziweiCache: Cache<LmtCacheKey<*>, Builder>
+  private lateinit var ziweiCache: Cache<LmtCacheKey<*>, IPlate>
 
   override val lmtPersonCache: Cache<LmtCacheKey<ZiweiConfig>, IPlate>
     get() = ziweiCache as Cache<LmtCacheKey<ZiweiConfig>, IPlate>
@@ -1068,13 +1068,15 @@ class ZiweiFeature(
   }
 
   /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「虛歲」各別是幾歲 ,   */
-  override fun getYearsOfFlowBig(builder: Builder, flowBig: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>> {
-    val birthYear = builder.chineseDate.year
-    val birthCycle = builder.chineseDate.cycleOrZero
+  override fun getYearsOfFlowBig(plate: IPlate, flowBig: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>> {
+
+    val birthYear = plate.chineseDate.year
+    val birthCycle = plate.chineseDate.cycleOrZero
 
     val bigRangeImpl = bigRangeImplMap[config.bigRange]!!
 
-    val (first, second) = bigRangeImpl.getVageRange(builder.branchHouseMap.getValue(flowBig), builder.state, birthYear.stem, builder.gender, houseSeqImplMap[config.houseSeq]!!)
+    val (first, second) = bigRangeImpl.getVageRange(plate.branchHouseMap.getValue(flowBig),
+                                                    plate.state, birthYear.stem, plate.gender, houseSeqImplMap[config.houseSeq]!!)
 
     // 再把虛歲轉換成干支
     return (first .. second).map { vAge ->

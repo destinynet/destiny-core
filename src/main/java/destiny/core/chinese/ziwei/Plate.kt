@@ -115,6 +115,14 @@ interface IPlate : Serializable {
   val branchHouseMap: Map<Branch, House>
 //    get() = branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.本命) }.toMap()
 
+  /** 每個地支宮位，所代表的大限，「虛歲」從何時、到何時  */
+  val flowBigVageMap: Map<StemBranch, Pair<Int, Int>>
+    get() {
+      return houseDataSet.associate { hd ->
+        hd.stemBranch to hd.vageRanges
+      }
+    }
+
 
   // =========== 以上 ↑↑ functions ↑↑ ===========
 
