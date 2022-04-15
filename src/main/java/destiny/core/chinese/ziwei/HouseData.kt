@@ -22,7 +22,7 @@ data class HouseData(
   val stars: MutableSet<ZStar>,
 
   /** 此宮位，在各個流運，叫什麼宮位  */
-  private val flowHouseMap: Map<FlowType, House>,
+  val flowHouseMap: Map<FlowType, House>,
 
   /** 宮干四化，此宮位，因為什麼星，各飛入哪個宮位(地支)  */
   private val transFourFlyMap: Set<Triple<ITransFour.Value, ZStar, Branch>>,

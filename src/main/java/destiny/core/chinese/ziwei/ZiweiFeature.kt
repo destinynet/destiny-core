@@ -19,10 +19,12 @@ import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.values
 import destiny.tools.*
+import destiny.tools.serializers.LocaleSerializer
 import destiny.tools.serializers.ZStarSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
+import java.text.MessageFormat
 import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
@@ -187,7 +189,9 @@ data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::clas
                        /** 晝夜區分 */
                        val dayNightConfig: DayNightConfig = DayNightConfig(),
                        /** 曆法 */
-                       val chineseDateImpl: ChineseDateImpl = ChineseDateImpl.Civil
+                       val chineseDateImpl: ChineseDateImpl = ChineseDateImpl.Civil,
+                       @Serializable(with = LocaleSerializer::class)
+                       val locale: Locale = Locale.TRADITIONAL_CHINESE
 ) : java.io.Serializable
 
 
@@ -272,6 +276,8 @@ class ZiweiConfigBuilder : destiny.tools.Builder<ZiweiConfig> {
 
   var chineseDateImpl: ChineseDateImpl = defaultConfig.chineseDateImpl
 
+  var locale: Locale = Locale.TRADITIONAL_CHINESE
+
   override fun build(): ZiweiConfig {
     return ZiweiConfig(
       stars,
@@ -296,7 +302,8 @@ class ZiweiConfigBuilder : destiny.tools.Builder<ZiweiConfig> {
       ageNotes,
       ewConfig,
       dayNightConfig,
-      chineseDateImpl
+      chineseDateImpl,
+      locale
     )
   }
 
@@ -307,7 +314,7 @@ class ZiweiConfigBuilder : destiny.tools.Builder<ZiweiConfig> {
   }
 }
 
-interface IZiweiFeature : PersonFeature<ZiweiConfig, Builder> {
+interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
 
   /** 取命宮、身宮地支  */
   fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ZiweiConfig): Triple<Branch, Branch, Int?>
@@ -346,23 +353,47 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, Builder> {
     dayNight: DayNight,
     gender: Gender,
     optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = null,
+    appendingNotes: List<String> = emptyList(),
     config: ZiweiConfig
-  ): Builder
+  ): IPlate
+
+  fun getModernBirthPlate(
+    name: String?,
+    lmt: ChronoLocalDateTime<*>?,
+    loc: ILocation,
+    place: String?,
+    mainAndBody: Pair<Branch, Branch>?,
+    preFinalMonthNumForMainStars: Int?,
+    cycle: Int,
+    lunarYear: StemBranch,
+    solarYear: StemBranch,
+    lunarMonth: Int,
+    leapMonth: Boolean,
+    monthBranch: Branch,
+    solarTerms: SolarTerms,
+    lunarDays: Int,
+    hour: Branch,
+    dayNight: DayNight,
+    gender: Gender,
+    optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = null,
+    appendingNotes: List<String> = emptyList(),
+    config: ZiweiConfig
+  ): IPlate
 
   /** 計算 大限盤  */
-  fun getFlowBig(builder: Builder, flowBig: StemBranch, config:ZiweiConfig): Builder
+  fun getFlowBig(plate: IPlate, flowBig: StemBranch, config:ZiweiConfig): IPlate
 
   /** 計算 流年盤 */
-  fun getFlowYear(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, config: ZiweiConfig): Builder
+  fun getFlowYear(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, config: ZiweiConfig): IPlate
 
   /** 計算 流月盤 */
-  fun getFlowMonth(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): Builder
+  fun getFlowMonth(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): IPlate
 
   /** 計算 流日盤 */
-  fun getFlowDay(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): Builder
+  fun getFlowDay(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): IPlate
 
   /** 計算 流時盤 */
-  fun getFlowHour(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): Builder
+  fun getFlowHour(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlate
 
   /**
    * @param cycle     cycle
@@ -402,20 +433,20 @@ class ZiweiFeature(
   private val dayNightFeature: DayNightFeature,
   @Named("intAgeZiweiImpl")
   private val intAgeImpl: IIntAge
-) : AbstractCachedPersonFeature<ZiweiConfig, Builder>(), IZiweiFeature {
+) : AbstractCachedPersonFeature<ZiweiConfig, IPlate>(), IZiweiFeature {
 
   @Inject
   @Transient
   private lateinit var ziweiCache: Cache<LmtCacheKey<*>, Builder>
 
-  override val lmtPersonCache: Cache<LmtCacheKey<ZiweiConfig>, Builder>
-    get() = ziweiCache as Cache<LmtCacheKey<ZiweiConfig>, Builder>
+  override val lmtPersonCache: Cache<LmtCacheKey<ZiweiConfig>, IPlate>
+    get() = ziweiCache as Cache<LmtCacheKey<ZiweiConfig>, IPlate>
 
   override val defaultConfig: ZiweiConfig = ZiweiConfig()
 
   override var lmtCacheGrain: CacheGrain? = CacheGrain.MINUTE
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): Builder {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): IPlate {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getPersonModel(lmt, loc, gender, name, place, config)
   }
@@ -460,6 +491,14 @@ class ZiweiFeature(
     }
   }
 
+  private fun List<Pair<String, Array<Any>>>.build(locale: Locale): List<String> {
+    return this.map { (first: String, second: Array<Any>) ->
+      val pattern = ResourceBundle.getBundle(ZiweiFeature::class.java.name, locale).getString(first)
+      MessageFormat.format(pattern, *second).also {
+        logger.trace("note : {}", it)
+      }
+    }
+  }
 
   /**
    * 本命盤
@@ -488,8 +527,9 @@ class ZiweiFeature(
     dayNight: DayNight,
     gender: Gender,
     optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
+    appendingNotes: List<String>,
     config: ZiweiConfig
-  ): Builder {
+  ): IPlate {
 
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
@@ -616,7 +656,7 @@ class ZiweiFeature(
     val (五行, 五行局) = Ziwei.getMainDesc(mainHouse)
 
     // 干支 -> 宮位 的 mapping
-    val branchHouseMap: Map<StemBranch, House> = // 要計算的宮位，比命宮，超前幾步
+    val stemBranchHouseMap: Map<StemBranch, House> = // 要計算的宮位，比命宮，超前幾步
       houseSeqImpl.houses.associateBy { house ->
         // 要計算的宮位，比命宮，超前幾步
         val steps = houseSeqImpl.getAheadOf(house, House.命宮)
@@ -626,7 +666,7 @@ class ZiweiFeature(
 
     // 地支 <-> 宮位 的 雙向 mapping
     val branchHouseBiMap: BiMap<Branch, House> = HashBiMap.create()
-    branchHouseMap.forEach { (sb, house) -> branchHouseBiMap[sb.branch] = house }
+    stemBranchHouseMap.forEach { (sb, house) -> branchHouseBiMap[sb.branch] = house }
 
     // 為了某些流派閏月的考量 , 須在此求出「上個月」有幾天 , 才能求出紫微星
     val prevMonthDays = if (leapMonth) prevMonthDaysImpl.getPrevMonthDays(cycle, lunarYear, lunarMonth, true) else 0
@@ -678,10 +718,30 @@ class ZiweiFeature(
     logger.debug("transFour = {} , title = {}", config.transFour, config.transFour.getTitle(Locale.TAIWAN))
     logger.debug("trans4Map = {}", trans4Map)
 
+    val transFourMap: Map<ZStar, SortedMap<FlowType, ITransFour.Value>> = trans4Map.map { (k: Pair<ZStar, FlowType>,v: ITransFour.Value) ->
+      k.first to sortedMapOf(k.second to v)
+    }.toMap()
+
+    //val transFourMap = mutableMapOf<ZStar, MutableMap<FlowType, ITransFour.Value>>()
+//    trans4Map.forEach { (starFlowType: Pair<ZStar, FlowType>, value: ITransFour.Value) ->
+//
+//      val (star, flowType) = starFlowType
+//
+//      transFourMap.computeIfPresent(star) { _, flowTypeValueMap ->
+//        flowTypeValueMap.putIfAbsent(flowType, value)
+//        flowTypeValueMap
+//      }
+//      transFourMap.putIfAbsent(star, object : TreeMap<FlowType, ITransFour.Value>() {
+//        init {
+//          put(flowType, value)
+//        }
+//      })
+//    }
+
     // 宮干四化 : 此宮位，因為什麼星，各飛入哪個宮位(地支)
     // 參考 : http://www.fate123.com.tw/fate-teaching/fate-lesson-5.2.asp
     val transFourImpl = transFourImplMap[config.transFour]!!
-    val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>> = branchHouseMap.keys.associateWith { sb: StemBranch ->
+    val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>> = stemBranchHouseMap.keys.associateWith { sb: StemBranch ->
 
       ITransFour.Value.values()
         .map { value ->
@@ -724,15 +784,151 @@ class ZiweiFeature(
      */
     val vageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = optionalVageMap
 
+    // 中介 map , 記錄 '[辰] : 天相,紫微' 這樣的 mapping , 此 map 的 key 不一定包含全部地支，因為可能有空宮
+    val branchStarsMap: Map<Branch, List<ZStar>> =
+      starBranchMap.entries.groupBy { it.value }.mapValues { it.value.map { entry -> entry.key } }
 
-    return Builder(
-      config, chineseDate, gender, year, finalMonthNumForMonthStars, hour, dayNight, mainHouse, bodyHouse, mainStar,
-      bodyStar, 五行, 五行局, branchHouseMap, starBranchMap, starStrengthMap, flowBigVageMap,
-      branchSmallRangesMap, flyMap, vageMap
+    // 哪個地支 裡面 有哪些星體 (可能會有空宮 , 若星體很少的話)
+    val branchStarMap: Map<Branch, List<ZStar>?> =
+      Branch.values().associateWith {
+        // 可能為 null (空宮)
+          branch ->
+        branchStarsMap[branch]
+      }.toSortedMap()
+
+    /**
+     * 每個地支，在每種流運，稱為什麼宮位
+     */
+    val branchFlowHouseMap = mutableMapOf<Branch, MutableMap<FlowType, House>>()
+
+    /**
+     * (branchFlowHouseMap) 儲存類似這樣資料結構 , 12組
+     * (子) :
+     *  本命 -> 疾厄
+     *  大運 -> XX宮
+     * (丑) :
+     *  本命 -> 財帛
+     */
+    stemBranchHouseMap.entries.associate { e ->
+      val m = mutableMapOf(FlowType.MAIN to stemBranchHouseMap.getValue(e.key))
+      e.key.branch to m
+    }.toSortedMap().toMap(branchFlowHouseMap)
+
+    val houseDataSet = stemBranchHouseMap.entries.map { e ->
+      val sb = e.key
+      val house = e.value
+      val stars = branchStarMap[sb.branch]?.toSet() ?: emptySet()
+
+      val fromTo = flowBigVageMap.getValue(sb) // 必定不為空
+      val smallRanges = branchSmallRangesMap.getValue(sb.branch)
+      HouseData(
+        house, sb, stars.toMutableSet(), branchFlowHouseMap.getValue(sb.branch), flyMap.getValue(sb), fromTo.first,
+        fromTo.second, smallRanges
+      )
+    }.toSet()
+
+    // 本命盤，不具備流運等資料
+    val flowBranchMap = emptyMap<FlowType, StemBranch>()
+
+    val summaries: List<String> = run {
+
+      val starMap = houseDataSet
+        .flatMap { hd -> hd.stars.map { star -> star to hd } }
+        .toMap()
+
+      val locale = Locale.TAIWAN
+
+      val line1 = buildString {
+        append("命宮在")
+        append(mainHouse.branch).append(",")
+
+        append(StarMain.紫微.toString(Locale.getDefault())).append("在")
+        starMap[StarMain.紫微]?.also { ziweiHouse: HouseData ->
+          append(ziweiHouse.stemBranch.branch)
+          append("(").append(ziweiHouse.house).append("宮)")
+        }
+      }
+
+      val line2 = buildString {
+        val naYin = NaYin.getDesc(mainHouse, locale)
+        append(naYin + " " + 五行.toString() + 五行局 + "局")
+      }
+
+      val line3 = buildString {
+        append("命主：")
+        append(mainStar.toString(locale))
+        append("，")
+        append("身主：")
+        append(bodyStar.toString(locale))
+      }
+
+
+      listOf(line1, line2, line3)
+    }
+
+
+    val notes: List<String> = notesBuilders.build(config.locale).let {
+      if (appendingNotes.isEmpty()) {
+        it
+      } else {
+        it.toMutableList().apply {
+          addAll(appendingNotes)
+        }
+      }
+    }
+
+
+    return Plate(
+      null, chineseDate, null, year, finalMonthNumForMonthStars, hour, null, null, dayNight, gender, mainHouse, bodyHouse, mainStar,
+      bodyStar, 五行, 五行局, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
+      vageMap, summaries
     )
-      .appendNotesBuilders(notesBuilders)
-      .appendTrans4Map(trans4Map)
 
+  }
+
+  override fun getModernBirthPlate(
+    name: String?,
+    lmt: ChronoLocalDateTime<*>?,
+    loc: ILocation,
+    place: String?,
+    mainAndBody: Pair<Branch, Branch>?,
+    preFinalMonthNumForMainStars: Int?,
+    cycle: Int,
+    lunarYear: StemBranch,
+    solarYear: StemBranch,
+    lunarMonth: Int,
+    leapMonth: Boolean,
+    monthBranch: Branch,
+    solarTerms: SolarTerms,
+    lunarDays: Int,
+    hour: Branch,
+    dayNight: DayNight,
+    gender: Gender,
+    optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
+    appendingNotes: List<String>,
+    config: ZiweiConfig
+  ): IPlate {
+
+    val plate = getBirthPlate(
+      mainAndBody,
+      preFinalMonthNumForMainStars,
+      cycle,
+      lunarYear,
+      solarYear,
+      lunarMonth,
+      leapMonth,
+      monthBranch,
+      solarTerms,
+      lunarDays,
+      hour,
+      dayNight,
+      gender,
+      optionalVageMap,
+      appendingNotes,
+      config
+    )
+
+    return (plate as Plate).copy(name = name , localDateTime = lmt, location = loc, place = place)
   }
 
   /**
@@ -751,7 +947,7 @@ class ZiweiFeature(
   }
 
   /** 計算 大限盤  */
-  override fun getFlowBig(builder: Builder, flowBig: StemBranch, config: ZiweiConfig): Builder {
+  override fun getFlowBig(plate: IPlate, flowBig: StemBranch, config: ZiweiConfig): IPlate {
     // 在此大限中，每個地支，對應到哪個宮位
 
     val branchHouseMap = values().associateWith { branch ->
@@ -761,17 +957,17 @@ class ZiweiFeature(
     }
 
     // 大限四化
-    val trans4Map = getTrans4Map(FlowType.SECTION, flowBig.stem, config)
-    return builder
+    val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> = getTrans4Map(FlowType.SECTION, flowBig.stem, config)
+
+    return plate
       .withFlowBig(flowBig, branchHouseMap)
       .appendTrans4Map(trans4Map)
   }
 
   /** 計算 流年盤  */
-  override fun getFlowYear(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, config: ZiweiConfig): Builder {
+  override fun getFlowYear(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, config: ZiweiConfig): IPlate {
     // 流年命宮
-
-    val yearlyMain = flowYearImplMap[config.flowYear]!!.getFlowYear(flowYear.branch, builder.birthMonthNum, builder.birthHour)
+    val yearlyMain = flowYearImplMap[config.flowYear]!!.getFlowYear(flowYear.branch, plate.finalMonthNumForMonthStars, plate.hour)
 
     val branchHouseMap = values().associateWith { branch ->
       val steps = branch.getAheadOf(yearlyMain)
@@ -781,16 +977,16 @@ class ZiweiFeature(
     // 流年四化
     val trans4Map = getTrans4Map(FlowType.YEAR, flowYear.stem, config)
 
-    return getFlowBig(builder, flowBig, config)
+    return getFlowBig(plate, flowBig, config)
       .withFlowYear(flowYear, branchHouseMap)
       .appendTrans4Map(trans4Map)
   }
 
   /** 計算 流月盤  */
-  override fun getFlowMonth(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): Builder {
+  override fun getFlowMonth(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): IPlate {
 
     // 流月命宮
-    val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
+    val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, plate.finalMonthNumForMonthStars, plate.hour)
 
     val branchHouseMap = values().associateWith { branch ->
       val steps = branch.getAheadOf(monthlyMain)
@@ -800,15 +996,15 @@ class ZiweiFeature(
     // 流月四化
     val trans4Map = getTrans4Map(FlowType.MONTH, flowMonth.stem, config)
 
-    return getFlowYear(builder, flowBig, flowYear, config)
+    return getFlowYear(plate, flowBig, flowYear, config)
       .withFlowMonth(flowMonth, branchHouseMap)
       .appendTrans4Map(trans4Map)
   }
 
   /** 計算 流日盤  */
-  override fun getFlowDay(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): Builder {
+  override fun getFlowDay(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): IPlate {
     // 流月命宮
-    val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
+    val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, plate.finalMonthNumForMonthStars, plate.hour)
 
     // 流日命宮
     val dailyMain = flowDayImplMap[config.flowDay]!!.getFlowDay(flowDay.branch, flowDayNum, monthlyMain)
@@ -819,15 +1015,15 @@ class ZiweiFeature(
 
     // 流日四化
     val trans4Map = getTrans4Map(FlowType.DAY, flowDay.stem, config)
-    return getFlowMonth(builder, flowBig, flowYear, flowMonth, config)
+    return getFlowMonth(plate, flowBig, flowYear, flowMonth, config)
       .withFlowDay(flowDay, branchHouseMap)
       .appendTrans4Map(trans4Map)
   }
 
   /** 計算 流時盤 */
-  override fun getFlowHour(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): Builder {
+  override fun getFlowHour(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlate {
     // 流月命宮
-    val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
+    val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, plate.finalMonthNumForMonthStars, plate.hour)
     // 流日命宮
     val dailyMain = flowDayImplMap[config.flowDay]!!.getFlowDay(flowDay.branch, flowDayNum, monthlyMain)
     // 流時命宮
@@ -841,7 +1037,7 @@ class ZiweiFeature(
     // 流時四化
     val trans4Map = getTrans4Map(FlowType.HOUR, flowHour.stem, config)
 
-    return getFlowDay(builder, flowBig, flowYear, flowMonth, flowDay, flowDayNum, config)
+    return getFlowDay(plate, flowBig, flowYear, flowMonth, flowDay, flowDayNum, config)
       .withFlowHour(flowHour, branchHouseMap)
       .appendTrans4Map(trans4Map)
   }
@@ -892,7 +1088,7 @@ class ZiweiFeature(
     }.toList()
   }
 
-  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): Builder {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): IPlate {
 
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
@@ -954,18 +1150,40 @@ class ZiweiFeature(
     // 虛歲時刻 , gmt Julian Day
     val vageMap = intAgeImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, loc), loc, 1, 130)
 
-    return getBirthPlate(Pair(mainBranch, bodyBranch), finalMonthNumForMainStars, cycle, yinYear, solarYear, lunarMonth
-                         , cDate.leapMonth, monthBranch, solarTerms, lunarDays, hour, dayNight, gender, vageMap , config)
-      .withLocalDateTime(lmt)
-      .withLocation(loc)
-      .apply {
-        name?.also {
-          withName(it)
-        }
-      }
-      .appendNotesBuilders(notesBuilders).apply {
-        place?.also { withPlace(it) }
-      }//.build()
+    val appendingNotes = notesBuilders.build(config.locale)
+
+    return getModernBirthPlate(
+      name, lmt, loc, place,
+      Pair(mainBranch, bodyBranch),
+      finalMonthNumForMainStars,
+      cycle,
+      yinYear,
+      solarYear,
+      lunarMonth,
+      cDate.leapMonth,
+      monthBranch,
+      solarTerms,
+      lunarDays,
+      hour,
+      dayNight,
+      gender,
+      vageMap,
+      appendingNotes,
+      config
+    )
+
+//    return getBirthPlate(Pair(mainBranch, bodyBranch), finalMonthNumForMainStars, cycle, yinYear, solarYear, lunarMonth
+//                         , cDate.leapMonth, monthBranch, solarTerms, lunarDays, hour, dayNight, gender, vageMap , config)
+//      .withLocalDateTime(lmt)
+//      .withLocation(loc)
+//      .apply {
+//        name?.also {
+//          withName(it)
+//        }
+//      }
+//      .appendNotesBuilders(notesBuilders).apply {
+//        place?.also { withPlace(it) }
+//      }
 
   }
 

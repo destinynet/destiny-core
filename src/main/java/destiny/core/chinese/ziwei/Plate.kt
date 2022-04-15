@@ -28,6 +28,12 @@ interface IPlate : Serializable {
   /** 出生年的干支 (可能是節氣、也可能是陰曆) */
   val year: StemBranch
 
+  /** 出生月份(陰曆 or 節氣) 所轉換的數字  */
+  val finalMonthNumForMonthStars: Int
+
+  /** 時辰 */
+  val hour: Branch
+
   /** 出生地點  */
   val location: ILocation?
 
@@ -65,7 +71,7 @@ interface IPlate : Serializable {
    * 四化星 的列表
    * 存放著「這顆星」在 [本命、大限、流年、...] 的四化 結果為何
    */
-  val tranFours: Map<ZStar, Map<FlowType, ITransFour.Value>>
+  val transFours: Map<ZStar, Map<FlowType, ITransFour.Value>>
 
   /** 取得此地支，在各個流運類型， 宮位名稱 是什麼  */
   val branchFlowHouseMap: Map<Branch, Map<FlowType, House>>
@@ -138,19 +144,19 @@ interface IPlate : Serializable {
 
   /** 取得此顆星，的四化列表 */
   fun getTransFourOf(star: ZStar): List<Pair<FlowType, ITransFour.Value>> {
-    return tranFours[star]?.map { (key, value) -> key to value }?.toList() ?: emptyList()
+    return transFours[star]?.map { (key, value) -> key to value }?.toList() ?: emptyList()
   }
 
   /** 取得此星，的四化值 (maybe null) */
   fun getTransFourValue(star: ZStar, type: FlowType = FlowType.MAIN): ITransFour.Value? {
-    return tranFours[star]?.let { m -> m[type] }
+    return transFours[star]?.let { m -> m[type] }
   }
 
   /**
    * 取得此四化星，在哪一宮位
    * */
   fun getTransFourHouseOf(value: ITransFour.Value, type: FlowType = FlowType.MAIN): HouseData {
-    val star = tranFours.entries.first { (_, map) ->
+    val star = transFours.entries.first { (_, map) ->
       map.any { (t, v) -> t == type && v == value }
     }.key
     return getHouseDataOf(star)!!
@@ -212,6 +218,24 @@ interface IPlate : Serializable {
       .flatMap { it.stars }
       .firstOrNull { it is StarYearFront }
   }
+
+  /** 大運 */
+  fun withFlowBig(flowBig: StemBranch, branchHouseMap: Map<Branch, House>): IPlate
+
+  /** 流年 */
+  fun withFlowYear(flowYear: StemBranch, branchHouseMap: Map<Branch, House>): IPlate
+
+  /** 流月 */
+  fun withFlowMonth(flowMonth: StemBranch, branchHouseMap: Map<Branch, House>): IPlate
+
+  /** 流日 */
+  fun withFlowDay(flowDay: StemBranch, branchHouseMap: Map<Branch, House>): IPlate
+
+  /** 流時 */
+  fun withFlowHour(flowHour: StemBranch, branchHouseMap: Map<Branch, House>): IPlate
+
+  /** 流運四化 */
+  fun appendTrans4Map(trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value>): IPlate
 }
 
 /** 排盤結果 , 作為 DTO  */
@@ -227,6 +251,12 @@ data class Plate(
 
   /** 出生年的干支 (可能是節氣、也可能是陰曆) */
   override val year: StemBranch,
+
+  /** 出生月份(陰曆 or 節氣) 所轉換的數字  */
+  override val finalMonthNumForMonthStars: Int,
+
+  /** 時辰 */
+  override val hour: Branch,
 
   /** 出生地點  */
   override val location: ILocation?,
@@ -265,7 +295,7 @@ data class Plate(
    * 四化星 的列表
    * 存放著「這顆星」在 [本命、大限、流年、...] 的四化 結果為何
    */
-  override val tranFours: Map<ZStar, Map<FlowType, ITransFour.Value>>,
+  override val transFours: Map<ZStar, Map<FlowType, ITransFour.Value>>,
 
   /** 取得此地支，在各個流運類型， 宮位名稱 是什麼  */
   override val branchFlowHouseMap: Map<Branch, Map<FlowType, House>>,
@@ -310,5 +340,174 @@ data class Plate(
   /** 本命盤中，此地支的宮位名稱是什麼  */
   override val branchHouseMap: Map<Branch, House> by lazy {
     branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.MAIN) }.toMap()
+  }
+
+  /** 大運 */
+  override fun withFlowBig(flowBig: StemBranch, branchHouseMap: Map<Branch, House>): IPlate {
+    val newFlowBranchMap: Map<FlowType, StemBranch> = flowBranchMap.toMutableMap().apply {
+      put(FlowType.SECTION, flowBig)
+    }.toMap()
+
+    val newBranchFlowHouseMap = branchFlowHouseMap.map { (branch: Branch, m: Map<FlowType, House>) ->
+      val newHouse: House = branchHouseMap[branch]!!
+      val newMap = m.toMutableMap().apply {
+        put(FlowType.SECTION , newHouse)
+      }.toMap()
+      branch to newMap
+    }.toMap()
+
+
+    val newHouseDataSet = houseDataSet.map { hd: HouseData ->
+      hd.copy(flowHouseMap = newBranchFlowHouseMap.getValue(hd.stemBranch.branch))
+    }.toSet()
+
+    return copy(flowBranchMap = newFlowBranchMap , branchFlowHouseMap = newBranchFlowHouseMap, houseDataSet = newHouseDataSet)
+  }
+
+  /** 流年 */
+  override fun withFlowYear(flowYear: StemBranch, branchHouseMap: Map<Branch, House>): IPlate {
+    val newFlowBranchMap: Map<FlowType, StemBranch> = flowBranchMap.toMutableMap().apply {
+      put(FlowType.YEAR, flowYear)
+    }.toMap()
+
+    val newBranchFlowHouseMap = branchFlowHouseMap.map { (branch: Branch, m: Map<FlowType, House>) ->
+      val newHouse: House = branchHouseMap[branch]!!
+      val newMap = m.toMutableMap().apply {
+        put(FlowType.YEAR, newHouse)
+      }.toMap()
+      branch to newMap
+    }.toMap()
+
+    // 以流年的 將前12星 取代本命盤中的位置
+    // 先檢查，本命盤中，是否已經存在任何 將前12星 , 若有，代表設定要計算
+    val showGeneralFront: Boolean = houseDataSet
+      .flatMap { houseData -> houseData.stars }
+      .any { it is StarGeneralFront }
+
+    if (showGeneralFront) {
+      // 若有的話，就清除掉現有紀錄
+      houseDataSet.forEach { houseData -> houseData.stars.removeIf { it is StarGeneralFront } }
+
+      // 接著，以「流年」的將前12星，塞入
+      StarGeneralFront.values.map { star ->
+        val b = StarGeneralFront.starFuncMap.getValue(star).invoke(flowYear.branch)
+        Pair(star, b)
+      }.forEach { (star, branch) ->
+        houseDataSet
+          .first { it.stemBranch.branch == branch }
+          .also { houseData -> houseData.stars.add(star) }
+      }
+    }
+
+    // 以流年的 歲前12星 取代本命盤中的位置
+    // 先檢查，本命盤中，是否已經存在任何 歲前12星。 若有，代表設定要計算
+    val showYearFront = houseDataSet
+      .flatMap { houseData -> houseData.stars }
+      .any { it is StarYearFront }
+
+    if (showYearFront) {
+      // 若有的話，就清除掉現有的紀錄
+      houseDataSet.forEach { houseData -> houseData.stars.removeIf { star -> star is StarYearFront } }
+
+      // 接著，以「流年」的 歲前12星，塞入
+      StarYearFront.values.map { star ->
+        val b = StarYearFront.starFuncMap.getValue(star).invoke(flowYear.branch)
+        Pair(star, b)
+      }.forEach { (star, branch) ->
+        houseDataSet
+          .first { it.stemBranch.branch == branch }
+          .also { houseData -> houseData.stars.add(star) }
+      }
+    }
+
+    val newHouseDataSet = houseDataSet.map { hd: HouseData ->
+      hd.copy(flowHouseMap = newBranchFlowHouseMap.getValue(hd.stemBranch.branch))
+    }.toSet()
+
+    return copy(flowBranchMap = newFlowBranchMap, branchFlowHouseMap = newBranchFlowHouseMap, houseDataSet = newHouseDataSet)
+  }
+
+  /** 流月 */
+  override fun withFlowMonth(flowMonth: StemBranch, branchHouseMap: Map<Branch, House>): IPlate {
+    val newFlowBranchMap: Map<FlowType, StemBranch> = flowBranchMap.toMutableMap().apply {
+      put(FlowType.MONTH, flowMonth)
+    }.toMap()
+
+    val newBranchFlowHouseMap = branchFlowHouseMap.map { (branch: Branch, m: Map<FlowType, House>) ->
+      val newHouse: House = branchHouseMap[branch]!!
+      val newMap = m.toMutableMap().apply {
+        put(FlowType.MONTH, newHouse)
+      }.toMap()
+      branch to newMap
+    }.toMap()
+
+    val newHouseDataSet = houseDataSet.map { hd: HouseData ->
+      hd.copy(flowHouseMap = newBranchFlowHouseMap.getValue(hd.stemBranch.branch))
+    }.toSet()
+
+    return copy(flowBranchMap = newFlowBranchMap, branchFlowHouseMap = newBranchFlowHouseMap, houseDataSet = newHouseDataSet)
+  }
+
+  /** 流日 */
+  override fun withFlowDay(flowDay: StemBranch, branchHouseMap: Map<Branch, House>): IPlate {
+    val newFlowBranchMap: Map<FlowType, StemBranch> = flowBranchMap.toMutableMap().apply {
+      put(FlowType.DAY, flowDay)
+    }.toMap()
+
+    val newBranchFlowHouseMap = branchFlowHouseMap.map { (branch: Branch, m: Map<FlowType, House>) ->
+      val newHouse: House = branchHouseMap[branch]!!
+      val newMap = m.toMutableMap().apply {
+        put(FlowType.DAY, newHouse)
+      }.toMap()
+      branch to newMap
+    }.toMap()
+
+    val newHouseDataSet = houseDataSet.map { hd: HouseData ->
+      hd.copy(flowHouseMap = newBranchFlowHouseMap.getValue(hd.stemBranch.branch))
+    }.toSet()
+
+    return copy(flowBranchMap = newFlowBranchMap, branchFlowHouseMap = newBranchFlowHouseMap, houseDataSet = newHouseDataSet)
+  }
+
+  /** 流時 */
+  override fun withFlowHour(flowHour: StemBranch, branchHouseMap: Map<Branch, House>): IPlate {
+    val newFlowBranchMap: Map<FlowType, StemBranch> = flowBranchMap.toMutableMap().apply {
+      put(FlowType.HOUR, flowHour)
+    }.toMap()
+
+    val newBranchFlowHouseMap = branchFlowHouseMap.map { (branch: Branch, m: Map<FlowType, House>) ->
+      val newHouse: House = branchHouseMap[branch]!!
+      val newMap = m.toMutableMap().apply {
+        put(FlowType.HOUR, newHouse)
+      }.toMap()
+      branch to newMap
+    }.toMap()
+
+    val newHouseDataSet = houseDataSet.map { hd: HouseData ->
+      hd.copy(flowHouseMap = newBranchFlowHouseMap.getValue(hd.stemBranch.branch))
+    }.toSet()
+
+    return copy(flowBranchMap = newFlowBranchMap, branchFlowHouseMap = newBranchFlowHouseMap, houseDataSet = newHouseDataSet)
+  }
+
+  /** 流運四化 */
+  override fun appendTrans4Map(trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value>): IPlate {
+
+    val newTransFours: Map<ZStar, Map<FlowType, ITransFour.Value>> = transFours.toMutableMap().apply {
+      trans4Map.forEach { (starFlowType: Pair<ZStar, FlowType>, value: ITransFour.Value) ->
+        val (star, flowType) = starFlowType
+
+        val starMap: Map<FlowType, ITransFour.Value>? = this[star]
+        if (starMap != null) {
+          this[star] = starMap.toMutableMap().apply {
+            put(flowType, value)
+          }
+        } else {
+          put(star, mapOf(flowType to value))
+        }
+      }
+    }.toMap()
+
+    return copy(transFours = newTransFours)
   }
 }

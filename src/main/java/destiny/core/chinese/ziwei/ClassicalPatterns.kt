@@ -739,7 +739,7 @@ val p三奇嘉會 = object : PatternSingleImpl() {
 
     return it.三方四正().all { branch ->
       val a: Set<ITransFour.Value?> = it.getHouseDataOf(branch).stars.map { star ->
-        it.tranFours[star]?.get(FlowType.MAIN)
+        it.transFours[star]?.get(FlowType.MAIN)
       }.toSet()
       a.any { value: ITransFour.Value? -> good3.contains(value) }
     }.let {

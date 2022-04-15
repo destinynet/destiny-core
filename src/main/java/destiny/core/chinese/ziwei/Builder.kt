@@ -35,7 +35,7 @@ class Builder(
    * 這與 [chineseDate] 內的 [ChineseDate.year] 或許重複
    *  */
   val year: StemBranch,
-  /** 出生月份  */
+  /** 出生月份(陰曆 or 節氣) 所轉換的數字  */
   val birthMonthNum: Int,
   /** 出生時辰  */
   val birthHour: Branch,
@@ -70,7 +70,7 @@ class Builder(
   private val starStrengthMap: Map<ZStar, Int>,
 
   /** 每個地支宮位，所代表的大限，「虛歲」從何時、到何時  */
-  val flowBigMap: Map<StemBranch, Pair<Int, Int>>, branchSmallRangesMap: Map<Branch, List<Int>>,
+  val flowBigVageMap: Map<StemBranch, Pair<Int, Int>>, branchSmallRangesMap: Map<Branch, List<Int>>,
 
   /** 宮干四化  */
   private val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>>,
@@ -156,7 +156,7 @@ class Builder(
       val house = e.value
       val stars = branchStarMap[sb.branch]?.toSet() ?: emptySet()
 
-      val fromTo = flowBigMap.getValue(sb) // 必定不為空
+      val fromTo = flowBigVageMap.getValue(sb) // 必定不為空
       val smallRanges = branchSmallRangesMap.getValue(sb.branch)
       HouseData(
         house, sb, stars.toMutableSet(), branchFlowHouseMap.getValue(sb.branch), flyMap.getValue(sb), fromTo.first,
@@ -280,7 +280,6 @@ class Builder(
           .first { it.stemBranch.branch == branch }
           .also { houseData -> houseData.stars.add(star) }
       }
-
     }
 
     return this
@@ -359,7 +358,7 @@ class Builder(
   }
 
   private fun buildNotes(resourceBundleClazz: Class<*>, locale: Locale): List<String> {
-    return notesBuilder.map { (first, second) ->
+    return notesBuilder.map { (first: String, second: Array<Any>) ->
       val pattern = ResourceBundle.getBundle(resourceBundleClazz.name, locale).getString(first)
       val note = MessageFormat.format(pattern, *second)
       logger.trace("note : {}", note)
@@ -408,7 +407,7 @@ class Builder(
 
 
     val plate = Plate(
-      name, chineseDate, localDateTime?.fixError(), year, location, place, dayNight, gender, mainHouse, bodyHouse, mainStar,
+      name, chineseDate, localDateTime?.fixError(), year, birthMonthNum, birthHour, location, place, dayNight, gender, mainHouse, bodyHouse, mainStar,
       bodyStar, fiveElement, state, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
       vageMap, summaries
     )
