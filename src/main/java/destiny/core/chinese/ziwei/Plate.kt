@@ -117,11 +117,7 @@ interface IPlate : Serializable {
 
   /** 每個地支宮位，所代表的大限，「虛歲」從何時、到何時  */
   val flowBigVageMap: Map<StemBranch, Pair<Int, Int>>
-    get() {
-      return houseDataSet.associate { hd ->
-        hd.stemBranch to hd.vageRanges
-      }
-    }
+
 
 
   // =========== 以上 ↑↑ functions ↑↑ ===========
@@ -349,6 +345,15 @@ data class Plate(
   override val branchHouseMap: Map<Branch, House> by lazy {
     branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.MAIN) }.toMap()
   }
+
+  /** 每個地支宮位，所代表的大限，「虛歲」從何時、到何時  */
+  override val flowBigVageMap: Map<StemBranch, Pair<Int, Int>>
+    get() {
+      return houseDataSet.associate { hd ->
+        hd.stemBranch to hd.vageRanges
+      }
+    }
+
 
   /** 大運 */
   override fun withFlowBig(flowBig: StemBranch, branchHouseMap: Map<Branch, House>): IPlate {
