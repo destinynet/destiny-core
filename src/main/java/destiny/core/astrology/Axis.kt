@@ -3,6 +3,11 @@
  */
 package destiny.core.astrology
 
+import destiny.core.IPoints
+import destiny.core.toString
+import java.util.*
+import kotlin.reflect.KClass
+
 sealed class Axis(nameKey: String, abbrKey: String) : AstroPoint(nameKey, Axis::class.java.name , abbrKey) {
 
   object RISING   : Axis("Axis.RISING"  , "Axis.RISING_ABBR")
@@ -10,8 +15,20 @@ sealed class Axis(nameKey: String, abbrKey: String) : AstroPoint(nameKey, Axis::
   object MERIDIAN : Axis("Axis.MERIDIAN", "Axis.MERIDIAN_ABBR")
   object NADIR    : Axis("Axis.NADIR"   , "Axis.NADIR_ABBR")
 
-  companion object {
+  companion object : IPoints<Axis> {
+
+    override val type: KClass<out AstroPoint> = Axis::class
+
     val array by lazy { arrayOf(RISING, SETTING, MERIDIAN, NADIR) }
     val list by lazy { listOf(*array)}
+
+    override val values: Array<Axis> by lazy { array }
+
+    override fun fromString(value: String, locale: Locale): Axis? {
+      return values.firstOrNull {
+        it.toString(locale).equals(value, ignoreCase = true)
+      }
+    }
+
   }
 }

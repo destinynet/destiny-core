@@ -3,9 +3,9 @@
  */
 package destiny.core.astrology
 
+import destiny.core.AbstractPointTest
 import destiny.core.getAbbreviation
 import destiny.core.toString
-import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -13,9 +13,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
 
 
-class AxisTest {
-
-  private val logger = KotlinLogging.logger {  }
+class AxisTest : AbstractPointTest(Axis::class) {
 
   @Test
   fun testString() {
@@ -25,8 +23,6 @@ class AxisTest {
     assertEquals("東昇" , Axis.RISING.toString(Locale.TRADITIONAL_CHINESE))
     assertEquals("東昇" , Axis.RISING.toString(Locale.TAIWAN))
     assertEquals("昇" , Axis.RISING.getAbbreviation(Locale.TAIWAN))
-    assertEquals("昇" , Axis.RISING.getAbbreviation(Locale.TAIWAN))
-
 
     Axis.array.forEach { p ->
       p.toString().also {

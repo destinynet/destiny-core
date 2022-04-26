@@ -1,6 +1,5 @@
 package destiny.core
 
-import java.io.Serializable
 import java.util.*
 
 /**
@@ -16,7 +15,7 @@ interface IPatternParasDescription : IPattern, Descriptive {
 data class PatternParasDescription(
   override val pattern: IPattern,
   override val paras: List<Paragraph>
-) : Serializable, IPatternParasDescription, IPattern by pattern {
+) : IPatternParasDescription, IPattern by pattern {
 
   /**
    * 沒有其他語系，就傳中文的 [IPattern.name] 即可
