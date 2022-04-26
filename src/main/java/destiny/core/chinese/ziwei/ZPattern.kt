@@ -9,7 +9,6 @@ import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
-import java.io.Serializable
 
 fun IPlate.拱(branch: Branch = this.mainHouse.branch): Set<Branch> = branch.let { setOf(it.prev(4), it.next(4)) }
 fun IPlate.三方(branch: Branch = this.mainHouse.branch) = 拱(branch).plus(branch)
@@ -105,7 +104,7 @@ interface IStarHousePattern : IPattern {
 
 data class StarHousePattern(
   override val orStars: Set<ZStar>,
-  override val house: House) : IStarHousePattern, Serializable
+  override val house: House) : IStarHousePattern
 
 
 /** ============================================================================= */
@@ -138,11 +137,9 @@ interface IStarsBranchesHousePattern : IPattern {
     }
 }
 
-data class StarBranchHousePattern(
-  val andStars: Set<ZStar>,
-  val orBranches: Set<Branch>,
-  override val house: House
-) : IStarsBranchesHousePattern, Serializable {
+data class StarBranchHousePattern(val andStars: Set<ZStar>,
+                                  val orBranches: Set<Branch>,
+                                  override val house: House) : IStarsBranchesHousePattern {
   override val stars: Set<ZStar>
     get() = andStars
   override val branches: Set<Branch>
