@@ -12,7 +12,7 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.serializers.PointSerializer
+import destiny.tools.serializers.AstroPointSerializer
 import kotlinx.serialization.Serializable
 import javax.cache.Cache
 import javax.inject.Named
@@ -20,7 +20,7 @@ import javax.inject.Named
 
 @Serializable
 data class HoroscopeConfig(
-  val points: Set<@Serializable(with = PointSerializer::class) Point> = setOf(*Planet.values, *LunarNode.values),
+  val points: Set<@Serializable(with = AstroPointSerializer::class) AstroPoint> = setOf(*Planet.values, *LunarNode.values),
   val houseSystem: HouseSystem = HouseSystem.PLACIDUS,
   val coordinate: Coordinate = Coordinate.ECLIPTIC,
   val centric: Centric = Centric.GEO,
@@ -32,7 +32,7 @@ data class HoroscopeConfig(
 
 @DestinyMarker
 class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
-  var points: Set<Point> = setOf(*Planet.values, *LunarNode.values)
+  var points: Set<AstroPoint> = setOf(*Planet.values, *LunarNode.values)
   var houseSystem: HouseSystem = HouseSystem.PLACIDUS
   var coordinate: Coordinate = Coordinate.ECLIPTIC
   var centric: Centric = Centric.GEO
@@ -53,7 +53,7 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
 }
 
 @Named
-class HoroscopeFeature(private val pointPosFuncMap: Map<Point, IPosition<*>> ,
+class HoroscopeFeature(private val pointPosFuncMap: Map<AstroPoint, IPosition<*>> ,
                        private val houseCuspFeature: IHouseCuspFeature,
                        private val voidCourseFeature: IVoidCourseFeature,
                        @Transient
@@ -68,7 +68,7 @@ class HoroscopeFeature(private val pointPosFuncMap: Map<Point, IPosition<*>> ,
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: HoroscopeConfig): IHoroscopeModel {
 
-    val positionMap: Map<Point, IPosWithAzimuth> = config.points.map { point ->
+    val positionMap: Map<AstroPoint, IPosWithAzimuth> = config.points.map { point ->
       point to pointPosFuncMap[point]?.getPosition(gmtJulDay, loc, config.centric, config.coordinate, config.temperature, config.pressure)
     }.filter { (_, v) -> v != null }.associate { (point, pos) -> point to pos!! as IPosWithAzimuth }
 

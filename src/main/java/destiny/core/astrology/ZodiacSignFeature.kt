@@ -7,12 +7,12 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
-import destiny.tools.serializers.PointSerializer
+import destiny.tools.serializers.AstroPointSerializer
 import kotlinx.serialization.Serializable
 import javax.inject.Named
 
 @Serializable
-data class ZodiacSignConfig(@Serializable(with = PointSerializer::class)
+data class ZodiacSignConfig(@Serializable(with = AstroPointSerializer::class)
                             val star: Star = Planet.SUN): java.io.Serializable
 
 class ZodiacSignBuilder : Builder<ZodiacSignConfig> {

@@ -5,10 +5,7 @@ package destiny.core.chinese.ziwei
 
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
-import destiny.core.DayNight
-import destiny.core.Gender
-import destiny.core.IIntAge
-import destiny.core.IntAgeNote
+import destiny.core.*
 import destiny.core.astrology.*
 import destiny.core.calendar.*
 import destiny.core.calendar.chinese.ChineseDate

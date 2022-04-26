@@ -1,10 +1,10 @@
 package destiny.core.astrology.classical
 
 import destiny.core.DayNight
+import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.Element.*
 import destiny.core.astrology.Planet
 import destiny.core.astrology.Planet.*
-import destiny.core.astrology.Point
 import destiny.core.astrology.ZodiacSign
 import java.io.Serializable
 
@@ -50,7 +50,7 @@ class TriplicityWilliamImpl : ITriplicity, Serializable {
    * 共管 , Partner
    * Ptolomy 只有水象星座，由火星共管
    *  */
-  override fun ZodiacSign.getPartner(): Point? {
+  override fun ZodiacSign.getPartner(): AstroPoint? {
     return this.element.takeIf { it === WATER }?.let { MARS }
   }
 

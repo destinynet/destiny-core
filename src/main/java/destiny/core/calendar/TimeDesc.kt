@@ -51,7 +51,7 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
   /** 日、月 四個至點 */
   data class TypeTransPoint(override val lmt: LocalDateTime,
                             val desc: String,
-                            val point: Point,
+                            val point: AstroPoint,
                             val tp: TransPoint) : TimeDesc(lmt, listOf(desc))
 
   /** 節氣 */

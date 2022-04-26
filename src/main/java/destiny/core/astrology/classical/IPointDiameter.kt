@@ -5,7 +5,7 @@
 package destiny.core.astrology.classical
 
 import destiny.core.Descriptive
-import destiny.core.astrology.Point
+import destiny.core.astrology.AstroPoint
 
 /**
  * 「古典占星術」所使用，取得星體光芒的「直徑」
@@ -14,5 +14,5 @@ import destiny.core.astrology.Point
 interface IPointDiameter : Descriptive {
 
   /** 如果不是行星，則光芒直徑一律視為 2.0  */
-  fun getDiameter(point: Point): Double
+  fun getDiameter(point: AstroPoint): Double
 }

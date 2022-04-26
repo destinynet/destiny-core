@@ -32,21 +32,21 @@ class AspectEffectiveModern(
   }
 
   /** 兩星交角容許度是多少 */
-  private fun getOrb(p1: Point, p2: Point, aspect: Aspect): Double {
+  private fun getOrb(p1: AstroPoint, p2: AstroPoint, aspect: Aspect): Double {
     //從「考量行星」的交角容許度實作找起
     return aspectOrbsPlanetImpl.getPlanetAspectOrb(p1, p2, aspect)
       ?: aspectOrbsImpl.getAspectOrb(aspect) // 再從「不考慮行星」的交角容許度尋找
   }
 
   /** 兩星交角容許度是多少 , 以及過了容許度的起始分數為多少 (0~1) */
-  private fun getOrbAndThresholdScore(p1: Point, p2: Point, aspect: Aspect): Pair<Double, Double> {
+  private fun getOrbAndThresholdScore(p1: AstroPoint, p2: AstroPoint, aspect: Aspect): Pair<Double, Double> {
     //從「考量行星」的交角容許度實作找起
     return aspectOrbsPlanetImpl.getPlanetAspectOrbAndThreshold(p1, p2, aspect)
     // 再從「不考慮行星」的交角容許度尋找
       ?: aspectOrbsImpl.getAspectOrbAndThreshold(aspect)
   }
 
-  override fun getEffectiveErrorAndScore(p1: Point, deg1: ZodiacDegree, p2: Point, deg2: ZodiacDegree, aspect: Aspect): Pair<Double, Double>? {
+  override fun getEffectiveErrorAndScore(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree, aspect: Aspect): Pair<Double, Double>? {
     val (orb, threshold) = getOrbAndThresholdScore(p1, p2, aspect)
     val angle = deg1.getAngle(deg2)
     val angleDiff = abs(angle - aspect.degree)
@@ -56,12 +56,12 @@ class AspectEffectiveModern(
       ?.let { it to (threshold + (1 - threshold) * (orb - angleDiff) / orb) }
   }
 
-  fun getEffectiveErrorAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Double, Double>? {
+  fun getEffectiveErrorAndScore(p1: AstroPoint, deg1: Double, p2: AstroPoint, deg2: Double, aspect: Aspect): Pair<Double, Double>? {
     return getEffectiveErrorAndScore(p1, deg1.toZodiacDegree(), p2, deg2.toZodiacDegree(), aspect)
   }
 
   /** 有些版本有考慮星體，例如：太陽月亮的交角，會有較高的容許度  */
-  override fun isEffective(p1: Point, deg1: ZodiacDegree, p2: Point, deg2: ZodiacDegree, aspect: Aspect): Boolean {
+  override fun isEffective(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree, aspect: Aspect): Boolean {
     val orb = getOrb(p1, p2, aspect)
     val angle = deg1.getAngle(deg2)
     val angleDiff = abs(angle - aspect.degree)

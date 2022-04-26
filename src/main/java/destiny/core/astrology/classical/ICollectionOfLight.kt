@@ -32,7 +32,7 @@ interface ICollectionOfLight {
    * 演算法 : p1 , p2 不能是 [APPLYING]
    * 而且 p1 , p2 都必須 與 point 形成 [APPLYING]
    */
-  fun isCollecting(point : Point, h: IHoroscopeModel, p1 : Point, p2 : Point) : Boolean
+  fun isCollecting(point : AstroPoint, h: IHoroscopeModel, p1 : AstroPoint, p2 : AstroPoint) : Boolean
 
   /**
    * 「可能」不指定「光線蒐集模式」，若呈現任何一種，就傳回來
@@ -155,7 +155,7 @@ class CollectionOfLightImpl(private val besiegedImpl: IBesieged,
 
   }
 
-  override fun isCollecting(point: Point, h: IHoroscopeModel, p1: Point, p2: Point): Boolean {
+  override fun isCollecting(point: AstroPoint, h: IHoroscopeModel, p1: AstroPoint, p2: AstroPoint): Boolean {
 
     return with(aspectsCalculator) {
       aspectsCalculator.getAspectData(p1, h, setOf(p1, p2), Aspect.getAspects(Aspect.Importance.HIGH))

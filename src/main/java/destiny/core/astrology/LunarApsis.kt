@@ -4,6 +4,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.IPoints
 import destiny.core.astrology.Apsis.APHELION
 import destiny.core.astrology.Apsis.PERIHELION
 import java.util.*
@@ -64,7 +65,7 @@ sealed class LunarApsis(nameKey: String, abbrKey: String,
 
   companion object : IPoints<LunarApsis> {
 
-    override val type: KClass<out Point> = LunarApsis::class
+    override val type: KClass<out AstroPoint> = LunarApsis::class
 
     val trueArray by lazy { arrayOf(APOGEE_OSCU, PERIGEE_OSCU) }
     val meanArray by lazy { arrayOf(APOGEE_MEAN, PERIGEE_MEAN) }

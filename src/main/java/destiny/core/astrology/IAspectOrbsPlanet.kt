@@ -20,13 +20,13 @@ interface IAspectOrbsPlanet {
    * @param aspect  欲取得容許度之交角
    * @return 交角容許度 , 以及其 threshold
    */
-  fun getPlanetAspectOrbAndThreshold(p1: Point, p2: Point, aspect: Aspect): Pair<Double,Double>?
+  fun getPlanetAspectOrbAndThreshold(p1: AstroPoint, p2: AstroPoint, aspect: Aspect): Pair<Double,Double>?
 
   /**
    * @param aspect 欲取得容許度之交角
    * @return 交角容許度
    */
-  fun getPlanetAspectOrb(p1: Point, p2: Point, aspect: Aspect): Double? {
+  fun getPlanetAspectOrb(p1: AstroPoint, p2: AstroPoint, aspect: Aspect): Double? {
     return getPlanetAspectOrbAndThreshold(p1, p2, aspect)?.first
   }
 }

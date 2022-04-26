@@ -1,8 +1,9 @@
 /**
  * Created by smallufo on 2022-02-16.
  */
-package destiny.core.astrology
+package destiny.core
 
+import destiny.core.astrology.AstroPoint
 import mu.KotlinLogging
 import java.util.*
 import kotlin.reflect.KClass
@@ -94,10 +95,10 @@ abstract class AbstractPointTest(private val kClass: KClass<out Point>) {
     companion?.objectInstance?.takeIf { it is IPoints<*> }
       .let { it as IPoints<*> }
       .let { iPoints: IPoints<*> ->
-        val shuffled: List<Comparable<Point>> = kClass.sealedSubclasses
+        val shuffled: List<Comparable<AstroPoint>> = kClass.sealedSubclasses
           .mapNotNull { it.objectInstance }
           .filter { it is Comparable<*> }
-          .map { it as Comparable<Point> }
+          .map { it as Comparable<AstroPoint> }
           .shuffled()
 
         sortedSetOf(*shuffled.toTypedArray()).toList().zip(iPoints.values).forEach { (p1, p2) ->

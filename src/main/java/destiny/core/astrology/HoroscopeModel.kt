@@ -39,7 +39,7 @@ interface IHoroscopeModel : ITimeLoc {
   val pressure: Double?
 
   /** 星體位置表 */
-  val positionMap: Map<Point, IPosWithAzimuth>
+  val positionMap: Map<AstroPoint, IPosWithAzimuth>
 
   /** 地盤 12宮 (1~12) , 每宮宮首在黃道幾度*/
   val cuspDegreeMap: Map<Int, ZodiacDegree>
@@ -52,13 +52,13 @@ interface IHoroscopeModel : ITimeLoc {
   /**
    * 星體於黃經的度數
    */
-  val pointDegreeMap: Map<Point, ZodiacDegree>
+  val pointDegreeMap: Map<AstroPoint, ZodiacDegree>
     get() = positionMap.mapValues { (_, posWithAzimuth) -> posWithAzimuth.lngDeg }
 
   /**
    * 星體於黃道上的星座
    */
-  val pointSignMap: Map<Point, ZodiacSign>
+  val pointSignMap: Map<AstroPoint, ZodiacSign>
     get() = pointDegreeMap.mapValues { (_, lngDeg) -> lngDeg.sign }
 
   /**
@@ -88,7 +88,7 @@ interface IHoroscopeModel : ITimeLoc {
     return TimeTools.getGmtFromLmt(getGmt(revJulDayFunc), location)
   }
 
-  val points: Set<Point>
+  val points: Set<AstroPoint>
     get() = positionMap.keys
 
   /**
@@ -129,7 +129,7 @@ interface IHoroscopeModel : ITimeLoc {
   /**
    * 取得第幾宮內的星星列表 , 1 <= index <=12 , 並且按照黃道度數「由小到大」排序
    */
-  fun getHousePoints(index: Int): List<Point> {
+  fun getHousePoints(index: Int): List<AstroPoint> {
     if (index < 1)
       return getHousePoints(index + 12)
     return if (index > 12) getHousePoints(index - 12)
@@ -140,7 +140,7 @@ interface IHoroscopeModel : ITimeLoc {
   /**
    * 所有宮位內，的星體列表 , 並且按照黃道度數「由小到大」排序
    */
-  val houseMap: Map<Int, List<Point>>
+  val houseMap: Map<Int, List<AstroPoint>>
     get() {
       return (1..12).associateWith { houseIndex ->
         positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lngDeg) == houseIndex }
@@ -165,13 +165,13 @@ interface IHoroscopeModel : ITimeLoc {
   /**
    * 取得單一 Horoscope 中 , 任兩顆星的交角
    */
-  fun getAngle(fromPoint: Point, toPoint: Point): Double {
+  fun getAngle(fromPoint: AstroPoint, toPoint: AstroPoint): Double {
     return positionMap.getValue(fromPoint).lngDeg.getAngle(positionMap.getValue(toPoint).lngDeg)
   }
 
 
   /** 取得一顆星體 Point / Star 在星盤上的角度  */
-  fun getPositionWithAzimuth(point: Point): IPosWithAzimuth {
+  fun getPositionWithAzimuth(point: AstroPoint): IPosWithAzimuth {
     return positionMap.getValue(point)
   }
 
@@ -187,7 +187,7 @@ interface IHoroscopeModel : ITimeLoc {
   }
 
 
-  fun getPositionWithAzimuth(clazz: Class<out Point>): Map<Point, IPosWithAzimuth> {
+  fun getPositionWithAzimuth(clazz: Class<out AstroPoint>): Map<AstroPoint, IPosWithAzimuth> {
     return positionMap
       .filter { (k, _) -> k.javaClass == clazz }
       .toMap()
@@ -196,12 +196,12 @@ interface IHoroscopeModel : ITimeLoc {
   /**
    * @param point 取得此星體在第幾宮
    */
-  fun getHouse(point: Point): Int? {
+  fun getHouse(point: AstroPoint): Int? {
     return positionMap[point]?.let { pos -> getHouse(pos.lngDeg) }
   }
 
   /** 取得星體的位置以及地平方位角  */
-  fun getPosition(point: Point): IPosWithAzimuth? {
+  fun getPosition(point: AstroPoint): IPosWithAzimuth? {
     return positionMap[point]
   }
 
@@ -210,7 +210,7 @@ interface IHoroscopeModel : ITimeLoc {
   }
 
   /** 取得某星 位於什麼星座  */
-  fun getZodiacSign(point: Point): ZodiacSign? {
+  fun getZodiacSign(point: AstroPoint): ZodiacSign? {
     return getPosition(point)?.lngDeg?.sign
   }
 
@@ -240,7 +240,7 @@ interface IHoroscopeModel : ITimeLoc {
      * 取得此兩顆星，對於此交角 Aspect 的誤差是幾度
      * 例如兩星交角 175 度 , Aspect = 沖 (180) , 則 誤差 5 度
      */
-    fun getAspectError(positionMap: Map<Point, IPos>, p1: Point, p2: Point, aspect: Aspect): Double? {
+    fun getAspectError(positionMap: Map<AstroPoint, IPos>, p1: AstroPoint, p2: AstroPoint, aspect: Aspect): Double? {
       return positionMap[p1]?.let { p1Pos ->
         positionMap[p2]?.let { p2Pos ->
           val angle = p1Pos.lngDeg.getAngle(p2Pos.lngDeg)
@@ -265,7 +265,7 @@ data class HoroscopeModel(
 
 
   /** 星體位置表 */
-  override val positionMap: Map<Point, IPosWithAzimuth>,
+  override val positionMap: Map<AstroPoint, IPosWithAzimuth>,
 
   /** 地盤 12宮 (1~12) , 每宮宮首在黃道幾度*/
   override val cuspDegreeMap: Map<Int, ZodiacDegree>,

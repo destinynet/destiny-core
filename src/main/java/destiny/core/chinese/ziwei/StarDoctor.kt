@@ -4,8 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
-import destiny.core.astrology.IPoints
-import destiny.core.astrology.Point
+import destiny.core.IPoints
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import java.util.*
@@ -45,7 +44,7 @@ sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name
 
   companion object : IPoints<StarDoctor> {
 
-    override val type: KClass<out Point> = StarDoctor::class
+    override val type: KClass<out ZStar> = StarDoctor::class
 
     override val values by lazy { arrayOf(博士, 力士, 青龍, 小耗, 將軍, 奏書, 飛廉, 喜神, 病符, 大耗, 伏兵, 官府) }
 

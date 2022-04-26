@@ -6,6 +6,7 @@ package destiny.core.astrology
 
 import destiny.core.astrology.IAspectData.Type
 import destiny.core.calendar.GmtJulDay
+import destiny.core.toString
 import destiny.tools.AlignTools
 import java.io.Serializable
 import java.util.*
@@ -47,7 +48,7 @@ data class AspectData(private val angleData: IAngleData,
 
   constructor(
     /** 存放形成交角的兩顆星體  */
-    points: Set<Point>,
+    points: Set<AstroPoint>,
     /** 兩星所形成的交角 */
     aspect: Aspect,
     /** 交會型態 : 接近 or 分離 */
@@ -65,15 +66,15 @@ data class AspectData(private val angleData: IAngleData,
     require(points.size == 2) { "INCORRECT points"}
   }
 
-  constructor(p1: Point, p2: Point, aspect: Aspect, type: Type? = null, orb: Double = 0.0, score: Double? = null) : this(
+  constructor(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, type: Type? = null, orb: Double = 0.0, score: Double? = null) : this(
     sortedSetOf(
       pointComp, p1, p2
     ), aspect, type, orb, score, null
   )
 
-  constructor(p1: Point, p2: Point, aspect: Aspect, orb: Double = 0.0) : this(p1, p2, aspect, null, orb, null)
+  constructor(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, orb: Double = 0.0) : this(p1, p2, aspect, null, orb, null)
 
-  constructor(p1: Point, p2: Point, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null, gmtJulDay: GmtJulDay?) : this(
+  constructor(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null, gmtJulDay: GmtJulDay?) : this(
     sortedSetOf(
       pointComp, p1, p2
     ), aspect, type, orb, score, gmtJulDay
@@ -94,7 +95,7 @@ data class AspectData(private val angleData: IAngleData,
 
 
   /** 傳入一個 point , 取得另一個 point , 如果沒有，則傳回 null  */
-  fun getAnotherPoint(thisPoint: Point): Point? {
+  fun getAnotherPoint(thisPoint: AstroPoint): AstroPoint? {
     return points.takeIf { it.contains(thisPoint) }
       ?.minus(thisPoint)
       ?.firstOrNull()
@@ -113,7 +114,7 @@ data class AspectData(private val angleData: IAngleData,
       }
 
     return if (thisP0.javaClass.name == thatP0.javaClass.name && thisP0 == thatP0) {
-      if (thisP1.javaClass.name == thatP1.javaClass.name) (thisP1 as Comparable<Point>).compareTo(thatP1)
+      if (thisP1.javaClass.name == thatP1.javaClass.name) (thisP1 as Comparable<AstroPoint>).compareTo(thatP1)
       else pointComp.compare(thisP1, thatP1)
     } else {
       pointComp.compare(thisP0, thatP0)
@@ -141,7 +142,7 @@ data class AspectData(private val angleData: IAngleData,
 
 
   companion object {
-    val pointComp = PointComparator()
+    val pointComp = AstroPointComparator()
   }
 
 

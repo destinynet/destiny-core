@@ -1,13 +1,13 @@
 /**
  * Created by smallufo on 2021-10-18.
  */
-package destiny.core.astrology
+package destiny.core
 
 import java.util.*
 import kotlin.reflect.KClass
 
 
-interface IPoints<T:Point> {
+interface IPoints<T: Point> {
 
   val type : KClass<out Point>
 

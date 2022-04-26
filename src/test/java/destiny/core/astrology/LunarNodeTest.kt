@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.News
+import destiny.core.toString
 import mu.KotlinLogging
 import java.util.*
 import kotlin.test.*

@@ -3,8 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.astrology.IPoints
-import destiny.core.astrology.Point
+import destiny.core.IPoints
 import destiny.core.chinese.Branch
 import java.util.*
 import kotlin.reflect.KClass
@@ -37,7 +36,7 @@ sealed class StarYearFront(nameKey: String) : ZStar(nameKey, StarYearFront::clas
 
   companion object : IPoints<StarYearFront> {
 
-    override val type: KClass<out Point> = StarYearFront::class
+    override val type: KClass<out ZStar> = StarYearFront::class
 
     override val values by lazy { arrayOf(歲建, 晦氣, 喪門, 貫索, 官符, 小耗, 歲破, 龍德, 白虎, 天德, 吊客, 病符) }
 

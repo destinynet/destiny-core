@@ -3,6 +3,8 @@
  */
 package destiny.core.astrology
 
+import destiny.core.AbstractPointTest
+import destiny.core.toString
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

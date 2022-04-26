@@ -107,7 +107,7 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
     val dayStem = eightWords.day.stem
     // 五星 + 南北交點
     val stars: List<Star> = listOf(*Planet.classicalArray, *LunarNode.meanArray)
-    val starPosMap: Map<Point, PositionWithBranch> = stars.associateWith { p: Point ->
+    val starPosMap: Map<AstroPoint, PositionWithBranch> = stars.associateWith { p: AstroPoint ->
       val pos: IPos = starPositionImpl.getPosition(p as Star, lmt, loc, Centric.GEO, Coordinate.ECLIPTIC)
 
       val hourImpl = HourHouseImpl(houseCuspImpl, starPositionImpl, p)

@@ -4,8 +4,8 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.Planet.*
-import destiny.core.astrology.Point
 import java.io.Serializable
 import java.util.*
 
@@ -21,7 +21,7 @@ class PointDiameterAlBiruniImpl : IPointDiameter, Serializable {
     return "Al-Biruni"
   }
 
-  override fun getDiameter(point: Point): Double {
+  override fun getDiameter(point: AstroPoint): Double {
     return planetOrbsMap[point] ?: 2.0
   }
 

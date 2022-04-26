@@ -11,10 +11,10 @@ import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 
 class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
-                            private val pointPosFuncMap: Map<Point, IPosition<*>>) : IAspectsCalculator, Serializable {
+                            private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>) : IAspectsCalculator, Serializable {
 
 
-  private fun IHoroscopeModel.getAspectData(twoPoints: Set<Point>, aspects: Collection<Aspect>): AspectData? {
+  private fun IHoroscopeModel.getAspectData(twoPoints: Set<AstroPoint>, aspects: Collection<Aspect>): AspectData? {
 
     val posMap = this.positionMap
 
@@ -55,7 +55,7 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
   }
 
   /** 針對整體 */
-  override fun IHoroscopeModel.getAspectData(points: Collection<Point>, aspects: Collection<Aspect>): Set<AspectData> {
+  override fun IHoroscopeModel.getAspectData(points: Collection<AstroPoint>, aspects: Collection<Aspect>): Set<AspectData> {
     return Sets.combinations(points.toSet(), 2)
       .asSequence()
       .mapNotNull { this.getAspectData(it, aspects) }
@@ -63,9 +63,9 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
   }
 
   /** 針對單一 */
-  override fun getAspectData(point: Point,
+  override fun getAspectData(point: AstroPoint,
                              h: IHoroscopeModel,
-                             points: Collection<Point>,
+                             points: Collection<AstroPoint>,
                              aspects: Collection<Aspect>): Set<AspectData> {
     return points
       .asSequence()
@@ -74,10 +74,10 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
       .toSet()
   }
 
-  override fun getPointAspectAndScore(point: Point,
-                                      positionMap: Map<Point, IPos>,
-                                      points: Collection<Point>,
-                                      aspects: Collection<Aspect>): Set<Triple<Point, Aspect, Double>> {
+  override fun getPointAspectAndScore(point: AstroPoint,
+                                      positionMap: Map<AstroPoint, IPos>,
+                                      points: Collection<AstroPoint>,
+                                      aspects: Collection<Aspect>): Set<Triple<AstroPoint, Aspect, Double>> {
     return positionMap[point]?.lngDeg?.let { starDeg ->
       points
         .filter { it !== point }

@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.astrology.AbstractPointTest
+import destiny.core.AbstractPointTest
 import destiny.core.chinese.Branch.*
 import kotlin.test.Test
 import kotlin.test.assertSame

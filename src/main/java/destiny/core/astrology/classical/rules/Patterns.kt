@@ -28,7 +28,7 @@ sealed class EssentialDignity : IPlanetPattern {
   data class MutualReception(override val planet: Planet,
                              val sign1: ZodiacSign,
                              val dig1: Dignity,
-                             val p2: Point,
+                             val p2: AstroPoint,
                              val sign2: ZodiacSign,
                              val dig2: Dignity) : EssentialDignity() {
     private val mutualData = MutualDataWithSign(planet, sign1, dig1, p2, sign2, dig2)
@@ -114,7 +114,7 @@ sealed class Debility : IPlanetPattern {
   data class MutualDeception(override val planet: Planet,
                              val sign1: ZodiacSign,
                              val dig1: Dignity,
-                             val p2: Point,
+                             val p2: AstroPoint,
                              val sign2: ZodiacSign,
                              val dig2: Dignity) : Debility() {
     private val mutualData = MutualDataWithSign(planet, sign1, dig1, p2, sign2, dig2)

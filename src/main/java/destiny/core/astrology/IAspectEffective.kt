@@ -15,12 +15,12 @@ interface IAspectEffective {
    * 如果形成交角 , 則傳回 error(orb) 角度 , 以及評分
    * 若無效，則傳回 null
    */
-  fun getEffectiveErrorAndScore(p1: Point, deg1: ZodiacDegree, p2: Point, deg2: ZodiacDegree, aspect: Aspect): Pair<Double, Double>?
+  fun getEffectiveErrorAndScore(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree, aspect: Aspect): Pair<Double, Double>?
 
   /**
    * 承上 , 另一種寫法
    */
-  fun getEffectiveErrorAndScore(p1: Point, p2: Point, posMap: Map<Point, IPos>, aspect: Aspect): Pair<Double, Double>? {
+  fun getEffectiveErrorAndScore(p1: AstroPoint, p2: AstroPoint, posMap: Map<AstroPoint, IPos>, aspect: Aspect): Pair<Double, Double>? {
     return getEffectiveErrorAndScore(p1, posMap.getValue(p1).lngDeg, p2, posMap.getValue(p2).lngDeg, aspect)
   }
 
@@ -32,17 +32,17 @@ interface IAspectEffective {
    * @param deg2 Point 2 於黃道帶上的角度
    * @return 是否形成有效交角
    */
-  fun isEffective(p1: Point, deg1: ZodiacDegree, p2: Point, deg2: ZodiacDegree, aspect: Aspect): Boolean
+  fun isEffective(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree, aspect: Aspect): Boolean
 
-  fun isEffective(p1: Point, p2: Point, posMap: Map<Point, IPos>, aspect: Aspect): Boolean {
+  fun isEffective(p1: AstroPoint, p2: AstroPoint, posMap: Map<AstroPoint, IPos>, aspect: Aspect): Boolean {
     return isEffective(p1, posMap.getValue(p1).lngDeg, p2, posMap.getValue(p2).lngDeg, aspect)
   }
 
-  fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, vararg aspects: Aspect): Boolean {
+  fun isEffective(p1: AstroPoint, deg1: Double, p2: AstroPoint, deg2: Double, vararg aspects: Aspect): Boolean {
     return isEffective(p1, deg1, p2, deg2, listOf(*aspects))
   }
 
-  fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, aspects: Collection<Aspect>): Boolean {
+  fun isEffective(p1: AstroPoint, deg1: Double, p2: AstroPoint, deg2: Double, aspects: Collection<Aspect>): Boolean {
     return aspects.any { isEffective(p1, deg1.toZodiacDegree(), p2, deg2.toZodiacDegree(), it) }
   }
 

@@ -6,8 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.Gender
 import destiny.core.Gender.女
 import destiny.core.Gender.男
-import destiny.core.astrology.IPoints
-import destiny.core.astrology.Point
+import destiny.core.IPoints
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement.*
@@ -82,7 +81,7 @@ sealed class StarMinor(nameKey: String, type: Type) : ZStar(nameKey, ZStar::clas
 
   companion object : IPoints<StarMinor> {
 
-    override val type: KClass<out Point> = StarMinor::class
+    override val type: KClass<out ZStar> = StarMinor::class
 
     override val values by lazy {
       arrayOf(天官, 天福, 天廚, 天刑, 天姚, 解神, 天巫, 天月, 陰煞, 台輔, 封誥, 天空, 天哭, 天虛, 龍池, 鳳閣, 紅鸞, 天喜, 孤辰, 寡宿, 蜚廉, 破碎, 華蓋, 咸池, 天德, 月德,

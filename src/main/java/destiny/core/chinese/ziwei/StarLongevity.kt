@@ -4,8 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
-import destiny.core.astrology.IPoints
-import destiny.core.astrology.Point
+import destiny.core.IPoints
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement
@@ -40,7 +39,7 @@ sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.n
 
   companion object : IPoints<StarLongevity> {
 
-    override val type: KClass<out Point> = StarLongevity::class
+    override val type: KClass<out ZStar> = StarLongevity::class
 
     override val values by lazy { arrayOf(長生, 沐浴, 冠帶, 臨官, 帝旺, 衰, 病, 死, 墓, 絕, 胎, 養) }
 

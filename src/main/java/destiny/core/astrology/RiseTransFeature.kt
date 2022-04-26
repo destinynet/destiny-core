@@ -11,13 +11,13 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
-import destiny.tools.serializers.PointSerializer
+import destiny.tools.serializers.AstroPointSerializer
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import javax.inject.Named
 
 @Serializable
-data class RiseTransConfig(@Serializable(with = PointSerializer::class)
+data class RiseTransConfig(@Serializable(with = AstroPointSerializer::class)
                            val star: Star = Planet.SUN,
                            val transPoint: TransPoint = TransPoint.RISING,
                            val transConfig: TransConfig = TransConfig()): java.io.Serializable

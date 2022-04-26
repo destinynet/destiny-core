@@ -28,10 +28,10 @@ interface IRefranation {
    *   「先」臨陣脫逃者，是哪顆星
    *   以及，他們原本要形成什麼交角
    */
-  fun getResult(horoscope: IHoroscopeModel, planet: Planet, otherPoint: Point, aspects: Collection<Aspect>): Pair<Point, Aspect>?
+  fun getResult(horoscope: IHoroscopeModel, planet: Planet, otherPoint: AstroPoint, aspects: Collection<Aspect>): Pair<AstroPoint, Aspect>?
 
   /** 取得重要交角 [Aspect.Importance.HIGH] 的結果 */
-  fun getImportantResult(horoscope: IHoroscopeModel, planet: Planet, otherPoint: Point): Pair<Point, Aspect>? {
+  fun getImportantResult(horoscope: IHoroscopeModel, planet: Planet, otherPoint: AstroPoint): Pair<AstroPoint, Aspect>? {
     return getResult(horoscope, planet, otherPoint, Aspect.getAspects(Aspect.Importance.HIGH))
   }
 
@@ -46,8 +46,8 @@ class RefranationImpl(private val aspectsCalculator: IAspectsCalculator,
 
   override fun getResult(horoscope: IHoroscopeModel,
                          planet: Planet,
-                         otherPoint: Point,
-                         aspects: Collection<Aspect>): Pair<Point, Aspect>? {
+                         otherPoint: AstroPoint,
+                         aspects: Collection<Aspect>): Pair<AstroPoint, Aspect>? {
 
     return aspects.asSequence().map { aspect ->
       /** 此兩星正在 apply 哪個交角  */
@@ -58,7 +58,7 @@ class RefranationImpl(private val aspectsCalculator: IAspectsCalculator,
         logger.debug("兩星 : {} {} 正在接近此角度 {}", planet, otherPoint, applyingAspect)
 
         /** 「先」臨陣脫逃者，是誰，這裡強調「先」，因為有可能在 Perfect 交角之前，雙方都臨陣脫逃。 */
-        val refranator: Point? = relativeTransitImpl.getRelativeTransit(
+        val refranator: AstroPoint? = relativeTransitImpl.getRelativeTransit(
           planet,
           otherPoint as Star,
           applyingAspect.degree,

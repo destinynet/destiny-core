@@ -4,11 +4,9 @@
  */
 package destiny.core.astrology
 
-import java.util.*
+class DegreeComparator(private val horoscope: IHoroscopeModel) : Comparator<AstroPoint> {
 
-class DegreeComparator(private val horoscope: IHoroscopeModel) : Comparator<Point> {
-
-  override fun compare(p1: Point, p2: Point): Int {
+  override fun compare(p1: AstroPoint, p2: AstroPoint): Int {
 
     val pos1: IPos? = horoscope.getPosition(p1)
     val pos2: IPos? = horoscope.getPosition(p2)

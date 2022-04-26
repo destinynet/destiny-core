@@ -3,8 +3,6 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.astrology.getAbbreviation
-import destiny.core.astrology.toString
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.丁
 import destiny.core.chinese.StemBranch.己酉
@@ -34,6 +32,8 @@ import destiny.core.chinese.ziwei.StarMinor.Companion.fun解神_月數
 import destiny.core.chinese.ziwei.StarMinor.Companion.fun陰煞_月支
 import destiny.core.chinese.ziwei.StarMinor.Companion.fun陰煞_月數
 import destiny.core.chinese.ziwei.StarMinor.Companion.fun鳳閣
+import destiny.core.getAbbreviation
+import destiny.core.toString
 import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test

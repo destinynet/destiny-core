@@ -6,4 +6,4 @@ package destiny.core.astrology
 
 data class House(val index: Int,
                  val cusp: ZodiacDegree,
-                 val pointPositions: List<Pair<Point, IPosWithAzimuth>>) : java.io.Serializable
+                 val pointPositions: List<Pair<AstroPoint, IPosWithAzimuth>>) : java.io.Serializable

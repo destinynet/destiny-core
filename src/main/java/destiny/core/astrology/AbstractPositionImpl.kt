@@ -5,5 +5,5 @@ package destiny.core.astrology
 
 import java.io.Serializable
 
-abstract class AbstractPositionImpl<out T : Point>
+abstract class AbstractPositionImpl<out T : AstroPoint>
   constructor(override val point: T) : IPosition<T>, Serializable

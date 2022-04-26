@@ -8,7 +8,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
 
-interface IPosition<out T : Point> {
+interface IPosition<out T : AstroPoint> {
 
   val point: T
 

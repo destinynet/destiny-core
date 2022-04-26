@@ -12,7 +12,7 @@ import destiny.core.calendar.JulDayResolver
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.Feature
-import destiny.tools.serializers.PointSerializer
+import destiny.tools.serializers.AstroPointSerializer
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import javax.inject.Named
@@ -25,7 +25,7 @@ enum class VoidCourseImpl {
 }
 
 @Serializable
-data class VoidCourseConfig(@Serializable(with = PointSerializer::class)
+data class VoidCourseConfig(@Serializable(with = AstroPointSerializer::class)
                             val planet: Planet = Planet.MOON,
                             val centric: Centric = Centric.GEO,
                             val vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval): java.io.Serializable
@@ -52,7 +52,7 @@ class VoidCourseConfigBuilder : Builder<VoidCourseConfig> {
  */
 interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourse?> {
 
-  fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation , points: Collection<Point> , config: VoidCourseConfig): Map<Planet, VoidCourse> {
+  fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation , points: Collection<AstroPoint> , config: VoidCourseConfig): Map<Planet, VoidCourse> {
     return points.filterIsInstance<Planet>()
       .map { planet ->
 
@@ -70,7 +70,7 @@ interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourse?> {
  */
 @Named
 class VoidCourseFeature(private val vocMap: Map<VoidCourseImpl, IVoidCourse>,
-                        private val pointPosFuncMap: Map<Point, IPosition<*>>,
+                        private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>,
                         private val julDayResolver: JulDayResolver) : IVoidCourseFeature , AbstractCachedFeature<VoidCourseConfig , VoidCourse?>() {
   
   override val key: String = "voidCourse"

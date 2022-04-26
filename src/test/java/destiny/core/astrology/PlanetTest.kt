@@ -5,7 +5,10 @@
 package destiny.core.astrology
 
 
+import destiny.core.AbstractPointTest
 import destiny.core.astrology.Planet.Companion.aheadOf
+import destiny.core.getAbbreviation
+import destiny.core.toString
 import java.util.*
 import kotlin.test.*
 
@@ -17,7 +20,7 @@ class PlanetTest : AbstractPointTest(Planet::class) {
     val sun1 = Planet.SUN
     val sun2 = Planet.SUN
 
-    val points = setOf<Point>(sun2)
+    val points = setOf<AstroPoint>(sun2)
 
     val pointsIt = points.iterator()
     while (pointsIt.hasNext()) {

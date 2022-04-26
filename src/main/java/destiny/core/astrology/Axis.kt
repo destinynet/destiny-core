@@ -3,7 +3,7 @@
  */
 package destiny.core.astrology
 
-sealed class Axis(nameKey: String, abbrKey: String) : Point(nameKey, Axis::class.java.name , abbrKey) {
+sealed class Axis(nameKey: String, abbrKey: String) : AstroPoint(nameKey, Axis::class.java.name , abbrKey) {
 
   object RISING   : Axis("Axis.RISING"  , "Axis.RISING_ABBR")
   object SETTING  : Axis("Axis.SETTING" , "Axis.SETTING_ABBR")

@@ -4,8 +4,8 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.DayNight
-import destiny.core.astrology.IPoints
-import destiny.core.astrology.Point
+import destiny.core.IPoints
+import destiny.core.Point
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Characters

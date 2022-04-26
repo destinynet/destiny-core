@@ -3,6 +3,6 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.astrology.AbstractPointTest
+import destiny.core.AbstractPointTest
 
 internal class StarDoctorTest : AbstractPointTest(StarDoctor::class)

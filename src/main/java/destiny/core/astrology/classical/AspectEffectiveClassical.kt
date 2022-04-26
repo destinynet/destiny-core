@@ -6,8 +6,8 @@ package destiny.core.astrology.classical
 
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.Aspect.Importance
+import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.IAspectEffective
-import destiny.core.astrology.Point
 import destiny.core.astrology.ZodiacDegree
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.DestinyMarker
@@ -33,11 +33,11 @@ class AspectEffectiveClassical(
     return abs(deg1.getAngle(deg2) - angle)
   }
 
-  private fun getSumOfRadius(p1: Point, p2: Point): Double {
+  private fun getSumOfRadius(p1: AstroPoint, p2: AstroPoint): Double {
     return (planetOrbsImpl.getDiameter(p1) + planetOrbsImpl.getDiameter(p2)) / 2
   }
 
-  override fun getEffectiveErrorAndScore(p1: Point, deg1: ZodiacDegree, p2: Point, deg2: ZodiacDegree, aspect: Aspect): Pair<Double, Double>? {
+  override fun getEffectiveErrorAndScore(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree, aspect: Aspect): Pair<Double, Double>? {
     val angleDiff = getAngleDiff(deg1, deg2, aspect.degree)
     val sumOfRadius = getSumOfRadius(p1, p2)
 
@@ -49,7 +49,7 @@ class AspectEffectiveClassical(
   /**
    * classical 交角不談容許度 (orb)
    */
-  fun isEffective(p1: Point, deg1: ZodiacDegree, p2: Point, deg2: ZodiacDegree, angle: Double): Boolean {
+  fun isEffective(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree, angle: Double): Boolean {
     val angleDiff = getAngleDiff(deg1, deg2, angle)
     val sumOfRadius = getSumOfRadius(p1, p2)
     return (angleDiff <= sumOfRadius)
@@ -58,12 +58,12 @@ class AspectEffectiveClassical(
   /**
    * classical 交角不談容許度 (orb)
    */
-  fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, angle: Double): Boolean {
+  fun isEffective(p1: AstroPoint, deg1: Double, p2: AstroPoint, deg2: Double, angle: Double): Boolean {
     return isEffective(p1 , deg1.toZodiacDegree() , p2 , deg2.toZodiacDegree(), angle)
   }
 
   /** 兩星體是否形成有效交角  */
-  override fun isEffective(p1: Point, deg1: ZodiacDegree, p2: Point, deg2: ZodiacDegree, aspect: Aspect): Boolean {
+  override fun isEffective(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree, aspect: Aspect): Boolean {
     return isEffective(p1, deg1, p2, deg2, aspect.degree)
   }
 

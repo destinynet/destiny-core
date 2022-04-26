@@ -12,12 +12,12 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 
-object PointSerializer : KSerializer<Point> {
+object AstroPointSerializer : KSerializer<AstroPoint> {
 
-  override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Point" , PrimitiveKind.STRING)
+  override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("AstroPoint" , PrimitiveKind.STRING)
 
 
-  override fun serialize(encoder: Encoder, value: Point) {
+  override fun serialize(encoder: Encoder, value: AstroPoint) {
     if (value is LunarApsis) {
       encoder.encodeString(LunarApsis::class.simpleName!!+"."+value::class.simpleName!!)
     } else {
@@ -25,7 +25,7 @@ object PointSerializer : KSerializer<Point> {
     }
   }
 
-  override fun deserialize(decoder: Decoder): Point {
+  override fun deserialize(decoder: Decoder): AstroPoint {
     val raw = decoder.decodeString()
     return if (raw.startsWith(Planet::class.simpleName!!)) {
       Planet.fromString(raw.substringAfter("."))!!

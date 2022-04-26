@@ -9,7 +9,7 @@ import java.io.Serializable
 /**
  * 對不同的 Point 做排序的動作 , 優先權： 行星 , 交點 , 小行星 , 恆星 , 阿拉伯點 , 漢堡
  */
-class PointComparator : Comparator<Point>, Serializable {
+class AstroPointComparator : Comparator<AstroPoint>, Serializable {
 
   private val starClasses = arrayOf(
     Planet::class.java,
@@ -20,7 +20,7 @@ class PointComparator : Comparator<Point>, Serializable {
     Arabic::class.java,
     Hamburger::class.java)
 
-  override fun compare(p1: Point, p2: Point): Int {
+  override fun compare(p1: AstroPoint, p2: AstroPoint): Int {
     if (p1 is Planet && p2 is Planet) {
       return Planet.values.indexOf(p1) - Planet.values.indexOf(p2)
     }

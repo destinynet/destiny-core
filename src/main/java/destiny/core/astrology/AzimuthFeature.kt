@@ -8,12 +8,12 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.serializers.PointSerializer
+import destiny.tools.serializers.AstroPointSerializer
 import kotlinx.serialization.Serializable
 import javax.inject.Named
 
 @Serializable
-data class AzimuthConfig(@Serializable(with = PointSerializer::class)
+data class AzimuthConfig(@Serializable(with = AstroPointSerializer::class)
                          val star: Star = Planet.SUN,
                          val coordinate: Coordinate = Coordinate.ECLIPTIC,
                          val geoAlt: Double = 0.0,

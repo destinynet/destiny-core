@@ -64,12 +64,12 @@ class DetrimentPtolemyImpl : AbstractPtolemy(), IDetriment {
 class ExaltationPtolemyImpl : AbstractPtolemy(), IExaltation {
 
   /** 哪顆星體在此星座 擢升 (EXALT , +4) , 必定為 1 or 0 顆星 */
-  override fun ZodiacSign.getExaltPoint(): Point? {
+  override fun ZodiacSign.getExaltPoint(): AstroPoint? {
     return findPoint(this, exaltDegreeMap)
   }
 
   /** 此星體在哪個星座 擢升 (EXALT , +4) , 前者逆函數 , 必定有值 */
-  override fun Point.getExaltSign(): ZodiacSign? {
+  override fun AstroPoint.getExaltSign(): ZodiacSign? {
     return exaltSignMap[this]
   }
 
@@ -83,12 +83,12 @@ class ExaltationPtolemyImpl : AbstractPtolemy(), IExaltation {
 class FallPtolemyImpl : AbstractPtolemy(), IFall, Serializable {
 
   /** 哪顆星體在此星座 落 (FALL , -4) , 必定為 1 or 0 顆星 */
-  override fun ZodiacSign.getFallPoint(): Point? {
+  override fun ZodiacSign.getFallPoint(): AstroPoint? {
     return findPoint(this, fallDegreeMap)
   }
 
   /** 此星體在哪個星座 落 (FALL , -4) , 前者逆函數 */
-  override fun Point.getFallingSign(): ZodiacSign? {
+  override fun AstroPoint.getFallingSign(): ZodiacSign? {
     return fallSignMap[this]
   }
 
@@ -118,7 +118,7 @@ class FallPtolemyImpl : AbstractPtolemy(), IFall, Serializable {
 class TriplicityPtolomyImpl : ITriplicity, Serializable {
 
   /** 哪顆星在此星座得到三分相 (+3) */
-  override fun ZodiacSign.getTriplicityPoint(dayNight: DayNight): Point {
+  override fun ZodiacSign.getTriplicityPoint(dayNight: DayNight): AstroPoint {
     return when (dayNight) {
       DAY -> when (this.element) {
         FIRE -> SUN
@@ -139,7 +139,7 @@ class TriplicityPtolomyImpl : ITriplicity, Serializable {
    * 共管 , Partner
    * Ptolomy 只有水象星座，由火星共管
    * */
-  override fun ZodiacSign.getPartner(): Point {
+  override fun ZodiacSign.getPartner(): AstroPoint {
     return when (this.element) {
       FIRE -> MARS
       EARTH -> SATURN
@@ -153,7 +153,7 @@ class TriplicityPtolomyImpl : ITriplicity, Serializable {
 
 class TermPtolomyImpl : ITerm, Serializable {
 
-  override fun getPoint(degree: ZodiacDegree): Point {
+  override fun getPoint(degree: ZodiacDegree): AstroPoint {
     val signIndex = degree.value.toInt() / 30
 
     return (0..4)
@@ -163,7 +163,7 @@ class TermPtolomyImpl : ITerm, Serializable {
       .firstOrNull() ?: throw IllegalStateException("Cannot find Essential Terms at degree $degree , signIndex = $signIndex")
   }
 
-  override fun ZodiacSign.getTermPoint(degree: Double): Point {
+  override fun ZodiacSign.getTermPoint(degree: Double): AstroPoint {
     return getPoint((this.degree + degree).toZodiacDegree())
   }
 
@@ -346,7 +346,7 @@ class FacePtolomyImpl : IFace, Serializable {
 
 abstract class AbstractPtolemy : Serializable {
 
-  fun findPoint(sign: ZodiacSign, map: Map<Point, Double>): Point? {
+  fun findPoint(sign: ZodiacSign, map: Map<AstroPoint, Double>): AstroPoint? {
     return map.entries
       .filter { (_, value) -> sign === of(value) }
       .map { entry -> entry.key }
@@ -373,7 +373,7 @@ abstract class AbstractPtolemy : Serializable {
     )
 
     /** 存放星體在黃道帶上幾度得到 Exaltation (+4) 的度數  */
-    internal val exaltDegreeMap = mapOf<Point, Double>(
+    internal val exaltDegreeMap = mapOf<AstroPoint, Double>(
       SUN to 19.0  // 太陽在戌宮 19度 exalted.
       , MOON to 33.0  // 月亮在酉宮 03度 exalted.
       , MERCURY to 165.0  // 水星在巳宮 15度 exalted.
@@ -454,12 +454,12 @@ abstract class AbstractPtolemy : Serializable {
 
 
     /** 承上，儲存的是星座值 */
-    internal val exaltSignMap: Map<Point, ZodiacSign> = exaltDegreeMap
+    internal val exaltSignMap: Map<AstroPoint, ZodiacSign> = exaltDegreeMap
       .mapValues { (_, degree) -> of(degree) }
       .toMap()
 
     /** Fall Degree Map , 即為 Exalt 對沖的度數 */
-    internal val fallDegreeMap: Map<Point, Double> = exaltDegreeMap
+    internal val fallDegreeMap: Map<AstroPoint, Double> = exaltDegreeMap
       .mapValues { (_, deg) -> (deg + 180).normalize() }
       .toMap()
 

@@ -3,11 +3,9 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.AbstractPointTest
 import destiny.core.Gender.女
 import destiny.core.Gender.男
-import destiny.core.astrology.AbstractPointTest
-import destiny.core.astrology.getAbbreviation
-import destiny.core.astrology.toString
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.YinYang.陰
@@ -17,6 +15,8 @@ import destiny.core.chinese.ziwei.StarLongevity.Companion.fun沐浴
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun胎
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun長生
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun養
+import destiny.core.getAbbreviation
+import destiny.core.toString
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

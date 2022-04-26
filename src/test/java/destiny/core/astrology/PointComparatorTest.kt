@@ -8,7 +8,7 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class PointComparatorTest {
-  private val pc = PointComparator()
+  private val pc = AstroPointComparator()
 
   @Test
   fun testCompare() {

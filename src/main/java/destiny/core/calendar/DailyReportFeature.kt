@@ -15,6 +15,7 @@ import destiny.core.calendar.eightwords.HourBranchConfigBuilder
 import destiny.core.calendar.eightwords.IHourBranchFeature
 import destiny.core.chinese.Branch
 import destiny.core.chinese.lunarStation.*
+import destiny.core.toString
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.CacheGrain

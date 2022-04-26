@@ -5,9 +5,9 @@ package destiny.core.astrology.classical
 
 import destiny.core.DayNight.DAY
 import destiny.core.DayNight.NIGHT
+import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.DayNightSimpleImpl
 import destiny.core.astrology.Planet.*
-import destiny.core.astrology.Point
 import destiny.core.astrology.ZodiacDegree
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign
@@ -213,7 +213,7 @@ class EssentialImplTest {
    */
   @Test
   fun testDignitiesReception() {
-    val signMap = mapOf<Point, ZodiacSign>(
+    val signMap = mapOf<AstroPoint, ZodiacSign>(
       SUN to LIBRA,
       MERCURY to SCORPIO,
       VENUS to VIRGO,
@@ -222,7 +222,7 @@ class EssentialImplTest {
       SATURN to ARIES
     )
 
-    val degreeMap = mapOf<Point, ZodiacDegree>(
+    val degreeMap = mapOf<AstroPoint, ZodiacDegree>(
       SUN to (180 + 25.0).toZodiacDegree(),
       MERCURY to (210 + 1.0).toZodiacDegree(),
       VENUS to (150 + 1.0).toZodiacDegree(),
@@ -278,12 +278,12 @@ class EssentialImplTest {
   @Test
   fun testReceptionMap1() {
 
-    val signMap = mapOf<Point, ZodiacSign>(
+    val signMap: Map<AstroPoint, ZodiacSign> = mapOf(
       MARS to LIBRA,
       VENUS to ARIES,
       SATURN to ARIES
     )
-    val degreeMap = mapOf<Point, ZodiacDegree>(
+    val degreeMap: Map<AstroPoint, ZodiacDegree> = mapOf(
       MARS to (180 + 3.0).toZodiacDegree(),
       VENUS to 1.toZodiacDegree(),
       SATURN to 1.toZodiacDegree()
@@ -333,7 +333,7 @@ class EssentialImplTest {
    */
   @Test
   fun testReceptionMap2() {
-    val degreeMap: Map<Point, ZodiacDegree> = mapOf(
+    val degreeMap: Map<AstroPoint, ZodiacDegree> = mapOf(
       MOON to (120 + 28.0).toZodiacDegree(),
       SUN to 1.toZodiacDegree(),
       JUPITER to 1.toZodiacDegree(),
@@ -368,7 +368,7 @@ class EssentialImplTest {
    */
   @Test
   fun `太陽到戌 , 火星到午 , RULER 互訪而形成互容`() {
-    val map = mapOf<Point, ZodiacSign>(
+    val map = mapOf<AstroPoint, ZodiacSign>(
       SUN to ARIES,
       MARS to LEO
     )
@@ -417,7 +417,7 @@ class EssentialImplTest {
    */
   @Test
   fun `月亮到亥 , 金星到酉 , EXALT 互容`() {
-    val map = mapOf<Point, ZodiacSign>(
+    val map = mapOf<AstroPoint, ZodiacSign>(
       MOON to PISCES,
       VENUS to TAURUS
     )
@@ -474,7 +474,7 @@ class EssentialImplTest {
    */
   @Test
   fun `白天 太陽雙子、土星射手 Triplicity互容`() {
-    val map = mapOf<Point, ZodiacSign>(
+    val map = mapOf<AstroPoint, ZodiacSign>(
       SUN to GEMINI,
       SATURN to SAGITTARIUS
     )
@@ -511,7 +511,7 @@ class EssentialImplTest {
    */
   @Test
   fun `夜晚 月亮牡羊、火星處女 Triplicity互容`() {
-    val map = mapOf<Point, ZodiacSign>(
+    val map = mapOf<AstroPoint, ZodiacSign>(
       MOON to ARIES,
       JUPITER to VIRGO
     )
@@ -550,7 +550,7 @@ class EssentialImplTest {
    */
   @Test
   fun `木星到牡羊 , 土星到雙子 , 互相踩痛腳`() {
-    val signMap = mapOf<Point, ZodiacSign>(
+    val signMap = mapOf<AstroPoint, ZodiacSign>(
       JUPITER to ARIES,
       SATURN to GEMINI
     )
@@ -579,7 +579,7 @@ class EssentialImplTest {
    */
   @Test
   fun `水星到巨蟹 , 火星到射手 , 互相踩痛腳`() {
-    val signMap = mapOf<Point, ZodiacSign>(
+    val signMap = mapOf<AstroPoint, ZodiacSign>(
       MERCURY to CANCER,
       MARS to SAGITTARIUS
     )

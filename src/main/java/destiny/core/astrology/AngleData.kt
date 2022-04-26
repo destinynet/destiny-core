@@ -9,7 +9,7 @@ import kotlin.math.abs
 
 interface IAngleData {
   /** 兩顆星體  */
-  val points: Set<Point>
+  val points: Set<AstroPoint>
 
   /** 交角幾度 */
   val angle: Double
@@ -29,15 +29,15 @@ interface IAngleData {
  * */
 data class AngleData(
   /** 兩顆星體  */
-  override val points: Set<Point>,
+  override val points: Set<AstroPoint>,
   /** 交角幾度 */
   override val angle: Double ,
   /** 何時發生 */
   override val gmtJulDay: GmtJulDay?) : IAngleData , Serializable {
 
-  constructor(p1: Point, p2: Point, angle: Double, gmtJulDay: GmtJulDay) : this(sortedSetOf(pointComp, p1, p2), angle, gmtJulDay)
+  constructor(p1: AstroPoint, p2: AstroPoint, angle: Double, gmtJulDay: GmtJulDay) : this(sortedSetOf(pointComp, p1, p2), angle, gmtJulDay)
 
   companion object {
-    val pointComp = PointComparator()
+    val pointComp = AstroPointComparator()
   }
 }

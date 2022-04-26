@@ -29,7 +29,7 @@ package destiny.core.astrology
  *
  *</pre>
  */
-sealed class Star(nameKey: String, abbrKey: String?, resource: String, unicode: Char? = null) : Point(nameKey, resource, abbrKey, unicode) {
+sealed class Star(nameKey: String, abbrKey: String?, resource: String, unicode: Char? = null) : AstroPoint(nameKey, resource, abbrKey, unicode) {
 
   constructor(nameKey: String, resource: String) : this(nameKey, null, resource, null)
 }

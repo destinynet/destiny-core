@@ -11,7 +11,7 @@ import destiny.core.astrology.classical.Dignity.RULER
 interface IRuler {
 
   /** @param dayNight 若有傳值，取得「日夜區分版本」的 [RULER] (nullable), 否則取得一般版本的 [RULER] (非null) */
-  fun ZodiacSign.getRulerPoint(dayNight: DayNight? = null): Point?
+  fun ZodiacSign.getRulerPoint(dayNight: DayNight? = null): AstroPoint?
 
   /** 不分日夜，取得此行星為哪個星座的主人 , 傳回的為 非null值 . size 固定為 2  */
   fun Planet.getRulingSigns(): Set<ZodiacSign>
@@ -42,10 +42,10 @@ interface IDetriment {
 interface IExaltation {
 
   /** 哪顆星體在此星座 擢升 (EXALT , +4) , 必定為 1 or 0 顆星 */
-  fun ZodiacSign.getExaltPoint(): Point?
+  fun ZodiacSign.getExaltPoint(): AstroPoint?
 
   /** 此星體在哪個星座 擢升 (EXALT , +4) , 前者逆函數 */
-  fun Point.getExaltSign(): ZodiacSign?
+  fun AstroPoint.getExaltSign(): ZodiacSign?
 
   /** 取得在此星座得到 擢升 (EXALT , +4) 的星體及度數 */
   fun ZodiacSign.getExaltPointDegree(): PointDegree?
@@ -57,10 +57,10 @@ interface IExaltation {
 interface IFall {
 
   /** 哪顆星體在此星座 落 (FALL , -4) , 必定為 1 or 0 顆星 */
-  fun ZodiacSign.getFallPoint(): Point?
+  fun ZodiacSign.getFallPoint(): AstroPoint?
 
   /** 此星體在哪個星座 落 (FALL , -4) , 前者逆函數 */
-  fun Point.getFallingSign(): ZodiacSign?
+  fun AstroPoint.getFallingSign(): ZodiacSign?
 
   /** 取得在此星座得到 落 (FALL , -4) 的星體及度數 */
   fun ZodiacSign.getPointDegree(): PointDegree?
@@ -71,10 +71,10 @@ interface IFall {
 interface ITriplicity {
 
   /** 哪顆星在此星座得到三分相 (+3) */
-  fun ZodiacSign.getTriplicityPoint(dayNight: DayNight): Point
+  fun ZodiacSign.getTriplicityPoint(dayNight: DayNight): AstroPoint
 
   /** 共管 , Partner */
-  fun ZodiacSign.getPartner() : Point?
+  fun ZodiacSign.getPartner() : AstroPoint?
 }
 
 
@@ -82,18 +82,18 @@ interface ITriplicity {
 interface ITerm {
 
   /** 取得黃道帶上的某點，其 Terms 是哪顆星 , 0<=degree<360  */
-  fun getPoint(degree: ZodiacDegree): Point
+  fun getPoint(degree: ZodiacDegree): AstroPoint
 
   /** 取得某星座某度，其 Terms 是哪顆星 , 0<=degree<30  */
-  fun ZodiacSign.getTermPoint(degree: Double): Point
+  fun ZodiacSign.getTermPoint(degree: Double): AstroPoint
 }
 
 /** Face (十度區 , Decans ) , +1 */
 interface IFace {
 
   /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360  */
-  fun getPoint(degree: ZodiacDegree): Point
+  fun getPoint(degree: ZodiacDegree): AstroPoint
 
   /** 取得某星座某度，其 Face 是哪顆星 , 0<=degree<30  */
-  fun ZodiacSign.getFacePoint(degree: Double): Point
+  fun ZodiacSign.getFacePoint(degree: Double): AstroPoint
 }

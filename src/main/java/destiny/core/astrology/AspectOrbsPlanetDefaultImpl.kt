@@ -21,7 +21,7 @@ class AspectOrbsPlanetDefaultImpl : IAspectOrbsPlanet, Serializable {
   /**
    * 先傳回交角容許度，再傳回門檻分數 (0~1)
    */
-  override fun getPlanetAspectOrbAndThreshold(p1: Point, p2: Point, aspect: Aspect): Pair<Double, Double>? {
+  override fun getPlanetAspectOrbAndThreshold(p1: AstroPoint, p2: AstroPoint, aspect: Aspect): Pair<Double, Double>? {
     return orbThresholdMap[Pair(setOf(p1 , p2) , aspect)]
   }
 

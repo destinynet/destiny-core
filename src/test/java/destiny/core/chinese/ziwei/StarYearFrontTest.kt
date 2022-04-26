@@ -3,10 +3,10 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.astrology.AbstractPointTest
-import destiny.core.astrology.getAbbreviation
-import destiny.core.astrology.toString
+import destiny.core.AbstractPointTest
 import destiny.core.chinese.Branch.*
+import destiny.core.getAbbreviation
+import destiny.core.toString
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

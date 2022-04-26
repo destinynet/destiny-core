@@ -4,11 +4,13 @@
  */
 package destiny.core.astrology
 
+import destiny.core.IPoints
 import destiny.core.News
 import destiny.core.News.NorthSouth.NORTH
 import destiny.core.News.NorthSouth.SOUTH
 import destiny.core.astrology.NodeType.MEAN
 import destiny.core.astrology.NodeType.TRUE
+import destiny.core.toString
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -56,7 +58,7 @@ sealed class LunarNode(nameKey: String,
 
   companion object : IPoints<LunarNode> {
 
-    override val type: KClass<out Point> = LunarNode::class
+    override val type: KClass<out AstroPoint> = LunarNode::class
 
     private val inner_values by lazy {
       arrayOf(NORTH_TRUE, NORTH_MEAN, SOUTH_TRUE, SOUTH_MEAN)

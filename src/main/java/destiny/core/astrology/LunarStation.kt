@@ -3,8 +3,7 @@
  */
 package destiny.core.astrology
 
-import destiny.core.ILoop
-import destiny.core.News
+import destiny.core.*
 import destiny.core.News.EastWest.EAST
 import destiny.core.News.EastWest.WEST
 import destiny.core.News.NorthSouth.NORTH
@@ -78,7 +77,7 @@ sealed class LunarStation(
 
   companion object : IPoints<LunarStation> {
 
-    override val type: KClass<out Point> = LunarStation::class
+    override val type: KClass<out AstroPoint> = LunarStation::class
 
     operator fun get(index: Int): LunarStation {
       return ArrayTools[list.toTypedArray(), index]

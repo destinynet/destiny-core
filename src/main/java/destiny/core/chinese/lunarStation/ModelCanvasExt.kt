@@ -4,10 +4,10 @@
 package destiny.core.chinese.lunarStation
 
 import destiny.core.astrology.LunarStation
-import destiny.core.astrology.getAbbreviation
-import destiny.core.astrology.toString
 import destiny.core.calendar.eightwords.Direction
 import destiny.core.chinese.toString
+import destiny.core.getAbbreviation
+import destiny.core.toString
 import destiny.tools.ChineseStringTools
 import destiny.tools.LocaleTools
 import destiny.tools.canvas.ColorCanvas

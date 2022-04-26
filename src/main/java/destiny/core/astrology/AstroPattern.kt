@@ -7,21 +7,21 @@ import destiny.core.IPattern
 import java.io.Serializable
 
 /**
- * 某星( or [Point] ) 位於那個星座 , 第幾宮 , 通常用於描述 pattern 的關鍵點
+ * 某星( or [AstroPoint] ) 位於那個星座 , 第幾宮 , 通常用於描述 pattern 的關鍵點
  *
  * http://goodvibeastrology.com/aspect-patterns/
  */
-data class PointSignHouse(val point: Point,
+data class PointSignHouse(val point: AstroPoint,
                           val sign: ZodiacSign,
                           val house: Int)
 
-sealed class AstroPattern(open val points: Set<Point> = emptySet(),
+sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
                           open val score: Double? = null) : IPattern, Serializable {
 
   /**
    * [GrandTrine] : 大三角
    */
-  data class GrandTrine(override val points: Set<Point>, val element: Element, override val score: Double? = null) : AstroPattern() {
+  data class GrandTrine(override val points: Set<AstroPoint>, val element: Element, override val score: Double? = null) : AstroPattern() {
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
@@ -43,8 +43,8 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
   /**
    * [Kite] : 風箏
    */
-  data class Kite(val head: PointSignHouse, val wings: Set<Point>, val tail: PointSignHouse, override val score: Double? = null) : AstroPattern() {
-    override val points: Set<Point>
+  data class Kite(val head: PointSignHouse, val wings: Set<AstroPoint>, val tail: PointSignHouse, override val score: Double? = null) : AstroPattern() {
+    override val points: Set<AstroPoint>
       get() = wings.plus(head.point).plus(tail.point)
 
     override fun equals(other: Any?): Boolean {
@@ -69,8 +69,8 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
   /**
    * [TSquared] : 三刑會沖
    */
-  data class TSquared(val oppoPoints: Set<Point>, val squared: PointSignHouse, override val score: Double? = null) : AstroPattern() {
-    override val points: Set<Point>
+  data class TSquared(val oppoPoints: Set<AstroPoint>, val squared: PointSignHouse, override val score: Double? = null) : AstroPattern() {
+    override val points: Set<AstroPoint>
       get() = oppoPoints.plus(squared.point)
 
     override fun equals(other: Any?): Boolean {
@@ -94,8 +94,8 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
    * [Yod] : 上帝之指 , Finger of God
    * 60 , 150 , 150
    * */
-  data class Yod(val bottoms: Set<Point>, val pointer: PointSignHouse, override val score: Double? = null) : AstroPattern() {
-    override val points: Set<Point>
+  data class Yod(val bottoms: Set<AstroPoint>, val pointer: PointSignHouse, override val score: Double? = null) : AstroPattern() {
+    override val points: Set<AstroPoint>
       get() = bottoms.plus(pointer.point)
 
     override fun equals(other: Any?): Boolean {
@@ -120,7 +120,7 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
    * [Yod] + 對沖點 (與雙翼形成 30度)
    * */
   data class Boomerang(val yod: Yod, val oppoPoint: PointSignHouse, override val score: Double? = null) : AstroPattern() {
-    override val points: Set<Point>
+    override val points: Set<AstroPoint>
       get() = yod.points.plus(oppoPoint.point)
 
     override fun equals(other: Any?): Boolean {
@@ -143,8 +143,8 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
   /**
    * [GoldenYod] : 黃金指 72 , 144 , 144
    * */
-  data class GoldenYod(val bottoms: Set<Point>, val pointer: PointSignHouse, override val score: Double? = null) : AstroPattern() {
-    override val points: Set<Point>
+  data class GoldenYod(val bottoms: Set<AstroPoint>, val pointer: PointSignHouse, override val score: Double? = null) : AstroPattern() {
+    override val points: Set<AstroPoint>
       get() = bottoms.plus(pointer.point)
 
     override fun equals(other: Any?): Boolean {
@@ -168,7 +168,7 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
   /**
    * [GrandCross] : 大十字
    */
-  data class GrandCross(override val points: Set<Point>, val quality: Quality, override val score: Double? = null) : AstroPattern() {
+  data class GrandCross(override val points: Set<AstroPoint>, val quality: Quality, override val score: Double? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is GrandCross) return false
@@ -190,7 +190,7 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
    * [DoubleT] : 兩組 三刑會沖 (但未形成 [GrandCross]大十字 )
    */
   data class DoubleT(val tSquares: Set<TSquared>, override val score: Double? = null) : AstroPattern() {
-    override val points: Set<Point>
+    override val points: Set<AstroPoint>
       get() = tSquares.flatMap { it.points }.toSet()
 
     override fun equals(other: Any?): Boolean {
@@ -240,8 +240,8 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
    * [Wedge] : 楔子
    * 180 沖 , 逢 第三顆星 , 以 60/120 介入，緩和局勢
    */
-  data class Wedge(val oppoPoints: Set<Point>, val moderator: PointSignHouse, override val score: Double? = null) : AstroPattern() {
-    override val points: Set<Point>
+  data class Wedge(val oppoPoints: Set<AstroPoint>, val moderator: PointSignHouse, override val score: Double? = null) : AstroPattern() {
+    override val points: Set<AstroPoint>
       get() = oppoPoints.plus(moderator.point)
 
     override fun equals(other: Any?): Boolean {
@@ -266,7 +266,7 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
    * 兩組 [Wedge] 對沖，兩個60度，兩個120度，這也會形成壓力，但是彼此間又可以釋放壓力，非常詭異
    * @param points 總共4顆星
    */
-  data class MysticRectangle(override val points: Set<Point>, override val score: Double? = null) : AstroPattern() {
+  data class MysticRectangle(override val points: Set<AstroPoint>, override val score: Double? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is MysticRectangle) return false
@@ -285,7 +285,7 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
    * [Pentagram] : 五芒星 五個 [GoldenYod]
    * @param points 總共5顆星
    * */
-  data class Pentagram(override val points: Set<Point>, override val score: Double? = null) : AstroPattern() {
+  data class Pentagram(override val points: Set<AstroPoint>, override val score: Double? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is Pentagram) return false
@@ -303,7 +303,7 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
   /**
    * [StelliumSign] : 聚集星座 (至少四顆星)
    */
-  data class StelliumSign(override val points: Set<Point>, val sign: ZodiacSign, override val score: Double? = null) : AstroPattern() {
+  data class StelliumSign(override val points: Set<AstroPoint>, val sign: ZodiacSign, override val score: Double? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is StelliumSign) return false
@@ -324,7 +324,7 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
   /**
    * [StelliumHouse] : 聚集宮位 (至少四顆星)
    */
-  data class StelliumHouse(override val points: Set<Point>, val house: Int, override val score: Double? = null) : AstroPattern() {
+  data class StelliumHouse(override val points: Set<AstroPoint>, val house: Int, override val score: Double? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is StelliumHouse) return false
@@ -346,8 +346,8 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
    * [Confrontation] 對峙
    * 兩組 三顆星以上的合相星群 彼此對沖
    */
-  data class Confrontation(val clusters: Set<Set<Point>>, override val score: Double? = null) : AstroPattern() {
-    override val points: Set<Point>
+  data class Confrontation(val clusters: Set<Set<AstroPoint>>, override val score: Double? = null) : AstroPattern() {
+    override val points: Set<AstroPoint>
       get() = clusters.flatten().toSet()
 
     override fun equals(other: Any?): Boolean {
@@ -368,7 +368,7 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
 
 interface IPatternFactory : Serializable {
 
-  fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern>
+  fun getPatterns(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern>
 
 }
 

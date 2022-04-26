@@ -3,8 +3,8 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.Descriptive
 import destiny.core.IPattern
+import destiny.core.IPatternParasDescription
 import destiny.core.Paragraph
 import destiny.core.chinese.Branch
 import java.io.Serializable
@@ -21,16 +21,6 @@ interface IPatternContext {
   }
 
   val target: Target
-}
-
-
-/**
- * 整合 [IPattern] , 以及 [Descriptive]
- * 另外新增 list of [Paragraph] 作為段落解說
- */
-interface IPatternParasDescription : IPattern, Descriptive {
-  val pattern: IPattern
-  val paras: List<Paragraph>
 }
 
 

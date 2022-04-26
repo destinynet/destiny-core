@@ -3,8 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.astrology.IPoints
-import destiny.core.astrology.Point
+import destiny.core.IPoints
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import java.util.*
@@ -45,7 +44,7 @@ sealed class StarMain(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, 
 
   companion object : IPoints<StarMain> {
 
-    override val type: KClass<out Point> = StarMain::class
+    override val type: KClass<out ZStar> = StarMain::class
 
     override val values by lazy { arrayOf(紫微, 天機, 太陽, 武曲, 天同, 廉貞, 天府, 太陰, 貪狼, 巨門, 天相, 天梁, 七殺, 破軍) }
 

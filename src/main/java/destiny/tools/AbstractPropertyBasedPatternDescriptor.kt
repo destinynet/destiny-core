@@ -8,6 +8,7 @@ import destiny.core.IPattern
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.toString
+import destiny.core.toString
 import mu.KotlinLogging
 import java.io.Serializable
 import java.text.MessageFormat
@@ -53,7 +54,7 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
       return when(it) {
         is ILocaleString -> it.toString(locale)
         is Double -> String.format( doubleFormat?:"%.1f", it)
-        is Point -> it.toString(locale)
+        is AstroPoint -> it.toString(locale)
         is Element -> it.toString(locale)
         is Quality -> it.toString(locale)
         is Aspect -> it.toString(locale)

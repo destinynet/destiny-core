@@ -49,7 +49,7 @@ interface IEightWordsContextModel : ITimeLoc {
   val nextSolarSign: Pair<ZodiacSign, GmtJulDay>
 
   /** 星體位置表 */
-  val starPosMap: Map<Point, PositionWithBranch>
+  val starPosMap: Map<AstroPoint, PositionWithBranch>
 
   /** 命宮 (上升星座) */
   val risingStemBranch: StemBranch
@@ -87,7 +87,7 @@ data class EightWordsContextModel(
   override val nextSolarSign: Pair<ZodiacSign, GmtJulDay>,
 
   /** 星體位置表 */
-  override val starPosMap: Map<Point, PositionWithBranch>,
+  override val starPosMap: Map<AstroPoint, PositionWithBranch>,
 
   /** 命宮 (上升星座) */
   override val risingStemBranch: StemBranch,

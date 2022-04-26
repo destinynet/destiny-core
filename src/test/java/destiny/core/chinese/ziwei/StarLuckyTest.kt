@@ -3,11 +3,11 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.astrology.getAbbreviation
-import destiny.core.astrology.toString
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.impls.TianyiZiweiBookImpl
+import destiny.core.getAbbreviation
+import destiny.core.toString
 import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
