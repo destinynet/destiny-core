@@ -6,7 +6,7 @@ package destiny.core
 
 interface ISource {
 
-  val name: String
+  val source: String
 
   val author: String?
 }
