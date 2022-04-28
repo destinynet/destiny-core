@@ -4,6 +4,11 @@
  */
 package destiny.core.astrology
 
+import destiny.core.IPoints
+import destiny.core.Point
+import java.util.*
+import kotlin.reflect.KClass
+
 /**
  * 代表「星體 (celestial bodies)」 的抽象 class , 星體包括：
  * 恆星 [FixedStar]
@@ -32,4 +37,23 @@ package destiny.core.astrology
 sealed class Star(nameKey: String, abbrKey: String?, resource: String, unicode: Char? = null) : AstroPoint(nameKey, resource, abbrKey, unicode) {
 
   constructor(nameKey: String, resource: String) : this(nameKey, null, resource, null)
+
+  companion object : IPoints<Star> {
+
+    override val type: KClass<out Point> = Star::class
+
+    override val values: Array<Star> by lazy {
+      arrayOf(*Planet.values, *Asteroid.values, *FixedStar.values, *LunarPoint.values, *Hamburger.values, *Arabic.values, *LunarStation.values)
+    }
+
+    override fun fromString(value: String, locale: Locale): Star? {
+      return Planet.fromString(value, locale)
+        ?: Asteroid.fromString(value, locale)
+        ?: FixedStar.fromString(value, locale)
+        ?: LunarPoint.fromString(value, locale)
+        ?: Hamburger.fromString(value, locale)
+        ?: Arabic.fromString(value, locale)
+        ?: LunarStation.fromString(value, locale)
+    }
+  }
 }

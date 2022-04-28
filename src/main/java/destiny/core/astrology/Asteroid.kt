@@ -5,6 +5,7 @@
 package destiny.core.astrology
 
 import destiny.core.IPoints
+import destiny.core.Point
 import destiny.core.toString
 import java.util.*
 import kotlin.reflect.KClass
@@ -42,7 +43,7 @@ sealed class Asteroid(nameKey: String,
 
   companion object : IPoints<Asteroid> {
 
-    override val type: KClass<out AstroPoint> = Asteroid::class
+    override val type: KClass<out Point> = Asteroid::class
 
     override val values by lazy {
       arrayOf(CERES, PALLAS, JUNO, VESTA, CHIRON, PHOLUS)

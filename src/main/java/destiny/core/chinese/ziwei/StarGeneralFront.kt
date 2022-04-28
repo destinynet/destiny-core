@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.IPoints
+import destiny.core.Point
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.BranchTools
@@ -51,7 +52,7 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
 
   companion object : IPoints<StarGeneralFront> {
 
-    override val type: KClass<out ZStar> = StarGeneralFront::class
+    override val type: KClass<out Point> = StarGeneralFront::class
 
     override val values by lazy { arrayOf(將星, 攀鞍, 歲馹, 息神, 華蓋, 劫煞, 災煞, 天煞, 指背, 咸池, 月煞, 亡神) }
 

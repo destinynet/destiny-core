@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.IPoints
+import destiny.core.Point
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.BranchTools
@@ -36,7 +37,7 @@ sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::cl
 
   companion object : IPoints<StarUnlucky> {
 
-    override val type: KClass<out ZStar> = StarUnlucky::class
+    override val type: KClass<out Point> = StarUnlucky::class
 
     override val values by lazy { arrayOf(擎羊, 陀羅, 火星, 鈴星, 地劫, 地空) }
 

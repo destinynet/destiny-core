@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.IPoints
+import destiny.core.Point
 import destiny.core.toString
 import java.util.*
 import kotlin.reflect.KClass
@@ -17,7 +18,7 @@ sealed class Axis(nameKey: String, abbrKey: String) : AstroPoint(nameKey, Axis::
 
   companion object : IPoints<Axis> {
 
-    override val type: KClass<out AstroPoint> = Axis::class
+    override val type: KClass<out Point> = Axis::class
 
     val array by lazy { arrayOf(RISING, SETTING, MERIDIAN, NADIR) }
     val list by lazy { listOf(*array)}

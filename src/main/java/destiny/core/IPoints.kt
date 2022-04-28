@@ -14,4 +14,10 @@ interface IPoints<T: Point> {
   val values: Array<T>
 
   fun fromString(value: String, locale: Locale = Locale.ENGLISH): T?
+
+  fun valueOf(nameKey: String): T? {
+    return values.firstOrNull {
+      it.nameKey == nameKey
+    }
+  }
 }

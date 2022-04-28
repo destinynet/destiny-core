@@ -4,10 +4,15 @@
  */
 package destiny.core.astrology
 
+import destiny.core.IPoints
+import destiny.core.Point
+import java.util.*
+import kotlin.reflect.KClass
+
 
 /**
  * 代表黃白道的交點，以及近遠點 , 繼承圖如下：
- * <pre>
+ *
  *       LunarPoint (Abstract)
  *              日月交點
  *              |
@@ -17,9 +22,22 @@ package destiny.core.astrology
  * [LunarNode]       [LunarApsis]
  * [TRUE/MEAN]       [MEAN/OSCU]
  * North/South   PERIGEE (近)/APOGEE (遠)
-</pre> *
  */
-abstract class LunarPoint(nameKey: String, abbrKey: String, resource: String, unicode: Char? = null) : Star(nameKey, abbrKey, resource, unicode)
+abstract class LunarPoint(nameKey: String, abbrKey: String, resource: String, unicode: Char? = null) : Star(nameKey, abbrKey, resource, unicode) {
+
+  companion object : IPoints<LunarPoint> {
+
+    override val type: KClass<out Point> = LunarPoint::class
+
+    override val values: Array<LunarPoint> by lazy {
+      arrayOf(*LunarNode.values, *LunarApsis.values)
+    }
+
+    override fun fromString(value: String, locale: Locale): LunarPoint? {
+      return LunarNode.fromString(value, locale) ?: LunarApsis.fromString(value, locale)
+    }
+  }
+}
 /*
    * [WARN] 2017-04-08 : parent class 不應 reference 到 sub-class 的 field , class loading 可能會出現問題
    * 參考搜尋字串： referencing subclass from superclass initializer might lead to class loading deadlock

@@ -5,6 +5,7 @@
 package destiny.core.astrology
 
 import destiny.core.IPoints
+import destiny.core.Point
 import destiny.core.toString
 import java.util.*
 import kotlin.reflect.KClass
@@ -78,7 +79,7 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
 
   companion object : IPoints<FixedStar> {
 
-    override val type: KClass<out AstroPoint> = FixedStar::class
+    override val type: KClass<out Point> = FixedStar::class
 
     override val values by lazy {
       arrayOf(

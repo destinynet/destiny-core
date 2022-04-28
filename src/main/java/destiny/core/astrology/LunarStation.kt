@@ -77,7 +77,7 @@ sealed class LunarStation(
 
   companion object : IPoints<LunarStation> {
 
-    override val type: KClass<out AstroPoint> = LunarStation::class
+    override val type: KClass<out Point> = LunarStation::class
 
     operator fun get(index: Int): LunarStation {
       return ArrayTools[list.toTypedArray(), index]

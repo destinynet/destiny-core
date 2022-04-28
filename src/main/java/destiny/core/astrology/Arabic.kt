@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.IPoints
+import destiny.core.Point
 import destiny.core.toString
 import java.util.*
 import kotlin.reflect.KClass
@@ -42,7 +43,7 @@ sealed class Arabic(nameKey: String, abbrKey: String, unicode: Char? = null) : S
 
   companion object : IPoints<Arabic> {
 
-    override val type: KClass<out AstroPoint> = Arabic::class
+    override val type: KClass<out Point> = Arabic::class
 
     override val values by lazy {
       arrayOf(Fortune, Spirit, Eros, Victory, Necessity, Courage, Nemesis)

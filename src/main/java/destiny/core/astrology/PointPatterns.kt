@@ -7,8 +7,13 @@ import destiny.core.IPattern
 
 interface IAstroPattern : IPattern
 
-data class PointSignPattern(val astroPoint: AstroPoint,
-                            val sign: ZodiacSign) : IAstroPattern
+interface IPointSignPattern : IAstroPattern {
+  val point : AstroPoint
+  val sign : ZodiacSign
+}
+
+data class PointSignPattern(override val point: AstroPoint,
+                            override val sign: ZodiacSign) : IPointSignPattern
 
 data class PointHousePattern(val astroPoint: AstroPoint,
                              val house : Int) : IAstroPattern

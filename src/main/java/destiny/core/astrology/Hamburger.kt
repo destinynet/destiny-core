@@ -5,6 +5,7 @@
 package destiny.core.astrology
 
 import destiny.core.IPoints
+import destiny.core.Point
 import destiny.core.toString
 import java.util.*
 import kotlin.reflect.KClass
@@ -32,7 +33,7 @@ sealed class Hamburger(nameKey: String) : Star(nameKey, Star::class.qualifiedNam
 
   companion object : IPoints<Hamburger> {
 
-    override val type: KClass<out AstroPoint> = Hamburger::class
+    override val type: KClass<out Point> = Hamburger::class
 
     override val values by lazy {
       arrayOf(

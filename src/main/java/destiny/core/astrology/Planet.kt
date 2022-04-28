@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.IPoints
+import destiny.core.Point
 import destiny.core.toString
 import java.util.*
 import kotlin.reflect.KClass
@@ -31,7 +32,7 @@ sealed class Planet(nameKey: String,
 
   companion object : IPoints<Planet> {
 
-    override val type: KClass<out AstroPoint> = Planet::class
+    override val type: KClass<out Point> = Planet::class
 
     val classicalArray by lazy { arrayOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN) }
     val classicalList by lazy { listOf(*classicalArray) }
