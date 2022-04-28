@@ -4,9 +4,9 @@
 package destiny.core
 
 
-interface IPatternDescriptionsFactory<T> : java.io.Serializable {
+interface IPatternDescriptionsFactory<T, P : IPattern> : java.io.Serializable {
 
   fun getPatternDescriptions(model: T): List<IPatternParasDescription>
 
-  fun getDescription(pattern: IPattern): IPatternParasDescription?
+  fun descriptions(pattern: P): List<IPatternParasDescription>
 }

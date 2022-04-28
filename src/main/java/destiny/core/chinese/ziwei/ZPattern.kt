@@ -86,10 +86,13 @@ enum class Route {
 
 /** ============================================================================= */
 
+
+interface ZPattern : IPattern
+
 /**
  * 某星 在 某宮位
  */
-interface IStarHousePattern : IPattern {
+interface IStarHousePattern : ZPattern {
   val orStars: Set<ZStar>
   val house: House
 
@@ -112,7 +115,7 @@ data class StarHousePattern(
 /**
  * A星(與B星）坐X或Y地支 於 Z宮位
  */
-interface IStarsBranchesHousePattern : IPattern {
+interface IStarsBranchesHousePattern : ZPattern {
   val stars: Set<ZStar>
   val branches: Set<Branch>
   val house: House
