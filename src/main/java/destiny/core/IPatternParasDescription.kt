@@ -20,13 +20,18 @@ data class PatternParasDescription(
 ) : IPatternParasDescription, IPattern by pattern {
 
   /**
-   * 沒有其他語系，就傳中文的 [IPattern.name] 即可
+   * 沒有其他語系，就傳中文的 [IPattern.getName] 即可
    */
   override fun toString(locale: Locale): String {
-    return pattern.name
+    return pattern.getName(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return pattern.notes ?: ""
+    return pattern.getNotes(locale) ?: ""
   }
 }
+
+
+interface IAstroPatternDescription : IPatternParasDescription
+interface IPointHouseContent : IAstroPatternDescription
+interface IPointSignContent : IAstroPatternDescription

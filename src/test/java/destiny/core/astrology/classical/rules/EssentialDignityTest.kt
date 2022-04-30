@@ -6,6 +6,7 @@ package destiny.core.astrology.classical.rules
 import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacSign
 import mu.KotlinLogging
+import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -16,7 +17,7 @@ class EssentialDignityTest {
   @Test
   fun testName() {
     EssentialDignity.Ruler(Planet.SUN , ZodiacSign.LEO).also {
-      assertEquals("Ruler" , it.name)
+      assertEquals("Ruler" , it.getName(Locale.TAIWAN))
     }
   }
 }

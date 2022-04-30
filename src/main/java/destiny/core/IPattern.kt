@@ -1,13 +1,16 @@
 package destiny.core
 
 import java.io.Serializable
+import java.util.*
 
 interface IPattern : Serializable {
 
-  val name: String
-    get() = javaClass.simpleName
+  fun getName(locale: Locale = Locale.TAIWAN): String {
+    return javaClass.simpleName
+  }
 
-  val notes: String?
-    get() = null
+  fun getNotes(locale: Locale): String? {
+    return null
+  }
 
 }

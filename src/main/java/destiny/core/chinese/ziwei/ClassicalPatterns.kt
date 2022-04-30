@@ -19,6 +19,7 @@ import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
 import java.io.Serializable
+import java.util.*
 
 // =========================== 以下 , 吉格 ===========================
 /**
@@ -2574,7 +2575,13 @@ interface IClassicalPattern : ZPattern {
  * http://www.ai5429.com/c/clock108/
  */
 sealed class ClassicalPattern(override val type: PatternType,
-                              override val notes: String? = null) : IClassicalPattern, Serializable {
+                              private val notes: String? = null) : IClassicalPattern, Serializable {
+
+  override fun getNotes(locale : Locale) : String? {
+    return notes
+  }
+
+
   object 極向離明 : ClassicalPattern(GOOD)
   object 紫府同宮 : ClassicalPattern(GOOD)
   class 紫府朝垣(house: House, goods: Set<GoodCombo>) :

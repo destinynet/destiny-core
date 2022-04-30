@@ -9,6 +9,7 @@ import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
+import java.util.*
 
 fun IPlate.拱(branch: Branch = this.mainHouse.branch): Set<Branch> = branch.let { setOf(it.prev(4), it.next(4)) }
 fun IPlate.三方(branch: Branch = this.mainHouse.branch) = 拱(branch).plus(branch)
@@ -96,13 +97,15 @@ interface IStarHousePattern : ZPattern {
   val orStars: Set<ZStar>
   val house: House
 
-  override val name: String
-    get() = (orStars.joinToString("或") { it.toString() } + "在" + house).let {
+  override fun getName(locale: Locale): String {
+    return (orStars.joinToString("或") { it.toString() } + "在" + house).let {
       if (!it.endsWith("宮"))
         it + "宮"
       else
         it
     }
+  }
+
 }
 
 data class StarHousePattern(
@@ -120,8 +123,7 @@ interface IStarsBranchesHousePattern : ZPattern {
   val branches: Set<Branch>
   val house: House
 
-  override val name: String
-    get() {
+  override fun getName(locale: Locale): String {
       val sb = StringBuilder()
       sb.append(stars.joinToString("與"))
       if (stars.size == 1)

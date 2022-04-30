@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.IPattern
 import java.io.Serializable
+import java.util.*
 
 /**
  * 某星( or [AstroPoint] ) 位於那個星座 , 第幾宮 , 通常用於描述 pattern 的關鍵點
@@ -211,8 +212,7 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
    * [Hexagon] : 六芒星 (兩組 [GrandTrine]大三角 , 彼此交角60度 )
    */
   data class Hexagon(val grandTrines: Set<GrandTrine>, override val score: Double? = null) : AstroPattern() {
-    override val notes: String
-      get() {
+    override fun getNotes(locale: Locale): String? {
         val (g1, g2) = grandTrines.toList().let { it[0] to it[1] }
         return StringBuilder().apply {
           append(g1.points)
