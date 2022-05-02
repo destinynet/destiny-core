@@ -15,8 +15,17 @@ interface IPointAspectPattern : IAstroPattern {
   val angle: Double
 }
 
-data class PointAspectPattern(override val points: Set<AstroPoint>,
-                              override val angle: Double) : IPointAspectPattern, Serializable
+data class PointAspectPattern internal constructor(
+  override val points: Set<AstroPoint>,
+  override val angle: Double
+) : IPointAspectPattern, Serializable {
+  companion object {
+    fun of(points: Set<AstroPoint>, angle: Double): PointAspectPattern {
+      val (p1, p2) = points.iterator().let { it.next() to it.next() }
+      return PointAspectPattern(sortedSetOf(AstroPointComparator(), p1, p2), angle)
+    }
+  }
+}
 
 
 interface IAngleData : IPointAspectPattern {
@@ -41,9 +50,5 @@ data class AngleData(
   /** 何時發生 */
   override val gmtJulDay: GmtJulDay?) : IAngleData , IPointAspectPattern by pointAspectPattern, Serializable {
 
-  constructor(p1: AstroPoint, p2: AstroPoint, angle: Double, gmtJulDay: GmtJulDay) : this(PointAspectPattern(sortedSetOf(pointComp, p1, p2), angle), gmtJulDay)
-
-  companion object {
-    val pointComp = AstroPointComparator()
-  }
+  constructor(p1: AstroPoint, p2: AstroPoint, angle: Double, gmtJulDay: GmtJulDay) : this(PointAspectPattern.of(setOf(p1, p2), angle), gmtJulDay)
 }

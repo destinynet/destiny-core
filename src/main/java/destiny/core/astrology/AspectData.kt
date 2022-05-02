@@ -38,7 +38,7 @@ interface IAspectData : IAngleData {
 /**
  * 存放星體交角的資料結構
  * */
-data class AspectData(private val angleData: IAngleData,
+data class AspectData(val angleData: IAngleData,
                       /** 交會型態 : 接近 or 分離 */
                       override val type: Type? = null,
                       /** orb 不列入 equals / hashCode 計算  */
@@ -59,7 +59,7 @@ data class AspectData(private val angleData: IAngleData,
     score: Double? = null,
     gmtJulDay: GmtJulDay?
   ) : this(
-    AngleData(PointAspectPattern(sortedSetOf(AstroPointComparator(), points.toTypedArray()[0], points.toTypedArray()[1]), aspect.degree), gmtJulDay),
+    AngleData(PointAspectPattern.of(points, aspect.degree), gmtJulDay),
     type, orb, score
   )
 
