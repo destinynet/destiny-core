@@ -20,7 +20,7 @@ import javax.inject.Named
 
 @Serializable
 data class HoroscopeConfig(
-  val points: Set<@Serializable(with = AstroPointSerializer::class) AstroPoint> = setOf(*Planet.values, *LunarNode.values),
+  val points: Set<@Serializable(with = AstroPointSerializer::class) AstroPoint> = setOf(*Planet.values, *LunarNode.values, Axis.RISING, Axis.MERIDIAN),
   val houseSystem: HouseSystem = HouseSystem.PLACIDUS,
   val coordinate: Coordinate = Coordinate.ECLIPTIC,
   val centric: Centric = Centric.GEO,
