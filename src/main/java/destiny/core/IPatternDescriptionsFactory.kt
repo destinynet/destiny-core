@@ -6,7 +6,7 @@ package destiny.core
 import java.util.*
 
 
-interface IPatternDescriptionsFactory<T, P : IPattern, D : IPatternParasDescription> : java.io.Serializable {
+interface IPatternDescriptionsFactory<T, P : IPattern, D : IPatternParasDescription<P>> : java.io.Serializable {
 
   fun getPatternDescriptions(model: T, locale: Locale = Locale.getDefault()): List<D>
 

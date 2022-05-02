@@ -24,9 +24,9 @@ interface ZPatternContext {
 
 @Deprecated("")
 interface IPlateDescriptionsFactory {
-  fun getPatternDescriptions(plate: IPlate, pContext: ZPatternContext): List<IPatternParasDescription>
+  fun getPatternDescriptions(plate: IPlate, pContext: ZPatternContext): List<IPatternParasDescription<ZPattern>>
 
-  fun getDescription(pattern: IPattern): IPatternParasDescription?
+  fun getDescription(pattern: IPattern): IPatternParasDescription<ZPattern>?
 }
 
 

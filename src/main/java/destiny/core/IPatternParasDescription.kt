@@ -1,23 +1,27 @@
 package destiny.core
 
+import destiny.core.astrology.IAstroPattern
+import destiny.core.astrology.IPointAspectPattern
+import destiny.core.astrology.IPointHousePattern
+import destiny.core.astrology.IPointSignPattern
 import java.util.*
 
 /**
  * 整合 [IPattern] , 以及 [Descriptive]
  * 另外新增 list of [Paragraph] 作為段落解說
  */
-interface IPatternParasDescription : IPattern, Descriptive, ISource {
-  val pattern: IPattern
+interface IPatternParasDescription<T : IPattern> : Descriptive, ISource {
+  val pattern: T
   val paras: List<Paragraph>
 }
 
 
-data class PatternParasDescription(
-  override val pattern: IPattern,
+data class PatternParasDescription<T : IPattern>(
+  override val pattern: T,
   override val paras: List<Paragraph>,
   override val source: String,
   override val author: String? = null
-) : IPatternParasDescription, IPattern by pattern {
+) : IPatternParasDescription<T> {
 
   /**
    * 沒有其他語系，就傳中文的 [IPattern.getName] 即可
@@ -32,7 +36,7 @@ data class PatternParasDescription(
 }
 
 
-interface IAstroPatternDescription : IPatternParasDescription
-interface IPointHouseContent : IAstroPatternDescription
-interface IPointSignContent : IAstroPatternDescription
-interface IPointAspectContent : IAstroPatternDescription
+interface IAstroPatternDescription<T : IAstroPattern> : IPatternParasDescription<T>
+interface IPointHouseContent : IAstroPatternDescription<IPointHousePattern>
+interface IPointSignContent : IAstroPatternDescription<IPointSignPattern>
+interface IPointAspectContent : IAstroPatternDescription<IPointAspectPattern>
