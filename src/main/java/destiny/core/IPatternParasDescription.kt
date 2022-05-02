@@ -35,3 +35,4 @@ data class PatternParasDescription(
 interface IAstroPatternDescription : IPatternParasDescription
 interface IPointHouseContent : IAstroPatternDescription
 interface IPointSignContent : IAstroPatternDescription
+interface IPointAspectContent : IAstroPatternDescription

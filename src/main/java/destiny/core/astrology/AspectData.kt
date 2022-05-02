@@ -57,7 +57,11 @@ data class AspectData(private val angleData: IAngleData,
     orb: Double = 0.0,
     /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
     score: Double? = null,
-    gmtJulDay: GmtJulDay?) : this(AngleData(points, aspect.degree, gmtJulDay), type, orb, score)
+    gmtJulDay: GmtJulDay?
+  ) : this(
+    AngleData(PointAspectPattern(sortedSetOf(AstroPointComparator(), points.toTypedArray()[0], points.toTypedArray()[1]), aspect.degree), gmtJulDay),
+    type, orb, score
+  )
 
 
 

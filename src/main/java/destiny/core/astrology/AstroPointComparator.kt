@@ -18,7 +18,8 @@ class AstroPointComparator : Comparator<AstroPoint>, Serializable {
     Asteroid::class.java,
     FixedStar::class.java,
     Arabic::class.java,
-    Hamburger::class.java)
+    Hamburger::class.java,
+    LunarStation::class.java)
 
   override fun compare(p1: AstroPoint, p2: AstroPoint): Int {
     if (p1 is Planet && p2 is Planet) {
