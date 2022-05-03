@@ -71,7 +71,7 @@ interface IAspectsCalculator  {
     return points.asSequence().map { p1 ->
       getPointAspectAndScore(p1, positionMap, points, aspects)
         .map { (p2 , aspect , score) ->
-          AspectData(p1 , p2 , aspect , IHoroscopeModel.getAspectError(positionMap, p1, p2, aspect) ?: 0.0, score , null , null)
+          AspectData.of(p1 , p2 , aspect , IHoroscopeModel.getAspectError(positionMap, p1, p2, aspect) ?: 0.0, score , null , null)
         }.toSet()
     }.flatten()
       .toSet()

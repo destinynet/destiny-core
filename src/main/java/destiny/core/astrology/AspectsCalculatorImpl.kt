@@ -46,7 +46,7 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
                 val errorNext = abs(planetsAngleNext - aspect.degree)
 
                 val type = if (errorNext <= error) APPLYING else SEPARATING
-                AspectData(p1, p2, aspect, error, score, type , this.gmtJulDay)
+                AspectData.of(p1, p2, aspect, error, score, type , this.gmtJulDay)
               }
             }
           }

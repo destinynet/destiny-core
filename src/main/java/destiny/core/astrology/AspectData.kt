@@ -46,7 +46,7 @@ data class AspectData(val angleData: IAngleData,
                       /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
                       override val score: Double? = null) : Comparable<AspectData>, IAspectData, IAngleData by angleData, Serializable {
 
-  constructor(
+  private constructor(
     /** 存放形成交角的兩顆星體  */
     points: Set<AstroPoint>,
     /** 兩星所形成的交角 */
@@ -64,25 +64,10 @@ data class AspectData(val angleData: IAngleData,
   )
 
 
-
-
   init {
     require(points.size == 2) { "INCORRECT points"}
   }
 
-  constructor(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, type: Type? = null, orb: Double = 0.0, score: Double? = null) : this(
-    sortedSetOf(
-      pointComp, p1, p2
-    ), aspect, type, orb, score, null
-  )
-
-  constructor(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, orb: Double = 0.0) : this(p1, p2, aspect, null, orb, null)
-
-  constructor(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null, gmtJulDay: GmtJulDay?) : this(
-    sortedSetOf(
-      pointComp, p1, p2
-    ), aspect, type, orb, score, gmtJulDay
-  )
 
   override fun toString(): String {
     val typeString = type?.toString()
@@ -147,6 +132,19 @@ data class AspectData(val angleData: IAngleData,
 
   companion object {
     val pointComp = AstroPointComparator()
+
+    fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null, gmtJulDay: GmtJulDay? = null): AspectData {
+      require(p1 != p2)
+      return AspectData(sortedSetOf(pointComp, p1, p2), aspect, type, orb, score, gmtJulDay)
+    }
+
+    fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, type: Type? = null, orb: Double = 0.0, score: Double? = null): AspectData {
+      return of(p1, p2, aspect, orb, score, type, null)
+    }
+
+    fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, orb: Double = 0.0): AspectData {
+      return of(p1, p2, aspect, null, orb, null)
+    }
   }
 
 
