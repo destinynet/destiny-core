@@ -20,11 +20,11 @@ value class ZodiacDegree private constructor(val value: Double) : Serializable {
   val min: Int
     get() = ((value - value.toInt()) * 60).toInt()
 
-  fun getAngle(to : ZodiacDegree) : Double {
+  fun getAngle(to: ZodiacDegree): Double {
     return Companion.getAngle(this.value, to.value)
   }
 
-  fun getAngle(to : Double) : Double {
+  fun getAngle(to: Double): Double {
     return Companion.getAngle(this.value, to)
   }
 
@@ -96,7 +96,7 @@ value class ZodiacDegree private constructor(val value: Double) : Serializable {
 
   companion object {
 
-    fun Number.toZodiacDegree() : ZodiacDegree {
+    fun Number.toZodiacDegree(): ZodiacDegree {
       return ZodiacDegree(this.toDouble().normalize())
     }
 
@@ -105,11 +105,23 @@ value class ZodiacDegree private constructor(val value: Double) : Serializable {
      */
     fun getAngle(from: Double, to: Double): Double {
       return when {
-        from - to >= 180 -> 360 - from + to
-        from - to >= 0 -> from - to
+        from - to >= 180  -> 360 - from + to
+        from - to >= 0    -> from - to
         from - to >= -180 -> to - from
-        else -> from + 360 - to  // (from - to < -180)
+        else              -> from + 360 - to  // (from - to < -180)
       }
+    }
+
+    object OrientalComparator : Comparator<ZodiacDegree> {
+      override fun compare(o1: ZodiacDegree, o2: ZodiacDegree): Int {
+        return if (o1.value == o2.value) {
+          0
+        } else if (o1.isOriental(o2))
+          -1
+        else
+          1
+      }
+
     }
   }
 }
