@@ -36,7 +36,7 @@ data class PatternParasDescription<T : IPattern>(
 }
 
 
-interface IAstroPatternDescription<T : IAstroPattern> : IPatternParasDescription<T>
+sealed interface IAstroPatternDescription<T : IAstroPattern> : IPatternParasDescription<T>
 interface IPointHouseContent : IAstroPatternDescription<IPointHousePattern>
 interface IPointSignContent : IAstroPatternDescription<IPointSignPattern>
 interface IPointAspectContent : IAstroPatternDescription<IPointAspectPattern>

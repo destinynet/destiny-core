@@ -4,7 +4,9 @@
 package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
+import destiny.core.toString
 import java.io.Serializable
+import java.util.*
 import kotlin.math.abs
 
 interface IPointAspectPattern : IAstroPattern {
@@ -19,6 +21,19 @@ data class PointAspectPattern internal constructor(
   override val points: Set<AstroPoint>,
   override val angle: Double
 ) : IPointAspectPattern, Serializable {
+
+  override fun getName(locale: Locale): String {
+    return buildString {
+      points.iterator().also { iterator ->
+        append(iterator.next().toString(locale))
+        append(" 與 ")
+        append(iterator.next().toString(locale))
+      }
+      append(" 形成 ")
+      append(angle.toInt())
+      append("度")
+    }
+  }
   companion object {
     fun of(points: Set<AstroPoint>, angle: Double): PointAspectPattern {
       val (p1, p2) = points.iterator().let { it.next() to it.next() }

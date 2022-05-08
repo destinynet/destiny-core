@@ -14,7 +14,7 @@ class AstroPointComparator : Comparator<AstroPoint>, Serializable {
   private val starClasses = arrayOf(
     Planet::class.java,
     Axis::class.java,
-    LunarNode::class.java,
+    LunarPoint::class.java,
     Asteroid::class.java,
     FixedStar::class.java,
     Arabic::class.java,

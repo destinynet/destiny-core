@@ -3,7 +3,6 @@
  */
 package destiny.core.astrology
 
-import destiny.core.IPattern
 import java.io.Serializable
 import java.util.*
 
@@ -17,7 +16,7 @@ data class PointSignHouse(val point: AstroPoint,
                           val house: Int)
 
 sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
-                          open val score: Double? = null) : IPattern, Serializable {
+                          open val score: Double? = null) : IAstroPattern, Serializable {
 
   /**
    * [GrandTrine] : 大三角
