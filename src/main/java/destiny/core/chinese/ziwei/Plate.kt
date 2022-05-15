@@ -349,9 +349,10 @@ data class Plate(
   /** 每個地支宮位，所代表的大限，「虛歲」從何時、到何時  */
   override val flowBigVageMap: Map<StemBranch, Pair<Int, Int>>
     get() {
-      return houseDataSet.associate { hd ->
+      return houseDataSet.map { hd ->
         hd.stemBranch to hd.vageRanges
-      }
+      }.sortedBy { (_ , pair) -> pair.first }
+        .toMap()
     }
 
 

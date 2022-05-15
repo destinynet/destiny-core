@@ -193,7 +193,7 @@ data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::clas
 
 
 @DestinyMarker
-class ZiweiConfigBuilder : destiny.tools.Builder<ZiweiConfig> {
+class ZiweiConfigBuilder : Builder<ZiweiConfig> {
 
   private val defaultConfig: ZiweiConfig = ZiweiConfig()
 
