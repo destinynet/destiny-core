@@ -9,7 +9,7 @@ import kotlin.math.absoluteValue
  * 先天六十四卦工具程式
  * (for 伏羲先天六十四卦天圓地方圖)
  */
-object congenital {
+object Congenital {
   /**
    * 坤 = 0
    * 剝 = 1

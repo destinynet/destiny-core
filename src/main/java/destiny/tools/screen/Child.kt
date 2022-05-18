@@ -5,9 +5,4 @@ package destiny.tools.screen
  * @date 2002/8/29
  * @time 上午 02:23:42
  */
-internal class Child(val canvas: Canvas, val x: Int, val y: Int) {
-
-  fun setParent(c: Canvas) {
-    this.canvas.parent = c
-  }
-}
+internal data class Child(val canvas: Canvas, val x: Int, val y: Int)

@@ -1513,7 +1513,7 @@ val p權煞化祿 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
     return it.getHouseDataOf(it.mainHouse.branch).stars
       .takeIf { _ -> it.getMainStarsIn(it.mainHouse.branch).isEmpty() } // 命宮無主星
-      ?.intersect(listOf(擎羊, 陀羅, 火星, 鈴星))
+      ?.intersect(setOf(擎羊, 陀羅, 火星, 鈴星))
       ?.firstOrNull()
       ?.takeIf { star ->
         it.starStrengthMap[star]?.let { value -> value <= 2 } ?: false
@@ -2100,7 +2100,7 @@ val p祿逢兩煞 = object : PatternSingleImpl() {
     val 化祿守命宮: Boolean = it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch == it.mainHouse.branch
 
     val 命宮有空劫: Boolean = it.空劫().contains(it.mainHouse.branch)
-    val 三方四正有惡煞 = it.三方四正().intersect(it.羊陀().plus(it.火鈴())).isNotEmpty()
+    val 三方四正有惡煞 = it.三方四正().intersect(it.羊陀().plus(it.火鈴()).toSet()).isNotEmpty()
 
     return if ((祿存守命宮 || 化祿守命宮) && 命宮有空劫 && 三方四正有惡煞)
       祿逢兩煞
@@ -2441,9 +2441,9 @@ val p科星逢破 = object : PatternMultipleImpl() {
     return it.getTransFourHouseOf(ITransFour.Value.科).stemBranch.branch
       .takeIf { branch -> branches.contains(branch) }
       ?.takeIf { branch ->
-        val 三方四正有擎羊或陀羅 = it.三方四正(branch).intersect(it.getBranches(擎羊, 陀羅)).isNotEmpty()
-        val 三方四正有火星或鈴星 = it.三方四正(branch).intersect(it.getBranches(火星, 鈴星)).isNotEmpty()
-        val 三方四正有地空或地劫 = it.三方四正(branch).intersect(it.getBranches(地空, 地劫)).isNotEmpty()
+        val 三方四正有擎羊或陀羅 = it.三方四正(branch).intersect(it.getBranches(擎羊, 陀羅).toSet()).isNotEmpty()
+        val 三方四正有火星或鈴星 = it.三方四正(branch).intersect(it.getBranches(火星, 鈴星).toSet()).isNotEmpty()
+        val 三方四正有地空或地劫 = it.三方四正(branch).intersect(it.getBranches(地空, 地劫).toSet()).isNotEmpty()
         三方四正有擎羊或陀羅 && 三方四正有火星或鈴星 && 三方四正有地空或地劫
       }?.let { branch ->
         val house = it.getHouseDataOf(branch).house
@@ -2508,7 +2508,7 @@ val p一生孤貧 = object : PatternSingleImpl() {
     return it.starMap[破軍]?.stemBranch?.branch
       ?.takeIf { branch -> branch == it.mainHouse.branch } // 破軍守命
       ?.takeIf { _ -> 7 == it.starStrengthMap[破軍] }  // 破軍 陷
-      ?.takeIf { branch -> it.三方四正(branch).intersect(it.getBranches(*StarLucky.values)).isEmpty() } // 三方四正 沒有吉星
+      ?.takeIf { branch -> it.三方四正(branch).intersect(it.getBranches(*StarLucky.values).toSet()).isEmpty() } // 三方四正 沒有吉星
       ?.let { 一生孤貧 }
   }
 }
@@ -2523,7 +2523,7 @@ val p魁鉞凶冲 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
     return setOf(it.mainHouse.branch, it.bodyHouse.branch)
       .takeIf { set -> set == it.getBranches(天魁, 天鉞).toSet() }
-      ?.takeIf { _ -> it.三方四正().intersect(it.getBranches(*StarLucky.values)).isEmpty() } // 三方四正无吉星
+      ?.takeIf { _ -> it.三方四正().intersect(it.getBranches(*StarLucky.values).toSet()).isEmpty() } // 三方四正无吉星
       ?.let { _ ->
         val evils = mutableSetOf<EvilCombo>().apply {
           if (it.三方四正().containsAll(it.羊陀()))

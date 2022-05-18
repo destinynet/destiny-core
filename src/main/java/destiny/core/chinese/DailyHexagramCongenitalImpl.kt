@@ -6,11 +6,11 @@ package destiny.core.chinese
 import destiny.core.astrology.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.calendar.GmtJulDay
+import destiny.core.iching.Congenital.Circle.aheadOf
+import destiny.core.iching.Congenital.Circle.next
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
 import destiny.core.iching.Symbol
-import destiny.core.iching.congenital.Circle.aheadOf
-import destiny.core.iching.congenital.Circle.next
 import mu.KotlinLogging
 import java.io.Serializable
 import java.util.*

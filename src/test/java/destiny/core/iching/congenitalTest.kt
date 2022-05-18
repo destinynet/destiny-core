@@ -3,14 +3,14 @@
  */
 package destiny.core.iching
 
-import destiny.core.iching.congenital.Circle.aheadOf
-import destiny.core.iching.congenital.Circle.behindOf
-import destiny.core.iching.congenital.Circle.next
-import destiny.core.iching.congenital.Circle.prev
-import destiny.core.iching.congenital.Table.tableNext
-import destiny.core.iching.congenital.Table.tablePrev
-import destiny.core.iching.congenital.toHexagram
-import destiny.core.iching.congenital.toInt
+import destiny.core.iching.Congenital.Circle.aheadOf
+import destiny.core.iching.Congenital.Circle.behindOf
+import destiny.core.iching.Congenital.Circle.next
+import destiny.core.iching.Congenital.Circle.prev
+import destiny.core.iching.Congenital.Table.tableNext
+import destiny.core.iching.Congenital.Table.tablePrev
+import destiny.core.iching.Congenital.toHexagram
+import destiny.core.iching.Congenital.toInt
 import mu.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals

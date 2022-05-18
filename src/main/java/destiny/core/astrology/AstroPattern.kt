@@ -211,7 +211,7 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
    * [Hexagon] : 六芒星 (兩組 [GrandTrine]大三角 , 彼此交角60度 )
    */
   data class Hexagon(val grandTrines: Set<GrandTrine>, override val score: Double? = null) : AstroPattern() {
-    override fun getNotes(locale: Locale): String? {
+    override fun getNotes(locale: Locale): String {
         val (g1, g2) = grandTrines.toList().let { it[0] to it[1] }
         return StringBuilder().apply {
           append(g1.points)

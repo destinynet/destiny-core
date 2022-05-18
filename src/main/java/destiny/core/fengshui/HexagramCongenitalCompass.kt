@@ -3,13 +3,13 @@
  */
 package destiny.core.fengshui
 
+import destiny.core.iching.Congenital
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
-import destiny.core.iching.congenital
 import java.io.Serializable
 
 /**
- * 先天64卦羅盤 , for 伏羲先天六十四卦天圓地方圖 [destiny.core.iching.congenital]
+ * 先天64卦羅盤 , for 伏羲先天六十四卦天圓地方圖 [destiny.core.iching.Congenital]
  */
 class HexagramCongenitalCompass : ICompass<IHexagram>, Serializable {
 
@@ -18,7 +18,7 @@ class HexagramCongenitalCompass : ICompass<IHexagram>, Serializable {
   override val stepDegree: Double = 5.625 // 360 / 64.0
 
   override fun getStartDegree(t: IHexagram): Double {
-    return with(congenital.Circle) {
+    return with(Congenital.Circle) {
       t.aheadOf(Hexagram.復) * stepDegree
     }
   }
@@ -32,7 +32,7 @@ class HexagramCongenitalCompass : ICompass<IHexagram>, Serializable {
    */
   override fun get(degree: Double): IHexagram {
     val steps : Int = (degree / stepDegree).toInt()
-    return with(congenital.Circle) {
+    return with(Congenital.Circle) {
       Hexagram.復.next(steps)
     }
   }
