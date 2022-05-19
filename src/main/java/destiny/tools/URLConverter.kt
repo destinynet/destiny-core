@@ -16,7 +16,7 @@ import java.util.regex.Pattern
 class URLConverter : Serializable {
   internal val pattern = Pattern.compile(
     //"(@)?(href=')?(HREF=')?(HREF=\")?(href=\")?(http://)?[a-zA-Z_0-9\\-]+(\\.\\w[a-zA-Z_0-9\\-]+)+(/[#&\\n\\-=?+%/.\\w]+)?",
-    "(@)?(href=')?(HREF=')?(HREF=\")?(href=\")?(https://)?(http://)?[a-zA-Z_0-9\\-]+(\\.\\w[a-zA-Z_0-9\\-]+)+(/[#&\\n\\-=?+%/.\\w]+)?",
+    "(@)?(href=')?(HREF=')?(HREF=\")?(href=\")?(https://)?(http://)?[a-zA-Z_\\d\\-]+(\\.\\w[a-zA-Z_\\d\\-]+)+(/[#&\\n\\-=?+%/.\\w]+)?",
     Pattern.MULTILINE or Pattern.CASE_INSENSITIVE)
 
   fun convert(initialText: String): String {

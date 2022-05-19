@@ -10,8 +10,8 @@ import destiny.core.News.NorthSouth.NORTH
 import destiny.core.News.NorthSouth.SOUTH
 import destiny.core.astrology.Planet.*
 import destiny.core.chinese.Animal
-import destiny.core.chinese.toString
 import destiny.tools.ArrayTools
+import destiny.tools.getTitle
 import destiny.tools.serializers.LunarStationSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -67,7 +67,7 @@ sealed class LunarStation(
 
   /** 角木蛟 , 亢金龍 ... 這樣的完整名稱 :  星 + 行星星曜 + 動物 , 共三字元 */
   fun getFullName(locale: Locale): String {
-    return "${this.toString(locale)}${this.planet.getAbbreviation(locale)}${this.animal.toString(locale)}"
+    return "${this.toString(locale)}${this.planet.getAbbreviation(locale)}${this.animal.getTitle(locale)}"
   }
 
   override fun next(n: Int): LunarStation {

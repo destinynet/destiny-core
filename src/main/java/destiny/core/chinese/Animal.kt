@@ -5,8 +5,6 @@ package destiny.core.chinese
 
 import destiny.core.chinese.Animal.*
 import destiny.core.chinese.Branch.*
-import destiny.tools.ILocaleString
-import java.util.*
 
 
 enum class Animal {
@@ -65,16 +63,6 @@ enum class Animal {
   貐,
 }
 
-
-fun Animal.asLocaleString() = object : ILocaleString {
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(Animal::class.qualifiedName!!, locale).getString(name)
-  }
-}
-
-fun Animal.toString(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
-}
 
 
 object AnimalMap {

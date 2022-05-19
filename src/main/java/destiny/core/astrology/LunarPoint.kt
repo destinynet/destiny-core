@@ -39,7 +39,7 @@ abstract class LunarPoint(nameKey: String, abbrKey: String, resource: String, un
   }
 }
 /*
-   * [WARN] 2017-04-08 : parent class 不應 reference 到 sub-class 的 field , class loading 可能會出現問題
+   * [WARN] 2017-04-08 : parent class 不應 reference 到 subclass 的 field , class loading 可能會出現問題
    * 參考搜尋字串： referencing subclass from superclass initializer might lead to class loading deadlock
    *
   public final static LunarPoint[] values = {

@@ -80,9 +80,8 @@ class HourHouseImpl(val houseCuspImpl: IHouseCusp,
       return houseMap.map { (houseIndex, cuspDegree: ZodiacDegree) ->
         houseIndex to cuspDegree.getAngle(degree)
       }
-        .filter { (_, angle) -> angle < 40 } // 只過濾 angle < 40 , 加快後面 sort 速度
-        .sortedBy { it.second }
-        .first().first
+        // 只過濾 angle < 40 , 加快後面 sort 速度
+        .filter { (_, angle) -> angle < 40 }.minByOrNull { it.second }!!.first
     }
 
     fun houseToBranch(house: Int): Branch {

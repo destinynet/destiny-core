@@ -5,12 +5,12 @@ package destiny.core.chinese.lunarStation
 
 import destiny.core.astrology.LunarStation
 import destiny.core.calendar.eightwords.Direction
-import destiny.core.chinese.toString
 import destiny.core.getAbbreviation
 import destiny.core.toString
 import destiny.tools.ChineseStringTools
 import destiny.tools.LocaleTools
 import destiny.tools.canvas.ColorCanvas
+import destiny.tools.getTitle
 import destiny.tools.mutableStackOf
 import java.util.*
 
@@ -82,7 +82,7 @@ object ModelCanvasExt {
     fun ColorCanvas.outputLunarStation(ls: LunarStation, x: Int, y: Int) {
       setText(ls.toString(locale), x, y)
       setText(ls.planet.getAbbreviation(locale), x, y + 2, gray)
-      setText(ls.animal.toString(locale), x, y + 4, gray)
+      setText(ls.animal.getTitle(locale), x, y + 4, gray)
     }
 
     return ColorCanvas(7, 30, ChineseStringTools.NULL_CHAR).apply {
@@ -102,7 +102,7 @@ object ModelCanvasExt {
           setText("活曜", x, y, "green")
           setText(self.toString(locale), x + 1, y, "green")
           setText(self.planet.getAbbreviation(locale), x + 1, y + 2, gray)
-          setText(self.animal.toString(locale), x + 1, y + 4, gray)
+          setText(self.animal.getTitle(locale), x + 1, y + 4, gray)
           // 左下：時/年 禽
           outputLunarStation(stack.pop(), x + 2, y)
           y + 8
@@ -111,7 +111,7 @@ object ModelCanvasExt {
           setText("翻禽", x, y, "red")
           setText(oppo.toString(locale), x + 1, y, "red")
           setText(oppo.planet.getAbbreviation(locale), x + 1, y + 2, gray)
-          setText(oppo.animal.toString(locale), x + 1, y + 4, gray)
+          setText(oppo.animal.getTitle(locale), x + 1, y + 4, gray)
           // 左中下：日/月 禽
           outputLunarStation(stack.pop(), x + 2, y)
           y + 8
@@ -120,7 +120,7 @@ object ModelCanvasExt {
           setText("倒將", x, y)
           setText(reversed.toString(locale), x + 1, y)
           setText(reversed.planet.getAbbreviation(locale), x + 1, y + 2, gray)
-          setText(reversed.animal.toString(locale), x + 1, y + 4, gray)
+          setText(reversed.animal.getTitle(locale), x + 1, y + 4, gray)
 
           // 右中下：月/日 禽
           outputLunarStation(stack.pop(), x + 2, y)
@@ -130,7 +130,7 @@ object ModelCanvasExt {
           setText("氣將", x, y)
           setText(dayIndex.leader().toString(locale), x + 1, y)
           setText(dayIndex.leader().planet.getAbbreviation(locale), x + 1, y + 2, gray)
-          setText(dayIndex.leader().animal.toString(locale), x + 1, y + 4, gray)
+          setText(dayIndex.leader().animal.getTitle(locale), x + 1, y + 4, gray)
           // 右下：年/時 禽
           outputLunarStation(stack.pop(), x + 2, y)
         }

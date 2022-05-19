@@ -353,7 +353,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Cazimi (within 17 minutes of the Sun).
    * */
-  val cazimi = object : IPlanetPatternFactory {
+  private val cazimi = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return planet.takeIf { it !== SUN }
         ?.takeIf { h.getAngle(it, SUN) < 17.0 / 60.0 }
@@ -661,7 +661,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Peregrine : 漂泊、茫游、外出狀態
    */
-  val peregrine = object : IPlanetPatternFactory {
+  private val peregrine = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
@@ -789,7 +789,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Combust the Sun (between 17' and 8.5 from Sol).
    */
-  val combustion = object : IPlanetPatternFactory {
+  private val combustion = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return planet.takeIf { it !== SUN }
         ?.takeIf { h.getAngle(planet, SUN) > 17.0 / 60.0 && h.getAngle(planet, SUN) <= 8.5 }

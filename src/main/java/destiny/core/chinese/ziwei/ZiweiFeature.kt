@@ -712,28 +712,13 @@ class ZiweiFeature(
           }
         }
       }
-    logger.debug("transFour = {} , title = {}", config.transFour, config.transFour.getTitle(Locale.TAIWAN))
-    logger.debug("trans4Map = {}", trans4Map)
+    logger.debug { "transFour = ${config.transFour} , title = ${config.transFour.getTitle(Locale.TAIWAN)}" }
+    logger.debug { "trans4Map = $trans4Map" }
 
     val transFourMap: Map<ZStar, SortedMap<FlowType, ITransFour.Value>> = trans4Map.map { (k: Pair<ZStar, FlowType>,v: ITransFour.Value) ->
       k.first to sortedMapOf(k.second to v)
     }.toMap()
 
-    //val transFourMap = mutableMapOf<ZStar, MutableMap<FlowType, ITransFour.Value>>()
-//    trans4Map.forEach { (starFlowType: Pair<ZStar, FlowType>, value: ITransFour.Value) ->
-//
-//      val (star, flowType) = starFlowType
-//
-//      transFourMap.computeIfPresent(star) { _, flowTypeValueMap ->
-//        flowTypeValueMap.putIfAbsent(flowType, value)
-//        flowTypeValueMap
-//      }
-//      transFourMap.putIfAbsent(star, object : TreeMap<FlowType, ITransFour.Value>() {
-//        init {
-//          put(flowType, value)
-//        }
-//      })
-//    }
 
     // 宮干四化 : 此宮位，因為什麼星，各飛入哪個宮位(地支)
     // 參考 : http://www.fate123.com.tw/fate-teaching/fate-lesson-5.2.asp
@@ -1050,18 +1035,16 @@ class ZiweiFeature(
   override fun getDaysOfMonth(cycle: Int, flowYear: StemBranch, flowMonth: Int, leap: Boolean): List<Triple<ChineseDate, ChronoLocalDate, StemBranch>> {
     val days = chineseDateFeature.getDaysOf(cycle, flowYear, flowMonth, leap)
 
-    val list =  mutableListOf<Triple<ChineseDate, ChronoLocalDate, StemBranch>>()
-
-    for (i in 1..days) {
+    return (1..days).map {i ->
       val yinDate = ChineseDate(cycle, flowYear, flowMonth, leap, i)
 
       val yangDate = chineseDateFeature.getYangDate(yinDate)
       val lmtJulDay = (TimeTools.getGmtJulDay(yangDate.atTime(LocalTime.MIDNIGHT)).value + 0.5).toInt()
       val index = (lmtJulDay - 11) % 60
       val sb = StemBranch[index]
-      list.add(Triple(yinDate, yangDate, sb))
-    }
-    return list
+      Triple(yinDate, yangDate, sb)
+    }.toList()
+
   }
 
   /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「虛歲」各別是幾歲 ,   */
@@ -1102,9 +1085,8 @@ class ZiweiFeature(
 
     logger.debug("命宮地支 = {} , 身宮地支 = {}", mainBranch, bodyBranch)
 
-    val t2 = TimeTools.getDstAndOffset(lmt, loc)
-    val dst = t2.first
-    val minuteOffset = t2.second.inWholeMinutes
+    val (dst , duration) = TimeTools.getDstAndOffset(lmt, loc)
+    val minuteOffset = duration.inWholeMinutes
 
     val cDate = chineseDateFeature.getModel(lmt, loc)
     val cycle = cDate.cycleOrZero
@@ -1170,19 +1152,6 @@ class ZiweiFeature(
       appendingNotes,
       config
     )
-
-//    return getBirthPlate(Pair(mainBranch, bodyBranch), finalMonthNumForMainStars, cycle, yinYear, solarYear, lunarMonth
-//                         , cDate.leapMonth, monthBranch, solarTerms, lunarDays, hour, dayNight, gender, vageMap , config)
-//      .withLocalDateTime(lmt)
-//      .withLocation(loc)
-//      .apply {
-//        name?.also {
-//          withName(it)
-//        }
-//      }
-//      .appendNotesBuilders(notesBuilders).apply {
-//        place?.also { withPlace(it) }
-//      }
 
   }
 

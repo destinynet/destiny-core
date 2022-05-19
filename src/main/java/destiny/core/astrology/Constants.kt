@@ -30,7 +30,7 @@ object Constants {
   /** 異常月 (通過近地點 , perigee) , 1994-2000  */
   const val ANOMALISTIC_MONTH = SECONDS_OF_DAY * 27.554550 // 2380713.12
 
-  /** 龍月 ? (The Draconic month is the time between one node passage to the next. ) */
+  /** 龍月 ? (The Draconic month is the time between one node passage to the next.) */
   const val DRACONIC_MONTH = SECONDS_OF_DAY * 27.212221 // 2351135.89
 
 }

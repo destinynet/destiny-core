@@ -140,7 +140,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   } // 上帝之指
 
   // 回力鏢 : YOD + 對沖點
-  val boomerang = object : IPatternFactory {
+  private val boomerang = object : IPatternFactory {
     override fun getPatterns(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
       return yod.getPatterns(posMap, cuspDegreeMap)
         .map { it as AstroPattern.Yod }
@@ -238,7 +238,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   } // 大十字
 
 
-  val doubleT = object : IPatternFactory {
+  private val doubleT = object : IPatternFactory {
     override fun getPatterns(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
       return tSquared.getPatterns(posMap, cuspDegreeMap)
         .takeIf { it.size >= 2 }
@@ -356,7 +356,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
 
   // 五芒星 , 144 , 72
-  val pentagram = object : IPatternFactory {
+  private val pentagram = object : IPatternFactory {
     override fun getPatterns(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
 
       return goldenYod.getPatterns(posMap, cuspDegreeMap)

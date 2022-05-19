@@ -18,8 +18,8 @@ object LocationTools {
 
   private fun String.localTrim() =
     this
-      .replace("[\\p{Cc}]\\d+;".toRegex(), "")
-      .replace("[\\p{Cntrl}]".toRegex(), "")
+      .replace("\\p{Cc}\\d+;".toRegex(), "")
+      .replace("\\p{Cntrl}".toRegex(), "")
       .trim { it == ' ' }
 
   fun encode(loc: ILocation): String {

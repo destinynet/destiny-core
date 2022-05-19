@@ -19,8 +19,8 @@ import java.io.Serializable
  * 以太陽過天底的時間來決定『子正』
  */
 class MidnightSolarTransImpl(private val riseTransImpl: IRiseTrans,
-                             val atmosphericPressure: Double = 1013.25,
-                             val atmosphericTemperature: Double = 0.0,
+                             private val atmosphericPressure: Double = 1013.25,
+                             private val atmosphericTemperature: Double = 0.0,
                              val discCenter: Boolean = true,
                              val refraction: Boolean = true) : IMidnight,
                                                                Descriptive by MidnightImpl.NADIR.asDescriptive(),

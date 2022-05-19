@@ -142,14 +142,15 @@ interface ILunarStationFeature : Feature<LunarStationConfig, ContextModel>{
  * 禽星排盤
  */
 @Named
-class LunarStationFeature(val yearlyFeature: LunarStationYearlyFeature,
-                          val monthlyFeature: ILunarStationMonthlyFeature,
-                          val dailyFeature: LunarStationDailyFeature,
-                          val hourlyFeature: LunarStationHourlyFeature,
-                          private val eightWordsFeature : EightWordsFeature,
-                          private val chineseDateFeature: ChineseDateFeature,
-                          private val hiddenVenusFoeFeature: HiddenVenusFoeFeature,
-                          private val julDayResolver: JulDayResolver) : ILunarStationFeature, AbstractCachedFeature<LunarStationConfig, ContextModel>() {
+class LunarStationFeature(
+  private val yearlyFeature: LunarStationYearlyFeature,
+  private val monthlyFeature: ILunarStationMonthlyFeature,
+  private val dailyFeature: LunarStationDailyFeature,
+  val hourlyFeature: LunarStationHourlyFeature,
+  private val eightWordsFeature : EightWordsFeature,
+  private val chineseDateFeature: ChineseDateFeature,
+  private val hiddenVenusFoeFeature: HiddenVenusFoeFeature,
+  private val julDayResolver: JulDayResolver) : ILunarStationFeature, AbstractCachedFeature<LunarStationConfig, ContextModel>() {
   override val key: String = "lunarStation"
 
   override val defaultConfig: LunarStationConfig = LunarStationConfig()

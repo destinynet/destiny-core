@@ -1966,7 +1966,7 @@ val p馬落空亡 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
     return it.mainHouse.branch
       .takeIf { branch -> branch == it.starMap[天馬]?.stemBranch?.branch } // 命宮天馬
-      ?.takeIf { _ -> it.三方四正().intersect(it.空劫()).isNotEmpty() } // 三方四正有地空或地劫
+      ?.takeIf { _ -> it.三方四正().intersect(it.空劫().toSet()).isNotEmpty() } // 三方四正有地空或地劫
       ?.let { 馬落空亡 }
   }
 }

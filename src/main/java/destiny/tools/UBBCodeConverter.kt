@@ -69,12 +69,12 @@ class UBBCodeConverter {
   }
 
   private fun String.reTxtEmail(): String {
-    val regex = "(\\[email=)([^]]+)([]])(.+?)(\\[/email])".toRegex(RegexOption.IGNORE_CASE)
+    val regex = "(\\[email=)([^]]+)(])(.+?)(\\[/email])".toRegex(RegexOption.IGNORE_CASE)
     return this.replace(regex) { r -> "<a href=mailto:" + r.groupValues[2] + ">" + r.groupValues[4] + "</a>" }
   }
 
   private fun String.reAlign(): String {
-    val regex = "(\\[align=)([^]]+)([]])(.+?)(\\[/align])".toRegex(RegexOption.IGNORE_CASE)
+    val regex = "(\\[align=)([^]]+)(])(.+?)(\\[/align])".toRegex(RegexOption.IGNORE_CASE)
     return this.replace(regex) { r -> "<pattern align=" + r.groupValues[2] + ">" + r.groupValues[4] + "</pattern>" }
   }
 
@@ -129,7 +129,7 @@ class UBBCodeConverter {
   }
 
   private fun String.reLi(): String {
-    val regex = "(\\[list=)([^]]+)([]])(.+?)(\\[/list])".toRegex(RegexOption.IGNORE_CASE)
+    val regex = "(\\[list=)([^]]+)(])(.+?)(\\[/list])".toRegex(RegexOption.IGNORE_CASE)
     return this.replace(regex) { r -> "<ol type=" + r.groupValues[2] + ">" + r.groupValues[4] + "</ol>" }
   }
 
@@ -143,7 +143,7 @@ class UBBCodeConverter {
   }
 
   private fun String.reShadow(): String {
-    val regex = "(\\[shadow=)([0-9]+)([,])([^,]+)([,])([^]]+)(])(.+?)(\\[/shadow])".toRegex(RegexOption.IGNORE_CASE)
+    val regex = "(\\[shadow=)(\\d+)(,)([^,]+)(,)([^]]+)(])(.+?)(\\[/shadow])".toRegex(RegexOption.IGNORE_CASE)
     return this.replace(regex) { r ->
       "<table w=" +
         r.groupValues[2] + " style=\"filter:shadow(color=" +
@@ -154,7 +154,7 @@ class UBBCodeConverter {
   }
 
   private fun String.reGlow(): String {
-    val regex = "(\\[glow=)([0-9]+)([,])([^,]+)([,])([^]]+)(])(.+?)(\\[/glow])".toRegex(RegexOption.IGNORE_CASE)
+    val regex = "(\\[glow=)(\\d+)(,)([^,]+)(,)([^]]+)(])(.+?)(\\[/glow])".toRegex(RegexOption.IGNORE_CASE)
     return this.replace(regex) { r ->
       "<table w=" +
         r.groupValues[2] + " style=\"filter:glow(color=" +
@@ -165,7 +165,7 @@ class UBBCodeConverter {
   }
 
   private fun String.reBlur(): String {
-    val regex = "(\\[blur=)([0-9]+)([,])([^,]+)([,])([^]]+)(])(.+?)(\\[/blur])".toRegex(RegexOption.IGNORE_CASE)
+    val regex = "(\\[blur=)(\\d+)(,)([^,]+)(,)([^]]+)(])(.+?)(\\[/blur])".toRegex(RegexOption.IGNORE_CASE)
     return this.replace(regex) { r ->
       "<table w=" +
         r.groupValues[2] + " style=\"filter:blur(Add=0,direction=" +
@@ -190,13 +190,13 @@ class UBBCodeConverter {
   }
 
   private fun String.reTxtSize(): String {
-    val regex = "(\\[size=)([1-9])([]])(.+?)(\\[/size])".toRegex(RegexOption.IGNORE_CASE)
+    val regex = "(\\[size=)([1-9])(])(.+?)(\\[/size])".toRegex(RegexOption.IGNORE_CASE)
     return this.replace(regex) { r -> "<font size=" + r.groupValues[2] + ">" + r.groupValues[4] + "</font>" }
   }
 
 
   private fun String.reSwf(): String {
-    val regex = "(\\[swf=)([0-9]+)([,])([0-9]+)(])(.+?)(\\[/swf])".toRegex(RegexOption.IGNORE_CASE)
+    val regex = "(\\[swf=)(\\d+)(,)(\\d+)(])(.+?)(\\[/swf])".toRegex(RegexOption.IGNORE_CASE)
     return this.replace(regex) { r ->
       "<a href=\"" +
         r.groupValues[6] + "\" target=\"_blank\" title=\"全螢幕播放\">全螢幕播放</a><br><OBJECT codeBase=http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=4,0,2,0 classId=clsid:D27CDB6E-AE6D-11cf-96B8-444553540000 w=" +
@@ -210,7 +210,7 @@ class UBBCodeConverter {
   }
 
   private fun String.reSk(): String {
-    val regex = "(\\[sk=)([0-9]+)([,])([0-9]+)(])(.+?)(\\[/sk])".toRegex(RegexOption.IGNORE_CASE)
+    val regex = "(\\[sk=)(\\d+)(,)(\\d+)(])(.+?)(\\[/sk])".toRegex(RegexOption.IGNORE_CASE)
     return this.replace(regex) { r ->
       "<object classId=clsid:166B1BCA-3F9C-11CF-8075-444553540000 codebase=http://download.macromedia.com/pub/shockwave/cabs/director/sw.cab#version=7,0,2,0 w=" +
         r.groupValues[2] + " h=" +
@@ -223,7 +223,7 @@ class UBBCodeConverter {
   }
 
   private fun String.reRm(): String {
-    val regex = "(\\[rm=)([0-9]+)([,])([0-9]+)(])(.+?)(\\[/rm])".toRegex(RegexOption.IGNORE_CASE)
+    val regex = "(\\[rm=)(\\d+)(,)(\\d+)(])(.+?)(\\[/rm])".toRegex(RegexOption.IGNORE_CASE)
     return this.replace(regex) { r ->
       "<OBJECT classId=clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA class=OBJECT id=RAOCX w=" +
         r.groupValues[2] + " h=" +
@@ -235,7 +235,7 @@ class UBBCodeConverter {
   }
 
   private fun String.reMp(): String {
-    val regex = "(\\[mp=)([0-9]+)([,])([0-9]+)(])(.+?)(\\[/mp])".toRegex(RegexOption.IGNORE_CASE)
+    val regex = "(\\[mp=)(\\d+)(,)(\\d+)(])(.+?)(\\[/mp])".toRegex(RegexOption.IGNORE_CASE)
     return this.replace(regex) { r ->
       "<object align=middle classId=CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95 class=OBJECT id=MediaPlayer w=" +
         r.groupValues[2] + " h=" +
@@ -248,7 +248,7 @@ class UBBCodeConverter {
   }
 
   private fun String.reQt(): String {
-    val regex = "(\\[qt=)([0-9]+)([,])([0-9]+)(])(.+?)(\\[/qt])".toRegex(RegexOption.IGNORE_CASE)
+    val regex = "(\\[qt=)(\\d+)(,)(\\d+)(])(.+?)(\\[/qt])".toRegex(RegexOption.IGNORE_CASE)
     return this.replace(regex) { r ->
       "<embed src=" + r.groupValues[6] +
         " w=" + r.groupValues[2] +

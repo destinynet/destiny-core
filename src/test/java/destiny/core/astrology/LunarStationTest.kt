@@ -5,8 +5,8 @@ package destiny.core.astrology
 
 import destiny.core.AbstractPointTest
 import destiny.core.astrology.LunarStation.*
-import destiny.core.chinese.toString
 import destiny.core.toString
+import destiny.tools.getTitle
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -78,9 +78,9 @@ internal class LunarStationTest : AbstractPointTest(LunarStation::class) {
     LunarStation::class.sealedSubclasses.map { k ->
       k.objectInstance as LunarStation
     }.forEach { station ->
-      assertTrue(station.animal.toString(Locale.TAIWAN).length == 1)
-      assertTrue(station.animal.toString(Locale.SIMPLIFIED_CHINESE).length == 1)
-      assertNotNull(station.animal.toString(Locale.ENGLISH))
+      assertTrue(station.animal.getTitle(Locale.TAIWAN).length == 1)
+      assertTrue(station.animal.getTitle(Locale.SIMPLIFIED_CHINESE).length == 1)
+      assertNotNull(station.animal.getTitle(Locale.ENGLISH))
     }
   }
 
