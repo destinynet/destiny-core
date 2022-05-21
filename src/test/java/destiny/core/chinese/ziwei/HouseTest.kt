@@ -3,32 +3,39 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.EnumTest
+import destiny.tools.getTitle
 import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class HouseTest {
+class HouseTest : EnumTest() {
 
-  private val logger = KotlinLogging.logger {  }
+  private val logger = KotlinLogging.logger { }
 
   @Test
-  fun testToString() {
+  fun testString() {
+    testEnums(House::class , false)
+  }
 
-    assertEquals("命宮" , House.命宮.toString(Locale.TAIWAN))
-    assertEquals("遷移" , House.遷移.toString(Locale.TAIWAN))
-    assertEquals("迁移" , House.遷移.toString(Locale.SIMPLIFIED_CHINESE))
+  @Test
+  fun testGetTitle() {
 
-    assertEquals("遷移" , House.遷移.toString(Locale.ENGLISH))
+    assertEquals("命宮", House.命宮.getTitle(Locale.TAIWAN))
+    assertEquals("遷移", House.遷移.getTitle(Locale.TAIWAN))
+    assertEquals("迁移", House.遷移.getTitle(Locale.SIMPLIFIED_CHINESE))
 
-    assertEquals("遷移" , House.遷移.toString())
+    assertEquals("遷移", House.遷移.getTitle(Locale.ENGLISH))
 
+    assertEquals("遷移", House.遷移.toString())
 
-    for (house in House.values()) {
+    House.values().forEach { house ->
       assertNotNull(house.toString())
       logger.info("{}", house.toString())
     }
+
   }
 
 }
