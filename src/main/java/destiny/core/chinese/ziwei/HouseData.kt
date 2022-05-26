@@ -34,7 +34,7 @@ data class HouseData(
   /** 六條小限  */
   val smallRanges: List<Int>) : Serializable, Comparable<HouseData> {
 
-  /** 宮干自化 列表 , 長度 0 , 1 or 2  */
+  /** 宮干自化 列表 , 0 <= 長度 <= 3 */
   val selfTransFours: List<ITransFour.Value>
     get() = transFourFlyMap
       .filter { (_, _, third) -> third == stemBranch.branch }
