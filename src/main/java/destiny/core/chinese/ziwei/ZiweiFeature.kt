@@ -137,6 +137,9 @@ enum class ChineseDateImpl {
   Civil
 }
 
+/** 某時刻對應到的 大運、流年 等資訊 */
+data class Flow(val section: StemBranch, val year: StemBranch) : java.io.Serializable
+
 @Serializable
 data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::class) ZStar> = setOf(*StarMain.values, *StarMinor.values, *StarLucky.values, *StarUnlucky.values,
                                                                                                   *StarDoctor.values, *StarGeneralFront.values, *StarLongevity.values, *StarYearFront.values),
@@ -392,8 +395,8 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
   /** 計算 流時盤 */
   fun getFlowHour(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlate
 
-  /** 反推大限 */
-  fun getSection(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): StemBranch?
+  /** 反推大限、流年等資訊 */
+  fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Flow?
 
   /**
    * @param cycle     cycle
@@ -1027,8 +1030,8 @@ class ZiweiFeature(
       .appendTrans4Map(trans4Map)
   }
 
-  /** 反推大限 */
-  override fun getSection(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): StemBranch? {
+  /** 反推大限、流年等資訊 */
+  override fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Flow? {
     return lmt.takeIf { it.isAfter(plate.localDateTime) }
       ?.takeIf { plate.vageMap != null }
       ?.let { targetLmt ->
@@ -1040,12 +1043,14 @@ class ZiweiFeature(
         vageMap.entries.firstOrNull { (_ , pair) ->
                 val (fromGmt , toGmt) = pair
                 targetGmtJulDay in fromGmt..toGmt
-              }?.key?.let { targetVage ->
+              }?.key?.let { targetVage -> // target虛歲
 
-          // target虛歲
           plate.flowBigVageMap.entries.firstOrNull { (_ , pair ) ->
             targetVage >= pair.first && targetVage <= pair.second
-          }?.key
+          }?.key?.let { section ->
+            val flowYear = plate.year.next(targetVage - 1)
+            Flow(section, flowYear)
+          }
         }
       }
   }
@@ -1081,11 +1086,11 @@ class ZiweiFeature(
 
     val bigRangeImpl = bigRangeImplMap[config.bigRange]!!
 
-    val (first, second) = bigRangeImpl.getVageRange(plate.branchHouseMap.getValue(flowBig),
+    val (fromVage, toVage) = bigRangeImpl.getVageRange(plate.branchHouseMap.getValue(flowBig),
                                                     plate.state, birthYear.stem, plate.gender, houseSeqImplMap[config.houseSeq]!!)
 
     // 再把虛歲轉換成干支
-    return (first .. second).map { vAge ->
+    return (fromVage .. toVage).map { vAge ->
       val sb = birthYear.next(vAge - 1) // 虛歲 (vAge) 轉換為年 , 要減一 . 虛歲
       val cycle: Int = if (sb.index >= birthYear.index) {
         birthCycle + (vAge - 1) / 60

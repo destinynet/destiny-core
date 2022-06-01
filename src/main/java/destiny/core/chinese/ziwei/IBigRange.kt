@@ -13,7 +13,7 @@ import mu.KotlinLogging
 /** 起大限  */
 interface IBigRange : Descriptive {
 
-  /** 取得此 house 的大限起訖時刻 , 傳回「虛歲」 (vAge)  */
+  /** 取得此 house 的大限起訖時刻 , 傳回「虛歲」 (vAge) , 虛歲皆為 inclusive */
   fun getVageRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int>
 
   /** 計算每個地支 的 大限 起訖 虛歲  */
