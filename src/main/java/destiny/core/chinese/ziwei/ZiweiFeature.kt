@@ -138,7 +138,7 @@ enum class ChineseDateImpl {
 }
 
 /** 某時刻對應到的 大運、流年 等資訊 */
-data class Flow(val section: StemBranch, val year: StemBranch) : java.io.Serializable
+data class Flow(val section: StemBranch?, val year: StemBranch) : java.io.Serializable
 
 @Serializable
 data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::class) ZStar> = setOf(*StarMain.values, *StarMinor.values, *StarLucky.values, *StarUnlucky.values,
@@ -1045,12 +1045,14 @@ class ZiweiFeature(
                 targetGmtJulDay in fromGmt..toGmt
               }?.key?.let { targetVage -> // target虛歲
 
-          plate.flowBigVageMap.entries.firstOrNull { (_ , pair ) ->
+          val section: StemBranch? = plate.flowBigVageMap.entries.firstOrNull { (_, pair) ->
             targetVage >= pair.first && targetVage <= pair.second
-          }?.key?.let { section ->
-            val flowYear = plate.year.next(targetVage - 1)
-            Flow(section, flowYear)
-          }
+          }?.key
+
+          val flowYear = plate.year.next(targetVage - 1)
+
+          Flow(section, flowYear)
+
         }
       }
   }
