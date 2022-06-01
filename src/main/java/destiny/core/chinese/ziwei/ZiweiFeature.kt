@@ -392,6 +392,9 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
   /** 計算 流時盤 */
   fun getFlowHour(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlate
 
+  /** 反推大限 */
+  fun getSection(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): StemBranch?
+
   /**
    * @param cycle     cycle
    * @param flowYear  流年
@@ -1022,6 +1025,29 @@ class ZiweiFeature(
     return getFlowDay(plate, flowBig, flowYear, flowMonth, flowDay, flowDayNum, config)
       .withFlowHour(flowHour, branchHouseMap)
       .appendTrans4Map(trans4Map)
+  }
+
+  /** 反推大限 */
+  override fun getSection(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): StemBranch? {
+    return lmt.takeIf { it.isAfter(plate.localDateTime) }
+      ?.takeIf { plate.vageMap != null }
+      ?.let { targetLmt ->
+        val loc = plate.location ?: locationOf(Locale.getDefault())
+        val targetGmtJulDay = TimeTools.getGmtJulDay(targetLmt, loc)
+
+        val vageMap = plate.vageMap!!
+
+        vageMap.entries.firstOrNull { (_ , pair) ->
+                val (fromGmt , toGmt) = pair
+                targetGmtJulDay in fromGmt..toGmt
+              }?.key?.let { targetVage ->
+
+          // target虛歲
+          plate.flowBigVageMap.entries.firstOrNull { (_ , pair ) ->
+            targetVage >= pair.first && targetVage <= pair.second
+          }?.key
+        }
+      }
   }
 
 
