@@ -13,9 +13,9 @@ import java.io.Serializable
 /**
  * 鄰宮起大限
  */
-class BigRangeSkipMain : IBigRange,
-                         Descriptive by BigRange.SkipMain.asDescriptive(),
-                         Serializable {
+class FlowSectionSkipMain : IFlowSection,
+                            Descriptive by BigRange.SkipMain.asDescriptive(),
+                            Serializable {
 
   override fun getVageRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int> {
     return getAgeRange(house, set, yinYang, gender, houseSeqImpl)

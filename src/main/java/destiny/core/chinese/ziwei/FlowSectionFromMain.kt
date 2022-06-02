@@ -20,9 +20,9 @@ import java.io.Serializable
  * 順行的話，就是命、父、福順時針而行。
  * 逆行就是命、兄、夫逆時針而行。
  */
-class BigRangeFromMain : IBigRange,
-                         Descriptive by BigRange.FromMain.asDescriptive(),
-                         Serializable {
+class FlowSectionFromMain : IFlowSection,
+                            Descriptive by BigRange.FromMain.asDescriptive(),
+                            Serializable {
 
   override fun getVageRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int> {
     return getAgeRange(house, set, yinYang, gender, houseSeqImpl)

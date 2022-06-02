@@ -116,7 +116,7 @@ interface IPlate : Serializable {
 //    get() = branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.本命) }.toMap()
 
   /** 每個地支宮位，所代表的大限，「虛歲」從何時、到何時  */
-  val flowBigVageMap: Map<StemBranch, Pair<Int, Int>>
+  val flowSectionVageMap: Map<StemBranch, Pair<Int, Int>>
 
 
 
@@ -224,7 +224,7 @@ interface IPlate : Serializable {
   }
 
   /** 大運 */
-  fun withFlowBig(flowBig: StemBranch, branchHouseMap: Map<Branch, House>): IPlate
+  fun withFlowSection(flowSection: StemBranch, branchHouseMap: Map<Branch, House>): IPlate
 
   /** 流年 */
   fun withFlowYear(flowYear: StemBranch, branchHouseMap: Map<Branch, House>): IPlate
@@ -347,7 +347,7 @@ data class Plate(
   }
 
   /** 每個地支宮位，所代表的大限，「虛歲」從何時、到何時  */
-  override val flowBigVageMap: Map<StemBranch, Pair<Int, Int>>
+  override val flowSectionVageMap: Map<StemBranch, Pair<Int, Int>>
     get() {
       return houseDataSet.map { hd ->
         hd.stemBranch to hd.vageRanges
@@ -357,9 +357,9 @@ data class Plate(
 
 
   /** 大運 */
-  override fun withFlowBig(flowBig: StemBranch, branchHouseMap: Map<Branch, House>): IPlate {
+  override fun withFlowSection(flowSection: StemBranch, branchHouseMap: Map<Branch, House>): IPlate {
     val newFlowBranchMap: Map<FlowType, StemBranch> = flowBranchMap.toMutableMap().apply {
-      put(FlowType.SECTION, flowBig)
+      put(FlowType.SECTION, flowSection)
     }.toMap()
 
     val newBranchFlowHouseMap = branchFlowHouseMap.map { (branch: Branch, m: Map<FlowType, House>) ->

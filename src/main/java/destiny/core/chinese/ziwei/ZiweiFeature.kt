@@ -381,22 +381,38 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
   ): IPlate
 
   /** 計算 大限盤  */
-  fun getFlowBig(plate: IPlate, flowBig: StemBranch, config:ZiweiConfig): IPlate
+  fun getFlowSection(plate: IPlate, section: StemBranch, config:ZiweiConfig): IPlate
 
   /** 計算 流年盤 */
-  fun getFlowYear(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, config: ZiweiConfig): IPlate
+  fun getFlowYear(plate: IPlate, section: StemBranch, flowYear: StemBranch, config: ZiweiConfig): IPlate
 
   /** 計算 流月盤 */
-  fun getFlowMonth(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): IPlate
+  fun getFlowMonth(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): IPlate
 
   /** 計算 流日盤 */
-  fun getFlowDay(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): IPlate
+  fun getFlowDay(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): IPlate
 
   /** 計算 流時盤 */
-  fun getFlowHour(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlate
+  fun getFlowHour(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlate
 
   /** 反推大限、流年等資訊 */
   fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Flow?
+
+  /** 反推大限盤 */
+  fun getFlowSection(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): IPlate? {
+    return reverseFlows(plate, lmt, config)?.section?.let {
+      getFlowSection(plate, it, config)
+    }
+  }
+
+  /** 反推大限、流年盤 */
+  fun getFlowYear(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): IPlate? {
+    return reverseFlows(plate, lmt, config)?.let { flow ->
+      flow.section?.let { section ->
+        getFlowYear(plate, section, flow.year, config)
+      }
+    }
+  }
 
   /**
    * @param cycle     cycle
@@ -408,7 +424,7 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
   fun getDaysOfMonth(cycle: Int, flowYear: StemBranch, flowMonth: Int, leap: Boolean): List<Triple<ChineseDate, ChronoLocalDate, StemBranch>>
 
   /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「虛歲」各別是幾歲 ,   */
-  fun getYearsOfFlowBig(plate: IPlate, flowBig: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>>
+  fun getYearsOfFlowSection(plate: IPlate, section: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>>
 }
 
 @Named
@@ -428,7 +444,7 @@ class ZiweiFeature(
   private val tianyiImplMap: Map<Tianyi, ITianyi>,
   private val transFourImplMap: Map<TransFour, ITransFour>,
   private val strengthImplMap: Map<Strength, IStrength>,
-  private val bigRangeImplMap: Map<BigRange, IBigRange>,
+  private val flowSectionImplMap: Map<BigRange, IFlowSection>,
   private val flowYearImplMap: Map<FlowYear, IFlowYear>,
   private val flowMonthImplMap: Map<FlowMonth, IFlowMonth>,
   private val flowDayImplMap: Map<FlowDay, IFlowDay>,
@@ -757,8 +773,8 @@ class ZiweiFeature(
     val chineseDate = ChineseDate(cycle, lunarYear, lunarMonth, leapMonth, lunarDays)
 
     // 計算每個地支的 大限 起訖 「虛歲」時刻
-    val bigRangeImpl = bigRangeImplMap[config.bigRange]!!
-    val flowBigVageMap = bigRangeImpl.getSortedFlowBigVageMap(branchHouseBiMap, 五行局, lunarYear, gender, houseSeqImpl)
+    val flowSectionImpl = flowSectionImplMap[config.bigRange]!!
+    val flowSectionVageMap = flowSectionImpl.getSortedFlowSectionVageMap(branchHouseBiMap, 五行局, lunarYear, gender, houseSeqImpl)
 
     // 小限 mapping
     val branchSmallRangesMap: Map<Branch, List<Int>> = values()
@@ -807,7 +823,7 @@ class ZiweiFeature(
       val house = e.value
       val stars = branchStarMap[sb.branch]?.toSet() ?: emptySet()
 
-      val fromTo = flowBigVageMap.getValue(sb) // 必定不為空
+      val fromTo = flowSectionVageMap.getValue(sb) // 必定不為空
       val smallRanges = branchSmallRangesMap.getValue(sb.branch)
       HouseData(
         house, sb, stars.toMutableSet(), branchFlowHouseMap.getValue(sb.branch), flyMap.getValue(sb), fromTo.first,
@@ -935,25 +951,25 @@ class ZiweiFeature(
   }
 
   /** 計算 大限盤  */
-  override fun getFlowBig(plate: IPlate, flowBig: StemBranch, config: ZiweiConfig): IPlate {
+  override fun getFlowSection(plate: IPlate, section: StemBranch, config: ZiweiConfig): IPlate {
     // 在此大限中，每個地支，對應到哪個宮位
 
     val branchHouseMap = values().associateWith { branch ->
-      val steps = branch.getAheadOf(flowBig.branch)
+      val steps = branch.getAheadOf(section.branch)
 
       houseSeqImplMap[config.houseSeq]!!.prev(House.命宮, steps)
     }
 
     // 大限四化
-    val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> = getTrans4Map(FlowType.SECTION, flowBig.stem, config)
+    val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> = getTrans4Map(FlowType.SECTION, section.stem, config)
 
     return plate
-      .withFlowBig(flowBig, branchHouseMap)
+      .withFlowSection(section, branchHouseMap)
       .appendTrans4Map(trans4Map)
   }
 
   /** 計算 流年盤  */
-  override fun getFlowYear(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, config: ZiweiConfig): IPlate {
+  override fun getFlowYear(plate: IPlate, section: StemBranch, flowYear: StemBranch, config: ZiweiConfig): IPlate {
     // 流年命宮
     val yearlyMain = flowYearImplMap[config.flowYear]!!.getFlowYear(flowYear.branch, plate.finalMonthNumForMonthStars, plate.hour)
 
@@ -965,13 +981,13 @@ class ZiweiFeature(
     // 流年四化
     val trans4Map = getTrans4Map(FlowType.YEAR, flowYear.stem, config)
 
-    return getFlowBig(plate, flowBig, config)
+    return getFlowSection(plate, section, config)
       .withFlowYear(flowYear, branchHouseMap)
       .appendTrans4Map(trans4Map)
   }
 
   /** 計算 流月盤  */
-  override fun getFlowMonth(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): IPlate {
+  override fun getFlowMonth(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): IPlate {
 
     // 流月命宮
     val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, plate.finalMonthNumForMonthStars, plate.hour)
@@ -984,13 +1000,13 @@ class ZiweiFeature(
     // 流月四化
     val trans4Map = getTrans4Map(FlowType.MONTH, flowMonth.stem, config)
 
-    return getFlowYear(plate, flowBig, flowYear, config)
+    return getFlowYear(plate, section, flowYear, config)
       .withFlowMonth(flowMonth, branchHouseMap)
       .appendTrans4Map(trans4Map)
   }
 
   /** 計算 流日盤  */
-  override fun getFlowDay(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): IPlate {
+  override fun getFlowDay(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): IPlate {
     // 流月命宮
     val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, plate.finalMonthNumForMonthStars, plate.hour)
 
@@ -1003,13 +1019,13 @@ class ZiweiFeature(
 
     // 流日四化
     val trans4Map = getTrans4Map(FlowType.DAY, flowDay.stem, config)
-    return getFlowMonth(plate, flowBig, flowYear, flowMonth, config)
+    return getFlowMonth(plate, section, flowYear, flowMonth, config)
       .withFlowDay(flowDay, branchHouseMap)
       .appendTrans4Map(trans4Map)
   }
 
   /** 計算 流時盤 */
-  override fun getFlowHour(plate: IPlate, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlate {
+  override fun getFlowHour(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlate {
     // 流月命宮
     val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, plate.finalMonthNumForMonthStars, plate.hour)
     // 流日命宮
@@ -1025,7 +1041,7 @@ class ZiweiFeature(
     // 流時四化
     val trans4Map = getTrans4Map(FlowType.HOUR, flowHour.stem, config)
 
-    return getFlowDay(plate, flowBig, flowYear, flowMonth, flowDay, flowDayNum, config)
+    return getFlowDay(plate, section, flowYear, flowMonth, flowDay, flowDayNum, config)
       .withFlowHour(flowHour, branchHouseMap)
       .appendTrans4Map(trans4Map)
   }
@@ -1045,7 +1061,7 @@ class ZiweiFeature(
                 targetGmtJulDay in fromGmt..toGmt
               }?.key?.let { targetVage -> // target虛歲
 
-          val section: StemBranch? = plate.flowBigVageMap.entries.firstOrNull { (_, pair) ->
+          val section: StemBranch? = plate.flowSectionVageMap.entries.firstOrNull { (_, pair) ->
             targetVage >= pair.first && targetVage <= pair.second
           }?.key
 
@@ -1081,15 +1097,15 @@ class ZiweiFeature(
   }
 
   /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「虛歲」各別是幾歲 ,   */
-  override fun getYearsOfFlowBig(plate: IPlate, flowBig: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>> {
+  override fun getYearsOfFlowSection(plate: IPlate, section: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>> {
 
     val birthYear = plate.chineseDate.year
     val birthCycle = plate.chineseDate.cycleOrZero
 
-    val bigRangeImpl = bigRangeImplMap[config.bigRange]!!
+    val flowSectionImpl = flowSectionImplMap[config.bigRange]!!
 
-    val (fromVage, toVage) = bigRangeImpl.getVageRange(plate.branchHouseMap.getValue(flowBig),
-                                                    plate.state, birthYear.stem, plate.gender, houseSeqImplMap[config.houseSeq]!!)
+    val (fromVage, toVage) = flowSectionImpl.getVageRange(plate.branchHouseMap.getValue(section),
+                                                          plate.state, birthYear.stem, plate.gender, houseSeqImplMap[config.houseSeq]!!)
 
     // 再把虛歲轉換成干支
     return (fromVage .. toVage).map { vAge ->

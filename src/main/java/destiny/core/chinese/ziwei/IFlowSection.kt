@@ -11,21 +11,21 @@ import destiny.core.chinese.StemBranch
 import mu.KotlinLogging
 
 /** 起大限  */
-interface IBigRange : Descriptive {
+interface IFlowSection : Descriptive {
 
   /** 取得此 house 的大限起訖時刻 , 傳回「虛歲」 (vAge) , 虛歲皆為 inclusive */
   fun getVageRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int>
 
   /** 計算每個地支 的 大限 起訖 虛歲  */
-  fun getFlowBigVageMap(branchHouseMap: Map<Branch, House>, set: Int, birthYear: StemBranch, gender: Gender, houseSeq: IHouseSeq): Map<Branch, Pair<Int, Int>> {
+  fun getFlowSectionVageMap(branchHouseMap: Map<Branch, House>, set: Int, birthYear: StemBranch, gender: Gender, houseSeq: IHouseSeq): Map<Branch, Pair<Int, Int>> {
     return Branch.values().associateWith { branch ->
       getVageRange(branchHouseMap.getValue(branch), set, birthYear.stem, gender, houseSeq)
     }
   }
 
   /** 承上 , 計算每個地支的 大限 起訖 「虛歲」時刻，並且按照先後順序排列 (年齡 小 -> 大)  */
-  fun getSortedFlowBigVageMap(branchHouseMap: Map<Branch, House>, set: Int, birthYear: StemBranch, gender: Gender, houseSeq: IHouseSeq): Map<StemBranch, Pair<Int, Int>> {
-    val map = getFlowBigVageMap(branchHouseMap, set, birthYear, gender, houseSeq)
+  fun getSortedFlowSectionVageMap(branchHouseMap: Map<Branch, House>, set: Int, birthYear: StemBranch, gender: Gender, houseSeq: IHouseSeq): Map<StemBranch, Pair<Int, Int>> {
+    val map = getFlowSectionVageMap(branchHouseMap, set, birthYear, gender, houseSeq)
 
     val stemOf寅 = Ziwei.getStemOf寅(birthYear.stem)
 

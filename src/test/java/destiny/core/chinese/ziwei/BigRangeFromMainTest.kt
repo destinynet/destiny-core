@@ -13,7 +13,7 @@ import kotlin.test.assertEquals
 
 class BigRangeFromMainTest {
 
-  internal var impl: IBigRange = BigRangeFromMain()
+  internal var impl: IFlowSection = FlowSectionFromMain()
   private var seq: IHouseSeq = HouseSeqDefaultImpl()
 
   @Test
