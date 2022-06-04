@@ -24,18 +24,13 @@ class FlowSectionFromMain : IFlowSection,
                             Descriptive by BigRange.FromMain.asDescriptive(),
                             Serializable {
 
-  override fun getVageRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int> {
-    return getAgeRange(house, set, yinYang, gender, houseSeqImpl)
-  }
-
-  /** 虛歲  */
-  private fun getAgeRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeq: IHouseSeq): Pair<Int, Int> {
+  override fun getAgeRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int> {
     val steps: Int = if (yinYang.booleanValue && gender === Gender.男 || !yinYang.booleanValue && gender === Gender.女) {
       // 陽男陰女順行
-      houseSeq.getAheadOf(命宮, house)
+      houseSeqImpl.getAheadOf(命宮, house)
     } else {
       // 陰男陽女逆行
-      houseSeq.getAheadOf(house, 命宮)
+      houseSeqImpl.getAheadOf(house, 命宮)
     }
     val fromRange = set + steps * 10
     val toRange = set + steps * 10 + 9

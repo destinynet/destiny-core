@@ -6,6 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.AbstractConfigTest
 import destiny.core.IntAgeNote
 import destiny.core.calendar.chinese.MonthAlgo
+import destiny.core.chinese.AgeType
 import destiny.core.chinese.Tianyi
 import destiny.core.chinese.YearType
 import destiny.core.chinese.ziwei.ZiweiConfigBuilder.Companion.ziweiConfig
@@ -39,6 +40,7 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     FlowDay.SkipFlowMonthMainHouse,
     FlowHour.Branch,
     BigRange.SkipMain,
+    AgeType.REAL,
     listOf(IntAgeNote.WestYear)
   )
 
@@ -65,6 +67,7 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     flowDay = FlowDay.SkipFlowMonthMainHouse
     flowHour = FlowHour.Branch
     bigRange = BigRange.SkipMain
+    sectionAgeType = AgeType.REAL
     ageNotes = listOf(IntAgeNote.WestYear)
   }
 
@@ -87,6 +90,7 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     assertTrue(raw.contains(""""flowDay":\s*"SkipFlowMonthMainHouse"""".toRegex()))
     assertTrue(raw.contains(""""flowHour":\s*"Branch"""".toRegex()))
     assertTrue(raw.contains(""""bigRange":\s*"SkipMain"""".toRegex()))
+    assertTrue(raw.contains(""""sectionAgeType":\s*"REAL"""".toRegex()))
     assertTrue(raw.contains(""""ageNotes":\s*\[\s*"WestYear"\s*]""".toRegex()))
   }
 }

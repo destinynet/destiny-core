@@ -182,6 +182,8 @@ data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::clas
                        val flowHour: FlowHour = FlowHour.MainHouseDep,
                        /** 大限計算方式 */
                        val bigRange: BigRange = BigRange.FromMain,
+                       /** 大限歲數 , 實歲 or 虛歲 */
+                       val sectionAgeType: AgeType = AgeType.VIRTUAL,
                        /** 歲運註記 */
                        val ageNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
                        /** 八字設定 設定 */
@@ -259,6 +261,9 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
   /** 大限計算方式 */
   var bigRange: BigRange = defaultConfig.bigRange
 
+  /** 大限歲數 , 實歲 or 虛歲 */
+  var sectionAgeType: AgeType = defaultConfig.sectionAgeType
+
   /** 歲運註記 */
   var ageNotes: List<IntAgeNote> = defaultConfig.ageNotes
 
@@ -299,6 +304,7 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
       flowDay,
       flowHour,
       bigRange,
+      sectionAgeType,
       ageNotes,
       ewConfig,
       dayNightConfig,
@@ -337,6 +343,7 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
    * @param monthBranch        「節氣」的月支
    * @param lunarDays          陰曆日期
    * @param optionalVageMap    預先計算好的虛歲時刻(GMT from / to)
+   * @param optionalRageMap    預先計算好的實歲時刻(GMT from / to)
    */
   fun getBirthPlate(
     mainAndBody: Pair<Branch, Branch>?,
@@ -353,6 +360,7 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
     dayNight: DayNight,
     gender: Gender,
     optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = null,
+    optionalRageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = null,
     appendingNotes: List<String> = emptyList(),
     config: ZiweiConfig
   ): IPlate
@@ -376,6 +384,7 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
     dayNight: DayNight,
     gender: Gender,
     optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = null,
+    optionalRageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = null,
     appendingNotes: List<String> = emptyList(),
     config: ZiweiConfig
   ): IPlate
@@ -423,7 +432,7 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
    */
   fun getDaysOfMonth(cycle: Int, flowYear: StemBranch, flowMonth: Int, leap: Boolean): List<Triple<ChineseDate, ChronoLocalDate, StemBranch>>
 
-  /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「虛歲」各別是幾歲 ,   */
+  /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「歲數」各別是幾歲 */
   fun getYearsOfFlowSection(plate: IPlate, section: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>>
 }
 
@@ -450,8 +459,12 @@ class ZiweiFeature(
   private val flowDayImplMap: Map<FlowDay, IFlowDay>,
   private val flowHourImplMap: Map<FlowHour, IFlowHour>,
   private val dayNightFeature: DayNightFeature,
-  @Named("intAgeZiweiImpl")
-  private val intAgeImpl: IIntAge
+
+  @Named("intVageZiweiImpl")
+  private val intVageImpl: IIntAge,
+
+  @Named("intRageZiweiImpl")
+  private val intRageImpl: IIntAge,
 ) : AbstractCachedPersonFeature<ZiweiConfig, IPlate>(), IZiweiFeature {
 
   @Inject
@@ -546,6 +559,7 @@ class ZiweiFeature(
     dayNight: DayNight,
     gender: Gender,
     optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
+    optionalRageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
     appendingNotes: List<String>,
     config: ZiweiConfig
   ): IPlate {
@@ -772,9 +786,9 @@ class ZiweiFeature(
 
     val chineseDate = ChineseDate(cycle, lunarYear, lunarMonth, leapMonth, lunarDays)
 
-    // 計算每個地支的 大限 起訖 「虛歲」時刻
+    // 計算每個地支的 大限 起訖 「歲數」時刻 (不考慮實歲或虛歲)
     val flowSectionImpl = flowSectionImplMap[config.bigRange]!!
-    val flowSectionVageMap = flowSectionImpl.getSortedFlowSectionVageMap(branchHouseBiMap, 五行局, lunarYear, gender, houseSeqImpl)
+    val flowSectionAgeMap = flowSectionImpl.getSortedFlowSectionAgeMap(branchHouseBiMap, 五行局, lunarYear, gender, houseSeqImpl)
 
     // 小限 mapping
     val branchSmallRangesMap: Map<Branch, List<Int>> = values()
@@ -787,6 +801,7 @@ class ZiweiFeature(
      * 不然就得開發另一套非常簡易的 [IIntAge] 在此使用
      */
     val vageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = optionalVageMap
+    val rageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = optionalRageMap
 
     // 中介 map , 記錄 '[辰] : 天相,紫微' 這樣的 mapping , 此 map 的 key 不一定包含全部地支，因為可能有空宮
     val branchStarsMap: Map<Branch, List<ZStar>> =
@@ -823,7 +838,7 @@ class ZiweiFeature(
       val house = e.value
       val stars = branchStarMap[sb.branch]?.toSet() ?: emptySet()
 
-      val fromTo = flowSectionVageMap.getValue(sb) // 必定不為空
+      val fromTo = flowSectionAgeMap.getValue(sb) // 必定不為空
       val smallRanges = branchSmallRangesMap.getValue(sb.branch)
       HouseData(
         house, sb, stars.toMutableSet(), branchFlowHouseMap.getValue(sb.branch), flyMap.getValue(sb), fromTo.first,
@@ -885,7 +900,7 @@ class ZiweiFeature(
     return Plate(
       null, chineseDate, null, year, finalMonthNumForMonthStars, hour, null, null, dayNight, gender, mainHouse, bodyHouse, mainStar,
       bodyStar, 五行, 五行局, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
-      vageMap, summaries
+      vageMap, rageMap, summaries
     )
 
   }
@@ -909,6 +924,7 @@ class ZiweiFeature(
     dayNight: DayNight,
     gender: Gender,
     optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
+    optionalRageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
     appendingNotes: List<String>,
     config: ZiweiConfig
   ): IPlate {
@@ -928,6 +944,7 @@ class ZiweiFeature(
       dayNight,
       gender,
       optionalVageMap,
+      optionalRageMap,
       appendingNotes,
       config
     )
@@ -1049,23 +1066,23 @@ class ZiweiFeature(
   /** 反推大限、流年等資訊 */
   override fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Flow? {
     return lmt.takeIf { it.isAfter(plate.localDateTime) }
-      ?.takeIf { plate.vageMap != null }
+      ?.takeIf { plate.getAgeMap(config.sectionAgeType) != null }
       ?.let { targetLmt ->
         val loc = plate.location ?: locationOf(Locale.getDefault())
         val targetGmtJulDay = TimeTools.getGmtJulDay(targetLmt, loc)
 
-        val vageMap = plate.vageMap!!
+        val ageMap = plate.getAgeMap(config.sectionAgeType)!!
 
-        vageMap.entries.firstOrNull { (_ , pair) ->
+        ageMap.entries.firstOrNull { (_ , pair) ->
                 val (fromGmt , toGmt) = pair
                 targetGmtJulDay in fromGmt..toGmt
-              }?.key?.let { targetVage -> // target虛歲
+              }?.key?.let { targetAge -> // target歲數
 
-          val section: StemBranch? = plate.flowSectionVageMap.entries.firstOrNull { (_, pair) ->
-            targetVage >= pair.first && targetVage <= pair.second
+          val section: StemBranch? = plate.flowSectionAgeMap.entries.firstOrNull { (_, pair) ->
+            targetAge >= pair.first && targetAge <= pair.second
           }?.key
 
-          val flowYear = plate.year.next(targetVage - 1)
+          val flowYear = plate.year.next(targetAge - 1)
 
           Flow(section, flowYear)
 
@@ -1096,7 +1113,7 @@ class ZiweiFeature(
 
   }
 
-  /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「虛歲」各別是幾歲 ,   */
+  /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「歲數」各別是幾歲  */
   override fun getYearsOfFlowSection(plate: IPlate, section: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>> {
 
     val birthYear = plate.chineseDate.year
@@ -1104,19 +1121,33 @@ class ZiweiFeature(
 
     val flowSectionImpl = flowSectionImplMap[config.bigRange]!!
 
-    val (fromVage, toVage) = flowSectionImpl.getVageRange(plate.branchHouseMap.getValue(section),
-                                                          plate.state, birthYear.stem, plate.gender, houseSeqImplMap[config.houseSeq]!!)
+    val (fromAge, toAge) = flowSectionImpl.getAgeRange(plate.branchHouseMap.getValue(section),
+                                                         plate.state, birthYear.stem, plate.gender, houseSeqImplMap[config.houseSeq]!!)
 
-    // 再把虛歲轉換成干支
-    return (fromVage .. toVage).map { vAge ->
-      val sb = birthYear.next(vAge - 1) // 虛歲 (vAge) 轉換為年 , 要減一 . 虛歲
-      val cycle: Int = if (sb.index >= birthYear.index) {
-        birthCycle + (vAge - 1) / 60
-      } else {
-        birthCycle + (vAge - 1) / 60 + 1
+    return when(config.sectionAgeType) {
+      AgeType.VIRTUAL -> {
+        (fromAge..toAge).map { vAge ->
+          val sb = birthYear.next(vAge - 1) // 虛歲 (vAge) 轉換為年 , 要減一 .
+          val cycle: Int = if (sb.index >= birthYear.index) {
+            birthCycle + (vAge - 1) / 60
+          } else {
+            birthCycle + (vAge - 1) / 60 + 1
+          }
+          Triple(cycle, sb, vAge)
+        }.toList()
       }
-      Triple(cycle , sb , vAge)
-    }.toList()
+      AgeType.REAL -> {
+        (fromAge..toAge).map { rAge ->
+          val sb = birthYear.next(rAge) // 實歲 (rAge) 轉換為年 , 不需要減一 .
+          val cycle: Int = if (sb.index >= birthYear.index) {
+            birthCycle + (rAge) / 60
+          } else {
+            birthCycle + (rAge) / 60 + 1
+          }
+          Triple(cycle, sb, rAge)
+        }.toList()
+      }
+    }
   }
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): IPlate {
@@ -1178,7 +1209,9 @@ class ZiweiFeature(
     val dayNight = dayNightFeature.getModel(lmt, loc, config.dayNightConfig)
 
     // 虛歲時刻 , gmt Julian Day
-    val vageMap = intAgeImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, loc), loc, 1, 130)
+    val vageMap = intVageImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, loc), loc, 1, 130)
+    // 實歲時刻 , gmt Julian Day
+    val rageMap = intRageImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, loc), loc, 0, 130)
 
     val appendingNotes = notesBuilders.build(config.locale)
 
@@ -1198,6 +1231,7 @@ class ZiweiFeature(
       dayNight,
       gender,
       vageMap,
+      rageMap,
       appendingNotes,
       config
     )

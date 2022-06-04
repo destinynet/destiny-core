@@ -8,6 +8,7 @@ import destiny.core.Gender
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
+import destiny.core.chinese.AgeType
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
@@ -88,6 +89,9 @@ interface IPlate : Serializable {
   /** 虛歲，每歲的起訖時分 (fromGmt , toGmt)  */
   val vageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?
 
+  /** 實歲，每歲的起訖時分 (fromGmt , toGmt)  */
+  val rageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?
+
   val summaries: List<String>
 
 
@@ -95,32 +99,33 @@ interface IPlate : Serializable {
 
   /** 宮位名稱 -> 宮位資料  */
   val houseMap: Map<House, HouseData>
-  //get() = houseDataSet.toList().map { hd -> hd.house to hd }.toMap()
 
   /** 星體 -> 宮位資料  */
   val starMap: Map<ZStar, HouseData>
-//    get() = houseDataSet
-//      .flatMap { hd -> hd.stars.map { star -> star to hd } }
-//      .toMap()
 
   /** 宮位地支 -> 星體s  */
   val branchStarMap: Map<Branch, Collection<ZStar>>
-//    get() = houseDataSet.groupBy { it.stemBranch.branch }.mapValues { it.value.flatMap { hData -> hData.stars } }
 
   /** 宮位名稱 -> 星體s  */
   val houseStarMap: Map<House, Set<ZStar>>
-//    get() = houseDataSet.map { it.house to it.stars }.toMap()
 
   /** 本命盤中，此地支的宮位名稱是什麼  */
   val branchHouseMap: Map<Branch, House>
-//    get() = branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.本命) }.toMap()
 
-  /** 每個地支宮位，所代表的大限，「虛歲」從何時、到何時  */
-  val flowSectionVageMap: Map<StemBranch, Pair<Int, Int>>
+  /** 每個地支宮位，所代表的大限，「歲數」從何時、到何時 (實歲、虛歲不討論) */
+  val flowSectionAgeMap: Map<StemBranch, Pair<Int, Int>>
 
 
 
   // =========== 以上 ↑↑ functions ↑↑ ===========
+
+  /** 傳回虛歲 or 實歲 age map */
+  fun getAgeMap(ageType: AgeType) : Map<Int, Pair<GmtJulDay, GmtJulDay>>? {
+    return when(ageType) {
+      AgeType.VIRTUAL -> vageMap
+      AgeType.REAL -> rageMap
+    }
+  }
 
   /** 取得這些星體所在宮位的地支 */
   fun getBranches(vararg stars: ZStar): List<Branch> {
@@ -135,6 +140,11 @@ interface IPlate : Serializable {
   /** 取得此地支的宮位資訊  */
   fun getHouseDataOf(branch: Branch): HouseData {
     return houseDataSet.first { houseData -> houseData.stemBranch.branch == branch }
+  }
+
+  /** 取得此流運的此宮位 */
+  fun getHouseDataOf(type : FlowType , house: House) : HouseData? {
+    return houseDataSet.firstOrNull { houseData -> houseData.flowHouseMap[type] == house }
   }
 
   fun getHouseDataOf(house: House): HouseData? {
@@ -316,6 +326,9 @@ data class Plate(
   /** 虛歲，每歲的起訖時分 (fromGmt , toGmt)  */
   override val vageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
 
+  /** 實歲，每歲的起訖時分 (fromGmt , toGmt)  */
+  override val rageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
+
   override val summaries: List<String>) : IPlate, Serializable {
 
 
@@ -346,11 +359,11 @@ data class Plate(
     branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.MAIN) }.toMap()
   }
 
-  /** 每個地支宮位，所代表的大限，「虛歲」從何時、到何時  */
-  override val flowSectionVageMap: Map<StemBranch, Pair<Int, Int>>
+  /** 每個地支宮位，所代表的大限，「歲數」從何時、到何時 (實歲、虛歲不討論) */
+  override val flowSectionAgeMap: Map<StemBranch, Pair<Int, Int>>
     get() {
       return houseDataSet.map { hd ->
-        hd.stemBranch to hd.vageRanges
+        hd.stemBranch to hd.ageRanges
       }.sortedBy { (_ , pair) -> pair.first }
         .toMap()
     }

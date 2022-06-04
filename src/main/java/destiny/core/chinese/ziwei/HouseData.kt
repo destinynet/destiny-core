@@ -27,9 +27,10 @@ data class HouseData(
   /** 宮干四化，此宮位，因為什麼星，各飛入哪個宮位(地支)  */
   private val transFourFlyMap: Set<Triple<ITransFour.Value, ZStar, Branch>>,
 
-  /** 大限，從「虛歲」幾歲，到幾歲 */
-  val rangeFromVage: Int,
-  val rangeToVage: Int,
+  /** 大限，從幾歲開始 (inclusive , 不考慮 虛歲 or 實歲）*/
+  val rangeFromAge: Int,
+  /** 大限，到幾歲截止 (inclusive , 不考慮 虛歲 or 實歲）*/
+  val rangeToAge: Int,
 
   /** 六條小限  */
   val smallRanges: List<Int>) : Serializable, Comparable<HouseData> {
@@ -54,8 +55,8 @@ data class HouseData(
       .filter { it.key != FlowType.MAIN }
       .toMap().toSortedMap()
 
-  val vageRanges: Pair<Int, Int>
-    get() = Pair(rangeFromVage, rangeToVage)
+  val ageRanges: Pair<Int, Int>
+    get() = Pair(rangeFromAge, rangeToAge)
 
   override fun toString(): String {
     return "[宮位 名稱=$house, 干支=$stemBranch, 星體=$stars]"
