@@ -9,6 +9,7 @@ import destiny.core.calendar.CalType
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.StemBranch
+import mu.KotlinLogging
 import org.threeten.extra.chrono.JulianDate
 import java.time.LocalDate
 import java.time.chrono.ChronoLocalDate
@@ -122,9 +123,24 @@ interface IChineseDate : Descriptive {
     val list = ArrayList<Pair<Int, Boolean>>(13)
     var date = ChineseDate(cycle, year, 1, false, 1)
 
+    // 閏11月會出問題！
+
+//    return generateSequence(Triple(date , date.month , date.leapMonth)) {
+//      val nextMonth = nextMonthStart(it.first)
+//      logger.info { "nextMonth = $nextMonth" }
+//      Triple(nextMonth, nextMonth.month, nextMonth.leapMonth)
+//    }.filter { it.first.year == year }
+//      .take(13)
+//      .map { (it.second to it.third) }
+//      .toList()
+
     while (date.year === year) {
+      logger.info { "adding $date" }
       list.add(Pair(date.month, date.leapMonth))
+      logger.info { "list size = ${list.size}" }
       date = nextMonthStart(date)
+      if (list.size == 13)
+        break
     }
     return list
   }
@@ -143,6 +159,8 @@ interface IChineseDate : Descriptive {
 
 
   companion object {
+
+    private val logger = KotlinLogging.logger { }
 
     /**
      * 西元年份 轉成 cycle , 例如 1984 為 cycle=78 的 甲子年
