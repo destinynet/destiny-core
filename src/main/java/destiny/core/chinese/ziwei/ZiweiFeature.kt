@@ -799,7 +799,11 @@ class ZiweiFeature(
             targetAge >= pair.first && targetAge <= pair.second
           }?.key
 
-          val flowYear = plate.year.next(targetAge - 1)
+
+          val flowYear: StemBranch = when (config.sectionAgeType) {
+            AgeType.VIRTUAL -> plate.year.next(targetAge - 1)
+            AgeType.REAL    -> plate.year.next(targetAge)
+          }
 
           Flow(section, flowYear)
 

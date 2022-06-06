@@ -120,29 +120,15 @@ interface IChineseDate : Descriptive {
 
   /** 列出該年所有月份(以及是否是閏月) , 可能傳回 12 or 13月 (有閏月的話)  */
   fun getMonthsOf(cycle: Int, year: StemBranch): List<Pair<Int, Boolean>> {
-    val list = ArrayList<Pair<Int, Boolean>>(13)
-    var date = ChineseDate(cycle, year, 1, false, 1)
+    val date = ChineseDate(cycle, year, 1, false, 1)
 
-    // 閏11月會出問題！
-
-//    return generateSequence(Triple(date , date.month , date.leapMonth)) {
-//      val nextMonth = nextMonthStart(it.first)
-//      logger.info { "nextMonth = $nextMonth" }
-//      Triple(nextMonth, nextMonth.month, nextMonth.leapMonth)
-//    }.filter { it.first.year == year }
-//      .take(13)
-//      .map { (it.second to it.third) }
-//      .toList()
-
-    while (date.year === year) {
-      logger.info { "adding $date" }
-      list.add(Pair(date.month, date.leapMonth))
-      logger.info { "list size = ${list.size}" }
-      date = nextMonthStart(date)
-      if (list.size == 13)
-        break
-    }
-    return list
+    return generateSequence(date) {
+      val nextMonth = nextMonthStart(it)
+      nextMonth
+    }.take(13)
+      .filter { it.year == year }
+      .map { it.month to it.leapMonth }
+      .toList()
   }
 
   /** 列出該月有幾日  */
