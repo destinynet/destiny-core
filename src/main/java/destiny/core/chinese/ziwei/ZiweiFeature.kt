@@ -124,14 +124,14 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
   /** 反推大限、流年等資訊 */
   fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Flow?
 
-  /** 反推大限盤 */
+  /** 計算大限盤 */
   fun getFlowSection(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): IPlate? {
     return reverseFlows(plate, lmt, config)?.section?.let {
       getFlowSection(plate, it, config)
     }
   }
 
-  /** 反推大限、流年盤 */
+  /** 計算大限、流年盤 */
   fun getFlowYear(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): IPlate? {
     return reverseFlows(plate, lmt, config)?.let { flow ->
       flow.section?.let { section ->
