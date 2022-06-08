@@ -31,6 +31,7 @@ import java.util.*
 import javax.cache.Cache
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.streams.toList
 
 
 /** 某時刻對應到的 大運、流年 等資訊 */
@@ -129,6 +130,20 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
     return reverseFlows(plate, lmt, config)?.section?.let {
       getFlowSection(plate, it, config)
     }
+  }
+
+  /**
+   * 列出到當下所經過的大限盤 (unfinished inclusive)
+   */
+  fun getFlowSections(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): List<IPlate> {
+    return reverseFlows(plate, lmt, config)?.section?.let { section ->
+
+      val sections = plate.flowSectionAgeMap.keys.stream().takeWhile { it != section }.toList().toMutableList().apply {
+        add(section)
+      }
+
+      sections.map { getFlowSection(plate, it, config) }.toList()
+    } ?: emptyList()
   }
 
   /** 計算大限、流年盤 */
