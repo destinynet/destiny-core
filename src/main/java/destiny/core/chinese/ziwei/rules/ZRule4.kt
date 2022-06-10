@@ -23,7 +23,7 @@ class ZRule4 : AbstractSeqBooleanRule() {
       val zStar = transFourImplMap[config.transFour]!!.getStarOf(sb.stem, ITransFour.Value.忌)
       logger.trace { "${sb.stem} 化忌 = $zStar" }
 
-      val 運限子女宮干飛化忌入本命 = sectionPlate.getHouseDataOf(FlowType.MAIN, zStar) == House.命宮
+      val 運限子女宮干飛化忌入本命 = sectionPlate.getHouseOf(FlowType.MAIN, zStar) == House.命宮
       val 桃花星在大限命宮 = pinkyInHouse(sectionPlate, FlowType.SECTION, House.命宮)
 
       運限子女宮干飛化忌入本命 && 桃花星在大限命宮

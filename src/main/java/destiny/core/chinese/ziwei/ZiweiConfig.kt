@@ -158,7 +158,7 @@ data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::clas
                        /** 廟旺弱陷 */
                        val strength: Strength = Strength.FullBook,
                        /** 流年 */
-                       val flowYear: FlowYear = FlowYear.Anchor,
+                       val flowYear: FlowYear = FlowYear.Branch,
                        /** 流月 */
                        val flowMonth: FlowMonth = FlowMonth.Default,
                        /** 流日 */

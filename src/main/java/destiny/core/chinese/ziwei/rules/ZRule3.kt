@@ -15,7 +15,6 @@ import javax.inject.Named
 @Named
 class ZRule3 : AbstractSeqBooleanRule() {
 
-
   override fun testSection(sectionPlate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Boolean {
     return sectionPlate.getHouseDataOf(FlowType.SECTION, House.子女)?.let { houseData ->
       val sb = houseData.stemBranch
@@ -24,7 +23,7 @@ class ZRule3 : AbstractSeqBooleanRule() {
       val zStar = transFourImplMap[config.transFour]!!.getStarOf(sb.stem, ITransFour.Value.忌)
       logger.trace { "${sb.stem} 化忌 = $zStar" }
 
-      val 運限子女宮干飛化忌入大命 = sectionPlate.getHouseDataOf(FlowType.SECTION, zStar) == House.命宮
+      val 運限子女宮干飛化忌入大命 = sectionPlate.getHouseOf(FlowType.SECTION, zStar) == House.命宮
       val 桃花星在大限命宮 = pinkyInHouse(sectionPlate, FlowType.SECTION, House.命宮)
 
       運限子女宮干飛化忌入大命 && 桃花星在大限命宮

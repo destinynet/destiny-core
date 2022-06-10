@@ -35,7 +35,7 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     RedBeauty.RED_BEAUTY_SAME,
     TransFour.Ziyun,
     Strength.Middle,
-    FlowYear.Branch,
+    FlowYear.Anchor,
     FlowMonth.Fixed,
     FlowDay.SkipFlowMonthMainHouse,
     FlowHour.Branch,
@@ -62,7 +62,7 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     redBeauty = RedBeauty.RED_BEAUTY_SAME
     transFour = TransFour.Ziyun
     strength = Strength.Middle
-    flowYear = FlowYear.Branch
+    flowYear = FlowYear.Anchor
     flowMonth = FlowMonth.Fixed
     flowDay = FlowDay.SkipFlowMonthMainHouse
     flowHour = FlowHour.Branch
@@ -85,7 +85,7 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     assertTrue(raw.contains(""""redBeauty":\s*"RED_BEAUTY_SAME"""".toRegex()))
     assertTrue(raw.contains(""""transFour":\s*"Ziyun"""".toRegex()))
     assertTrue(raw.contains(""""strength":\s*"Middle"""".toRegex()))
-    assertTrue(raw.contains(""""flowYear":\s*"Branch"""".toRegex()))
+    assertTrue(raw.contains(""""flowYear":\s*"Anchor"""".toRegex()))
     assertTrue(raw.contains(""""flowMonth":\s*"Fixed"""".toRegex()))
     assertTrue(raw.contains(""""flowDay":\s*"SkipFlowMonthMainHouse"""".toRegex()))
     assertTrue(raw.contains(""""flowHour":\s*"Branch"""".toRegex()))

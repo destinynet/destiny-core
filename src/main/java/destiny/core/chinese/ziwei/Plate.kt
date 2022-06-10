@@ -157,7 +157,7 @@ interface IPlate : Serializable {
   }
 
   /** 這顆星在此流運，位於哪個宮位 */
-  fun getHouseDataOf(flowType: FlowType , star: ZStar): House? {
+  fun getHouseOf(flowType: FlowType, star: ZStar): House? {
     return getHouseDataOf(star)?.let { houseData ->
       houseData.flowHouseMap[flowType]
     }

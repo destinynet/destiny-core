@@ -21,7 +21,7 @@ data class HouseData(
   /** 宮位裡面 有哪些星體  */
   val stars: MutableSet<ZStar>,
 
-  /** 此宮位，在各個流運，叫什麼宮位  */
+  /** 此宮位，在各個流運(含本命)，叫什麼宮位  */
   val flowHouseMap: Map<FlowType, House>,
 
   /** 宮干四化，此宮位，因為什麼星，各飛入哪個宮位(地支)  */
