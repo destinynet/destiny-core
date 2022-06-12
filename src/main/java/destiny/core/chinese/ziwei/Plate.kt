@@ -291,9 +291,6 @@ data class Plate(
   /** 性別  */
   override val gender: Gender,
 
-  /** 命宮  */
-  override val mainHouse: StemBranch,
-
   /** 身宮  */
   override val bodyHouse: StemBranch,
 
@@ -338,6 +335,9 @@ data class Plate(
 
   override val summaries: List<String>) : IPlate, Serializable {
 
+
+  override val mainHouse: StemBranch
+    get() = houseMap[House.命宮]!!.stemBranch
 
   /** 宮位名稱 -> 宮位資料  */
   override val houseMap: Map<House, HouseData> by lazy {

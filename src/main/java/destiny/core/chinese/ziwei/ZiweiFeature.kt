@@ -31,7 +31,6 @@ import java.util.*
 import javax.cache.Cache
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.streams.toList
 
 
 /** 某時刻對應到的 大運、流年 等資訊 */
@@ -138,7 +137,7 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
   fun getFlowSections(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): List<IPlate> {
     return reverseFlows(plate, lmt, config)?.section?.let { section ->
 
-      val sections = plate.flowSectionAgeMap.keys.stream().takeWhile { it != section }.toList().toMutableList().apply {
+      val sections = plate.flowSectionAgeMap.keys.asSequence().takeWhile { it != section }.toList().toMutableList().apply {
         add(section)
       }
 
@@ -425,8 +424,7 @@ class ZiweiFeature(
       houseSeqImpl.houses.associateBy { house ->
         // 要計算的宮位，比命宮，超前幾步
         val steps = houseSeqImpl.getAheadOf(house, House.命宮)
-        val sb = Ziwei.getStemBranchOf(mainHouse.branch.prev(steps), stemOf寅)
-        sb
+        Ziwei.getStemBranchOf(mainHouse.branch.prev(steps), stemOf寅)
       }
 
     // 地支 <-> 宮位 的 雙向 mapping
@@ -630,7 +628,7 @@ class ZiweiFeature(
 
 
     return Plate(
-      null, chineseDate, null, year, finalMonthNumForMonthStars, hour, null, null, dayNight, gender, mainHouse, bodyHouse, mainStar,
+      null, chineseDate, null, year, finalMonthNumForMonthStars, hour, null, null, dayNight, gender, bodyHouse, mainStar,
       bodyStar, 五行, 五行局, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
       vageMap, rageMap, summaries
     )
