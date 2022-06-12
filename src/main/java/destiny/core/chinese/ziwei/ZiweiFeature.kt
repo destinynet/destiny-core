@@ -107,25 +107,25 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
   ): IPlate
 
   /** 計算 大限盤  */
-  fun getFlowSection(plate: IPlate, section: StemBranch, config:ZiweiConfig): IPlate
+  fun getFlowSection(plate: IPlate, section: StemBranch, config:ZiweiConfig): IPlateSection
 
   /** 計算 流年盤 */
-  fun getFlowYear(plate: IPlate, section: StemBranch, flowYear: StemBranch, config: ZiweiConfig): IPlate
+  fun getFlowYear(plate: IPlate, section: StemBranch, flowYear: StemBranch, config: ZiweiConfig): IPlateYear
 
   /** 計算 流月盤 */
-  fun getFlowMonth(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): IPlate
+  fun getFlowMonth(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): IPlateMonth
 
   /** 計算 流日盤 */
-  fun getFlowDay(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): IPlate
+  fun getFlowDay(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): IPlateDay
 
   /** 計算 流時盤 */
-  fun getFlowHour(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlate
+  fun getFlowHour(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlateHour
 
   /** 反推大限、流年等資訊 */
   fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Flow?
 
   /** 計算大限盤 */
-  fun getFlowSection(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): IPlate? {
+  fun getFlowSection(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): IPlateSection? {
     return reverseFlows(plate, lmt, config)?.section?.let {
       getFlowSection(plate, it, config)
     }
@@ -629,7 +629,8 @@ class ZiweiFeature(
 
     return Plate(
       null, chineseDate, null, year, finalMonthNumForMonthStars, hour, null, null, dayNight, gender, bodyHouse, mainStar,
-      bodyStar, 五行, 五行局, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
+      bodyStar, 五行, 五行局, houseDataSet, transFourMap //, branchFlowHouseMap
+      , flowBranchMap, starStrengthMap, notes,
       vageMap, rageMap, summaries
     )
 
@@ -659,7 +660,7 @@ class ZiweiFeature(
     config: ZiweiConfig
   ): IPlate {
 
-    val plate = getBirthPlate(
+    val plate: IPlate = getBirthPlate(
       mainAndBody,
       preFinalMonthNumForMainStars,
       cycle,
@@ -679,7 +680,13 @@ class ZiweiFeature(
       config
     )
 
-    return (plate as Plate).copy(name = name , localDateTime = lmt, location = loc, place = place)
+    return Plate(
+      name, plate.chineseDate, lmt, plate.year, plate.finalMonthNumForMonthStars, plate.hour, loc, place, plate.dayNight, plate.gender,
+      plate.bodyHouse, plate.mainStar, plate.bodyStar, plate.fiveElement, plate.state, plate.houseDataSet, plate.transFours, plate.flowBranchMap,
+      plate.starStrengthMap, plate.notes, plate.vageMap, plate.rageMap, plate.summaries
+    )
+
+    //return (plate as Plate).copy(name = name , localDateTime = lmt, location = loc, place = place)
   }
 
   /**
@@ -698,10 +705,10 @@ class ZiweiFeature(
   }
 
   /** 計算 大限盤  */
-  override fun getFlowSection(plate: IPlate, section: StemBranch, config: ZiweiConfig): IPlate {
+  override fun getFlowSection(plate: IPlate, section: StemBranch, config: ZiweiConfig): IPlateSection {
     // 在此大限中，每個地支，對應到哪個宮位
 
-    val branchHouseMap = values().associateWith { branch ->
+    val branchHouseMap: Map<Branch, House> = values().associateWith { branch ->
       val steps = branch.getAheadOf(section.branch)
 
       houseSeqImplMap[config.houseSeq]!!.prev(House.命宮, steps)
@@ -710,13 +717,17 @@ class ZiweiFeature(
     // 大限四化
     val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> = getTrans4Map(FlowType.SECTION, section.stem, config)
 
-    return plate
-      .withFlowSection(section, branchHouseMap)
-      .appendTrans4Map(trans4Map)
+    val newHouseDataSet: Set<HouseData> = plate.append(FlowType.SECTION, branchHouseMap)
+
+//    return plate
+//      .withFlowSection(section, branchHouseMap)
+//      .appendTrans4Map(trans4Map)
+
+    return PlateWithSection(plate , section, branchHouseMap, newHouseDataSet, plate.transFours.append(trans4Map))
   }
 
   /** 計算 流年盤  */
-  override fun getFlowYear(plate: IPlate, section: StemBranch, flowYear: StemBranch, config: ZiweiConfig): IPlate {
+  override fun getFlowYear(plate: IPlate, section: StemBranch, flowYear: StemBranch, config: ZiweiConfig): IPlateYear {
     // 流年命宮
     val yearlyMain = flowYearImplMap[config.flowYear]!!.getFlowYear(flowYear.branch, plate.finalMonthNumForMonthStars, plate.hour)
 
@@ -728,13 +739,18 @@ class ZiweiFeature(
     // 流年四化
     val trans4Map = getTrans4Map(FlowType.YEAR, flowYear.stem, config)
 
-    return getFlowSection(plate, section, config)
-      .withFlowYear(flowYear, branchHouseMap)
-      .appendTrans4Map(trans4Map)
+//    return getFlowSection(plate, section, config)
+//      .withFlowYear(flowYear, branchHouseMap)
+//      .appendTrans4Map(trans4Map)
+    val plateSection = getFlowSection(plate , section, config)
+
+    val newHouseDataSet: Set<HouseData> = plateSection.append(FlowType.YEAR, branchHouseMap)
+
+    return PlateWithYear(plateSection , flowYear, branchHouseMap, newHouseDataSet, plateSection.transFours.append(trans4Map))
   }
 
   /** 計算 流月盤  */
-  override fun getFlowMonth(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): IPlate {
+  override fun getFlowMonth(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): IPlateMonth {
 
     // 流月命宮
     val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, plate.finalMonthNumForMonthStars, plate.hour)
@@ -747,13 +763,20 @@ class ZiweiFeature(
     // 流月四化
     val trans4Map = getTrans4Map(FlowType.MONTH, flowMonth.stem, config)
 
-    return getFlowYear(plate, section, flowYear, config)
-      .withFlowMonth(flowMonth, branchHouseMap)
-      .appendTrans4Map(trans4Map)
+//    return getFlowYear(plate, section, flowYear, config)
+//      .withFlowMonth(flowMonth, branchHouseMap)
+//      .appendTrans4Map(trans4Map)
+
+
+    val plateYear = getFlowYear(plate , section, flowYear, config)
+
+    val newHouseDataSet: Set<HouseData> = plateYear.append(FlowType.MONTH, branchHouseMap)
+
+    return PlateWithMonth(plateYear , section, branchHouseMap, newHouseDataSet, plateYear.transFours.append(trans4Map))
   }
 
   /** 計算 流日盤  */
-  override fun getFlowDay(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): IPlate {
+  override fun getFlowDay(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): IPlateDay {
     // 流月命宮
     val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, plate.finalMonthNumForMonthStars, plate.hour)
 
@@ -766,13 +789,19 @@ class ZiweiFeature(
 
     // 流日四化
     val trans4Map = getTrans4Map(FlowType.DAY, flowDay.stem, config)
-    return getFlowMonth(plate, section, flowYear, flowMonth, config)
-      .withFlowDay(flowDay, branchHouseMap)
-      .appendTrans4Map(trans4Map)
+//    return getFlowMonth(plate, section, flowYear, flowMonth, config)
+//      .withFlowDay(flowDay, branchHouseMap)
+//      .appendTrans4Map(trans4Map)
+
+    val plateMonth = getFlowMonth(plate , section, flowYear, flowMonth, config)
+
+    val newHouseDataSet = plateMonth.append(FlowType.DAY, branchHouseMap)
+
+    return PlateWithDay(plateMonth , flowDay, branchHouseMap, newHouseDataSet, plateMonth.transFours.append(trans4Map))
   }
 
   /** 計算 流時盤 */
-  override fun getFlowHour(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlate {
+  override fun getFlowHour(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlateHour {
     // 流月命宮
     val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, plate.finalMonthNumForMonthStars, plate.hour)
     // 流日命宮
@@ -786,12 +815,51 @@ class ZiweiFeature(
     }
 
     // 流時四化
-    val trans4Map = getTrans4Map(FlowType.HOUR, flowHour.stem, config)
+    val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> = getTrans4Map(FlowType.HOUR, flowHour.stem, config)
 
-    return getFlowDay(plate, section, flowYear, flowMonth, flowDay, flowDayNum, config)
-      .withFlowHour(flowHour, branchHouseMap)
-      .appendTrans4Map(trans4Map)
+//    return getFlowDay(plate, section, flowYear, flowMonth, flowDay, flowDayNum, config)
+//      .withFlowHour(flowHour, branchHouseMap)
+//      .appendTrans4Map(trans4Map)
+
+    val plateDay = getFlowDay(plate , section, flowYear, flowMonth, flowDay, flowDayNum, config)
+
+    val newHouseDataSet = plateDay.append(FlowType.HOUR, branchHouseMap)
+
+    return PlateWithHour(plateDay , flowHour, branchHouseMap, newHouseDataSet, plateDay.transFours.append(trans4Map))
   }
+
+  private fun IPlate.append(flowType : FlowType , branchHouseMap: Map<Branch, House>): Set<HouseData> {
+    val newBranchFlowHouseMap: Map<Branch, Map<FlowType, House>> = this.branchFlowHouseMap.map { (branch: Branch, m: Map<FlowType, House>) ->
+      val newHouse: House = branchHouseMap[branch]!!
+      val newMap = m.toMutableMap().apply {
+        put(flowType, newHouse)
+      }.toMap()
+      branch to newMap
+    }.toMap()
+
+    return this.houseDataSet.map { hd: HouseData ->
+      hd.copy(flowHouseMap = newBranchFlowHouseMap.getValue(hd.stemBranch.branch))
+    }.toSet()
+  }
+
+
+  private fun Map<ZStar, Map<FlowType, ITransFour.Value>>.append(trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value>): Map<ZStar, Map<FlowType, ITransFour.Value>> {
+    return this.toMutableMap().apply {
+      trans4Map.forEach { (starFlowType: Pair<ZStar, FlowType>, value: ITransFour.Value) ->
+        val (star, flowType) = starFlowType
+
+        val starMap: Map<FlowType, ITransFour.Value>? = this[star]
+        if (starMap != null) {
+          this[star] = starMap.toMutableMap().apply {
+            put(flowType, value)
+          }
+        } else {
+          put(star, mapOf(flowType to value))
+        }
+      }
+    }.toMap()
+  }
+
 
   /** 反推大限、流年等資訊 */
   override fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Flow? {
