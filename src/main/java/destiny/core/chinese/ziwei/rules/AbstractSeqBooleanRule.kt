@@ -25,7 +25,7 @@ abstract class AbstractSeqBooleanRule : ZRule<Boolean> {
   abstract fun testSection(sectionPlate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Boolean
 
   protected fun pinkyInHouse(plate: IPlate, flowType: FlowType, house: House): Boolean {
-    return plate.getHouseDataOf(flowType, house)?.let { houseData ->
+    return plate.getHouseDataOf(house, flowType)?.let { houseData ->
       val basic1: Boolean = houseData.stars.any { it in pinkyStars }
 
       val basic2 = if (houseData.stars.contains(StarMain.廉貞)) {

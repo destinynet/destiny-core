@@ -92,12 +92,6 @@ open class Plate (
   override val summaries: List<String>
 ) : IPlate, Serializable {
 
-  override val branchFlowHouseMap: Map<Branch, Map<FlowType, House>>
-    get() {
-      return houseDataSet.associate { houseData ->
-        houseData.stemBranch.branch to houseData.flowHouseMap
-      }
-    }
 
   override val mainHouse: StemBranch
     get() = houseMap[House.命宮]!!.stemBranch
@@ -124,10 +118,18 @@ open class Plate (
     houseDataSet.associate { it.house to it.stars }
   }
 
+  override val branchFlowHouseMap: Map<Branch, Map<FlowType, House>>
+    get() {
+      return houseDataSet.associate { houseData ->
+        houseData.stemBranch.branch to houseData.flowHouseMap
+      }
+    }
+
   /** 命盤中，此地支的宮位名稱是什麼  */
   override val branchHouseMap: Map<Branch, House> by lazy {
     branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.MAIN) }.toMap()
   }
+
 
   /** 每個地支宮位，所代表的大限，「歲數」從何時、到何時 (實歲、虛歲不討論) */
   override val flowSectionAgeMap: Map<StemBranch, Pair<Int, Int>>

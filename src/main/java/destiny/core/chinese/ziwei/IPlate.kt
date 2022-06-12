@@ -143,12 +143,8 @@ interface IPlate : Serializable {
   }
 
   /** 取得此流運的此宮位 */
-  fun getHouseDataOf(type : FlowType, house: House) : HouseData? {
+  fun getHouseDataOf(house: House, type: FlowType = FlowType.MAIN) : HouseData? {
     return houseDataSet.firstOrNull { houseData -> houseData.flowHouseMap[type] == house }
-  }
-
-  fun getHouseDataOf(house: House): HouseData? {
-    return houseDataSet.firstOrNull { it.house == house }
   }
 
   /** 這顆星在哪個宮位 */
@@ -157,7 +153,7 @@ interface IPlate : Serializable {
   }
 
   /** 這顆星在此流運，位於哪個宮位 */
-  fun getHouseOf(flowType: FlowType, star: ZStar): House? {
+  fun getHouseOf(star: ZStar, flowType: FlowType = FlowType.MAIN): House? {
     return getHouseDataOf(star)?.let { houseData ->
       houseData.flowHouseMap[flowType]
     }

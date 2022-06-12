@@ -14,14 +14,14 @@ import javax.inject.Named
 class ZRule1 : AbstractSeqBooleanRule() {
 
   override fun testSection(sectionPlate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Boolean {
-    return sectionPlate.getHouseDataOf(FlowType.SECTION, House.夫妻)?.let { houseData ->
+    return sectionPlate.getHouseDataOf(House.夫妻, FlowType.SECTION)?.let { houseData ->
       val sb = houseData.stemBranch
       logger.trace { "大限夫妻宮 干支 = $sb" }
 
       val zStar = transFourImplMap[config.transFour]!!.getStarOf(sb.stem, ITransFour.Value.忌)
       logger.trace { "${sb.stem} 化忌 = $zStar" }
 
-      sectionPlate.getHouseOf(FlowType.SECTION, zStar) == House.命宮
+      sectionPlate.getHouseOf(zStar, FlowType.SECTION) == House.命宮
     } ?: false
   }
 }
