@@ -35,6 +35,11 @@ data class HouseData(
   /** 六條小限  */
   val smallRanges: List<Int>) : Serializable, Comparable<HouseData> {
 
+  fun getHouse(flowType: FlowType = FlowType.MAIN) : House {
+    return flowHouseMap[flowType] ?: house
+  }
+
+
   /** 宮干自化 列表 , 0 <= 長度 <= 3 */
   val selfTransFours: List<ITransFour.Value>
     get() = transFourFlyMap

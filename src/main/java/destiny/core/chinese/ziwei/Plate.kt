@@ -93,29 +93,51 @@ open class Plate (
 ) : IPlate, Serializable {
 
 
-  override val mainHouse: StemBranch
-    get() = houseMap[House.命宮]!!.stemBranch
+  override val mainHouse: StemBranch by lazy {
+    val branch = branchHouseMap.entries.first { (_ , house) -> house == House.命宮 }.key
+    houseDataSet.first { it.stemBranch.branch == branch }.stemBranch
+    //get() = houseMap[House.命宮]!!.stemBranch
+  }
 
   /** 宮位名稱 -> 宮位資料  */
   override val houseMap: Map<House, HouseData> by lazy {
-    houseDataSet.toList().associateBy { hd -> hd.house }
+    branchHouseMap.map { (branch, house) ->
+      house to houseDataSet.first { it.stemBranch.branch == branch }
+    }.toMap()
+
+    //houseDataSet.toList().associateBy { hd -> hd.house }
   }
 
   /** 星體 -> 宮位資料  */
   override val starMap: Map<ZStar, HouseData> by lazy {
-    houseDataSet
-      .flatMap { hd -> hd.stars.map { star -> star to hd } }
-      .toMap()
+
+    branchHouseMap.flatMap { (branch, _) ->
+      val houseData: HouseData = houseDataSet.first { it.stemBranch.branch == branch }
+      houseData.stars.map { star -> star to houseData }
+    }.toMap()
+
+    // houseDataSet.flatMap { hd -> hd.stars.map { star -> star to hd } }.toMap()
   }
 
   /** 宮位地支 -> 星體s  */
   override val branchStarMap: Map<Branch, Collection<ZStar>> by lazy {
-    houseDataSet.groupBy { it.stemBranch.branch }.mapValues { it.value.flatMap { hData -> hData.stars } }
+    branchHouseMap.map { (branch, _) ->
+      val houseData: HouseData = houseDataSet.first { it.stemBranch.branch == branch }
+      branch to houseData.stars.toSet()
+    }.toMap()
+
+    // houseDataSet.groupBy { it.stemBranch.branch }.mapValues { it.value.flatMap { hData -> hData.stars } }
   }
 
   /** 宮位名稱 -> 星體s  */
   override val houseStarMap: Map<House, Set<ZStar>> by lazy {
-    houseDataSet.associate { it.house to it.stars }
+
+    branchHouseMap.map { (branch, house) ->
+      val houseData: HouseData = houseDataSet.first { it.stemBranch.branch == branch }
+      house to houseData.stars.toSet()
+    }.toMap()
+
+    // houseDataSet.associate { it.house to it.stars }
   }
 
   override val branchFlowHouseMap: Map<Branch, Map<FlowType, House>>

@@ -932,9 +932,9 @@ val p文桂文華 = object : PatternSingleImpl() {
       ?.let { branch ->
         when {
           setOf(branch).containsAll(it.昌曲()) -> Route.入
-          it.昌曲().grip() == branch -> Route.夾
-          it.拱(branch) == it.昌曲().toSet() -> Route.拱
-          else -> null
+          it.昌曲().grip() == branch           -> Route.夾
+          it.拱(branch) == it.昌曲().toSet()    -> Route.拱
+          else                               -> null
         }
       }
       ?.let { route -> 文桂文華(route) }
@@ -989,9 +989,9 @@ val p魁鉞拱命 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
     return when {
       setOf(it.mainHouse.branch).containsAll(it.魁鉞()) -> Route.入
-      it.魁鉞().toSet() == it.neighbors() -> Route.夾
-      it.魁鉞().trine() == it.mainHouse.branch -> Route.拱
-      else -> null
+      it.魁鉞().toSet() == it.neighbors()               -> Route.夾
+      it.魁鉞().trine() == it.mainHouse.branch          -> Route.拱
+      else                                            -> null
     }?.let { route -> 魁鉞拱命(route) }
   }
 }
@@ -1047,8 +1047,10 @@ val p丹墀桂墀 = object : PatternSingleImpl() {
       ?.takeIf { it.starStrengthMap[太陰]?.let { strength -> strength <= 2 } ?: false } // 月旺廟
       ?.takeIf {
         val 三方四正有日月: Boolean = it.三方四正().containsAll(it.日月())
-        val 日月分散在辰戌且其中一個守命宮 = setOf(辰, 戌) == it.日月().toSet() && setOf(辰,
-                                                                      戌).contains(it.mainHouse.branch)
+        val 日月分散在辰戌且其中一個守命宮 = setOf(辰, 戌) == it.日月().toSet() && setOf(
+          辰,
+          戌
+        ).contains(it.mainHouse.branch)
         三方四正有日月 || 日月分散在辰戌且其中一個守命宮
       }
       ?.let { 丹墀桂墀 }
@@ -1256,8 +1258,10 @@ val p權祿巡逢 = object : PatternMultipleImpl() {
 
     // 說法B : 化祿、化權 拱 某宮
     val 化祿化權拱某宮: Branch? =
-      listOf(it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch,
-             it.getTransFourHouseOf(ITransFour.Value.權).stemBranch.branch).trine()
+      listOf(
+        it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch,
+        it.getTransFourHouseOf(ITransFour.Value.權).stemBranch.branch
+      ).trine()
 
     return listOf(化權與祿存或化祿同宮, 化祿化權拱某宮)
       .firstOrNull { it != null }
@@ -1289,7 +1293,8 @@ val p科權祿夾 = object : PatternSingleImpl() {
     return listOf(
       it.getTransFourHouseOf(ITransFour.Value.科).stemBranch.branch,
       it.getTransFourHouseOf(ITransFour.Value.權).stemBranch.branch,
-      it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch)
+      it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch
+    )
       .takeIf { 科權祿 -> 科權祿.containsAll(it.neighbors()) }
       ?.let { 科權祿夾 }
   }
@@ -1497,7 +1502,8 @@ val p雙祿夾命 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
     return listOf(
       it.starMap[祿存]?.stemBranch?.branch,
-      it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch)
+      it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch
+    )
       .grip()
       ?.takeIf { branch ->
         branch == it.mainHouse.branch
@@ -1662,8 +1668,11 @@ val p財印天祿 = object : PatternSingleImpl() {
         val 同梁祿星: Set<ZStar> = setOf(天同, 天梁, 祿存)
         val 天同天梁祿存在命宮: Boolean = it.getHouseDataOf(branch).stars.containsAll(同梁祿星)
 
-        val 天同天梁化祿地支: List<Branch> = it.getBranches(天同, 天梁).plus(it.getTransFourHouseOf(
-          ITransFour.Value.祿).stemBranch.branch)
+        val 天同天梁化祿地支: List<Branch> = it.getBranches(天同, 天梁).plus(
+          it.getTransFourHouseOf(
+            ITransFour.Value.祿
+          ).stemBranch.branch
+        )
         val 天同天梁化祿在命宮: Boolean = setOf(branch).containsAll(天同天梁化祿地支)
 
         天同天梁祿存在命宮 || 天同天梁化祿在命宮
@@ -2248,8 +2257,8 @@ val p刑囚夾印 = object : PatternSingleImpl() {
 
     return when {
       說法A_廉貞天相擎羊入命宮於子或午 != null -> 刑囚夾印(命宮)
-      說法B_廉貞天相擎羊同宮 != null -> 刑囚夾印(說法B_廉貞天相擎羊同宮)
-      else -> null
+      說法B_廉貞天相擎羊同宮 != null      -> 刑囚夾印(說法B_廉貞天相擎羊同宮)
+      else                      -> null
     }
   }
 }
@@ -2560,7 +2569,8 @@ val p眾水朝東 = object : PatternSingleImpl() {
 interface IClassicalPattern : ZPattern {
 
   enum class PatternType {
-    GOOD, EVIL
+    GOOD,
+    EVIL
   }
 
   val type: PatternType
@@ -2574,86 +2584,79 @@ interface IClassicalPattern : ZPattern {
  * https://goo.gl/hDUun2 ( http://vioheart.pixnet.net )
  * http://www.ai5429.com/c/clock108/
  */
-sealed class ClassicalPattern(override val type: PatternType,
-                              private val notes: String? = null) : IClassicalPattern, Serializable {
+sealed class ClassicalPattern(
+  override val type: PatternType,
+  private val notes: String? = null
+) : IClassicalPattern, Serializable {
 
-  override fun getNotes(locale : Locale) : String? {
+  override fun toString(): String {
+    return this::class.simpleName!!
+  }
+
+  override fun getNotes(locale: Locale): String? {
     return notes
   }
 
 
   object 極向離明 : ClassicalPattern(GOOD)
   object 紫府同宮 : ClassicalPattern(GOOD)
-  class 紫府朝垣(house: House, goods: Set<GoodCombo>) :
-    ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
-
-  class 天府朝垣(goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
-  class 府相朝垣(house: House, goods: Set<GoodCombo>) :
-    ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
-
-  class 巨機同宮(branch: Branch, goods: Set<GoodCombo>) :
-    ClassicalPattern(GOOD, "[" + branch.toString() + "]" + goods.joinToString(","))
-
-  class 善蔭朝綱(goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
+  data class 紫府朝垣(val house: House, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
+  data class 天府朝垣(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
+  data class 府相朝垣(val house: House, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
+  data class 巨機同宮(val branch: Branch, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + branch.toString() + "]" + goods.joinToString(","))
+  data class 善蔭朝綱(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
   object 機月同梁 : ClassicalPattern(GOOD)
-  class 日月照壁(goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
-  class 日麗中天(dayNight: DayNight, goods: Set<GoodCombo>) :
-    ClassicalPattern(GOOD, "[" + dayNight.toString() + "]" + goods.joinToString(","))
-
-
-  class 君臣慶會(house: House, goods: Set<GoodCombo>) :
-    ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
-
+  data class 日月照壁(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
+  data class 日麗中天(val dayNight: DayNight, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + dayNight.toString() + "]" + goods.joinToString(","))
+  data class 君臣慶會(val house: House, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
   object 日月同宮 : ClassicalPattern(GOOD)
   object 日月並明 : ClassicalPattern(GOOD)
   object 日照雷門 : ClassicalPattern(GOOD)
-  class 陽梁昌祿(house: House) : ClassicalPattern(GOOD, "[$house]")
+  data class 陽梁昌祿(val house: House) : ClassicalPattern(GOOD, "[$house]")
   object 明珠出海 : ClassicalPattern(GOOD)
   object 巨日同宮 : ClassicalPattern(GOOD)
   object 貪武同行 : ClassicalPattern(GOOD)
   object 將星得地 : ClassicalPattern(GOOD)
-  class 七殺朝斗(goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
+  data class 七殺朝斗(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
   object 雄宿朝垣 : ClassicalPattern(GOOD)
   object 對面朝天 : ClassicalPattern(GOOD)
   object 科名會祿 : ClassicalPattern(GOOD)
   object 甲第登科 : ClassicalPattern(GOOD)
   object 科權逢迎 : ClassicalPattern(GOOD)
   object 祿合鴛鴦 : ClassicalPattern(GOOD)
-  class 雙祿朝垣(house: House) : ClassicalPattern(GOOD, "[$house]")
+  data class 雙祿朝垣(val house: House) : ClassicalPattern(GOOD, "[$house]")
   object 三奇嘉會 : ClassicalPattern(GOOD)
   object 祿馬交馳 : ClassicalPattern(GOOD)
-  class 月朗天門(dayNight: DayNight) : ClassicalPattern(GOOD, dayNight.toString())
-  class 月生滄海(dayNight: DayNight) : ClassicalPattern(GOOD, dayNight.toString())
-  class 石中隱玉(goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
-  class 壽星入廟(goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
-  class 英星入廟(goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
-  //class 機梁加會(goods: Set<GoodCombo>) : Pattern(GOOD, goods.joinToString(","))
-  class 文桂文華(route: Route) : ClassicalPattern(GOOD, route.toString())
+  data class 月朗天門(val dayNight: DayNight) : ClassicalPattern(GOOD, dayNight.toString())
+  data class 月生滄海(val dayNight: DayNight) : ClassicalPattern(GOOD, dayNight.toString())
+  data class 石中隱玉(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
+  data class 壽星入廟(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
+  data class 英星入廟(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
 
-  class 文梁振紀(goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
-  class 魁鉞拱命(route: Route) : ClassicalPattern(GOOD, route.toString())
-  class 左右同宮(goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
+  //class 機梁加會(goods: Set<GoodCombo>) : Pattern(GOOD, goods.joinToString(","))
+  data class 文桂文華(val route: Route) : ClassicalPattern(GOOD, route.toString())
+  data class 文梁振紀(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
+  data class 魁鉞拱命(val route: Route) : ClassicalPattern(GOOD, route.toString())
+  data class 左右同宮(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
   object 丹墀桂墀 : ClassicalPattern(GOOD)
   object 甲第登庸 : ClassicalPattern(GOOD)
   object 化星返貴 : ClassicalPattern(GOOD)
   object 天乙拱命 : ClassicalPattern(GOOD)
   object 坐貴向貴 : ClassicalPattern(GOOD)
   object 廉貞文武 : ClassicalPattern(GOOD)
-  class 星臨正位(stars: Set<ZStar>) : ClassicalPattern(GOOD, stars.joinToString(","))
-  class 輔拱文星(house: House) : ClassicalPattern(GOOD, "[$house]")
-  class 三合火貪(house: House) : ClassicalPattern(GOOD, "[$house]")
-  class 三合鈴貪(house: House) : ClassicalPattern(GOOD, "[$house]")
-  class 權祿巡逢(house: House, goods: Set<GoodCombo>) :
-    ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
+  data class 星臨正位(val stars: Set<ZStar>) : ClassicalPattern(GOOD, stars.joinToString(","))
+  data class 輔拱文星(val house: House) : ClassicalPattern(GOOD, "[$house]")
+  data class 三合火貪(val house: House) : ClassicalPattern(GOOD, "[$house]")
+  data class 三合鈴貪(val house: House) : ClassicalPattern(GOOD, "[$house]")
+  data class 權祿巡逢(val house: House, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
 
   object 科權祿夾 : ClassicalPattern(GOOD)
   object 文星拱命 : ClassicalPattern(GOOD)
-  class 財祿夾馬(house: House, goods: Set<GoodCombo>) :
-    ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
+  data class 財祿夾馬(val house: House, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
 
-  class 財蔭夾印(house: House) : ClassicalPattern(GOOD, "[$house]")
-  class 擎羊入廟(house: House) : ClassicalPattern(GOOD, "[$house]")
-  class 祿馬配印(house: House) : ClassicalPattern(GOOD, "[$house]")
+  data class 財蔭夾印(val house: House) : ClassicalPattern(GOOD, "[$house]")
+  data class 擎羊入廟(val house: House) : ClassicalPattern(GOOD, "[$house]")
+  data class 祿馬配印(val house: House) : ClassicalPattern(GOOD, "[$house]")
   object 紫府夾命 : ClassicalPattern(GOOD)
   object 日月夾命 : ClassicalPattern(GOOD)
   object 昌曲夾命 : ClassicalPattern(GOOD)
@@ -2663,7 +2666,7 @@ sealed class ClassicalPattern(override val type: PatternType,
   object 祿文拱命 : ClassicalPattern(GOOD)
   object 明祿暗祿 : ClassicalPattern(GOOD)
   object 水木清華 : ClassicalPattern(GOOD)
-  class 金鑾扶駕(house: House) : ClassicalPattern(GOOD, "[$house]")
+  data class 金鑾扶駕(val house: House) : ClassicalPattern(GOOD, "[$house]")
   object 玉袖添香 : ClassicalPattern(GOOD)
   object 殺破狼格 : ClassicalPattern(GOOD)
   object 廟星變景 : ClassicalPattern(GOOD)
@@ -2673,8 +2676,8 @@ sealed class ClassicalPattern(override val type: PatternType,
 
   // =========================== 以下 , 惡格 ===========================
 
-  class 馬頭帶劍(evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
-  class 極居卯酉(evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
+  data class 馬頭帶劍(val evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
+  data class 極居卯酉(val evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
   object 命無正曜 : ClassicalPattern(EVIL)
   object 風流綵杖 : ClassicalPattern(EVIL)
   object 巨機化酉 : ClassicalPattern(EVIL)
@@ -2683,9 +2686,9 @@ sealed class ClassicalPattern(override val type: PatternType,
   object 梁馬飄蕩 : ClassicalPattern(EVIL)
   object 貞殺同宮 : ClassicalPattern(EVIL)
   object 殺拱廉貞 : ClassicalPattern(EVIL)
-  class 巨逢四煞(house: House) : ClassicalPattern(EVIL, "[$house]")
+  data class 巨逢四煞(val house: House) : ClassicalPattern(EVIL, "[$house]")
   object 命裡逢空 : ClassicalPattern(EVIL)
-  class 文星遇夾(evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
+  data class 文星遇夾(val evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
   object 馬落空亡 : ClassicalPattern(EVIL)
   object 兩重華蓋 : ClassicalPattern(EVIL)
   object 祿逢衝破 : ClassicalPattern(EVIL)
@@ -2694,28 +2697,28 @@ sealed class ClassicalPattern(override val type: PatternType,
   object 財與囚仇 : ClassicalPattern(EVIL)
   object 火入泉鄉 : ClassicalPattern(EVIL)
   object 祿逢兩煞 : ClassicalPattern(EVIL)
-  class 君子在野(evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
-  class 羊陀夾忌(house: House) : ClassicalPattern(EVIL, house.toString())
-  class 火鈴夾忌(house: House) : ClassicalPattern(EVIL, house.toString())
+  data class 君子在野(val evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
+  data class 羊陀夾忌(val house: House) : ClassicalPattern(EVIL, house.toString())
+  data class 火鈴夾忌(val house: House) : ClassicalPattern(EVIL, house.toString())
   object 羊陀夾命 : ClassicalPattern(EVIL)
   object 火鈴夾命 : ClassicalPattern(EVIL)
   object 空劫夾命 : ClassicalPattern(EVIL)
-  class 刑囚夾印(house: House) : ClassicalPattern(EVIL, "[$house]")
-  class 刑忌夾印(house: House) : ClassicalPattern(EVIL, "[$house]")
-  class 祿衰馬困(house: House) : ClassicalPattern(EVIL, "[$house]")
+  data class 刑囚夾印(val house: House) : ClassicalPattern(EVIL, "[$house]")
+  data class 刑忌夾印(val house: House) : ClassicalPattern(EVIL, "[$house]")
+  data class 祿衰馬困(val house: House) : ClassicalPattern(EVIL, "[$house]")
   object 名不利達 : ClassicalPattern(EVIL)
   object 三方並凶 : ClassicalPattern(EVIL)
-  class 三奇沖剋(house: House) : ClassicalPattern(EVIL, "[$house]")
+  data class 三奇沖剋(val house: House) : ClassicalPattern(EVIL, "[$house]")
   object 天機巳亥 : ClassicalPattern(EVIL)
   object 月同遇煞 : ClassicalPattern(EVIL)
   object 桃花滾浪 : ClassicalPattern(EVIL)
   object 梁同巳亥 : ClassicalPattern(EVIL)
-  class 科星逢破(house: House) : ClassicalPattern(EVIL, "[$house]")
-  class 刑囚會鈴(house: House) : ClassicalPattern(EVIL, "[$house]")
+  data class 科星逢破(val house: House) : ClassicalPattern(EVIL, "[$house]")
+  data class 刑囚會鈴(val house: House) : ClassicalPattern(EVIL, "[$house]")
   object 鈴昌陀武 : ClassicalPattern(EVIL)
   object 廉殺羊鈴 : ClassicalPattern(EVIL)
   object 一生孤貧 : ClassicalPattern(EVIL)
-  class 魁鉞凶冲(evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
+  data class 魁鉞凶冲(val evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
   object 眾水朝東 : ClassicalPattern(EVIL)
   // TODO : 在野孤君 , 無道之君
 
@@ -2736,6 +2739,6 @@ sealed class ClassicalPattern(override val type: PatternType,
       p祿逢兩煞, p君子在野, p羊陀夾忌, p火鈴夾忌, p羊陀夾命, p火鈴夾命, p空劫夾命, p刑囚夾印, p刑忌夾印, p祿衰馬困,
       p名不利達, p三方並凶, p三奇沖剋, p天機巳亥, p月同遇煞, p桃花滾浪, p梁同巳亥, p科星逢破, p刑囚會鈴, p鈴昌陀武,
       p廉殺羊鈴, p一生孤貧, p魁鉞凶冲, p眾水朝東
-                                                )
+    )
   }
 }
