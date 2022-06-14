@@ -562,7 +562,7 @@ object HouseFunctions {
 
   private val house將前_攀鞍: IHouse<*> = HouseGeneralFrontImpl(攀鞍)
 
-  private val house將前_歲馹: IHouse<*> = HouseGeneralFrontImpl(歲馹)
+  private val house將前_歲馹: IHouse<*> = HouseGeneralFrontImpl(歲驛)
 
   private val house將前_息神: IHouse<*> = HouseGeneralFrontImpl(息神)
 

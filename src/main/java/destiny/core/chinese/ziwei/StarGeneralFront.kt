@@ -31,7 +31,7 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
 
   object 將星 : StarGeneralFront("將星")
   object 攀鞍 : StarGeneralFront("攀鞍")
-  object 歲馹 : StarGeneralFront("歲馹")
+  object 歲驛 : StarGeneralFront("歲驛")
   object 息神 : StarGeneralFront("息神")
   object 華蓋 : StarGeneralFront("華蓋")
   object 劫煞 : StarGeneralFront("劫煞")
@@ -54,7 +54,7 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
 
     override val type: KClass<out Point> = StarGeneralFront::class
 
-    override val values by lazy { arrayOf(將星, 攀鞍, 歲馹, 息神, 華蓋, 劫煞, 災煞, 天煞, 指背, 咸池, 月煞, 亡神) }
+    override val values by lazy { arrayOf(將星, 攀鞍, 歲驛, 息神, 華蓋, 劫煞, 災煞, 天煞, 指背, 咸池, 月煞, 亡神) }
 
     override fun fromString(value: String, locale: Locale): StarGeneralFront? {
       return values.firstOrNull {
@@ -85,7 +85,7 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
 
     val fun將星 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 將星) }
     val fun攀鞍 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 攀鞍) }
-    private val fun歲馹 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 歲馹) }
+    private val fun歲驛 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 歲驛) }
     private val fun息神 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 息神) }
     private val fun華蓋 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 華蓋) }
     private val fun劫煞 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 劫煞) }
@@ -100,7 +100,7 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
       mapOf(
         將星 to fun將星,
         攀鞍 to fun攀鞍,
-        歲馹 to fun歲馹,
+        歲驛 to fun歲驛,
         息神 to fun息神,
         華蓋 to fun華蓋,
         劫煞 to fun劫煞,

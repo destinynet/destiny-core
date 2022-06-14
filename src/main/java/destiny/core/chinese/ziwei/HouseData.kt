@@ -19,7 +19,7 @@ data class HouseData(
   val stemBranch: StemBranch,
 
   /** 宮位裡面 有哪些星體  */
-  val stars: MutableSet<ZStar>,
+  val stars: Set<ZStar>,
 
   /** 此宮位，在各個流運(含本命)，叫什麼宮位  */
   val flowHouseMap: Map<FlowType, House>,

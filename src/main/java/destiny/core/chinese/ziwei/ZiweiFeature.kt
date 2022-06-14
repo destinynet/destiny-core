@@ -717,7 +717,7 @@ class ZiweiFeature(
     // 大限四化
     val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> = getTrans4Map(FlowType.SECTION, section.stem, config)
 
-    val newHouseDataSet: Set<HouseData> = plate.append(FlowType.SECTION, branchHouseMap)
+    val newHouseDataSet: Set<HouseData> = plate.houseDataSet.append(FlowType.SECTION, branchHouseMap)
 
     return PlateWithSection(plate , section, branchHouseMap, newHouseDataSet, plate.transFours.append(trans4Map))
   }
@@ -735,13 +735,53 @@ class ZiweiFeature(
     // 流年四化
     val trans4Map = getTrans4Map(FlowType.YEAR, flowYear.stem, config)
 
-//    return getFlowSection(plate, section, config)
-//      .withFlowYear(flowYear, branchHouseMap)
-//      .appendTrans4Map(trans4Map)
     val plateSection = getFlowSection(plate , section, config)
 
-    val newHouseDataSet: Set<HouseData> = plateSection.append(FlowType.YEAR, branchHouseMap)
 
+    // 本命盤中，是否已經存在任何 將前12星 , 若有，代表設定要計算
+    val showGeneralFront: Boolean = plateSection.houseDataSet
+      .flatMap { houseData -> houseData.stars }
+      .any { it is StarGeneralFront }
+
+    // 本命盤中，是否已經存在任何 歲前12星。 若有，代表設定要計算
+    val showYearFront = plateSection.houseDataSet
+      .flatMap { houseData -> houseData.stars }
+      .any { it is StarYearFront }
+
+
+
+    val newHouseDataSet: Set<HouseData> = plateSection.houseDataSet.map { houseData ->
+      if (showGeneralFront) {
+        // 先過濾掉 將前12星
+        val newStars = houseData.stars.filterNot { it is StarGeneralFront }.toMutableSet().apply {
+          // 再加入 流年的 將前12星
+
+          val addingStar = StarGeneralFront.values.first { star ->
+            StarGeneralFront.starFuncMap.getValue(star).invoke(flowYear.branch) == houseData.stemBranch.branch
+          }
+          add(addingStar)
+        }
+
+        houseData.copy(stars = newStars)
+      } else {
+        houseData
+      }
+    }.map { houseData ->
+      if (showYearFront) {
+        // 先過濾掉 歲前12星
+        val newStars = houseData.stars.filterNot { it is StarYearFront }.toMutableSet().apply {
+          // 再加入 流年的 歲前12星
+          val addingStar = StarYearFront.values.first { star ->
+            StarYearFront.starFuncMap.getValue(star).invoke(flowYear.branch) == houseData.stemBranch.branch
+          }
+          add(addingStar)
+        }
+
+        houseData.copy(stars = newStars)
+      } else {
+        houseData
+      }
+    }.toSet().append(FlowType.YEAR, branchHouseMap)
 
     return PlateWithYear(plateSection , flowYear, branchHouseMap, newHouseDataSet, plateSection.transFours.append(trans4Map))
   }
@@ -762,7 +802,7 @@ class ZiweiFeature(
 
     val plateYear = getFlowYear(plate , section, flowYear, config)
 
-    val newHouseDataSet: Set<HouseData> = plateYear.append(FlowType.MONTH, branchHouseMap)
+    val newHouseDataSet: Set<HouseData> = plateYear.houseDataSet.append(FlowType.MONTH, branchHouseMap)
 
     return PlateWithMonth(plateYear , section, branchHouseMap, newHouseDataSet, plateYear.transFours.append(trans4Map))
   }
@@ -784,7 +824,7 @@ class ZiweiFeature(
 
     val plateMonth = getFlowMonth(plate , section, flowYear, flowMonth, config)
 
-    val newHouseDataSet = plateMonth.append(FlowType.DAY, branchHouseMap)
+    val newHouseDataSet = plateMonth.houseDataSet.append(FlowType.DAY, branchHouseMap)
 
     return PlateWithDay(plateMonth , flowDay, branchHouseMap, newHouseDataSet, plateMonth.transFours.append(trans4Map))
   }
@@ -808,21 +848,20 @@ class ZiweiFeature(
 
     val plateDay = getFlowDay(plate , section, flowYear, flowMonth, flowDay, flowDayNum, config)
 
-    val newHouseDataSet = plateDay.append(FlowType.HOUR, branchHouseMap)
+    val newHouseDataSet = plateDay.houseDataSet.append(FlowType.HOUR, branchHouseMap)
 
     return PlateWithHour(plateDay , flowHour, branchHouseMap, newHouseDataSet, plateDay.transFours.append(trans4Map))
   }
 
-  private fun IPlate.append(flowType : FlowType , branchHouseMap: Map<Branch, House>): Set<HouseData> {
 
-    return this.houseDataSet.map { houseData ->
+  private fun Set<HouseData>.append(flowType: FlowType, branchHouseMap: Map<Branch, House>): Set<HouseData> {
+    return this.map { houseData ->
       val newFlowHouseMap: Map<FlowType, House> = houseData.flowHouseMap.toMutableMap().apply {
         put(flowType, branchHouseMap[houseData.stemBranch.branch]!!)
       }.toMap()
       houseData.copy(house = newFlowHouseMap[flowType]!!,
                      flowHouseMap = newFlowHouseMap)
     }.toSet()
-
   }
 
 
