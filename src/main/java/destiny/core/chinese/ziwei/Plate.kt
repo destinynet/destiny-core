@@ -17,6 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
 
 /** 排盤結果 , 作為 DTO  */
 open class Plate (
+
   /** 名稱  */
   override val name: String?,
 
@@ -71,9 +72,6 @@ open class Plate (
    */
   override val transFours: Map<ZStar, Map<FlowType, ITransFour.Value>>,
 
-//  /** 取得此地支，在各個流運類型， 宮位名稱 是什麼  */
-//  override val branchFlowHouseMap: Map<Branch, Map<FlowType, House>>,
-
   /** 取得此命盤，包含哪些流運資訊  */
   override val flowBranchMap: Map<FlowType, StemBranch>,
 
@@ -93,74 +91,6 @@ open class Plate (
 ) : IPlate, Serializable {
 
 
-  override val mainHouse: StemBranch by lazy {
-    val branch = branchHouseMap.entries.first { (_ , house) -> house == House.命宮 }.key
-    houseDataSet.first { it.stemBranch.branch == branch }.stemBranch
-    //get() = houseMap[House.命宮]!!.stemBranch
-  }
-
-  /** 宮位名稱 -> 宮位資料  */
-  override val houseMap: Map<House, HouseData> by lazy {
-    branchHouseMap.map { (branch, house) ->
-      house to houseDataSet.first { it.stemBranch.branch == branch }
-    }.toMap()
-
-    //houseDataSet.toList().associateBy { hd -> hd.house }
-  }
-
-  /** 星體 -> 宮位資料  */
-  override val starMap: Map<ZStar, HouseData> by lazy {
-
-    branchHouseMap.flatMap { (branch, _) ->
-      val houseData: HouseData = houseDataSet.first { it.stemBranch.branch == branch }
-      houseData.stars.map { star -> star to houseData }
-    }.toMap()
-
-    // houseDataSet.flatMap { hd -> hd.stars.map { star -> star to hd } }.toMap()
-  }
-
-  /** 宮位地支 -> 星體s  */
-  override val branchStarMap: Map<Branch, Collection<ZStar>> by lazy {
-    branchHouseMap.map { (branch, _) ->
-      val houseData: HouseData = houseDataSet.first { it.stemBranch.branch == branch }
-      branch to houseData.stars.toSet()
-    }.toMap()
-
-    // houseDataSet.groupBy { it.stemBranch.branch }.mapValues { it.value.flatMap { hData -> hData.stars } }
-  }
-
-  /** 宮位名稱 -> 星體s  */
-  override val houseStarMap: Map<House, Set<ZStar>> by lazy {
-
-    branchHouseMap.map { (branch, house) ->
-      val houseData: HouseData = houseDataSet.first { it.stemBranch.branch == branch }
-      house to houseData.stars.toSet()
-    }.toMap()
-
-    // houseDataSet.associate { it.house to it.stars }
-  }
-
-  override val branchFlowHouseMap: Map<Branch, Map<FlowType, House>>
-    get() {
-      return houseDataSet.associate { houseData ->
-        houseData.stemBranch.branch to houseData.flowHouseMap
-      }
-    }
-
-  /** 命盤中，此地支的宮位名稱是什麼  */
-  override val branchHouseMap: Map<Branch, House> by lazy {
-    branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.MAIN) }.toMap()
-  }
-
-
-  /** 每個地支宮位，所代表的大限，「歲數」從何時、到何時 (實歲、虛歲不討論) */
-  override val flowSectionAgeMap: Map<StemBranch, Pair<Int, Int>>
-    get() {
-      return houseDataSet.map { hd ->
-        hd.stemBranch to hd.ageRanges
-      }.sortedBy { (_, pair) -> pair.first }
-        .toMap()
-    }
 
 
 //  /** 大運 */

@@ -719,10 +719,6 @@ class ZiweiFeature(
 
     val newHouseDataSet: Set<HouseData> = plate.append(FlowType.SECTION, branchHouseMap)
 
-//    return plate
-//      .withFlowSection(section, branchHouseMap)
-//      .appendTrans4Map(trans4Map)
-
     return PlateWithSection(plate , section, branchHouseMap, newHouseDataSet, plate.transFours.append(trans4Map))
   }
 
@@ -764,11 +760,6 @@ class ZiweiFeature(
     // 流月四化
     val trans4Map = getTrans4Map(FlowType.MONTH, flowMonth.stem, config)
 
-//    return getFlowYear(plate, section, flowYear, config)
-//      .withFlowMonth(flowMonth, branchHouseMap)
-//      .appendTrans4Map(trans4Map)
-
-
     val plateYear = getFlowYear(plate , section, flowYear, config)
 
     val newHouseDataSet: Set<HouseData> = plateYear.append(FlowType.MONTH, branchHouseMap)
@@ -790,9 +781,6 @@ class ZiweiFeature(
 
     // 流日四化
     val trans4Map = getTrans4Map(FlowType.DAY, flowDay.stem, config)
-//    return getFlowMonth(plate, section, flowYear, flowMonth, config)
-//      .withFlowDay(flowDay, branchHouseMap)
-//      .appendTrans4Map(trans4Map)
 
     val plateMonth = getFlowMonth(plate , section, flowYear, flowMonth, config)
 
@@ -818,10 +806,6 @@ class ZiweiFeature(
     // 流時四化
     val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> = getTrans4Map(FlowType.HOUR, flowHour.stem, config)
 
-//    return getFlowDay(plate, section, flowYear, flowMonth, flowDay, flowDayNum, config)
-//      .withFlowHour(flowHour, branchHouseMap)
-//      .appendTrans4Map(trans4Map)
-
     val plateDay = getFlowDay(plate , section, flowYear, flowMonth, flowDay, flowDayNum, config)
 
     val newHouseDataSet = plateDay.append(FlowType.HOUR, branchHouseMap)
@@ -830,20 +814,15 @@ class ZiweiFeature(
   }
 
   private fun IPlate.append(flowType : FlowType , branchHouseMap: Map<Branch, House>): Set<HouseData> {
-    val newBranchFlowHouseMap: Map<Branch, Map<FlowType, House>> = this.branchFlowHouseMap.map { (branch: Branch, m: Map<FlowType, House>) ->
-      val newHouse: House = branchHouseMap[branch]!!
-      val newMap = m.toMutableMap().apply {
-        put(flowType, newHouse)
+
+    return this.houseDataSet.map { houseData ->
+      val newFlowHouseMap: Map<FlowType, House> = houseData.flowHouseMap.toMutableMap().apply {
+        put(flowType, branchHouseMap[houseData.stemBranch.branch]!!)
       }.toMap()
-      branch to newMap
-    }.toMap()
-
-
-
-    return this.houseDataSet.map { hd: HouseData ->
-      val newFlowHouseMap = newBranchFlowHouseMap.getValue(hd.stemBranch.branch)
-      hd.copy(house = newFlowHouseMap[flowType]!!, flowHouseMap = newFlowHouseMap)
+      houseData.copy(house = newFlowHouseMap[flowType]!!,
+                     flowHouseMap = newFlowHouseMap)
     }.toSet()
+
   }
 
 

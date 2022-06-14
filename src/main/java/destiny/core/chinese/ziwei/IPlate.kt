@@ -45,9 +45,6 @@ interface IPlate : Serializable {
   /** 性別  */
   val gender: Gender
 
-  /** 命宮  */
-  val mainHouse: StemBranch
-
   /** 身宮  */
   val bodyHouse: StemBranch
 
@@ -72,9 +69,6 @@ interface IPlate : Serializable {
    */
   val transFours: Map<ZStar, Map<FlowType, ITransFour.Value>>
 
-  /** 取得此地支，在各個流運類型， 宮位名稱 是什麼  */
-  val branchFlowHouseMap: Map<Branch, Map<FlowType, House>>
-
   /** 取得此命盤，包含哪些流運資訊  */
   val flowBranchMap: Map<FlowType, StemBranch>
 
@@ -95,23 +89,58 @@ interface IPlate : Serializable {
 
   // =========== 以上 ↑↑ fields for overridden ↑↑ ===========
 
+  /** 命宮  */
+  val mainHouse: StemBranch
+    get() {
+      return houseMap[House.命宮]!!.stemBranch
+    }
+
   /** 宮位名稱 -> 宮位資料  */
   val houseMap: Map<House, HouseData>
+    get() {
+      return houseDataSet.toList().associateBy { hd -> hd.house }
+    }
 
   /** 星體 -> 宮位資料  */
   val starMap: Map<ZStar, HouseData>
+    get() {
+      return houseDataSet.flatMap { hd -> hd.stars.map { star -> star to hd } }.toMap()
+    }
 
   /** 宮位地支 -> 星體s  */
   val branchStarMap: Map<Branch, Collection<ZStar>>
+    get() {
+      return houseDataSet.groupBy { it.stemBranch.branch }.mapValues { it.value.flatMap { hData -> hData.stars } }
+    }
 
   /** 宮位名稱 -> 星體s  */
   val houseStarMap: Map<House, Set<ZStar>>
+    get() {
+      return houseDataSet.associate { it.house to it.stars }
+    }
 
   /** 命盤中，此地支的宮位名稱是什麼  */
   val branchHouseMap: Map<Branch, House>
+    get() {
+      return houseDataSet.associate { it.stemBranch.branch to it.getHouse(FlowType.MAIN) }
+    }
+
+  /** 取得此地支，在各個流運類型， 宮位名稱 是什麼  */
+  val branchFlowHouseMap: Map<Branch, Map<FlowType, House>>
+    get() {
+      return houseDataSet.associate { houseData ->
+        houseData.stemBranch.branch to houseData.flowHouseMap
+      }
+    }
 
   /** 每個地支宮位，所代表的大限，「歲數」從何時、到何時 (實歲、虛歲不討論) */
   val flowSectionAgeMap: Map<StemBranch, Pair<Int, Int>>
+    get() {
+      return houseDataSet.map { hd ->
+        hd.stemBranch to hd.ageRanges
+      }.sortedBy { (_, pair) -> pair.first }
+        .toMap()
+    }
 
 
 
