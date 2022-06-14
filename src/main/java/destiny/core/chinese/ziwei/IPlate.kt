@@ -143,8 +143,18 @@ interface IPlate : Serializable {
   }
 
   /** 取得此流運的此宮位 */
-  fun getHouseDataOf(house: House, type: FlowType = FlowType.MAIN) : HouseData? {
+  fun getHouseDataOf(house: House, type: FlowType) : HouseData? {
     return houseDataSet.firstOrNull { houseData -> houseData.flowHouseMap[type] == house }
+  }
+
+  /**
+   * 取得此宮位的內容 , 未指定流運。
+   *  [IPlate] 本命盤就查找本命盤的宮位
+   *  [IPlateSection] 大限盤就查找大限盤的宮位
+   *  ... 以下類推
+   *  */
+  fun getHouseDataOf(house: House): HouseData? {
+    return houseDataSet.firstOrNull { hd -> hd.house == house }
   }
 
   /** 這顆星在哪個宮位 */

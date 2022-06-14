@@ -838,8 +838,11 @@ class ZiweiFeature(
       branch to newMap
     }.toMap()
 
+
+
     return this.houseDataSet.map { hd: HouseData ->
-      hd.copy(flowHouseMap = newBranchFlowHouseMap.getValue(hd.stemBranch.branch))
+      val newFlowHouseMap = newBranchFlowHouseMap.getValue(hd.stemBranch.branch)
+      hd.copy(house = newFlowHouseMap[flowType]!!, flowHouseMap = newFlowHouseMap)
     }.toSet()
   }
 

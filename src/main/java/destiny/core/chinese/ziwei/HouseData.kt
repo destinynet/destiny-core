@@ -12,7 +12,7 @@ import java.io.Serializable
  */
 data class HouseData(
 
-  /** 宮位名稱  */
+  /** 宮位名稱 (本命盤就本命盤的宮位 , 大限盤就大限盤的宮位... 以下類推) */
   val house: House,
 
   /** 宮位干支  */
