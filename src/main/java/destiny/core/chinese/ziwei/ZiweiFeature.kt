@@ -945,8 +945,9 @@ class ZiweiFeature(
 
     val flowSectionImpl = flowSectionImplMap[config.bigRange]!!
 
-    val (fromAge, toAge) = flowSectionImpl.getAgeRange(plate.branchHouseMap.getValue(section),
-                                                         plate.state, birthYear.stem, plate.gender, houseSeqImplMap[config.houseSeq]!!)
+    // 原本 house 取得方式 : plate.branchHouseMap.getValue(section) , 只會取得 命宮
+    val (fromAge, toAge) = flowSectionImpl.getAgeRange(plate.getHouseDataOf(section).getHouse(FlowType.MAIN),
+                                                       plate.state, birthYear.stem, plate.gender, houseSeqImplMap[config.houseSeq]!!)
 
     return when(config.sectionAgeType) {
       AgeType.VIRTUAL -> {
