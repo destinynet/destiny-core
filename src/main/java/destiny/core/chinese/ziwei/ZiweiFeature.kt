@@ -435,6 +435,7 @@ class ZiweiFeature(
     val prevMonthDays = if (leapMonth) prevMonthDaysImpl.getPrevMonthDays(cycle, lunarYear, lunarMonth, true) else 0
 
     // 什麼星，在什麼地支
+    // TODO : 紫微變盤
     val starBranchMap: Map<ZStar, Branch> = config.stars.map { star ->
       val branch: Branch? = HouseFunctions.map[star]?.getBranch(
         HouseCalContext(

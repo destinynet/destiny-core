@@ -7,6 +7,7 @@ import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsConfigBuilder
 import destiny.core.chinese.AgeType
+import destiny.core.chinese.Branch
 import destiny.core.chinese.Tianyi
 import destiny.core.chinese.YearType
 import destiny.tools.Builder
@@ -177,6 +178,8 @@ data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::clas
                        val dayNightConfig: DayNightConfig = DayNightConfig(),
                        /** 曆法 */
                        val chineseDateImpl: ChineseDateImpl = ChineseDateImpl.Civil,
+                       /** 紫微強制地支 */
+                       val ziweiForceBranch : Branch? = null,
                        @Serializable(with = LocaleSerializer::class)
                        val locale: Locale = Locale.TRADITIONAL_CHINESE
 ) : java.io.Serializable
@@ -266,6 +269,8 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
 
   var chineseDateImpl: ChineseDateImpl = defaultConfig.chineseDateImpl
 
+  var ziweiForceBranch: Branch? = defaultConfig.ziweiForceBranch
+
   var locale: Locale = Locale.TRADITIONAL_CHINESE
 
   override fun build(): ZiweiConfig {
@@ -294,6 +299,7 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
       ewConfig,
       dayNightConfig,
       chineseDateImpl,
+      ziweiForceBranch,
       locale
     )
   }

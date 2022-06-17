@@ -27,27 +27,30 @@ class PurpleStarBranchLeapAccumDaysImpl : IPurpleStarBranch,
    * @param leap 是否是閏月
    * @param prevMonthDays 前一月有幾日
    */
-  override fun getBranchOfPurpleStar(state: Int, day: Int, leap: Boolean, prevMonthDays: Int): Branch {
+  override fun getBranchOfPurpleStar(state: Int, day: Int, leap: Boolean, prevMonthDays: Int, ziweiForcedBranch: Branch?): Branch {
     require(day + prevMonthDays > 30) {
       logger.error("日數 = {} , 加上前一個月的天數 {}  , 小於 30 日，不適用此 「日數累加推算紫微」演算法", day, prevMonthDays)
       "Error : 局數 = $state , day = $day , 閏月 = $leap , 前一個月日數 = $prevMonthDays"
     }
 
-    return if (!leap) {
-      getBranchOfPurpleStarNonLeap(state, day)
-    } else {
-      // 閏月
-      // 取得新的日數
-      val newDays = prevMonthDays + day
-      when (state) {
-        2 -> water2(newDays)
-        3 -> wood3(newDays)
-        4 -> gold4(newDays)
-        5 -> earth5(newDays)
-        6 -> fire6(newDays)
-        else -> throw AssertionError("Error state : $state")
-      }
-    } // 閏月
+    return ziweiForcedBranch ?: run {
+      if (!leap) {
+        getBranchOfPurpleStarNonLeap(state, day)
+      } else {
+        // 閏月
+        // 取得新的日數
+        val newDays = prevMonthDays + day
+        when (state) {
+          2    -> water2(newDays)
+          3    -> wood3(newDays)
+          4    -> gold4(newDays)
+          5    -> earth5(newDays)
+          6    -> fire6(newDays)
+          else -> throw AssertionError("Error state : $state")
+        }
+      } // 閏月
+    }
+
   }
 
   /** 水二局  */

@@ -56,22 +56,25 @@ sealed class StarMain(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, 
     }
 
     // （局數 , 日數 , 是否閏月 , 上個月的天數 , 紫微星實作) -> 地支
-    private val fun紫微 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> iPurpleBranch.getBranchOfPurpleStar(state, days, leap, prevMonthDays) }
-    private val fun天機 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun紫微.invoke(state, days, leap, prevMonthDays, iPurpleBranch).prev(1) }
-    private val fun太陽 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun紫微.invoke(state, days, leap, prevMonthDays, iPurpleBranch).prev(3) }
-    private val fun武曲 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun紫微.invoke(state, days, leap, prevMonthDays, iPurpleBranch).prev(4) }
-    private val fun天同 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun紫微.invoke(state, days, leap, prevMonthDays, iPurpleBranch).prev(5) }
-    private val fun廉貞 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun紫微.invoke(state, days, leap, prevMonthDays, iPurpleBranch).prev(8) }
-    private val fun天府 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> getMirrored(fun紫微.invoke(state, days, leap, prevMonthDays, iPurpleBranch)) }
-    private val fun太陰 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, iPurpleBranch).next(1) }
-    private val fun貪狼 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, iPurpleBranch).next(2) }
-    private val fun巨門 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, iPurpleBranch).next(3) }
-    private val fun天相 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, iPurpleBranch).next(4) }
-    private val fun天梁 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, iPurpleBranch).next(5) }
-    private val fun七殺 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, iPurpleBranch).next(6) }
-    private val fun破軍 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, iPurpleBranch).next(10) }
+    private val fun紫微 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?,
+                          iPurpleBranch: IPurpleStarBranch ->
+      iPurpleBranch.getBranchOfPurpleStar(state, days, leap, prevMonthDays, null)
+    }
+    private val fun天機 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun紫微.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).prev(1) }
+    private val fun太陽 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun紫微.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).prev(3) }
+    private val fun武曲 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun紫微.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).prev(4) }
+    private val fun天同 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun紫微.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).prev(5) }
+    private val fun廉貞 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun紫微.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).prev(8) }
+    private val fun天府 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> getMirrored(fun紫微.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch)) }
+    private val fun太陰 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).next(1) }
+    private val fun貪狼 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).next(2) }
+    private val fun巨門 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).next(3) }
+    private val fun天相 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).next(4) }
+    private val fun天梁 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).next(5) }
+    private val fun七殺 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).next(6) }
+    private val fun破軍 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).next(10) }
 
-    val starFuncMap: Map<StarMain, Function5<Int, Int, Boolean, Int, IPurpleStarBranch, Branch>> by lazy {
+    val starFuncMap: Map<StarMain, Function6<Int, Int, Boolean, Int, Branch?, IPurpleStarBranch, Branch>> by lazy {
       mapOf(
         紫微 to fun紫微,
         天機 to fun天機,

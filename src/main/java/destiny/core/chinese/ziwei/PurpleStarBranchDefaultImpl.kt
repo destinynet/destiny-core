@@ -32,9 +32,11 @@ class PurpleStarBranchDefaultImpl : IPurpleStarBranch,
    * @param leap 是否是閏月 (此實作用不到)
    * @param prevMonthDays 前一月有幾日 (此實作用不到)
    */
-  override fun getBranchOfPurpleStar(state: Int, day: Int, leap: Boolean, prevMonthDays: Int): Branch {
-    val steps = getPurpleSteps(state, day)
-    return 寅.next(steps - 1)
+  override fun getBranchOfPurpleStar(state: Int, day: Int, leap: Boolean, prevMonthDays: Int, ziweiForcedBranch: Branch?): Branch {
+    return ziweiForcedBranch?: run {
+      val steps = getPurpleSteps(state, day)
+      寅.next(steps - 1)
+    }
   }
 
   /**
