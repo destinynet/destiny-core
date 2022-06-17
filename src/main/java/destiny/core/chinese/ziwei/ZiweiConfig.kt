@@ -179,7 +179,7 @@ data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::clas
                        /** 曆法 */
                        val chineseDateImpl: ChineseDateImpl = ChineseDateImpl.Civil,
                        /** 紫微強制地支 */
-                       val ziweiForceBranch : Branch? = null,
+                       val purpleFixedBranch : Branch? = null,
                        @Serializable(with = LocaleSerializer::class)
                        val locale: Locale = Locale.TRADITIONAL_CHINESE
 ) : java.io.Serializable
@@ -269,7 +269,7 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
 
   var chineseDateImpl: ChineseDateImpl = defaultConfig.chineseDateImpl
 
-  var ziweiForceBranch: Branch? = defaultConfig.ziweiForceBranch
+  var purpleFixedBranch: Branch? = defaultConfig.purpleFixedBranch
 
   var locale: Locale = Locale.TRADITIONAL_CHINESE
 
@@ -299,7 +299,7 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
       ewConfig,
       dayNightConfig,
       chineseDateImpl,
-      ziweiForceBranch,
+      purpleFixedBranch,
       locale
     )
   }

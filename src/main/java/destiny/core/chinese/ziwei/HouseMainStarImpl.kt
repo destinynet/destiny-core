@@ -26,14 +26,14 @@ class HouseMainStarImpl internal constructor(star: StarMain) : HouseAbstractImpl
 
     return context.run {
       if (!leap) {
-        getBranch(MainStarData(state, days, false, prevMonthDays, config.ziweiForceBranch, defaultImpl))
+        getBranch(MainStarData(state, days, false, prevMonthDays, config.purpleFixedBranch, defaultImpl))
       } else {
         // 閏月
         if (days + prevMonthDays == 30) {
-          getBranch(MainStarData(state, 30, true, prevMonthDays, config.ziweiForceBranch, defaultImpl))
+          getBranch(MainStarData(state, 30, true, prevMonthDays, config.purpleFixedBranch, defaultImpl))
         } else {
           // 閏月，且「日數＋前一個月的月數」超過 30天，就啟用注入進來的演算法 . 可能會累加日數
-          getBranch(MainStarData(state, days, true, prevMonthDays, config.ziweiForceBranch, purpleStarBranchImplMap[config.purpleStarBranch]!!))
+          getBranch(MainStarData(state, days, true, prevMonthDays, config.purpleFixedBranch, purpleStarBranchImplMap[config.purpleStarBranch]!!))
         }
       }
     }
