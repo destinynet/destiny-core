@@ -5,10 +5,7 @@ import destiny.core.Gender
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.chinese.AgeType
-import destiny.core.chinese.Branch
-import destiny.core.chinese.FiveElement
-import destiny.core.chinese.StemBranch
+import destiny.core.chinese.*
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
@@ -146,7 +143,11 @@ interface IPlate : Serializable {
 
   // =========== 以上 ↑↑ functions ↑↑ ===========
 
-  //fun getHouseData() : Set<HouseData>
+  /** 納音 */
+  fun getNayin(locale: Locale): String {
+    return NaYin.getDesc(getHouseDataOf(House.命宮, FlowType.MAIN)!!.stemBranch, locale)
+  }
+
 
   /** 傳回虛歲 or 實歲 age map */
   fun getAgeMap(ageType: AgeType) : Map<Int, Pair<GmtJulDay, GmtJulDay>>? {
