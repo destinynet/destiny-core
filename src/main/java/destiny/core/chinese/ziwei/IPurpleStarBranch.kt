@@ -14,12 +14,11 @@ interface IPurpleStarBranch : Descriptive {
    * @param day               本月幾日
    * @param leap              本月是否是閏月
    * @param prevMonthDays     上個月有幾天
-   * @param ziweiForcedBranch 紫微星強制的地支
    */
-  fun getBranchOfPurpleStar(state: Int, day: Int, leap: Boolean, prevMonthDays: Int, ziweiForcedBranch: Branch?): Branch
+  fun getBranchOfPurpleStar(state: Int, day: Int, leap: Boolean, prevMonthDays: Int): Branch
 
   /** 傳入的不是閏月，因此傳遞回去的 prevMonthDays 也不重要，傳回 0 即可  */
   fun getBranchOfPurpleStarNonLeap(state: Int, day: Int): Branch {
-    return getBranchOfPurpleStar(state, day, false, 0, null)
+    return getBranchOfPurpleStar(state, day, false, 0)
   }
 }

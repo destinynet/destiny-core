@@ -58,7 +58,7 @@ sealed class StarMain(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, 
     // （局數 , 日數 , 是否閏月 , 上個月的天數 , 紫微星實作) -> 地支
     private val fun紫微 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, purpleForceBranch: Branch?,
                           iPurpleBranch: IPurpleStarBranch ->
-      iPurpleBranch.getBranchOfPurpleStar(state, days, leap, prevMonthDays, purpleForceBranch)
+      purpleForceBranch ?: iPurpleBranch.getBranchOfPurpleStar(state, days, leap, prevMonthDays)
     }
     private val fun天機 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun紫微.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).prev(1) }
     private val fun太陽 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, zwForceBranch: Branch?, iPurpleBranch: IPurpleStarBranch -> fun紫微.invoke(state, days, leap, prevMonthDays, zwForceBranch, iPurpleBranch).prev(3) }

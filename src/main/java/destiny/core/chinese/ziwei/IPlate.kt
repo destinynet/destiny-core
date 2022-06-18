@@ -148,7 +148,6 @@ interface IPlate : Serializable {
     return NaYin.getDesc(getHouseDataOf(House.命宮, FlowType.MAIN)!!.stemBranch, locale)
   }
 
-
   /** 傳回虛歲 or 實歲 age map */
   fun getAgeMap(ageType: AgeType) : Map<Int, Pair<GmtJulDay, GmtJulDay>>? {
     return when(ageType) {

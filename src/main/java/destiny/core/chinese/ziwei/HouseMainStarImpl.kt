@@ -13,13 +13,13 @@ data class MainStarData(val state: Int,
                         val days: Int,
                         val leapMonth: Boolean,
                         val prevMonthDays: Int,
-                        val zwForceBranch: Branch?,
+                        val purpleFixedBranch: Branch?,
                         val purpleStarBranch: IPurpleStarBranch)
 
 class HouseMainStarImpl internal constructor(star: StarMain) : HouseAbstractImpl<MainStarData>(star) {
 
   override fun getBranch(t: MainStarData): Branch {
-    return StarMain.starFuncMap[star]!!.invoke(t.state, t.days, t.leapMonth, t.prevMonthDays, t.zwForceBranch, t.purpleStarBranch)
+    return StarMain.starFuncMap[star]!!.invoke(t.state, t.days, t.leapMonth, t.prevMonthDays, t.purpleFixedBranch, t.purpleStarBranch)
   }
 
   override fun getBranch(context: HouseCalContext): Branch {

@@ -35,13 +35,4 @@ class PurpleStarBranchDefaultImplTest {
      */
     assertSame(Branch.酉 , impl.getBranchOfPurpleStarNonLeap(6 , 20) )
   }
-
-  @Test
-  fun testForceBranch() {
-    Branch.values().forEach {
-      impl.getBranchOfPurpleStar(2, 1, false, 30, it)
-    }
-
-  }
-
 }

@@ -196,6 +196,8 @@ class ZiweiFeature(
 
   @Named("intRageZiweiImpl")
   private val intRageImpl: IIntAge,
+
+  private val purpleRelocationMutator : IHouseMutator
 ) : AbstractCachedPersonFeature<ZiweiConfig, IPlate>(), IZiweiFeature {
 
   @Inject
@@ -435,7 +437,6 @@ class ZiweiFeature(
     val prevMonthDays = if (leapMonth) prevMonthDaysImpl.getPrevMonthDays(cycle, lunarYear, lunarMonth, true) else 0
 
     // 什麼星，在什麼地支
-    // TODO : 紫微變盤
     val starBranchMap: Map<ZStar, Branch> = config.stars.map { star ->
       val branch: Branch? = HouseFunctions.map[star]?.getBranch(
         HouseCalContext(
@@ -546,10 +547,6 @@ class ZiweiFeature(
         branchStarsMap[branch]
       }.toSortedMap()
 
-    /**
-     * 每個地支，在每種流運，稱為什麼宮位
-     */
-    val branchFlowHouseMap = mutableMapOf<Branch, MutableMap<FlowType, House>>()
 
     /**
      * (branchFlowHouseMap) 儲存類似這樣資料結構 , 12組
@@ -559,10 +556,10 @@ class ZiweiFeature(
      * (丑) :
      *  本命 -> 財帛
      */
-    stemBranchHouseMap.entries.associate { e ->
-      val m = mutableMapOf(FlowType.MAIN to stemBranchHouseMap.getValue(e.key))
+    val branchFlowHouseMap: Map<Branch, Map<FlowType, House>> = stemBranchHouseMap.entries.associate { e ->
+      val m = mapOf(FlowType.MAIN to stemBranchHouseMap.getValue(e.key))
       e.key.branch to m
-    }.toSortedMap().toMap(branchFlowHouseMap)
+    }.toSortedMap()
 
     val houseDataSet = stemBranchHouseMap.entries.map { e ->
       val sb = e.key
@@ -634,7 +631,6 @@ class ZiweiFeature(
       , flowBranchMap, starStrengthMap, notes,
       vageMap, rageMap, summaries
     )
-
   }
 
   override fun getModernBirthPlate(
@@ -687,7 +683,6 @@ class ZiweiFeature(
       plate.starStrengthMap, plate.notes, plate.vageMap, plate.rageMap, plate.summaries
     )
 
-    //return (plate as Plate).copy(name = name , localDateTime = lmt, location = loc, place = place)
   }
 
   /**
@@ -709,7 +704,7 @@ class ZiweiFeature(
   override fun getFlowSection(plate: IPlate, section: StemBranch, config: ZiweiConfig): IPlateSection {
     // 在此大限中，每個地支，對應到哪個宮位
 
-    val branchHouseMap: Map<Branch, House> = values().associateWith { branch ->
+    val newBranchHouseMap: Map<Branch, House> = values().associateWith { branch ->
       val steps = branch.getAheadOf(section.branch)
 
       houseSeqImplMap[config.houseSeq]!!.prev(House.命宮, steps)
@@ -718,9 +713,12 @@ class ZiweiFeature(
     // 大限四化
     val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> = getTrans4Map(FlowType.SECTION, section.stem, config)
 
-    val newHouseDataSet: Set<HouseData> = plate.houseDataSet.append(FlowType.SECTION, branchHouseMap)
 
-    return PlateWithSection(plate , section, branchHouseMap, newHouseDataSet, plate.transFours.append(trans4Map))
+    val newHouseDataSet: Set<HouseData> = purpleRelocationMutator.mutate(plate, config)
+      .append(FlowType.SECTION, newBranchHouseMap)
+
+
+    return PlateWithSection(plate , section, newBranchHouseMap, newHouseDataSet, plate.transFours.append(trans4Map))
   }
 
   /** 計算 流年盤  */
