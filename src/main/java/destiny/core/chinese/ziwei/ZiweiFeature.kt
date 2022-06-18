@@ -714,9 +714,8 @@ class ZiweiFeature(
     val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> = getTrans4Map(FlowType.SECTION, section.stem, config)
 
 
-    val newHouseDataSet: Set<HouseData> = purpleRelocationMutator.mutate(plate, config)
+    val newHouseDataSet: Set<HouseData> = (purpleRelocationMutator.mutate(plate, config)?: plate.houseDataSet)
       .append(FlowType.SECTION, newBranchHouseMap)
-
 
     return PlateWithSection(plate , section, newBranchHouseMap, newHouseDataSet, plate.transFours.append(trans4Map))
   }
