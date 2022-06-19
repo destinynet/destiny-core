@@ -7,7 +7,7 @@ import javax.inject.Named
  * 紫微星變盤
  */
 @Named
-class PurpleRelocationMutator(private val prevMonthDaysImpl: IPrevMonthDays) : IHouseMutator {
+class PurpleRelocationMutator(private val prevMonthDaysImpl: IPrevMonthDays) : IHouseMutator, java.io.Serializable {
 
   override fun mutate(plate: IPlate, config: ZiweiConfig): Set<HouseData>? {
 
