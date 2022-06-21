@@ -16,6 +16,8 @@ abstract class AbstractSeqBooleanRule : ZRule<Boolean> {
 
   private val pinkyStars = setOf(StarMain.天相, StarMain.巨門, StarMain.太陰, StarMain.天同, StarMain.破軍, StarMain.貪狼)
 
+  val 鸞喜 = setOf(StarMinor.紅鸞, StarMinor.天喜)
+
   override fun IZiweiFeature.test(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Boolean {
     return this.getFlowSections(plate , lmt, config).drop(1).any { sectionPlate ->
       testSection(sectionPlate, lmt, config)

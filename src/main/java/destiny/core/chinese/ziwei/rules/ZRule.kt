@@ -10,6 +10,9 @@ import java.time.chrono.ChronoLocalDateTime
 
 
 interface ZRule<T> {
+  
+  val name : String
+    get() = javaClass.simpleName
 
   fun IZiweiFeature.test(plate: IPlate, lmt : ChronoLocalDateTime<*>, config: ZiweiConfig): T
 }
