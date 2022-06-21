@@ -26,3 +26,25 @@ class ZRule7 : AbstractSeqBooleanRule() {
     } ?:false
   }
 }
+
+/**
+ * 本命化忌入運限夫妻宫
+ */
+@Named
+class ZRule8 : AbstractSeqBooleanRule() {
+
+  override fun testSection(sectionPlate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Boolean {
+    return sectionPlate.getTransFourHouseOf(ITransFour.Value.忌, FlowType.MAIN) == sectionPlate.getHouseDataOf(House.夫妻)
+  }
+}
+
+/**
+ * 大命化忌入本命夫妻宫
+ */
+@Named
+class ZRule9 : AbstractSeqBooleanRule() {
+
+  override fun testSection(sectionPlate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Boolean {
+    return sectionPlate.getTransFourHouseOf(ITransFour.Value.忌, FlowType.SECTION) == sectionPlate.getHouseDataOf(House.夫妻, FlowType.MAIN)
+  }
+}
