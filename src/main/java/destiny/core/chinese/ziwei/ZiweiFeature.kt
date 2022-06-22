@@ -1011,11 +1011,11 @@ class ZiweiFeature(
     if (dst) {
       // 日光節約時間 特別註記
       notesBuilders.add(Pair("dst", arrayOf()))
-      logger.info("[DST]:校正日光節約時間...")
-      logger.info("lmt = {} , location = {} . location.hasMinuteOffset = {}", lmt, loc, loc.hasMinuteOffset)
-      logger.info("loc tz = {} , minuteOffset = {}", loc.timeZone.id, loc.finalMinuteOffset)
-      logger.info("有日光節約時間 ,  GMT 時差 : {}", minuteOffset)
-      logger.info("時辰 = {} . hourImpl = {}", hour, config.ewConfig.dayHourConfig.hourBranchConfig.hourImpl)
+      logger.trace("[DST]:校正日光節約時間...")
+      logger.trace("lmt = {} , location = {} . location.hasMinuteOffset = {}", lmt, loc, loc.hasMinuteOffset)
+      logger.trace("loc tz = {} , minuteOffset = {}", loc.timeZone.id, loc.finalMinuteOffset)
+      logger.trace("有日光節約時間 ,  GMT 時差 : {}", minuteOffset)
+      logger.trace("時辰 = {} . hourImpl = {}", hour, config.ewConfig.dayHourConfig.hourBranchConfig.hourImpl)
     }
 
     if (hourImpl == HourImpl.TST) {
