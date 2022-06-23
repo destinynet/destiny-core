@@ -353,6 +353,7 @@ class ZiweiFeature(
           // 命身宮於閏月月中切割,故用{0}月
           notesBuilders.add(Pair("mainStarsAlgo_month_leap_split15", arrayOf(finalMonthNumForMainStars)))
         }
+        else                         -> {}
       }
     }
 

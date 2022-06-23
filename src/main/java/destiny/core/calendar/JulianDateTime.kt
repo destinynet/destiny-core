@@ -89,22 +89,20 @@ class JulianDateTime private constructor(private val date: JulianDate, private v
    * see [LocalDateTime.plus]
    */
   override fun plus(amountToAdd: Long, unit: TemporalUnit): ChronoLocalDateTime<JulianDate> {
-    if (unit is ChronoUnit) {
+    return if (unit is ChronoUnit) {
       when (unit) {
-        ChronoUnit.NANOS -> return plusNanos(amountToAdd)
-        ChronoUnit.MICROS -> return plusDays(amountToAdd / MICROS_PER_DAY).plusNanos(
-          amountToAdd % MICROS_PER_DAY * 1000)
-        ChronoUnit.MILLIS -> return plusDays(amountToAdd / MILLIS_PER_DAY).plusNanos(
-          amountToAdd % MILLIS_PER_DAY * 1000000)
-        ChronoUnit.SECONDS -> return plusSeconds(amountToAdd)
-        ChronoUnit.MINUTES -> return plusMinutes(amountToAdd)
-        ChronoUnit.HOURS -> return plusHours(amountToAdd)
-        ChronoUnit.HALF_DAYS -> return plusDays(amountToAdd / 256).plusHours(
-          amountToAdd % 256 * 12)  // no overflow (256 is multiple of 2)
+        ChronoUnit.NANOS     -> plusNanos(amountToAdd)
+        ChronoUnit.MICROS    -> plusDays(amountToAdd / MICROS_PER_DAY).plusNanos(amountToAdd % MICROS_PER_DAY * 1000)
+        ChronoUnit.MILLIS    -> plusDays(amountToAdd / MILLIS_PER_DAY).plusNanos(amountToAdd % MILLIS_PER_DAY * 1000000)
+        ChronoUnit.SECONDS   -> plusSeconds(amountToAdd)
+        ChronoUnit.MINUTES   -> plusMinutes(amountToAdd)
+        ChronoUnit.HOURS     -> plusHours(amountToAdd)
+        // no overflow (256 is multiple of 2)
+        ChronoUnit.HALF_DAYS -> plusDays(amountToAdd / 256).plusHours(amountToAdd % 256 * 12)
+        else                 -> with(date.plus(amountToAdd, unit), time)
       }
-      return with(date.plus(amountToAdd, unit), time)
-    }
-    return unit.addTo(this, amountToAdd)
+    } else
+      unit.addTo(this, amountToAdd)
   }
 
   override fun minus(amountToSubtract: Long, unit: TemporalUnit): ChronoLocalDateTime<JulianDate> {
@@ -220,6 +218,7 @@ class JulianDateTime private constructor(private val date: JulianDate, private v
             amount = Math.multiplyExact(amount, 2)
             timePart /= (NANOS_PER_HOUR * 12)
           }
+          else -> {}
         }
         return Math.addExact(amount, timePart)
       }
