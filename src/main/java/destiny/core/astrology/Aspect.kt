@@ -9,17 +9,6 @@ import destiny.tools.getTitle
 import java.util.*
 import kotlin.math.abs
 
-//fun Aspect.asLocaleString() = object : ILocaleString {
-//  private val resource = "destiny.core.astrology.Astrology"
-//  override fun toString(locale: Locale): String {
-//    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
-//  }
-//}
-//
-//fun Aspect.getTitle(locale: Locale): String {
-//  return this.asLocaleString().toString(locale)
-//}
-
 /** 交角 , Aspect  */
 enum class Aspect(val nameKey: String,
                   /** 取得度數  */
