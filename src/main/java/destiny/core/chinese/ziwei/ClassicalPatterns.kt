@@ -14,10 +14,10 @@ import destiny.core.chinese.ziwei.House.*
 import destiny.core.chinese.ziwei.IClassicalPattern.PatternType
 import destiny.core.chinese.ziwei.IClassicalPattern.PatternType.EVIL
 import destiny.core.chinese.ziwei.IClassicalPattern.PatternType.GOOD
-import destiny.core.chinese.ziwei.ITransFour.Value.忌
 import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
+import destiny.core.chinese.ziwei.T4Value.忌
 import java.io.Serializable
 import java.util.*
 
@@ -476,7 +476,7 @@ val p陽梁昌祿 = object : PatternMultipleImpl() {
     val 陽梁昌祿 = 太陽地支?.let { branch ->
       val 梁昌 = it.getBranches(天梁, 文昌)
       // 上格
-      val 化祿 = it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch
+      val 化祿 = it.getTransFourHouseOf(T4Value.祿).stemBranch.branch
       // 次之
       val 祿存 = it.starMap[祿存]?.stemBranch?.branch
 
@@ -618,7 +618,7 @@ val p對面朝天 = object : PatternSingleImpl() {
     return it.mainHouse.branch
       .takeIf { it == 子 }   // 命宮在子
       ?.takeIf { _ -> it.starMap[太陽]?.stemBranch?.branch == 午 }         // 太陽在午
-      ?.takeIf { _ -> it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch == 午 } // 化祿在午
+      ?.takeIf { _ -> it.getTransFourHouseOf(T4Value.祿).stemBranch.branch == 午 } // 化祿在午
       ?.let { 對面朝天 }
   }
 }
@@ -636,7 +636,7 @@ val p科名會祿 = object : PatternSingleImpl() {
 
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
 
-    val 三方四正有化祿: Boolean = it.三方四正().contains(it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch)
+    val 三方四正有化祿: Boolean = it.三方四正().contains(it.getTransFourHouseOf(T4Value.祿).stemBranch.branch)
 
     return if (it.化科入命宮() && (三方四正有化祿 || it.三方四正有祿存())) {
       科名會祿
@@ -655,7 +655,7 @@ val p甲第登科 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
     return if (
       it.化科入命宮() &&
-      it.三方().contains(it.getTransFourHouseOf(ITransFour.Value.權).stemBranch.branch)
+      it.三方().contains(it.getTransFourHouseOf(T4Value.權).stemBranch.branch)
     )
       甲第登科
     else
@@ -670,7 +670,7 @@ val p科權逢迎 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
     return it
       .takeIf { it.化科入命宮() }
-      ?.takeIf { it.getTransFourHouseOf(ITransFour.Value.權).stemBranch.branch == it.mainHouse.branch.opposite } // 化權入遷移宮
+      ?.takeIf { it.getTransFourHouseOf(T4Value.權).stemBranch.branch == it.mainHouse.branch.opposite } // 化權入遷移宮
       ?.let { 科權逢迎 }
   }
 }
@@ -686,7 +686,7 @@ val p科權逢迎 = object : PatternSingleImpl() {
 val p祿合鴛鴦 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
 
-    val 化祿入對宮 = it.getTransFourHouseOf(ITransFour.Value.權).stemBranch.branch == it.mainHouse.branch.opposite
+    val 化祿入對宮 = it.getTransFourHouseOf(T4Value.權).stemBranch.branch == it.mainHouse.branch.opposite
     val 祿存入命宮 = (it.mainHouse.branch == it.starMap[祿存]?.stemBranch?.branch)
     val 祿存在對宮 = (it.mainHouse.branch.next(6) == it.starMap[祿存]?.stemBranch?.branch)
 
@@ -715,7 +715,7 @@ val p祿合鴛鴦 = object : PatternSingleImpl() {
 val p雙祿朝垣 = object : PatternMultipleImpl() {
 
   override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: ZPatternContext): ZPattern? {
-    val 化祿宮位: Branch = it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch
+    val 化祿宮位: Branch = it.getTransFourHouseOf(T4Value.祿).stemBranch.branch
     val 祿存宮位: Branch? = it.starMap[祿存]?.stemBranch?.branch
 
     val 被拱宮位: Branch? = setOf(化祿宮位, 祿存宮位).trine()?.takeIf { branches.contains(it) }
@@ -735,13 +735,13 @@ val p三奇嘉會 = object : PatternSingleImpl() {
 
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
 
-    val good3: Set<ITransFour.Value> = setOf(ITransFour.Value.祿, ITransFour.Value.權, ITransFour.Value.科)
+    val good3: Set<T4Value> = setOf(T4Value.祿, T4Value.權, T4Value.科)
 
     return it.三方四正().all { branch ->
-      val a: Set<ITransFour.Value?> = it.getHouseDataOf(branch).stars.map { star ->
+      val a: Set<T4Value?> = it.getHouseDataOf(branch).stars.map { star ->
         it.transFours[star]?.get(FlowType.MAIN)
       }.toSet()
-      a.any { value: ITransFour.Value? -> good3.contains(value) }
+      a.any { value: T4Value? -> good3.contains(value) }
     }.let {
       if (it)
         三奇嘉會
@@ -771,7 +771,7 @@ val p祿馬交馳 = object : PatternSingleImpl() {
     val 祿存在命 = it.mainHouse.branch == it.starMap[祿存]?.stemBranch?.branch
     val 祿存在遷 = it.mainHouse.branch.opposite == it.starMap[祿存]?.stemBranch?.branch
 
-    val 化祿入遷移: Boolean = it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch == it.mainHouse.branch.opposite
+    val 化祿入遷移: Boolean = it.getTransFourHouseOf(T4Value.祿).stemBranch.branch == it.mainHouse.branch.opposite
 
     return if (
       (天馬在命 && (祿存在遷 || 化祿入遷移))
@@ -1066,7 +1066,7 @@ val p甲第登庸 = object : PatternSingleImpl() {
 
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
 
-    val 拱有化權 = it.拱().contains(it.getTransFourHouseOf(ITransFour.Value.權).stemBranch.branch)
+    val 拱有化權 = it.拱().contains(it.getTransFourHouseOf(T4Value.權).stemBranch.branch)
 
     return if (it.化科入命宮() && 拱有化權)
       甲第登庸
@@ -1249,18 +1249,18 @@ val p權祿巡逢 = object : PatternMultipleImpl() {
 
   override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: ZPatternContext): ZPattern? {
     // 說法A
-    val 化權與祿存或化祿同宮: Branch? = it.getTransFourHouseOf(ITransFour.Value.權).stemBranch.branch
+    val 化權與祿存或化祿同宮: Branch? = it.getTransFourHouseOf(T4Value.權).stemBranch.branch
       .takeIf { branch -> branches.contains(branch) }
       ?.takeIf { branch ->
         it.starMap[祿存]?.stemBranch?.branch == branch
-          || it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch == branch
+          || it.getTransFourHouseOf(T4Value.祿).stemBranch.branch == branch
       }
 
     // 說法B : 化祿、化權 拱 某宮
     val 化祿化權拱某宮: Branch? =
       listOf(
-        it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch,
-        it.getTransFourHouseOf(ITransFour.Value.權).stemBranch.branch
+        it.getTransFourHouseOf(T4Value.祿).stemBranch.branch,
+        it.getTransFourHouseOf(T4Value.權).stemBranch.branch
       ).trine()
 
     return listOf(化權與祿存或化祿同宮, 化祿化權拱某宮)
@@ -1291,9 +1291,9 @@ val p科權祿夾 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
 
     return listOf(
-      it.getTransFourHouseOf(ITransFour.Value.科).stemBranch.branch,
-      it.getTransFourHouseOf(ITransFour.Value.權).stemBranch.branch,
-      it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch
+      it.getTransFourHouseOf(T4Value.科).stemBranch.branch,
+      it.getTransFourHouseOf(T4Value.權).stemBranch.branch,
+      it.getTransFourHouseOf(T4Value.祿).stemBranch.branch
     )
       .takeIf { 科權祿 -> 科權祿.containsAll(it.neighbors()) }
       ?.let { 科權祿夾 }
@@ -1325,7 +1325,7 @@ val p財祿夾馬 = object : PatternMultipleImpl() {
 
     val 武曲branch = it.starMap[武曲]?.stemBranch?.branch
     val 祿存branch = it.starMap[祿存]?.stemBranch?.branch
-    val 化祿branch = it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch
+    val 化祿branch = it.getTransFourHouseOf(T4Value.祿).stemBranch.branch
 
     return it.starMap[天馬]?.stemBranch?.branch
       ?.takeIf { branches.contains(it) }
@@ -1371,7 +1371,7 @@ val p財祿夾馬 = object : PatternMultipleImpl() {
  */
 val p財蔭夾印 = object : PatternMultipleImpl() {
   override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: ZPatternContext): ZPattern? {
-    val 化祿地支 = it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch
+    val 化祿地支 = it.getTransFourHouseOf(T4Value.祿).stemBranch.branch
     val 天梁地支 = it.starMap[天梁]?.stemBranch?.branch
 
     return listOf(化祿地支, 天梁地支).grip()
@@ -1421,7 +1421,7 @@ val p祿馬配印 = object : PatternMultipleImpl() {
       ?.takeIf { branch -> branches.contains(branch) }
       ?.takeIf { branch ->
         branch == it.starMap[祿存]?.stemBranch?.branch
-          || branch == it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch
+          || branch == it.getTransFourHouseOf(T4Value.祿).stemBranch.branch
       }
       ?.let { branch ->
         val house = it.getHouseDataOf(branch).house
@@ -1502,7 +1502,7 @@ val p雙祿夾命 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
     return listOf(
       it.starMap[祿存]?.stemBranch?.branch,
-      it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch
+      it.getTransFourHouseOf(T4Value.祿).stemBranch.branch
     )
       .grip()
       ?.takeIf { branch ->
@@ -1555,7 +1555,7 @@ val p祿文拱命 = object : PatternSingleImpl() {
 val p明祿暗祿 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
     val 祿存branch = it.starMap[祿存]?.stemBranch?.branch
-    val 化祿branch = it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch
+    val 化祿branch = it.getTransFourHouseOf(T4Value.祿).stemBranch.branch
 
     val 祿存及化祿 = setOf(祿存branch, 化祿branch)
 
@@ -1670,7 +1670,7 @@ val p財印天祿 = object : PatternSingleImpl() {
 
         val 天同天梁化祿地支: List<Branch> = it.getBranches(天同, 天梁).plus(
           it.getTransFourHouseOf(
-            ITransFour.Value.祿
+            T4Value.祿
           ).stemBranch.branch
         )
         val 天同天梁化祿在命宮: Boolean = setOf(branch).containsAll(天同天梁化祿地支)
@@ -2005,7 +2005,7 @@ val p祿逢衝破 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
     return it.mainHouse.branch
       .takeIf { branch ->
-        val 化祿入命宮 = branch == it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch
+        val 化祿入命宮 = branch == it.getTransFourHouseOf(T4Value.祿).stemBranch.branch
         val 祿存坐命 = branch == it.starMap[祿存]?.stemBranch?.branch
         化祿入命宮 || 祿存坐命
       }
@@ -2106,7 +2106,7 @@ val p火入泉鄉 = object : PatternSingleImpl() {
 val p祿逢兩煞 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
     val 祿存守命宮: Boolean = it.getHouseDataOf(it.mainHouse.branch).stars.contains(祿存)
-    val 化祿守命宮: Boolean = it.getTransFourHouseOf(ITransFour.Value.祿).stemBranch.branch == it.mainHouse.branch
+    val 化祿守命宮: Boolean = it.getTransFourHouseOf(T4Value.祿).stemBranch.branch == it.mainHouse.branch
 
     val 命宮有空劫: Boolean = it.空劫().contains(it.mainHouse.branch)
     val 三方四正有惡煞 = it.三方四正().intersect(it.羊陀().plus(it.火鈴()).toSet()).isNotEmpty()
@@ -2353,8 +2353,8 @@ val p三奇沖剋 = object : PatternMultipleImpl() {
   override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: ZPatternContext): ZPattern? {
     return it.getTransFourHouseOf(忌).stemBranch.branch
       .takeIf { branches.contains(it) }
-      ?.takeIf { branch -> branch == it.getTransFourHouseOf(ITransFour.Value.權).stemBranch.branch }
-      ?.takeIf { branch -> branch == it.getTransFourHouseOf(ITransFour.Value.科).stemBranch.branch }
+      ?.takeIf { branch -> branch == it.getTransFourHouseOf(T4Value.權).stemBranch.branch }
+      ?.takeIf { branch -> branch == it.getTransFourHouseOf(T4Value.科).stemBranch.branch }
       ?.let { branch ->
         val house = it.getHouseDataOf(branch).house
         三奇沖剋(house)
@@ -2447,7 +2447,7 @@ val p梁同巳亥 = object : PatternSingleImpl() {
  */
 val p科星逢破 = object : PatternMultipleImpl() {
   override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: ZPatternContext): ZPattern? {
-    return it.getTransFourHouseOf(ITransFour.Value.科).stemBranch.branch
+    return it.getTransFourHouseOf(T4Value.科).stemBranch.branch
       .takeIf { branch -> branches.contains(branch) }
       ?.takeIf { branch ->
         val 三方四正有擎羊或陀羅 = it.三方四正(branch).intersect(it.getBranches(擎羊, 陀羅).toSet()).isNotEmpty()

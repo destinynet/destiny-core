@@ -29,7 +29,7 @@ internal class LunarStationSerializerTest {
     LunarStation.values.forEach { ls ->
       format.encodeToString(ls).also { s ->
         assertNotNull(s)
-        assertEquals(""""$ls"""", s)
+        assertEquals(""""${ls.nameKey}"""", s)
         assertEquals(ls, format.decodeFromString(s))
       }
     }

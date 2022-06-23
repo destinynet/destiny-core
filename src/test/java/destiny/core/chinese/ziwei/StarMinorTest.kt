@@ -72,8 +72,8 @@ class StarMinorTest {
       assertNotNull(star.toString(Locale.TAIWAN))
       assertNotNull(star.toString(Locale.CHINA))
       logger.info("tw = {}({}) , cn = {}({})",
-        star.toString(Locale.TAIWAN), star.getAbbreviation(Locale.TAIWAN),
-        star.toString(Locale.CHINA), star.getAbbreviation(Locale.CHINA))
+                  star.toString(Locale.TAIWAN), star.getAbbreviation(Locale.TAIWAN),
+                  star.toString(Locale.CHINA), star.getAbbreviation(Locale.CHINA))
     }
   }
 

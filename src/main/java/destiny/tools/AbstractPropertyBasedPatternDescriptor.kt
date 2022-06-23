@@ -55,11 +55,11 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
         is ILocaleString -> it.toString(locale)
         is Double -> String.format( doubleFormat?:"%.1f", it)
         is AstroPoint -> it.toString(locale)
-        is Element -> it.toString(locale)
-        is Quality -> it.toString(locale)
-        is Aspect -> it.toString(locale)
+        is Element -> it.getTitle(locale)
+        is Quality -> it.getTitle(locale)
+        is Aspect -> it.getTitle(locale)
         is Dignity -> it.toString(locale)
-        is ZodiacSign -> it.toString(locale)
+        is ZodiacSign -> it.getTitle(locale)
         is Collection<*> -> it.joinToString(",") { item -> objectToString(item?:"")  }
         else -> it.toString()
       }

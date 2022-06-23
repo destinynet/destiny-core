@@ -14,7 +14,7 @@ fun Ayanamsa.asLocaleString() = object : ILocaleString {
   }
 }
 
-fun Ayanamsa.toString(locale: Locale): String {
+fun Ayanamsa.getTitle(locale: Locale): String {
   return this.asLocaleString().toString(locale)
 }
 

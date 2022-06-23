@@ -70,7 +70,7 @@ open class Plate (
    * 四化星 的列表
    * 存放著「這顆星」在 [本命、大限、流年、...] 的四化 結果為何
    */
-  override val transFours: Map<ZStar, Map<FlowType, ITransFour.Value>>,
+  override val transFours: Map<ZStar, Map<FlowType, T4Value>>,
 
   /** 取得此命盤，包含哪些流運資訊  */
   override val flowBranchMap: Map<FlowType, StemBranch>,
@@ -120,7 +120,7 @@ open class PlateWithSection(p : IPlate ,
                        override val flowSection: StemBranch,
                        override val branchHouseMap: Map<Branch, House>,
                        houseDataSet: Set<HouseData>,
-                       transFours: Map<ZStar, Map<FlowType, ITransFour.Value>>
+                       transFours: Map<ZStar, Map<FlowType, T4Value>>
                        ) : Plate(p.name , p.chineseDate, p.localDateTime, p.year, p.finalMonthNumForMonthStars, p.hour, p.location, p.place, p.dayNight, p.gender,
                                  p.bodyHouse , p.mainStar, p.bodyStar, p.fiveElement, p.state, houseDataSet, transFours,
                                  p.flowBranchMap, p.starStrengthMap, p.notes, p.vageMap, p.rageMap,p.summaries), IPlateSection, Serializable
@@ -130,7 +130,7 @@ open class PlateWithYear(p: IPlateSection,
                     override val flowYear: StemBranch,
                     branchHouseMap: Map<Branch, House>,
                     houseDataSet: Set<HouseData>,
-                    transFours: Map<ZStar, Map<FlowType, ITransFour.Value>>
+                    transFours: Map<ZStar, Map<FlowType, T4Value>>
                     ) : PlateWithSection(p, p.flowSection, branchHouseMap, houseDataSet, transFours) , IPlateYear, Serializable
 
 /** 流月盤 */
@@ -138,7 +138,7 @@ open class PlateWithMonth(p : IPlateYear,
                           override val flowMonth: StemBranch,
                           branchHouseMap: Map<Branch, House>,
                           houseDataSet: Set<HouseData>,
-                          transFours: Map<ZStar, Map<FlowType, ITransFour.Value>>
+                          transFours: Map<ZStar, Map<FlowType, T4Value>>
                           ) : PlateWithYear(p, p.flowYear, branchHouseMap, houseDataSet, transFours), IPlateMonth, Serializable
 
 /** 流日盤 */
@@ -146,11 +146,11 @@ open class PlateWithDay(p: IPlateMonth,
                         override val flowDay: StemBranch,
                         branchHouseMap: Map<Branch, House>,
                         houseDataSet: Set<HouseData>,
-                        transFours: Map<ZStar, Map<FlowType, ITransFour.Value>>) : PlateWithMonth(p, p.flowMonth, branchHouseMap, houseDataSet, transFours), IPlateDay, Serializable
+                        transFours: Map<ZStar, Map<FlowType, T4Value>>) : PlateWithMonth(p, p.flowMonth, branchHouseMap, houseDataSet, transFours), IPlateDay, Serializable
 
 /** 流時盤 */
 class PlateWithHour(p : IPlateDay,
                     override val flowHour: StemBranch,
                     branchHouseMap: Map<Branch, House>,
                     houseDataSet: Set<HouseData>,
-                    transFours: Map<ZStar, Map<FlowType, ITransFour.Value>>) : PlateWithDay(p, p.flowDay, branchHouseMap, houseDataSet, transFours) , IPlateHour, Serializable
+                    transFours: Map<ZStar, Map<FlowType, T4Value>>) : PlateWithDay(p, p.flowDay, branchHouseMap, houseDataSet, transFours), IPlateHour, Serializable

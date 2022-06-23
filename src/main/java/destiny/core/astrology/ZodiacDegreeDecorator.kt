@@ -6,6 +6,7 @@ package destiny.core.astrology
 
 import destiny.tools.LocaleTools
 import destiny.tools.getOutputString
+import destiny.tools.getTitle
 import java.util.*
 
 object ZodiacDegreeDecorator {
@@ -57,7 +58,7 @@ class ZodiacDegreeDecoratorTradChinese : IZodiacDegreeDecorator {
 
     val sb = StringBuilder()
 
-    sb.append(sign.toString(locale)).append(" ")
+    sb.append(sign.getTitle(locale)).append(" ")
     if (getDeg() < 10)
       sb.append("0")
     sb.append(getDeg()).append("度 ")
@@ -105,7 +106,7 @@ class ZodiacDegreeDecoratorEnglish : IZodiacDegreeDecorator {
     val sign = ZodiacSign.of(value)
     this.deg = value - sign.degree
 
-    return sign.toString(locale) + " " + getDeg() + "Deg " + min + "Min " + sec + "Sec"
+    return sign.getTitle(locale) + " " + getDeg() + "Deg " + min + "Min " + sec + "Sec"
   }
 
   override fun getSimpOutString(degree: Double): String {

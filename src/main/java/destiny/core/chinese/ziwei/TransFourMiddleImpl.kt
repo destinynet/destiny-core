@@ -4,7 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Stem.*
-import destiny.core.chinese.ziwei.ITransFour.Value.*
+import destiny.core.chinese.ziwei.T4Value.*
 
 /**
  * 中州派(王亭之)

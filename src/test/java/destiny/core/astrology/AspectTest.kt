@@ -4,10 +4,17 @@
  */
 package destiny.core.astrology
 
+import destiny.core.EnumTest
+import destiny.tools.getTitle
 import java.util.*
 import kotlin.test.*
 
-class AspectTest {
+class AspectTest : EnumTest() {
+
+  @Test
+  fun testString() {
+    testEnums(Aspect::class)
+  }
 
   @Test
   fun testGetAspectFromString() {
@@ -22,49 +29,49 @@ class AspectTest {
 
   @Test
   fun testToString() {
-    assertEquals("合", Aspect.CONJUNCTION.toString(Locale.TAIWAN))
-    assertEquals("十二分相", Aspect.SEMISEXTILE.toString(Locale.TAIWAN))
-    assertEquals("十分相", Aspect.DECILE.toString(Locale.TAIWAN))
-    assertEquals("九分相", Aspect.NOVILE.toString(Locale.TAIWAN))
-    assertEquals("半刑", Aspect.SEMISQUARE.toString(Locale.TAIWAN))
-    assertEquals("七分相", Aspect.SEPTILE.toString(Locale.TAIWAN))
-    assertEquals("六合", Aspect.SEXTILE.toString(Locale.TAIWAN))
-    assertEquals("五分相", Aspect.QUINTILE.toString(Locale.TAIWAN))
-    assertEquals("倍九分相", Aspect.BINOVILE.toString(Locale.TAIWAN))
-    assertEquals("刑", Aspect.SQUARE.toString(Locale.TAIWAN))
-    assertEquals("倍七分相", Aspect.BISEPTILE.toString(Locale.TAIWAN))
-    assertEquals("補五分相", Aspect.SESQUIQUINTLE.toString(Locale.TAIWAN))
-    assertEquals("三合", Aspect.TRINE.toString(Locale.TAIWAN))
-    assertEquals("補八分相", Aspect.SESQUIQUADRATE.toString(Locale.TAIWAN))
-    assertEquals("倍五分相", Aspect.BIQUINTILE.toString(Locale.TAIWAN))
-    assertEquals("補十二分相", Aspect.QUINCUNX.toString(Locale.TAIWAN))
-    assertEquals("七分之三分相", Aspect.TRISEPTILE.toString(Locale.TAIWAN))
-    assertEquals("九分之四分相", Aspect.QUATRONOVILE.toString(Locale.TAIWAN))
-    assertEquals("沖", Aspect.OPPOSITION.toString(Locale.TAIWAN))
+    assertEquals("合", Aspect.CONJUNCTION.getTitle(Locale.TAIWAN))
+    assertEquals("十二分相", Aspect.SEMISEXTILE.getTitle(Locale.TAIWAN))
+    assertEquals("十分相", Aspect.DECILE.getTitle(Locale.TAIWAN))
+    assertEquals("九分相", Aspect.NOVILE.getTitle(Locale.TAIWAN))
+    assertEquals("半刑", Aspect.SEMISQUARE.getTitle(Locale.TAIWAN))
+    assertEquals("七分相", Aspect.SEPTILE.getTitle(Locale.TAIWAN))
+    assertEquals("六合", Aspect.SEXTILE.getTitle(Locale.TAIWAN))
+    assertEquals("五分相", Aspect.QUINTILE.getTitle(Locale.TAIWAN))
+    assertEquals("倍九分相", Aspect.BINOVILE.getTitle(Locale.TAIWAN))
+    assertEquals("刑", Aspect.SQUARE.getTitle(Locale.TAIWAN))
+    assertEquals("倍七分相", Aspect.BISEPTILE.getTitle(Locale.TAIWAN))
+    assertEquals("補五分相", Aspect.SESQUIQUINTLE.getTitle(Locale.TAIWAN))
+    assertEquals("三合", Aspect.TRINE.getTitle(Locale.TAIWAN))
+    assertEquals("補八分相", Aspect.SESQUIQUADRATE.getTitle(Locale.TAIWAN))
+    assertEquals("倍五分相", Aspect.BIQUINTILE.getTitle(Locale.TAIWAN))
+    assertEquals("補十二分相", Aspect.QUINCUNX.getTitle(Locale.TAIWAN))
+    assertEquals("七分之三分相", Aspect.TRISEPTILE.getTitle(Locale.TAIWAN))
+    assertEquals("九分之四分相", Aspect.QUATRONOVILE.getTitle(Locale.TAIWAN))
+    assertEquals("沖", Aspect.OPPOSITION.getTitle(Locale.TAIWAN))
   }
 
   @Test
   fun testToStringLocale() {
     val locale = Locale.ENGLISH
-    assertEquals("Conjunction", Aspect.CONJUNCTION.toString(locale))
-    assertEquals("SemiSextile", Aspect.SEMISEXTILE.toString(locale))
-    assertEquals("Decile", Aspect.DECILE.toString(locale))
-    assertEquals("Novile", Aspect.NOVILE.toString(locale))
-    assertEquals("SemiSquare", Aspect.SEMISQUARE.toString(locale))
-    assertEquals("Septile", Aspect.SEPTILE.toString(locale))
-    assertEquals("Sextile", Aspect.SEXTILE.toString(locale))
-    assertEquals("Quintile", Aspect.QUINTILE.toString(locale))
-    assertEquals("BiNovile", Aspect.BINOVILE.toString(locale))
-    assertEquals("Square", Aspect.SQUARE.toString(locale))
-    assertEquals("BiSeptile", Aspect.BISEPTILE.toString(locale))
-    assertEquals("SesquiQuintile", Aspect.SESQUIQUINTLE.toString(locale))
-    assertEquals("Trine", Aspect.TRINE.toString(locale))
-    assertEquals("SesquiQuadrate", Aspect.SESQUIQUADRATE.toString(locale))
-    assertEquals("BiQuintile", Aspect.BIQUINTILE.toString(locale))
-    assertEquals("Quincunx", Aspect.QUINCUNX.toString(locale))
-    assertEquals("TriSeptile", Aspect.TRISEPTILE.toString(locale))
-    assertEquals("QuatroNovile", Aspect.QUATRONOVILE.toString(locale))
-    assertEquals("Opposition", Aspect.OPPOSITION.toString(locale))
+    assertEquals("Conjunction", Aspect.CONJUNCTION.getTitle(locale))
+    assertEquals("SemiSextile", Aspect.SEMISEXTILE.getTitle(locale))
+    assertEquals("Decile", Aspect.DECILE.getTitle(locale))
+    assertEquals("Novile", Aspect.NOVILE.getTitle(locale))
+    assertEquals("SemiSquare", Aspect.SEMISQUARE.getTitle(locale))
+    assertEquals("Septile", Aspect.SEPTILE.getTitle(locale))
+    assertEquals("Sextile", Aspect.SEXTILE.getTitle(locale))
+    assertEquals("Quintile", Aspect.QUINTILE.getTitle(locale))
+    assertEquals("BiNovile", Aspect.BINOVILE.getTitle(locale))
+    assertEquals("Square", Aspect.SQUARE.getTitle(locale))
+    assertEquals("BiSeptile", Aspect.BISEPTILE.getTitle(locale))
+    assertEquals("SesquiQuintile", Aspect.SESQUIQUINTLE.getTitle(locale))
+    assertEquals("Trine", Aspect.TRINE.getTitle(locale))
+    assertEquals("SesquiQuadrate", Aspect.SESQUIQUADRATE.getTitle(locale))
+    assertEquals("BiQuintile", Aspect.BIQUINTILE.getTitle(locale))
+    assertEquals("Quincunx", Aspect.QUINCUNX.getTitle(locale))
+    assertEquals("TriSeptile", Aspect.TRISEPTILE.getTitle(locale))
+    assertEquals("QuatroNovile", Aspect.QUATRONOVILE.getTitle(locale))
+    assertEquals("Opposition", Aspect.OPPOSITION.getTitle(locale))
   }
 
   @Test

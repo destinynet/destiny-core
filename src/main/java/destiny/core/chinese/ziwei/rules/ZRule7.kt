@@ -17,7 +17,7 @@ class ZRule7 : AbstractSeqBooleanRule() {
       val sb = houseData.stemBranch
       logger.trace { "大限命宮 干支 = $sb" }
 
-      sectionPlate.getTransFourHouseOf(ITransFour.Value.忌, FlowType.SECTION).house == House.夫妻
+      sectionPlate.getTransFourHouseOf(T4Value.忌, FlowType.SECTION).house == House.夫妻
 
 //      ITransFour.Value.values().any { value ->
 //        val zStar = transFourImplMap[config.transFour]!!.getStarOf(sb.stem, value)
@@ -34,7 +34,7 @@ class ZRule7 : AbstractSeqBooleanRule() {
 class ZRule8 : AbstractSeqBooleanRule() {
 
   override fun testSection(sectionPlate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Boolean {
-    return sectionPlate.getTransFourHouseOf(ITransFour.Value.忌, FlowType.MAIN) == sectionPlate.getHouseDataOf(House.夫妻)
+    return sectionPlate.getTransFourHouseOf(T4Value.忌, FlowType.MAIN) == sectionPlate.getHouseDataOf(House.夫妻)
   }
 }
 
@@ -45,6 +45,6 @@ class ZRule8 : AbstractSeqBooleanRule() {
 class ZRule9 : AbstractSeqBooleanRule() {
 
   override fun testSection(sectionPlate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Boolean {
-    return sectionPlate.getTransFourHouseOf(ITransFour.Value.忌, FlowType.SECTION) == sectionPlate.getHouseDataOf(House.夫妻, FlowType.MAIN)
+    return sectionPlate.getTransFourHouseOf(T4Value.忌, FlowType.SECTION) == sectionPlate.getHouseDataOf(House.夫妻, FlowType.MAIN)
   }
 }

@@ -47,7 +47,7 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
    * @param flowStem  天干為
    * @return 傳回四化 (若有的話)
    */
-  fun getTrans4Map(flowType: FlowType, flowStem: Stem, config: ZiweiConfig): Map<Pair<ZStar, FlowType>, ITransFour.Value>
+  fun getTrans4Map(flowType: FlowType, flowStem: Stem, config: ZiweiConfig): Map<Pair<ZStar, FlowType>, T4Value>
 
   /**
    * 本命盤
@@ -467,7 +467,7 @@ class ZiweiFeature(
 
     // 本命四化 : 四化要依據 陰曆初一 還是 節氣立春 劃分
 
-    val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> =
+    val trans4Map: Map<Pair<ZStar, FlowType>, T4Value> =
       if (config.yearType == YearType.YEAR_LUNAR) {
         getTrans4Map(FlowType.MAIN, lunarYear.stem, config)
       } else {
@@ -483,7 +483,7 @@ class ZiweiFeature(
     logger.debug { "transFour = ${config.transFour} , title = ${config.transFour.getTitle(Locale.TAIWAN)}" }
     logger.debug { "trans4Map = $trans4Map" }
 
-    val transFourMap: Map<ZStar, SortedMap<FlowType, ITransFour.Value>> = trans4Map.map { (k: Pair<ZStar, FlowType>,v: ITransFour.Value) ->
+    val transFourMap: Map<ZStar, SortedMap<FlowType, T4Value>> = trans4Map.map { (k: Pair<ZStar, FlowType>,v: T4Value) ->
       k.first to sortedMapOf(k.second to v)
     }.toMap()
 
@@ -491,9 +491,9 @@ class ZiweiFeature(
     // 宮干四化 : 此宮位，因為什麼星，各飛入哪個宮位(地支)
     // 參考 : http://www.fate123.com.tw/fate-teaching/fate-lesson-5.2.asp
     val transFourImpl = transFourImplMap[config.transFour]!!
-    val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>> = stemBranchHouseMap.keys.associateWith { sb: StemBranch ->
+    val flyMap: Map<StemBranch, Set<Triple<T4Value, ZStar, Branch>>> = stemBranchHouseMap.keys.associateWith { sb: StemBranch ->
 
-      ITransFour.Value.values()
+      T4Value.values()
         .map { value ->
           val flyStar: ZStar = transFourImpl.getStarOf(sb.stem, value)
           value to flyStar
@@ -690,10 +690,10 @@ class ZiweiFeature(
    * @param flowStem  天干為
    * @return 傳回四化 (若有的話)
    */
-  override fun getTrans4Map(flowType: FlowType, flowStem: Stem, config: ZiweiConfig): Map<Pair<ZStar, FlowType>, ITransFour.Value> {
+  override fun getTrans4Map(flowType: FlowType, flowStem: Stem, config: ZiweiConfig): Map<Pair<ZStar, FlowType>, T4Value> {
     return config.stars.map { star ->
       val key = star to flowType
-      val value: ITransFour.Value? = transFourImplMap[config.transFour]!!.getValueOf(star, flowStem)
+      val value: T4Value? = transFourImplMap[config.transFour]!!.getValueOf(star, flowStem)
       key to value
     }
       .filter { it.second != null }
@@ -711,7 +711,7 @@ class ZiweiFeature(
     }
 
     // 大限四化
-    val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> = getTrans4Map(FlowType.SECTION, section.stem, config)
+    val trans4Map: Map<Pair<ZStar, FlowType>, T4Value> = getTrans4Map(FlowType.SECTION, section.stem, config)
 
 
     val newHouseDataSet: Set<HouseData> = (purpleRelocationMutator.mutate(plate, config)?: plate.houseDataSet)
@@ -842,7 +842,7 @@ class ZiweiFeature(
     }
 
     // 流時四化
-    val trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value> = getTrans4Map(FlowType.HOUR, flowHour.stem, config)
+    val trans4Map: Map<Pair<ZStar, FlowType>, T4Value> = getTrans4Map(FlowType.HOUR, flowHour.stem, config)
 
     val plateDay = getFlowDay(plate , section, flowYear, flowMonth, flowDay, flowDayNum, config)
 
@@ -863,12 +863,12 @@ class ZiweiFeature(
   }
 
 
-  private fun Map<ZStar, Map<FlowType, ITransFour.Value>>.append(trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value>): Map<ZStar, Map<FlowType, ITransFour.Value>> {
+  private fun Map<ZStar, Map<FlowType, T4Value>>.append(trans4Map: Map<Pair<ZStar, FlowType>, T4Value>): Map<ZStar, Map<FlowType, T4Value>> {
     return this.toMutableMap().apply {
-      trans4Map.forEach { (starFlowType: Pair<ZStar, FlowType>, value: ITransFour.Value) ->
+      trans4Map.forEach { (starFlowType: Pair<ZStar, FlowType>, value: T4Value) ->
         val (star, flowType) = starFlowType
 
-        val starMap: Map<FlowType, ITransFour.Value>? = this[star]
+        val starMap: Map<FlowType, T4Value>? = this[star]
         if (starMap != null) {
           this[star] = starMap.toMutableMap().apply {
             put(flowType, value)

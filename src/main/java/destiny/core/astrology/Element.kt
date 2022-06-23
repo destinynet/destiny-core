@@ -4,31 +4,17 @@
  */
 package destiny.core.astrology
 
-import destiny.tools.ILocaleString
-import java.util.*
-
-
-fun Element.asLocaleString() = object : ILocaleString {
-  private val resource = ZodiacSign::class.qualifiedName!!
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
-  }
-}
-
-fun Element.toString(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
-}
 
 /**
  * 四大元素 : 火 Fire , 土 Earth , 風 Air , 水 Water
  */
-enum class Element(val nameKey: String)  {
+enum class Element {
   /** 火  */
-  FIRE("Element.FIRE"),
+  FIRE,
   /** 土  */
-  EARTH("Element.EARTH"),
+  EARTH,
   /** 風  */
-  AIR("Element.AIR"),
+  AIR,
   /** 水  */
-  WATER("Element.WATER");
+  WATER;
 }

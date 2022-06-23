@@ -15,7 +15,7 @@ fun TransPoint.asLocaleString() = object : ILocaleString {
   }
 }
 
-fun TransPoint.toString(locale: Locale): String {
+fun TransPoint.getTitle(locale: Locale): String {
   return this.asLocaleString().toString(locale)
 }
 

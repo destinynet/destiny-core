@@ -5,20 +5,20 @@
 package destiny.core.astrology
 
 import destiny.core.astrology.Aspect.Importance.*
-import destiny.tools.ILocaleString
+import destiny.tools.getTitle
 import java.util.*
 import kotlin.math.abs
 
-fun Aspect.asLocaleString() = object : ILocaleString {
-  private val resource = "destiny.core.astrology.Astrology"
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
-  }
-}
-
-fun Aspect.toString(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
-}
+//fun Aspect.asLocaleString() = object : ILocaleString {
+//  private val resource = "destiny.core.astrology.Astrology"
+//  override fun toString(locale: Locale): String {
+//    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+//  }
+//}
+//
+//fun Aspect.getTitle(locale: Locale): String {
+//  return this.asLocaleString().toString(locale)
+//}
 
 /** 交角 , Aspect  */
 enum class Aspect(val nameKey: String,
@@ -76,7 +76,7 @@ enum class Aspect(val nameKey: String,
 
     /** 從「英文」的 aspect name 來反找 Aspect , 找不到則傳回 null  */
     fun getAspectFromName(value: String): Aspect? {
-      return values().firstOrNull { name -> name.toString(Locale.ENGLISH).equals(value.trim { it <= ' '}, ignoreCase = true) }
+      return values().firstOrNull { name -> name.getTitle(Locale.ENGLISH).equals(value.trim { it <= ' '}, ignoreCase = true) }
     }
 
     /**

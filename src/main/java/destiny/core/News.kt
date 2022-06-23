@@ -76,7 +76,7 @@ fun News.EastWest.toCoordinateString(locale: Locale): String {
 }
 
 /** 東 / 西 / 南 / 北 */
-fun News.toString(locale: Locale): String {
+fun News.getTitle(locale: Locale): String {
   val nameKey = this::class.simpleName!!
   val resource = News::class.qualifiedName!!
   return ResourceBundle.getBundle(resource, locale).getString(nameKey)

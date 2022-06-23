@@ -25,7 +25,7 @@ data class HouseData(
   val flowHouseMap: Map<FlowType, House>,
 
   /** 宮干四化，此宮位，因為什麼星，各飛入哪個宮位(地支)  */
-  private val transFourFlyMap: Set<Triple<ITransFour.Value, ZStar, Branch>>,
+  private val transFourFlyMap: Set<Triple<T4Value, ZStar, Branch>>,
 
   /** 大限，從幾歲開始 (inclusive , 不考慮 虛歲 or 實歲）*/
   val rangeFromAge: Int,
@@ -41,14 +41,14 @@ data class HouseData(
 
 
   /** 宮干自化 列表 , 0 <= 長度 <= 3 */
-  val selfTransFours: List<ITransFour.Value>
+  val selfTransFours: List<T4Value>
     get() = transFourFlyMap
       .filter { (_, _, third) -> third == stemBranch.branch }
       .map { it.first }
       .toList()
 
   /** 宮干 化入對宮  */
-  val oppositeTransFours: List<ITransFour.Value>
+  val oppositeTransFours: List<T4Value>
     get() = transFourFlyMap
       .filter { (_, _, third) -> third == stemBranch.branch.opposite }
       .map { it.first }

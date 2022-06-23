@@ -82,19 +82,19 @@ internal class NewsTest {
 
   @Test
   fun testLocaleString() {
-    assertEquals("北", NORTH.toString(Locale.TAIWAN))
-    assertEquals("南", SOUTH.toString(Locale.TAIWAN))
-    assertEquals("東", EAST.toString(Locale.TAIWAN))
-    assertEquals("西", WEST.toString(Locale.TAIWAN))
+    assertEquals("北", NORTH.getTitle(Locale.TAIWAN))
+    assertEquals("南", SOUTH.getTitle(Locale.TAIWAN))
+    assertEquals("東", EAST.getTitle(Locale.TAIWAN))
+    assertEquals("西", WEST.getTitle(Locale.TAIWAN))
 
-    assertEquals("北", NORTH.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("南", SOUTH.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("东", EAST.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("西", WEST.toString(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("北", NORTH.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("南", SOUTH.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("东", EAST.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("西", WEST.getTitle(Locale.SIMPLIFIED_CHINESE))
 
-    assertEquals("N", NORTH.toString(Locale.ENGLISH))
-    assertEquals("S", SOUTH.toString(Locale.ENGLISH))
-    assertEquals("E", EAST.toString(Locale.ENGLISH))
-    assertEquals("W", WEST.toString(Locale.ENGLISH))
+    assertEquals("N", NORTH.getTitle(Locale.ENGLISH))
+    assertEquals("S", SOUTH.getTitle(Locale.ENGLISH))
+    assertEquals("E", EAST.getTitle(Locale.ENGLISH))
+    assertEquals("W", WEST.getTitle(Locale.ENGLISH))
   }
 }

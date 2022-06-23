@@ -14,7 +14,7 @@ fun Apsis.asLocaleString() = object : ILocaleString {
   }
 }
 
-fun Apsis.toString(locale: Locale): String {
+fun Apsis.getTitle(locale: Locale): String {
   return this.asLocaleString().toString(locale)
 }
 

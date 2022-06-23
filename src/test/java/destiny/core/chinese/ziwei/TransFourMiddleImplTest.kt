@@ -4,9 +4,9 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Stem.*
-import destiny.core.chinese.ziwei.ITransFour.Value.忌
-import destiny.core.chinese.ziwei.ITransFour.Value.科
 import destiny.core.chinese.ziwei.StarMain.*
+import destiny.core.chinese.ziwei.T4Value.忌
+import destiny.core.chinese.ziwei.T4Value.科
 import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test

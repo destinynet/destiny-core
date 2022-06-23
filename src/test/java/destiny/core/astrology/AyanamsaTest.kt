@@ -13,9 +13,9 @@ import kotlin.test.assertNotSame
 class AyanamsaTest {
   @Test
   fun testAyanamsa() {
-    assertEquals("Lahiri" , Ayanamsa.LAHIRI.toString(Locale.TAIWAN))
-    assertEquals("Lahiri" , Ayanamsa.LAHIRI.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("Lahiri" , Ayanamsa.LAHIRI.toString(Locale.ENGLISH))
+    assertEquals("Lahiri" , Ayanamsa.LAHIRI.getTitle(Locale.TAIWAN))
+    assertEquals("Lahiri" , Ayanamsa.LAHIRI.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("Lahiri" , Ayanamsa.LAHIRI.getTitle(Locale.ENGLISH))
 
     assertEquals("LAHIRI" , Ayanamsa.LAHIRI.toString())
 
@@ -24,8 +24,8 @@ class AyanamsaTest {
       assertNotSame('!', each.toString()[0])
 
       val locale = Locale.ENGLISH
-      assertNotNull(each.toString(locale))
-      assertNotSame('!', each.toString(locale)[0])
+      assertNotNull(each.getTitle(locale))
+      assertNotSame('!', each.getTitle(locale)[0])
     }
   }
 }

@@ -4,31 +4,17 @@
  */
 package destiny.core.astrology
 
-import destiny.tools.ILocaleString
-import java.util.*
-
-fun Quality.asLocaleString() = object : ILocaleString {
-  private val resource = ZodiacSign::class.qualifiedName!!
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
-  }
-}
-
-fun Quality.toString(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
-}
-
 /**
  * 基本 Cardinal , 固定 Fixed , 變動 Mutable
  */
-enum class Quality(val nameKey: String) {
+enum class Quality {
 
   /** 基本 : 辰戌丑未 */
-  CARDINAL("Quality.CARDINAL"),
+  CARDINAL,
 
   /** 固定 : 子午卯酉 */
-  FIXED("Quality.FIXED"),
+  FIXED,
 
   /** 變動 : 寅巳申亥 */
-  MUTABLE("Quality.MUTABLE");
+  MUTABLE;
 }

@@ -13,11 +13,11 @@ import kotlin.test.assertNotSame
 class ApsisTest {
   @Test
   fun testLocaleString() {
-    assertEquals("近點" , Apsis.PERIHELION.toString(Locale.TAIWAN))
-    assertEquals("遠點" , Apsis.APHELION.toString(Locale.TAIWAN))
+    assertEquals("近點" , Apsis.PERIHELION.getTitle(Locale.TAIWAN))
+    assertEquals("遠點" , Apsis.APHELION.getTitle(Locale.TAIWAN))
 
-    assertEquals("近点" , Apsis.PERIHELION.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("远点" , Apsis.APHELION.toString(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("近点" , Apsis.PERIHELION.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("远点" , Apsis.APHELION.getTitle(Locale.SIMPLIFIED_CHINESE))
   }
 
   @Test
@@ -27,8 +27,8 @@ class ApsisTest {
       assertNotSame('!', each.toString()[0])
 
       val locale = Locale.US
-      assertNotNull(each.toString(locale))
-      assertNotSame('!', each.toString(locale)[0])
+      assertNotNull(each.getTitle(locale))
+      assertNotSame('!', each.getTitle(locale)[0])
     }
   }
 }

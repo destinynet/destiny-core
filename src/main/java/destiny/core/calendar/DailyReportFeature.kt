@@ -151,7 +151,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
       listOf(Planet.SUN, Planet.MOON).map { planet ->
         TimeDesc.TypeTransPoint(
           riseTransFeature.getLmtTrans(lmtStart, planet, tp, loc, julDayResolver, config.hourBranchConfig.transConfig) as LocalDateTime,
-          planet.toString(Locale.TAIWAN) + tp.toString(Locale.TAIWAN),
+          planet.toString(Locale.TAIWAN) + tp.getTitle(Locale.TAIWAN),
           planet,
           tp
         )

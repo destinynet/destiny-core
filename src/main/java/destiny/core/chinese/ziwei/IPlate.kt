@@ -64,7 +64,7 @@ interface IPlate : Serializable {
    * 四化星 的列表
    * 存放著「這顆星」在 [本命、大限、流年、...] 的四化 結果為何
    */
-  val transFours: Map<ZStar, Map<FlowType, ITransFour.Value>>
+  val transFours: Map<ZStar, Map<FlowType, T4Value>>
 
   /** 取得此命盤，包含哪些流運資訊  */
   val flowBranchMap: Map<FlowType, StemBranch>
@@ -199,19 +199,19 @@ interface IPlate : Serializable {
   }
 
   /** 取得此顆星，的四化列表 */
-  fun getTransFourOf(star: ZStar): List<Pair<FlowType, ITransFour.Value>> {
+  fun getTransFourOf(star: ZStar): List<Pair<FlowType, T4Value>> {
     return transFours[star]?.map { (key, value) -> key to value }?.toList() ?: emptyList()
   }
 
   /** 取得此星，的四化值 (maybe null) */
-  fun getTransFourValue(star: ZStar, type: FlowType = FlowType.MAIN): ITransFour.Value? {
+  fun getTransFourValue(star: ZStar, type: FlowType = FlowType.MAIN): T4Value? {
     return transFours[star]?.let { m -> m[type] }
   }
 
   /**
    * 取得此四化星，在哪一宮位
    * */
-  fun getTransFourHouseOf(value: ITransFour.Value, type: FlowType = FlowType.MAIN): HouseData {
+  fun getTransFourHouseOf(value: T4Value, type: FlowType = FlowType.MAIN): HouseData {
     val star = transFours.entries.first { (_, map) ->
       map.any { (t, v) -> t == type && v == value }
     }.key

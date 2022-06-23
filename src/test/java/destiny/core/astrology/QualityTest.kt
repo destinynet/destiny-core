@@ -4,6 +4,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.getTitle
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,13 +21,13 @@ class QualityTest {
 
   @Test
   fun testToStringLocale() {
-    assertEquals("基本", Quality.CARDINAL.toString(Locale.TAIWAN))
-    assertEquals("固定", Quality.FIXED.toString(Locale.TRADITIONAL_CHINESE))
-    assertEquals("變動", Quality.MUTABLE.toString(Locale.TAIWAN))
+    assertEquals("基本", Quality.CARDINAL.getTitle(Locale.TAIWAN))
+    assertEquals("固定", Quality.FIXED.getTitle(Locale.TRADITIONAL_CHINESE))
+    assertEquals("變動", Quality.MUTABLE.getTitle(Locale.TAIWAN))
 
-    assertEquals("Cardinal", Quality.CARDINAL.toString(Locale.ENGLISH))
-    assertEquals("Fixed", Quality.FIXED.toString(Locale.US))
-    assertEquals("Mutable", Quality.MUTABLE.toString(Locale.UK))
+    assertEquals("Cardinal", Quality.CARDINAL.getTitle(Locale.ENGLISH))
+    assertEquals("Fixed", Quality.FIXED.getTitle(Locale.US))
+    assertEquals("Mutable", Quality.MUTABLE.getTitle(Locale.UK))
   }
 
 }

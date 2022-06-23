@@ -17,7 +17,7 @@ class ZRule6 : AbstractSeqBooleanRule() {
       val sb = houseData.stemBranch
       logger.trace { "大限田宅宮 干支 = $sb" }
 
-      val zStar = transFourImplMap[config.transFour]!!.getStarOf(sb.stem, ITransFour.Value.忌)
+      val zStar = transFourImplMap[config.transFour]!!.getStarOf(sb.stem, T4Value.忌)
       logger.trace { "${sb.stem} 化忌 = $zStar" }
 
       val 運限田宅宮干飛化忌入本命 = sectionPlate.getHouseOf(zStar, FlowType.MAIN) == House.命宮

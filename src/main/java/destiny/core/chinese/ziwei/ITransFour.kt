@@ -7,6 +7,17 @@ import destiny.core.Descriptive
 import destiny.core.chinese.Stem
 import java.util.*
 
+enum class T4Value {
+
+  祿,
+  權,
+  科,
+  忌;
+
+  fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(ZStar::class.java.name, locale).getString(name)
+  }
+}
 /**
  * 四化
  * 參考實作 http://destiny66.com/xuetang/tzyy_wei/question/question.htm
@@ -30,22 +41,14 @@ interface ITransFour : Descriptive {
   val transFour: TransFour
 
   /** 取得「某天干（可能是本命年、大限、或是流年、流月、流日、流時）的某四化」是哪顆星  */
-  fun getStarOf(stem: Stem, value: Value): ZStar
+  fun getStarOf(stem: Stem, value: T4Value): ZStar
 
   /** 類似前者，但逆算：計算此星於此干，是否有四化，若有的話，其為何者  */
-  fun getValueOf(star: ZStar, stem: Stem): Value? {
+  fun getValueOf(star: ZStar, stem: Stem): T4Value? {
     // 先把本年四化的四顆星都找出來
-    val map = Value.values().associateBy { type -> getStarOf(stem, type) }
+    val map = T4Value.values().associateBy { type -> getStarOf(stem, type) }
 
     return map[star]
   }
 
-  enum class Value {
-
-    祿, 權, 科, 忌;
-
-    fun toString(locale: Locale): String {
-      return ResourceBundle.getBundle(ZStar::class.java.name, locale).getString(name)
-    }
-  }
 }

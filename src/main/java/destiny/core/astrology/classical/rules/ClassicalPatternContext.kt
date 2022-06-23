@@ -11,6 +11,7 @@ import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.classical.*
 import destiny.core.chinese.YinYang
+import destiny.tools.getTitle
 import mu.KotlinLogging
 import java.io.Serializable
 import java.util.*
@@ -954,13 +955,13 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
         h.getHouse(planet)?.let { house ->
           when (val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)) {
             DAY -> if (arrayOf(MOON, VENUS, MARS).contains(planet) && house >= 7 && sign.booleanValue) {
-              logger.debug("夜星 {} 於白天在地平面上，落入陽性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN))
+              logger.debug("夜星 {} 於白天在地平面上，落入陽性星座 {} , 不得時", planet, sign.getTitle(Locale.TAIWAN))
               Debility.Out_of_Sect(planet, dayNight, YinYang.陽, sign)
             } else {
               null
             }
             NIGHT -> if (arrayOf(SUN, JUPITER, SATURN).contains(planet) && house >= 7 && !sign.booleanValue) {
-              logger.debug("晝星 {} 於夜晚在地平面上，落入陰性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN))
+              logger.debug("晝星 {} 於夜晚在地平面上，落入陰性星座 {} , 不得時", planet, sign.getTitle(Locale.TAIWAN))
               Debility.Out_of_Sect(planet, dayNight, YinYang.陰, sign)
             } else {
               null

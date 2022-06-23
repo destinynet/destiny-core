@@ -5,10 +5,10 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.IPattern
 import destiny.core.chinese.Branch
-import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
+import destiny.core.chinese.ziwei.T4Value.*
 import java.util.*
 
 fun IPlate.拱(branch: Branch = this.mainHouse.branch): Set<Branch> = branch.let { setOf(it.prev(4), it.next(4)) }
@@ -56,7 +56,7 @@ fun IPlate.三方四正有祿權科星(branch: Branch = this.mainHouse.branch): 
     this.getHouseDataOf(b).stars.map { star: ZStar ->
       this.transFours[star]?.get(FlowType.MAIN)
     }
-  }.any { value: ITransFour.Value? -> setOf(祿, 權, 科).contains(value) }
+  }.any { value: T4Value? -> setOf(祿, 權, 科).contains(value) }
 
 
 fun IPlate.化祿入命宮() = this.getTransFourHouseOf(祿).stemBranch.branch == this.mainHouse.branch

@@ -3,11 +3,15 @@
  */
 package destiny.core.calendar
 
-import destiny.core.astrology.*
+import destiny.core.astrology.AstroPoint
+import destiny.core.astrology.LunarStation
+import destiny.core.astrology.Planet
+import destiny.core.astrology.TransPoint
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.ILunarEclipse
 import destiny.core.astrology.eclipse.ISolarEclipse
 import destiny.core.chinese.Branch
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
@@ -94,7 +98,7 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
     /** 月空亡開始 */
     data class Begin(val voidCourse: Misc.VoidCourse, val loc: ILocation) : VoidMoon(
       TimeTools.getLmtFromGmt(voidCourse.beginGmt, loc, julDayResolver) as LocalDateTime,
-      "月空亡開始，剛離開與 ${voidCourse.exactAspectPrior.points.first { it != Planet.MOON }} 的 ${voidCourse.exactAspectPrior.aspect.toString(Locale.TAIWAN)} "
+      "月空亡開始，剛離開與 ${voidCourse.exactAspectPrior.points.first { it != Planet.MOON }} 的 ${voidCourse.exactAspectPrior.aspect.getTitle(Locale.TAIWAN)} "
     )
 
     /** 月空亡結束 */

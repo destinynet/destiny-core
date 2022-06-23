@@ -37,9 +37,9 @@ abstract class TransFourAbstractImpl(override val transFour: TransFour) : ITrans
                                                                           Descriptive by transFour.asDescriptive(),
                                                                           Serializable {
 
-  protected abstract val table: Collection<Triple<Stem, ITransFour.Value, ZStar>>
+  protected abstract val table: Collection<Triple<Stem, T4Value, ZStar>>
 
-  override fun getStarOf(stem: Stem, value: ITransFour.Value): ZStar {
+  override fun getStarOf(stem: Stem, value: T4Value): ZStar {
     return table
       .filter { it.first == stem && it.second == value}
       .map { it.third }

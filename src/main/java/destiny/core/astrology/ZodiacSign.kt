@@ -12,25 +12,18 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.IYinYang
 import destiny.tools.ArrayTools
 import destiny.tools.CircleTools.normalize
-import destiny.tools.ILocaleString
+import destiny.tools.getTitle
 import java.util.*
 
 
-fun ZodiacSign.asLocaleString() = object : ILocaleString {
-  private val resource = ZodiacSign::class.qualifiedName!!
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
-  }
-}
-
-fun ZodiacSign.toString(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
+fun ZodiacSign.getAbbreviation(locale: Locale): String {
+  val resource = ZodiacSign::class.qualifiedName!!
+  return ResourceBundle.getBundle(resource, locale).getString(this.abbrKey)
 }
 
 
 /** 黃道十二宮  */
-enum class ZodiacSign(val nameKey: String,
-                      private val abbrKey: String,
+enum class ZodiacSign(val abbrKey: String,
                       /** 四正 (火/土/風/水)  */
                       val element: Element,
                       /** 三方 (基本/固定/變動)  */
@@ -41,29 +34,29 @@ enum class ZodiacSign(val nameKey: String,
                       val degree: Int,
                       val unicode: Char) : IYinYang, ILoop<ZodiacSign> {
   /** Aries 戌/牡羊  */
-  ARIES("ZodiacSign.ARIES", "ZodiacSign.ARIES_ABBR", FIRE, CARDINAL, true, 0, '♈'),
+  ARIES("ZodiacSign.ARIES_ABBR", FIRE, CARDINAL, true, 0, '♈'),
   /** Taurus 酉/金牛  */
-  TAURUS("ZodiacSign.TAURUS", "ZodiacSign.TAURUS_ABBR", EARTH, FIXED, false, 30, '♉'),
+  TAURUS("ZodiacSign.TAURUS_ABBR", EARTH, FIXED, false, 30, '♉'),
   /** Gemini 申/雙子  */
-  GEMINI("ZodiacSign.GEMINI", "ZodiacSign.GEMINI_ABBR", AIR, MUTABLE, true, 60, '♊'),
+  GEMINI("ZodiacSign.GEMINI_ABBR", AIR, MUTABLE, true, 60, '♊'),
   /** Cancer 未/巨蟹  */
-  CANCER("ZodiacSign.CANCER", "ZodiacSign.CANCER_ABBR", WATER, CARDINAL, false, 90, '♋'),
+  CANCER("ZodiacSign.CANCER_ABBR", WATER, CARDINAL, false, 90, '♋'),
   /** Leo 午/獅子  */
-  LEO("ZodiacSign.LEO", "ZodiacSign.LEO_ABBR", FIRE, FIXED, true, 120, '♌'),
+  LEO("ZodiacSign.LEO_ABBR", FIRE, FIXED, true, 120, '♌'),
   /** Virgo 巳/處女  */
-  VIRGO("ZodiacSign.VIRGO", "ZodiacSign.VIRGO_ABBR", EARTH, MUTABLE, false, 150, '♍'),
+  VIRGO("ZodiacSign.VIRGO_ABBR", EARTH, MUTABLE, false, 150, '♍'),
   /** Libra 辰/天秤  */
-  LIBRA("ZodiacSign.LIBRA", "ZodiacSign.LIBRA_ABBR", AIR, CARDINAL, true, 180, '♎'),
+  LIBRA("ZodiacSign.LIBRA_ABBR", AIR, CARDINAL, true, 180, '♎'),
   /** Scorpio 卯/天蠍  */
-  SCORPIO("ZodiacSign.SCORPIO", "ZodiacSign.SCORPIO_ABBR", WATER, FIXED, false, 210, '♏'),
+  SCORPIO("ZodiacSign.SCORPIO_ABBR", WATER, FIXED, false, 210, '♏'),
   /** Sagittarius 寅/射手  */
-  SAGITTARIUS("ZodiacSign.SAGITTARIUS", "ZodiacSign.SAGITTARIUS_ABBR", FIRE, MUTABLE, true, 240, '♐'),
+  SAGITTARIUS("ZodiacSign.SAGITTARIUS_ABBR", FIRE, MUTABLE, true, 240, '♐'),
   /** Capricorn 丑/摩羯  */
-  CAPRICORN("ZodiacSign.CAPRICORN", "ZodiacSign.CAPRICORN_ABBR", EARTH, CARDINAL, false, 270, '♑'),
+  CAPRICORN("ZodiacSign.CAPRICORN_ABBR", EARTH, CARDINAL, false, 270, '♑'),
   /** Aquarius 子/水瓶  */
-  AQUARIUS("ZodiacSign.AQUARIUS", "ZodiacSign.AQUARIUS_ABBR", AIR, FIXED, true, 300, '♒'),
+  AQUARIUS("ZodiacSign.AQUARIUS_ABBR", AIR, FIXED, true, 300, '♒'),
   /** Pisces 亥/雙魚  */
-  PISCES("ZodiacSign.PISCES", "ZodiacSign.PISCES_ABBR", WATER, MUTABLE, false, 330, '♓');
+  PISCES("ZodiacSign.PISCES_ABBR", WATER, MUTABLE, false, 330, '♓');
 
   /** 縮寫  */
   val abbreviation: String
@@ -86,12 +79,12 @@ enum class ZodiacSign(val nameKey: String,
   }
 
   override fun toString(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
+    return this.getTitle(Locale.getDefault())
   }
 
-  fun getAbbreviation(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(abbrKey)
-  }
+//  fun getAbbreviation(locale: Locale): String {
+//    return ResourceBundle.getBundle(resource, locale).getString(abbrKey)
+//  }
 
   override fun next(n: Int): ZodiacSign {
     return get(index + n)

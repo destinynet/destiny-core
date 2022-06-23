@@ -4,14 +4,21 @@
  */
 package destiny.core.astrology
 
+import destiny.core.EnumTest
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.chinese.Branch
+import destiny.tools.getTitle
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
-class ZodiacSignTest {
+class ZodiacSignTest : EnumTest() {
+
+  @Test
+  fun testString() {
+    testEnums(ZodiacSign::class)
+  }
 
   @Test
   fun testIndex() {
@@ -120,34 +127,34 @@ class ZodiacSignTest {
 
   @Test
   fun testToString() {
-    assertEquals("牡羊", ARIES.toString(Locale.TAIWAN))
-    assertEquals("金牛", TAURUS.toString(Locale.TAIWAN))
-    assertEquals("雙子", GEMINI.toString(Locale.TAIWAN))
-    assertEquals("巨蟹", CANCER.toString(Locale.TAIWAN))
-    assertEquals("獅子", LEO.toString(Locale.TAIWAN))
-    assertEquals("處女", VIRGO.toString(Locale.TAIWAN))
-    assertEquals("天秤", LIBRA.toString(Locale.TAIWAN))
-    assertEquals("天蠍", SCORPIO.toString(Locale.TAIWAN))
-    assertEquals("射手", SAGITTARIUS.toString(Locale.TAIWAN))
-    assertEquals("摩羯", CAPRICORN.toString(Locale.TAIWAN))
-    assertEquals("水瓶", AQUARIUS.toString(Locale.TAIWAN))
-    assertEquals("雙魚", PISCES.toString(Locale.TAIWAN))
+    assertEquals("牡羊", ARIES.getTitle(Locale.TAIWAN))
+    assertEquals("金牛", TAURUS.getTitle(Locale.TAIWAN))
+    assertEquals("雙子", GEMINI.getTitle(Locale.TAIWAN))
+    assertEquals("巨蟹", CANCER.getTitle(Locale.TAIWAN))
+    assertEquals("獅子", LEO.getTitle(Locale.TAIWAN))
+    assertEquals("處女", VIRGO.getTitle(Locale.TAIWAN))
+    assertEquals("天秤", LIBRA.getTitle(Locale.TAIWAN))
+    assertEquals("天蠍", SCORPIO.getTitle(Locale.TAIWAN))
+    assertEquals("射手", SAGITTARIUS.getTitle(Locale.TAIWAN))
+    assertEquals("摩羯", CAPRICORN.getTitle(Locale.TAIWAN))
+    assertEquals("水瓶", AQUARIUS.getTitle(Locale.TAIWAN))
+    assertEquals("雙魚", PISCES.getTitle(Locale.TAIWAN))
   }
 
   @Test
   fun testToStringLocale() {
-    assertEquals("Aries", ARIES.toString(Locale.US))
-    assertEquals("Taurus", TAURUS.toString(Locale.US))
-    assertEquals("Gemini", GEMINI.toString(Locale.US))
-    assertEquals("Cancer", CANCER.toString(Locale.US))
-    assertEquals("Leo", LEO.toString(Locale.US))
-    assertEquals("Virgo", VIRGO.toString(Locale.US))
-    assertEquals("Libra", LIBRA.toString(Locale.US))
-    assertEquals("Scorpio", SCORPIO.toString(Locale.US))
-    assertEquals("Sagittarius", SAGITTARIUS.toString(Locale.US))
-    assertEquals("Capricorn", CAPRICORN.toString(Locale.US))
-    assertEquals("Aquarius", AQUARIUS.toString(Locale.US))
-    assertEquals("Pisces", PISCES.toString(Locale.US))
+    assertEquals("Aries", ARIES.getTitle(Locale.US))
+    assertEquals("Taurus", TAURUS.getTitle(Locale.US))
+    assertEquals("Gemini", GEMINI.getTitle(Locale.US))
+    assertEquals("Cancer", CANCER.getTitle(Locale.US))
+    assertEquals("Leo", LEO.getTitle(Locale.US))
+    assertEquals("Virgo", VIRGO.getTitle(Locale.US))
+    assertEquals("Libra", LIBRA.getTitle(Locale.US))
+    assertEquals("Scorpio", SCORPIO.getTitle(Locale.US))
+    assertEquals("Sagittarius", SAGITTARIUS.getTitle(Locale.US))
+    assertEquals("Capricorn", CAPRICORN.getTitle(Locale.US))
+    assertEquals("Aquarius", AQUARIUS.getTitle(Locale.US))
+    assertEquals("Pisces", PISCES.getTitle(Locale.US))
   }
 
   @Test
