@@ -8,7 +8,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.StemBranch
-import mu.KotlinLogging
 import java.io.Serializable
 
 
@@ -30,21 +29,4 @@ class YearEclipticDegreeImpl(
     return feature.getModel(gmtJulDay, loc, YearConfig(changeYearDegree))
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is YearEclipticDegreeImpl) return false
-
-    if (changeYearDegree != other.changeYearDegree) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return changeYearDegree.hashCode()
-  }
-
-
-  companion object {
-    val logger = KotlinLogging.logger { }
-  }
 }

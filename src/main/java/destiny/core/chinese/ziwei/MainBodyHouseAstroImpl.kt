@@ -35,18 +35,5 @@ class MainBodyHouseAstroImpl(private val risingSignImpl: IRisingSign,
     return Triple(mainHouse, bodyHouse , null)
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is MainBodyHouseAstroImpl) return false
-
-    if (risingSignImpl != other.risingSignImpl) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return risingSignImpl.hashCode()
-  }
-
 
 }

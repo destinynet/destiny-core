@@ -99,22 +99,6 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
         }.toSet()
     } ?: emptySet()
   }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is AspectsCalculatorImpl) return false
-
-    if (aspectEffectiveImpl != other.aspectEffectiveImpl) return false
-    if (pointPosFuncMap != other.pointPosFuncMap) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    var result = aspectEffectiveImpl.hashCode()
-    result = 31 * result + pointPosFuncMap.hashCode()
-    return result
-  }
 }
 
 

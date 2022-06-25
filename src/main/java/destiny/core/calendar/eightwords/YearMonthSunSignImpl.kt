@@ -54,19 +54,6 @@ class YearMonthSunSignImpl(private val ymSolarTermsStarPositionImpl: YearMonthSo
     }
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is YearMonthSunSignImpl) return false
-
-    if (ymSolarTermsStarPositionImpl != other.ymSolarTermsStarPositionImpl) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return ymSolarTermsStarPositionImpl.hashCode()
-  }
-
 
   companion object {
     const val VALUE = "sign"

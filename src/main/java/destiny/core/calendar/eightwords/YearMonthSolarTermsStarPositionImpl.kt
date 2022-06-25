@@ -10,7 +10,6 @@ import destiny.core.calendar.*
 import destiny.core.chinese.IStemBranch
 import destiny.tools.getDescription
 import destiny.tools.getTitle
-import mu.KotlinLogging
 import java.util.*
 
 /**
@@ -28,7 +27,7 @@ class YearMonthSolarTermsStarPositionImpl(
   private val julDayResolver: JulDayResolver,
   override val southernHemisphereOpposition: Boolean = false,
   override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
-) : IYearMonth, IYear by yearImpl{
+) : IYearMonth, IYear by yearImpl {
 
   override fun toString(locale: Locale): String {
     return MonthImpl.SolarTerms.getTitle(Locale.TAIWAN)
@@ -46,35 +45,11 @@ class YearMonthSolarTermsStarPositionImpl(
    * @return 取得月干支
    */
   override fun getMonth(gmtJulDay: GmtJulDay, location: ILocation): IStemBranch {
-
     return getMonth(gmtJulDay, location, solarTermsImpl, starPositionImpl, southernHemisphereOpposition, hemisphereBy, changeYearDegree, julDayResolver)
-
   }
-
-
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is YearMonthSolarTermsStarPositionImpl) return false
-
-    if (southernHemisphereOpposition != other.southernHemisphereOpposition) return false
-    if (hemisphereBy != other.hemisphereBy) return false
-    if (changeYearDegree != other.changeYearDegree) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    var result = southernHemisphereOpposition.hashCode()
-    result = 31 * result + hemisphereBy.hashCode()
-    result = 31 * result + changeYearDegree.hashCode()
-    return result
-  }
-
 
   companion object {
     const val VALUE = "default"
-    private val logger = KotlinLogging.logger { }
   }
 
 }

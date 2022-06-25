@@ -84,27 +84,4 @@ class LunarStationYearlyImpl(override val yearType: YearType = YearType.YEAR_SOL
     return YearIndex(value, epoch)
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is LunarStationYearlyImpl) return false
-
-    if (yearType != other.yearType) return false
-    if (yearEpoch != other.yearEpoch) return false
-    if (yearImpl != other.yearImpl) return false
-    if (chineseDateImpl != other.chineseDateImpl) return false
-    if (dayHourImpl != other.dayHourImpl) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    var result = yearType.hashCode()
-    result = 31 * result + yearEpoch.hashCode()
-    result = 31 * result + yearImpl.hashCode()
-    result = 31 * result + chineseDateImpl.hashCode()
-    result = 31 * result + dayHourImpl.hashCode()
-    return result
-  }
-
-
 }

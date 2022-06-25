@@ -85,18 +85,5 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializa
     }
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is IntAge8wImpl) return false
-
-    if (solarTermsImpl != other.solarTermsImpl) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return solarTermsImpl.hashCode()
-  }
-
 
 }

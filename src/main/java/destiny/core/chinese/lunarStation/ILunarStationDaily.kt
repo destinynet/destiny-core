@@ -110,22 +110,6 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
     return DayIndex(index420)
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is LunarStationDailyImpl) return false
-
-    if (dayHourImpl != other.dayHourImpl) return false
-    if (julDayResolver != other.julDayResolver) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    var result = dayHourImpl.hashCode()
-    result = 31 * result + julDayResolver.hashCode()
-    return result
-  }
-
 
   companion object {
     /** 陽曆 , 西元 1993年 10月 10日 一元一將 甲子日 中午 , julDay = 2451791 , [虛] 值日 */

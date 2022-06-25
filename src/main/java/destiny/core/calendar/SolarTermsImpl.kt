@@ -139,17 +139,5 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
     }
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is SolarTermsImpl) return false
-
-    if (starTransitImpl != other.starTransitImpl) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return starTransitImpl.hashCode()
-  }
 
 }
