@@ -25,16 +25,6 @@ class AspectOrbsPlanetDefaultImpl : IAspectOrbsPlanet, Serializable {
     return orbThresholdMap[Pair(setOf(p1 , p2) , aspect)]
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is AspectOrbsPlanetDefaultImpl) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
 
   companion object {
 

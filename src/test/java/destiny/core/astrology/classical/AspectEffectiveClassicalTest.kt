@@ -14,15 +14,7 @@ class AspectEffectiveClassicalTest {
 
   val logger = KotlinLogging.logger {}
 
-  @Test
-  fun testEquality() {
-    val impl1 = AspectEffectiveClassical(PointDiameterAlBiruniImpl())
-    val impl2 = AspectEffectiveClassical(PointDiameterAlBiruniImpl(), 0.6)
-    assertEquals(impl1, impl2)
 
-    val impl3 = AspectEffectiveClassical(PointDiameterAlBiruniImpl(), 0.7)
-    assertNotEquals(impl1, impl3)
-  }
 
   /** 測試注入 PlanetOrbsDefaultImpl 的實作  */
   @Test

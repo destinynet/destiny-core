@@ -69,24 +69,6 @@ class AspectEffectiveModern(
     return (angleDiff <= orb)
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is AspectEffectiveModern) return false
-
-    if (aspectOrbsImpl != other.aspectOrbsImpl) return false
-    if (aspectOrbsPlanetImpl != other.aspectOrbsPlanetImpl) return false
-    if (applicableAspects != other.applicableAspects) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    var result = aspectOrbsImpl.hashCode()
-    result = 31 * result + aspectOrbsPlanetImpl.hashCode()
-    result = 31 * result + applicableAspects.hashCode()
-    return result
-  }
-
 
   companion object {
 
