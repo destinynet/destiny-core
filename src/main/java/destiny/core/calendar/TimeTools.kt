@@ -78,6 +78,9 @@ object TimeTools {
     return getJulDay(gmtInstant)
   }
 
+  fun ChronoLocalDateTime<*>.toGmtJulDay(loc: ILocation) : GmtJulDay {
+    return getGmtJulDay(this , loc)
+  }
 
   /**
    * 承上， date + time 拆開來的版本

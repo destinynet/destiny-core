@@ -102,6 +102,7 @@ interface IPlace {
   val place: String
 }
 
+@kotlinx.serialization.Serializable
 data class Location(override val lat: Double,
                     override val lng: Double,
                     override val tzid: String?,
