@@ -32,7 +32,7 @@ data class HouseData(
   /** 大限，到幾歲截止 (inclusive , 不考慮 虛歲 or 實歲）*/
   val rangeToAge: Int,
 
-  /** 六條小限  */
+  /** 8條小限  */
   val smallRanges: List<Int>) : Serializable, Comparable<HouseData> {
 
   fun getHouse(flowType: FlowType = FlowType.MAIN) : House {

@@ -41,7 +41,7 @@ interface ISmallRange {
 
       val startAge = 1 + steps
 
-      return (0..5).map { startAge + it * 12 }
+      return (0..7).map { startAge + it * 12 }
     }
 
     /** 哪一宮 起 一歲小限  */
