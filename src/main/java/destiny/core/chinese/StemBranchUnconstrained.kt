@@ -11,6 +11,7 @@ import destiny.tools.ArrayTools
 /**
  * 120柱干支組合，沒有 陰陽限制
  */
+@kotlinx.serialization.Serializable
 enum class StemBranchUnconstrained(override val stem: Stem,
                                    override val branch: Branch) : IStemBranch {
   甲子(甲, 子),

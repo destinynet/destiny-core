@@ -155,6 +155,7 @@ data class EightWordsNullable private constructor(override val year: IStemBranch
  * 2006-06-12 將此 class 繼承 [EightWordsNullable]
  * 2018-04-01 起， 將此 class 與 [EightWordsNullable] 拆離繼承關係
  */
+@kotlinx.serialization.Serializable
 data class EightWords(override val year: StemBranch,
                       override val month: IStemBranch,
                       override val day: StemBranch,

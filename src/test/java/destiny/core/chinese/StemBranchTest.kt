@@ -8,10 +8,34 @@ package destiny.core.chinese
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch.*
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.test.*
 
 class StemBranchTest {
+
+  @Test
+  fun testSerializeDefault() {
+    StemBranch.values().forEach { sb ->
+      val encoded = Json.encodeToString(sb)
+      assertEquals(""""${sb.name}"""", encoded)
+      assertSame(sb, Json.decodeFromString(encoded))
+    }
+  }
+
+  @Test
+  fun testSerializeWithSerializer() {
+    val serializer: KSerializer<StemBranch> = StemBranch.serializer()
+
+    StemBranch.values().forEach { sb ->
+      val encoded = Json.encodeToString(serializer, sb)
+      assertEquals(""""${sb.name}"""", encoded)
+      assertSame(sb, Json.decodeFromString(serializer, encoded))
+    }
+  }
 
   /** 兩種甲子目前不相等，未來要如何改，再想想 */
   @Test
@@ -23,7 +47,7 @@ class StemBranchTest {
 
   @Test
   fun testOf() {
-    assertSame(甲子 ,  StemBranch.of(甲, 子))
+    assertSame(甲子, StemBranch.of(甲, 子))
     assertNull(StemBranch.of(甲, 丑))
     assertNull(StemBranch.of(甲, null))
     assertNull(StemBranch.of(null, 子))
@@ -230,8 +254,10 @@ class StemBranchTest {
   fun testSorting() {
     val array1 = arrayOf(StemBranch[10], StemBranch[甲, 午], StemBranch[50], StemBranch['甲', '子'], StemBranch[20])
     val expected =
-      arrayOf(StemBranch['甲', '子'], StemBranch['甲', '戌'], StemBranch['甲', '申'], StemBranch['甲', '午'],
-        StemBranch['甲', '寅'])
+      arrayOf(
+        StemBranch['甲', '子'], StemBranch['甲', '戌'], StemBranch['甲', '申'], StemBranch['甲', '午'],
+        StemBranch['甲', '寅']
+      )
     Arrays.sort(array1)
     assertTrue(expected.contentEquals(array1))
   }
