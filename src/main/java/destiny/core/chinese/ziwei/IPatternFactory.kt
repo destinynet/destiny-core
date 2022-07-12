@@ -3,8 +3,6 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.IPattern
-import destiny.core.IPatternParasDescription
 import destiny.core.chinese.Branch
 import java.io.Serializable
 
@@ -19,14 +17,6 @@ interface ZPatternContext {
   }
 
   val target: Target
-}
-
-
-@Deprecated("")
-interface IPlateDescriptionsFactory {
-  fun getPatternDescriptions(plate: IPlate, pContext: ZPatternContext): List<IPatternParasDescription<ZPattern>>
-
-  fun getDescription(pattern: IPattern): IPatternParasDescription<ZPattern>?
 }
 
 

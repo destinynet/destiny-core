@@ -16,7 +16,7 @@ data class PointSignHouse(val point: AstroPoint,
                           val house: Int)
 
 sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
-                          open val score: Double? = null) : IAstroPattern, Serializable {
+                          open val score: Double? = null) : IAstroPattern {
 
   /**
    * [GrandTrine] : 大三角
