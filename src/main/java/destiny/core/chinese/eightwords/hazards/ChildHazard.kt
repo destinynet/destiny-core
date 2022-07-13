@@ -7,8 +7,10 @@ import destiny.core.IPattern
 import java.util.*
 
 
+
+
 sealed class ChildHazard : IPattern {
-  //object 直難關 : ChildHazard()
+
   object 百日關 : ChildHazard() {
     override fun getNotes(locale: Locale): String {
       return "俗忌百曰不出大門，房門不忌。夫百曰關者，專以十二生肖月忌各所內百犯之，童限月內百曰必有星辰難養。"
