@@ -7,6 +7,7 @@ import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
+import destiny.core.chinese.eightwords.hazards.ChildHazard.*
 
 private val 子午卯酉 = listOf(子, 午, 卯, 酉)
 private val 寅申巳亥 = listOf(寅, 申, 巳, 亥)
@@ -16,6 +17,11 @@ private val 寅卯辰 = listOf(寅, 卯, 辰)
 private val 巳午未 = listOf(巳, 午, 未)
 private val 申酉戌 = listOf(申, 酉, 戌)
 private val 亥子丑 = listOf(亥, 子, 丑)
+
+private val 巳酉丑 = listOf(巳, 酉, 丑)
+private val 申子辰 = listOf(申, 子, 辰)
+private val 亥卯未 = listOf(亥, 卯, 未)
+private val 寅午戌 = listOf(寅, 午, 戌)
 
 interface IHazardFactory {
   fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard?
@@ -56,7 +62,7 @@ val p百日關 = object : IHazardFactory {
       (子午卯酉.contains(eightWords.month.branch) && 寅申巳亥.contains(eightWords.hour.branch)) ||
       (辰戌丑未.contains(eightWords.month.branch) && 子午卯酉.contains(eightWords.hour.branch))
     ) {
-      ChildHazard.百日關
+      百日關
     } else {
       null
     }
@@ -76,7 +82,7 @@ val p千日關A = object : IHazardFactory {
       (listOf(庚, 辛).contains(eightWords.year.stem) && listOf(寅).contains(eightWords.hour.branch)) ||
       (listOf(壬, 癸).contains(eightWords.year.stem) && listOf(丑, 亥).contains(eightWords.hour.branch))
     ) {
-      ChildHazard.千日關
+      千日關
     } else {
       null
     }
@@ -96,7 +102,7 @@ val p千日關B = object : IHazardFactory {
       (listOf(庚, 辛).contains(eightWords.year.stem) && listOf(寅).contains(eightWords.hour.branch)) ||
       (listOf(壬, 癸).contains(eightWords.year.stem) && listOf(丑, 亥).contains(eightWords.hour.branch))
     ) {
-      ChildHazard.千日關
+      千日關
     } else {
       null
     }
@@ -109,7 +115,7 @@ val p千日關B = object : IHazardFactory {
 val p千日關C = object : IHazardFactory {
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
     return if (eightWords.year.branch == 午 && 寅申巳亥.contains(eightWords.hour.branch)) {
-      ChildHazard.千日關
+      千日關
     } else {
       null
     }
@@ -119,12 +125,10 @@ val p千日關C = object : IHazardFactory {
 
 /**
  * 春忌牛羊水上波，夏逢辰戌見閻羅，秋逢子午君須避，冬時生人虎兔時，
- * 甲乙丙丁申子辰，戊己庚生亥卯未，辛兼壬癸寅午戌，生孩切慮不成人。
- * 日主旺不防，弱則難養。（象吉）
+ * 甲乙丙丁申子辰，戊己庚生亥卯未，辛兼壬癸寅午戌，生孩切慮不成人。日主旺不防，弱則難養。（象吉）
  *
  * 春季牛羊水上波，夏逢辰戌見閻羅，秋遇子午君須避，冬季生人虎兔嗟。
- * 甲乙丙丁申子辰，戊己庚辛亥卯未，辛兼壬癸寅午戌，生孩切慮不成人。
- * 日主生人不旺，弱則難養。（鰲頭）
+ * 甲乙丙丁申子辰，戊己庚辛亥卯未，辛兼壬癸寅午戌，生孩切慮不成人。日主生人不旺，弱則難養。（鰲頭）
  *
  * 春忌牛羊水上波，夏逢辰戌見閻羅，秋逢子午當須避，冬季生人虎兔磨。日主旺無妨。（星平會海）
  *
@@ -142,7 +146,7 @@ val p閻王關A = object : IHazardFactory {
       (申酉戌.contains(eightWords.month.branch) && listOf(子, 午).contains(eightWords.hour.branch)) ||
       (亥子丑.contains(eightWords.month.branch) && listOf(寅, 卯).contains(eightWords.hour.branch))
     ) {
-      ChildHazard.閻王關
+      閻王關
     } else {
       null
     }
@@ -167,7 +171,7 @@ val p閻王關B = object : IHazardFactory {
       (申酉戌.contains(eightWords.month.branch) && listOf(子, 午).contains(eightWords.hour.branch)) ||
       (亥子丑.contains(eightWords.month.branch) && listOf(寅, 卯).contains(eightWords.hour.branch))
     ) {
-      ChildHazard.閻王關
+      閻王關
     } else {
       null
     }
@@ -179,7 +183,7 @@ val p閻王關B = object : IHazardFactory {
  * 卯辰巳生人、申戌亥為刑。
  * 午未申生人、莫犯丑寅卯。
  * 酉戌亥生人、子辰巳難乎。
- * 夫鬼門關者，以十二支生人、逢各所值時辰、論小兒時上、並童限逢之不可遠行。 (象吉通書)
+ * 夫鬼門關者，以十二支生人、逢各所值時辰、論小兒時上、並童限逢之不可遠行。 (象吉)
  *
  * 子丑寅生人，巳午未時嗔，
  * 卯辰巳生人，申亥戌為刑，
@@ -196,7 +200,7 @@ val p鬼門關A = object : IHazardFactory {
       (listOf(午, 未, 申).contains(eightWords.year.branch) && listOf(丑, 寅, 卯).contains(eightWords.hour.branch)) ||
       (listOf(酉, 戌, 亥).contains(eightWords.year.branch) && listOf(子, 辰, 巳).contains(eightWords.hour.branch))
     ) {
-      ChildHazard.鬼門關
+      鬼門關
     } else {
       null
     }
@@ -230,7 +234,7 @@ val p鬼門關B = object : IHazardFactory {
         Pair(戌, 巳),
       ).contains(eightWords.year.branch to eightWords.hour.branch)
     ) {
-      ChildHazard.鬼門關
+      鬼門關
     } else {
       null
     }
@@ -270,10 +274,85 @@ val p鬼門關C = object : IHazardFactory {
         Pair(亥, 辰),
       ).contains(eightWords.year.branch to eightWords.hour.branch)
     ) {
-      ChildHazard.鬼門關
+      鬼門關
     } else {
       null
     }
   }
+}
 
+/**
+ * 甲己巳酉丑、孩兒難保守。庚辛亥卯未、父母哭斷腸。壬癸寅午戌、生下不見日。乙戊丙丁子、不過三朝死。此關童命犯之難養，童限遇之亦凶，以午明順。(鰲頭)
+ * 甲己巳酉丑、孩兒難保守。庚辛亥卯年、爺娘哭斷腸。壬癸寅午戌、生下不見日。乙戊丙丁子、不過三朝死。(星平會海)
+ */
+val p雞飛關A = object : IHazardFactory {
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (listOf(甲, 己).contains(eightWords.day.stem) && 巳酉丑.contains(eightWords.hour.branch)) ||
+      (listOf(庚, 辛).contains(eightWords.day.stem) && 亥卯未.contains(eightWords.hour.branch)) ||
+      (listOf(壬, 癸).contains(eightWords.day.stem) && 寅午戌.contains(eightWords.hour.branch)) ||
+      (listOf(乙, 戊, 丙, 丁).contains(eightWords.day.stem) && eightWords.hour.branch == 子)
+    ) {
+      雞飛關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 甲乙巳酉丑、孩兒難保守。庚辛亥卯未、父母哭斷腸。壬癸寅午戌、生下不見日。己戊丙丁子、不過三朝死。此關童命犯之難養，夜生不妨，限遇亦凶，以年干生人取用。(象吉)
+ */
+val p雞飛關B = object : IHazardFactory {
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (listOf(甲, 乙).contains(eightWords.day.stem) && 巳酉丑.contains(eightWords.hour.branch)) ||
+      (listOf(庚, 辛).contains(eightWords.day.stem) && 亥卯未.contains(eightWords.hour.branch)) ||
+      (listOf(壬, 癸).contains(eightWords.day.stem) && 寅午戌.contains(eightWords.hour.branch)) ||
+      (listOf(己, 戊, 丙, 丁).contains(eightWords.day.stem) && eightWords.hour.branch == 子)
+    ) {
+      雞飛關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 甲己巳酉丑、庚辛亥卯未、壬庚午戌、乙戊丙丁子，不過三日關。勿看殺生，童限難養，夜生不妨。凡辰戌未時生人，犯此忌雞對面啼叫。(生育禮俗)
+ */
+val p雞飛關C = object : IHazardFactory {
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (listOf(甲, 己).contains(eightWords.day.stem) && 巳酉丑.contains(eightWords.hour.branch)) ||
+      (listOf(庚, 辛).contains(eightWords.day.stem) && 亥卯未.contains(eightWords.hour.branch)) ||
+      (listOf(乙, 戊, 丙, 丁).contains(eightWords.day.stem) && eightWords.hour.branch == 子)
+    ) {
+      雞飛關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 甲、己日逢巳、酉、丑時生，
+ * 乙、丙、丁、戊日逢子時生，
+ * 庚日逢亥、卯、未時生，
+ * 辛、壬、癸日逢寅、午、戌時生是。
+ * 避免孩子看殺雞、殺魚、殺鴨等行為，可燒牛頭馬面錢、或稱牛馬將軍錢，制化即吉。(黃曆解秘)
+ */
+val p雞飛關D = object : IHazardFactory {
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (listOf(甲, 己).contains(eightWords.day.stem) && 巳酉丑.contains(eightWords.hour.branch)) ||
+      (庚 == eightWords.day.stem && 亥卯未.contains(eightWords.hour.branch)) ||
+      (listOf(辛, 壬, 癸).contains(eightWords.day.stem) && 寅午戌.contains(eightWords.hour.branch)) ||
+      (listOf(乙, 丙, 丁, 戊).contains(eightWords.day.stem) && eightWords.hour.branch == 子)
+    ) {
+      雞飛關
+    } else {
+      null
+    }
+  }
 }
