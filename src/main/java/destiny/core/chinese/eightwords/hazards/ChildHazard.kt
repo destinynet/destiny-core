@@ -3,13 +3,7 @@
  */
 package destiny.core.chinese.eightwords.hazards
 
-import destiny.core.Gender
 import destiny.core.IPattern
-import destiny.core.calendar.eightwords.IEightWords
-import destiny.core.chinese.Branch.*
-import destiny.core.chinese.Stem.*
-import destiny.core.chinese.eightwords.hazards.ChildHazard.千日關
-import destiny.core.chinese.eightwords.hazards.ChildHazard.百日關
 import java.util.*
 
 
@@ -246,57 +240,3 @@ sealed class ChildHazard : IPattern {
 }
 
 
-interface IHazardFactory {
-  fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard?
-}
-
-
-private val 子午卯酉 = listOf(子, 午, 卯, 酉)
-private val 寅申巳亥 = listOf(寅, 申, 巳, 亥)
-private val 辰戌丑未 = listOf(辰, 戌, 丑, 未)
-
-/**
- * 寅申巳亥月：辰戌丑未時。
- * 子午卯酉月：寅申巳亥時。
- * 辰戌丑未月：子午卯酉時。
- * 俗忌百曰不出大門，房門不忌。夫百曰關者，專以十二生肖月忌各所內百犯之，童限月內百曰必有星辰難養。
- */
-val p百日關 = object : IHazardFactory {
-  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
-    return if (
-      (寅申巳亥.contains(eightWords.month.branch) && 辰戌丑未.contains(eightWords.hour.branch)) ||
-      (子午卯酉.contains(eightWords.month.branch) && 寅申巳亥.contains(eightWords.hour.branch)) ||
-      (辰戌丑未.contains(eightWords.month.branch) && 子午卯酉.contains(eightWords.hour.branch))
-    ) {
-      百日關
-    } else {
-      null
-    }
-  }
-}
-
-/**
- * 甲乙馬頭龍不住，
- * 丙丁雞猴奔山崗，
- * 戊己逢藏蛇在草，
- * 庚辛遇虎於林下，
- * 壬癸丑亥時須忌，
- * 孩兒直此有煩惱。
- *
- * 夫千曰關者，如甲乙生人午時是也，余仿此。犯之主有驚風、吐乳之災，忌住難星。另一說法；三歲之前不宜到外婆家，或莫至外婆供奉祖先牌位處。
- */
-val p千日關 = object : IHazardFactory {
-  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
-    return if (
-      (listOf(甲, 乙).contains(eightWords.year.stem) && listOf(午).contains(eightWords.hour.branch)) ||
-      (listOf(丙, 丁).contains(eightWords.year.stem) && listOf(申, 酉).contains(eightWords.hour.branch)) ||
-      (listOf(戊, 己).contains(eightWords.year.stem) && listOf(巳).contains(eightWords.hour.branch)) ||
-      (listOf(庚, 辛).contains(eightWords.year.stem) && listOf(寅).contains(eightWords.hour.branch)) ||
-      (listOf(壬, 癸).contains(eightWords.year.stem) && listOf(丑, 亥).contains(eightWords.hour.branch))
-    ) {
-      千日關
-    } else {
-      null
-    }
-  }
-}
