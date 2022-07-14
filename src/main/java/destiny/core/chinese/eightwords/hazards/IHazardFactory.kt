@@ -719,3 +719,51 @@ val p浴盆關 = object : IHazardFactory {
     }
   }
 }
+
+
+/**
+ * 子午卯酉休逢馬，寅申巳亥虎驚人，辰戌丑未羊相觸，常防湯火厄相侵。此殺如子午卯酉生人忌午時，若小兒犯此招湯火之災，亦忌此限。蓋人生水火乃養生之要、何能免乎，知防慎則吉矣。(象吉)
+ * 子午卯酉休遇馬，寅申巳亥虎驚人，辰戌丑未羊相撞，常防湯火厄相侵。其煞如子午卯酉生人忌午時，若小兒犯此招湯火之厄。(鰲頭)
+ * 子午卯酉休騎馬，寅申巳亥虎驚人，辰戌丑未羊相觸，常防湯火厄相侵。（星平會海）
+ * 子午卯酉莫逢馬，寅申巳亥怕見虎，辰戌丑未若遇羊，湯火傷身切須防。限內湯火油小心，宜制化保安寧。(生育禮俗)
+ */
+val p湯火關A = object : IHazardFactory {
+  override fun getBooks(): Set<Book> {
+    return setOf(象吉通書, 鰲頭通書, 星平會海, 生育禮俗)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (子午卯酉.contains(eightWords.year.branch) && eightWords.hour.branch == 午) ||
+      (寅申巳亥.contains(eightWords.year.branch) && eightWords.hour.branch == 寅) ||
+      (辰戌丑未.contains(eightWords.year.branch) && eightWords.hour.branch == 未)
+    ) {
+      湯火關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 凡子、午、卯、酉年午時生人，犯此忌疵痲之患。另：丑、申、亥年逢未時，寅年逢巳時，卯年逢子時，午、酉年逢寅時出生人是。用火神錢制化、或到火神廟拜拜即吉。(黃曆解秘)
+ */
+val p湯火關B = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (子午卯酉.contains(eightWords.year.branch) && eightWords.hour.branch == 午) ||
+      (setOf(丑, 申, 亥).contains(eightWords.year.branch) && eightWords.hour.branch == 未) ||
+      (寅 == eightWords.year.branch && eightWords.hour.branch == 巳) ||
+      (setOf(午, 酉).contains(eightWords.year.branch) && eightWords.hour.branch == 寅)
+    ) {
+      湯火關
+    } else {
+      null
+    }
+  }
+}

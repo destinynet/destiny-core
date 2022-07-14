@@ -40,7 +40,7 @@ sealed class ChildHazard : IPattern {
 
   object 浴盆關 : ChildHazard()
 
-  object 湯火煞 : ChildHazard()
+  object 湯火關 : ChildHazard()
 
   object 水火關 : ChildHazard()
 
