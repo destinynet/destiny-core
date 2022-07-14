@@ -677,11 +677,11 @@ val p短命關 = object : IHazardFactory {
   }
 
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
-    return when(BranchTools.trilogy(eightWords.year.branch)) {
-      火 -> 辰
-      金 -> 寅
-      水 -> 巳
-      木 -> 未
+    return when (BranchTools.trilogy(eightWords.year.branch)) {
+      火    -> 辰
+      金    -> 寅
+      水    -> 巳
+      木    -> 未
       else -> throw IllegalArgumentException("error")
     }.let { branch ->
       if (branch == eightWords.hour.branch) {
@@ -691,5 +691,31 @@ val p短命關 = object : IHazardFactory {
       }
     }
   }
+}
 
+/**
+ * 浴盆之煞最無良，春月忌龍夏忌羊，秋季犬兒須切忌，冬月逢牛定主傷。此生下地之時不可用腳盆，須用鐵鍋、火盆之類，洗之後無忌也，只忌月內一周之外不忌。(象吉)
+ * 浴盆之煞最無良，春忌龍兮夏忌羊，秋忌犬兒須切忌，冬月逢丑定須防。出母勿用浴盆。(星平會海)
+ * 浴盆之煞四季論，春忌龍兮夏忌羊，三秋忌犬冬忌丑，小兒初浴要提防。小兒初次洗浴時小心，解厄平安。正、二、三月申時生人，犯此忌沐浴太早。(生育禮俗)
+ *
+ * 浴盆之煞最無良，春忌龍兮夏忌羊，秋季人見切須忌，冬月逢午定主傷。此煞生子俗時不用瓦盆，宜用鐵銅大盆洗之後無忌。(鰲頭) (人 -> 犬? , 午 -> 牛? , 應該是抄錄錯誤, 不採用)
+ */
+val p浴盆關 = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(象吉通書, 星平會海, 生育禮俗)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (寅卯辰.contains(eightWords.month.branch) && 辰 == eightWords.hour.branch) ||
+      (巳午未.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
+      (申酉戌.contains(eightWords.month.branch) && 戌 == eightWords.hour.branch) ||
+      (亥子丑.contains(eightWords.month.branch) && 丑 == eightWords.hour.branch)
+    ) {
+      浴盆關
+    } else {
+      null
+    }
+  }
 }
