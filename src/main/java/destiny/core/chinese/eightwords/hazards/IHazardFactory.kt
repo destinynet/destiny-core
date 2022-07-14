@@ -6,6 +6,7 @@ package destiny.core.chinese.eightwords.hazards
 import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.BranchTools
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.SimpleBranch
 import destiny.core.chinese.Stem.*
@@ -660,4 +661,35 @@ val p四柱關B = object : IHazardFactory {
       null
     }
   }
+}
+
+/**
+ * 寅午戌龍當，巳酉丑虎亡，申子辰蛇上，亥卯未尋羊。此關生時上帶、主驚呼夜啼難養，如日干健則無事，日主弱凶。(象吉)
+ * 寅午戌生龍位當，巳酉丑人在虎亡，申子辰生蛇頭立，亥卯未人去尋羊。此關生時上帶、主驚呼夜啼難養，如日干旺健則可無事矣。(鰲頭)
+ * 寅午戌龍當，巳酉丑虎亡，申子辰蛇上，亥卯未尋羊。時上見主驚叫夜啼患。(星平會海)
+ * 寅午戌龍當，巳酉丑虎郎，申子辰蛇上，亥卯未尋羊。時上見主驚叫夜啼。限內主小心看護，宜制化方可平安。凡子辰年巳時生人，犯此主多驚怖、夜啼之患。(生育禮俗)
+ * 凡申、子、辰年逢巳時，巳、酉、丑年逢寅時，寅、午、戌年逢辰時，亥、卯、未年逢未時出生人是。犯此主多驚怖、夜啼之患。(黃曆解秘)
+ */
+val p短命關 = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(象吉通書, 鰲頭通書, 星平會海, 生育禮俗, 黃曆解秘)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return when(BranchTools.trilogy(eightWords.year.branch)) {
+      火 -> 辰
+      金 -> 寅
+      水 -> 巳
+      木 -> 未
+      else -> throw IllegalArgumentException("error")
+    }.let { branch ->
+      if (branch == eightWords.hour.branch) {
+        短命關
+      } else {
+        null
+      }
+    }
+  }
+
 }
