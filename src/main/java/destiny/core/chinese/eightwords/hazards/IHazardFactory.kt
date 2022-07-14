@@ -27,7 +27,6 @@ private val 亥卯未 = setOf(亥, 卯, 未)
 private val 寅午戌 = setOf(寅, 午, 戌)
 
 
-
 interface IHazardFactory {
 
   fun getBooks(): Set<Book> = emptySet()
@@ -573,11 +572,11 @@ val p落井關A = object : IHazardFactory {
 
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
     return setOf(
-      Pair(土 , 巳),
-      Pair(金 , 子),
-      Pair(水 , 申),
-      Pair(木 , 戌),
-      Pair(火 , 卯),
+      Pair(土, 巳),
+      Pair(金, 子),
+      Pair(水, 申),
+      Pair(木, 戌),
+      Pair(火, 卯),
     ).contains(eightWords.year.stem.fiveElement to eightWords.hour.branch).let {
       if (it) {
         落井關
@@ -610,6 +609,55 @@ val p落井關B = object : IHazardFactory {
       } else {
         null
       }
+    }
+  }
+}
+
+/**
+ * 正七休生巳亥時，二八辰戌不堪推，三九卯酉生兒惡，四十寅申主哭悲。五十一月丑未死，六十二月子午啼。此關俗忌坐轎車、止忌生時，帶著童限不忌，大抵亦無甚凶。(象吉)
+ * 正七休生巳亥時，二八辰戌不堪推，三九卯酉生兇惡，四十寅申主哭悲。五十一月丑未死，六十二月子午真。此關俗雲忌坐轎車、存忌，止忌生時，帶童限不忌。(鰲頭)
+ * 正七休生巳亥時，二八辰戌不堪推，三九卯酉主人惡，四十寅申主交悲。五十一逢丑未死，六十二子午非宜。小兒若犯此關煞，父母不久主分離。(星平會海)
+ * 正七巳亥時，二八辰戌時，三九卯酉時，四十寅申時，五十一丑未時，六十二子午時。與父母暫分離，俗稱忌座轎子而已。凡巳亥年正二月辰寅時生人，犯此忌坐桿竹椅太早。(生育禮俗)
+ */
+val p四柱關A = object : IHazardFactory {
+  override fun getBooks(): Set<Book> {
+    return setOf(象吉通書, 鰲頭通書, 星平會海, 生育禮俗)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (setOf(寅, 申).contains(eightWords.month.branch) && setOf(巳, 亥).contains(eightWords.hour.branch)) ||
+      (setOf(卯, 酉).contains(eightWords.month.branch) && setOf(辰, 戌).contains(eightWords.hour.branch)) ||
+      (setOf(辰, 戌).contains(eightWords.month.branch) && setOf(卯, 酉).contains(eightWords.hour.branch)) ||
+      (setOf(巳, 亥).contains(eightWords.month.branch) && setOf(寅, 申).contains(eightWords.hour.branch)) ||
+      (setOf(午, 子).contains(eightWords.month.branch) && setOf(丑, 未).contains(eightWords.hour.branch)) ||
+      (setOf(未, 丑).contains(eightWords.month.branch) && setOf(子, 午).contains(eightWords.hour.branch))
+    ) {
+      四柱關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 凡巳、亥年正、二月辰、巳時生人，犯此忌坐欄杆、竹椅太早。(黃曆解秘)
+ */
+val p四柱關B = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      setOf(巳, 亥).contains(eightWords.year.branch) &&
+      setOf(寅, 卯).contains(eightWords.month.branch) &&
+      setOf(辰, 巳).contains(eightWords.hour.branch)
+    ) {
+      四柱關
+    } else {
+      null
     }
   }
 }
