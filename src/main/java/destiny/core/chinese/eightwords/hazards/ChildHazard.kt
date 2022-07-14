@@ -259,6 +259,6 @@ fun ChildHazard.getNotes(locale: Locale, book: Book?): String {
       } catch (e: MissingResourceException) {
         this::class.simpleName
       }
-    } ?: this::class.simpleName!!
+    } ?: this.getNotes(locale)?:""
   }
 }
