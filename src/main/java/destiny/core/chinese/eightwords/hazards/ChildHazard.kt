@@ -7,7 +7,14 @@ import destiny.core.IPattern
 import java.util.*
 
 
-
+enum class Book {
+  象吉通書,
+  鰲頭通書,
+  星平會海,
+  黃曆解秘,
+  生育禮俗,
+  小兒關煞圖
+}
 
 sealed class ChildHazard : IPattern {
 
@@ -95,7 +102,7 @@ sealed class ChildHazard : IPattern {
     }
   }
 
-  class 將軍箭(val arrows: Int) : ChildHazard() {
+  data class 將軍箭(val arrows: Int) : ChildHazard() {
     override fun getNotes(locale: Locale): String {
       return "一箭傷人三歲死，二箭傷人六歲亡，三箭傷人九歲亡，四箭傷人十二亡。"
     }
@@ -107,7 +114,7 @@ sealed class ChildHazard : IPattern {
     }
   }
 
-  object 紅豔煞 : ChildHazard()
+  //object 紅豔煞 : ChildHazard()
   object 流霞煞 : ChildHazard() {
     override fun getNotes(locale: Locale): String {
       return "女主產厄、男主刀傷。又雲：犯此男主他鄉死、女主產後亡。"
@@ -242,3 +249,16 @@ sealed class ChildHazard : IPattern {
 }
 
 
+fun ChildHazard.getNotes(locale: Locale, book: Book?): String {
+  return ResourceBundle.getBundle(ChildHazard::class.qualifiedName!!, locale).let { resourceBundle ->
+    book?.name?.let { bookName ->
+      val key = "${this::class.simpleName}.${bookName}"
+
+      try {
+        resourceBundle.getString(key)
+      } catch (e: MissingResourceException) {
+        this::class.simpleName
+      }
+    } ?: this::class.simpleName!!
+  }
+}

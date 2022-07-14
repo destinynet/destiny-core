@@ -26,14 +26,7 @@ private val 申子辰 = setOf(申, 子, 辰)
 private val 亥卯未 = setOf(亥, 卯, 未)
 private val 寅午戌 = setOf(寅, 午, 戌)
 
-enum class Book {
-  象吉,
-  鰲頭,
-  星平會海,
-  黃曆解秘,
-  生育禮俗,
-  小兒關煞圖
-}
+
 
 interface IHazardFactory {
 
@@ -59,7 +52,7 @@ interface IHazardFactory {
  * 子午卯酉月忌寅申巳亥時。
  * 生孩百日內勿出大門前。(星平會海)
  *
- * 寅申巳亥月：辰戌醜未時。
+ * 寅申巳亥月：辰戌丑未時。
  * 子午卯酉月：寅申巳亥時。
  * 辰戌丑未月：子午卯酉時。
  * 童限犯之初生百日內、勿出大門外。凡正月寅巳時生人，犯此百日內忌出入門前。(生育禮俗)
@@ -68,9 +61,13 @@ interface IHazardFactory {
  * 正、四、七、十月逢辰、戌、丑、未時，
  * 二、五、八、十一月逢寅、申、巳、亥時，
  * 三、六、九、十二月逢子、午、卯、酉時生人是。
- * 犯此百日內忌出入門前。(黃曆解祕)
+ * 犯此百日內忌出入門前。(黃曆解秘)
  */
 val p百日關 = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(象吉通書, 鰲頭通書, 星平會海, 生育禮俗, 黃曆解秘)
+  }
 
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
     return if (
@@ -86,12 +83,24 @@ val p百日關 = object : IHazardFactory {
 }
 
 /**
- * 甲乙馬頭龍不住，丙丁雞猴奔山崗  ，戊己逢藏蛇在草，庚辛遇虎於林下，壬癸丑亥時須忌，孩兒直此有煩惱。夫千曰關者，如甲乙生人午時是也，余仿此。犯之主有驚風、吐乳之災，忌住難星。（象吉）
- * 甲乙馬龍頭、丙丁猴雞山、庚辛虎林下、戊己蛇藏草、壬癸丑亥時。未滿千日勿往外媽厝，主驚風、吐乳，制化即安。凡午年寅巳亥時生人，犯上忌三歲上高落低之患。（生育禮俗）
+ * 甲乙馬頭龍不住，
+ * 丙丁雞猴奔山崗，
+ * 戊己逢藏蛇在草，
+ * 庚辛遇虎於林下，
+ * 壬癸丑亥時須忌，
+ * 孩兒直此有煩惱。
+ * 夫千曰關者，如甲乙生人午時是也，余仿此。犯之主有驚風、吐乳之災，忌住難星。（象吉）
+ *
+ * 甲乙馬龍頭、
+ * 丙丁猴雞山、
+ * 庚辛虎林下、
+ * 戊己蛇藏草、
+ * 壬癸丑亥時。
+ * 未滿千日勿往外媽厝，主驚風、吐乳，制化即安。凡午年寅巳亥時生人，犯上忌三歲上高落低之患。（生育禮俗）
  */
 val p千日關A = object : IHazardFactory {
   override fun getBooks(): Set<Book> {
-    return setOf(象吉, 生育禮俗)
+    return setOf(象吉通書, 生育禮俗)
   }
 
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
@@ -110,12 +119,23 @@ val p千日關A = object : IHazardFactory {
 }
 
 /**
- * 甲乙馬頭龍不住、丙丁雞叫奔山崗、戊己逢蛇藏在草、庚辛遇虎竹林下、壬癸丑亥時須忌。孩兒值此有吁嗟。夫千日關者，且如甲乙生人忌午時是、餘仿此，犯之乃驚風、吐乳。（鰲頭）
- * 甲乙馬頭籠不住、丙丁雞叫奔山岡、戊己逢蛇在草藏、庚辛遇虎於林下、壬癸丑亥時須忌。孩兒值此有嗟。過千日之外則不妨。（星平會海）
+ * 甲乙馬頭龍不住、
+ * 丙丁雞叫奔山崗、
+ * 戊己逢蛇藏在草、
+ * 庚辛遇虎竹林下、
+ * 壬癸丑亥時須忌。
+ * 孩兒值此有吁嗟。夫千日關者，且如甲乙生人忌午時是、餘仿此，犯之乃驚風、吐乳。（鰲頭）
+ *
+ * 甲乙馬頭籠不住、
+ * 丙丁雞叫奔山岡、
+ * 戊己逢蛇在草藏、
+ * 庚辛遇虎於林下、
+ * 壬癸丑亥時須忌。
+ * 孩兒值此有嗟。過千日之外則不妨。（星平會海）
  */
 val p千日關B = object : IHazardFactory {
   override fun getBooks(): Set<Book> {
-    return setOf(鰲頭, 星平會海)
+    return setOf(鰲頭通書, 星平會海)
   }
 
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
@@ -134,7 +154,8 @@ val p千日關B = object : IHazardFactory {
 }
 
 /**
- * 凡午年寅、申、巳、亥時生人，犯此忌三歲上高落低之患。另一說法；三歲之前不宜到外婆家，或莫至外婆供奉祖先牌位處。（黃曆解秘）
+ * 凡午年寅、申、巳、亥時生人，犯此忌三歲上高落低之患。
+ * 另一說法；三歲之前不宜到外婆家，或莫至外婆供奉祖先牌位處。（黃曆解秘）
  */
 val p千日關C = object : IHazardFactory {
   override fun getBooks(): Set<Book> {
@@ -169,7 +190,7 @@ val p千日關C = object : IHazardFactory {
 val p閻王關A = object : IHazardFactory {
 
   override fun getBooks(): Set<Book> {
-    return setOf(象吉, 鰲頭, 星平會海, 生育禮俗)
+    return setOf(象吉通書, 鰲頭通書, 星平會海, 生育禮俗)
   }
 
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
@@ -231,7 +252,7 @@ val p閻王關B = object : IHazardFactory {
 val p鬼門關A = object : IHazardFactory {
 
   override fun getBooks(): Set<Book> {
-    return setOf(象吉, 鰲頭)
+    return setOf(象吉通書, 鰲頭通書)
   }
 
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
@@ -336,7 +357,7 @@ val p鬼門關C = object : IHazardFactory {
  */
 val p雞飛關A = object : IHazardFactory {
   override fun getBooks(): Set<Book> {
-    return setOf(鰲頭, 星平會海)
+    return setOf(鰲頭通書, 星平會海)
   }
 
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
@@ -358,7 +379,7 @@ val p雞飛關A = object : IHazardFactory {
  */
 val p雞飛關B = object : IHazardFactory {
   override fun getBooks(): Set<Book> {
-    return setOf(象吉)
+    return setOf(象吉通書)
   }
 
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
@@ -433,7 +454,7 @@ val p雞飛關D = object : IHazardFactory {
 val p鐵蛇關A = object : IHazardFactory {
 
   override fun getBooks(): Set<Book> {
-    return setOf(象吉, 鰲頭, 星平會海, 生育禮俗)
+    return setOf(象吉通書, 鰲頭通書, 星平會海, 生育禮俗)
   }
 
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
@@ -499,7 +520,7 @@ val p鐵蛇關B = object : IHazardFactory {
  */
 val p斷橋關 = object : IHazardFactory {
   override fun getBooks(): Set<Book> {
-    return setOf(象吉, 鰲頭, 生育禮俗)
+    return setOf(象吉通書, 鰲頭通書, 生育禮俗)
   }
 
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
@@ -519,6 +540,56 @@ val p斷橋關 = object : IHazardFactory {
     ).contains(eightWords.month.branch to eightWords.hour.branch).let {
       if (it) {
         斷橋關
+      } else {
+        null
+      }
+    }
+  }
+}
+
+/**
+ * 甲己見蛇傷，乙庚鼠內藏，丙辛猴覓果，丁壬犬吠汪，戊癸愁逢兔，孩兒有水殃。此關以年干取、如甲己生人巳時是，君流年浮沉合之少壯命皆有水災之厄，切宜防慎吉。(象吉)
+ * 甲己見蛇傷，乙庚鼠內藏，丙辛猴見果，丁壬犬吠汪，戊癸愁逢兔，孩兒有水殃。如甲己生人巳時是，若流年浮沉合之災，旺命該有水厄之災，切宜防吉。(鰲頭)
+ * 甲己見蛇傷，乙庚鼠內藏，丙辛猴覓果，丁壬犬吠汪，戊癸愁逢兔，孩兒有水殃。(星平會海)
+ * 甲己見蛇傷，乙庚鼠內藏，丙辛猴見果，丁壬犬吠汪，戊癸愁逢兔，孩兒有水殃。勿近井水邊、渡舟、游泳有水厄之災。凡午巳卯申戌時生人，犯此忌見井泉、池塘、涌溪。(生育禮俗)
+ *
+ */
+val p落井關A = object : IHazardFactory {
+  override fun getBooks(): Set<Book> {
+    return setOf(象吉通書, 鰲頭通書, 星平會海, 生育禮俗)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return setOf(
+      Pair(土 , 巳),
+      Pair(金 , 子),
+      Pair(水 , 申),
+      Pair(木 , 戌),
+      Pair(火 , 卯),
+    ).contains(eightWords.year.stem.fiveElement to eightWords.hour.branch).let {
+      if (it) {
+        落井關
+      } else {
+        null
+      }
+    }
+  }
+}
+
+/**
+ * 凡甲己日逢巳時，乙庚日逢子時，丙辛日逢申時，丁壬日逢戌時，戊癸日逢卯時生人是。犯此須遠離井泉、池塘、河邊、溪流、海邊避免遭厄難。(黃曆解秘)
+ */
+val p落井關B = object : IHazardFactory {
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return setOf(
+      Pair(土, 巳),
+      Pair(金, 子),
+      Pair(水, 申),
+      Pair(木, 戌),
+      Pair(火, 卯),
+    ).contains(eightWords.day.stem.fiveElement to eightWords.hour.branch).let {
+      if (it) {
+        落井關
       } else {
         null
       }
