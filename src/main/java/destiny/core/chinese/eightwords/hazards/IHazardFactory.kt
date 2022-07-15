@@ -1289,3 +1289,70 @@ val p五鬼關C = object : IHazardFactory {
   }
 }
 
+/**
+ * 正七逢申人必死，二八雞哥命必厄，三九犬兒尋聲吠，四十逢豬是鎖匙，五十一逢子巳死，六十二與丑非奇。(星平會海)
+ *
+ */
+val p金鎖關A = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(星平會海)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (setOf(
+        Pair(寅, 申),
+        Pair(卯, 酉),
+        Pair(辰, 戌),
+        Pair(巳, 亥),
+        Pair(午, 子),
+        Pair(未, 丑),
+        Pair(申, 申),
+        Pair(酉, 酉),
+        Pair(戌, 戌),
+        Pair(亥, 亥),
+        Pair(子, 子),
+        Pair(丑, 丑),
+      ).contains(eightWords.month.branch to eightWords.hour.branch)
+    ) {
+      金鎖關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 正七月申時，二八月酉時，三九月戌時，四十月亥時，五十一月子時，六十二月丑時。童限忌帶金銀鎖片、錢索等物。凡人生正二月申卯時，生人犯此忌帶金銀器物。(生育禮俗)
+ * 凡正、二月申、卯時生人，犯此忌帶金銀器物。另：正、七月申時，二、八月酉時，三、九月戌時，四、十月亥時，五、十一月子時，六、十二月丑時生人是。少帶金銀飾品即吉。(黃曆解秘)
+ */
+val p金鎖關B = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(生育禮俗, 黃曆解秘)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+
+    return if (setOf(
+        Pair(寅, 申),
+        Pair(卯, 酉),
+        Pair(辰, 戌),
+        Pair(巳, 亥),
+        Pair(午, 子),
+        Pair(未, 丑),
+        Pair(申, 申),
+        Pair(酉, 酉),
+        Pair(戌, 戌),
+        Pair(亥, 亥),
+        Pair(子, 子),
+        Pair(丑, 丑),
+      ).contains(eightWords.month.branch to eightWords.hour.branch)
+      || (setOf(寅, 卯).contains(eightWords.month.branch) && setOf(申, 卯).contains(eightWords.hour.branch))
+    ) {
+      金鎖關
+    } else {
+      null
+    }
+  }
+}
