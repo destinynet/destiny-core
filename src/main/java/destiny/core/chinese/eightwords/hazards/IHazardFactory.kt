@@ -5,6 +5,7 @@ package destiny.core.chinese.eightwords.hazards
 
 import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
+import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.BranchTools
 import destiny.core.chinese.FiveElement.*
@@ -827,7 +828,7 @@ val p深水關A = object : IHazardFactory {
 
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
     return if (
-      (寅卯辰.contains(eightWords.month.branch) && setOf(寅,申).contains(eightWords.hour.branch)) ||
+      (寅卯辰.contains(eightWords.month.branch) && setOf(寅, 申).contains(eightWords.hour.branch)) ||
       (巳午未.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
       (申酉戌.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
       (亥子丑.contains(eightWords.month.branch) && 丑 == eightWords.hour.branch)
@@ -862,8 +863,6 @@ val p深水關B = object : IHazardFactory {
 /**
  * 子午卯酉單怕羊，寅申巳亥虎羊當，辰戌丑未雞常叫，連霄不睡到天光，春人怕馬夏逢雞，秋子冬卯不暫移，小兒若犯此關煞，定是三周半夜啼。此關利害難治，只是兩樣起例不同，因並錄之、云後一例有驗。(象吉)
  * 子午卯酉單怕羊，寅申巳亥虎羊當，辰戌丑未雞常叫，連霄不睡到天光，春馬夏雞秋怕子，冬兔三周半夜啼。(星平會海)
- *
- *
  */
 val p夜啼關A = object : IHazardFactory {
 
@@ -874,7 +873,7 @@ val p夜啼關A = object : IHazardFactory {
   override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
     return if (
       (子午卯酉.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
-      (寅申巳亥.contains(eightWords.month.branch) && setOf(寅,未).contains(eightWords.hour.branch)) ||
+      (寅申巳亥.contains(eightWords.month.branch) && setOf(寅, 未).contains(eightWords.hour.branch)) ||
       (辰戌丑未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
       (寅卯辰.contains(eightWords.month.branch) && 午 == eightWords.hour.branch) ||
       (巳午未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
@@ -960,3 +959,97 @@ val p夜啼關D = object : IHazardFactory {
   }
 }
 
+/**
+ * (季節來看?)
+ * 火人白虎鬚在子，金人白虎在卯方，水土生人白虎午，木人白虎酉中藏。此關時上帶，主見驚風之症，又忌出痘時帶難養，童限遇之則有血光損傷之厄。(象吉)
+ * 火人白虎鬚在子，金人白虎在卯方，水土生人白虎午，木人白虎酉中藏。此關時上帶，主見驚風之症，又忌出痘時帶難養，童限遇之則有血光損傷之厄。(鰲頭)
+ * 火人白虎鬚在子，金人白虎卯之方，水土生人白虎午，木人白虎酉中藏。主有血光、驚風、傷損。(星平會海)
+ */
+val p白虎關A = object : IHazardFactory {
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (when (SimpleBranch.getFiveElement(eightWords.month.branch)) {
+        火    -> 子
+        金    -> 卯
+        水, 土 -> 午
+        木    -> 酉
+      } == eightWords.hour.branch
+    ) {
+      白虎關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 正二月犯申酉時，三月犯子怕戌時，四六月犯卯丑時，八十月犯卯時當。出痲小心。凡金木水火土生人，犯此主多血光災厄。(生育禮俗)
+ */
+val p白虎關B = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(生育禮俗)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (setOf(寅, 卯).contains(eightWords.month.branch) && setOf(申, 酉).contains(eightWords.hour.branch)) ||
+      (辰 == eightWords.month.branch && setOf(子, 戌).contains(eightWords.hour.branch)) ||
+      (setOf(巳, 未).contains(eightWords.month.branch) && setOf(卯, 丑).contains(eightWords.hour.branch)) ||
+      (setOf(酉, 亥).contains(eightWords.month.branch) && 卯 == eightWords.hour.branch)
+    ) {
+      白虎關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 凡金、木、水、火、土生人，犯此多主血光災厄。
+ * 另：
+ * 金年逢卯、戌時，
+ * 木年逢辰、酉時，
+ * 火年逢子、未、申時，
+ * 水年、土年逢丑、寅、午時生人是。燒白虎錢制化。(黃曆解秘)
+ */
+val p白虎關C = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (when (SimpleBranch.getFiveElement(eightWords.year.branch)) {
+        金    -> setOf(卯, 戌)
+        木    -> setOf(辰, 酉)
+        火    -> setOf(子, 未, 申)
+        水, 土 -> setOf(丑, 寅, 午)
+      }.contains(eightWords.hour.branch)
+    ) {
+      白虎關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 子人見戌丑人亥，寅人見子卯人丑，辰人見寅巳人卯，午人見辰未人巳，申人見午酉人未，戌人見申亥人酉。此即天狗星是也，如子生人則從戌上起子順行亥卯丑寅子丑辰寅巳卯也，小兒行年童限值之有驚怖血光之疾，命中時上帶則有狗傷之厄，切宜防之、慎之。(象吉)
+ * 子人見戌丑人亥，寅人見子卯人丑，辰人見寅巳人卯，午人見辰未人巳，申人見午酉人未，戌人見申亥人酉。此即天狗星是也，如子生人則從戌上起子順行丑亥寅子卯丑辰寅巳卯也，小兒行年童限值之有驚風血光之疾，命中時上帶則有狗傷之厄，切宜防之、慎之。(鰲頭)
+ * 子人見戌丑人亥，寅人見子卯見丑，辰人見寅巳見卯，午人見辰未見巳，申人見午酉見未，戌人見申亥見酉。(星平會海)
+ * 子見戌丑見亥，寅見子卯見丑，辰見寅巳見卯，午見辰未見巳，申見午酉見未，戌見申亥見酉。此關有血光、傷害、破相等，宜制化。凡八字五行全者生人，犯此月內怕聞犬吠聲。(生育禮俗)
+ * 凡子年逢戌時，丑年逢亥時，寅年逢子時，卯年逢丑時，辰年逢寅時，巳年逢卯時，午年逢辰時，未年逢巳時，申年逢午時，酉年逢未時，戌年逢申時，亥年逢酉時出生人是。犯此月內怕聞犬吠聲。小孩易有顏面傷害破相，刀、剪、鑽、針須收好，用天狗錢制天狗煞。(黃曆解秘)
+ */
+val p天狗關 = object : IHazardFactory {
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+
+    return if (Branch.values()
+        .map { b -> b to b.prev(2) }
+        .toSet().contains(eightWords.year.branch to eightWords.hour.branch)
+    ) {
+      天狗關
+    } else {
+      null
+    }
+  }
+}

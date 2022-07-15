@@ -46,23 +46,9 @@ sealed class ChildHazard : IPattern {
 
   object 深水關 : ChildHazard()
 
-  data class 將軍箭(val arrows: Int) : ChildHazard() {
-    override fun getNotes(locale: Locale): String {
-      return "一箭傷人三歲死，二箭傷人六歲亡，三箭傷人九歲亡，四箭傷人十二亡。"
-    }
-  }
-
-  //object 桃花煞 : ChildHazard()
-
-  //object 紅豔煞 : ChildHazard()
-
-  //object 流霞煞 : ChildHazard()
-
   object 夜啼關 : ChildHazard()
 
   object 白虎關 : ChildHazard()
-
-  object 雷公打腦關 : ChildHazard()
 
   object 天狗關 : ChildHazard()
 
@@ -99,6 +85,20 @@ sealed class ChildHazard : IPattern {
   object 血刃關 : ChildHazard()
 
   object 基敗關 : ChildHazard()
+
+  object 雷公打腦關 : ChildHazard()
+
+  data class 將軍箭(val arrows: Int) : ChildHazard() {
+    override fun getNotes(locale: Locale): String {
+      return "一箭傷人三歲死，二箭傷人六歲亡，三箭傷人九歲亡，四箭傷人十二亡。"
+    }
+  }
+
+  //object 桃花煞 : ChildHazard()
+
+  //object 紅豔煞 : ChildHazard()
+
+  //object 流霞煞 : ChildHazard()
 }
 
 
