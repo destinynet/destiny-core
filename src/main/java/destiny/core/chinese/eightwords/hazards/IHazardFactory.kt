@@ -814,3 +814,47 @@ val p水火關B = object : IHazardFactory {
     }
   }
 }
+
+/**
+ * 春忌寅申夏忌羊，秋生雞嘴實堪傷，三冬切忌牛生角。十個孩兒九個亡。童限最忌痲痘災。(星平會海)
+ * 春忌寅申時，夏怕未時當，秋季嫌酉時，冬天勿丑時。清明、七夕之日主不拜、多病多災。正二三月寅申時生人，犯此忌病疹災害。(生育禮俗)
+ */
+val p深水關A = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(星平會海, 生育禮俗)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (寅卯辰.contains(eightWords.month.branch) && setOf(寅,申).contains(eightWords.hour.branch)) ||
+      (巳午未.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
+      (申酉戌.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
+      (亥子丑.contains(eightWords.month.branch) && 丑 == eightWords.hour.branch)
+    ) {
+      深水關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 凡正、二、三月寅、申時生人，犯此忌病疹災害。俗云：犯此關之人與前世父母糾纏不清，應該避免在清明節、端午節、中秋節、除夕祭拜祖先，滿月及周歲皆要提前一天舉行。(黃曆解秘)
+ */
+val p深水關B = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (寅卯辰.contains(eightWords.month.branch) && setOf(寅, 申).contains(eightWords.hour.branch))
+    ) {
+      深水關
+    } else {
+      null
+    }
+  }
+}
