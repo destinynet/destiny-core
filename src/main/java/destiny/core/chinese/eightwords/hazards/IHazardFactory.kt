@@ -1321,3 +1321,48 @@ val p取命關 = object : IHazardFactory {
       )
   }
 }
+
+/**
+ * ? 甲乙生逢午未時，丙寅辰巳報君知，庚子生孩元申虎，壬癸逢牛不負犁。(生育禮俗)
+ * 甲乙怕見午未時，丙丁生忌辰巳逢，庚辛秋金怕寅虎，壬癸冬水怕逢牛。勿看殺豬羊，勿入屠宰場。(生育禮俗)
+ */
+val p斷腸關A = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 斷腸關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(生育禮俗)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return (
+      (setOf(甲, 乙).contains(eightWords.day.stem) && setOf(午, 未).contains(eightWords.hour.branch)) ||
+        (setOf(丙, 丁).contains(eightWords.day.stem) && setOf(辰, 巳).contains(eightWords.hour.branch)) ||
+        (setOf(庚, 辛).contains(eightWords.day.stem) && 寅 == eightWords.hour.branch) ||
+        (setOf(壬, 癸).contains(eightWords.day.stem) && 丑 == eightWords.hour.branch)
+      )
+  }
+}
+
+/**
+ * 凡甲乙日生午未時，丙丁日生辰巳時，戊日生於午時，己日生於未時，庚辛日生於寅時，壬癸日生於丑時是。勿看殺豬羊，勿入屠宰場。小孩應避免看殺雞、殺鴨等殺生行為。宜用牛馬將軍錢制化。(黃曆解秘)
+ */
+val p斷腸關B = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 斷腸關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return (
+      (setOf(甲, 乙).contains(eightWords.day.stem) && setOf(午, 未).contains(eightWords.hour.branch)) ||
+        (setOf(丙, 丁).contains(eightWords.day.stem) && setOf(辰, 巳).contains(eightWords.hour.branch)) ||
+        (戊 == eightWords.day.stem && 午 == eightWords.hour.branch) ||
+        (己 == eightWords.day.stem && 未 == eightWords.hour.branch) ||
+        (setOf(庚, 辛).contains(eightWords.day.stem) && 寅 == eightWords.hour.branch) ||
+        (setOf(壬, 癸).contains(eightWords.day.stem) && 丑 == eightWords.hour.branch)
+      )
+  }
+}
