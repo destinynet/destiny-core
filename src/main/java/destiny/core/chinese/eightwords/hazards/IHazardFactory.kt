@@ -858,3 +858,105 @@ val p深水關B = object : IHazardFactory {
     }
   }
 }
+
+/**
+ * 子午卯酉單怕羊，寅申巳亥虎羊當，辰戌丑未雞常叫，連霄不睡到天光，春人怕馬夏逢雞，秋子冬卯不暫移，小兒若犯此關煞，定是三周半夜啼。此關利害難治，只是兩樣起例不同，因並錄之、云後一例有驗。(象吉)
+ * 子午卯酉單怕羊，寅申巳亥虎羊當，辰戌丑未雞常叫，連霄不睡到天光，春馬夏雞秋怕子，冬兔三周半夜啼。(星平會海)
+ *
+ *
+ */
+val p夜啼關A = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(象吉通書, 星平會海)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (子午卯酉.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
+      (寅申巳亥.contains(eightWords.month.branch) && setOf(寅,未).contains(eightWords.hour.branch)) ||
+      (辰戌丑未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
+      (寅卯辰.contains(eightWords.month.branch) && 午 == eightWords.hour.branch) ||
+      (巳午未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
+      (申酉戌.contains(eightWords.month.branch) && 子 == eightWords.hour.branch) ||
+      (亥子丑.contains(eightWords.month.branch) && 卯 == eightWords.hour.branch)
+    ) {
+      夜啼關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 子午卯酉單怕羊，寅申巳亥處牛當，辰戌丑未蟬常叫，連霄不睡到天光，春人怕馬夏逢雞，秋子冬卯不暫移，小兒若犯此關煞，定有三周半夜啼。此關利害難治，只是兩樣起例不同，因並錄之、云後則有驗。(鰲頭)
+ */
+val p夜啼關B = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(鰲頭通書)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (子午卯酉.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
+      (寅申巳亥.contains(eightWords.month.branch) && 丑 == eightWords.hour.branch) ||
+      // (辰戌丑未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) || (蟬?)
+      (寅卯辰.contains(eightWords.month.branch) && 午 == eightWords.hour.branch) ||
+      (巳午未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
+      (申酉戌.contains(eightWords.month.branch) && 子 == eightWords.hour.branch) ||
+      (亥子丑.contains(eightWords.month.branch) && 卯 == eightWords.hour.branch)
+    ) {
+      夜啼關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 辰戌丑未虎雞當，子午卯酉喜怕羊，寅申巳亥羊又忌，兒命犯之定有殃。限內夜間不要火，逢者制化自安。凡子午丑未時生人，犯此主夜間啾唧不寧。(生育禮俗)
+ *
+ */
+val p夜啼關C = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(生育禮俗)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (子午卯酉.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
+      (寅申巳亥.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
+      (辰戌丑未.contains(eightWords.month.branch) && 寅 == eightWords.hour.branch)
+    ) {
+      夜啼關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 凡正二三月逢午時生，四五六月逢酉時生，七八九月逢子時生，十十一十二月逢卯時生是。犯此主夜間啾唧不寧，制化保平安。(黃曆解秘)
+ */
+val p夜啼關D = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (寅卯辰.contains(eightWords.month.branch) && 午 == eightWords.hour.branch) ||
+      (巳午未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
+      (申酉戌.contains(eightWords.month.branch) && 子 == eightWords.hour.branch) ||
+      (亥子丑.contains(eightWords.month.branch) && 卯 == eightWords.hour.branch)
+    ) {
+      夜啼關
+    } else {
+      null
+    }
+  }
+}
+

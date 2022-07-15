@@ -52,11 +52,11 @@ sealed class ChildHazard : IPattern {
     }
   }
 
-  object 桃花煞 : ChildHazard()
+  //object 桃花煞 : ChildHazard()
 
   //object 紅豔煞 : ChildHazard()
 
-  object 流霞煞 : ChildHazard()
+  //object 流霞煞 : ChildHazard()
 
   object 夜啼關 : ChildHazard()
 
