@@ -102,7 +102,7 @@ sealed class ChildHazard : IPattern {
 }
 
 
-fun ChildHazard.getNotes(locale: Locale, book: Book?): String {
+fun ChildHazard.getNote(locale: Locale, book: Book?): String? {
   return ResourceBundle.getBundle(ChildHazard::class.qualifiedName!!, locale).let { resourceBundle ->
     book?.name?.let { bookName ->
       val key = "${this::class.simpleName}.${bookName}"
@@ -110,8 +110,8 @@ fun ChildHazard.getNotes(locale: Locale, book: Book?): String {
       try {
         resourceBundle.getString(key)
       } catch (e: MissingResourceException) {
-        this::class.simpleName
+        null
       }
-    } ?: this.getNotes(locale)?:""
+    }
   }
 }

@@ -11,14 +11,14 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.util.*
 import java.util.stream.Stream
 import kotlin.reflect.full.isSubclassOf
-import kotlin.test.assertNotNull
+import kotlin.test.assertNotEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ChildHazardTest {
 
   private val logger = KotlinLogging.logger { }
 
-  private fun hazards() : Stream<Triple<ChildHazard, Book?, Locale>> {
+  private fun hazards(): Stream<Triple<ChildHazard, Book?, Locale>> {
     val locales = listOf(Locale.TRADITIONAL_CHINESE, Locale.SIMPLIFIED_CHINESE)
 
     return ChildHazard::class.nestedClasses
@@ -36,12 +36,13 @@ internal class ChildHazardTest {
 
   @ParameterizedTest
   @MethodSource("hazards")
-  fun testHazardNotes(row : Triple<ChildHazard, Book?, Locale>) {
+  fun testHazardNotes(row: Triple<ChildHazard, Book?, Locale>) {
     val (childHazard, book, locale) = row
-    val notes = childHazard.getNotes(locale, book)
-    assertNotNull(notes)
-    if (notes != childHazard.getName()) {
-      logger.info { "${childHazard.getName(locale)} :《${book?.getTitle(locale)}》 $locale = $notes" }
+    val note = childHazard.getNote(locale, book)
+    logger.info { "${childHazard.getName(locale)} :《${book?.getTitle(locale)}》 $locale = $note" }
+
+    if (note != null) {
+      assertNotEquals(childHazard.getName(locale), note)
     }
   }
 }

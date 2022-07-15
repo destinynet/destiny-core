@@ -767,3 +767,50 @@ val p湯火關B = object : IHazardFactory {
     }
   }
 }
+
+/**
+ * 春月生戌未，夏月見丑辰，秋月生丑戌，冬月見未辰。須防水火之災。(星平會海)
+ * 春月生人見戌未，夏月生人見丑辰，秋月生人見丑戌，冬月生人見未辰。須防水厄、火湯油之災，解化保平安。凡正二三月未戌時生人，犯此主膿血、瘡疾太多及小心水火。(生育禮俗)
+ */
+val p水火關A = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(星平會海, 生育禮俗)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (寅卯辰.contains(eightWords.month.branch) && setOf(戌, 未).contains(eightWords.hour.branch)) ||
+      (巳午未.contains(eightWords.month.branch) && setOf(丑, 辰).contains(eightWords.hour.branch)) ||
+      (申酉戌.contains(eightWords.month.branch) && setOf(丑, 戌).contains(eightWords.hour.branch)) ||
+      (亥子丑.contains(eightWords.month.branch) && setOf(未, 辰).contains(eightWords.hour.branch))
+    ) {
+      水火關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 凡正、二、三月逢未、戌時生人，四、五、六月逢丑、辰時生人，七、八、九月逢酉時生人，十、十一、十二月逢丑時生人是。犯此主膿血、瘡疾太多及小心水火。民俗制化法：祭火神及水官大帝，用火神錢拜火神、用水官錢拜水官大帝。(黃曆解秘)
+ */
+val p水火關B = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (寅卯辰.contains(eightWords.month.branch) && setOf(戌, 未).contains(eightWords.hour.branch)) ||
+      (巳午未.contains(eightWords.month.branch) && setOf(丑, 辰).contains(eightWords.hour.branch)) ||
+      (申酉戌.contains(eightWords.month.branch) && setOf(酉).contains(eightWords.hour.branch)) ||
+      (亥子丑.contains(eightWords.month.branch) && setOf(丑).contains(eightWords.hour.branch))
+    ) {
+      水火關
+    } else {
+      null
+    }
+  }
+}
