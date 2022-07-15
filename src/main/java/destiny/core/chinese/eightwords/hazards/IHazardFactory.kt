@@ -1041,8 +1041,12 @@ val p白虎關C = object : IHazardFactory {
  * 凡子年逢戌時，丑年逢亥時，寅年逢子時，卯年逢丑時，辰年逢寅時，巳年逢卯時，午年逢辰時，未年逢巳時，申年逢午時，酉年逢未時，戌年逢申時，亥年逢酉時出生人是。犯此月內怕聞犬吠聲。小孩易有顏面傷害破相，刀、剪、鑽、針須收好，用天狗錢制天狗煞。(黃曆解秘)
  */
 val p天狗關 = object : IHazardFactory {
-  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
 
+  override fun getBooks(): Set<Book> {
+    return setOf(象吉通書, 鰲頭通書, 星平會海, 生育禮俗, 黃曆解秘)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
     return if (Branch.values()
         .map { b -> b to b.prev(2) }
         .toSet().contains(eightWords.year.branch to eightWords.hour.branch)
@@ -1052,4 +1056,60 @@ val p天狗關 = object : IHazardFactory {
       null
     }
   }
+}
+
+/**
+ * 春生巳丑不為祥，夏遇申辰惹禍殃，秋季豬羊都不吉，冬逢虎兔兩傷亡。此關詳考乃四季天地荒蕪日，人命逢此日有始無終，苗而不秀亦難養。(象吉)
+ * 春生巳丑不為祥，夏遇申辰惹禍殃，秋季豬羊都不吉，冬逢虎兔兩相傷。此關乃四季天地荒蕪日，人命逢此日有始無終，苗而不秀亦難養。(鰲頭)
+ */
+val p四季關A = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(象吉通書, 鰲頭通書)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (寅卯辰.contains(eightWords.month.branch) && setOf(巳, 丑).contains(eightWords.hour.branch)) ||
+      (巳午未.contains(eightWords.month.branch) && setOf(申, 辰).contains(eightWords.hour.branch)) ||
+      (申酉戌.contains(eightWords.month.branch) && setOf(亥, 未).contains(eightWords.hour.branch)) ||
+      (亥子丑.contains(eightWords.month.branch) && setOf(寅, 卯).contains(eightWords.hour.branch))
+    ) {
+      四季關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 春關牛與蛇，夏生龍猴嗟，秋忌羊豬位，冬犬虎交加。忌四位全只一位不為關，名兩頭關閑也。又命逢之，有始無終。一名月關，正月忌巳、十月忌亥，余同此。(星平會海)
+ * 春忌牛與蛇，夏生龍猴差，秋怕豬羊位，冬犬虎交加。四季小心，苗而不秀，必然難養多疾。凡正、二、三月壬辰時生人，犯此關忌一歲，出入凶、喜事。(生育禮俗)
+ *
+ * 凡正、二、三月壬辰時生人，犯此關忌一歲，出入凶、喜事。
+ * 另：
+ * 正、二、三月丑、巳時，
+ * 四、五、六月辰、申時，
+ * 七、八、九月亥、未時，
+ * 十、十一、十二月寅、戌時生人是。季節交換注意身體保護。(黃曆解秘)
+ */
+val p四季關B = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(星平會海, 生育禮俗, 黃曆解秘)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (寅卯辰.contains(eightWords.month.branch) && setOf(巳, 丑).contains(eightWords.hour.branch)) ||
+      (巳午未.contains(eightWords.month.branch) && setOf(申, 辰).contains(eightWords.hour.branch)) ||
+      (申酉戌.contains(eightWords.month.branch) && setOf(亥, 未).contains(eightWords.hour.branch)) ||
+      (亥子丑.contains(eightWords.month.branch) && setOf(寅, 戌).contains(eightWords.hour.branch))
+    ) {
+      四季關
+    } else {
+      null
+    }
+  }
+
 }
