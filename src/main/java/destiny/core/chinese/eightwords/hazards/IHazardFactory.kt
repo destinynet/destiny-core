@@ -1296,3 +1296,28 @@ val p直難關 = object : IHazardFactory {
       )
   }
 }
+
+/**
+ * 甲乙丙丁申子辰，戊己庚主亥卯未，辛申壬癸寅午戌，生還切慮不成人。日主旺則多病疾，主弱則難養成。(星平會海)
+ * 甲乙丙丁申子辰，戊己庚生亥卯未，辛金壬癸寅午戌，生兒祇怕不成人。勿入中元壇內，勿看普渡。(生育禮俗)
+ *
+ * 凡甲、乙、丙、丁日逢申、子、辰時生，
+ * 戊、己、庚日逢亥、卯、未時生，
+ * 辛、壬、癸日逢寅、午、戌時生是。莫至供奉七爺、八爺廟、有應公、萬善祠、十八王公廟，並須遠離喪葬場合、廟宇建醮、法會、中元普渡場合皆忌。宜用本命錢制化。(黃曆解秘)
+ */
+val p取命關 = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 取命關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(星平會海, 生育禮俗, 黃曆解秘)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return (
+      (setOf(甲, 乙, 丙, 丁).contains(eightWords.day.stem) && 申子辰.contains(eightWords.hour.branch)) ||
+        (setOf(戊, 己, 庚).contains(eightWords.day.stem) && 亥卯未.contains(eightWords.hour.branch)) ||
+        (setOf(辛, 壬, 癸).contains(eightWords.day.stem) && 寅午戌.contains(eightWords.hour.branch))
+      )
+  }
+}
