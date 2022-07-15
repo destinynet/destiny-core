@@ -1366,3 +1366,175 @@ val p斷腸關B = object : IHazardFactory {
       )
   }
 }
+
+
+/**
+ * 子午卯酉逢野牛，寅申巳亥山猿群，辰戌丑未兔驚鬧，此關埋兒驚凶喪。（生育禮俗）
+ *
+ * 依照民間術士的說法，凡子、午、卯、酉年逢丑時生人，寅、申、巳、亥年逢申時生人，辰、戌、丑、未年逢卯時生人。（黃曆解秘）
+ * 。此關埋兒驚凶喪，自幼難養。犯此關主勿看出殯喪葬、出山凶喪保平安。宜重拜父母或拜神明為契子保平安。
+ */
+val p埋兒關 = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 埋兒關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(生育禮俗, 黃曆解秘)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return (
+      (子午卯酉.contains(eightWords.year.branch) && 丑 == eightWords.hour.branch) ||
+        (寅申巳亥.contains(eightWords.year.branch) && 申 == eightWords.hour.branch) ||
+        (辰戌丑未.contains(eightWords.year.branch) && 卯 == eightWords.hour.branch)
+      )
+  }
+}
+
+/**
+ * 日支 -> 時辰
+ * 申子辰生巳午時，寅午戌生龍馬侵，亥卯未生申午起，巳酉丑生卯子真。逆病庶生之子。(星平會海)
+ * 申子辰怕巳午時，寅午戌怕辰午時，亥卯未怕申午時，巳酉丑怕卯子時。重拜父母或過房，若私生子無妨。凡寅午戌年辰時生人，犯此主煩惱不寧、眼睛直朢。(生育禮俗)
+ */
+val p天吊關A = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 天吊關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(星平會海, 生育禮俗)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return (申子辰.contains(eightWords.day.branch) && setOf(巳, 午).contains(eightWords.hour.branch)) ||
+      (寅午戌.contains(eightWords.day.branch) && setOf(辰, 午).contains(eightWords.hour.branch)) ||
+      (亥卯未.contains(eightWords.day.branch) && setOf(卯, 子).contains(eightWords.hour.branch))
+  }
+
+}
+
+/**
+ * 凡寅、午、戌年辰時生人，犯此主煩惱不寧、眼睛直望。另：
+ * 申子辰年巳、午時生，
+ * 巳酉丑年子、卯時生，
+ * 寅午戌年辰、午時生，
+ * 亥卯未年午、申時生是。從小兩眼獃滯、眼珠翻白。(黃曆解秘)
+ */
+val p天吊關B = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 天吊關
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return (
+      (申子辰.contains(eightWords.year.branch) && setOf(巳, 午).contains(eightWords.hour.branch)) ||
+        (巳酉丑.contains(eightWords.year.branch) && setOf(子, 卯).contains(eightWords.hour.branch)) ||
+        (寅午戌.contains(eightWords.year.branch) && setOf(辰, 午).contains(eightWords.hour.branch)) ||
+        (亥卯未.contains(eightWords.year.branch) && setOf(午, 申).contains(eightWords.hour.branch))
+      )
+  }
+
+}
+
+/**
+ * 子午卯酉忌辰戌丑未，辰戌丑未忌子午卯酉，寅申巳亥忌寅申巳亥，論坐命推便為關。(星平會海)
+ * 子午卯酉怕辰戌丑未，辰戌丑未怕子午卯酉，寅申巳亥怕寅申巳亥，便是休庵和尚關。勿隨母入宮廟寺觀燒香拜佛即可解。凡子午卯酉年辰戌丑未時生人，犯此忌入庵寺見僧尼。(生育禮俗)
+ * 凡子午卯酉年，辰戌丑未時生人，辰戌丑未年，子午卯酉時生人，寅申巳亥年，寅申巳亥時生人是。犯此忌入庵寺見僧尼。制化法：燒七星錢、請七星娘娘來保護、燒床母經及三十六婆姐錢則吉。(黃曆解秘)
+ */
+val p和尚關 = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 和尚關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(星平會海, 生育禮俗, 黃曆解秘)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return (
+      (子午卯酉.contains(eightWords.year.branch) && 辰戌丑未.contains(eightWords.hour.branch)) ||
+        (辰戌丑未.contains(eightWords.year.branch) && 子午卯酉.contains(eightWords.hour.branch)) ||
+        (寅申巳亥.contains(eightWords.year.branch) && 寅申巳亥.contains(eightWords.hour.branch))
+      )
+  }
+}
+
+/**
+ * 日 -> 時
+ * 子蛇丑羊寅巳宮, 卯鼠午未俱怕牛, 辰巳申生同忌馬, 酉亥怕豬戌忌羊。 犯此關主難養夭壽,生後宜過房圖解制化。(生育禮俗)
+ */
+val p撞命關A = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 撞命關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(生育禮俗)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return setOf(
+      Pair(子, 巳),
+      Pair(丑, 未),
+      Pair(寅, 巳),
+      Pair(卯, 子),
+      Pair(辰, 午),
+      Pair(巳, 午),
+      Pair(午, 丑),
+      Pair(未, 丑),
+      Pair(申, 午),
+      Pair(酉, 亥),
+      Pair(戌, 未),
+      Pair(亥, 亥),
+    ).contains(eightWords.day.branch to eightWords.hour.branch)
+  }
+}
+
+/**
+ * 子年生於丑時，
+ * 丑年生於未時，
+ * 寅年生於子時，
+ * 卯年生於巳時，
+ * 辰年生於辰時，
+ * 巳年生於午時，
+ * 午年生於午時，
+ * 未年生於丑時，
+ * 申年生於午時，
+ * 酉年生於酉時，
+ * 戌年生於未時，
+ * 亥年生於亥時的人，
+ * 天生就犯了此關，從小難養，體弱多病，易有夭折現象，犯此關主宜過房拜認乾爹乾媽可保平安。（黃曆解秘）
+ */
+val p撞命關B = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 撞命關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return setOf(
+      Pair(子, 丑),
+      Pair(丑, 未),
+      Pair(寅, 子),
+      Pair(卯, 巳),
+      Pair(辰, 辰),
+      Pair(巳, 午),
+      Pair(午, 午),
+      Pair(未, 丑),
+      Pair(申, 午),
+      Pair(酉, 酉),
+      Pair(戌, 未),
+      Pair(亥, 亥),
+    ).contains(eightWords.year.branch to eightWords.hour.branch)
+  }
+}
+
+/**
+ * 凡正二三月子寅時出生之人命犯此關煞，忌聞刀斧之聲。
+ */
+val p下情關 = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 下情關
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return 寅卯辰.contains(eightWords.month.branch) && setOf(子,寅).contains(eightWords.hour.branch)
+  }
+}
