@@ -1538,3 +1538,25 @@ val p下情關 = object : IHazardFactory {
     return 寅卯辰.contains(eightWords.month.branch) && setOf(子,寅).contains(eightWords.hour.branch)
   }
 }
+
+
+/**
+ * 申子辰年生於四月，巳酉丑年生於正月，寅午戌年生於十月，亥卯未年生於七月是。小心提防錢財損失。(黃曆解秘)
+ */
+val p劫煞關 = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 劫煞關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return (
+      (申子辰.contains(eightWords.year.branch) && 巳 == eightWords.month.branch) ||
+      (巳酉丑.contains(eightWords.year.branch) && 寅 == eightWords.month.branch) ||
+      (寅午戌.contains(eightWords.year.branch) && 亥 == eightWords.month.branch) ||
+      (亥卯未.contains(eightWords.year.branch) && 申 == eightWords.month.branch)
+    )
+  }
+}
