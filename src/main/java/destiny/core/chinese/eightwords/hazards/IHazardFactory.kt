@@ -676,10 +676,10 @@ val p浴盆關 = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (寅卯辰.contains(eightWords.month.branch) && 辰 == eightWords.hour.branch) ||
-      (巳午未.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
-      (申酉戌.contains(eightWords.month.branch) && 戌 == eightWords.hour.branch) ||
-      (亥子丑.contains(eightWords.month.branch) && 丑 == eightWords.hour.branch)
-    )
+        (巳午未.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
+        (申酉戌.contains(eightWords.month.branch) && 戌 == eightWords.hour.branch) ||
+        (亥子丑.contains(eightWords.month.branch) && 丑 == eightWords.hour.branch)
+      )
   }
 }
 
@@ -701,9 +701,9 @@ val p湯火關A = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (子午卯酉.contains(eightWords.year.branch) && eightWords.hour.branch == 午) ||
-      (寅申巳亥.contains(eightWords.year.branch) && eightWords.hour.branch == 寅) ||
-      (辰戌丑未.contains(eightWords.year.branch) && eightWords.hour.branch == 未)
-    )
+        (寅申巳亥.contains(eightWords.year.branch) && eightWords.hour.branch == 寅) ||
+        (辰戌丑未.contains(eightWords.year.branch) && eightWords.hour.branch == 未)
+      )
   }
 }
 
@@ -721,10 +721,10 @@ val p湯火關B = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (子午卯酉.contains(eightWords.year.branch) && eightWords.hour.branch == 午) ||
-      (setOf(丑, 申, 亥).contains(eightWords.year.branch) && eightWords.hour.branch == 未) ||
-      (寅 == eightWords.year.branch && eightWords.hour.branch == 巳) ||
-      (setOf(午, 酉).contains(eightWords.year.branch) && eightWords.hour.branch == 寅)
-    )
+        (setOf(丑, 申, 亥).contains(eightWords.year.branch) && eightWords.hour.branch == 未) ||
+        (寅 == eightWords.year.branch && eightWords.hour.branch == 巳) ||
+        (setOf(午, 酉).contains(eightWords.year.branch) && eightWords.hour.branch == 寅)
+      )
   }
 }
 
@@ -743,10 +743,10 @@ val p水火關A = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (寅卯辰.contains(eightWords.month.branch) && setOf(戌, 未).contains(eightWords.hour.branch)) ||
-      (巳午未.contains(eightWords.month.branch) && setOf(丑, 辰).contains(eightWords.hour.branch)) ||
-      (申酉戌.contains(eightWords.month.branch) && setOf(丑, 戌).contains(eightWords.hour.branch)) ||
-      (亥子丑.contains(eightWords.month.branch) && setOf(未, 辰).contains(eightWords.hour.branch))
-    )
+        (巳午未.contains(eightWords.month.branch) && setOf(丑, 辰).contains(eightWords.hour.branch)) ||
+        (申酉戌.contains(eightWords.month.branch) && setOf(丑, 戌).contains(eightWords.hour.branch)) ||
+        (亥子丑.contains(eightWords.month.branch) && setOf(未, 辰).contains(eightWords.hour.branch))
+      )
   }
 }
 
@@ -764,10 +764,10 @@ val p水火關B = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (寅卯辰.contains(eightWords.month.branch) && setOf(戌, 未).contains(eightWords.hour.branch)) ||
-      (巳午未.contains(eightWords.month.branch) && setOf(丑, 辰).contains(eightWords.hour.branch)) ||
-      (申酉戌.contains(eightWords.month.branch) && setOf(酉).contains(eightWords.hour.branch)) ||
-      (亥子丑.contains(eightWords.month.branch) && setOf(丑).contains(eightWords.hour.branch))
-    )
+        (巳午未.contains(eightWords.month.branch) && setOf(丑, 辰).contains(eightWords.hour.branch)) ||
+        (申酉戌.contains(eightWords.month.branch) && setOf(酉).contains(eightWords.hour.branch)) ||
+        (亥子丑.contains(eightWords.month.branch) && setOf(丑).contains(eightWords.hour.branch))
+      )
   }
 }
 
@@ -786,10 +786,10 @@ val p深水關A = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (寅卯辰.contains(eightWords.month.branch) && setOf(寅, 申).contains(eightWords.hour.branch)) ||
-      (巳午未.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
-      (申酉戌.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
-      (亥子丑.contains(eightWords.month.branch) && 丑 == eightWords.hour.branch)
-    )
+        (巳午未.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
+        (申酉戌.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
+        (亥子丑.contains(eightWords.month.branch) && 丑 == eightWords.hour.branch)
+      )
   }
 }
 
@@ -805,7 +805,7 @@ val p深水關B = object : IHazardFactory {
   }
 
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
-    return(寅卯辰.contains(eightWords.month.branch) && setOf(寅, 申).contains(eightWords.hour.branch))
+    return (寅卯辰.contains(eightWords.month.branch) && setOf(寅, 申).contains(eightWords.hour.branch))
 
   }
 }
@@ -825,13 +825,13 @@ val p夜啼關A = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (子午卯酉.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
-      (寅申巳亥.contains(eightWords.month.branch) && setOf(寅, 未).contains(eightWords.hour.branch)) ||
-      (辰戌丑未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
-      (寅卯辰.contains(eightWords.month.branch) && 午 == eightWords.hour.branch) ||
-      (巳午未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
-      (申酉戌.contains(eightWords.month.branch) && 子 == eightWords.hour.branch) ||
-      (亥子丑.contains(eightWords.month.branch) && 卯 == eightWords.hour.branch)
-    )
+        (寅申巳亥.contains(eightWords.month.branch) && setOf(寅, 未).contains(eightWords.hour.branch)) ||
+        (辰戌丑未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
+        (寅卯辰.contains(eightWords.month.branch) && 午 == eightWords.hour.branch) ||
+        (巳午未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
+        (申酉戌.contains(eightWords.month.branch) && 子 == eightWords.hour.branch) ||
+        (亥子丑.contains(eightWords.month.branch) && 卯 == eightWords.hour.branch)
+      )
   }
 }
 
@@ -849,13 +849,13 @@ val p夜啼關B = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (子午卯酉.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
-      (寅申巳亥.contains(eightWords.month.branch) && 丑 == eightWords.hour.branch) ||
-      // (辰戌丑未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) || (蟬?)
-      (寅卯辰.contains(eightWords.month.branch) && 午 == eightWords.hour.branch) ||
-      (巳午未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
-      (申酉戌.contains(eightWords.month.branch) && 子 == eightWords.hour.branch) ||
-      (亥子丑.contains(eightWords.month.branch) && 卯 == eightWords.hour.branch)
-    )
+        (寅申巳亥.contains(eightWords.month.branch) && 丑 == eightWords.hour.branch) ||
+        // (辰戌丑未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) || (蟬?)
+        (寅卯辰.contains(eightWords.month.branch) && 午 == eightWords.hour.branch) ||
+        (巳午未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
+        (申酉戌.contains(eightWords.month.branch) && 子 == eightWords.hour.branch) ||
+        (亥子丑.contains(eightWords.month.branch) && 卯 == eightWords.hour.branch)
+      )
   }
 }
 
@@ -874,9 +874,9 @@ val p夜啼關C = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (子午卯酉.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
-      (寅申巳亥.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
-      (辰戌丑未.contains(eightWords.month.branch) && 寅 == eightWords.hour.branch)
-    )
+        (寅申巳亥.contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
+        (辰戌丑未.contains(eightWords.month.branch) && 寅 == eightWords.hour.branch)
+      )
   }
 }
 
@@ -894,10 +894,10 @@ val p夜啼關D = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (寅卯辰.contains(eightWords.month.branch) && 午 == eightWords.hour.branch) ||
-      (巳午未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
-      (申酉戌.contains(eightWords.month.branch) && 子 == eightWords.hour.branch) ||
-      (亥子丑.contains(eightWords.month.branch) && 卯 == eightWords.hour.branch)
-    )
+        (巳午未.contains(eightWords.month.branch) && 酉 == eightWords.hour.branch) ||
+        (申酉戌.contains(eightWords.month.branch) && 子 == eightWords.hour.branch) ||
+        (亥子丑.contains(eightWords.month.branch) && 卯 == eightWords.hour.branch)
+      )
   }
 }
 
@@ -913,12 +913,12 @@ val p白虎關A = object : IHazardFactory {
 
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (when (SimpleBranch.getFiveElement(eightWords.month.branch)) {
-        火    -> 子
-        金    -> 卯
-        水, 土 -> 午
-        木    -> 酉
-      } == eightWords.hour.branch
-    )
+      火    -> 子
+      金    -> 卯
+      水, 土 -> 午
+      木    -> 酉
+    } == eightWords.hour.branch
+      )
   }
 }
 
@@ -936,10 +936,10 @@ val p白虎關B = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (setOf(寅, 卯).contains(eightWords.month.branch) && setOf(申, 酉).contains(eightWords.hour.branch)) ||
-      (辰 == eightWords.month.branch && setOf(子, 戌).contains(eightWords.hour.branch)) ||
-      (setOf(巳, 未).contains(eightWords.month.branch) && setOf(卯, 丑).contains(eightWords.hour.branch)) ||
-      (setOf(酉, 亥).contains(eightWords.month.branch) && 卯 == eightWords.hour.branch)
-    )
+        (辰 == eightWords.month.branch && setOf(子, 戌).contains(eightWords.hour.branch)) ||
+        (setOf(巳, 未).contains(eightWords.month.branch) && setOf(卯, 丑).contains(eightWords.hour.branch)) ||
+        (setOf(酉, 亥).contains(eightWords.month.branch) && 卯 == eightWords.hour.branch)
+      )
   }
 }
 
@@ -961,12 +961,12 @@ val p白虎關C = object : IHazardFactory {
 
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (when (SimpleBranch.getFiveElement(eightWords.year.branch)) {
-        金    -> setOf(卯, 戌)
-        木    -> setOf(辰, 酉)
-        火    -> setOf(子, 未, 申)
-        水, 土 -> setOf(丑, 寅, 午)
-      }.contains(eightWords.hour.branch)
-    )
+      金    -> setOf(卯, 戌)
+      木    -> setOf(辰, 酉)
+      火    -> setOf(子, 未, 申)
+      水, 土 -> setOf(丑, 寅, 午)
+    }.contains(eightWords.hour.branch)
+      )
   }
 }
 
@@ -987,9 +987,9 @@ val p天狗關 = object : IHazardFactory {
 
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (Branch.values()
-        .map { b -> b to b.prev(2) }
-        .toSet().contains(eightWords.year.branch to eightWords.hour.branch)
-    )
+      .map { b -> b to b.prev(2) }
+      .toSet().contains(eightWords.year.branch to eightWords.hour.branch)
+      )
   }
 }
 
@@ -1008,10 +1008,10 @@ val p四季關A = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (寅卯辰.contains(eightWords.month.branch) && setOf(巳, 丑).contains(eightWords.hour.branch)) ||
-      (巳午未.contains(eightWords.month.branch) && setOf(申, 辰).contains(eightWords.hour.branch)) ||
-      (申酉戌.contains(eightWords.month.branch) && setOf(亥, 未).contains(eightWords.hour.branch)) ||
-      (亥子丑.contains(eightWords.month.branch) && setOf(寅, 卯).contains(eightWords.hour.branch))
-    )
+        (巳午未.contains(eightWords.month.branch) && setOf(申, 辰).contains(eightWords.hour.branch)) ||
+        (申酉戌.contains(eightWords.month.branch) && setOf(亥, 未).contains(eightWords.hour.branch)) ||
+        (亥子丑.contains(eightWords.month.branch) && setOf(寅, 卯).contains(eightWords.hour.branch))
+      )
   }
 }
 
@@ -1037,10 +1037,10 @@ val p四季關B = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (寅卯辰.contains(eightWords.month.branch) && setOf(巳, 丑).contains(eightWords.hour.branch)) ||
-      (巳午未.contains(eightWords.month.branch) && setOf(申, 辰).contains(eightWords.hour.branch)) ||
-      (申酉戌.contains(eightWords.month.branch) && setOf(亥, 未).contains(eightWords.hour.branch)) ||
-      (亥子丑.contains(eightWords.month.branch) && setOf(寅, 戌).contains(eightWords.hour.branch))
-    )
+        (巳午未.contains(eightWords.month.branch) && setOf(申, 辰).contains(eightWords.hour.branch)) ||
+        (申酉戌.contains(eightWords.month.branch) && setOf(亥, 未).contains(eightWords.hour.branch)) ||
+        (亥子丑.contains(eightWords.month.branch) && setOf(寅, 戌).contains(eightWords.hour.branch))
+      )
   }
 }
 
@@ -1059,10 +1059,10 @@ val p急腳關A = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (寅卯辰.contains(eightWords.month.branch) && setOf(亥, 子).contains(eightWords.hour.branch)) ||
-      (巳午未.contains(eightWords.month.branch) && setOf(卯, 未).contains(eightWords.hour.branch)) ||
-      (申酉戌.contains(eightWords.month.branch) && setOf(寅, 戌).contains(eightWords.hour.branch)) ||
-      (亥子丑.contains(eightWords.month.branch) && setOf(辰, 戌).contains(eightWords.hour.branch))
-    )
+        (巳午未.contains(eightWords.month.branch) && setOf(卯, 未).contains(eightWords.hour.branch)) ||
+        (申酉戌.contains(eightWords.month.branch) && setOf(寅, 戌).contains(eightWords.hour.branch)) ||
+        (亥子丑.contains(eightWords.month.branch) && setOf(辰, 戌).contains(eightWords.hour.branch))
+      )
   }
 }
 
@@ -1082,10 +1082,10 @@ val p急腳關B = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (寅卯辰.contains(eightWords.month.branch) && setOf(亥, 子).contains(eightWords.hour.branch)) ||
-      (巳午未.contains(eightWords.month.branch) && setOf(卯, 未).contains(eightWords.hour.branch)) ||
-      (申酉戌.contains(eightWords.month.branch) && setOf(寅, 戌).contains(eightWords.hour.branch)) ||
-      (亥子丑.contains(eightWords.month.branch) && setOf(丑, 戌).contains(eightWords.hour.branch))
-    )
+        (巳午未.contains(eightWords.month.branch) && setOf(卯, 未).contains(eightWords.hour.branch)) ||
+        (申酉戌.contains(eightWords.month.branch) && setOf(寅, 戌).contains(eightWords.hour.branch)) ||
+        (亥子丑.contains(eightWords.month.branch) && setOf(丑, 戌).contains(eightWords.hour.branch))
+      )
   }
 }
 
@@ -1106,11 +1106,11 @@ val p急腳煞 = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (setOf(甲, 乙).contains(eightWords.day.stem) && setOf(申, 酉).contains(eightWords.hour.branch)) ||
-      (setOf(丙, 丁).contains(eightWords.day.stem) && setOf(亥, 子).contains(eightWords.hour.branch)) ||
-      (setOf(戊, 己).contains(eightWords.day.stem) && setOf(寅, 卯).contains(eightWords.hour.branch)) ||
-      (setOf(庚, 辛).contains(eightWords.day.stem) && setOf(巳, 午).contains(eightWords.hour.branch)) ||
-      (setOf(壬, 癸).contains(eightWords.day.stem) && setOf(丑, 未, 辰, 戌).contains(eightWords.hour.branch))
-    )
+        (setOf(丙, 丁).contains(eightWords.day.stem) && setOf(亥, 子).contains(eightWords.hour.branch)) ||
+        (setOf(戊, 己).contains(eightWords.day.stem) && setOf(寅, 卯).contains(eightWords.hour.branch)) ||
+        (setOf(庚, 辛).contains(eightWords.day.stem) && setOf(巳, 午).contains(eightWords.hour.branch)) ||
+        (setOf(壬, 癸).contains(eightWords.day.stem) && setOf(丑, 未, 辰, 戌).contains(eightWords.hour.branch))
+      )
   }
 }
 
@@ -1130,20 +1130,20 @@ val p五鬼關A = object : IHazardFactory {
 
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (setOf(
-        Pair(子, 辰),
-        Pair(丑, 卯),
-        Pair(寅, 寅),
-        Pair(卯, 丑),
-        Pair(辰, 子),
-        Pair(巳, 亥),
-        Pair(午, 戌),
-        Pair(未, 申),
-        Pair(申, 酉),
-        Pair(酉, 未),
-        Pair(戌, 午),
-        Pair(亥, 巳)
-      ).contains(eightWords.year.branch to eightWords.hour.branch)
-    )
+      Pair(子, 辰),
+      Pair(丑, 卯),
+      Pair(寅, 寅),
+      Pair(卯, 丑),
+      Pair(辰, 子),
+      Pair(巳, 亥),
+      Pair(午, 戌),
+      Pair(未, 申),
+      Pair(申, 酉),
+      Pair(酉, 未),
+      Pair(戌, 午),
+      Pair(亥, 巳)
+    ).contains(eightWords.year.branch to eightWords.hour.branch)
+      )
   }
 }
 
@@ -1160,20 +1160,20 @@ val p五鬼關B = object : IHazardFactory {
 
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (setOf(
-        Pair(子, 辰),
-        Pair(丑, 卯),
-        Pair(寅, 寅),
-        Pair(卯, 丑),
-        Pair(辰, 子),
-        Pair(巳, 亥),
-        Pair(午, 戌),
-        Pair(未, 酉),
-        Pair(申, 申),
-        Pair(酉, 未),
-        Pair(戌, 午),
-        Pair(亥, 巳)
-      ).contains(eightWords.year.branch to eightWords.hour.branch)
-    )
+      Pair(子, 辰),
+      Pair(丑, 卯),
+      Pair(寅, 寅),
+      Pair(卯, 丑),
+      Pair(辰, 子),
+      Pair(巳, 亥),
+      Pair(午, 戌),
+      Pair(未, 酉),
+      Pair(申, 申),
+      Pair(酉, 未),
+      Pair(戌, 午),
+      Pair(亥, 巳)
+    ).contains(eightWords.year.branch to eightWords.hour.branch)
+      )
   }
 }
 
@@ -1191,20 +1191,20 @@ val p五鬼關C = object : IHazardFactory {
 
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (setOf(
-        Pair(子, 辰),
-        Pair(丑, 巳),
-        Pair(寅, 午),
-        Pair(卯, 未),
-        Pair(辰, 申),
-        Pair(巳, 酉),
-        Pair(午, 戌),
-        Pair(未, 亥),
-        Pair(申, 子),
-        Pair(酉, 丑),
-        Pair(戌, 寅),
-        Pair(亥, 卯)
-      ).contains(eightWords.year.branch to eightWords.hour.branch)
-    )
+      Pair(子, 辰),
+      Pair(丑, 巳),
+      Pair(寅, 午),
+      Pair(卯, 未),
+      Pair(辰, 申),
+      Pair(巳, 酉),
+      Pair(午, 戌),
+      Pair(未, 亥),
+      Pair(申, 子),
+      Pair(酉, 丑),
+      Pair(戌, 寅),
+      Pair(亥, 卯)
+    ).contains(eightWords.year.branch to eightWords.hour.branch)
+      )
   }
 }
 
@@ -1222,20 +1222,20 @@ val p金鎖關A = object : IHazardFactory {
 
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (setOf(
-        Pair(寅, 申),
-        Pair(卯, 酉),
-        Pair(辰, 戌),
-        Pair(巳, 亥),
-        Pair(午, 子),
-        Pair(未, 丑),
-        Pair(申, 申),
-        Pair(酉, 酉),
-        Pair(戌, 戌),
-        Pair(亥, 亥),
-        Pair(子, 子),
-        Pair(丑, 丑),
-      ).contains(eightWords.month.branch to eightWords.hour.branch)
-    )
+      Pair(寅, 申),
+      Pair(卯, 酉),
+      Pair(辰, 戌),
+      Pair(巳, 亥),
+      Pair(午, 子),
+      Pair(未, 丑),
+      Pair(申, 申),
+      Pair(酉, 酉),
+      Pair(戌, 戌),
+      Pair(亥, 亥),
+      Pair(子, 子),
+      Pair(丑, 丑),
+    ).contains(eightWords.month.branch to eightWords.hour.branch)
+      )
   }
 }
 
@@ -1254,20 +1254,45 @@ val p金鎖關B = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
 
     return (setOf(
-        Pair(寅, 申),
-        Pair(卯, 酉),
-        Pair(辰, 戌),
-        Pair(巳, 亥),
-        Pair(午, 子),
-        Pair(未, 丑),
-        Pair(申, 申),
-        Pair(酉, 酉),
-        Pair(戌, 戌),
-        Pair(亥, 亥),
-        Pair(子, 子),
-        Pair(丑, 丑),
-      ).contains(eightWords.month.branch to eightWords.hour.branch)
+      Pair(寅, 申),
+      Pair(卯, 酉),
+      Pair(辰, 戌),
+      Pair(巳, 亥),
+      Pair(午, 子),
+      Pair(未, 丑),
+      Pair(申, 申),
+      Pair(酉, 酉),
+      Pair(戌, 戌),
+      Pair(亥, 亥),
+      Pair(子, 子),
+      Pair(丑, 丑),
+    ).contains(eightWords.month.branch to eightWords.hour.branch)
       || (setOf(寅, 卯).contains(eightWords.month.branch) && setOf(申, 卯).contains(eightWords.hour.branch))
-    )
+      )
+  }
+}
+
+/**
+ * ? 小兒最怕逢直難，羊刃劫殺不須輪，甲壬戊旬逆申起，庚丙旬人數起寅，數至本年方是殺，三九六十二為真，小兒若是逢斯難，父母徒然生此身。此關主多啾唧、星卻不為害，琴堂所說更靈，而此復載隨人用。(象吉)
+ * ? 小兒最怕逢直難，羊刃劫煞不須輪，甲壬戊旬逆申起，庚丙旬人數起字，數至本年方是煞，三九六十二為真，小兒若是逢此難，父母徒然生此身。此關主多啾唧、星辰卻不為大害，琴堂所說更靈，而此復載隨人用。(鰲頭)
+ * ? 小兒最怕逢直難，羊刃劫煞不須論，甲壬戊旬逆申起，庚丙旬人數起寅，數至本年方是煞，三九六十二為真，小兒若是逢斷煞，父母徒勞生此身。甲子壬子戊子旬生人，甲上起子逆數，庚子戊子旬入庚上起子數，木甲上起一歲是命宮，佯若逢三六九宜數也。(星平會海)
+ * 凡寅、卯月逢午時生人，辰、巳月逢未時生人，午、未月逢卯、戌時生人，申、酉月逢巳、申時生人，戌、亥月逢寅、卯時生人，子、丑月逢辰、酉時生人是。易受又硬又直的利器所傷。(黃曆解秘)
+ */
+val p直難關 = object : IHazardFactory {
+  override val hazard: ChildHazard = 直難關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return (
+      (setOf(寅, 卯).contains(eightWords.month.branch) && 午 == eightWords.hour.branch) ||
+        (setOf(辰, 巳).contains(eightWords.month.branch) && 未 == eightWords.hour.branch) ||
+        (setOf(午, 未).contains(eightWords.month.branch) && setOf(卯, 戌).contains(eightWords.hour.branch)) ||
+        (setOf(申, 酉).contains(eightWords.month.branch) && setOf(巳, 申).contains(eightWords.hour.branch)) ||
+        (setOf(戌, 亥).contains(eightWords.month.branch) && setOf(寅, 卯).contains(eightWords.hour.branch)) ||
+        (setOf(子, 丑).contains(eightWords.month.branch) && setOf(辰, 酉).contains(eightWords.hour.branch))
+      )
   }
 }

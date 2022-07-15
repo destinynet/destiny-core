@@ -62,8 +62,6 @@ sealed class ChildHazard : IPattern {
 
   object 金鎖關 : ChildHazard()
 
-  object 金鎖匙 : ChildHazard()
-
   object 直難關 : ChildHazard()
 
   object 取命關 : ChildHazard()
