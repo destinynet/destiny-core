@@ -1111,5 +1111,53 @@ val p四季關B = object : IHazardFactory {
       null
     }
   }
+}
 
+/**
+ * 春忌亥子不過關，夏逢卯未在中間，秋季寅戌還須忌，冬月辰戌死不難。此關即八座殺，惟忌修造動土凶。(象吉)
+ * 春忌亥子不過關，夏逢卯未在中間，秋季寅戌還須忌，冬月辰戌死不難。此關即八座，惟忌修造動土犯之主凶。(鰲頭)
+ */
+val p急腳關A = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(象吉通書, 鰲頭通書)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (寅卯辰.contains(eightWords.month.branch) && setOf(亥, 子).contains(eightWords.hour.branch)) ||
+      (巳午未.contains(eightWords.month.branch) && setOf(卯, 未).contains(eightWords.hour.branch)) ||
+      (申酉戌.contains(eightWords.month.branch) && setOf(寅, 戌).contains(eightWords.hour.branch)) ||
+      (亥子丑.contains(eightWords.month.branch) && setOf(辰, 戌).contains(eightWords.hour.branch))
+    ) {
+      急腳關
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * 三春亥子不過關，夏月卯未實堪嗔，秋寅戌位還須忌，冬丑辰宮死弗難。(星平會海)
+ * 二春亥子難過關，夏逢卯未實堪傷，秋寅戌位還須忌，冬丑辰宮死不難。修造、動土勿看，限內宜制化。此正二三月子亥時生人，犯此忌驚嚇、跌扑之患。(生育禮俗)
+ * 凡正、二、三月逢子、亥時生人，四、五、六月逢卯、未時生人，七、八、九月逢寅、戌時生人，十、十一、十二月逢丑、辰時生人是。犯此須避動土、修造、開挖事。宜用山神土地錢制化。(黃曆解秘)
+ */
+val p急腳關B = object : IHazardFactory {
+
+  override fun getBooks(): Set<Book> {
+    return setOf(星平會海, 生育禮俗, 黃曆解秘)
+  }
+
+  override fun getHazard(eightWords: IEightWords, gender: Gender?): ChildHazard? {
+    return if (
+      (寅卯辰.contains(eightWords.month.branch) && setOf(亥, 子).contains(eightWords.hour.branch)) ||
+      (巳午未.contains(eightWords.month.branch) && setOf(卯, 未).contains(eightWords.hour.branch)) ||
+      (申酉戌.contains(eightWords.month.branch) && setOf(寅, 戌).contains(eightWords.hour.branch)) ||
+      (亥子丑.contains(eightWords.month.branch) && setOf(丑, 戌).contains(eightWords.hour.branch))
+    ) {
+      急腳關
+    } else {
+      null
+    }
+  }
 }
