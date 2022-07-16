@@ -86,7 +86,8 @@ sealed class ChildHazard : IPattern {
 
   object 將軍箭 : ChildHazard()
 
-  object 雷公打腦關 : ChildHazard()
+  /** 雷公打腦關 */
+  object 雷公關 : ChildHazard()
 
   //object 桃花煞 : ChildHazard()
 

@@ -1654,6 +1654,77 @@ val p將軍箭B = object : IHazardFactory {
   }
 
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
-    return setOf(辰,酉,戌).contains(eightWords.year.branch) && 未 == eightWords.hour.branch
+    return setOf(辰, 酉, 戌).contains(eightWords.year.branch) && 未 == eightWords.hour.branch
+  }
+}
+
+
+/**
+ * 甲牛乙馬丙丁鼠，戊己原來在犬，庚辛逢虎鬚防避，壬雞癸豬有憂煌。限遇此關流年天厄、卒暴、陽刃、火值之，主雷火之厄，若遇天月二德可解。(象吉)
+ * 甲牛乙馬丙丁鼠，戊己原來在戌，庚辛逢虎鬚防避，壬雞癸豬有夢場。此關遇流年天厄、卒暴、明月星值之，主雷火之厄，若遇天月三德可以解之。(鰲頭)
+ * 甲午乙馬丙丁鼠，戊己原來在戌，庚辛生孩原怕虎，壬雞癸亥有憂惶。(星平會海)
+ *
+ */
+val p雷公關A = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 雷公關
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return setOf(
+      Pair(甲, 丑),
+      Pair(乙, 午),
+      Pair(丙, 子),
+      Pair(丁, 子),
+      Pair(戊, 戌),
+      Pair(己, 戌),
+      Pair(庚, 寅),
+      Pair(辛, 寅),
+      Pair(壬, 酉),
+      Pair(癸, 亥),
+    ).contains(eightWords.day.stem to eightWords.hour.branch)
+  }
+}
+
+/**
+ * 甲己逢馬、丙丁忌鼠、戊乙生犬、庚辛遇虎、壬癸雞鼠、災見閻王。勿抱高空，額處弄跳，注意蹊倒。凡寅午申酉辰亥時生人，犯此忌驚聞鼓雷公及大聲叫喊。(生育禮俗)
+ */
+val p雷公關B = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 雷公關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(生育禮俗)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return (
+      (setOf(甲, 己).contains(eightWords.day.stem) && 午 == eightWords.hour.branch) ||
+        (setOf(丙, 丁).contains(eightWords.day.stem) && 子 == eightWords.hour.branch) ||
+        (setOf(乙, 戊).contains(eightWords.day.stem) && 戌 == eightWords.hour.branch) ||
+        (setOf(庚, 辛).contains(eightWords.day.stem) && 寅 == eightWords.hour.branch) ||
+        (setOf(壬, 癸).contains(eightWords.day.stem) && setOf(酉, 子).contains(eightWords.hour.branch))
+      )
+  }
+
+}
+
+/**
+ * 凡甲己日逢午時，乙戊日逢戌時，丙丁壬癸日逢子時，庚辛日逢寅時生人是。犯此忌驚聞鑼鼓、雷公及大聲叫喊。(黃曆解秘)
+ */
+val p雷公關C = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 雷公關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return (
+      (setOf(甲, 己).contains(eightWords.day.stem) && 午 == eightWords.hour.branch) ||
+        (setOf(乙, 戊).contains(eightWords.day.stem) && 戌 == eightWords.hour.branch) ||
+        (setOf(丙, 丁, 壬, 癸).contains(eightWords.day.stem) && 子 == eightWords.hour.branch) ||
+        (setOf(庚, 辛).contains(eightWords.day.stem) && 寅 == eightWords.hour.branch)
+      )
   }
 }
