@@ -1535,7 +1535,7 @@ val p下情關 = object : IHazardFactory {
   override val hazard: ChildHazard = 下情關
 
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
-    return 寅卯辰.contains(eightWords.month.branch) && setOf(子,寅).contains(eightWords.hour.branch)
+    return 寅卯辰.contains(eightWords.month.branch) && setOf(子, 寅).contains(eightWords.hour.branch)
   }
 }
 
@@ -1554,9 +1554,106 @@ val p劫煞關 = object : IHazardFactory {
   override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
     return (
       (申子辰.contains(eightWords.year.branch) && 巳 == eightWords.month.branch) ||
-      (巳酉丑.contains(eightWords.year.branch) && 寅 == eightWords.month.branch) ||
-      (寅午戌.contains(eightWords.year.branch) && 亥 == eightWords.month.branch) ||
-      (亥卯未.contains(eightWords.year.branch) && 申 == eightWords.month.branch)
-    )
+        (巳酉丑.contains(eightWords.year.branch) && 寅 == eightWords.month.branch) ||
+        (寅午戌.contains(eightWords.year.branch) && 亥 == eightWords.month.branch) ||
+        (亥卯未.contains(eightWords.year.branch) && 申 == eightWords.month.branch)
+      )
+  }
+}
+
+
+/**
+ * 凡正月生於丑時，二月生於未時，三月生於寅時，四月生於申時，五月生於卯時，六月生於酉時，七月生於辰時，八月生於戌時，九月生於巳時，十月生於亥時，十一月生於午時，十二月生於子時是。易有意外血光之災，或車禍及撞傷，用本命錢或車厄錢制化。(黃曆解秘)
+ */
+val p血刃關 = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 血刃關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return setOf(
+      Pair(寅, 丑),
+      Pair(卯, 未),
+      Pair(辰, 寅),
+      Pair(巳, 申),
+      Pair(午, 卯),
+      Pair(未, 酉),
+      Pair(申, 辰),
+      Pair(酉, 戌),
+      Pair(戌, 巳),
+      Pair(亥, 亥),
+      Pair(子, 午),
+      Pair(丑, 子),
+    ).contains(eightWords.month.branch to eightWords.hour.branch)
+  }
+}
+
+/**
+ * 凡
+ * 正、二、三月生於未、戌、亥時，
+ * 四、五、六月生於子、辰、巳時，
+ * 七、八、九月生於丑、申、酉時，
+ * 十、十一、十二月生於寅、卯、午時是。
+ * 出生後身體狀況差、容易營養不良，忌看蓋房子、打地基，宜拜神明為契子、或注意腸胃方面的治療便能轉危為安。(黃曆解秘)
+ */
+val p基敗關 = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 基敗關
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return (
+      (寅卯辰.contains(eightWords.month.branch) && setOf(未, 戌, 亥).contains(eightWords.hour.branch)) ||
+        (巳午未.contains(eightWords.month.branch) && setOf(子, 辰, 巳).contains(eightWords.hour.branch)) ||
+        (申酉戌.contains(eightWords.month.branch) && setOf(丑, 申, 酉).contains(eightWords.hour.branch)) ||
+        (亥子丑.contains(eightWords.month.branch) && setOf(寅, 卯, 午).contains(eightWords.hour.branch))
+      )
+  }
+}
+
+/**
+ * 酉戌辰時春不旺，未卯子時夏中亡，丑寅午時秋並忌，冬季亥申巳為殃，一箭傷人三歲死，二箭傷人六歲亡，三箭傷人九歲亡，四箭傷人十二亡。此箭有弓則凶何也？十二支相衝是也。假如酉戌辰時春生帶箭，八字有相衝弓箭全凶，無沖則不忌。(象吉)
+ * 酉戌辰時春不旺，未卯子時夏中亡，子寅丑時秋並忌，冬季亥申巳為殃，一箭傷人三歲死，二箭傷人六歲亡，三箭傷人七歲夭，四箭傷之十二傷。此箭有弓則凶何也？十二支相衝是。如酉戌辰時春生帶箭，八字有相衝遇箭全不吉，無沖則不忌矣。(鰲頭)
+ * 酉戌辰時春不旺，未卯子時夏中亡，午寅丑時秋並忌，冬季亥申巳為殃，一箭傷人三歲死，二箭傷人六歲亡。(星平會海)
+ * 酉戌辰時春不旺，未卯子時夏中亡，午寅丑時秋並忌，冬季亥申巳為殃，一箭管三歲、柱中遇沖災禍臨至、勿入將軍廟。凡辰酉戌年未時生人，犯此忌見弓箭，二歲亦忌流年中箭。(生育禮俗)
+ */
+val p將軍箭A = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 將軍箭
+
+  override fun getBooks(): Set<Book> {
+    return setOf(象吉通書, 鰲頭通書, 星平會海, 生育禮俗)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return (
+      (寅卯辰.contains(eightWords.month.branch) && setOf(酉, 戌, 辰).contains(eightWords.hour.branch)) ||
+        (巳午未.contains(eightWords.month.branch) && setOf(未, 卯, 子).contains(eightWords.hour.branch)) ||
+        (申酉戌.contains(eightWords.month.branch) && setOf(丑, 寅, 午).contains(eightWords.hour.branch)) ||
+        (亥子丑.contains(eightWords.month.branch) && setOf(亥, 申, 巳).contains(eightWords.hour.branch))
+      )
+  }
+
+}
+
+/**
+ * 凡辰酉戌年，未時生人，犯此忌見弓箭，二歲忌流年中箭。民間祭刀箭方法，備將軍錢及草人當替身，將孩子生辰八字寫在草人上，再用竹箭象徵性射過草人後，同將軍一起制化即吉。或至銀樓打一把黃金小剪刀隨身攜帶亦吉。(黃曆解秘)
+ */
+val p將軍箭B = object : IHazardFactory {
+
+  override val hazard: ChildHazard = 將軍箭
+
+  override fun getBooks(): Set<Book> {
+    return setOf(黃曆解秘)
+  }
+
+  override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+    return setOf(辰,酉,戌).contains(eightWords.year.branch) && 未 == eightWords.hour.branch
   }
 }
