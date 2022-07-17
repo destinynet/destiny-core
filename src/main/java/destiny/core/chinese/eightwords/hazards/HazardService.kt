@@ -5,6 +5,7 @@ package destiny.core.chinese.eightwords.hazards
 
 import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
+import java.util.*
 
 
 class HazardService : java.io.Serializable {
@@ -15,10 +16,20 @@ class HazardService : java.io.Serializable {
       factory.impls.filter { iHazard ->
         iHazard.test(eightWords, gender)
       }.flatMap { iHazard: IHazard ->
-        iHazard.getBooks().map { b -> factory.hazard to b  }
+        iHazard.getBooks().map { b -> factory.hazard to b }
       }
     }
   }
+
+
+  fun getChildHazardNotes(eightWords: IEightWords, gender: Gender?, locale: Locale): List<Pair<String, String>> {
+    return getChildHazards(eightWords, gender).map { (childHazard, book) ->
+      val descriptor = ChildHazardDescriptor(childHazard)
+      descriptor.getTitle(locale) to childHazard.getBookNote(locale, book)
+    }.filter { (_, note) -> note != null }
+      .map { (title, note) -> title to note!! }
+  }
+
 
   companion object {
     val childHazardFactories: Set<IHazardFactory> = setOf(

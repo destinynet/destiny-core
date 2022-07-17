@@ -12,13 +12,27 @@ internal class HazardServiceTest {
 
   val logger = KotlinLogging.logger { }
 
+  val service = HazardService()
+
   @Test
   fun testGetChildHazards() {
-    val service = HazardService()
     val ew = EightWords("壬寅", "丁未", "辛未", "己丑")
+    val locales = listOf(Locale.TAIWAN, Locale.SIMPLIFIED_CHINESE)
     service.getChildHazards(ew, null).forEach { (hazard, book) ->
-      logger.info { "${hazard.getName()} 《$book》 ${hazard.getBookNote(Locale.TAIWAN, book)}" }
+      locales.forEach { locale ->
+        logger.info { "${hazard.getName(locale)} 《$book》 ${hazard.getBookNote(locale, book)}" }
+      }
     }
+  }
 
+  @Test
+  fun testGetChildHazardNotes() {
+    val ew = EightWords("壬寅", "丁未", "辛未", "己丑")
+    val locales = listOf(Locale.TAIWAN, Locale.SIMPLIFIED_CHINESE)
+    locales.forEach { locale ->
+      service.getChildHazardNotes(ew, null, locale).forEach { (title , note) ->
+        logger.info { "$title : $note" }
+      }
+    }
   }
 }
