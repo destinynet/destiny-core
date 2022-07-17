@@ -13,19 +13,24 @@ import destiny.core.calendar.eightwords.EightWordsContextConfig
 import destiny.core.calendar.eightwords.EightWordsContextConfigBuilder
 import destiny.core.calendar.eightwords.EightWordsContextFeature
 import destiny.core.calendar.eightwords.IEightWordsContextModel
+import destiny.core.chinese.eightwords.hazards.IHazardService
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.CacheGrain
 import destiny.tools.DestinyMarker
+import destiny.tools.serializers.LocaleSerializer
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import java.util.*
 import javax.cache.Cache
 import javax.inject.Named
 
 @Serializable
 data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContextConfig = EightWordsContextConfig(),
                                   val fortuneLargeConfig: FortuneLargeConfig = FortuneLargeConfig(),
-                                  val fortuneSmallConfig: FortuneSmallConfig = FortuneSmallConfig()): java.io.Serializable
+                                  val fortuneSmallConfig: FortuneSmallConfig = FortuneSmallConfig(),
+                                  @Serializable(with = LocaleSerializer::class)
+                                  val locale : Locale = Locale.getDefault()): java.io.Serializable
 
 @DestinyMarker
 class PersonConfigBuilder : Builder<EightWordsPersonConfig> {
@@ -45,8 +50,10 @@ class PersonConfigBuilder : Builder<EightWordsPersonConfig> {
     this.fortuneSmallConfig = FortuneSmallConfigBuilder.fortuneSmall(block)
   }
 
+  var locale: Locale = Locale.getDefault()
+
   override fun build(): EightWordsPersonConfig {
-    return EightWordsPersonConfig(ewContextConfig, fortuneLargeConfig, fortuneSmallConfig)
+    return EightWordsPersonConfig(ewContextConfig, fortuneLargeConfig, fortuneSmallConfig, locale)
   }
 
   companion object {
@@ -63,6 +70,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
                            private val fortuneLargeFeature: IFortuneLargeFeature,
                            private val fortuneSmallFeature: FortuneSmallFeature,
                            private val julDayResolver: JulDayResolver,
+                           private val hazardService: IHazardService,
                            @Transient
                            private val ewPersonFeatureCache: Cache<LmtCacheKey<*>, IPersonContextModel>) : AbstractCachedPersonFeature<EightWordsPersonConfig, IPersonContextModel>() {
 
@@ -91,7 +99,8 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
     val larges: List<FortuneData> = fortuneLargeFeature.getPersonModel(lmt, loc, gender, name, place, config.fortuneLargeConfig)
     val smalls: List<FortuneData> = fortuneSmallFeature.getPersonModel(lmt, loc, gender, name, place, config.fortuneSmallConfig)
 
-    return PersonContextModel(ewModel, gender, name, larges, smalls, ageMap)
+    val childHazards = hazardService.getChildHazardNotes(ewModel.eightWords, gender, config.locale)
+    return PersonContextModel(ewModel, gender, name, larges, smalls, ageMap, childHazards)
   }
 
   companion object {

@@ -9,6 +9,7 @@ import destiny.core.astrology.*
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.eightwords.PersonConfigBuilder.Companion.ewPersonConfig
 import kotlinx.serialization.KSerializer
+import java.util.*
 import kotlin.test.assertTrue
 
 internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonConfig>() {
@@ -37,7 +38,8 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
       "台北市"
     ),
     fortuneLargeConfig = FortuneLargeConfig(FortuneLargeImpl.SolarTermsSpan, 90.0),
-    fortuneSmallConfig = FortuneSmallConfig(FortuneSmallConfig.Impl.SixGia, 90, intAgeNotes = listOf(IntAgeNote.Minguo))
+    fortuneSmallConfig = FortuneSmallConfig(FortuneSmallConfig.Impl.SixGia, 90, intAgeNotes = listOf(IntAgeNote.Minguo)),
+    locale = Locale.ENGLISH
   )
 
   override val configByFunction: EightWordsPersonConfig = ewPersonConfig {
@@ -91,6 +93,7 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
       count = 90
       intAgeNotes(listOf(IntAgeNote.Minguo))
     }
+    locale = Locale.ENGLISH
   }
 
   override val assertion: (String) -> Unit = { raw ->
@@ -112,6 +115,7 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
     assertTrue(raw.contains(""""count":\s*90""".toRegex()))
     assertTrue(raw.contains("""\[\s*"Minguo"\s*]""".toRegex()))
 
+    assertTrue(raw.contains(""""locale":\s*"en"""".toRegex()))
 
   }
 }

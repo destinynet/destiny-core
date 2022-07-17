@@ -12,6 +12,7 @@ import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
+import destiny.core.chinese.eightwords.hazards.HazardItem
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -26,6 +27,9 @@ interface IPersonContextModel : IEightWordsContextModel , IBirthDataNamePlace  {
 
   /** 歲數(可能是虛歲)，每歲的起訖時刻  */
   val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>
+
+  /** 小兒關煞 */
+  val childHazards: List<HazardItem>
 
   /**
    * 由 GMT 反推月大運
@@ -106,7 +110,9 @@ data class PersonContextModel(
   override val fortuneDataSmalls: List<FortuneData>,
 
   /** 歲數(可能是虛歲)，每歲的起訖時刻  */
-  override val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>) : IPersonContextModel,
+  override val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>,
+
+  override val childHazards: List<HazardItem>) : IPersonContextModel,
   IEightWordsContextModel by eightWordsContextModel, Serializable
 
 /** 除了「人」的資料，還包括「排盤當下的時間」，會標註當下行運、流年 */
