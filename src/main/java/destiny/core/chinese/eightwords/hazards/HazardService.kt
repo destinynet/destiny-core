@@ -5,8 +5,16 @@ package destiny.core.chinese.eightwords.hazards
 
 import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
+import destiny.tools.getTitle
 import java.util.*
 
+
+data class HazardItem(
+  val hazard: ChildHazard,
+  val title: String,
+  /** bookName , bookNote */
+  val bookNotes: List<Pair<String, String>>
+)
 
 class HazardService : java.io.Serializable {
 
@@ -22,12 +30,20 @@ class HazardService : java.io.Serializable {
   }
 
 
-  fun getChildHazardNotes(eightWords: IEightWords, gender: Gender?, locale: Locale): List<Pair<String, String>> {
-    return getChildHazards(eightWords, gender).map { (childHazard, book) ->
-      val descriptor = ChildHazardDescriptor(childHazard)
-      descriptor.getTitle(locale) to childHazard.getBookNote(locale, book)
-    }.filter { (_, note) -> note != null }
-      .map { (title, note) -> title to note!! }
+  fun getChildHazardNotes(eightWords: IEightWords, gender: Gender?, locale: Locale): List<HazardItem> {
+
+    return getChildHazards(eightWords, gender)
+      .groupBy { (hazard, _) -> hazard }
+      .map { (hazard , list) ->
+        val descriptor = ChildHazardDescriptor(hazard)
+        val title = descriptor.getTitle(locale)
+        val bookNotes = list.map { (_ , book) ->
+          book to hazard.getBookNote(locale, book)
+        }.filter { (_ , note) -> note != null }
+          .map { (book , note) -> book.getTitle(locale) to note!! }
+          .toList()
+        HazardItem(hazard, title, bookNotes)
+      }
   }
 
 

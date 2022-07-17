@@ -4,9 +4,12 @@
 package destiny.core.chinese.eightwords.hazards
 
 import destiny.core.calendar.eightwords.EightWords
+import destiny.core.chinese.eightwords.hazards.ChildHazard.*
 import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 internal class HazardServiceTest {
 
@@ -30,8 +33,11 @@ internal class HazardServiceTest {
     val ew = EightWords("壬寅", "丁未", "辛未", "己丑")
     val locales = listOf(Locale.TAIWAN, Locale.SIMPLIFIED_CHINESE)
     locales.forEach { locale ->
-      service.getChildHazardNotes(ew, null, locale).forEach { (title , note) ->
-        logger.info { "$title : $note" }
+      service.getChildHazardNotes(ew, null, locale).also { items ->
+        assertEquals(5, items.size)
+        assertTrue { items.map { it.hazard }.containsAll(setOf(千日關, 水火關, 白虎關, 金鎖關, 撞命關)) }
+      }.forEach { item ->
+        logger.info { "$item" }
       }
     }
   }
