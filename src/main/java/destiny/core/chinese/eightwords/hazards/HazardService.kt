@@ -10,14 +10,6 @@ import java.util.*
 import javax.inject.Named
 
 
-data class HazardItem(
-  val hazard: ChildHazard,
-  val title: String,
-  /** bookName , bookNote */
-  val bookNotes: List<Pair<String, String>>
-)
-
-
 @Named
 class HazardService : IHazardService, java.io.Serializable {
 
