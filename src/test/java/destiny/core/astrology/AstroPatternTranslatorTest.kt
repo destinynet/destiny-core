@@ -16,7 +16,7 @@ class AstroPatternTranslatorTest {
   val logger = KotlinLogging.logger {}
 
   private val AstroPattern.title: String
-    get() = AstroPatternTranslator.getDescriptor(this).toString(Locale.TAIWAN)
+    get() = AstroPatternTranslator.getDescriptor(this).getTitle(Locale.TAIWAN)
 
   private val AstroPattern.description: String
     get() = AstroPatternTranslator.getDescriptor(this).getDescription(Locale.TAIWAN)
@@ -171,11 +171,11 @@ class AstroPatternTranslatorTest {
     val pattern = GrandTrine(setOf(SUN, VENUS, MOON), Element.WATER, null)
 
     AstroPatternTranslator.getDescriptor(pattern).also { d ->
-      assertEquals("大三角" , d.toString(Locale.TAIWAN))
-      assertEquals("大三角" , d.toString(Locale.SIMPLIFIED_CHINESE))
-      assertEquals("大三角" , d.toString(Locale.ENGLISH))
-      assertEquals("大三角" , d.toString(Locale.FRANCE))
-      assertEquals("大三角" , d.toString(Locale.JAPANESE))
+      assertEquals("大三角" , d.getTitle(Locale.TAIWAN))
+      assertEquals("大三角" , d.getTitle(Locale.SIMPLIFIED_CHINESE))
+      assertEquals("大三角" , d.getTitle(Locale.ENGLISH))
+      assertEquals("大三角" , d.getTitle(Locale.FRANCE))
+      assertEquals("大三角" , d.getTitle(Locale.JAPANESE))
     }
   }
 

@@ -18,11 +18,11 @@ interface IMainBodyHouse : Descriptive {
   /** 命宮、身宮 、以及「最後要給主星所使用的月數 (若為占星算法，此值為空) 」 */
   fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<Branch, Branch , Int?>
 
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return mainBodyHouse.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return toString(locale)
+    return getTitle(locale)
   }
 }

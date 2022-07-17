@@ -9,7 +9,7 @@ import destiny.core.calendar.eightwords.IEightWords
 
 class HazardService : java.io.Serializable {
 
-  fun test(eightWords: IEightWords, gender: Gender?): List<Pair<ChildHazard, Book>> {
+  fun getChildHazards(eightWords: IEightWords, gender: Gender?): List<Pair<ChildHazard, Book>> {
 
     return childHazardFactories.flatMap { factory ->
       factory.impls.filter { iHazard ->

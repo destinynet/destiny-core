@@ -9,13 +9,13 @@ import java.util.*
 
 fun Ayanamsa.asLocaleString() = object : ILocaleString {
   private val resource = "destiny.core.astrology.Astrology"
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
   }
 }
 
 fun Ayanamsa.getTitle(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
+  return this.asLocaleString().getTitle(locale)
 }
 
 /**

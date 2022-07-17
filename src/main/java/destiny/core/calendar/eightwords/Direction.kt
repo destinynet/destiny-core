@@ -10,7 +10,7 @@ import java.util.*
 enum class Direction : Descriptive {
   R2L, L2R;
 
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return when (this) {
       L2R -> "左至右"
       R2L -> "右至左"

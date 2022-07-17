@@ -26,7 +26,7 @@ data class PatternParasDescription<T : IPattern>(
   /**
    * 沒有其他語系，就傳中文的 [IPattern.getName] 即可
    */
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return pattern.getName(locale)
   }
 

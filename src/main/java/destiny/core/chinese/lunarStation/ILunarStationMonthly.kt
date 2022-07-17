@@ -84,7 +84,7 @@ class LunarStationMonthlyAnimalExplained : ILunarStationMonthly,
   }
 
 
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return "《剋擇講義》"
   }
 

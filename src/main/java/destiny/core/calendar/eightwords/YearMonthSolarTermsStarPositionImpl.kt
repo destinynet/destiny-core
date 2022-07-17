@@ -29,7 +29,7 @@ class YearMonthSolarTermsStarPositionImpl(
   override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
 ) : IYearMonth, IYear by yearImpl {
 
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return MonthImpl.SolarTerms.getTitle(Locale.TAIWAN)
   }
 

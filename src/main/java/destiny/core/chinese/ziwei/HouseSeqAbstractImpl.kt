@@ -25,12 +25,12 @@ abstract class HouseSeqAbstractImpl : IHouseSeq, Serializable {
     return if (steps >= 0) steps else steps + 12
   }
 
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return houseSeq.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return toString(locale)
+    return getTitle(locale)
   }
 
   private operator fun get(index: Int): House {

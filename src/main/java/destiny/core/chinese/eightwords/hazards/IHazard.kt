@@ -1628,15 +1628,39 @@ val h下情關 = object : IHazardFactory {
   override val hazard: ChildHazard = 下情關
 
   /**
-   * 凡正二三月子寅時出生之人命犯此關煞，忌聞刀斧之聲。
+   * 春生寅酉子，夏生戌亥巳，秋生申丑亡，冬生子午推。(星平會海)
    */
-  private val p下情關 = object : IHazard {
+  private val p下情關A = object : IHazard {
+
+    override fun getBooks(): Set<Book> {
+      return setOf(星平會海)
+    }
+
+    override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
+      return (
+        (寅卯辰.contains(eightWords.month.branch) && setOf(寅, 酉, 子).contains(eightWords.hour.branch)) ||
+          (巳午未.contains(eightWords.month.branch) && setOf(戌, 亥, 巳).contains(eightWords.hour.branch)) ||
+          (申酉戌.contains(eightWords.month.branch) && setOf(申, 丑).contains(eightWords.hour.branch)) ||
+          (亥子丑.contains(eightWords.month.branch) && setOf(子, 午).contains(eightWords.hour.branch))
+        )
+    }
+  }
+
+  /**
+   * 凡正二三月子寅時出生之人命犯此關煞，忌聞刀斧之聲。(生育禮俗)
+   */
+  private val p下情關B = object : IHazard {
+
+    override fun getBooks(): Set<Book> {
+      return setOf(生育禮俗)
+    }
+
     override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
       return 寅卯辰.contains(eightWords.month.branch) && setOf(子, 寅).contains(eightWords.hour.branch)
     }
   }
 
-  override val impls: Set<IHazard> = setOf(p下情關)
+  override val impls: Set<IHazard> = setOf(p下情關A, p下情關B)
 }
 
 val h劫煞關 = object : IHazardFactory {

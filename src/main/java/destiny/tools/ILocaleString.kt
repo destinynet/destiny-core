@@ -9,5 +9,5 @@ import java.util.*
 
 interface ILocaleString : Serializable {
 
-  fun toString(locale: Locale = Locale.getDefault()): String
+  fun getTitle(locale: Locale = Locale.getDefault()): String
 }

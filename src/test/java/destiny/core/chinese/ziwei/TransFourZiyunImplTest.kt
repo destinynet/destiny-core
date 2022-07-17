@@ -20,7 +20,7 @@ class TransFourZiyunImplTest {
 
   @Test
   fun testTitle() {
-    logger.info("title tw = {} , cn = {}", impl.toString(Locale.TAIWAN), impl.toString(Locale.CHINA))
+    logger.info("title tw = {} , cn = {}", impl.getTitle(Locale.TAIWAN), impl.getTitle(Locale.CHINA))
   }
 
   @Test

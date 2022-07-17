@@ -82,7 +82,7 @@ sealed interface IVoidCourse : Descriptive {
       .associate { (planet, voc) -> planet to voc!! }
   }
 
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return try {
       ResourceBundle.getBundle(IVoidCourse::class.java.name, locale).getString(javaClass.simpleName)
     } catch (e: MissingResourceException) {

@@ -9,13 +9,13 @@ import java.util.*
 
 fun HemisphereBy.asLocaleString() = object : ILocaleString {
   private val resource = EightWords::class.java.name
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
   }
 }
 
 fun HemisphereBy.toString(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
+  return this.asLocaleString().getTitle(locale)
 }
 
 /** 界定南北半球的方法 , 赤道 還是 赤緯  */

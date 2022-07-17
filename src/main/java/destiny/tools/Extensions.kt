@@ -116,7 +116,7 @@ fun <T> Sequence<T>.chunked(predicate: (T, T) -> Boolean): Sequence<List<T>> {
 
 inline fun <reified T : Enum<T>> Enum<T>.asDescriptive() : Descriptive {
   return object : Descriptive {
-    override fun toString(locale: Locale): String {
+    override fun getTitle(locale: Locale): String {
       return this@asDescriptive.getTitle(locale)
     }
 

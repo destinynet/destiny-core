@@ -88,7 +88,7 @@ class DailyHexagramCongenitalImpl(val starTransitImpl: IStarTransit,
     }
   }
 
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return "先天卦氣"
   }
 

@@ -31,7 +31,7 @@ class YearMonthSunSignImpl(private val ymSolarTermsStarPositionImpl: YearMonthSo
     ymSolarTermsStarPositionImpl.solarTermsImpl
   }
 
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return MonthImpl.SunSign.getTitle(Locale.TAIWAN)
   }
 

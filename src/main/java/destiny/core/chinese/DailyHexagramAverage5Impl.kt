@@ -44,7 +44,7 @@ class DailyHexagramAverage5Impl(val solarTermsImpl: ISolarTerms) : IDailyHexagra
     }
   }
 
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return "《易緯》"
   }
 

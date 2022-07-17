@@ -65,13 +65,13 @@ abstract class Point(
 }
 
 fun Point.asLocaleString() = object : ILocaleString {
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return ResourceBundle.getBundle(resource, locale).getString(nameKey)
   }
 }
 
 fun Point.toString(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
+  return this.asLocaleString().getTitle(locale)
 }
 
 /** 取得縮寫 , 如果沒有傳入縮寫，則把 name 取前兩個 bytes  */

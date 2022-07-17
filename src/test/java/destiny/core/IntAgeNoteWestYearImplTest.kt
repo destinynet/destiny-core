@@ -25,9 +25,9 @@ class IntAgeNoteWestYearImplTest {
 
   @Test
   fun getTitle() {
-    assertEquals("西元", impl.toString(Locale.TAIWAN))
-    assertEquals("西元", impl.toString(Locale.CHINA))
-    assertEquals("Year", impl.toString(Locale.ENGLISH))
+    assertEquals("西元", impl.getTitle(Locale.TAIWAN))
+    assertEquals("西元", impl.getTitle(Locale.CHINA))
+    assertEquals("Year", impl.getTitle(Locale.ENGLISH))
   }
 
   @Test

@@ -30,12 +30,12 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
 
   abstract val resource: String
 
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return try {
       logger.trace("try to get nameKey = {} of locale = {} , resource = {}", nameKey, locale, resource)
       ResourceBundle.getBundle(resource, locale).getString(nameKey)
     } catch (e: Exception) {
-      logger.trace("cannot get from nameKey = {}", nameKey)
+      logger.info("cannot get from nameKey = {}", nameKey)
       pattern::class.simpleName!!
     }
   }
@@ -52,7 +52,7 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
 
     fun objectToString(it : Any) : String {
       return when(it) {
-        is ILocaleString -> it.toString(locale)
+        is ILocaleString -> it.getTitle(locale)
         is Double -> String.format( doubleFormat?:"%.1f", it)
         is AstroPoint -> it.toString(locale)
         is Element -> it.getTitle(locale)

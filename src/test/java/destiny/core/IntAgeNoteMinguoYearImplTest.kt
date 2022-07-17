@@ -34,9 +34,9 @@ class IntAgeNoteMinguoYearImplTest {
 
   @Test
   fun getTitle() {
-    assertEquals("民國", impl.toString(Locale.TAIWAN))
-    assertEquals("民国", impl.toString(Locale.CHINA))
-    assertEquals("Minguo", impl.toString(Locale.ENGLISH))
+    assertEquals("民國", impl.getTitle(Locale.TAIWAN))
+    assertEquals("民国", impl.getTitle(Locale.CHINA))
+    assertEquals("Minguo", impl.getTitle(Locale.ENGLISH))
   }
 
   @Test

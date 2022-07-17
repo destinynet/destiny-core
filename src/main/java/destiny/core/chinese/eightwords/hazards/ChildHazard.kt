@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese.eightwords.hazards
 
-import destiny.core.IPattern
+import destiny.core.chinese.eightwords.EwPattern
 import java.util.*
 
 
@@ -16,7 +16,7 @@ enum class Book {
   小兒關煞圖
 }
 
-sealed class ChildHazard : IPattern {
+sealed class ChildHazard : EwPattern {
 
   object 百日關 : ChildHazard()
 
@@ -94,19 +94,21 @@ sealed class ChildHazard : IPattern {
   //object 紅豔煞 : ChildHazard()
 
   //object 流霞煞 : ChildHazard()
+
+
+  /** 不實作 [getNotes] , 交由 [ChildHazardDescriptor.getDescription] 處理 (避免 depend on [ResourceBundle] ) */
+
 }
 
 
-fun ChildHazard.getNote(locale: Locale, book: Book?): String? {
+fun ChildHazard.getBookNote(locale: Locale, book: Book): String? {
   return ResourceBundle.getBundle(ChildHazard::class.qualifiedName!!, locale).let { resourceBundle ->
-    book?.name?.let { bookName ->
-      val key = "${this::class.simpleName}.${bookName}"
 
-      try {
-        resourceBundle.getString(key)
-      } catch (e: MissingResourceException) {
-        null
-      }
+    val key = "${this::class.simpleName}.${book.name}"
+    try {
+      resourceBundle.getString(key)
+    } catch (e: MissingResourceException) {
+      null
     }
   }
 }

@@ -19,9 +19,9 @@ class HouseSeqTaiyiImplTest {
 
   @Test
   fun testString() {
-    assertNotNull(impl.toString(Locale.TAIWAN))
-    assertNotNull(impl.toString(Locale.SIMPLIFIED_CHINESE))
-    logger.info("title tw = {} , cn = {}", impl.toString(Locale.TAIWAN), impl.toString(Locale.SIMPLIFIED_CHINESE))
+    assertNotNull(impl.getTitle(Locale.TAIWAN))
+    assertNotNull(impl.getTitle(Locale.SIMPLIFIED_CHINESE))
+    logger.info("title tw = {} , cn = {}", impl.getTitle(Locale.TAIWAN), impl.getTitle(Locale.SIMPLIFIED_CHINESE))
   }
 
   @Test

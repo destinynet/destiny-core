@@ -16,7 +16,7 @@ import java.util.*
  */
 class PointDiameterLillyImpl : IPointDiameter, Serializable {
 
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return "William Lilly"
   }
 

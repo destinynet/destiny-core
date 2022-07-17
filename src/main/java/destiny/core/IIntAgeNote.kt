@@ -23,7 +23,7 @@ interface IIntAgeNote : Descriptive {
    */
   fun getAgeNote(startAndEnd: Pair<GmtJulDay, GmtJulDay>): String?
 
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return intAgeNote.getTitle(locale)
   }
 }

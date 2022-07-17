@@ -11,6 +11,6 @@ interface Descriptive : ILocaleString {
 
   /** 詳細描述  */
   fun getDescription(locale: Locale): String {
-    return toString(locale)
+    return getTitle(locale)
   }
 }

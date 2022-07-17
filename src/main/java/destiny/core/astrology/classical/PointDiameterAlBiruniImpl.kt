@@ -17,7 +17,7 @@ import java.util.*
  */
 class PointDiameterAlBiruniImpl : IPointDiameter, Serializable {
 
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return "Al-Biruni"
   }
 

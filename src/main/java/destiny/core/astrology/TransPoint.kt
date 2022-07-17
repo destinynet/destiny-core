@@ -10,13 +10,13 @@ import java.util.*
 
 fun TransPoint.asLocaleString() = object : ILocaleString {
   private val resource = "destiny.core.astrology.Star"
-  override fun toString(locale: Locale): String {
+  override fun getTitle(locale: Locale): String {
     return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
   }
 }
 
 fun TransPoint.getTitle(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
+  return this.asLocaleString().getTitle(locale)
 }
 
 /**
