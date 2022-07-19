@@ -18,4 +18,6 @@ interface IHazardService {
 
   fun getChildHazardNotes(eightWords: IEightWords, gender: Gender?, locale: Locale): List<HazardItem>
 
+  val hazardFactories : List<IHazardFactory>
+
 }

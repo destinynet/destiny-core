@@ -13,6 +13,10 @@ import javax.inject.Named
 @Named
 class HazardService : IHazardService, java.io.Serializable {
 
+  override val hazardFactories: List<IHazardFactory> = childHazardFactories
+
+
+
   fun getChildHazards(eightWords: IEightWords, gender: Gender?): List<Pair<ChildHazard, Book>> {
 
     return childHazardFactories.flatMap { factory ->
@@ -43,7 +47,7 @@ class HazardService : IHazardService, java.io.Serializable {
 
 
   companion object {
-    val childHazardFactories: Set<IHazardFactory> = setOf(
+    val childHazardFactories: List<IHazardFactory> = listOf(
       h百日關,
       h千日關,
       h閻王關,

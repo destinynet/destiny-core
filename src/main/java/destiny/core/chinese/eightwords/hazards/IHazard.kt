@@ -41,6 +41,19 @@ interface IHazardFactory {
   val hazard: ChildHazard
 
   val impls: Set<IHazard>
+
+  fun test(eightWords: IEightWords, gender: Gender?, preferredBook: Book? = null): Boolean {
+    return impls.map { hazard: IHazard ->
+      hazard.getBooks() to hazard.test(eightWords, gender)
+    }.let { pairs: List<Pair<Set<Book>, Boolean>> ->
+      if (preferredBook != null) {
+        pairs.firstOrNull { it.first.contains(preferredBook) }?.second
+          ?: pairs.map { it.second }.firstOrNull { it } ?: false
+      } else {
+        pairs.map { it.second }.firstOrNull { it } ?: false
+      }
+    }
+  }
 }
 
 
