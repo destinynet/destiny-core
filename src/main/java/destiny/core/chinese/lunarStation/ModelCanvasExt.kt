@@ -48,9 +48,9 @@ object ModelCanvasExt {
     val canvases: List<ColorCanvas> = this.hiddenVenusFoes.map { (from, to) ->
       ColorCanvas(1, 36, ChineseStringTools.NULL_CHAR).apply {
         // "日禽昴日雞　犯　月禽心月狐　暗金伏斷"
-        setText("""${from.toChineseChar()}禽${this@getHiddenFoeCanvas.getStation(from).getFullName(locale)}""", 1, 1)
+        setText("""${from.getTitle(Locale.TAIWAN)}禽${this@getHiddenFoeCanvas.getStation(from).getFullName(locale)}""", 1, 1)
         setText("犯", 1, 13)
-        setText("""${to.toChineseChar()}禽${this@getHiddenFoeCanvas.getStation(to).getFullName(locale)}""", 1, 17)
+        setText("""${to.getTitle(Locale.TAIWAN)}禽${this@getHiddenFoeCanvas.getStation(to).getFullName(locale)}""", 1, 17)
         setText("暗金伏斷", 1, 29)
       }
     }

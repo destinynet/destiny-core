@@ -39,6 +39,7 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
     ),
     fortuneLargeConfig = FortuneLargeConfig(FortuneLargeImpl.SolarTermsSpan, 90.0),
     fortuneSmallConfig = FortuneSmallConfig(FortuneSmallConfig.Impl.SixGia, 90, intAgeNotes = listOf(IntAgeNote.Minguo)),
+    ewContextScore = EwContextScore.OctaDivide46,
     locale = Locale.ENGLISH
   )
 
@@ -93,6 +94,7 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
       count = 90
       intAgeNotes(listOf(IntAgeNote.Minguo))
     }
+    ewContextScore = EwContextScore.OctaDivide46
     locale = Locale.ENGLISH
   }
 
@@ -115,6 +117,7 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
     assertTrue(raw.contains(""""count":\s*90""".toRegex()))
     assertTrue(raw.contains("""\[\s*"Minguo"\s*]""".toRegex()))
 
+    assertTrue(raw.contains(""""ewContextScore":\s*"OctaDivide46"""".toRegex()))
     assertTrue(raw.contains(""""locale":\s*"en"""".toRegex()))
 
   }

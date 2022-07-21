@@ -4,6 +4,7 @@
 package destiny.core.chinese.onePalm
 
 import destiny.core.Gender
+import destiny.core.Scale
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -221,7 +222,7 @@ class PalmMetaDescFeature(private val palmMetaFeature : PersonFeature<PalmConfig
       HouseDescription(branch, dao, star, houseIntro, map)
     }.toList()
 
-    val hourBranch = palmModel.getBranch(IPalmModel.Pillar.時)
+    val hourBranch = palmModel.getBranch(Scale.HOUR)
     val hourPoem = branchDescImpl.getPoem(hourBranch)
     val hourContent = branchDescImpl.getContent(hourBranch)
 

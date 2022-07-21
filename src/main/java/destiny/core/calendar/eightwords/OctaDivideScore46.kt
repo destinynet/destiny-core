@@ -3,6 +3,8 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement.土
@@ -56,7 +58,7 @@ class OctaDivideScore46 : AbstractOctaDivideScore() {
    * 戌月 - 金令：金1分、土1分。土令(立冬前18天)：土2分。
    * 丑月 - 水令：水1分、土1分。土令(立春前18天)：土2分。
    */
-  override fun getScoreOfMonth(dayStem: Stem, monthBranch: Branch, ewContext: IEightWordsContextModel): Double {
+  override fun getScoreOfMonth(dayStem: Stem, monthBranch: Branch, gmtJulDay: GmtJulDay, solarTermsTimePos: SolarTermsTimePos): Double {
     var score = 0.0
 
     if (!setOf(辰, 戌, 丑, 未).contains(monthBranch)) {
@@ -72,7 +74,7 @@ class OctaDivideScore46 : AbstractOctaDivideScore() {
     } else {
       // 土月
 
-      val toEndDays = (ewContext.solarTermsTimePos.nextMajor.second - ewContext.gmtJulDay)
+      val toEndDays = (solarTermsTimePos.nextMajor.second - gmtJulDay)
       logger.info { "toEndDays = $toEndDays" }
 
 

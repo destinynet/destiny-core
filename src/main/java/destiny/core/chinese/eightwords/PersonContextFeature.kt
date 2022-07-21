@@ -9,10 +9,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.eightwords.EightWordsContextConfig
-import destiny.core.calendar.eightwords.EightWordsContextConfigBuilder
-import destiny.core.calendar.eightwords.EightWordsContextFeature
-import destiny.core.calendar.eightwords.IEightWordsContextModel
+import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.eightwords.hazards.IHazardService
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
@@ -29,6 +26,7 @@ import javax.inject.Named
 data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContextConfig = EightWordsContextConfig(),
                                   val fortuneLargeConfig: FortuneLargeConfig = FortuneLargeConfig(),
                                   val fortuneSmallConfig: FortuneSmallConfig = FortuneSmallConfig(),
+                                  val ewContextScore: EwContextScore = EwContextScore.OctaDivide316,
                                   @Serializable(with = LocaleSerializer::class)
                                   val locale : Locale = Locale.getDefault()): java.io.Serializable
 
@@ -50,10 +48,12 @@ class PersonConfigBuilder : Builder<EightWordsPersonConfig> {
     this.fortuneSmallConfig = FortuneSmallConfigBuilder.fortuneSmall(block)
   }
 
+  var ewContextScore: EwContextScore = EwContextScore.OctaDivide316
+
   var locale: Locale = Locale.getDefault()
 
   override fun build(): EightWordsPersonConfig {
-    return EightWordsPersonConfig(ewContextConfig, fortuneLargeConfig, fortuneSmallConfig, locale)
+    return EightWordsPersonConfig(ewContextConfig, fortuneLargeConfig, fortuneSmallConfig, ewContextScore, locale)
   }
 
   companion object {
@@ -71,6 +71,9 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
                            private val fortuneSmallFeature: FortuneSmallFeature,
                            private val julDayResolver: JulDayResolver,
                            private val hazardService: IHazardService,
+
+                           private val ewContextScoreImplMap: Map<EwContextScore, IEwContextScore>,
+
                            @Transient
                            private val ewPersonFeatureCache: Cache<LmtCacheKey<*>, IPersonContextModel>) : AbstractCachedPersonFeature<EightWordsPersonConfig, IPersonContextModel>() {
 
@@ -100,7 +103,10 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
     val smalls: List<FortuneData> = fortuneSmallFeature.getPersonModel(lmt, loc, gender, name, place, config.fortuneSmallConfig)
 
     val childHazards = hazardService.getChildHazardNotes(ewModel.eightWords, gender, config.locale)
-    return PersonContextModel(ewModel, gender, name, larges, smalls, ageMap, childHazards)
+
+    val score = ewContextScoreImplMap[config.ewContextScore]!!.getScore(ewModel)
+
+    return PersonContextModel(ewModel, gender, name, larges, smalls, ageMap, childHazards, score)
   }
 
   companion object {

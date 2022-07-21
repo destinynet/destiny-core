@@ -3,6 +3,8 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement.*
@@ -48,7 +50,8 @@ class OctaDivideScore316 : AbstractOctaDivideScore() {
     return score
   }
 
-  override fun getScoreOfMonth(dayStem: Stem, monthBranch: Branch, ewContext: IEightWordsContextModel): Double {
+
+  override fun getScoreOfMonth(dayStem: Stem, monthBranch: Branch, gmtJulDay: GmtJulDay, solarTermsTimePos: SolarTermsTimePos): Double {
     var score = 0.0
     if (!setOf(辰, 戌, 丑, 未).contains(monthBranch)) {
 
@@ -61,8 +64,8 @@ class OctaDivideScore316 : AbstractOctaDivideScore() {
       }
     } else {
 
-      val proportion = (ewContext.gmtJulDay - ewContext.solarTermsTimePos.prevMajor.second) /
-        (ewContext.solarTermsTimePos.nextMajor.second - ewContext.solarTermsTimePos.prevMajor.second)
+      val proportion = (gmtJulDay - solarTermsTimePos.prevMajor.second) /
+        (solarTermsTimePos.nextMajor.second - solarTermsTimePos.prevMajor.second)
 
       logger.debug { "proportion = $proportion" }
 

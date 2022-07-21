@@ -4,7 +4,11 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.Scale
+import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.SolarTermsTimePos
+import destiny.tools.getTitle
 import mu.KotlinLogging
+import java.util.*
 
 
 interface IEwContextScore : java.io.Serializable {
@@ -21,16 +25,16 @@ interface IEwContextScore : java.io.Serializable {
    */
   fun getScoreMap(ewContext: IEightWordsContextModel): Map<Scale, Pair<Double, Double>> {
     return Scale.values().associateWith { scale ->
-      getPillarScore(scale, ewContext)
+      getPillarScore(scale, ewContext.eightWords, ewContext.gmtJulDay, ewContext.solarTermsTimePos)
     }.onEach { (scale, score) ->
-      logger.info { "\t${scale.toChineseChar()} 貢獻 $score 分" }
+      logger.trace { "\t${scale.getTitle(Locale.TAIWAN)} 貢獻 $score 分" }
     }
   }
 
   /**
    * 取得此柱的干支分別貢獻幾分
    */
-  fun getPillarScore(scale: Scale, ewContext: IEightWordsContextModel): Pair<Double, Double>
+  fun getPillarScore(scale: Scale, eightWords: IEightWords, gmtJulDay: GmtJulDay, solarTermsTimePos: SolarTermsTimePos): Pair<Double, Double>
 
 
   companion object {

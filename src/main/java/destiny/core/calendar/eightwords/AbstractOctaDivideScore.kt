@@ -4,6 +4,8 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.Scale
+import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem
@@ -19,17 +21,17 @@ abstract class AbstractOctaDivideScore : IEwContextScore {
   /**
    * 取得此柱的干支分別貢獻幾分
    */
-  override fun getPillarScore(scale: Scale, ewContext: IEightWordsContextModel): Pair<Double, Double> {
+  override fun getPillarScore(scale: Scale, eightWords: IEightWords, gmtJulDay: GmtJulDay, solarTermsTimePos: SolarTermsTimePos): Pair<Double, Double> {
     // 年干、月干、時干
-    val dayStem = ewContext.eightWords.day.stem
-    val sb = ewContext.eightWords.getScale(scale)
+    val dayStem = eightWords.day.stem
+    val sb = eightWords.getScale(scale)
 
     return when (scale) {
       Scale.YEAR, Scale.HOUR -> {
         getScoreOfStem(dayStem, sb.stem) to getScoreOfYDH(dayStem, sb.branch)
       }
       Scale.MONTH            -> {
-        getScoreOfStem(dayStem, sb.stem) to getScoreOfMonth(dayStem, sb.branch, ewContext)
+        getScoreOfStem(dayStem, sb.stem) to getScoreOfMonth(dayStem, sb.branch, gmtJulDay, solarTermsTimePos)
       }
       Scale.DAY              -> {
         0.0 to getScoreOfYDH(dayStem, sb.branch)
@@ -40,7 +42,7 @@ abstract class AbstractOctaDivideScore : IEwContextScore {
   /**
    * 月支貢獻分數
    */
-  abstract fun getScoreOfMonth(dayStem: Stem, monthBranch: Branch, ewContext: IEightWordsContextModel): Double
+  abstract fun getScoreOfMonth(dayStem: Stem, monthBranch: Branch, gmtJulDay: GmtJulDay, solarTermsTimePos: SolarTermsTimePos): Double
 
   /**
    * 只針對 年、日、時支 對照日干 取得分數

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.onePalm
 
+import destiny.core.Scale
 import destiny.core.chinese.Branch
 
 /** 由地支，取得解釋  */
@@ -12,7 +13,7 @@ interface IBranchDesc {
   fun getHouseIntro(house: Branch): String
 
   /** 取得某柱（座落於某宮）的解釋  */
-  fun getContent(pillar: IPalmModel.Pillar, house: Branch): String
+  fun getContent(pillar: Scale, house: Branch): String
 
   /** 取得「時柱」的詩詞  */
   fun getPoem(hourBranch: Branch): String

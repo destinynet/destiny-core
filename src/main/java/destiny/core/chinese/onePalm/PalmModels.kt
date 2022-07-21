@@ -1,6 +1,7 @@
 package destiny.core.chinese.onePalm
 
 import destiny.core.Gender
+import destiny.core.Scale
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDateHour
 import destiny.core.chinese.Branch
@@ -21,10 +22,6 @@ interface IPalmModel {
 
   val houseMap: Map<Branch, House>
 
-  enum class Pillar {
-    年, 月, 日, 時
-  }
-
   enum class House {
     命, 財帛, 兄弟, 田宅, 男女, 奴僕, 配偶, 疾厄, 遷移, 官祿, 福德, 相貌
   }
@@ -41,23 +38,23 @@ interface IPalmModel {
   /**
    * 取得哪些宮位有「柱」坐落其中，列出來
    */
-  val nonEmptyPillars: Map<Branch, Collection<Pillar>>
+  val nonEmptyPillars: Map<Branch, Collection<Scale>>
 
 
   /**
    * 取得在某一地支宮位，包含了哪些「柱」 (年/月/日/時)
    */
-  fun getPillars(branch: Branch): Collection<Pillar>
+  fun getPillars(branch: Branch): Collection<Scale>
 
   /**
    * 取得此柱，在哪個地支
    */
-  fun getBranch(pillar: Pillar): Branch {
+  fun getBranch(pillar: Scale): Branch {
     return when (pillar) {
-      Pillar.年 -> year
-      Pillar.月 -> month
-      Pillar.日 -> day
-      Pillar.時 -> hour
+      Scale.YEAR -> year
+      Scale.MONTH -> month
+      Scale.DAY -> day
+      Scale.HOUR -> hour
     }
   }
 
@@ -150,22 +147,22 @@ data class PalmModel(
                     ) : IPalmModel, Serializable {
 
   /** 每「柱」各在哪個地支宮位 */
-  private val pillarMap: Map<IPalmModel.Pillar, Branch> = mapOf(
-    IPalmModel.Pillar.年 to year,
-    IPalmModel.Pillar.月 to month,
-    IPalmModel.Pillar.日 to day,
-    IPalmModel.Pillar.時 to hour)
+  private val pillarMap: Map<Scale, Branch> = mapOf(
+    Scale.YEAR to year,
+    Scale.MONTH to month,
+    Scale.DAY to day,
+    Scale.HOUR to hour)
 
   /**
    * @return 取得哪些宮位有「柱」坐落其中，列出來
    */
-  override val nonEmptyPillars: Map<Branch, Collection<IPalmModel.Pillar>>
+  override val nonEmptyPillars: Map<Branch, Collection<Scale>>
     get() = Branch.values().filter { pillarMap.values.contains(it) }.associateWith { branch -> pillarMap.filter { (_, v) -> v === branch }.keys }
 
   /**
    * 取得在某一地支宮位，包含了哪些「柱」 (年/月/日/時)
    */
-  override fun getPillars(branch: Branch): Collection<IPalmModel.Pillar> {
+  override fun getPillars(branch: Branch): Collection<Scale> {
     return pillarMap.filter { (_, v) -> v === branch }.keys
   }
 }
@@ -182,7 +179,7 @@ data class HouseDescription(val branch: Branch,
   val dao: String,
   val star: String,
   val intro: String,
-  val map: Map<IPalmModel.Pillar, String>) : Serializable
+  val map: Map<Scale, String>) : Serializable
 
 /** 一則 [IPalmModel] 的文字解釋 */
 interface IPalmModelDesc {
