@@ -66,6 +66,8 @@ class OctaDivideScore316 : AbstractOctaDivideScore() {
       val proportion = (ewContext.gmtJulDay - ewContext.solarTermsTimePos.prevMajor.second) /
         (ewContext.solarTermsTimePos.nextMajor.second - ewContext.solarTermsTimePos.prevMajor.second)
 
+      logger.debug { "proportion = $proportion" }
+
       // 司令天干
       val masterStem: Stem = hiddenStems.getHiddenStems(monthBranch).let { stems ->
         if (proportion <= 0.3) {
@@ -77,7 +79,7 @@ class OctaDivideScore316 : AbstractOctaDivideScore() {
         }
       }
 
-      if (masterStem.fiveElement == 土 && dayStem.fiveElement == 土) {
+      if (masterStem.fiveElement == 土 && (dayStem.fiveElement == 土 || dayStem.fiveElement == 金)) {
         // 最後18天 , 土 司令
         score += 2.0
       } else {

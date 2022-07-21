@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.Scale
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.eightwords.HiddenStemsStandardImpl
@@ -18,32 +19,63 @@ abstract class AbstractOctaDivideScore : IEwContextScore {
 
   override fun getScore(ewContext: IEightWordsContextModel): Double {
 
-    var score = 0.0
+    return getScoreMap(ewContext).map { it.value }.sum()
 
+//    var score = 0.0
+//
+//    // 年干、月干、時干
+//    val dayStem = ewContext.eightWords.day.stem
+//
+//    score += listOf(
+//      ewContext.eightWords.year.stem,
+//      ewContext.eightWords.month.stem,
+//      ewContext.eightWords.hour.stem
+//    ).sumOf { stem -> getScoreOfStem(dayStem, stem).also { if (it > 0) logger.info { "\t透過天干 $stem 貢獻 $it 分" } } }
+//
+//    logger.info { "年、月、時干，累計得分 $score" }
+//
+//    ewContext.eightWords.also { ew ->
+//      score += getScoreOfYDH(dayStem, ew.year.branch).also { if (it > 0) logger.info { "\t年支 貢獻 $it 分" } }
+//      score += getScoreOfYDH(dayStem, ew.day.branch).also { if (it > 0) logger.info { "\t日支 貢獻 $it 分" } }
+//      score += getScoreOfYDH(dayStem, ew.hour.branch).also { if (it > 0) logger.info { "\t時支 貢獻 $it 分" } }
+//    }
+//
+//    logger.info { "年、日、時支，累計得分 $score" }
+//
+//
+//    val monthBranch = ewContext.eightWords.month.branch
+//    score += getScoreOfMonth(dayStem, monthBranch, ewContext).also { if (it > 0) logger.info { "\t月支 貢獻 $it 分" } }
+//
+//    return score
+  }
+
+
+  private fun getScoreMap(ewContext: IEightWordsContextModel): Map<Scale, Double> {
+    return Scale.values().associateWith { scale ->
+      getPillarScore(scale, ewContext)
+    }
+      .onEach { (scale, score) ->
+        logger.info { "\t${scale.toChineseChar()} 貢獻 $score 分" }
+      }
+  }
+
+
+  private fun getPillarScore(scale: Scale, ewContext: IEightWordsContextModel): Double {
     // 年干、月干、時干
     val dayStem = ewContext.eightWords.day.stem
+    val sb = ewContext.eightWords.getScale(scale)
 
-    score += listOf(
-      ewContext.eightWords.year.stem,
-      ewContext.eightWords.month.stem,
-      ewContext.eightWords.hour.stem
-    ).sumOf { stem -> getScoreOfStem(dayStem, stem).also { if (it > 0) logger.info { "\t透過天干 $stem 貢獻 $it 分" } } }
-
-    logger.info { "年、月、時干，累計得分 $score" }
-
-    ewContext.eightWords.also { ew ->
-      score += getScoreOfYDH(dayStem, ew.year.branch).also { if (it > 0) logger.info { "\t年支 貢獻 $it 分" } }
-      score += getScoreOfYDH(dayStem, ew.day.branch).also { if (it > 0) logger.info { "\t日支 貢獻 $it 分" } }
-      score += getScoreOfYDH(dayStem, ew.hour.branch).also { if (it > 0) logger.info { "\t時支 貢獻 $it 分" } }
+    return when (scale) {
+      Scale.YEAR, Scale.HOUR -> {
+        getScoreOfStem(dayStem, sb.stem) + getScoreOfYDH(dayStem, sb.branch)
+      }
+      Scale.MONTH            -> {
+        getScoreOfStem(dayStem, sb.stem) + getScoreOfMonth(dayStem, sb.branch, ewContext)
+      }
+      Scale.DAY              -> {
+        getScoreOfYDH(dayStem, sb.branch)
+      }
     }
-
-    logger.info { "年、日、時支，累計得分 $score" }
-
-
-    val monthBranch = ewContext.eightWords.month.branch
-    score += getScoreOfMonth(dayStem, monthBranch, ewContext).also { if (it > 0) logger.info { "\t月支 貢獻 $it 分" } }
-
-    return score
   }
 
   /**

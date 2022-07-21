@@ -29,6 +29,16 @@ sealed interface IEightWordsNullable {
       Scale.HOUR -> hour
     }
   }
+
+
+  fun getScale(scale: Scale): IStemBranchOptional {
+    return when (scale) {
+      Scale.YEAR  -> year
+      Scale.MONTH -> month
+      Scale.DAY   -> day
+      Scale.HOUR  -> hour
+    }
+  }
 }
 
 fun IEightWordsNullable.getInts(): List<Int> {
@@ -72,6 +82,15 @@ interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
 
   override val eightWordsNullable: IEightWordsNullable
     get() = EightWordsNullable.of(year, month, day, hour)
+
+  override fun getScale(scale: Scale) : IStemBranch {
+    return when(scale) {
+      Scale.YEAR -> year
+      Scale.MONTH -> month
+      Scale.DAY -> day
+      Scale.HOUR -> hour
+    }
+  }
 }
 
 @kotlinx.serialization.Serializable
