@@ -23,7 +23,7 @@ interface IEwContextScore : java.io.Serializable {
     return Scale.values().associateWith { scale ->
       getPillarScore(scale, ewContext)
     }.onEach { (scale, score) ->
-      logger.trace { "\t${scale.toChineseChar()} 貢獻 $score 分" }
+      logger.info { "\t${scale.toChineseChar()} 貢獻 $score 分" }
     }
   }
 

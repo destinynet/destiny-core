@@ -5,7 +5,6 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.FiveElement
 import destiny.core.chinese.FiveElement.土
 import destiny.core.chinese.SimpleBranch
 import destiny.core.chinese.Stem
@@ -30,11 +29,10 @@ class OctaDivideScore46 : AbstractOctaDivideScore() {
 
     SimpleBranch.getFiveElement(branch).also { fiveElement ->
 
-      if (fiveElement == dayStem.fiveElement) {
+
+      if (fiveElement.helps(dayStem.fiveElement)) {
         score += 1.0
-      } else if (fiveElement.isProducingTo(dayStem.fiveElement)) {
-        score += 1.0
-      } else if (fiveElement == FiveElement.土) {
+      } else if (fiveElement == 土) {
         hiddenStems.getHiddenStems(branch).map { it.fiveElement }.any { hiddenStemFiveElement ->
           hiddenStemFiveElement == dayStem.fiveElement
         }.also {
@@ -64,9 +62,8 @@ class OctaDivideScore46 : AbstractOctaDivideScore() {
     if (!setOf(辰, 戌, 丑, 未).contains(monthBranch)) {
 
       SimpleBranch.getFiveElement(monthBranch).also { fiveElement ->
-        if (fiveElement == dayStem.fiveElement) {
-          score += 2.0
-        } else if (fiveElement.isProducingTo(dayStem.fiveElement)) {
+
+        if (fiveElement.helps(dayStem.fiveElement)) {
           score += 2.0
         }
       }
@@ -100,20 +97,5 @@ class OctaDivideScore46 : AbstractOctaDivideScore() {
     return score
   }
 
-
-//  /**
-//   * 只針對 「非土月」的月支 對照日干 取得分數
-//   */
-//  private fun getScoreOfNonEarthMonth(dayStem: Stem, branch: Branch): Double {
-//    var score = 0.0
-//    SimpleBranch.getFiveElement(branch).also { fiveElement ->
-//      if (fiveElement == dayStem.fiveElement) {
-//        score += 2.0
-//      } else if (fiveElement.isProducingTo(dayStem.fiveElement)) {
-//        score += 2.0
-//      }
-//    }
-//    return score
-//  }
 
 }

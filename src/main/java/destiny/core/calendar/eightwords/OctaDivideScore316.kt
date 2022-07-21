@@ -22,9 +22,7 @@ class OctaDivideScore316 : AbstractOctaDivideScore() {
 
     SimpleBranch.getFiveElement(branch).also { fiveElement ->
 
-      if (fiveElement == dayStem.fiveElement) {
-        score += 1.0
-      } else if (fiveElement.isProducingTo(dayStem.fiveElement)) {
+      if (fiveElement.helps(dayStem.fiveElement)) {
         score += 1.0
       } else if (fiveElement == 土) {
         when (dayStem.fiveElement) {
@@ -55,11 +53,11 @@ class OctaDivideScore316 : AbstractOctaDivideScore() {
     if (!setOf(辰, 戌, 丑, 未).contains(monthBranch)) {
 
       SimpleBranch.getFiveElement(monthBranch).also { fiveElement ->
-        if (fiveElement == dayStem.fiveElement) {
-          score += 2.0
-        } else if (fiveElement.isProducingTo(dayStem.fiveElement)) {
+
+        if (fiveElement.helps(dayStem.fiveElement)) {
           score += 2.0
         }
+
       }
     } else {
 
@@ -79,17 +77,19 @@ class OctaDivideScore316 : AbstractOctaDivideScore() {
         }
       }
 
-      if (masterStem.fiveElement == 土 && (dayStem.fiveElement == 土 || dayStem.fiveElement == 金)) {
-        // 最後18天 , 土 司令
+
+      if (masterStem.fiveElement == 土 && 土.helps(dayStem.fiveElement)) {
+        // 全部，包含 最後18天 , 土 司令
         score += 2.0
       } else {
         // 前9天 && 中間3天 , 若日主為土 , 都 +1
         if (dayStem.fiveElement == 土) {
           score += 1.0
         } else {
-          if (proportion <= 0.3 && dayStem.fiveElement == masterStem.fiveElement) {
+
+          if (proportion <= 0.3 && (masterStem.fiveElement.helps(dayStem.fiveElement) || 土.helps(dayStem.fiveElement))) {
             score += 1.0
-          } else if (proportion <= 0.4 && dayStem.fiveElement == masterStem.fiveElement) {
+          } else if (proportion <= 0.4 && (masterStem.fiveElement.helps(dayStem.fiveElement) || 土.helps(dayStem.fiveElement))) {
             score += 1.0
           }
         }

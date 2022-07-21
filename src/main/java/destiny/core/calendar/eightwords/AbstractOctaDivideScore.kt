@@ -5,6 +5,7 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.Scale
 import destiny.core.chinese.Branch
+import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem
 import destiny.core.chinese.eightwords.HiddenStemsStandardImpl
 import destiny.core.chinese.eightwords.IHiddenStems
@@ -52,12 +53,21 @@ abstract class AbstractOctaDivideScore : IEwContextScore {
    */
   private fun getScoreOfStem(dayStem: Stem, otherStem: Stem): Double {
     var score = 0.0
-    if (dayStem.fiveElement == otherStem.fiveElement) {
-      score += 1.0
-    } else if (otherStem.fiveElement.isProducingTo(dayStem.fiveElement)) {
+
+    if (otherStem.helps(dayStem)) {
       score += 1.0
     }
+
     return score
+  }
+
+
+  private fun Stem.helps(target: Stem): Boolean {
+    return this.fiveElement.helps(target.fiveElement)
+  }
+
+  protected fun FiveElement.helps(target: FiveElement): Boolean {
+    return this == target || this.isProducingTo(target)
   }
 
 
