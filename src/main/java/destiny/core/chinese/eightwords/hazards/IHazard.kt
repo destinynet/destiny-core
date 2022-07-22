@@ -29,14 +29,14 @@ private val 亥卯未 = setOf(亥, 卯, 未)
 private val 寅午戌 = setOf(寅, 午, 戌)
 
 
-interface IHazard {
+interface IHazard : java.io.Serializable {
 
   fun getBooks(): Set<Book> = emptySet()
 
   fun test(eightWords: IEightWords, gender: Gender?): Boolean
 }
 
-interface IHazardFactory {
+interface IHazardFactory : java.io.Serializable {
 
   val hazard: ChildHazard
 

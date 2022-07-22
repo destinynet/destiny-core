@@ -12,7 +12,7 @@ data class HazardItem(
   val title: String,
   /** bookName , bookNote */
   val bookNotes: List<Pair<String, String>>
-)
+) : java.io.Serializable
 
 interface IHazardService {
 
