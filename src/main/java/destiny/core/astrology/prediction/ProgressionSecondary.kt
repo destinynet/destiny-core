@@ -4,7 +4,7 @@ import destiny.core.astrology.Constants
 
 /**
  * Secondary Progressions 一日一年法 , 次限法
- * <pre>
+ *
  * Puka : 由十六世紀時占星家瑪吉尼斯（Antonius Maginus）所創，他根據主限法的概念稍加改變，
  * 以行星在黃道上移動（稱為次要運動Secondary Motion）為主要起盤依據。
  * 次限法的原理是出生後一天等於人生實際一歲，也就是說要推算某人20歲時的運勢，可以觀察某人出生後第20天的星象。
@@ -27,7 +27,6 @@ import destiny.core.astrology.Constants
  * 追蹤次限月亮的推進，常可發現當它與本命星準確交角時引動了該事件的發生。
  * 在應用上除了查看次限星對本命星形成的相位之外，也有占星家認為應該加看次限星彼此形成的相位關係，
  * 以及流年星（Transits）對次限星所形成的相位關係。
-</pre> *
  */
 class ProgressionSecondary(override val converse: Boolean = false) : AbstractProgression() {
 

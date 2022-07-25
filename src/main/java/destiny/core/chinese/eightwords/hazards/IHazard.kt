@@ -974,6 +974,10 @@ val h白虎關 = object : IHazardFactory {
    */
   private val p白虎關A = object : IHazard {
 
+    override fun getBooks(): Set<Book> {
+      return setOf(象吉通書, 鰲頭通書, 星平會海)
+    }
+
     override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
       return (when (SimpleBranch.getFiveElement(eightWords.month.branch)) {
         火    -> 子
