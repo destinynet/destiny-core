@@ -88,32 +88,7 @@ open class Plate (
   override val rageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
 
   override val summaries: List<String>
-) : IPlate, Serializable {
-
-
-
-//
-//  /** 流運四化 */
-//  override fun appendTrans4Map(trans4Map: Map<Pair<ZStar, FlowType>, ITransFour.Value>): IPlate {
-//
-//    val newTransFours: Map<ZStar, Map<FlowType, ITransFour.Value>> = transFours.toMutableMap().apply {
-//      trans4Map.forEach { (starFlowType: Pair<ZStar, FlowType>, value: ITransFour.Value) ->
-//        val (star, flowType) = starFlowType
-//
-//        val starMap: Map<FlowType, ITransFour.Value>? = this[star]
-//        if (starMap != null) {
-//          this[star] = starMap.toMutableMap().apply {
-//            put(flowType, value)
-//          }
-//        } else {
-//          put(star, mapOf(flowType to value))
-//        }
-//      }
-//    }.toMap()
-//
-//    return copy(transFours = newTransFours)
-//  }
-}
+) : IPlate, Serializable
 
 /** 大運盤 */
 open class PlateWithSection(p : IPlate ,

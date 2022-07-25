@@ -1,16 +1,15 @@
 /**
  * Created by smallufo on 2022-07-20.
  */
-package destiny.core.calendar.eightwords
+package destiny.core.chinese.eightwords
 
 import destiny.core.Scale
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.SolarTermsTimePos
+import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem
-import destiny.core.chinese.eightwords.HiddenStemsStandardImpl
-import destiny.core.chinese.eightwords.IHiddenStems
 import mu.KotlinLogging
 
 

@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2022-07-20.
  */
-package destiny.core.calendar.eightwords
+package destiny.core.chinese.eightwords
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.SolarTermsTimePos
