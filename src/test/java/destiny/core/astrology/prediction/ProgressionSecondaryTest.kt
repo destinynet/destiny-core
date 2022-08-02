@@ -21,12 +21,14 @@ internal class ProgressionSecondaryTest {
 
   val julDayResolver = JulDayResolver1582CutoverImpl()
 
-  private val progression = ProgressionSecondary()
+
 
   val logger = KotlinLogging.logger { }
 
   @Test
-  fun test2022() {
+  fun test2022_normal() {
+    val progression = ProgressionSecondary()
+
     val natalLmt = LocalDateTime.of(2000, 1, 1, 0, 0)
     val natalGmtJulDay = TimeTools.getGmtJulDay(natalLmt, loc)
 
@@ -38,6 +40,38 @@ internal class ProgressionSecondaryTest {
       val convergentLmt = TimeTools.getLmtFromGmt(convergentJulDay, loc, julDayResolver)
       logger.info { "convergentLmt = $convergentLmt" }
       assertEquals(natalLmt.toLocalDate().plusDays(22), convergentLmt.toLocalDate())
+
+      progression.getDivergentTime(natalGmtJulDay, convergentJulDay).also { divergentJulDay: GmtJulDay ->
+        logger.info { "divergentJulDay = $divergentJulDay" }
+        val divergentLmt = TimeTools.getLmtFromGmt(divergentJulDay, loc, julDayResolver)
+        logger.info { "divergentLmt = $divergentLmt" }
+
+        assertEquals(0, Duration.between(now, divergentLmt).abs().seconds)
+      }
+
+      progression.getDivergentTime(natalLmt, convergentLmt, julDayResolver).also { divergentLmt: ChronoLocalDateTime<*> ->
+        logger.info { "divergentLmt = $divergentLmt" }
+        assertEquals(0, Duration.between(now, divergentLmt).abs().seconds)
+      }
+    }
+  }
+
+  @Test
+  fun test2022_converse() {
+
+    val progression = ProgressionSecondary(true)
+
+    val natalLmt = LocalDateTime.of(2000, 1, 1, 0, 0)
+    val natalGmtJulDay = TimeTools.getGmtJulDay(natalLmt, loc)
+
+    val now = LocalDateTime.of(2022, 7, 26, 0, 30)
+    val nowGmtJulDay = TimeTools.getGmtJulDay(now, loc)
+
+    progression.getConvergentTime(natalGmtJulDay, nowGmtJulDay).also { convergentJulDay: GmtJulDay ->
+      logger.info { "convergentJulDay = $convergentJulDay" }
+      val convergentLmt = TimeTools.getLmtFromGmt(convergentJulDay, loc, julDayResolver)
+      logger.info { "convergentLmt = $convergentLmt" }
+      assertEquals(natalLmt.toLocalDate().minusDays(23), convergentLmt.toLocalDate())
 
       progression.getDivergentTime(natalGmtJulDay, convergentJulDay).also { divergentJulDay: GmtJulDay ->
         logger.info { "divergentJulDay = $divergentJulDay" }

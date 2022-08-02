@@ -22,7 +22,7 @@ abstract class AbstractProgression : ILinear, Conversable, Serializable {
   /** Denominator: 分母 , 假設以 [ProgressionSecondary] (一日一年)來說 , 分母是一日(有幾秒)  */
   protected abstract val denominator: Double
 
-
+  /** 「收斂」到的時間 */
   override fun getConvergentTime(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): GmtJulDay {
     val dur = (natalGmtJulDay - nowGmtJulDay).absoluteValue
 

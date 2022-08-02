@@ -7,11 +7,13 @@ import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.astrology.classical.rules.Misc
+import destiny.core.astrology.prediction.ProgressionSecondary
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.Feature
 import destiny.tools.serializers.AstroPointSerializer
 import kotlinx.serialization.Serializable
 import javax.cache.Cache
@@ -52,12 +54,27 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
   }
 }
 
+
+interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
+
+  /**
+   * TODO : return model needs to be re-designed
+   */
+  fun getSecondaryProgression(model: IHoroscopeModel, viewGmtJulDay: GmtJulDay, converse: Boolean = false) : IHoroscopeModel {
+    val progression = ProgressionSecondary(converse)
+    progression.getConvergentTime(model.gmtJulDay, viewGmtJulDay).also { convergentTime ->
+      return getModel(convergentTime, model.location)
+    }
+  }
+
+}
+
 @Named
 class HoroscopeFeature(private val pointPosFuncMap: Map<AstroPoint, IPosition<*>> ,
                        private val houseCuspFeature: IHouseCuspFeature,
                        private val voidCourseFeature: IVoidCourseFeature,
                        @Transient
-                       private val horoscopeFeatureCache : Cache<GmtCacheKey<*>, IHoroscopeModel>) : AbstractCachedFeature<HoroscopeConfig, IHoroscopeModel>() {
+                       private val horoscopeFeatureCache : Cache<GmtCacheKey<*>, IHoroscopeModel>) : AbstractCachedFeature<HoroscopeConfig, IHoroscopeModel>(), IHoroscopeFeature {
   override val key: String = "horoscope"
 
   override val defaultConfig: HoroscopeConfig = HoroscopeConfig()
