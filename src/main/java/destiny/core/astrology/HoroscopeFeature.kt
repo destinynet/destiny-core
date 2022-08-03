@@ -3,10 +3,14 @@
  */
 package destiny.core.astrology
 
+import com.google.common.collect.Sets
 import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.astrology.classical.rules.Misc
+import destiny.core.astrology.prediction.IProgressionModel
+import destiny.core.astrology.prediction.ProgressedAspect
+import destiny.core.astrology.prediction.ProgressionModel
 import destiny.core.astrology.prediction.ProgressionSecondary
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -58,12 +62,35 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
 interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
 
   /**
-   * TODO : return model needs to be re-designed
+   * secondary progression calculation
    */
-  fun getSecondaryProgression(model: IHoroscopeModel, viewGmtJulDay: GmtJulDay, converse: Boolean = false) : IHoroscopeModel {
+  fun getSecondaryProgression(model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Collection<Aspect>,
+                              aspectsCalculator : IAspectsCalculator , config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
     val progression = ProgressionSecondary(converse)
-    progression.getConvergentTime(model.gmtJulDay, viewGmtJulDay).also { convergentTime ->
-      return getModel(convergentTime, model.location)
+    val posMapInner = model.positionMap
+    return progression.getConvergentTime(model.gmtJulDay, progressionTime).let { convergentTime ->
+
+      val convergentModel = getModel(convergentTime , model.location, config)
+
+      val posMapOuter = convergentModel.positionMap
+
+      // 2.4 hours later
+      val later = progressionTime.plus(0.1)
+      progression.getConvergentTime(model.gmtJulDay, later).let { laterConvergentTime ->
+        val laterModel = getModel(laterConvergentTime, model.location, config)
+        val posMapLater = laterModel.positionMap
+
+        val progressedAspects = Sets.combinations(config.points.toSet(), 2)
+          .asSequence()
+          .map { it -> it.iterator().let { it.next() to it.next() } }
+          .mapNotNull { (p1,p2) ->
+            aspectsCalculator.getAspectData(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)?.let { ad: AspectData ->
+              ProgressedAspect(p1, p2 , ad.aspect, ad.orb, ad.type!!, ad.score)
+            }
+          }.toSet()
+
+        ProgressionModel(model.gmtJulDay, progressionTime, convergentTime, progressedAspects)
+      }
     }
   }
 

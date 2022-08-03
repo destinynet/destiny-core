@@ -7,16 +7,43 @@ import com.google.common.collect.Sets
 import destiny.core.astrology.IAspectData.Type.APPLYING
 import destiny.core.astrology.IAspectData.Type.SEPARATING
 import java.io.Serializable
-import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 
 class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
                             private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>) : IAspectsCalculator, Serializable {
 
 
+  override fun getAspectData(p1: AstroPoint, p2: AstroPoint,
+                             p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,
+                             laterForP1: () -> IPos?, laterForP2: () -> IPos?, aspects: Collection<Aspect>): AspectData? {
+    return aspects
+      .intersect(aspectEffectiveImpl.applicableAspects)
+      .asSequence()
+      .map { aspect ->
+        aspect to aspectEffectiveImpl.getEffectiveErrorAndScore(p1, p1PosMap.getValue(p1).lngDeg, p2, p2PosMap.getValue(p2).lngDeg, aspect)
+      }.firstOrNull { (_, maybeErrorAndScore) -> maybeErrorAndScore != null }
+      ?.let { (aspect, maybeErrorAndScore) -> aspect to maybeErrorAndScore!! }
+      ?.let { (aspect, errorAndScore) ->
+        val error = errorAndScore.first
+        val score = errorAndScore.second
+
+        laterForP1.invoke()?.lngDeg?.let { deg1Next ->
+          laterForP2.invoke()?.lngDeg?.let { deg2Next ->
+            val planetsAngleNext = deg1Next.getAngle(deg2Next)
+            val errorNext = abs(planetsAngleNext - aspect.degree)
+
+            val type = if (errorNext <= error) APPLYING else SEPARATING
+            AspectData.of(p1, p2, aspect, error, score, type)
+          }
+        }
+
+      }
+  }
+
+
   private fun IHoroscopeModel.getAspectData(twoPoints: Set<AstroPoint>, aspects: Collection<Aspect>): AspectData? {
 
-    val posMap = this.positionMap
+    val posMap: Map<AstroPoint, IPosWithAzimuth> = this.positionMap
 
     return twoPoints
       .takeIf { it.size == 2 } // 確保裡面只有兩個 Point
@@ -26,30 +53,14 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
       ?.let {
         val (p1, p2) = twoPoints.iterator().let { it.next() to it.next() }
 
-        aspects
-          .intersect(aspectEffectiveImpl.applicableAspects)
-          .asSequence()
-          .map { aspect ->
-            aspect to aspectEffectiveImpl.getEffectiveErrorAndScore(p1, posMap.getValue(p1).lngDeg, p2, posMap.getValue(p2).lngDeg, aspect)
-          }.firstOrNull { (_, maybeErrorAndScore) -> maybeErrorAndScore != null }
-          ?.let { (aspect, maybeErrorAndScore) -> aspect to maybeErrorAndScore!! }
-          ?.let { (aspect, errorAndScore) ->
-            val error = errorAndScore.first
-            val score = errorAndScore.second
 
-            val lmt = this.lmt //目前時間
-            val later = lmt.plus(1, ChronoUnit.SECONDS) // 一段時間後
+        // 8.64 seconds
+        val later = this.gmtJulDay.plus(0.0001)
 
-            pointPosFuncMap[p1]?.getPosition(later, location)?.lngDeg?.let { deg1Next->
-              pointPosFuncMap[p2]?.getPosition(later, location)?.lngDeg?.let { deg2Next ->
-                val planetsAngleNext = deg1Next.getAngle(deg2Next)
-                val errorNext = abs(planetsAngleNext - aspect.degree)
+        val laterForP1: () -> IPos? = { pointPosFuncMap[p1]?.getPosition(later, location) }
+        val laterForP2: () -> IPos? = { pointPosFuncMap[p2]?.getPosition(later, location) }
 
-                val type = if (errorNext <= error) APPLYING else SEPARATING
-                AspectData.of(p1, p2, aspect, error, score, type , this.gmtJulDay)
-              }
-            }
-          }
+        getAspectData(p1, p2, posMap, posMap, laterForP1, laterForP2, aspects)
       }
 
   }

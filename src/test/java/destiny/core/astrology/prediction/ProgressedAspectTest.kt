@@ -3,22 +3,15 @@
  */
 package destiny.core.astrology.prediction
 
+import destiny.core.astrology.Aspect
 import destiny.core.astrology.IAspectData
 import destiny.core.astrology.Planet
 import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 internal class ProgressedAspectTest {
 
   @Test
-  fun testInitFail() {
-    assertFailsWith(IllegalArgumentException::class) {
-      ProgressedAspect(Planet.MOON, Planet.SUN, 5.0, IAspectData.Type.APPLYING, null)
-    }
-  }
-
-  @Test
   fun testInitOk() {
-    ProgressedAspect(Planet.MOON, Planet.SUN, 0.0, IAspectData.Type.APPLYING, null)
+    ProgressedAspect(Planet.MOON, Planet.SUN, Aspect.CONJUNCTION, 0.1, IAspectData.Type.APPLYING, null)
   }
 }

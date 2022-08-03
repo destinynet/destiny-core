@@ -1,7 +1,7 @@
 package destiny.core
 
 import destiny.core.astrology.IAstroPattern
-import destiny.core.astrology.IPointAspectPattern
+import destiny.core.astrology.IPointAnglePattern
 import destiny.core.astrology.IPointHousePattern
 import destiny.core.astrology.IPointSignPattern
 import java.util.*
@@ -39,4 +39,4 @@ data class PatternParasDescription<T : IPattern>(
 sealed interface IAstroPatternDescription<T : IAstroPattern> : IPatternParasDescription<T>
 interface IPointHouseContent : IAstroPatternDescription<IPointHousePattern>
 interface IPointSignContent : IAstroPatternDescription<IPointSignPattern>
-interface IPointAspectContent : IAstroPatternDescription<IPointAspectPattern>
+interface IPointAspectContent : IAstroPatternDescription<IPointAnglePattern>

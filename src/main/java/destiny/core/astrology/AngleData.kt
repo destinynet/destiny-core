@@ -9,7 +9,7 @@ import java.io.Serializable
 import java.util.*
 import kotlin.math.abs
 
-interface IPointAspectPattern : IAstroPattern {
+interface IPointAnglePattern : IAstroPattern {
   /** 兩顆星體  */
   val points: Set<AstroPoint>
 
@@ -17,10 +17,10 @@ interface IPointAspectPattern : IAstroPattern {
   val angle: Double
 }
 
-data class PointAspectPattern internal constructor(
+data class PointAnglePattern internal constructor(
   override val points: Set<AstroPoint>,
   override val angle: Double
-) : IPointAspectPattern, Serializable {
+) : IPointAnglePattern, Serializable {
 
   override fun getName(locale: Locale): String {
     return buildString {
@@ -35,15 +35,15 @@ data class PointAspectPattern internal constructor(
     }
   }
   companion object {
-    fun of(points: Set<AstroPoint>, angle: Double): PointAspectPattern {
+    fun of(points: Set<AstroPoint>, angle: Double): PointAnglePattern {
       val (p1, p2) = points.iterator().let { it.next() to it.next() }
-      return PointAspectPattern(sortedSetOf(AstroPointComparator(), p1, p2), angle)
+      return PointAnglePattern(sortedSetOf(AstroPointComparator(), p1, p2), angle)
     }
   }
 }
 
 
-interface IAngleData : IPointAspectPattern {
+interface IAngleData : IPointAnglePattern {
 
   /** 何時 */
   val gmtJulDay : GmtJulDay?
@@ -60,10 +60,10 @@ interface IAngleData : IPointAspectPattern {
  * */
 data class AngleData(
 
-  private val pointAspectPattern: PointAspectPattern,
+  private val pointAnglePattern: PointAnglePattern,
 
   /** 何時發生 */
-  override val gmtJulDay: GmtJulDay?) : IAngleData , IPointAspectPattern by pointAspectPattern, Serializable {
+  override val gmtJulDay: GmtJulDay?) : IAngleData, IPointAnglePattern by pointAnglePattern, Serializable {
 
-  constructor(p1: AstroPoint, p2: AstroPoint, angle: Double, gmtJulDay: GmtJulDay) : this(PointAspectPattern.of(setOf(p1, p2), angle), gmtJulDay)
+  constructor(p1: AstroPoint, p2: AstroPoint, angle: Double, gmtJulDay: GmtJulDay) : this(PointAnglePattern.of(setOf(p1, p2), angle), gmtJulDay)
 }

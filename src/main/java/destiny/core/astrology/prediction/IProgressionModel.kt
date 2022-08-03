@@ -7,35 +7,27 @@ import destiny.core.astrology.Aspect
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.IAspectData
 import destiny.core.calendar.GmtJulDay
+import java.io.Serializable
 
 
-data class ProgressedAspect(
-  val progressedPoint: AstroPoint,
-  val natalPoint: AstroPoint,
-  override val angle: Double,
-  override val type: IAspectData.Type,
-  override val score: Double?
-) : IAspectData {
+interface IProgressedAspect : IAspectData {
+  val progressedPoint: AstroPoint
+  val natalPoint: AstroPoint
 
-  override val points: Set<AstroPoint> = setOf(progressedPoint, natalPoint)
+  override val points: Set<AstroPoint>
+    get() = setOf(progressedPoint, natalPoint)
+}
+
+data class ProgressedAspect(override val progressedPoint: AstroPoint,
+                            override val natalPoint: AstroPoint,
+                            override val aspect: Aspect,
+                            override val orb: Double,
+                            override val type: IAspectData.Type,
+                            override val score: Double?) : IProgressedAspect {
+
+  override val angle: Double = aspect.degree
 
   override val gmtJulDay: GmtJulDay? = null
-
-  override lateinit var aspect: Aspect //= Aspect.getAspect(angle)!!
-
-  init {
-
-    require(Aspect.getAspect(angle) != null)
-
-    println("aspect = ${Aspect.getAspect(angle)}")
-    this.aspect = Aspect.getAspect(angle)!!
-  }
-
-
-
-
-
-
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -43,7 +35,7 @@ data class ProgressedAspect(
 
     if (progressedPoint != other.progressedPoint) return false
     if (natalPoint != other.natalPoint) return false
-    if (angle != other.angle) return false
+    if (aspect != other.aspect) return false
     if (type != other.type) return false
 
     return true
@@ -52,7 +44,7 @@ data class ProgressedAspect(
   override fun hashCode(): Int {
     var result = progressedPoint.hashCode()
     result = 31 * result + natalPoint.hashCode()
-    result = 31 * result + angle.hashCode()
+    result = 31 * result + aspect.hashCode()
     result = 31 * result + type.hashCode()
     return result
   }
@@ -60,7 +52,14 @@ data class ProgressedAspect(
 
 }
 
-interface IProgressionModel {
+interface IProgressionModel : Serializable {
   val natalTime: GmtJulDay
-  val angleDataSet: Set<ProgressedAspect>
+  val progressionTime: GmtJulDay
+  val convergentTime: GmtJulDay
+  val progressedAspects: Set<IProgressedAspect>
 }
+
+data class ProgressionModel(override val natalTime: GmtJulDay,
+                            override val progressionTime: GmtJulDay,
+                            override val convergentTime: GmtJulDay,
+                            override val progressedAspects: Set<IProgressedAspect>) : IProgressionModel

@@ -59,7 +59,7 @@ data class AspectData(val angleData: IAngleData,
     score: Double? = null,
     gmtJulDay: GmtJulDay?
   ) : this(
-    AngleData(PointAspectPattern.of(points, aspect.degree), gmtJulDay),
+    AngleData(PointAnglePattern.of(points, aspect.degree), gmtJulDay),
     type, orb, score
   )
 

@@ -14,6 +14,11 @@ import destiny.core.astrology.IAspectData.Type.SEPARATING
  */
 interface IAspectsCalculator  {
 
+  fun getAspectData(p1: AstroPoint, p2: AstroPoint,
+                    p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,
+                    laterForP1: () -> IPos?, laterForP2: () -> IPos?,
+                    aspects: Collection<Aspect>): AspectData?
+
   /** 取得此星盤中，所有的交角資料 */
   fun IHoroscopeModel.getAspectData(
                     points : Collection<AstroPoint> = this.positionMap.keys,
