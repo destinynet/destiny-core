@@ -247,7 +247,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (this === other) return true
       if (other !is Wedge) return false
 
-      if (oppoPoints.toSet() != other.oppoPoints.toSet()) return false
+      if (oppoPoints != other.oppoPoints) return false
       if (moderator != other.moderator) return false
 
       return true

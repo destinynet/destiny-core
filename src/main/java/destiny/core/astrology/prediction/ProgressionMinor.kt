@@ -10,7 +10,9 @@ import destiny.core.astrology.Constants
  * 次限法用來查看長期事件趨勢，短期事件趨勢則以流年法的引動為主。光之教堂稱次限法為主要推運（Major Progressions），
  * 月限法為次要推運（Minor Progressions）。Zain並認為只查看次限法加上流年法是不足的，必須加上月限才可看出人生的起伏軌跡。
  */
-class ProgressionMinor : AbstractProgression() {
+class ProgressionMinor(override val converse: Boolean = false) : AbstractProgression() {
+
+  override val type: ProgressionType = ProgressionType.MINOR
 
   /** MP (一月一年) , 分子是 一年  */
   override val numerator: Double = Constants.SIDEREAL_YEAR

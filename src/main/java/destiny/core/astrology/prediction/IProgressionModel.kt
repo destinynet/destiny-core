@@ -48,18 +48,22 @@ data class ProgressedAspect(override val progressedPoint: AstroPoint,
     result = 31 * result + type.hashCode()
     return result
   }
+}
 
-
+enum class ProgressionType {
+  SECONDARY , TERTIARY , MINOR
 }
 
 interface IProgressionModel : Serializable {
+  val type : ProgressionType
   val natalTime: GmtJulDay
   val progressionTime: GmtJulDay
   val convergentTime: GmtJulDay
   val progressedAspects: Set<IProgressedAspect>
 }
 
-data class ProgressionModel(override val natalTime: GmtJulDay,
+data class ProgressionModel(override val type: ProgressionType,
+                            override val natalTime: GmtJulDay,
                             override val progressionTime: GmtJulDay,
                             override val convergentTime: GmtJulDay,
                             override val progressedAspects: Set<IProgressedAspect>) : IProgressionModel

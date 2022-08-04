@@ -13,6 +13,8 @@ import kotlin.math.absoluteValue
  */
 abstract class AbstractProgression : ILinear, Conversable, Serializable {
 
+  abstract val type: ProgressionType
+
   /** 是否逆推，內定是順推  */
   override val converse = false
 

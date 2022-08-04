@@ -16,10 +16,12 @@ import destiny.core.astrology.Constants
  * 例如：次限月亮每月約行一度，而參限月亮約一周行3.5～4度。
  *
  */
-class ProgressionTertiary : AbstractProgression() {
+class ProgressionTertiary(override val converse: Boolean = false) : AbstractProgression() {
+
+  override val type: ProgressionType = ProgressionType.TERTIARY
 
   /** TP (一日一月) , 分子是 一月  */
-  override val numerator: Double = Constants.SIDEREAL_MONTH
+  override val numerator: Double = Constants.SYNODICAL_MONTH
 
   /** TP (一日一月) , 分母是 一日  */
   override val denominator: Double = Constants.SIDEREAL_DAY

@@ -54,31 +54,4 @@ class AspectDataTest {
 
     assertEquals(data1, data2)
   }
-
-//  @Test
-//  fun testSameStar() {
-//    assertFailsWith(IllegalArgumentException::class) {
-//      AspectData.of(SUN, SUN, Aspect.CONJUNCTION, 1.0, gmtJulDay = null)
-//    }
-//
-//    assertFailsWith(IllegalArgumentException::class) {
-//      AspectData.of(SUN, SUN, Aspect.CONJUNCTION, null, 1.0, null)
-//    }
-//
-//    assertFailsWith(IllegalArgumentException::class) {
-//      AspectData.of(SUN, SUN, Aspect.CONJUNCTION, null, 1.0)
-//    }
-//
-//    assertFailsWith(IllegalArgumentException::class) {
-//      AspectData.of(SUN, SUN, Aspect.CONJUNCTION, IAspectData.Type.APPLYING)
-//    }
-//
-//    assertFailsWith(IllegalArgumentException::class) {
-//      AspectData.of(SUN, SUN, Aspect.CONJUNCTION, 1.0)
-//    }
-//
-//    assertFailsWith(IllegalArgumentException::class) {
-//      AspectData.of(MOON, MOON, Aspect.CONJUNCTION, 1.0)
-//    }
-//  }
 }

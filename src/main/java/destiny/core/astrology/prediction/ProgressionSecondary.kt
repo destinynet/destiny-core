@@ -30,6 +30,8 @@ import destiny.core.astrology.Constants
  */
 class ProgressionSecondary(override val converse: Boolean = false) : AbstractProgression() {
 
+  override val type: ProgressionType = ProgressionType.SECONDARY
+
   /** SP (一日一年) , 分子是 一年  */
   override val numerator: Double = Constants.SIDEREAL_YEAR
 

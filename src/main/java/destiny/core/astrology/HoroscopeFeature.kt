@@ -7,10 +7,7 @@ import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.astrology.classical.rules.Misc
-import destiny.core.astrology.prediction.IProgressionModel
-import destiny.core.astrology.prediction.ProgressedAspect
-import destiny.core.astrology.prediction.ProgressionModel
-import destiny.core.astrology.prediction.ProgressionSecondary
+import destiny.core.astrology.prediction.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
@@ -68,6 +65,34 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
   fun getSecondaryProgression(model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Collection<Aspect>,
                               aspectsCalculator : IAspectsCalculator , config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
     val progression = ProgressionSecondary(converse)
+
+    return doProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
+  }
+
+  /**
+   * Tertiary Progression calculation
+   */
+  fun getTertiaryProgression(model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Collection<Aspect>,
+                             aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
+    val progression = ProgressionTertiary(converse)
+
+    return doProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
+  }
+
+  /**
+   * Minor Progression calculation
+   */
+  fun getMinorProgression(model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Collection<Aspect>,
+                          aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
+    val progression = ProgressionMinor(converse)
+
+    return doProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
+  }
+
+  private fun doProgression(progression : AbstractProgression, model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Collection<Aspect>,
+                            aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig) : IProgressionModel {
+
+    // inner : natal chart
     val posMapInner = model.positionMap
 
     return progression.getConvergentTime(model.gmtJulDay, progressionTime).let { convergentTime ->
@@ -76,8 +101,9 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
 
       logger.info { "convergentGmt = ${JulDayResolver1582CutoverImpl().getLocalDateTime(convergentTime)}" }
 
-      val convergentModel = getModel(convergentTime , model.location, config)
+      val convergentModel = getModel(convergentTime, model.location, config)
 
+      // outer : progression chart
       val posMapOuter = convergentModel.positionMap
 
       // 2.4 hours later
@@ -88,13 +114,13 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
 
 
         val progressedAspects = config.points.asSequence().flatMap { p1 -> config.points.asSequence().map { p2 -> p1 to p2 } }
-          .mapNotNull { (p1,p2) ->
+          .mapNotNull { (p1, p2) ->
             aspectsCalculator.getAspectData(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)?.let { ad: AspectData ->
-              ProgressedAspect(p1, p2 , ad.aspect, ad.orb, ad.type!!, ad.score)
+              ProgressedAspect(p1, p2, ad.aspect, ad.orb, ad.type!!, ad.score)
             }
           }.toSet()
 
-        ProgressionModel(model.gmtJulDay, progressionTime, convergentTime, progressedAspects)
+        ProgressionModel(progression.type, model.gmtJulDay, progressionTime, convergentTime, progressedAspects)
       }
     }
   }
