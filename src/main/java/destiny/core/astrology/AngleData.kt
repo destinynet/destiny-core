@@ -11,14 +11,14 @@ import kotlin.math.abs
 
 interface IPointAnglePattern : IAstroPattern {
   /** 兩顆星體  */
-  val points: Set<AstroPoint>
+  val points: List<AstroPoint>
 
   /** 交角幾度 */
   val angle: Double
 }
 
 data class PointAnglePattern internal constructor(
-  override val points: Set<AstroPoint>,
+  override val points: List<AstroPoint>,
   override val angle: Double
 ) : IPointAnglePattern, Serializable {
 
@@ -35,9 +35,16 @@ data class PointAnglePattern internal constructor(
     }
   }
   companion object {
-    fun of(points: Set<AstroPoint>, angle: Double): PointAnglePattern {
+    fun of(points: List<AstroPoint>, angle: Double): PointAnglePattern {
       val (p1, p2) = points.iterator().let { it.next() to it.next() }
-      return PointAnglePattern(sortedSetOf(AstroPointComparator(), p1, p2), angle)
+
+      val pointList = if (p1 != p2) {
+        sortedSetOf(AstroPointComparator(), p1, p2).toList()
+      } else {
+        listOf(p1, p2)
+      }
+
+      return PointAnglePattern(pointList, angle)
     }
   }
 }
@@ -65,5 +72,5 @@ data class AngleData(
   /** 何時發生 */
   override val gmtJulDay: GmtJulDay?) : IAngleData, IPointAnglePattern by pointAnglePattern, Serializable {
 
-  constructor(p1: AstroPoint, p2: AstroPoint, angle: Double, gmtJulDay: GmtJulDay) : this(PointAnglePattern.of(setOf(p1, p2), angle), gmtJulDay)
+  constructor(p1: AstroPoint, p2: AstroPoint, angle: Double, gmtJulDay: GmtJulDay) : this(PointAnglePattern.of(listOf(p1, p2), angle), gmtJulDay)
 }

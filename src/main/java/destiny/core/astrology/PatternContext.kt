@@ -99,9 +99,9 @@ class PatternContext(val aspectEffective: IAspectEffective,
               && threeSet.filter { it.aspect == SQUARE }.size == 2
           }.map { threeSet ->
             val score: Double? = threeSet.takeIf { sets -> sets.all { it.score != null } }?.map { it.score!! }?.average()
-            val oppoPoints = threeSet.first { it.aspect == OPPOSITION }.points
+            val oppoPoints: List<AstroPoint> = threeSet.first { it.aspect == OPPOSITION }.points
             val squared = threeSet.flatMap { it.points }.toSet().minus(oppoPoints).first().signHouse(posMap, cuspDegreeMap)
-            AstroPattern.TSquared(oppoPoints, squared, score)
+            AstroPattern.TSquared(oppoPoints.toSet(), squared, score)
           }
         }?.toSet() ?: emptySet()
 
@@ -315,7 +315,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             val oppoPoints = threePairs.first { it.aspect == OPPOSITION }.points
             val moderator = threePairs.flatMap { it.points }.toSet().minus(oppoPoints).iterator().next()
 
-            AstroPattern.Wedge(oppoPoints, moderator.signHouse(posMap, cuspDegreeMap), score)
+            AstroPattern.Wedge(oppoPoints.toSet(), moderator.signHouse(posMap, cuspDegreeMap), score)
           }.toSet()
         } ?: emptySet()
     }

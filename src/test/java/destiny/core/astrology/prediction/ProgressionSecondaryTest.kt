@@ -36,6 +36,8 @@ internal class ProgressionSecondaryTest {
     val nowGmtJulDay = TimeTools.getGmtJulDay(now, loc)
 
     progression.getConvergentTime(natalGmtJulDay, nowGmtJulDay).also { convergentJulDay: GmtJulDay ->
+
+
       logger.info { "convergentJulDay = $convergentJulDay" }
       val convergentLmt = TimeTools.getLmtFromGmt(convergentJulDay, loc, julDayResolver)
       logger.info { "convergentLmt = $convergentLmt" }

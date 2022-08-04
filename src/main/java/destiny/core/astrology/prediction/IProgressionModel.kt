@@ -14,8 +14,8 @@ interface IProgressedAspect : IAspectData {
   val progressedPoint: AstroPoint
   val natalPoint: AstroPoint
 
-  override val points: Set<AstroPoint>
-    get() = setOf(progressedPoint, natalPoint)
+  override val points: List<AstroPoint>
+    get() = listOf(progressedPoint, natalPoint)
 }
 
 data class ProgressedAspect(override val progressedPoint: AstroPoint,

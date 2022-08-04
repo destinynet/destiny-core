@@ -3,7 +3,6 @@
  */
 package destiny.core.astrology
 
-import com.google.common.collect.Sets
 import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseImpl
@@ -14,12 +13,14 @@ import destiny.core.astrology.prediction.ProgressionModel
 import destiny.core.astrology.prediction.ProgressionSecondary
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import destiny.tools.serializers.AstroPointSerializer
 import kotlinx.serialization.Serializable
+import mu.KotlinLogging
 import javax.cache.Cache
 import javax.inject.Named
 
@@ -68,7 +69,12 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
                               aspectsCalculator : IAspectsCalculator , config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
     val progression = ProgressionSecondary(converse)
     val posMapInner = model.positionMap
+
     return progression.getConvergentTime(model.gmtJulDay, progressionTime).let { convergentTime ->
+
+      logger.trace { "convergentTime = $convergentTime" }
+
+      logger.info { "convergentGmt = ${JulDayResolver1582CutoverImpl().getLocalDateTime(convergentTime)}" }
 
       val convergentModel = getModel(convergentTime , model.location, config)
 
@@ -80,9 +86,8 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
         val laterModel = getModel(laterConvergentTime, model.location, config)
         val posMapLater = laterModel.positionMap
 
-        val progressedAspects = Sets.combinations(config.points.toSet(), 2)
-          .asSequence()
-          .map { it -> it.iterator().let { it.next() to it.next() } }
+
+        val progressedAspects = config.points.asSequence().flatMap { p1 -> config.points.asSequence().map { p2 -> p1 to p2 } }
           .mapNotNull { (p1,p2) ->
             aspectsCalculator.getAspectData(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)?.let { ad: AspectData ->
               ProgressedAspect(p1, p2 , ad.aspect, ad.orb, ad.type!!, ad.score)
@@ -94,6 +99,10 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
     }
   }
 
+
+  companion object {
+    private val logger = KotlinLogging.logger { }
+  }
 }
 
 @Named

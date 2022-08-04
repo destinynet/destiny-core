@@ -15,7 +15,7 @@ data class PointSignHouse(val point: AstroPoint,
                           val sign: ZodiacSign,
                           val house: Int)
 
-sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
+sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
                           open val score: Double? = null) : IAstroPattern {
 
   /**
@@ -70,7 +70,7 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
    * [TSquared] : 三刑會沖
    */
   data class TSquared(val oppoPoints: Set<AstroPoint>, val squared: PointSignHouse, override val score: Double? = null) : AstroPattern() {
-    override val points: Set<AstroPoint>
+    override val points: Collection<AstroPoint>
       get() = oppoPoints.plus(squared.point)
 
     override fun equals(other: Any?): Boolean {
@@ -143,8 +143,8 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
   /**
    * [GoldenYod] : 黃金指 72 , 144 , 144
    * */
-  data class GoldenYod(val bottoms: Set<AstroPoint>, val pointer: PointSignHouse, override val score: Double? = null) : AstroPattern() {
-    override val points: Set<AstroPoint>
+  data class GoldenYod(val bottoms: Collection<AstroPoint>, val pointer: PointSignHouse, override val score: Double? = null) : AstroPattern() {
+    override val points: Collection<AstroPoint>
       get() = bottoms.plus(pointer.point)
 
     override fun equals(other: Any?): Boolean {
@@ -240,14 +240,14 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
    * 180 沖 , 逢 第三顆星 , 以 60/120 介入，緩和局勢
    */
   data class Wedge(val oppoPoints: Set<AstroPoint>, val moderator: PointSignHouse, override val score: Double? = null) : AstroPattern() {
-    override val points: Set<AstroPoint>
+    override val points: Collection<AstroPoint>
       get() = oppoPoints.plus(moderator.point)
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is Wedge) return false
 
-      if (oppoPoints != other.oppoPoints) return false
+      if (oppoPoints.toSet() != other.oppoPoints.toSet()) return false
       if (moderator != other.moderator) return false
 
       return true

@@ -48,7 +48,7 @@ data class AspectData(val angleData: IAngleData,
 
   private constructor(
     /** 存放形成交角的兩顆星體  */
-    points: Set<AstroPoint>,
+    points: List<AstroPoint>,
     /** 兩星所形成的交角 */
     aspect: Aspect,
     /** 交會型態 : 接近 or 分離 */
@@ -134,8 +134,13 @@ data class AspectData(val angleData: IAngleData,
     val pointComp = AstroPointComparator()
 
     fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null, gmtJulDay: GmtJulDay? = null): AspectData {
-      require(p1 != p2)
-      return AspectData(sortedSetOf(pointComp, p1, p2), aspect, type, orb, score, gmtJulDay)
+      val points = if (p1 != p2) {
+        sortedSetOf(pointComp, p1, p2).toList()
+      } else {
+        listOf(p1, p2)
+      }
+
+      return AspectData(points, aspect, type, orb, score, gmtJulDay)
     }
 
     fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, type: Type? = null, orb: Double = 0.0, score: Double? = null): AspectData {
