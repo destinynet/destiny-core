@@ -17,11 +17,11 @@ internal interface ILinear : Mappable {
   /**
    * 取得反推（發散 divergent）的時間
    * @param natalGmtJulDay 起始時間，通常是出生時間
-   * @param nowTime   某時刻
+   * @param nowGmtJulDay   某時刻
    * @return nowTime 相對於 natalTime 輻射放大出去， 是此人的何時
    */
 
-  fun getDivergentTime(natalGmtJulDay: GmtJulDay, nowTime: GmtJulDay): GmtJulDay
+  fun getDivergentTime(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): GmtJulDay
 
 
   fun getDivergentTime(natalTime: ChronoLocalDateTime<*>, nowTime: ChronoLocalDateTime<*>,

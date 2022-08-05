@@ -22,7 +22,7 @@ object Constants {
   const val SIDEREAL_MONTH = SECONDS_OF_DAY * 27.321662 // 2360591.6
 
   /** 會合月 (新月到新月)  */
-  const val SYNODICAL_MONTH = SECONDS_OF_DAY * 29.530589 // 2551442.89
+  const val SYNODIC_MONTH = SECONDS_OF_DAY * 29.530589 // 2551442.89
 
   /** 回歸月  */
   const val TROPICAL_MONTH = SECONDS_OF_DAY * 27.321582 // 2360584.68

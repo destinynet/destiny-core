@@ -42,9 +42,9 @@ abstract class AbstractProgression : ILinear, Conversable, Serializable {
    * 實作 [ILinear]
    * 計算從 nowTime 相對於 natalTime , 「發散(diverge)」到(未來的)哪個時間
    */
-  override fun getDivergentTime(natalGmtJulDay: GmtJulDay, nowTime: GmtJulDay): GmtJulDay {
+  override fun getDivergentTime(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): GmtJulDay {
 
-    val diffDays = (nowTime - natalGmtJulDay) / denominator * numerator
+    val diffDays = (nowGmtJulDay - natalGmtJulDay) / denominator * numerator
 
     return if (converse) {
       natalGmtJulDay - diffDays

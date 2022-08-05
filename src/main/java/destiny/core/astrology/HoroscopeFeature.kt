@@ -66,7 +66,7 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
                               aspectsCalculator : IAspectsCalculator , config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
     val progression = ProgressionSecondary(converse)
 
-    return doProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
+    return getProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
   }
 
   /**
@@ -76,7 +76,7 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
                              aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
     val progression = ProgressionTertiary(converse)
 
-    return doProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
+    return getProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
   }
 
   /**
@@ -86,11 +86,11 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
                           aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
     val progression = ProgressionMinor(converse)
 
-    return doProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
+    return getProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
   }
 
-  private fun doProgression(progression : AbstractProgression, model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Collection<Aspect>,
-                            aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig) : IProgressionModel {
+  fun getProgression(progression : AbstractProgression, model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Collection<Aspect>,
+                     aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig) : IProgressionModel {
 
     // inner : natal chart
     val posMapInner = model.positionMap
@@ -125,6 +125,11 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
     }
   }
 
+
+  fun transit(model: IHoroscopeModel, transitTime: GmtJulDay, aspects: Collection<Aspect>,
+              aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig, converse: Boolean = false) {
+    TODO("TransitModel")
+  }
 
   companion object {
     private val logger = KotlinLogging.logger { }

@@ -21,7 +21,7 @@ class ProgressionTertiary(override val converse: Boolean = false) : AbstractProg
   override val type: ProgressionType = ProgressionType.TERTIARY
 
   /** TP (一日一月) , 分子是 一月  */
-  override val numerator: Double = Constants.SYNODICAL_MONTH
+  override val numerator: Double = Constants.SYNODIC_MONTH
 
   /** TP (一日一月) , 分母是 一日  */
   override val denominator: Double = Constants.SIDEREAL_DAY
