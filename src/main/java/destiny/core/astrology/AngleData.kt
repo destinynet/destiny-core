@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.IGmtJulDay
 import destiny.core.calendar.GmtJulDay
 import java.io.Serializable
 import kotlin.math.abs
@@ -11,14 +12,16 @@ import kotlin.math.abs
 /**
  * 具備 發生時間 [gmtJulDay] 的交角資料
  */
-interface IAngleData : IPointAnglePattern {
+interface IAngleData : IPointAnglePattern , IGmtJulDay {
 
   /** 何時 */
-  val gmtJulDay : GmtJulDay
+  override val gmtJulDay : GmtJulDay
 
   fun toAspectData(): AspectData? {
     return Aspect.getAspect(angle)?.let { aspect ->
-      AspectData(this, null, abs(aspect.degree - angle))
+      AspectData.of(this.points, aspect , abs(aspect.degree - angle), null , null , gmtJulDay)
+      //AspectData(this.points, null , abs(aspect.degree - angle) , null ,null)
+      //AspectData(this, null, abs(aspect.degree - angle))
     }
   }
 }

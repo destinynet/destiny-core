@@ -13,12 +13,16 @@ import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
+interface IGmtJulDay : Serializable {
+  val gmtJulDay: GmtJulDay
+}
+
 /** 時間、地點 */
-interface ITimeLoc : Serializable {
+interface ITimeLoc : IGmtJulDay {
   val time: ChronoLocalDateTime<*>
   val location: ILocation
 
-  val gmtJulDay: GmtJulDay
+  override val gmtJulDay: GmtJulDay
     get() {
       return TimeTools.getGmtJulDay(time, location)
     }

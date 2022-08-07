@@ -4,23 +4,28 @@
  */
 package destiny.core.astrology
 
+import destiny.core.IGmtJulDay
 import destiny.core.astrology.IPointAspectPattern.Type
 import destiny.core.calendar.GmtJulDay
 import java.io.Serializable
 
 
-interface IAspectData : IPointAspectPattern, IAngleData
+interface IAspectData : IPointAspectPattern, IGmtJulDay
 
 /**
  * 存放兩顆「不同」星體交角的資料結構
  * */
-data class AspectData(val angleData: IAngleData,
-                      /** 交會型態 : 接近 or 分離 */
-                      override val type: Type? = null,
-                      /** orb 不列入 equals / hashCode 計算  */
-                      override val orb: Double = 0.0,
-                      /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
-                      override val score: Double? = null) : IAspectData, IAngleData by angleData, Serializable {
+data class AspectData(
+  val pointAspectPattern: PointAspectPattern,
+  //val angleData: IAngleData,
+  /** 交會型態 : 接近 or 分離 */
+  override val type: Type? = null,
+  /** orb 不列入 equals / hashCode 計算  */
+  override val orb: Double = 0.0,
+  /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
+  override val score: Double? = null,
+  override val gmtJulDay: GmtJulDay
+) : IAspectData, IPointAspectPattern by pointAspectPattern, Serializable {
 
   private constructor(
     /** 存放形成交角的兩顆「不同」星體  */
@@ -35,13 +40,14 @@ data class AspectData(val angleData: IAngleData,
     score: Double? = null,
     gmtJulDay: GmtJulDay
   ) : this(
-    AngleData(PointAnglePattern.of(points, aspect.degree), gmtJulDay),
-    type, orb, score
+    PointAspectPattern(points.toList(), aspect.degree, type, orb, score),
+    //AngleData(PointAnglePattern.of(points, aspect.degree), gmtJulDay),
+    type, orb, score, gmtJulDay
   )
 
 
   init {
-    require(points.size == 2) { "INCORRECT points"}
+    require(points.size == 2) { "INCORRECT points" }
   }
 
 //  override fun compareTo(other: AspectData): Int {
@@ -93,8 +99,15 @@ data class AspectData(val angleData: IAngleData,
       } else {
         listOf(p1, p2).toSet()
       }
-
       return AspectData(points, aspect, type, orb, score, gmtJulDay)
+    }
+
+    fun of(points: Collection<AstroPoint>, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null, gmtJulDay: GmtJulDay): AspectData? {
+      return points.takeIf { it.toSet().size == 2 }
+        ?.let { ps ->
+          val (p1, p2) = ps.iterator().let { it.next() to it.next() }
+          of(p1, p2, aspect, orb, score, type, gmtJulDay)
+        }
     }
 
   }
