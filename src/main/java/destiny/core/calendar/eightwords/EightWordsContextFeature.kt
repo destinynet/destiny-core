@@ -135,7 +135,7 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
 
     val (prevSolarSign, nextSolarSign) = zodiacSignFeature.getModel(lmt, loc)
     val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(TimeTools.getGmtJulDay(lmt, loc))
-    val aspectDataSet = aspectsCalculator.getAspectDataSet(starPosMap)
+    val aspectDataSet = aspectsCalculator.getAspectPatterns(starPosMap)
 
     return EightWordsContextModel(
       eightWords,

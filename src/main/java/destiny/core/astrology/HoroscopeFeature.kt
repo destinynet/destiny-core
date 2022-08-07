@@ -115,8 +115,8 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
 
         val progressedAspects = config.points.asSequence().flatMap { p1 -> config.points.asSequence().map { p2 -> p1 to p2 } }
           .mapNotNull { (p1, p2) ->
-            aspectsCalculator.getAspectData(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)?.let { ad: AspectData ->
-              ProgressedAspect(p1, p2, ad.aspect, ad.orb, ad.type!!, ad.score)
+            aspectsCalculator.getAspectPatterns(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)?.let { p: IPointAspectPattern ->
+              ProgressedAspect(p1, p2, p.aspect, p.orb, p.type!!, p.score)
             }
           }.toSet()
 

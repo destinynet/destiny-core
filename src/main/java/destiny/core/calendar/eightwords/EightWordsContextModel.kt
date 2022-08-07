@@ -61,7 +61,7 @@ interface IEightWordsContextModel : ITimeLoc {
   val rsmiMap : Map<TransPoint, ZodiacDegree>
 
   /** 星體交角 */
-  val aspectsDataSet: Set<AspectData>
+  val aspectsDataSet: Set<IPointAspectPattern>
 }
 
 
@@ -99,7 +99,7 @@ data class EightWordsContextModel(
   override val rsmiMap : Map<TransPoint, ZodiacDegree>,
 
   /** 星體交角 */
-  override val aspectsDataSet: Set<AspectData>
+  override val aspectsDataSet: Set<IPointAspectPattern>
 ) : IEightWordsContextModel, Serializable {
 
   /** 是否有日光節約  */

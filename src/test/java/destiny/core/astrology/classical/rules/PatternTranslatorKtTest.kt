@@ -6,7 +6,7 @@ package destiny.core.astrology.classical.rules
 import destiny.core.DayNight
 import destiny.core.astrology.Aspect.OPPOSITION
 import destiny.core.astrology.Aspect.TRINE
-import destiny.core.astrology.IAspectData
+import destiny.core.astrology.IPointAspectPattern
 import destiny.core.astrology.LunarNode
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
@@ -189,7 +189,7 @@ class PatternTranslatorKtTest {
       assertEquals("太陽 被 金星 及 木星 包夾 (善意 Besieged)" , it.description)
     }
 
-    Translation_of_Light(SATURN, VENUS, JUPITER, 120.0, IAspectData.Type.APPLYING).also {
+    Translation_of_Light(SATURN, VENUS, JUPITER, 120.0, IPointAspectPattern.Type.APPLYING).also {
       assertEquals("傳遞光線" , it.title)
       assertEquals("土星 從 金星 傳遞光線到 木星 ，金星 與 木星 交角 120.0 度，相位為 APPLYING" , it.description)
     }

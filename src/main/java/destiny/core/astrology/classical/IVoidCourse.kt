@@ -40,7 +40,7 @@ sealed interface IVoidCourse : Descriptive {
     fun getNextVoc(gmt : GmtJulDay): Misc.VoidCourse? {
 
       return relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, planets, gmt, aspects, true)
-        ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay!! < toGmt }
+        ?.takeIf { nextAspectData: IAspectData -> nextAspectData.gmtJulDay!! < toGmt }
         ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay!! > fromGmt }
         ?.let { nextAspectData ->
           logger.trace { "接下來將在 ${julDayResolver.getLocalDateTime(nextAspectData.gmtJulDay!!)} 與 ${nextAspectData.points} 形成 ${nextAspectData.aspect}" }

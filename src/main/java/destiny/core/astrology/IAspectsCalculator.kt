@@ -5,32 +5,33 @@
 package destiny.core.astrology
 
 import destiny.core.astrology.Aspect.Importance
-import destiny.core.astrology.IAspectData.Type
-import destiny.core.astrology.IAspectData.Type.APPLYING
-import destiny.core.astrology.IAspectData.Type.SEPARATING
+import destiny.core.astrology.IPointAspectPattern.Type
+import destiny.core.astrology.IPointAspectPattern.Type.APPLYING
+import destiny.core.astrology.IPointAspectPattern.Type.SEPARATING
 
 /**
- * 計算一張命盤 [IHoroscopeModel] 中，的交角列表
+ * 計算一張命盤 [IHoroscopeModel] 內部的交角列表
+ * 或是兩張命盤，彼此的交角列表
  */
 interface IAspectsCalculator  {
 
-  fun getAspectData(p1: AstroPoint, p2: AstroPoint,
-                    p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,
-                    laterForP1: () -> IPos?, laterForP2: () -> IPos?,
-                    aspects: Collection<Aspect>): AspectData?
+  fun getAspectPatterns(p1: AstroPoint, p2: AstroPoint,
+                        p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,
+                        laterForP1: () -> IPos?, laterForP2: () -> IPos?,
+                        aspects: Collection<Aspect>): IPointAspectPattern?
 
   /** 取得此星盤中，所有的交角資料 */
-  fun IHoroscopeModel.getAspectData(
+  fun IHoroscopeModel.getAspectPatterns(
                     points : Collection<AstroPoint> = this.positionMap.keys,
-                    aspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)) : Set<AspectData>
+                    aspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)) : Set<IPointAspectPattern>
 
   /**
    * 取得於此 [AstroPoint] , 在此星盤 [h] 中 , 形成交角的資料
    */
-  fun getAspectData(point: AstroPoint,
-                    h: IHoroscopeModel,
-                    points : Collection<AstroPoint> = h.positionMap.keys,
-                    aspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)) : Set<AspectData>
+  fun getAspectPatterns(point: AstroPoint,
+                        h: IHoroscopeModel,
+                        points : Collection<AstroPoint> = h.positionMap.keys,
+                        aspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)) : Set<IPointAspectPattern>
 
   /**
    * 取得與 [AstroPoint] 形成交角的星體，以及其交角是哪種，以及交角緊密度 (0~1)
@@ -69,14 +70,14 @@ interface IAspectsCalculator  {
    *
    * 如果沒有形成任何交角（不太可能 , 除非 points 很少 ），則傳回 size = 0 之 Set
    */
-  fun getAspectDataSet(positionMap: Map<AstroPoint, IPos>,
-                       points: Collection<AstroPoint> = positionMap.keys,
-                       aspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)): Set<AspectData> {
+  fun getAspectPatterns(positionMap: Map<AstroPoint, IPos>,
+                        points: Collection<AstroPoint> = positionMap.keys,
+                        aspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)): Set<IPointAspectPattern> {
 
     return points.asSequence().map { p1 ->
       getPointAspectAndScore(p1, positionMap, points, aspects)
         .map { (p2 , aspect , score) ->
-          AspectData.of(p1 , p2 , aspect , IHoroscopeModel.getAspectError(positionMap, p1, p2, aspect) ?: 0.0, score , null , null)
+          PointAspectPattern.of(p1, p2 , aspect, null, IHoroscopeModel.getAspectError(positionMap, p1, p2, aspect) ?: 0.0, score )
         }.toSet()
     }.flatten()
       .toSet()
@@ -87,7 +88,7 @@ interface IAspectsCalculator  {
    * 如果不是形成 aspect 交角，會傳回 null
    * */
   fun IHoroscopeModel.getAspectType(p1: AstroPoint, p2: AstroPoint, aspect: Aspect): Type? {
-    return this.getAspectData(setOf(p1 , p2) , setOf(aspect)).firstOrNull()?.type
+    return this.getAspectPatterns(setOf(p1, p2), setOf(aspect)).firstOrNull()?.type
   }
 
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */

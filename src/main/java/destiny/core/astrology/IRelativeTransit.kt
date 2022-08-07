@@ -190,9 +190,9 @@ interface IRelativeTransit {
     }.map { (other , gmt , deg) -> AspectData.of(transitStar, other , Aspect.getAspect(deg)!! , 0.0 , 0.0 , null , gmt) }
       .let { list ->
         if (forward)
-          list.minByOrNull { it.gmtJulDay!! }
+          list.minByOrNull { it.gmtJulDay }
         else
-          list.maxByOrNull { it.gmtJulDay!! }
+          list.maxByOrNull { it.gmtJulDay }
       }
   }
 

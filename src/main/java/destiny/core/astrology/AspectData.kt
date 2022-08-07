@@ -4,39 +4,15 @@
  */
 package destiny.core.astrology
 
-import destiny.core.astrology.IAspectData.Type
+import destiny.core.astrology.IPointAspectPattern.Type
 import destiny.core.calendar.GmtJulDay
-import destiny.core.toString
-import destiny.tools.AlignTools
 import java.io.Serializable
-import java.util.*
-import kotlin.math.abs
 
 
-interface IAspectData : IAngleData {
-
-  /** 兩星所形成的交角 */
-  val aspect: Aspect
-    get() = Aspect.getAspect(angle)!!
-
-  /** 交會型態 : 接近 or 分離 */
-  val type: Type?
-
-  /** orb 不列入 equals / hashCode 計算  */
-  val orb: Double
-    get() = abs(aspect.degree - angle)
-
-  /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
-  val score: Double?
-
-  enum class Type {
-    APPLYING,
-    SEPARATING
-  }
-}
+interface IAspectData : IPointAspectPattern, IAngleData
 
 /**
- * 存放星體交角的資料結構
+ * 存放兩顆「不同」星體交角的資料結構
  * */
 data class AspectData(val angleData: IAngleData,
                       /** 交會型態 : 接近 or 分離 */
@@ -44,11 +20,11 @@ data class AspectData(val angleData: IAngleData,
                       /** orb 不列入 equals / hashCode 計算  */
                       override val orb: Double = 0.0,
                       /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
-                      override val score: Double? = null) : Comparable<AspectData>, IAspectData, IAngleData by angleData, Serializable {
+                      override val score: Double? = null) : IAspectData, IAngleData by angleData, Serializable {
 
   private constructor(
-    /** 存放形成交角的兩顆星體  */
-    points: List<AstroPoint>,
+    /** 存放形成交角的兩顆「不同」星體  */
+    points: Set<AstroPoint>,
     /** 兩星所形成的交角 */
     aspect: Aspect,
     /** 交會型態 : 接近 or 分離 */
@@ -57,7 +33,7 @@ data class AspectData(val angleData: IAngleData,
     orb: Double = 0.0,
     /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
     score: Double? = null,
-    gmtJulDay: GmtJulDay?
+    gmtJulDay: GmtJulDay
   ) : this(
     AngleData(PointAnglePattern.of(points, aspect.degree), gmtJulDay),
     type, orb, score
@@ -68,48 +44,26 @@ data class AspectData(val angleData: IAngleData,
     require(points.size == 2) { "INCORRECT points"}
   }
 
-
-  override fun toString(): String {
-    val typeString = type?.toString()
-      ?.substring(0, 1) ?: "?"
-    return StringBuilder("[$typeString] [${points.joinToString(", ") {it.toString(Locale.TRADITIONAL_CHINESE)}}] $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度").apply {
-      score?.also { score: Double ->
-        val s = (score * 100).toString()
-          .take(5)
-        append("，得分：$s")
-      }
-    }
-      .toString()
-  }
-
-
-  /** 傳入一個 point , 取得另一個 point , 如果沒有，則傳回 null  */
-  fun getAnotherPoint(thisPoint: AstroPoint): AstroPoint? {
-    return points.takeIf { it.contains(thisPoint) }
-      ?.minus(thisPoint)
-      ?.firstOrNull()
-  }
-
-  override fun compareTo(other: AspectData): Int {
-
-    val (thisP0, thisP1) = points.iterator()
-      .let {
-        it.next() to it.next()
-      }
-
-    val (thatP0, thatP1) = other.points.iterator()
-      .let {
-        it.next() to it.next()
-      }
-
-    return if (thisP0.javaClass.name == thatP0.javaClass.name && thisP0 == thatP0) {
-      if (thisP1.javaClass.name == thatP1.javaClass.name) (thisP1 as Comparable<AstroPoint>).compareTo(thatP1)
-      else pointComp.compare(thisP1, thatP1)
-    } else {
-      pointComp.compare(thisP0, thatP0)
-    }
-
-  }
+//  override fun compareTo(other: AspectData): Int {
+//
+//    val (thisP0, thisP1) = points.iterator()
+//      .let {
+//        it.next() to it.next()
+//      }
+//
+//    val (thatP0, thatP1) = other.points.iterator()
+//      .let {
+//        it.next() to it.next()
+//      }
+//
+//    return if (thisP0.javaClass.name == thatP0.javaClass.name && thisP0 == thatP0) {
+//      if (thisP1.javaClass.name == thatP1.javaClass.name) (thisP1 as Comparable<AstroPoint>).compareTo(thatP1)
+//      else pointComp.compare(thisP1, thatP1)
+//    } else {
+//      pointComp.compare(thisP0, thatP0)
+//    }
+//
+//  }
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -131,25 +85,18 @@ data class AspectData(val angleData: IAngleData,
 
 
   companion object {
-    val pointComp = AstroPointComparator()
+    private val pointComp = AstroPointComparator()
 
-    fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null, gmtJulDay: GmtJulDay? = null): AspectData {
+    fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null, gmtJulDay: GmtJulDay): AspectData {
       val points = if (p1 != p2) {
-        sortedSetOf(pointComp, p1, p2).toList()
+        sortedSetOf(pointComp, p1, p2)
       } else {
-        listOf(p1, p2)
+        listOf(p1, p2).toSet()
       }
 
       return AspectData(points, aspect, type, orb, score, gmtJulDay)
     }
 
-    fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, type: Type? = null, orb: Double = 0.0, score: Double? = null): AspectData {
-      return of(p1, p2, aspect, orb, score, type, null)
-    }
-
-    fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, orb: Double = 0.0): AspectData {
-      return of(p1, p2, aspect, null, orb, null)
-    }
   }
 
 

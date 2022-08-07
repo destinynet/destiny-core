@@ -4,8 +4,8 @@
 package destiny.core.astrology
 
 import com.google.common.collect.Sets
-import destiny.core.astrology.IAspectData.Type.APPLYING
-import destiny.core.astrology.IAspectData.Type.SEPARATING
+import destiny.core.astrology.IPointAspectPattern.Type.APPLYING
+import destiny.core.astrology.IPointAspectPattern.Type.SEPARATING
 import java.io.Serializable
 import kotlin.math.abs
 
@@ -13,9 +13,9 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
                             private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>) : IAspectsCalculator, Serializable {
 
 
-  override fun getAspectData(p1: AstroPoint, p2: AstroPoint,
-                             p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,
-                             laterForP1: () -> IPos?, laterForP2: () -> IPos?, aspects: Collection<Aspect>): AspectData? {
+  override fun getAspectPatterns(p1: AstroPoint, p2: AstroPoint,
+                                 p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,
+                                 laterForP1: () -> IPos?, laterForP2: () -> IPos?, aspects: Collection<Aspect>): IPointAspectPattern? {
     return aspects
       .intersect(aspectEffectiveImpl.applicableAspects)
       .asSequence()
@@ -33,7 +33,8 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
             val errorNext = abs(planetsAngleNext - aspect.degree)
 
             val type = if (errorNext <= error) APPLYING else SEPARATING
-            AspectData.of(p1, p2, aspect, error, score, type)
+            PointAspectPattern.of(p1, p2, aspect, type, error, score)
+            //AspectData.of(p1, p2, aspect, error, score, type)
           }
         }
 
@@ -41,7 +42,7 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
   }
 
 
-  private fun IHoroscopeModel.getAspectData(twoPoints: Set<AstroPoint>, aspects: Collection<Aspect>): AspectData? {
+  private fun IHoroscopeModel.getAspectData(twoPoints: Set<AstroPoint>, aspects: Collection<Aspect>): IPointAspectPattern? {
 
     val posMap: Map<AstroPoint, IPosWithAzimuth> = this.positionMap
 
@@ -60,13 +61,13 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
         val laterForP1: () -> IPos? = { pointPosFuncMap[p1]?.getPosition(later, location) }
         val laterForP2: () -> IPos? = { pointPosFuncMap[p2]?.getPosition(later, location) }
 
-        getAspectData(p1, p2, posMap, posMap, laterForP1, laterForP2, aspects)
+        getAspectPatterns(p1, p2, posMap, posMap, laterForP1, laterForP2, aspects)
       }
 
   }
 
   /** 針對整體 */
-  override fun IHoroscopeModel.getAspectData(points: Collection<AstroPoint>, aspects: Collection<Aspect>): Set<AspectData> {
+  override fun IHoroscopeModel.getAspectPatterns(points: Collection<AstroPoint>, aspects: Collection<Aspect>): Set<IPointAspectPattern> {
     return Sets.combinations(points.toSet(), 2)
       .asSequence()
       .mapNotNull { this.getAspectData(it, aspects) }
@@ -74,10 +75,10 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
   }
 
   /** 針對單一 */
-  override fun getAspectData(point: AstroPoint,
-                             h: IHoroscopeModel,
-                             points: Collection<AstroPoint>,
-                             aspects: Collection<Aspect>): Set<AspectData> {
+  override fun getAspectPatterns(point: AstroPoint,
+                                 h: IHoroscopeModel,
+                                 points: Collection<AstroPoint>,
+                                 aspects: Collection<Aspect>): Set<IPointAspectPattern> {
     return points
       .asSequence()
       .map { eachPoint -> setOf(point, eachPoint) }

@@ -4,7 +4,7 @@
 package destiny.core.astrology.classical
 
 import destiny.core.astrology.*
-import destiny.core.astrology.IAspectData.Type.APPLYING
+import destiny.core.astrology.IPointAspectPattern.Type.APPLYING
 import mu.KotlinLogging
 import java.io.Serializable
 import kotlin.math.abs
@@ -158,10 +158,10 @@ class CollectionOfLightImpl(private val besiegedImpl: IBesieged,
   override fun isCollecting(point: AstroPoint, h: IHoroscopeModel, p1: AstroPoint, p2: AstroPoint): Boolean {
 
     return with(aspectsCalculator) {
-      aspectsCalculator.getAspectData(p1, h, setOf(p1, p2), Aspect.getAspects(Aspect.Importance.HIGH))
+      aspectsCalculator.getAspectPatterns(p1, h, setOf(p1, p2), Aspect.getAspects(Aspect.Importance.HIGH))
         .takeIf { it.isEmpty() }
-        ?.takeIf { h.getAspectData(setOf(point, p1), aspects = Aspect.getAspects(Aspect.Importance.HIGH)).firstOrNull()?.type === APPLYING }
-        ?.takeIf { h.getAspectData(setOf(point, p2), aspects = Aspect.getAspects(Aspect.Importance.HIGH)).firstOrNull()?.type === APPLYING }
+        ?.takeIf { h.getAspectPatterns(setOf(point, p1), aspects = Aspect.getAspects(Aspect.Importance.HIGH)).firstOrNull()?.type === APPLYING }
+        ?.takeIf { h.getAspectPatterns(setOf(point, p2), aspects = Aspect.getAspects(Aspect.Importance.HIGH)).firstOrNull()?.type === APPLYING }
         ?.let { true }
         ?: false
     }

@@ -37,8 +37,8 @@ internal class ProgressionTertiaryTest {
       logger.info { "convergentJulDay = $convergentJulDay" }
       val convergentLmt = TimeTools.getLmtFromGmt(convergentJulDay, loc, julDayResolver)
       logger.info { "convergentLmt = $convergentLmt" }
-      // 大約 300 個月
-      assertEquals(natalLmt.toLocalDate().plusDays(300), convergentLmt.toLocalDate())
+      // 大約 278 個月
+      assertEquals(natalLmt.toLocalDate().plusDays(278), convergentLmt.toLocalDate())
 
       progression.getDivergentTime(natalGmtJulDay, convergentJulDay).also { divergentJulDay: GmtJulDay ->
         logger.info { "divergentJulDay = $divergentJulDay" }

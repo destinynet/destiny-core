@@ -5,12 +5,12 @@ package destiny.core.astrology.prediction
 
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.AstroPoint
-import destiny.core.astrology.IAspectData
+import destiny.core.astrology.IPointAspectPattern
 import destiny.core.calendar.GmtJulDay
 import java.io.Serializable
 
 
-interface IProgressedAspect : IAspectData {
+interface IProgressedAspect : IPointAspectPattern {
   val progressedPoint: AstroPoint
   val natalPoint: AstroPoint
 
@@ -22,12 +22,10 @@ data class ProgressedAspect(override val progressedPoint: AstroPoint,
                             override val natalPoint: AstroPoint,
                             override val aspect: Aspect,
                             override val orb: Double,
-                            override val type: IAspectData.Type,
+                            override val type: IPointAspectPattern.Type,
                             override val score: Double?) : IProgressedAspect {
 
   override val angle: Double = aspect.degree
-
-  override val gmtJulDay: GmtJulDay? = null
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -54,16 +52,19 @@ enum class ProgressionType {
   SECONDARY , TERTIARY , MINOR
 }
 
-interface IProgressionModel : Serializable {
-  val type : ProgressionType
+interface ITransitModel : Serializable {
   val natalTime: GmtJulDay
-  val progressionTime: GmtJulDay
+  val viewTime: GmtJulDay
+}
+
+interface IProgressionModel : ITransitModel {
+  val type : ProgressionType
   val convergentTime: GmtJulDay
   val progressedAspects: Set<IProgressedAspect>
 }
 
 data class ProgressionModel(override val type: ProgressionType,
                             override val natalTime: GmtJulDay,
-                            override val progressionTime: GmtJulDay,
+                            override val viewTime: GmtJulDay,
                             override val convergentTime: GmtJulDay,
                             override val progressedAspects: Set<IProgressedAspect>) : IProgressionModel
