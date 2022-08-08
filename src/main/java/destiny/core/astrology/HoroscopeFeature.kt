@@ -89,6 +89,12 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
     return getProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
   }
 
+  fun transit(model: IHoroscopeModel, transitTime: GmtJulDay, aspects: Collection<Aspect>,
+              aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig, converse: Boolean = false): IProgressionModel {
+    val progression = Transit(converse)
+    return getProgression(progression, model, transitTime, aspects, aspectsCalculator, config)
+  }
+
   fun getProgression(progression : AbstractProgression, model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Collection<Aspect>,
                      aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig) : IProgressionModel {
 
@@ -126,10 +132,7 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
   }
 
 
-  fun transit(model: IHoroscopeModel, transitTime: GmtJulDay, aspects: Collection<Aspect>,
-              aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig, converse: Boolean = false) {
-    TODO("TransitModel")
-  }
+
 
   companion object {
     private val logger = KotlinLogging.logger { }

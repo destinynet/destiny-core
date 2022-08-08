@@ -4,10 +4,15 @@
 package destiny.core.astrology.prediction
 
 import destiny.core.calendar.GmtJulDay
-import java.io.Serializable
 
 
-class Transit(override val converse: Boolean = false) : ILinear, Conversable, Serializable {
+class Transit(override val converse: Boolean = false) : AbstractProgression() {
+
+  override val type: ProgressionType = ProgressionType.TRANSIT
+
+  override val numerator: Double = 1.0
+
+  override val denominator: Double = 1.0
 
   override fun getDivergentTime(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): GmtJulDay {
     return if (!converse) {

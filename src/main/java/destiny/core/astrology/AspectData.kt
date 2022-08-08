@@ -15,9 +15,8 @@ interface IAspectData : IPointAspectPattern, IGmtJulDay
 /**
  * 存放兩顆「不同」星體交角的資料結構
  * */
-data class AspectData(
+data class AspectData internal constructor(
   val pointAspectPattern: PointAspectPattern,
-  //val angleData: IAngleData,
   /** 交會型態 : 接近 or 分離 */
   override val type: Type? = null,
   /** orb 不列入 equals / hashCode 計算  */
@@ -41,7 +40,6 @@ data class AspectData(
     gmtJulDay: GmtJulDay
   ) : this(
     PointAspectPattern(points.toList(), aspect.degree, type, orb, score),
-    //AngleData(PointAnglePattern.of(points, aspect.degree), gmtJulDay),
     type, orb, score, gmtJulDay
   )
 
@@ -49,27 +47,6 @@ data class AspectData(
   init {
     require(points.size == 2) { "INCORRECT points" }
   }
-
-//  override fun compareTo(other: AspectData): Int {
-//
-//    val (thisP0, thisP1) = points.iterator()
-//      .let {
-//        it.next() to it.next()
-//      }
-//
-//    val (thatP0, thatP1) = other.points.iterator()
-//      .let {
-//        it.next() to it.next()
-//      }
-//
-//    return if (thisP0.javaClass.name == thatP0.javaClass.name && thisP0 == thatP0) {
-//      if (thisP1.javaClass.name == thatP1.javaClass.name) (thisP1 as Comparable<AstroPoint>).compareTo(thatP1)
-//      else pointComp.compare(thisP1, thatP1)
-//    } else {
-//      pointComp.compare(thisP0, thatP0)
-//    }
-//
-//  }
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -109,7 +86,6 @@ data class AspectData(
           of(p1, p2, aspect, orb, score, type, gmtJulDay)
         }
     }
-
   }
 
 

@@ -20,8 +20,6 @@ interface IAngleData : IPointAnglePattern , IGmtJulDay {
   fun toAspectData(): AspectData? {
     return Aspect.getAspect(angle)?.let { aspect ->
       AspectData.of(this.points, aspect , abs(aspect.degree - angle), null , null , gmtJulDay)
-      //AspectData(this.points, null , abs(aspect.degree - angle) , null ,null)
-      //AspectData(this, null, abs(aspect.degree - angle))
     }
   }
 }

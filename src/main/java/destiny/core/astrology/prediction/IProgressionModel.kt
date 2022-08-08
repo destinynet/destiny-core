@@ -49,7 +49,7 @@ data class ProgressedAspect(override val progressedPoint: AstroPoint,
 }
 
 enum class ProgressionType {
-  SECONDARY , TERTIARY , MINOR
+  TRANSIT, SECONDARY, TERTIARY, MINOR
 }
 
 interface ITransitModel : Serializable {
