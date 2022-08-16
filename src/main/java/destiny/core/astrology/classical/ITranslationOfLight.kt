@@ -20,7 +20,7 @@ interface ITranslationOfLight {
 /**
  * Translation of Light 的定義以及演算法 :
  * 根據此文的定義
- * http://destiny.to/ubbthreads/ubbthreads.php/posts/6999
+ * https://destiny.to/ubbthreads/ubbthreads.php/posts/6999
  * 「(1)某行星運行速度快於兩個徵象星,
  * 且(2)該行星與一個徵象星有出相位, 與另一個有入相位,
  *   (3)而這兩個徵象星彼此是出相位」

@@ -15,7 +15,7 @@ import java.io.Serializable
 /**
  * 地支藏干標準實作
  * 潘文欽有另一套說法：
- * http://destiny.to/ubbthreads/files/1704571-%E8%97%8F%E5%B9%B2.jpg
+ * https://destiny.to/ubbthreads/files/1704571-%E8%97%8F%E5%B9%B2.jpg
  */
 class HiddenStemsStandardImpl : IHiddenStems, Serializable {
 
