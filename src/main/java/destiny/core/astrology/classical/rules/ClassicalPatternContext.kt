@@ -228,7 +228,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return h.getHouse(planet)
         ?.takeIf { it == 9 }
-        ?.let { _ ->
+        ?.let {
           AccidentalDignity.House_9(planet)
         }
         ?.let { pattern -> listOf(pattern) } ?: emptyList()
@@ -240,7 +240,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return h.getHouse(planet)
         ?.takeIf { it == 3 }
-        ?.let { _ ->
+        ?.let {
           AccidentalDignity.House_3(planet)
         }
         ?.let { pattern -> listOf(pattern) } ?: emptyList()
@@ -308,7 +308,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return planet.takeIf { it === MERCURY || it === VENUS }
-        ?.let { it -> h.getPosition(it) }?.lngDeg?.let { planetDeg ->
+        ?.let { h.getPosition(it) }?.lngDeg?.let { planetDeg ->
         h.getPosition(SUN)?.lngDeg?.takeIf { sunDeg ->
           planetDeg.isOccidental(sunDeg)
         }?.let {
@@ -614,13 +614,13 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       return planet.takeIf { it !== MOON && it !== SUN }
         ?.let {
 
-          planet.takeIf { it !== MARS }?.let { _ ->
+          planet.takeIf { it !== MARS }?.let {
             refranationImpl.getImportantResult(h, planet, MARS)?.let { pair ->
               val aspect = pair.second
               logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, MARS, aspect)
               AccidentalDignity.Refrain_from_Mars_Saturn(planet, MARS, aspect)
             }
-          } ?: planet.takeIf { it !== SATURN }?.let { _ ->
+          } ?: planet.takeIf { it !== SATURN }?.let {
             refranationImpl.getImportantResult(h, planet, SATURN)?.let { pair ->
               val aspect = pair.second
               logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, SATURN, aspect)
@@ -932,7 +932,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
         h.getPosition(FixedStar.ALGOL)?.lngDeg?.takeIf { algolDeg ->
           AspectEffectiveModern.isEffective(planetDeg, algolDeg, CONJUNCTION, 5.0)
-        }?.let { _ ->
+        }?.let {
           logger.debug("{} 與 {} 形成 {}", planet, FixedStar.ALGOL, CONJUNCTION)
           Debility.Conj_Algol(planet)
         }

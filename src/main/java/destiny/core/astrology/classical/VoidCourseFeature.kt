@@ -90,12 +90,12 @@ class VoidCourseFeature(private val vocMap: Map<VoidCourseImpl, IVoidCourse>,
     fun getNextVoc(gmt : GmtJulDay): VoidCourse? {
 
       return relativeTransitImpl.getNearestRelativeTransitGmtJulDay(config.planet, planets, gmt, aspects, true)
-        ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay!! < toGmt }
-        ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay!! > fromGmt }
+        ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay < toGmt }
+        ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay > fromGmt }
         ?.let { nextAspectData ->
-          logger.trace { "接下來將在 ${julDayResolver.getLocalDateTime(nextAspectData.gmtJulDay!!)} 與 ${nextAspectData.points} 形成 ${nextAspectData.aspect}" }
+          logger.trace { "接下來將在 ${julDayResolver.getLocalDateTime(nextAspectData.gmtJulDay)} 與 ${nextAspectData.points} 形成 ${nextAspectData.aspect}" }
 
-          val nextTime: GmtJulDay = nextAspectData.gmtJulDay!! + 0.01
+          val nextTime: GmtJulDay = nextAspectData.gmtJulDay + 0.01
           logger.trace { "推進計算時刻 ${julDayResolver.getLocalDateTime(nextTime)}" }
           getModel(nextTime , loc , config)?:getNextVoc(nextTime)
         }
@@ -117,7 +117,7 @@ class VoidCourseFeature(private val vocMap: Map<VoidCourseImpl, IVoidCourse>,
     }
 
     return generateSequence(getVoc(fromGmt , config)) {
-      val newGmt = (min(it.endGmt.value, it.exactAspectAfter.gmtJulDay!!.value) + 0.01).toGmtJulDay()
+      val newGmt = (min(it.endGmt.value, it.exactAspectAfter.gmtJulDay.value) + 0.01).toGmtJulDay()
       if (newGmt < toGmt) {
         getVoc(newGmt, config)?.takeIf { voc -> voc.beginGmt < toGmt }
       } else

@@ -40,12 +40,12 @@ sealed interface IVoidCourse : Descriptive {
     fun getNextVoc(gmt : GmtJulDay): Misc.VoidCourse? {
 
       return relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, planets, gmt, aspects, true)
-        ?.takeIf { nextAspectData: IAspectData -> nextAspectData.gmtJulDay!! < toGmt }
-        ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay!! > fromGmt }
+        ?.takeIf { nextAspectData: IAspectData -> nextAspectData.gmtJulDay < toGmt }
+        ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay > fromGmt }
         ?.let { nextAspectData ->
-          logger.trace { "接下來將在 ${julDayResolver.getLocalDateTime(nextAspectData.gmtJulDay!!)} 與 ${nextAspectData.points} 形成 ${nextAspectData.aspect}" }
+          logger.trace { "接下來將在 ${julDayResolver.getLocalDateTime(nextAspectData.gmtJulDay)} 與 ${nextAspectData.points} 形成 ${nextAspectData.aspect}" }
 
-          val nextTime: GmtJulDay = nextAspectData.gmtJulDay!! + 0.01
+          val nextTime: GmtJulDay = nextAspectData.gmtJulDay + 0.01
           logger.trace { "推進計算時刻 ${julDayResolver.getLocalDateTime(nextTime)}" }
           getVoidCourse(nextTime, loc, pointPosFuncMap, planet, centric) ?: getNextVoc(nextTime)
         }
@@ -67,7 +67,7 @@ sealed interface IVoidCourse : Descriptive {
     }
 
     return generateSequence(getVoc(fromGmt)) {
-      val newGmt = (min(it.endGmt.value , it.exactAspectAfter.gmtJulDay!!.value) + 0.01).toGmtJulDay()
+      val newGmt = (min(it.endGmt.value , it.exactAspectAfter.gmtJulDay.value) + 0.01).toGmtJulDay()
       if (newGmt < toGmt) {
         getVoc(newGmt)?.takeIf { voc -> voc.beginGmt < toGmt }
       } else
@@ -115,8 +115,8 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
         val p1 = exactAspectPrior.points.first { it != planet } as Planet
         val p2 = exactAspectAfter.points.first { it != planet } as Planet
 
-        val pos1 = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay!!, loc).lngDeg
-        val pos2 = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, loc).lngDeg
+        val pos1 = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay, loc).lngDeg
+        val pos2 = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay, loc).lngDeg
 
         pointPosFuncMap[planet]?.getPosition(gmtJulDay, loc, centric)?.lngDeg?.let { planetDeg: ZodiacDegree ->
           planet.takeIf {
@@ -130,7 +130,7 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
             橫跨共 ${pos1.getAngle(pos2)} 度 , 超過 30度。
           """.trimIndent()
             }
-            Misc.VoidCourse(planet, exactAspectPrior.gmtJulDay!!, pos1, exactAspectAfter.gmtJulDay!!, pos2, exactAspectPrior, exactAspectAfter)
+            Misc.VoidCourse(planet, exactAspectPrior.gmtJulDay, pos1, exactAspectAfter.gmtJulDay, pos2, exactAspectPrior, exactAspectAfter)
           }
         }
       }
@@ -175,8 +175,8 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
 
 
         pointPosFuncMap[planet]?.getPosition(gmtJulDay, loc, centric)?.lngDeg?.let { planetDeg: ZodiacDegree ->
-          val planetExactPosPrior = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay!!, loc)
-          val planetExactPosAfter = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, loc)
+          val planetExactPosPrior = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay, loc)
+          val planetExactPosAfter = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay, loc)
 
           val combinedMoiety = (pointDiameter.getDiameter(planet) + pointDiameter.getDiameter(p2)) / 2
 
@@ -237,7 +237,7 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->
 
-        val pos2 = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, loc).lngDeg
+        val pos2 = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay, loc).lngDeg
 
         pointPosFuncMap[planet]?.getPosition(gmtJulDay, loc, centric)?.lngDeg?.let { planetDeg: ZodiacDegree ->
           planet.takeIf {
@@ -246,7 +246,7 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
           }?.let {
             // 計算進入下一個星座的時間
             val nextSign = planetDeg.sign.next
-            val beginGmt = exactAspectPrior.gmtJulDay!!
+            val beginGmt = exactAspectPrior.gmtJulDay
             val beginDegree = starPositionImpl.getPosition(planet, beginGmt, loc).lngDeg
             val endGmt = starTransitImpl.getNextTransitGmt(planet, nextSign.degree.toZodiacDegree(), gmtJulDay, true)
             val endDegree = nextSign.degree.toZodiacDegree()
