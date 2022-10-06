@@ -20,11 +20,11 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IPlanetaryHour {
 
-  fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: Location): PlanetaryHour
+  fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: Location): PlanetaryHour?
 
-  fun getPlanetaryHour(lmt: ChronoLocalDateTime<*>, loc: Location): Planet {
+  fun getPlanetaryHour(lmt: ChronoLocalDateTime<*>, loc: Location): Planet? {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getPlanetaryHour(gmtJulDay, loc).planet
+    return getPlanetaryHour(gmtJulDay, loc)?.planet
   }
 
   fun getPlanetaryHours(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: Location): List<PlanetaryHour>

@@ -26,12 +26,12 @@ import java.time.temporal.ChronoField
 class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans,
                         private val julDayResolver: JulDayResolver) : IPlanetaryHour, Serializable {
 
-  override fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: Location): PlanetaryHour {
+  override fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: Location): PlanetaryHour? {
 
-    val t: HourIndexOfDay = getHourIndexOfDay(gmtJulDay, loc)
-
-    val planet = getPlanet(t.hourIndex, gmtJulDay, loc)
-    return PlanetaryHour(t.hourStart, t.hourEnd, t.dayNight, planet, loc)
+    return getHourIndexOfDay(gmtJulDay, loc)?.let { t ->
+      val planet = getPlanet(t.hourIndex, gmtJulDay, loc)
+      PlanetaryHour(t.hourStart, t.hourEnd, t.dayNight, planet, loc)
+    }
   } // getPlanetaryHour
 
 
@@ -41,10 +41,11 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans,
     }
 
 
-    fun fromGmtToPlanetaryHour(gmt: GmtJulDay): PlanetaryHour {
-      val r: HourIndexOfDay = getHourIndexOfDay(gmt, loc)
-      val planet = getPlanet(r.hourIndex, r.hourStart, loc)
-      return PlanetaryHour(r.hourStart, r.hourEnd, r.dayNight, planet, loc)
+    fun fromGmtToPlanetaryHour(gmt: GmtJulDay): PlanetaryHour? {
+      return getHourIndexOfDay(gmt, loc)?.let { r ->
+        val planet = getPlanet(r.hourIndex, r.hourStart, loc)
+        PlanetaryHour(r.hourStart, r.hourEnd, r.dayNight, planet, loc)
+      }
     }
 
     return generateSequence(fromGmtToPlanetaryHour(fromGmt)) {
@@ -65,43 +66,45 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans,
     val dayNight: DayNight
   )
 
-  private fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: Location): HourIndexOfDay {
+  private fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: Location): HourIndexOfDay? {
 
-    // TODO : 極區內可能不適用
-    val nextRising = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, RISING, loc)!!
-    val nextSetting = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, SETTING, loc)!!
+    // 極區內可能不適用
+    return riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, RISING, loc)?.let { nextRising ->
+      riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, SETTING, loc)?.let { nextSetting ->
+        val halfDayIndex: HourIndexOfDay
+        val dayNight: DayNight
+        if (nextRising < nextSetting) {
+          // 目前是黑夜
+          dayNight = DayNight.NIGHT
+          // 先計算「接近上一個中午」的時刻，這裡不用算得很精準
+          val nearPrevMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, MERIDIAN, loc)!! - 1 // 記得減一
+          // 接著，計算「上一個」日落時刻
+          val prevSetting = riseTransImpl.getGmtTransJulDay(nearPrevMeridian, SUN, SETTING, loc)!!
 
-    val halfDayIndex: HourIndexOfDay
-    val dayNight: DayNight
-    if (nextRising < nextSetting) {
-      // 目前是黑夜
-      dayNight = DayNight.NIGHT
-      // 先計算「接近上一個中午」的時刻，這裡不用算得很精準
-      val nearPrevMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, MERIDIAN, loc)!! - 1 // 記得減一
-      // 接著，計算「上一個」日落時刻
-      val prevSetting = riseTransImpl.getGmtTransJulDay(nearPrevMeridian, SUN, SETTING, loc)!!
+          halfDayIndex = getHourIndexOfHalfDay(prevSetting, nextRising, gmtJulDay).let {
+            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight)
+          }
+        } else {
+          // 目前是白天
+          dayNight = DayNight.DAY
+          // 先計算「接近上一個子正的時刻」，這禮不用算得很經準
+          val nearPrevMidNight = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, NADIR, loc)!! - 1 // 記得減一
+          // 接著，計算「上一個」日出時刻
+          val prevRising = riseTransImpl.getGmtTransJulDay(nearPrevMidNight, SUN, RISING, loc)!!
 
-      halfDayIndex = getHourIndexOfHalfDay(prevSetting, nextRising, gmtJulDay).let {
-        HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight)
+          halfDayIndex = getHourIndexOfHalfDay(prevRising, nextSetting, gmtJulDay).let {
+            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight)
+          }
+        }
+
+        halfDayIndex.let {
+          if (dayNight == DayNight.NIGHT) {
+            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex + 12, it.dayNight)
+          } else
+            it
+        }
+
       }
-    } else {
-      // 目前是白天
-      dayNight = DayNight.DAY
-      // 先計算「接近上一個子正的時刻」，這禮不用算得很經準
-      val nearPrevMidNight = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, NADIR, loc)!! - 1 // 記得減一
-      // 接著，計算「上一個」日出時刻
-      val prevRising = riseTransImpl.getGmtTransJulDay(nearPrevMidNight, SUN, RISING, loc)!!
-
-      halfDayIndex = getHourIndexOfHalfDay(prevRising, nextSetting, gmtJulDay).let {
-        HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight)
-      }
-    }
-
-    return halfDayIndex.let {
-      if (dayNight == DayNight.NIGHT) {
-        HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex + 12, it.dayNight)
-      } else
-        it
     }
   }
 
