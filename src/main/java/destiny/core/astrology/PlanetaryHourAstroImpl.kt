@@ -25,8 +25,8 @@ import javax.inject.Named
  * 晝夜、分別劃分 12等分
  */
 @Named
-class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans,
-                        private val julDayResolver: JulDayResolver) : IPlanetaryHour, Serializable {
+class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans,
+                             private val julDayResolver: JulDayResolver) : IPlanetaryHour, Serializable {
 
   override fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): PlanetaryHour? {
 

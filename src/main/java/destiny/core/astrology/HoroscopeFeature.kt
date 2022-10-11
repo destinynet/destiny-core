@@ -140,10 +140,10 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
 }
 
 @Named
-class HoroscopeFeature(private val pointPosFuncMap: Map<AstroPoint, IPosition<*>> ,
+class HoroscopeFeature(private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>,
                        private val houseCuspFeature: IHouseCuspFeature,
                        private val voidCourseFeature: IVoidCourseFeature,
-                       private val planetaryHourImpl: IPlanetaryHour,
+                       private val planetHourFeature: Feature<PlanetaryHourConfig, PlanetaryHour?>,
                        @Transient
                        private val horoscopeFeatureCache : Cache<GmtCacheKey<*>, IHoroscopeModel>) : AbstractCachedFeature<HoroscopeConfig, IHoroscopeModel>(), IHoroscopeFeature {
   override val key: String = "horoscope"
@@ -168,7 +168,7 @@ class HoroscopeFeature(private val pointPosFuncMap: Map<AstroPoint, IPosition<*>
     val vocMap: Map<Planet, Misc.VoidCourse> = voidCourseFeature.getVocMap(gmtJulDay, loc, config.points, VoidCourseConfig(vocImpl = config.vocImpl))
 
     // 行星時 Planetary Hour
-    val planetaryHour = planetaryHourImpl.getPlanetaryHour(gmtJulDay, loc, TransConfig(temperature = config.temperature , pressure = config.pressure))
+    val planetaryHour = planetHourFeature.getModel(gmtJulDay, loc, PlanetaryHourConfig(PlanetaryHourType.ASTRO, TransConfig(temperature = config.temperature, pressure = config.pressure)))
 
     return HoroscopeModel(gmtJulDay, loc, config, positionMap, cuspDegreeMap, vocMap, planetaryHour)
   }

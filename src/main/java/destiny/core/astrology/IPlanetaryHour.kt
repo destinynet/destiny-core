@@ -14,8 +14,6 @@ import java.time.chrono.ChronoLocalDateTime
  *
  * http://pansci.asia/archives/126644
  *
- * http://www.astrology.com.tr/planetary-hours.asp
- * 晝夜、分別劃分 12等分
  */
 interface IPlanetaryHour {
 
