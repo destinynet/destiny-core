@@ -5,8 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.DayNight
 import destiny.core.calendar.GmtJulDay
-import destiny.core.calendar.Location
-
+import destiny.core.calendar.ILocation
 import java.io.Serializable
 
 /**
@@ -24,4 +23,4 @@ data class PlanetaryHour(
 
   val planet: Planet,
 
-  val location: Location) : Serializable
+  val location: ILocation) : Serializable

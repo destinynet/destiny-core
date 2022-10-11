@@ -4,9 +4,8 @@
 package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
-
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -20,18 +19,18 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IPlanetaryHour {
 
-  fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: Location): PlanetaryHour?
+  fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig = TransConfig()): PlanetaryHour?
 
-  fun getPlanetaryHour(lmt: ChronoLocalDateTime<*>, loc: Location): Planet? {
+  fun getPlanetaryHour(lmt: ChronoLocalDateTime<*>, loc: ILocation, transConfig: TransConfig = TransConfig()): Planet? {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getPlanetaryHour(gmtJulDay, loc)?.planet
+    return getPlanetaryHour(gmtJulDay, loc, transConfig)?.planet
   }
 
-  fun getPlanetaryHours(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: Location): List<PlanetaryHour>
+  fun getPlanetaryHours(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, transConfig: TransConfig = TransConfig()): List<PlanetaryHour>
 
-  fun getPlanetaryHours(fromLmt: ChronoLocalDateTime<*>, toLmt: ChronoLocalDateTime<*>, loc: Location): List<PlanetaryHour> {
+  fun getPlanetaryHours(fromLmt: ChronoLocalDateTime<*>, toLmt: ChronoLocalDateTime<*>, loc: ILocation, transConfig: TransConfig = TransConfig()): List<PlanetaryHour> {
     val fromGmt = TimeTools.getGmtJulDay(fromLmt, loc)
     val toGmt = TimeTools.getGmtJulDay(toLmt, loc)
-    return getPlanetaryHours(fromGmt, toGmt, loc)
+    return getPlanetaryHours(fromGmt, toGmt, loc, transConfig)
   }
 }

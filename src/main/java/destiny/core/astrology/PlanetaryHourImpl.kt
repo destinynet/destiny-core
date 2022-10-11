@@ -8,13 +8,14 @@ import destiny.core.astrology.Planet.*
 import destiny.core.astrology.TransPoint.*
 import destiny.core.calendar.Constants.SECONDS_OF_DAY
 import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import mu.KotlinLogging
 import org.apache.commons.lang3.ArrayUtils
 import java.io.Serializable
 import java.time.temporal.ChronoField
+import javax.inject.Named
 
 /**
  * http://www.astrology.com.tr/planetary-hours.asp
@@ -23,26 +24,27 @@ import java.time.temporal.ChronoField
  *
  * 晝夜、分別劃分 12等分
  */
+@Named
 class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans,
                         private val julDayResolver: JulDayResolver) : IPlanetaryHour, Serializable {
 
-  override fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: Location): PlanetaryHour? {
+  override fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): PlanetaryHour? {
 
-    return getHourIndexOfDay(gmtJulDay, loc)?.let { t ->
+    return getHourIndexOfDay(gmtJulDay, loc, transConfig)?.let { t ->
       val planet = getPlanet(t.hourIndex, gmtJulDay, loc)
       PlanetaryHour(t.hourStart, t.hourEnd, t.dayNight, planet, loc)
     }
-  } // getPlanetaryHour
+  }
 
 
-  override fun getPlanetaryHours(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: Location): List<PlanetaryHour> {
+  override fun getPlanetaryHours(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, transConfig: TransConfig): List<PlanetaryHour> {
     require(fromGmt < toGmt) {
       "fromGmt : $fromGmt larger than or equal to toGmt : $toGmt"
     }
 
 
     fun fromGmtToPlanetaryHour(gmt: GmtJulDay): PlanetaryHour? {
-      return getHourIndexOfDay(gmt, loc)?.let { r ->
+      return getHourIndexOfDay(gmt, loc, transConfig)?.let { r ->
         val planet = getPlanet(r.hourIndex, r.hourStart, loc)
         PlanetaryHour(r.hourStart, r.hourEnd, r.dayNight, planet, loc)
       }
@@ -66,20 +68,20 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans,
     val dayNight: DayNight
   )
 
-  private fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: Location): HourIndexOfDay? {
+  private fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): HourIndexOfDay? {
 
     // 極區內可能不適用
-    return riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, RISING, loc)?.let { nextRising ->
-      riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, SETTING, loc)?.let { nextSetting ->
+    return riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, RISING, loc, transConfig)?.let { nextRising ->
+      riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, SETTING, loc, transConfig)?.let { nextSetting ->
         val halfDayIndex: HourIndexOfDay
         val dayNight: DayNight
         if (nextRising < nextSetting) {
           // 目前是黑夜
           dayNight = DayNight.NIGHT
           // 先計算「接近上一個中午」的時刻，這裡不用算得很精準
-          val nearPrevMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, MERIDIAN, loc)!! - 1 // 記得減一
+          val nearPrevMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, MERIDIAN, loc, transConfig)!! - 1 // 記得減一
           // 接著，計算「上一個」日落時刻
-          val prevSetting = riseTransImpl.getGmtTransJulDay(nearPrevMeridian, SUN, SETTING, loc)!!
+          val prevSetting = riseTransImpl.getGmtTransJulDay(nearPrevMeridian, SUN, SETTING, loc, transConfig)!!
 
           halfDayIndex = getHourIndexOfHalfDay(prevSetting, nextRising, gmtJulDay).let {
             HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight)
@@ -88,9 +90,9 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans,
           // 目前是白天
           dayNight = DayNight.DAY
           // 先計算「接近上一個子正的時刻」，這禮不用算得很經準
-          val nearPrevMidNight = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, NADIR, loc)!! - 1 // 記得減一
+          val nearPrevMidNight = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, NADIR, loc, transConfig)!! - 1 // 記得減一
           // 接著，計算「上一個」日出時刻
-          val prevRising = riseTransImpl.getGmtTransJulDay(nearPrevMidNight, SUN, RISING, loc)!!
+          val prevRising = riseTransImpl.getGmtTransJulDay(nearPrevMidNight, SUN, RISING, loc, transConfig)!!
 
           halfDayIndex = getHourIndexOfHalfDay(prevRising, nextSetting, gmtJulDay).let {
             HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight)
@@ -122,33 +124,31 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans,
 
     val avgHour = (to - from) / 12.0
 
-    // TODO : 這裡應該有更 functional 的解法！
-    for (i in 1..11) {
+    return (1..11).map { i ->
       val stepFrom = from + avgHour * (i - 1)
       val stepTo = from + avgHour * i
-      if (gmtJulDay >= stepFrom && gmtJulDay < stepTo) {
-        return HourIndexOfHalfDay(stepFrom, stepTo, i)
-      }
-    }
-    return HourIndexOfHalfDay(from + avgHour * 11, to, 12)
-  } // getHourIndexOfHalfDay , return 1 to 12
+      Triple(stepFrom, stepTo , i)
+    }.firstOrNull { (stepFrom, stepTo) -> gmtJulDay >= stepFrom && gmtJulDay < stepTo }
+      ?.let { (stepFrom , stepTo, index) -> HourIndexOfHalfDay(stepFrom, stepTo, index)}
+      ?: HourIndexOfHalfDay(from + avgHour * 11, to, 12)
+  }
 
 
-  private fun getPlanet(hourIndexOfDay: Int, gmtJulDay: GmtJulDay, loc: Location): Planet {
+  private fun getPlanet(hourIndexOfDay: Int, gmtJulDay: GmtJulDay, loc: ILocation): Planet {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
     // 1:星期一 , 2:星期二 ... , 6:星期六 , 7:星期日
     val dayOfWeek = lmt.get(ChronoField.DAY_OF_WEEK)
 
-    logger.debug("dayOfWeek = {}", dayOfWeek)
+    logger.trace("dayOfWeek = {}", dayOfWeek)
 
     // from 0 to 6
     val indexOfDayTable = ArrayUtils.indexOf(seqDay, dayOfWeek)
-    logger.debug("indexOfDayTable = {}", indexOfDayTable)
+    logger.trace("indexOfDayTable = {}", indexOfDayTable)
 
     // 0 to (24x7-1)
     val hourIndexFromSaturday = indexOfDayTable * 24 + hourIndexOfDay - 1
-    logger.debug("hourIndexFromSaturday = {}", hourIndexFromSaturday)
+    logger.trace("hourIndexFromSaturday = {}", hourIndexFromSaturday)
 
     return seqPlanet[hourIndexFromSaturday % 7]
   }
