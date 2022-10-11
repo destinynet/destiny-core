@@ -6,6 +6,7 @@ package destiny.core.astrology
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
+import destiny.tools.Feature
 import javax.inject.Named
 
 
@@ -17,8 +18,11 @@ enum class PlanetaryHourType {
 data class PlanetaryHourConfig(val type: PlanetaryHourType = PlanetaryHourType.ASTRO,
                                val transConfig: TransConfig = TransConfig())
 
+interface IPlanetaryHourFeature : Feature<PlanetaryHourConfig, PlanetaryHour?>
+
 @Named
-class PlanetaryHourFeature(private val astroHourImplMap : Map<PlanetaryHourType, IPlanetaryHour>) : AbstractCachedFeature<PlanetaryHourConfig, PlanetaryHour?>() {
+class PlanetaryHourFeature(private val astroHourImplMap : Map<PlanetaryHourType, IPlanetaryHour>) : AbstractCachedFeature<PlanetaryHourConfig, PlanetaryHour?>() ,
+                                                                                                    IPlanetaryHourFeature {
 
   override val defaultConfig: PlanetaryHourConfig = PlanetaryHourConfig()
 
