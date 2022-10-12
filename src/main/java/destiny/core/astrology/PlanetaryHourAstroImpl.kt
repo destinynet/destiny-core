@@ -4,17 +4,15 @@
 package destiny.core.astrology
 
 import destiny.core.DayNight
+import destiny.core.astrology.IPlanetaryHour.HourIndexOfDay
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.TransPoint.*
 import destiny.core.calendar.Constants.SECONDS_OF_DAY
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.TimeTools
 import mu.KotlinLogging
-import org.apache.commons.lang3.ArrayUtils
 import java.io.Serializable
-import java.time.temporal.ChronoField
 import javax.inject.Named
 
 /**
@@ -31,7 +29,7 @@ class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans,
   override fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): PlanetaryHour? {
 
     return getHourIndexOfDay(gmtJulDay, loc, transConfig)?.let { t ->
-      val planet = getPlanet(t.hourIndex, gmtJulDay, loc)
+      val planet = getPlanet(t.hourIndex, gmtJulDay, loc, julDayResolver)
       PlanetaryHour(t.hourStart, t.hourEnd, t.dayNight, planet, loc)
     }
   }
@@ -45,7 +43,7 @@ class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans,
 
     fun fromGmtToPlanetaryHour(gmt: GmtJulDay): PlanetaryHour? {
       return getHourIndexOfDay(gmt, loc, transConfig)?.let { r ->
-        val planet = getPlanet(r.hourIndex, r.hourStart, loc)
+        val planet = getPlanet(r.hourIndex, r.hourStart, loc, julDayResolver)
         PlanetaryHour(r.hourStart, r.hourEnd, r.dayNight, planet, loc)
       }
     }
@@ -58,17 +56,10 @@ class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans,
   } // getPlanetaryHours , 一段時間內的 Planetary Hours
 
 
-  /**
-   * @param hourIndex 整天 的 hour index , from 1 to 24
-   */
-  private data class HourIndexOfDay(
-    val hourStart: GmtJulDay,
-    val hourEnd: GmtJulDay,
-    val hourIndex: Int,
-    val dayNight: DayNight
-  )
 
-  private fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): HourIndexOfDay? {
+
+
+  override fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): HourIndexOfDay? {
 
     // 極區內可能不適用
     return riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, RISING, loc, transConfig)?.let { nextRising ->
@@ -134,24 +125,24 @@ class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans,
   }
 
 
-  private fun getPlanet(hourIndexOfDay: Int, gmtJulDay: GmtJulDay, loc: ILocation): Planet {
-    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-
-    // 1:星期一 , 2:星期二 ... , 6:星期六 , 7:星期日
-    val dayOfWeek = lmt.get(ChronoField.DAY_OF_WEEK)
-
-    logger.trace("dayOfWeek = {}", dayOfWeek)
-
-    // from 0 to 6
-    val indexOfDayTable = ArrayUtils.indexOf(seqDay, dayOfWeek)
-    logger.trace("indexOfDayTable = {}", indexOfDayTable)
-
-    // 0 to (24x7-1)
-    val hourIndexFromSaturday = indexOfDayTable * 24 + hourIndexOfDay - 1
-    logger.trace("hourIndexFromSaturday = {}", hourIndexFromSaturday)
-
-    return seqPlanet[hourIndexFromSaturday % 7]
-  }
+//  private fun getPlanet(hourIndexOfDay: Int, gmtJulDay: GmtJulDay, loc: ILocation): Planet {
+//    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
+//
+//    // 1:星期一 , 2:星期二 ... , 6:星期六 , 7:星期日
+//    val dayOfWeek = lmt.get(ChronoField.DAY_OF_WEEK)
+//
+//    logger.trace("dayOfWeek = {}", dayOfWeek)
+//
+//    // from 0 to 6
+//    val indexOfDayTable = ArrayUtils.indexOf(seqDay, dayOfWeek)
+//    logger.trace("indexOfDayTable = {}", indexOfDayTable)
+//
+//    // 0 to (24x7-1)
+//    val hourIndexFromSaturday = indexOfDayTable * 24 + hourIndexOfDay - 1
+//    logger.trace("hourIndexFromSaturday = {}", hourIndexFromSaturday)
+//
+//    return seqPlanet[hourIndexFromSaturday % 7]
+//  }
 
   companion object {
     private val logger = KotlinLogging.logger { }
