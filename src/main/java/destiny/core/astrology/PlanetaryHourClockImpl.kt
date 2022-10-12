@@ -41,7 +41,4 @@ class PlanetaryHourClockImpl(private val julDayResolver: JulDayResolver) : IPlan
     TODO("Not yet implemented")
   }
 
-  override fun getPlanetaryHours(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, transConfig: TransConfig): List<PlanetaryHour> {
-    TODO("Not yet implemented")
-  }
 }

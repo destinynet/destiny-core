@@ -5,10 +5,8 @@ package destiny.core.astrology
 
 import destiny.core.DayNight
 import destiny.core.astrology.Planet.*
-import destiny.core.calendar.GmtJulDay
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.*
+import destiny.core.calendar.Constants
 import mu.KotlinLogging
 import org.apache.commons.lang3.ArrayUtils
 import java.time.chrono.ChronoLocalDateTime
@@ -23,6 +21,9 @@ import java.time.temporal.ChronoField
  */
 interface IPlanetaryHour {
 
+  /**
+   * @param hourIndexOfDay : index from 1
+   */
   fun getPlanet(hourIndexOfDay: Int, gmtJulDay: GmtJulDay, loc: ILocation, julDayResolver: JulDayResolver): Planet {
 
     /** 星期六白天起，七顆行星順序： 土、木、火、日、金、水、月 */
@@ -44,7 +45,7 @@ interface IPlanetaryHour {
 
     // 0 to (24x7-1)
     val hourIndexFromSaturday = indexOfDayTable * 24 + hourIndexOfDay - 1
-    logger.info { "hourIndexFromSaturday = $hourIndexFromSaturday" }
+    logger.trace { "hourIndexFromSaturday = $hourIndexFromSaturday" }
 
     return seqPlanet[hourIndexFromSaturday % 7]
   }
@@ -66,12 +67,29 @@ interface IPlanetaryHour {
     return getPlanetaryHour(gmtJulDay, loc, transConfig)?.planet
   }
 
-  fun getPlanetaryHours(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, transConfig: TransConfig = TransConfig()): List<PlanetaryHour>
+  fun getPlanetaryHours(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig = TransConfig()): List<PlanetaryHour> {
 
-  fun getPlanetaryHours(fromLmt: ChronoLocalDateTime<*>, toLmt: ChronoLocalDateTime<*>, loc: ILocation, transConfig: TransConfig = TransConfig()): List<PlanetaryHour> {
+    require(fromGmt < toGmt) {
+      "fromGmt : $fromGmt larger than or equal to toGmt : $toGmt"
+    }
+
+    fun fromGmtToPlanetaryHour(gmt: GmtJulDay): PlanetaryHour? {
+      return getHourIndexOfDay(gmt, loc, transConfig)?.let { r ->
+        val planet = getPlanet(r.hourIndex, r.hourStart, loc, julDayResolver)
+        PlanetaryHour(r.hourStart, r.hourEnd, r.dayNight, planet, loc)
+      }
+    }
+
+    return generateSequence(fromGmtToPlanetaryHour(fromGmt)) {
+      fromGmtToPlanetaryHour(it.hourEnd + (1 / Constants.SECONDS_OF_DAY.toDouble()))
+    }.takeWhile { it.hourStart < toGmt }
+      .toList()
+  }
+
+  fun getPlanetaryHours(fromLmt: ChronoLocalDateTime<*>, toLmt: ChronoLocalDateTime<*>, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig = TransConfig()): List<PlanetaryHour> {
     val fromGmt = TimeTools.getGmtJulDay(fromLmt, loc)
     val toGmt = TimeTools.getGmtJulDay(toLmt, loc)
-    return getPlanetaryHours(fromGmt, toGmt, loc, transConfig)
+    return getPlanetaryHours(fromGmt, toGmt, loc, julDayResolver, transConfig)
   }
 
   companion object {

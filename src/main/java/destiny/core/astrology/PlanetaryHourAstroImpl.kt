@@ -5,13 +5,11 @@ package destiny.core.astrology
 
 import destiny.core.DayNight
 import destiny.core.astrology.IPlanetaryHour.HourIndexOfDay
-import destiny.core.astrology.Planet.*
+import destiny.core.astrology.Planet.SUN
 import destiny.core.astrology.TransPoint.*
-import destiny.core.calendar.Constants.SECONDS_OF_DAY
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
-import mu.KotlinLogging
 import java.io.Serializable
 import javax.inject.Named
 
@@ -33,30 +31,6 @@ class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans,
       PlanetaryHour(t.hourStart, t.hourEnd, t.dayNight, planet, loc)
     }
   }
-
-
-  override fun getPlanetaryHours(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, transConfig: TransConfig): List<PlanetaryHour> {
-    require(fromGmt < toGmt) {
-      "fromGmt : $fromGmt larger than or equal to toGmt : $toGmt"
-    }
-
-
-    fun fromGmtToPlanetaryHour(gmt: GmtJulDay): PlanetaryHour? {
-      return getHourIndexOfDay(gmt, loc, transConfig)?.let { r ->
-        val planet = getPlanet(r.hourIndex, r.hourStart, loc, julDayResolver)
-        PlanetaryHour(r.hourStart, r.hourEnd, r.dayNight, planet, loc)
-      }
-    }
-
-    return generateSequence(fromGmtToPlanetaryHour(fromGmt)) {
-      fromGmtToPlanetaryHour(it.hourEnd + (1 / SECONDS_OF_DAY.toDouble()))
-    }.takeWhile { it.hourStart < toGmt }
-      .toList()
-
-  } // getPlanetaryHours , 一段時間內的 Planetary Hours
-
-
-
 
 
   override fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): HourIndexOfDay? {
@@ -124,33 +98,4 @@ class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans,
       ?: HourIndexOfHalfDay(from + avgHour * 11, to, 12)
   }
 
-
-//  private fun getPlanet(hourIndexOfDay: Int, gmtJulDay: GmtJulDay, loc: ILocation): Planet {
-//    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-//
-//    // 1:星期一 , 2:星期二 ... , 6:星期六 , 7:星期日
-//    val dayOfWeek = lmt.get(ChronoField.DAY_OF_WEEK)
-//
-//    logger.trace("dayOfWeek = {}", dayOfWeek)
-//
-//    // from 0 to 6
-//    val indexOfDayTable = ArrayUtils.indexOf(seqDay, dayOfWeek)
-//    logger.trace("indexOfDayTable = {}", indexOfDayTable)
-//
-//    // 0 to (24x7-1)
-//    val hourIndexFromSaturday = indexOfDayTable * 24 + hourIndexOfDay - 1
-//    logger.trace("hourIndexFromSaturday = {}", hourIndexFromSaturday)
-//
-//    return seqPlanet[hourIndexFromSaturday % 7]
-//  }
-
-  companion object {
-    private val logger = KotlinLogging.logger { }
-
-    /** 星期六白天起，七顆行星順序： 土、木、火、日、金、水、月 */
-    private val seqPlanet = arrayOf(SATURN, JUPITER, MARS, SUN, VENUS, MERCURY, MOON)
-
-    /** 日期順序 */
-    private val seqDay = intArrayOf(6, 7, 1, 2, 3, 4, 5)
-  }
 }
