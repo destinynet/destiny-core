@@ -8,7 +8,6 @@ import destiny.core.astrology.Planet.*
 import destiny.core.calendar.*
 import destiny.core.calendar.Constants
 import mu.KotlinLogging
-import org.apache.commons.lang3.ArrayUtils
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 
@@ -26,10 +25,10 @@ interface IPlanetaryHour {
    */
   fun getPlanet(hourIndexOfDay: Int, gmtJulDay: GmtJulDay, loc: ILocation, julDayResolver: JulDayResolver): Planet {
 
-    /** 星期六白天起，七顆行星順序： 土、木、火、日、金、水、月 */
+    // 星期六白天起，七顆行星順序： 土、木、火、日、金、水、月
     val seqPlanet = arrayOf(SATURN, JUPITER, MARS, SUN, VENUS, MERCURY, MOON)
 
-    /** 日期順序 */
+    // 日期順序
     val seqDay = intArrayOf(6, 7, 1, 2, 3, 4, 5)
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
@@ -40,7 +39,7 @@ interface IPlanetaryHour {
     logger.trace { "dayOfWeek = $dayOfWeek" }
 
     // from 0 to 6
-    val indexOfDayTable = ArrayUtils.indexOf(seqDay, dayOfWeek)
+    val indexOfDayTable = seqDay.indexOf(dayOfWeek)
     logger.trace { "indexOfDayTable = $indexOfDayTable" }
 
     // 0 to (24x7-1)
@@ -53,18 +52,23 @@ interface IPlanetaryHour {
   data class HourIndexOfDay(
     val hourStart: GmtJulDay,
     val hourEnd: GmtJulDay,
-    /** 整天 的 hour index , from 1 to 24 */
-    val hourIndex: Int,
+    /** 日出之後 的 hour index , from 1 to 24 */
+    val hourIndexAfterSunrise: Int,
     val dayNight: DayNight
   )
 
   fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig = TransConfig()): HourIndexOfDay?
 
-  fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig = TransConfig()): PlanetaryHour?
+  fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: ILocation, julDayResolver : JulDayResolver, transConfig: TransConfig = TransConfig()): PlanetaryHour? {
+    return getHourIndexOfDay(gmtJulDay, loc, transConfig)?.let { t ->
+      val planet = getPlanet(t.hourIndexAfterSunrise, gmtJulDay, loc, julDayResolver)
+      PlanetaryHour(t.hourStart, t.hourEnd, t.dayNight, planet, loc)
+    }
+  }
 
-  fun getPlanetaryHour(lmt: ChronoLocalDateTime<*>, loc: ILocation, transConfig: TransConfig = TransConfig()): Planet? {
+  fun getPlanetaryHour(lmt: ChronoLocalDateTime<*>, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig = TransConfig()): Planet? {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getPlanetaryHour(gmtJulDay, loc, transConfig)?.planet
+    return getPlanetaryHour(gmtJulDay, loc, julDayResolver, transConfig)?.planet
   }
 
   fun getPlanetaryHours(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig = TransConfig()): List<PlanetaryHour> {
@@ -75,7 +79,7 @@ interface IPlanetaryHour {
 
     fun fromGmtToPlanetaryHour(gmt: GmtJulDay): PlanetaryHour? {
       return getHourIndexOfDay(gmt, loc, transConfig)?.let { r ->
-        val planet = getPlanet(r.hourIndex, r.hourStart, loc, julDayResolver)
+        val planet = getPlanet(r.hourIndexAfterSunrise, r.hourStart, loc, julDayResolver)
         PlanetaryHour(r.hourStart, r.hourEnd, r.dayNight, planet, loc)
       }
     }

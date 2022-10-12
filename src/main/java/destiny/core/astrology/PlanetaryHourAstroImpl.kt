@@ -9,7 +9,6 @@ import destiny.core.astrology.Planet.SUN
 import destiny.core.astrology.TransPoint.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver
 import java.io.Serializable
 import javax.inject.Named
 
@@ -21,16 +20,7 @@ import javax.inject.Named
  * 晝夜、分別劃分 12等分
  */
 @Named
-class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans,
-                             private val julDayResolver: JulDayResolver) : IPlanetaryHour, Serializable {
-
-  override fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): PlanetaryHour? {
-
-    return getHourIndexOfDay(gmtJulDay, loc, transConfig)?.let { t ->
-      val planet = getPlanet(t.hourIndex, gmtJulDay, loc, julDayResolver)
-      PlanetaryHour(t.hourStart, t.hourEnd, t.dayNight, planet, loc)
-    }
-  }
+class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour, Serializable {
 
 
   override fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): HourIndexOfDay? {
@@ -66,7 +56,7 @@ class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans,
 
         halfDayIndex.let {
           if (dayNight == DayNight.NIGHT) {
-            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex + 12, it.dayNight)
+            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndexAfterSunrise + 12, it.dayNight)
           } else
             it
         }

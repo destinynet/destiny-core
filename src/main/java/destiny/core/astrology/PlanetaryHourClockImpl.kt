@@ -20,25 +20,29 @@ import javax.inject.Named
 @Named
 class PlanetaryHourClockImpl(private val julDayResolver: JulDayResolver) : IPlanetaryHour {
 
-  override fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): IPlanetaryHour.HourIndexOfDay? {
+  override fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): IPlanetaryHour.HourIndexOfDay {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
-    val hourIndex = lmt.get(ChronoField.HOUR_OF_DAY) + 1
-    val hourStart = lmt.with(ChronoField.HOUR_OF_DAY, hourIndex.toLong() - 1)
-      .with(ChronoField.SECOND_OF_MINUTE, 0)
-      .with(ChronoField.MICRO_OF_SECOND, 0)
-      .with(ChronoField.MILLI_OF_SECOND, 0)
-    val hourEnd = hourStart.plus(1, ChronoUnit.HOURS)
-    val dayNight = if (hourIndex in 6..17)
+    val hour = lmt.get(ChronoField.HOUR_OF_DAY)
+
+    val dayNight = if (hour in 6..17)
       DayNight.DAY
     else
       DayNight.NIGHT
 
-    return IPlanetaryHour.HourIndexOfDay(hourStart.toGmtJulDay(loc), hourEnd.toGmtJulDay(loc), hourIndex, dayNight)
-  }
+    val hourIndexAfterSunrise =
+      if (hour >= 6)
+        hour - 5
+      else
+        hour + 19
 
-  override fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): PlanetaryHour? {
-    TODO("Not yet implemented")
-  }
+    val hourStart = lmt.with(ChronoField.HOUR_OF_DAY, hour.toLong())
+      .with(ChronoField.MINUTE_OF_HOUR, 0)
+      .with(ChronoField.SECOND_OF_MINUTE, 0)
+      .with(ChronoField.MICRO_OF_SECOND, 0)
+      .with(ChronoField.MILLI_OF_SECOND, 0)
+    val hourEnd = hourStart.plus(1, ChronoUnit.HOURS)
 
+    return IPlanetaryHour.HourIndexOfDay(hourStart.toGmtJulDay(loc), hourEnd.toGmtJulDay(loc), hourIndexAfterSunrise, dayNight)
+  }
 }

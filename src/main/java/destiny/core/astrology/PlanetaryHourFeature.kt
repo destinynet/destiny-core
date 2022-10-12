@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
 import javax.inject.Named
@@ -21,13 +22,13 @@ data class PlanetaryHourConfig(val type: PlanetaryHourType = PlanetaryHourType.A
 interface IPlanetaryHourFeature : Feature<PlanetaryHourConfig, PlanetaryHour?>
 
 @Named
-class PlanetaryHourFeature(private val astroHourImplMap : Map<PlanetaryHourType, IPlanetaryHour>) : AbstractCachedFeature<PlanetaryHourConfig, PlanetaryHour?>() ,
-                                                                                                    IPlanetaryHourFeature {
+class PlanetaryHourFeature(private val astroHourImplMap : Map<PlanetaryHourType, IPlanetaryHour> ,
+                           private val julDayResolver: JulDayResolver) : AbstractCachedFeature<PlanetaryHourConfig, PlanetaryHour?>() , IPlanetaryHourFeature {
 
   override val defaultConfig: PlanetaryHourConfig = PlanetaryHourConfig()
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: PlanetaryHourConfig): PlanetaryHour? {
-    return astroHourImplMap[config.type]!!.getPlanetaryHour(gmtJulDay, loc, config.transConfig)
+    return astroHourImplMap[config.type]!!.getPlanetaryHour(gmtJulDay, loc, julDayResolver, config.transConfig)
   }
 
 }
