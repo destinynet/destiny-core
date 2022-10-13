@@ -18,9 +18,10 @@ import javax.inject.Named
  * 單純以時鐘劃分 行星時
  */
 @Named
-class PlanetaryHourClockImpl(private val julDayResolver: JulDayResolver) : IPlanetaryHour {
+class PlanetaryHourClockImpl : IPlanetaryHour {
 
-  override fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): IPlanetaryHour.HourIndexOfDay {
+
+  override fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig): IPlanetaryHour.HourIndexOfDay {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
     val hour = lmt.get(ChronoField.HOUR_OF_DAY)
@@ -43,6 +44,14 @@ class PlanetaryHourClockImpl(private val julDayResolver: JulDayResolver) : IPlan
       .with(ChronoField.MILLI_OF_SECOND, 0)
     val hourEnd = hourStart.plus(1, ChronoUnit.HOURS)
 
-    return IPlanetaryHour.HourIndexOfDay(hourStart.toGmtJulDay(loc), hourEnd.toGmtJulDay(loc), hourIndexAfterSunrise, dayNight)
+    val dayOfWeek = lmt.let {
+      if (hour < 6)
+        lmt.minus(6, ChronoUnit.HOURS)
+      else
+        lmt
+    }.get(ChronoField.DAY_OF_WEEK)
+
+    return IPlanetaryHour.HourIndexOfDay(hourStart.toGmtJulDay(loc), hourEnd.toGmtJulDay(loc), hourIndexAfterSunrise, dayNight, dayOfWeek)
   }
+
 }

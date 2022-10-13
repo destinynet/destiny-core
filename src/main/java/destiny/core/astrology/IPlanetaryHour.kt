@@ -9,7 +9,6 @@ import destiny.core.calendar.*
 import destiny.core.calendar.Constants
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
-import java.time.temporal.ChronoField
 
 /**
  * 取得當下、當地的「行星時」 Planetary Hour
@@ -21,20 +20,16 @@ import java.time.temporal.ChronoField
 interface IPlanetaryHour {
 
   /**
-   * @param hourIndexOfDay : index from 1
-   */
-  fun getPlanet(hourIndexOfDay: Int, gmtJulDay: GmtJulDay, loc: ILocation, julDayResolver: JulDayResolver): Planet {
+   * @param hourIndexAfterSunrise : 日出後的第幾個小時 , from 1
+   * @param dayOfWeek : 1:星期一 , 2:星期二 ... , 6:星期六 , 7:星期日
+   **/
+  fun getPlanet(hourIndexAfterSunrise: Int, dayOfWeek: Int): Planet {
 
     // 星期六白天起，七顆行星順序： 土、木、火、日、金、水、月
     val seqPlanet = arrayOf(SATURN, JUPITER, MARS, SUN, VENUS, MERCURY, MOON)
 
     // 日期順序
     val seqDay = intArrayOf(6, 7, 1, 2, 3, 4, 5)
-
-    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-
-    // 1:星期一 , 2:星期二 ... , 6:星期六 , 7:星期日
-    val dayOfWeek = lmt.get(ChronoField.DAY_OF_WEEK)
 
     logger.trace { "dayOfWeek = $dayOfWeek" }
 
@@ -43,7 +38,7 @@ interface IPlanetaryHour {
     logger.trace { "indexOfDayTable = $indexOfDayTable" }
 
     // 0 to (24x7-1)
-    val hourIndexFromSaturday = indexOfDayTable * 24 + hourIndexOfDay - 1
+    val hourIndexFromSaturday = indexOfDayTable * 24 + hourIndexAfterSunrise - 1
     logger.trace { "hourIndexFromSaturday = $hourIndexFromSaturday" }
 
     return seqPlanet[hourIndexFromSaturday % 7]
@@ -54,14 +49,16 @@ interface IPlanetaryHour {
     val hourEnd: GmtJulDay,
     /** 日出之後 的 hour index , from 1 to 24 */
     val hourIndexAfterSunrise: Int,
-    val dayNight: DayNight
+    val dayNight: DayNight,
+    /** Monday : 1 ... Sunday : 7 */
+    val dayOfWeek: Int
   )
 
-  fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig = TransConfig()): HourIndexOfDay?
+  fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig = TransConfig()): HourIndexOfDay?
 
-  fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: ILocation, julDayResolver : JulDayResolver, transConfig: TransConfig = TransConfig()): PlanetaryHour? {
-    return getHourIndexOfDay(gmtJulDay, loc, transConfig)?.let { t ->
-      val planet = getPlanet(t.hourIndexAfterSunrise, gmtJulDay, loc, julDayResolver)
+  fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig = TransConfig()): PlanetaryHour? {
+    return getHourIndexOfDay(gmtJulDay, loc, julDayResolver, transConfig)?.let { t: HourIndexOfDay ->
+      val planet = getPlanet(t.hourIndexAfterSunrise, t.dayOfWeek)
       PlanetaryHour(t.hourStart, t.hourEnd, t.dayNight, planet, loc)
     }
   }
@@ -78,8 +75,8 @@ interface IPlanetaryHour {
     }
 
     fun fromGmtToPlanetaryHour(gmt: GmtJulDay): PlanetaryHour? {
-      return getHourIndexOfDay(gmt, loc, transConfig)?.let { r ->
-        val planet = getPlanet(r.hourIndexAfterSunrise, r.hourStart, loc, julDayResolver)
+      return getHourIndexOfDay(gmt, loc, julDayResolver, transConfig)?.let { r ->
+        val planet = getPlanet(r.hourIndexAfterSunrise, r.dayOfWeek)
         PlanetaryHour(r.hourStart, r.hourEnd, r.dayNight, planet, loc)
       }
     }
@@ -97,6 +94,6 @@ interface IPlanetaryHour {
   }
 
   companion object {
-    private val logger = KotlinLogging.logger {  }
+    private val logger = KotlinLogging.logger { }
   }
 }

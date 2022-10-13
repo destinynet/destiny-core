@@ -9,7 +9,11 @@ import destiny.core.astrology.Planet.SUN
 import destiny.core.astrology.TransPoint.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
+import destiny.core.calendar.TimeTools
+import mu.KotlinLogging
 import java.io.Serializable
+import java.time.temporal.ChronoField
 import javax.inject.Named
 
 /**
@@ -23,7 +27,10 @@ import javax.inject.Named
 class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour, Serializable {
 
 
-  override fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): HourIndexOfDay? {
+  override fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig): HourIndexOfDay? {
+
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
+    val dayOfWeek: Int = lmt.get(ChronoField.DAY_OF_WEEK)
 
     // 極區內可能不適用
     return riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, RISING, loc, transConfig)?.let { nextRising ->
@@ -39,7 +46,7 @@ class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans) : IPlanetary
           val prevSetting = riseTransImpl.getGmtTransJulDay(nearPrevMeridian, SUN, SETTING, loc, transConfig)!!
 
           halfDayIndex = getHourIndexOfHalfDay(prevSetting, nextRising, gmtJulDay).let {
-            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight)
+            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight, dayOfWeek)
           }
         } else {
           // 目前是白天
@@ -50,13 +57,13 @@ class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans) : IPlanetary
           val prevRising = riseTransImpl.getGmtTransJulDay(nearPrevMidNight, SUN, RISING, loc, transConfig)!!
 
           halfDayIndex = getHourIndexOfHalfDay(prevRising, nextSetting, gmtJulDay).let {
-            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight)
+            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight, dayOfWeek)
           }
         }
 
         halfDayIndex.let {
           if (dayNight == DayNight.NIGHT) {
-            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndexAfterSunrise + 12, it.dayNight)
+            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndexAfterSunrise + 12, it.dayNight, dayOfWeek)
           } else
             it
         }
@@ -82,10 +89,14 @@ class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans) : IPlanetary
     return (1..11).map { i ->
       val stepFrom = from + avgHour * (i - 1)
       val stepTo = from + avgHour * i
-      Triple(stepFrom, stepTo , i)
+      Triple(stepFrom, stepTo, i)
     }.firstOrNull { (stepFrom, stepTo) -> gmtJulDay >= stepFrom && gmtJulDay < stepTo }
-      ?.let { (stepFrom , stepTo, index) -> HourIndexOfHalfDay(stepFrom, stepTo, index)}
+      ?.let { (stepFrom, stepTo, index) -> HourIndexOfHalfDay(stepFrom, stepTo, index) }
       ?: HourIndexOfHalfDay(from + avgHour * 11, to, 12)
   }
 
+
+  companion object {
+    private val logger = KotlinLogging.logger { }
+  }
 }
