@@ -8,6 +8,7 @@ import destiny.core.astrology.Planet.*
 import destiny.core.calendar.*
 import destiny.core.calendar.Constants
 import mu.KotlinLogging
+import java.time.LocalDate
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -20,10 +21,15 @@ import java.time.chrono.ChronoLocalDateTime
 interface IPlanetaryHour {
 
   /**
-   * @param hourIndexAfterSunrise : 日出後的第幾個小時 , from 1
+   * @param hourIndexAfterSunrise : 日出後的第幾個小時 , from 1 to 24
    * @param dayOfWeek : 1:星期一 , 2:星期二 ... , 6:星期六 , 7:星期日
    **/
   fun getPlanet(hourIndexAfterSunrise: Int, dayOfWeek: Int): Planet {
+
+    require(hourIndexAfterSunrise in 1..24)
+    require(dayOfWeek in 1..7) {
+      "dayOfWeek($dayOfWeek) should be between 1 (Monday) and 7 (Sunday)"
+    }
 
     // 星期六白天起，七顆行星順序： 土、木、火、日、金、水、月
     val seqPlanet = arrayOf(SATURN, JUPITER, MARS, SUN, VENUS, MERCURY, MOON)
@@ -33,12 +39,14 @@ interface IPlanetaryHour {
 
     logger.trace { "dayOfWeek = $dayOfWeek" }
 
+    logger.trace { "hourIndexAfterSunrise = $hourIndexAfterSunrise" }
+
     // from 0 to 6
     val indexOfDayTable = seqDay.indexOf(dayOfWeek)
     logger.trace { "indexOfDayTable = $indexOfDayTable" }
 
     // 0 to (24x7-1)
-    val hourIndexFromSaturday = indexOfDayTable * 24 + hourIndexAfterSunrise - 1
+    val hourIndexFromSaturday = indexOfDayTable * 24 + (hourIndexAfterSunrise - 1)
     logger.trace { "hourIndexFromSaturday = $hourIndexFromSaturday" }
 
     return seqPlanet[hourIndexFromSaturday % 7]
@@ -91,6 +99,12 @@ interface IPlanetaryHour {
     val fromGmt = TimeTools.getGmtJulDay(fromLmt, loc)
     val toGmt = TimeTools.getGmtJulDay(toLmt, loc)
     return getPlanetaryHours(fromGmt, toGmt, loc, julDayResolver, transConfig)
+  }
+
+  fun getDailyPlanetaryHours(date : LocalDate , loc: ILocation , julDayResolver: JulDayResolver , transConfig: TransConfig = TransConfig()) : List<PlanetaryHour> {
+    val fromLmt = date.atStartOfDay()
+    val toLmt = fromLmt.plusDays(1)
+    return getPlanetaryHours(fromLmt, toLmt, loc, julDayResolver, transConfig)
   }
 
   companion object {

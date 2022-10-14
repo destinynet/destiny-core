@@ -20,7 +20,6 @@ import javax.inject.Named
 @Named
 class PlanetaryHourClockImpl : IPlanetaryHour {
 
-
   override fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig): IPlanetaryHour.HourIndexOfDay {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 

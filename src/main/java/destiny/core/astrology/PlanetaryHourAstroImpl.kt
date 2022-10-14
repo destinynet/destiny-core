@@ -14,6 +14,7 @@ import destiny.core.calendar.TimeTools
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.temporal.ChronoField
+import java.time.temporal.ChronoUnit
 import javax.inject.Named
 
 /**
@@ -30,43 +31,42 @@ class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans) : IPlanetary
   override fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig): HourIndexOfDay? {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-    val dayOfWeek: Int = lmt.get(ChronoField.DAY_OF_WEEK)
+
+    val hour = lmt.get(ChronoField.HOUR_OF_DAY)
 
     // 極區內可能不適用
     return riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, RISING, loc, transConfig)?.let { nextRising ->
       riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, SETTING, loc, transConfig)?.let { nextSetting ->
-        val halfDayIndex: HourIndexOfDay
-        val dayNight: DayNight
-        if (nextRising < nextSetting) {
+
+        return if (nextRising < nextSetting) {
           // 目前是黑夜
-          dayNight = DayNight.NIGHT
           // 先計算「接近上一個中午」的時刻，這裡不用算得很精準
           val nearPrevMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, MERIDIAN, loc, transConfig)!! - 1 // 記得減一
           // 接著，計算「上一個」日落時刻
           val prevSetting = riseTransImpl.getGmtTransJulDay(nearPrevMeridian, SUN, SETTING, loc, transConfig)!!
 
-          halfDayIndex = getHourIndexOfHalfDay(prevSetting, nextRising, gmtJulDay).let {
-            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight, dayOfWeek)
+          val dayOfWeek = if (hour < 12)
+            lmt.minus(12, ChronoUnit.HOURS).get(ChronoField.DAY_OF_WEEK)
+          else
+            lmt.get(ChronoField.DAY_OF_WEEK)
+
+          getHourIndexOfHalfDay(prevSetting, nextRising, gmtJulDay).let {
+            HourIndexOfDay(it.hourStart, it.hourEnd, it.halfIndex + 12, DayNight.NIGHT, dayOfWeek)
           }
-        } else {
+
+        } // 黑夜
+        else {
           // 目前是白天
-          dayNight = DayNight.DAY
+          val dayOfWeek: Int = lmt.get(ChronoField.DAY_OF_WEEK)
           // 先計算「接近上一個子正的時刻」，這禮不用算得很經準
           val nearPrevMidNight = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, NADIR, loc, transConfig)!! - 1 // 記得減一
           // 接著，計算「上一個」日出時刻
           val prevRising = riseTransImpl.getGmtTransJulDay(nearPrevMidNight, SUN, RISING, loc, transConfig)!!
 
-          halfDayIndex = getHourIndexOfHalfDay(prevRising, nextSetting, gmtJulDay).let {
-            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight, dayOfWeek)
+          getHourIndexOfHalfDay(prevRising, nextSetting, gmtJulDay).let {
+            HourIndexOfDay(it.hourStart, it.hourEnd, it.halfIndex, DayNight.DAY, dayOfWeek)
           }
-        }
-
-        halfDayIndex.let {
-          if (dayNight == DayNight.NIGHT) {
-            HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndexAfterSunrise + 12, it.dayNight, dayOfWeek)
-          } else
-            it
-        }
+        } // 白天
 
       }
     }
@@ -74,9 +74,9 @@ class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans) : IPlanetary
 
 
   /**
-   * @param hourIndex 「半天」的 hourIndex , 1 to 12
+   * @param halfIndex 「半天」的 hourIndex , 1 to 12
    */
-  private data class HourIndexOfHalfDay(val hourStart: GmtJulDay, val hourEnd: GmtJulDay, val hourIndex: Int)
+  private data class HourIndexOfHalfDay(val hourStart: GmtJulDay, val hourEnd: GmtJulDay, val halfIndex: Int)
 
   private fun getHourIndexOfHalfDay(from: GmtJulDay, to: GmtJulDay, gmtJulDay: GmtJulDay): HourIndexOfHalfDay {
 

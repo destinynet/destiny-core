@@ -8,6 +8,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
+import java.time.LocalDate
 import javax.inject.Named
 
 
@@ -19,7 +20,10 @@ enum class PlanetaryHourType {
 data class PlanetaryHourConfig(val type: PlanetaryHourType = PlanetaryHourType.ASTRO,
                                val transConfig: TransConfig = TransConfig())
 
-interface IPlanetaryHourFeature : Feature<PlanetaryHourConfig, PlanetaryHour?>
+interface IPlanetaryHourFeature : Feature<PlanetaryHourConfig, PlanetaryHour?> {
+
+  fun getDailyPlanetaryHours(date: LocalDate, loc: ILocation, config: PlanetaryHourConfig = PlanetaryHourConfig()): List<PlanetaryHour>
+}
 
 @Named
 class PlanetaryHourFeature(private val astroHourImplMap : Map<PlanetaryHourType, IPlanetaryHour> ,
@@ -31,4 +35,7 @@ class PlanetaryHourFeature(private val astroHourImplMap : Map<PlanetaryHourType,
     return astroHourImplMap[config.type]!!.getPlanetaryHour(gmtJulDay, loc, julDayResolver, config.transConfig)
   }
 
+  override fun getDailyPlanetaryHours(date: LocalDate, loc: ILocation, config: PlanetaryHourConfig): List<PlanetaryHour> {
+    return astroHourImplMap[config.type]!!.getDailyPlanetaryHours(date, loc, julDayResolver, config.transConfig)
+  }
 }
