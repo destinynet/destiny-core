@@ -8,8 +8,10 @@ import destiny.core.astrology.Planet.*
 import destiny.core.calendar.*
 import destiny.core.calendar.Constants
 import mu.KotlinLogging
-import java.time.LocalDate
+import java.time.LocalTime
+import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
+import java.time.temporal.ChronoUnit
 
 /**
  * 取得當下、當地的「行星時」 Planetary Hour
@@ -101,9 +103,9 @@ interface IPlanetaryHour {
     return getPlanetaryHours(fromGmt, toGmt, loc, julDayResolver, transConfig)
   }
 
-  fun getDailyPlanetaryHours(date : LocalDate , loc: ILocation , julDayResolver: JulDayResolver , transConfig: TransConfig = TransConfig()) : List<PlanetaryHour> {
-    val fromLmt = date.atStartOfDay()
-    val toLmt = fromLmt.plusDays(1)
+  fun getDailyPlanetaryHours(date : ChronoLocalDate , loc: ILocation , julDayResolver: JulDayResolver , transConfig: TransConfig = TransConfig()) : List<PlanetaryHour> {
+    val fromLmt = date.atTime(LocalTime.MIDNIGHT)
+    val toLmt = fromLmt.plus(1L , ChronoUnit.DAYS)
     return getPlanetaryHours(fromLmt, toLmt, loc, julDayResolver, transConfig)
   }
 
