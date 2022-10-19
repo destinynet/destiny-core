@@ -23,7 +23,7 @@ enum class PlanetaryHourType {
 
 @Serializable
 data class PlanetaryHourConfig(val type: PlanetaryHourType = PlanetaryHourType.ASTRO,
-                               val transConfig: TransConfig = TransConfig())
+                               val transConfig: TransConfig = TransConfig()): java.io.Serializable
 
 @DestinyMarker
 class PlanetaryHourConfigBuilder : Builder<PlanetaryHourConfig> {

@@ -9,6 +9,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.TimeTools.toGmtJulDay
+import java.io.Serializable
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 import javax.inject.Named
@@ -18,7 +19,7 @@ import javax.inject.Named
  * 單純以時鐘劃分 行星時
  */
 @Named
-class PlanetaryHourClockImpl : IPlanetaryHour {
+class PlanetaryHourClockImpl : IPlanetaryHour, Serializable {
 
   override fun getHourIndexOfDay(gmtJulDay: GmtJulDay, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig): IPlanetaryHour.HourIndexOfDay {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
