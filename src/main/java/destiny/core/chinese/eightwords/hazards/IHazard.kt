@@ -54,6 +54,13 @@ interface IHazardFactory : java.io.Serializable {
       }
     }
   }
+
+  /** 專測某本書籍 , 若該書未定義，則傳回 null */
+  fun testBook(eightWords: IEightWords, gender: Gender?, book: Book): Boolean? {
+    return impls.firstOrNull { hazard: IHazard ->
+      hazard.getBooks().contains(book)
+    }?.test(eightWords, gender)
+  }
 }
 
 
