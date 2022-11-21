@@ -100,7 +100,7 @@ interface IHourBranchFeature : Feature<HourBranchConfig, Branch> {
 
     return Branch.values().map { b ->
       val lmt = if (b == 子) {
-        getLmtNextStartOf(lmtStart.minus(2, ChronoUnit.HOURS), loc, b, config)
+        getLmtNextStartOf(lmtStart.minus(12, ChronoUnit.HOURS), loc, b, config)
       } else {
         getLmtNextStartOf(lmtStart, loc, b, config)
       }
@@ -125,6 +125,16 @@ interface IHourBranchFeature : Feature<HourBranchConfig, Branch> {
     }.sortedBy { (_, lmt) -> lmt }.toMap()
   }
 
+
+  /**
+   * accessory function, 取得當天時辰開始時刻 , 加上隔天子初
+   */
+  fun getDailyBranchStartListWithNextDayZi(day: ChronoLocalDate, loc: ILocation, config: HourBranchConfig): List<Pair<Branch, ChronoLocalDateTime<*>>> {
+    return getDailyBranchStartMap(day, loc, config).toList().toMutableList().apply {
+      // 加上隔天子時
+      add(子 to getLmtNextStartOf(last().second, loc, 子, config))
+    }.toList()
+  }
 }
 
 

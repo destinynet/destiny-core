@@ -76,7 +76,7 @@ interface IHour {
 
     return Branch.values().map { b ->
       val lmt = if (b == Branch.子) {
-        getLmtNextStartOf(lmtStart.minus(2, ChronoUnit.HOURS), loc, b, julDayResolver, config)
+        getLmtNextStartOf(lmtStart.minus(12, ChronoUnit.HOURS), loc, b, julDayResolver, config)
       } else {
         getLmtNextStartOf(lmtStart, loc, b, julDayResolver, config)
       }
