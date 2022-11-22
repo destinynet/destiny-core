@@ -117,28 +117,29 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
 
     val set = sortedSetOf<TimeDesc>()
 
+    fun getTimeDesc(branch: Branch, branchStart: ChronoLocalDateTime<*>, middleLmt: ChronoLocalDateTime<*>, loc: ILocation): TimeDesc.TypeHour {
+      val hourlyLunarStation = lunarStationFeature.hourlyFeature.getModel(middleLmt, loc, config.lunarStationConfig.hourlyConfig)
+      val descs = buildList {
+        add("$branch 初")
+        add(hourlyLunarStation.getFullName(config.locale))
+      }
+      return TimeDesc.TypeHour(branchStart as LocalDateTime, branch, hourlyLunarStation, descs)
+    }
+
     // 12地支 + 隔天的子初
     val listBranches: List<TimeDesc.TypeHour> = hourBranchFeature.getDailyBranchStartListWithNextDayZi(lmtStart.toLocalDate(), loc, config.hourBranchConfig).let { list ->
       val branchMiddleMap: Map<Branch, ChronoLocalDateTime<*>> = hourBranchFeature.getDailyBranchMiddleMap(lmtStart.toLocalDate(), loc, config.hourBranchConfig)
       val list12 = list.take(12).map { (branch , branchStart) ->
         val middleLmt = branchMiddleMap[branch]!!
-        val hourlyLunarStation = lunarStationFeature.hourlyFeature.getModel(middleLmt, loc, config.lunarStationConfig.hourlyConfig)
-        val descs = buildList {
-          add("$branch 初")
-          add(hourlyLunarStation.getFullName(config.locale))
-        }
-        TimeDesc.TypeHour(branchStart as LocalDateTime, branch, hourlyLunarStation, descs)
+
+        getTimeDesc(branch, branchStart, middleLmt, loc)
       }
 
       val tomorrowLunarStationMap = hourBranchFeature.getDailyBranchMiddleMap(lmtStart.toLocalDate().plus(1, ChronoUnit.DAYS), loc, config.hourBranchConfig)
       val nextDayZi = list.last().let { (branch , branchStart) ->
         val middleLmt = tomorrowLunarStationMap[Branch.子]!!
-        val hourlyLunarStation = lunarStationFeature.hourlyFeature.getModel(middleLmt, loc, config.lunarStationConfig.hourlyConfig)
-        val descs = buildList {
-          add("$branch 初")
-          add(hourlyLunarStation.getFullName(config.locale))
-        }
-        TimeDesc.TypeHour(branchStart as LocalDateTime, branch, hourlyLunarStation, descs)
+
+        getTimeDesc(branch, branchStart, middleLmt, loc)
       }
       list12.plus(nextDayZi)
     }

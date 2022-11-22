@@ -128,6 +128,7 @@ interface IHourBranchFeature : Feature<HourBranchConfig, Branch> {
 
   /**
    * accessory function, 取得當天時辰開始時刻 , 加上隔天子初
+   * list size == 13
    */
   fun getDailyBranchStartListWithNextDayZi(day: ChronoLocalDate, loc: ILocation, config: HourBranchConfig): List<Pair<Branch, ChronoLocalDateTime<*>>> {
     return getDailyBranchStartMap(day, loc, config).toList().toMutableList().apply {
