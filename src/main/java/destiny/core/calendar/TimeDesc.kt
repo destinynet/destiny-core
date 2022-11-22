@@ -3,11 +3,9 @@
  */
 package destiny.core.calendar
 
-import destiny.core.astrology.AstroPoint
-import destiny.core.astrology.LunarStation
-import destiny.core.astrology.Planet
-import destiny.core.astrology.TransPoint
+import destiny.core.astrology.*
 import destiny.core.astrology.classical.rules.Misc
+import destiny.core.astrology.eclipse.EclipseTime
 import destiny.core.astrology.eclipse.LunarType
 import destiny.core.astrology.eclipse.SolarType
 import destiny.core.chinese.Branch
@@ -15,12 +13,6 @@ import destiny.tools.getTitle
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
-
-enum class EclipseTime {
-  BEGIN,
-  MAX,
-  END;
-}
 
 
 sealed class TimeDesc(open val lmt: LocalDateTime,
@@ -56,28 +48,30 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
 
   /** 日月交角 */
   data class TypeSunMoon(override val lmt: LocalDateTime,
-                         val desc: String,
-                         val degree: Int) : TimeDesc(lmt, listOf(desc))
+                         val phase: LunarPhase) : TimeDesc(lmt , phase.getTitle(Locale.getDefault()))
 
   /** 日食 */
   data class TypeSolarEclipse(override val lmt: LocalDateTime,
                               val type: SolarType,
                               val time: EclipseTime,
-                              val locPlace: ILocationPlace? = null) : TimeDesc(lmt, when (type) {
-    SolarType.PARTIAL -> SolarType.PARTIAL.getTitle(Locale.getDefault()) + " " + time.getTitle(Locale.getDefault())
-    SolarType.TOTAL -> SolarType.TOTAL.getTitle(Locale.getDefault()) + " " + time.getTitle(Locale.getDefault())
-    SolarType.ANNULAR -> SolarType.ANNULAR.getTitle(Locale.getDefault())+ " " + time.getTitle(Locale.getDefault())
-    SolarType.HYBRID  -> SolarType.HYBRID.getTitle(Locale.getDefault()) + " "+ time.getTitle(Locale.getDefault())
-  }.let {
-    locPlace?.let { lp ->
-      it + " 於 " + lp.place
-    } ?: it
-  })
+                              val locPlace: ILocationPlace? = null) :
+    TimeDesc(lmt,
+             buildString {
+               append(type.getTitle(Locale.getDefault()))
+               append(" ")
+               time.getTitle(Locale.getDefault())
+             }.let {
+               locPlace?.let { lp ->
+                 it + " 於 " + lp.place
+               } ?: it
+             }
+    )
 
   /** 月食 */
   data class TypeLunarEclipse(override val lmt: LocalDateTime,
                               val type: LunarType,
-                              val time: EclipseTime) : TimeDesc(lmt, when (type) {
+                              val time: EclipseTime
+  ) : TimeDesc(lmt, when (type) {
     LunarType.PARTIAL -> LunarType.PARTIAL.getTitle(Locale.getDefault()) + " " + time.getTitle(Locale.getDefault())
     LunarType.TOTAL -> LunarType.TOTAL.getTitle(Locale.getDefault()) + time.getTitle(Locale.getDefault())
     LunarType.PENUMBRA -> LunarType.PENUMBRA.getTitle(Locale.getDefault()) + time.getTitle(Locale.getDefault())

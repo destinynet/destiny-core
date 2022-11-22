@@ -7,6 +7,7 @@ import destiny.core.astrology.*
 import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseConfigBuilder
 import destiny.core.astrology.classical.VoidCourseFeature
+import destiny.core.astrology.eclipse.EclipseTime
 import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.astrology.eclipse.SolarType
 import destiny.core.calendar.eightwords.DayHourConfig
@@ -166,14 +167,14 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
 
     // 日月交角
     val listSunMoonAngle: List<TimeDesc> = listOf(
-      0.0 to "新月",
-      90.0 to "上弦月",
-      180.0 to "滿月",
-      270.0 to "下弦月"
-    ).flatMap { (deg, desc) ->
+      0.0 to LunarPhase.NEW,
+      90.0 to LunarPhase.FIRST_QUARTER,
+      180.0 to LunarPhase.FULL,
+      270.0 to LunarPhase.LAST_QUARTER
+    ).flatMap { (deg, phase) ->
       relativeTransitImpl.getPeriodRelativeTransitLMTs(Planet.MOON, Planet.SUN, lmtStart, lmtEnd, loc, deg, julDayResolver)
         .filter { t -> TimeTools.isBetween(t, lmtStart, lmtEnd) }
-        .map { t -> TimeDesc.TypeSunMoon(t as LocalDateTime, desc, deg.toInt()) }
+        .map { t -> TimeDesc.TypeSunMoon(t as LocalDateTime, phase) }
     }
 
     set.addAll(listBranches)

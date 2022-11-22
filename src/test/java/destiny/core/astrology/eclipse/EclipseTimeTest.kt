@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2022-11-22.
  */
-package destiny.core.calendar
+package destiny.core.astrology.eclipse
 
 import destiny.core.EnumTest
 import kotlin.test.Test
