@@ -35,7 +35,7 @@ data class EclipseObservation(
 /** 日食 觀測資料 */
 interface ISolarEclipseObservation : IEclipseObservation {
   /** 日食 的種類  */
-  val type: ISolarEclipse.SolarType
+  val type: SolarType
   /** 半徑被蓋住的比例  */
   val magnitude: Double
   /** 面積被蓋住的比例  */
@@ -45,7 +45,7 @@ interface ISolarEclipseObservation : IEclipseObservation {
 /** 日食觀測只有一種，不需要定義 sealed data class */
 data class SolarEclipseObservation2(
   private val observation: EclipseObservation,
-  override val type: ISolarEclipse.SolarType,
+  override val type: SolarType,
   override val magnitude: Double,
   override val obscuration: Double) : ISolarEclipseObservation, IEclipseObservation by observation
 
@@ -53,7 +53,7 @@ data class SolarEclipseObservation2(
 /** 月食 觀測資料 */
 interface ILunarEclipseObservation : IEclipseObservation {
   /** 月食 的種類 */
-  val type: ILunarEclipse.LunarType
+  val type: LunarType
   /** 本影強度 , magnitude of Umbra  */
   val magUmbra: Double
   /** 半影強度 , magnitude of Penumbra  */
@@ -99,8 +99,8 @@ sealed class AbstractLunarEclipseObservation : ILunarEclipseObservation {
     override val penumbraBeginVisible: Boolean,
     override val penumbraEndVisible: Boolean) : AbstractLunarEclipseObservation(),
     ILunarEclipsePenumbraObservation {
-    override val type: ILunarEclipse.LunarType
-      get() = ILunarEclipse.LunarType.PENUMBRA
+    override val type: LunarType
+      get() = LunarType.PENUMBRA
   }
 
   /** 月偏食 的觀測資料 */
@@ -109,8 +109,8 @@ sealed class AbstractLunarEclipseObservation : ILunarEclipseObservation {
     override val partialBeginVisible: Boolean,
     override val partialEndVisible: Boolean) : AbstractLunarEclipseObservation(), ILunarEclipsePartialObservation,
     ILunarEclipsePenumbraObservation by penumbraObs {
-    override val type: ILunarEclipse.LunarType
-      get() = ILunarEclipse.LunarType.PARTIAL
+    override val type: LunarType
+      get() = LunarType.PARTIAL
   }
 
   /** 月全食 的觀測資料 */
@@ -118,8 +118,8 @@ sealed class AbstractLunarEclipseObservation : ILunarEclipseObservation {
     private val partialObs : LunarEclipsePartialObservation,
     override val totalBeginVisible: Boolean,
     override val totalEndVisible: Boolean) : AbstractLunarEclipseObservation() , ILunarEclipseTotalObservation, ILunarEclipsePartialObservation by partialObs {
-    override val type: ILunarEclipse.LunarType
-      get() = ILunarEclipse.LunarType.TOTAL
+    override val type: LunarType
+      get() = LunarType.TOTAL
   }
 
 

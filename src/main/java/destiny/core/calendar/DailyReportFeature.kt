@@ -8,7 +8,7 @@ import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseConfigBuilder
 import destiny.core.astrology.classical.VoidCourseFeature
 import destiny.core.astrology.eclipse.IEclipseFactory
-import destiny.core.astrology.eclipse.ISolarEclipse
+import destiny.core.astrology.eclipse.SolarType
 import destiny.core.calendar.eightwords.DayHourConfig
 import destiny.core.calendar.eightwords.HourBranchConfig
 import destiny.core.calendar.eightwords.HourBranchConfigBuilder
@@ -185,7 +185,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     val toGmtJulDay = TimeTools.getGmtJulDay(lmtEnd, loc)
 
     // 日食
-    eclipseImpl.getNextSolarEclipse(fromGmtJulDay, true, ISolarEclipse.SolarType.values().toList()).also { eclipse ->
+    eclipseImpl.getNextSolarEclipse(fromGmtJulDay, true, SolarType.values().toList()).also { eclipse ->
       val begin = TimeTools.getLmtFromGmt(eclipse.begin, loc, julDayResolver) as LocalDateTime
       val max = TimeTools.getLmtFromGmt(eclipse.max, loc, julDayResolver) as LocalDateTime
       val end = TimeTools.getLmtFromGmt(eclipse.end, loc, julDayResolver) as LocalDateTime

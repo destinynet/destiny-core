@@ -8,8 +8,8 @@ import destiny.core.astrology.LunarStation
 import destiny.core.astrology.Planet
 import destiny.core.astrology.TransPoint
 import destiny.core.astrology.classical.rules.Misc
-import destiny.core.astrology.eclipse.ILunarEclipse
-import destiny.core.astrology.eclipse.ISolarEclipse
+import destiny.core.astrology.eclipse.LunarType
+import destiny.core.astrology.eclipse.SolarType
 import destiny.core.chinese.Branch
 import destiny.tools.getTitle
 import java.io.Serializable
@@ -20,15 +20,6 @@ enum class EclipseTime {
   BEGIN,
   MAX,
   END;
-
-
-  fun desc(): String {
-    return when (this) {
-      BEGIN -> "開始"
-      MAX -> "食甚"
-      END -> "結束"
-    }
-  }
 }
 
 
@@ -70,13 +61,13 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
 
   /** 日食 */
   data class TypeSolarEclipse(override val lmt: LocalDateTime,
-                              val type: ISolarEclipse.SolarType,
+                              val type: SolarType,
                               val time: EclipseTime,
                               val locPlace: ILocationPlace? = null) : TimeDesc(lmt, when (type) {
-    ISolarEclipse.SolarType.PARTIAL -> "日偏食 " + time.desc()
-    ISolarEclipse.SolarType.TOTAL -> "日全食 " + time.desc()
-    ISolarEclipse.SolarType.ANNULAR -> "日環食 " + time.desc()
-    ISolarEclipse.SolarType.HYBRID -> "全環食 " + time.desc()
+    SolarType.PARTIAL -> SolarType.PARTIAL.getTitle(Locale.getDefault()) + " " + time.getTitle(Locale.getDefault())
+    SolarType.TOTAL -> SolarType.TOTAL.getTitle(Locale.getDefault()) + " " + time.getTitle(Locale.getDefault())
+    SolarType.ANNULAR -> SolarType.ANNULAR.getTitle(Locale.getDefault())+ " " + time.getTitle(Locale.getDefault())
+    SolarType.HYBRID  -> SolarType.HYBRID.getTitle(Locale.getDefault()) + " "+ time.getTitle(Locale.getDefault())
   }.let {
     locPlace?.let { lp ->
       it + " 於 " + lp.place
@@ -85,11 +76,11 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
 
   /** 月食 */
   data class TypeLunarEclipse(override val lmt: LocalDateTime,
-                              val type: ILunarEclipse.LunarType,
+                              val type: LunarType,
                               val time: EclipseTime) : TimeDesc(lmt, when (type) {
-    ILunarEclipse.LunarType.PARTIAL -> "月偏食 " + time.desc()
-    ILunarEclipse.LunarType.TOTAL -> "月全食 " + time.desc()
-    ILunarEclipse.LunarType.PENUMBRA -> "半影月食 " + time.desc()
+    LunarType.PARTIAL -> LunarType.PARTIAL.getTitle(Locale.getDefault()) + " " + time.getTitle(Locale.getDefault())
+    LunarType.TOTAL -> LunarType.TOTAL.getTitle(Locale.getDefault()) + time.getTitle(Locale.getDefault())
+    LunarType.PENUMBRA -> LunarType.PENUMBRA.getTitle(Locale.getDefault()) + time.getTitle(Locale.getDefault())
   })
 
 

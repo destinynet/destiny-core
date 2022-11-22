@@ -14,19 +14,19 @@ interface IEclipseFactory {
   // ================================== 日食 ==================================
 
   /** 從此時之後，全球各地的「一場」日食資料 (型態、開始、最大、結束...）  */
-  fun getNextSolarEclipse(fromGmtJulDay: GmtJulDay, forward: Boolean, types: Collection<ISolarEclipse.SolarType>):
+  fun getNextSolarEclipse(fromGmtJulDay: GmtJulDay, forward: Boolean, types: Collection<SolarType>):
     AbstractSolarEclipse
 
   /** 承上 , 不指定 日食類型 [ISolarEclipse.SolarType]]  */
   fun getNextSolarEclipse(fromGmtJulDay: GmtJulDay, forward: Boolean): AbstractSolarEclipse {
-    return getNextSolarEclipse(fromGmtJulDay, forward, listOf(*ISolarEclipse.SolarType.values()))
+    return getNextSolarEclipse(fromGmtJulDay, forward, listOf(*SolarType.values()))
   }
 
   /** 全球，某時間範圍內的日食記錄  */
   fun getRangeSolarEclipses(fromGmt: GmtJulDay,
                             toGmt: GmtJulDay,
-                            types: Collection<ISolarEclipse.SolarType> = listOf(
-                              *ISolarEclipse.SolarType.values())): List<AbstractSolarEclipse> {
+                            types: Collection<SolarType> = listOf(
+                              *SolarType.values())): List<AbstractSolarEclipse> {
     require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
 
     return generateSequence (getNextSolarEclipse(fromGmt , true , types)) {
@@ -44,7 +44,7 @@ interface IEclipseFactory {
   /** 承上 , [ChronoLocalDateTime] 版本 , 搜尋 單一種類的日食 */
   fun getRangeSolarEclipses(fromGmt: ChronoLocalDateTime<*>,
                             toGmt: ChronoLocalDateTime<*>,
-                            type: ISolarEclipse.SolarType
+                            type: SolarType
   ): List<AbstractSolarEclipse> {
     return getRangeSolarEclipses(TimeTools.getGmtJulDay(fromGmt), TimeTools.getGmtJulDay(toGmt), listOf(type))
   }
@@ -57,8 +57,8 @@ interface IEclipseFactory {
   /** 全球，某時間範圍內的月食記錄 */
   fun getRangeLunarEclipses(fromGmt: GmtJulDay,
                             toGmt: GmtJulDay,
-                            types: Collection<ILunarEclipse.LunarType> = listOf(
-                              *ILunarEclipse.LunarType.values())): List<AbstractLunarEclipse> {
+                            types: Collection<LunarType> = listOf(
+                              *LunarType.values())): List<AbstractLunarEclipse> {
     require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
 
     return generateSequence( getNextLunarEclipse(fromGmt , true)) {
