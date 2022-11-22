@@ -117,33 +117,30 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
 
     val set = sortedSetOf<TimeDesc>()
 
-    // 每個時辰開始時刻 (子初可能是前一晚）
-    val hourStartMap = hourBranchFeature.getDailyBranchStartMap(lmtStart.toLocalDate(), loc, config.hourBranchConfig)
-      .mapValues { (_, v) -> v as LocalDateTime }
-
-
-    // 每個時辰的 時禽
-    val hourLunarStationMap: Map<Branch, LunarStation> = config.lunarStationConfig.let {
-      hourBranchFeature.getDailyBranchMiddleMap(lmtStart.toLocalDate(), loc, config.hourBranchConfig)
-        .map { (b, middleLmt) ->
-          b to lunarStationFeature.hourlyFeature.getModel(middleLmt, loc, it.hourlyConfig)
-        }.toMap()
-    }
-
-    // 12地支
-    val listBranches: List<TimeDesc> = Branch.values().map { eb ->
-
-      val branchStart: LocalDateTime = hourStartMap[eb]!!
-
-      val hourlyLunarStation: LunarStation? = hourLunarStationMap.let { it[eb] }
-
-      val descs = buildList {
-        add("$eb 初")
-        hourlyLunarStation?.also {
-          add(it.getFullName(config.locale))
+    // 12地支 + 隔天的子初
+    val listBranches: List<TimeDesc.TypeHour> = hourBranchFeature.getDailyBranchStartListWithNextDayZi(lmtStart.toLocalDate(), loc, config.hourBranchConfig).let { list ->
+      val branchMiddleMap: Map<Branch, ChronoLocalDateTime<*>> = hourBranchFeature.getDailyBranchMiddleMap(lmtStart.toLocalDate(), loc, config.hourBranchConfig)
+      val list12 = list.take(12).map { (branch , branchStart) ->
+        val middleLmt = branchMiddleMap[branch]!!
+        val hourlyLunarStation = lunarStationFeature.hourlyFeature.getModel(middleLmt, loc, config.lunarStationConfig.hourlyConfig)
+        val descs = buildList {
+          add("$branch 初")
+          add(hourlyLunarStation.getFullName(config.locale))
         }
+        TimeDesc.TypeHour(branchStart as LocalDateTime, branch, hourlyLunarStation, descs)
       }
-      TimeDesc.TypeHour(branchStart, eb, hourlyLunarStation, descs)
+
+      val tomorrowLunarStationMap = hourBranchFeature.getDailyBranchMiddleMap(lmtStart.toLocalDate().plus(1, ChronoUnit.DAYS), loc, config.hourBranchConfig)
+      val nextDayZi = list.last().let { (branch , branchStart) ->
+        val middleLmt = tomorrowLunarStationMap[Branch.子]!!
+        val hourlyLunarStation = lunarStationFeature.hourlyFeature.getModel(middleLmt, loc, config.lunarStationConfig.hourlyConfig)
+        val descs = buildList {
+          add("$branch 初")
+          add(hourlyLunarStation.getFullName(config.locale))
+        }
+        TimeDesc.TypeHour(branchStart as LocalDateTime, branch, hourlyLunarStation, descs)
+      }
+      list12.plus(nextDayZi)
     }
 
     // 日月 四個至點
