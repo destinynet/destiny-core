@@ -7,7 +7,6 @@ import com.google.common.collect.HashBiMap
 import destiny.core.Descriptive
 import destiny.tools.Domain
 import destiny.tools.Impl
-import destiny.tools.StringTools.decodeToFinalUrl
 import mu.KotlinLogging
 import java.io.Serializable
 
@@ -61,7 +60,7 @@ abstract class EnumMapConverterWithDefault<T : Enum<T>>(override val key: String
   }
 
   override fun getContext(map: Map<String, String>): T? {
-    return map[key]?.trim()?.decodeToFinalUrl()?.let { s ->
+    return map[key]?.trim()?.let { s ->
       defaultImpl::class.java.enumConstants.firstOrNull { it.name.equals(s , true)}
     }
   }

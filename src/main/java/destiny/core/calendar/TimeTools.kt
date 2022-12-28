@@ -6,7 +6,7 @@ package destiny.core.calendar
 import destiny.core.News.EastWest.EAST
 import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.chinese.StemBranch
-import destiny.tools.StringTools
+import destiny.tools.StringTools.clean
 import mu.KotlinLogging
 import java.time.*
 import java.time.chrono.ChronoLocalDate
@@ -286,7 +286,7 @@ object TimeTools {
    * 解碼
    */
   fun decode(s: String): ChronoLocalDateTime<*>? {
-    val trimmed = StringTools.clean(s)
+    val trimmed = s.clean()
     logger.trace("clean '{}' => '{}' ", s, trimmed)
     return when {
       trimmed.startsWith('G') -> LocalDateTime.parse(trimmed.substring(1), DateTimeFormatter.ISO_DATE_TIME)

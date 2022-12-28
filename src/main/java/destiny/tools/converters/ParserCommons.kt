@@ -4,7 +4,7 @@
 package destiny.tools.converters
 
 import com.google.common.base.Enums
-import destiny.tools.StringTools.decodeToFinalUrl
+import java.net.URLDecoder
 
 object ParserCommons {
 
@@ -24,7 +24,9 @@ object ParserCommons {
    * 承上 , 只是這若是無此值，就傳回 null
    */
   fun <E : Enum<E>> parseEnum(key: String, clazz: Class<E>, map: Map<String, String>): E? {
-    return map[key]?.trim()?.decodeToFinalUrl()?.let { name ->
+    return map[key]?.trim()?.let { s ->
+      URLDecoder.decode(s, "UTF-8").replace(" ", "+")
+    }?.let { name ->
       clazz.enumConstants.firstOrNull { it.name.equals(name, true) }
     }
   }
