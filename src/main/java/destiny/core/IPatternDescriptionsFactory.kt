@@ -11,4 +11,6 @@ interface IPatternDescriptionsFactory<T, P : IPattern, D : IPatternParasDescript
   fun getPatternDescriptions(model: T, locale: Locale = Locale.getDefault()): List<D>
 
   fun getDescriptions(pattern: P, locale: Locale = Locale.getDefault()): List<D>
+
+  fun getPrompts(model: T, locale: Locale = Locale.getDefault()): String? = null
 }
