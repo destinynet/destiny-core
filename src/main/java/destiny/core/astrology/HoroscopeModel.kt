@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.Gender
+import destiny.core.IBirthDataNamePlace
 import destiny.core.ITimeLoc
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.calendar.GmtJulDay
@@ -308,9 +309,9 @@ data class HoroscopeModel(
 /**
  * 與「人」綁定的星盤資料
  */
-interface IPersonHoroscopeModel : IHoroscopeModel {
-  val gender: Gender
-  val name: String?
+interface IPersonHoroscopeModel : IHoroscopeModel, IBirthDataNamePlace {
+  override val gender: Gender
+  override val name: String?
 }
 
 /**
