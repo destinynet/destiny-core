@@ -83,31 +83,26 @@ object LocaleTools {
    * </pre>
    */
   fun getBestMatchingLocale(locale: Locale = Locale.getDefault(), locales: Iterable<Locale>): Locale? {
-    //符合第一項 : 語言/國家/變數 都符合
-    locales
-      .filter {
+
+    return locales.let { locs ->
+      locs.firstOrNull {
+        //符合第一項 : 語言/國家/變數 都符合
         locale.language.equals(it.language, ignoreCase = true) &&
           locale.country.equals(it.country, ignoreCase = true) &&
           locale.variant.equals(it.variant, ignoreCase = true)
+      }?: run {
+        locs.firstOrNull {
+          //符合第二項 : 語言/國家 符合即可
+          locale.language.equals(it.language, ignoreCase = true) &&
+            locale.country.equals(it.country, ignoreCase = true)
+        }
+      }?: run {
+        locs.firstOrNull {
+          //符合第三項 : 只有語言符合
+          locale.language.equals(it.language, ignoreCase = true)
+        }
       }
-      .forEach { return it }
-
-    //符合第二項 : 語言/國家 符合即可
-    locales
-      .filter {
-        locale.language.equals(it.language, ignoreCase = true) &&
-          locale.country.equals(it.country, ignoreCase = true)
-      }
-      .forEach { return it }
-
-    //符合第三項 : 只有語言符合
-    locales
-      .filter {
-        locale.language.equals(it.language, ignoreCase = true)
-      }
-      .forEach { return it }
-
-    return null
+    }
   }
 
   /**

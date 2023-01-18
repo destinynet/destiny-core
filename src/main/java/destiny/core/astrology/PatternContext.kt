@@ -313,7 +313,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             val score = threePairs.takeIf { pairs -> pairs.all { it.score != null } }?.map { it.score!! }?.average()
 
             val oppoPoints = threePairs.first { it.aspect == OPPOSITION }.points
-            val moderator = threePairs.flatMap { it.points }.toSet().minus(oppoPoints).iterator().next()
+            val moderator = threePairs.flatMap { it.points }.toSet().minus(oppoPoints).first()
 
             AstroPattern.Wedge(oppoPoints.toSet(), moderator.signHouse(posMap, cuspDegreeMap), score)
           }.toSet()
