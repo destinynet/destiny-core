@@ -66,6 +66,22 @@ interface IHoroscopeModel : ITimeLoc {
     get() = pointDegreeMap.mapValues { (_, lngDeg) -> lngDeg.sign }
 
   /**
+   * 星座星體列表，按照黃道經度排列
+   */
+  val signPointsMap : Map<ZodiacSign , List<AstroPoint>>
+    get() = ZodiacSign.values().associateWith { sign ->
+      pointSignMap.filter { (k, v) -> sign == v }
+        .map { (k, v) -> k }
+        .sortedBy { p -> positionMap[p]!!.lng }
+        .toList()
+    }
+
+//    get() = pointSignMap.map { (point,sign) -> sign to point }
+//      .groupBy { (sign , _) -> sign }
+//      .mapValues { (_, values) -> values.map { it.second }.sortedBy { p -> positionMap[p]!!.lng } }
+//      .toMap()
+
+  /**
    * @return 取得 GMT 時刻
    */
   val gmt: ChronoLocalDateTime<*>
