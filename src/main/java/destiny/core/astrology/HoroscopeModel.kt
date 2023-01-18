@@ -76,10 +76,6 @@ interface IHoroscopeModel : ITimeLoc {
         .toList()
     }
 
-//    get() = pointSignMap.map { (point,sign) -> sign to point }
-//      .groupBy { (sign , _) -> sign }
-//      .mapValues { (_, values) -> values.map { it.second }.sortedBy { p -> positionMap[p]!!.lng } }
-//      .toMap()
 
   /**
    * @return 取得 GMT 時刻
