@@ -11,10 +11,9 @@ interface TimeZoneService {
 
 
   /** 嘗試從經緯度，尋找 TimeZone  */
-  @Throws(Exception::class)
   fun getTimeZoneId(lat: Double, lng: Double): String?
 
-  fun getTimeZoneId(latLng : ILatLng) : String ? {
+  fun getTimeZoneId(latLng: ILatLng): String? {
     return getTimeZoneId(latLng.lat, latLng.lng)
   }
 
@@ -23,6 +22,6 @@ interface TimeZoneService {
   }
 
   fun getTimeZoneOrGMT(lat: Double, lng: Double): TimeZone {
-    return getTimeZoneId(lat, lng)?.let { TimeZone.getTimeZone(it) }?:TimeZone.getTimeZone("GMT")
+    return getTimeZoneId(lat, lng)?.let { TimeZone.getTimeZone(it) } ?: TimeZone.getTimeZone("GMT")
   }
 }
