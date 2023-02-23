@@ -17,7 +17,7 @@ class AstroPatternDescriptor(
   commentKey: String,
   parameters: List<Any>
 ) :
-  AbstractPropertyBasedPatternDescriptor(pattern, commentKey, parameters, "%.2f") {
+  AbstractPropertyBasedPatternDescriptor(pattern, commentKey, parameters) {
 
   override val resource = AstroPattern::class.qualifiedName!!
 

@@ -6,6 +6,7 @@ package destiny.core.astrology
 import com.google.common.collect.Sets
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
+import destiny.tools.Score.Companion.toScore
 import mu.KotlinLogging
 import org.apache.commons.math3.ml.clustering.Cluster
 import org.apache.commons.math3.ml.clustering.Clusterable
@@ -42,7 +43,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
               ?.let { unionPoints ->
                 val score = threeSets.takeIf { sets -> sets.all { it.score != null } }
                   ?.map { it.score!! }?.average()
-                AstroPattern.GrandTrine(unionPoints, posMap.getValue(set1.points.first()).sign.element, score)
+                AstroPattern.GrandTrine(unionPoints, posMap.getValue(set1.points.first()).sign.element, score?.toScore())
               }
           }.toSet()
         } ?: emptySet()
@@ -74,8 +75,8 @@ class PatternContext(val aspectEffective: IAspectEffective,
                 ?.let { map: Map<AstroPoint, Double> ->
                   val wings = map.keys
                   /** 分數 : [AstroPattern.GrandTrine] + 對沖分數 +  head與兩個翅膀 [Aspect.SEXTILE] 的分數 , 四者平均 */
-                  val score = grandTrine.score?.let { setOf(it) }?.plus(oppoScore)?.plus(map.values)?.average()
-                  AstroPattern.Kite(head.signHouse(posMap, cuspDegreeMap), wings, tail.signHouse(posMap, cuspDegreeMap), score)
+                  val score = grandTrine.score?.value?.let { setOf(it) }?.plus(oppoScore)?.plus(map.values)?.average()
+                  AstroPattern.Kite(head.signHouse(posMap, cuspDegreeMap), wings, tail.signHouse(posMap, cuspDegreeMap), score?.toScore())
                 }
             }
           }
@@ -101,7 +102,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             val score: Double? = threeSet.takeIf { sets -> sets.all { it.score != null } }?.map { it.score!! }?.average()
             val oppoPoints: List<AstroPoint> = threeSet.first { it.aspect == OPPOSITION }.points
             val squared = threeSet.flatMap { it.points }.toSet().minus(oppoPoints).first().signHouse(posMap, cuspDegreeMap)
-            AstroPattern.TSquared(oppoPoints.toSet(), squared, score)
+            AstroPattern.TSquared(oppoPoints.toSet(), squared, score?.toScore())
           }
         }?.toSet() ?: emptySet()
 
@@ -133,7 +134,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
               val (set1: IPointAspectPattern, set2: IPointAspectPattern) = twoSets.toList().let { it[0] to it[1] }
               val pointer = set1.points.intersect(set2.points).first().signHouse(posMap, cuspDegreeMap)
               val bottoms: Set<AstroPoint> = twoSets.flatMap { it.points }.toSet().minus(pointer.point)
-              AstroPattern.Yod(bottoms, pointer, score)
+              AstroPattern.Yod(bottoms, pointer, score?.toScore())
             }
         }?.toSet() ?: emptySet()
     }
@@ -160,8 +161,8 @@ class PatternContext(val aspectEffective: IAspectEffective,
               // 分數 : 上帝之指分數 + 對沖分數 + 兩個60度的分數 , 平均
               //val score: Double? = pattern.score?.let { patternScore -> bottoms60ScoreMap.map { sextileScore -> sextileScore.value }.plus(oppoScore).plus(patternScore).average() }
               // 分數 : 上帝之指分數 + 對沖分數 平均
-              val score: Double? = pattern.score?.let { patternScore -> setOf(oppoScore).plus(patternScore).average() }
-              AstroPattern.Boomerang(pattern, oppoPoint.signHouse(posMap, cuspDegreeMap), score)
+              val score = pattern.score?.value?.let { patternScore -> setOf(oppoScore).plus(patternScore).average() }
+              AstroPattern.Boomerang(pattern, oppoPoint.signHouse(posMap, cuspDegreeMap), score?.toScore())
             }
         }.toSet()
     }
@@ -188,7 +189,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
               val bottoms = threePairs.first { it.aspect == QUINTILE }.points
               val pointer = threePairs.flatMap { it.points }.toSet().minus(bottoms).first()
 
-              AstroPattern.GoldenYod(bottoms, pointer.signHouse(posMap, cuspDegreeMap), score)
+              AstroPattern.GoldenYod(bottoms, pointer.signHouse(posMap, cuspDegreeMap), score?.toScore())
             }
         }?.toSet() ?: emptySet()
     }
@@ -219,7 +220,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
                     // 加上其對衝點 , 與此 T-Squared 兩底點的 squared 分數
                     val twinSquaredScore: List<Double> = twoSquared.map { it.third }
                     // 三個值 , 平均
-                    val score: Double? = tSquaredScore?.let { twinSquaredScore.plus(it).average() }
+                    val score = tSquaredScore?.value?.let { twinSquaredScore.plus(it).average() }
 
                     // 仍然有可能，四顆星不在同一種 quality 星座內 , 必須取「最多」者
                     val union4 = tSquared.oppoPoints.union(setOf(tSquared.squared.point, oppo))
@@ -228,7 +229,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
                       .toSortedMap()
                       .lastKey()
 
-                    AstroPattern.GrandCross(union4, quality, score)
+                    AstroPattern.GrandCross(union4, quality, score?.toScore())
                   }
               }.asSequence()
             }.toSet()
@@ -258,7 +259,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
               && !aspectEffective.isEffective(p1, p2, posMap, SQUARE)
               && !aspectEffective.isEffective(p1, p2, posMap, CONJUNCTION)
           }.map { twoPatterns: Set<AstroPattern.TSquared> ->
-            val score: Double? = twoPatterns.takeIf { patterns -> patterns.all { it.score != null } }?.map { it.score!! }?.average()
+            val score = twoPatterns.takeIf { patterns -> patterns.all { it.score != null } }?.map { it.score!!.value }?.average()?.toScore()
             AstroPattern.DoubleT(twoPatterns, score)
           }
         }?.toSet() ?: emptySet()
@@ -284,7 +285,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
               aspectsCalculator.getPointAspect(p, posMap, g2.points, aspects = setOf(OPPOSITION)).size == 1
             }
           }.map { twoTrines: Set<AstroPattern.GrandTrine> ->
-            val score: Double? = twoTrines.takeIf { trines -> trines.all { it.score != null } }?.map { it.score!! }?.average()
+            val score = twoTrines.takeIf { trines -> trines.all { it.score != null } }?.map { it.score!!.value }?.average()?.toScore()
             AstroPattern.Hexagon(twoTrines, score)
           }
         }?.toSet() ?: emptySet()
@@ -315,7 +316,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             val oppoPoints = threePairs.first { it.aspect == OPPOSITION }.points
             val moderator = threePairs.flatMap { it.points }.toSet().minus(oppoPoints).first()
 
-            AstroPattern.Wedge(oppoPoints.toSet(), moderator.signHouse(posMap, cuspDegreeMap), score)
+            AstroPattern.Wedge(oppoPoints.toSet(), moderator.signHouse(posMap, cuspDegreeMap), score?.toScore())
           }.toSet()
         } ?: emptySet()
     }
@@ -347,8 +348,8 @@ class PatternContext(val aspectEffective: IAspectEffective,
             .map { (twoWedges , oppoScore) ->
               val unionPoints = twoWedges.flatMap { it.points }.toSet()
               // 分數 : 以兩組 wedge 個別分數 , 加上 moderator 對沖分數 , 三者平均
-              val score: Double? = twoWedges.takeIf { pattern -> pattern.all { it.score != null } }?.map { it.score!! }?.plus(oppoScore)?.average()
-              AstroPattern.MysticRectangle(unionPoints, score)
+              val score: Double? = twoWedges.takeIf { pattern -> pattern.all { it.score != null } }?.map { it.score!!.value }?.plus(oppoScore)?.average()
+              AstroPattern.MysticRectangle(unionPoints, score?.toScore())
             }.toSet()
         } ?: emptySet()
     }
@@ -365,9 +366,9 @@ class PatternContext(val aspectEffective: IAspectEffective,
           Sets.combinations(patterns, 5).asSequence()
             .filter { fiveSet -> fiveSet.flatMap { it.points }.toSet().size == 5 }
             .map { fivePatterns ->
-              val score: Double? = fivePatterns.takeIf { patterns -> patterns.all { it.score != null } }?.map { it.score!! }?.average()
+              val score: Double? = fivePatterns.takeIf { patterns -> patterns.all { it.score != null } }?.map { it.score!!.value }?.average()
               val fivePoints = fivePatterns.flatMap { it.points }.toSet()
-              AstroPattern.Pentagram(fivePoints, score)
+              AstroPattern.Pentagram(fivePoints, score?.toScore())
             }
         }?.toSet() ?: emptySet()
     }
@@ -388,7 +389,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             aspectEffective.getEffectiveErrorAndScore(p1, p2, posMap, CONJUNCTION)?.second?:0.0
           }.average()
 
-          AstroPattern.StelliumSign(points, sign, score)
+          AstroPattern.StelliumSign(points, sign, score.toScore())
         }.toSet()
     }
   }
@@ -407,7 +408,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             aspectEffective.getEffectiveErrorAndScore(p1, p2, posMap, CONJUNCTION)?.second ?: 0.0
           }.average()
 
-          AstroPattern.StelliumHouse(points, house, score)
+          AstroPattern.StelliumHouse(points, house, score.toScore())
         }.toSet()
     }
   }
@@ -461,7 +462,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
                   logger.warn("score is NaN !! group1 = {} , group2 = {}", group1, group2)
                   null
                 } else {
-                  AstroPattern.Confrontation(setOf(group1.toSet(), group2.toSet()), score)
+                  AstroPattern.Confrontation(setOf(group1.toSet(), group2.toSet()), score.toScore())
                 }
               }
           }?.toSet() ?: emptySet()

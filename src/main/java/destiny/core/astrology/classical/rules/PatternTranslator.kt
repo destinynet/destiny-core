@@ -17,7 +17,7 @@ import java.io.Serializable
 abstract class AbstractPlanetPatternDescriptor<out T : IPlanetPattern>(pattern: IPlanetPattern,
                                                                        commentKey: String,
                                                                        parameters: List<Any>)
-  : AbstractPropertyBasedPatternDescriptor(pattern, commentKey, parameters , "%.1f")
+  : AbstractPropertyBasedPatternDescriptor(pattern, commentKey, parameters)
 
 
 class EssentialDignityDescriptor(rule: EssentialDignity, key: String, parameters: List<Any>) :

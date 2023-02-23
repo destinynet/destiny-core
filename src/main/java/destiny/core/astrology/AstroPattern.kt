@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Score
 import java.io.Serializable
 import java.util.*
 
@@ -16,12 +17,12 @@ data class PointSignHouse(val point: AstroPoint,
                           val house: Int)
 
 sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
-                          open val score: Double? = null) : IAstroPattern {
+                          open val score: Score? = null) : IAstroPattern {
 
   /**
    * [GrandTrine] : 大三角
    */
-  data class GrandTrine(override val points: Set<AstroPoint>, val element: Element, override val score: Double? = null) : AstroPattern() {
+  data class GrandTrine(override val points: Set<AstroPoint>, val element: Element, override val score: Score? = null) : AstroPattern() {
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
@@ -43,7 +44,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
   /**
    * [Kite] : 風箏
    */
-  data class Kite(val head: PointSignHouse, val wings: Set<AstroPoint>, val tail: PointSignHouse, override val score: Double? = null) : AstroPattern() {
+  data class Kite(val head: PointSignHouse, val wings: Set<AstroPoint>, val tail: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     override val points: Set<AstroPoint>
       get() = wings.plus(head.point).plus(tail.point)
 
@@ -69,7 +70,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
   /**
    * [TSquared] : 三刑會沖
    */
-  data class TSquared(val oppoPoints: Set<AstroPoint>, val squared: PointSignHouse, override val score: Double? = null) : AstroPattern() {
+  data class TSquared(val oppoPoints: Set<AstroPoint>, val squared: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     override val points: Collection<AstroPoint>
       get() = oppoPoints.plus(squared.point)
 
@@ -94,7 +95,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
    * [Yod] : 上帝之指 , Finger of God
    * 60 , 150 , 150
    * */
-  data class Yod(val bottoms: Set<AstroPoint>, val pointer: PointSignHouse, override val score: Double? = null) : AstroPattern() {
+  data class Yod(val bottoms: Set<AstroPoint>, val pointer: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     override val points: Set<AstroPoint>
       get() = bottoms.plus(pointer.point)
 
@@ -119,7 +120,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
    * [Boomerang] : 回力鏢
    * [Yod] + 對沖點 (與雙翼形成 30度)
    * */
-  data class Boomerang(val yod: Yod, val oppoPoint: PointSignHouse, override val score: Double? = null) : AstroPattern() {
+  data class Boomerang(val yod: Yod, val oppoPoint: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     override val points: Set<AstroPoint>
       get() = yod.points.plus(oppoPoint.point)
 
@@ -143,7 +144,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
   /**
    * [GoldenYod] : 黃金指 72 , 144 , 144
    * */
-  data class GoldenYod(val bottoms: Collection<AstroPoint>, val pointer: PointSignHouse, override val score: Double? = null) : AstroPattern() {
+  data class GoldenYod(val bottoms: Collection<AstroPoint>, val pointer: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     override val points: Collection<AstroPoint>
       get() = bottoms.plus(pointer.point)
 
@@ -168,7 +169,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
   /**
    * [GrandCross] : 大十字
    */
-  data class GrandCross(override val points: Set<AstroPoint>, val quality: Quality, override val score: Double? = null) : AstroPattern() {
+  data class GrandCross(override val points: Set<AstroPoint>, val quality: Quality, override val score: Score? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is GrandCross) return false
@@ -189,7 +190,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
   /**
    * [DoubleT] : 兩組 三刑會沖 (但未形成 [GrandCross]大十字 )
    */
-  data class DoubleT(val tSquares: Set<TSquared>, override val score: Double? = null) : AstroPattern() {
+  data class DoubleT(val tSquares: Set<TSquared>, override val score: Score? = null) : AstroPattern() {
     override val points: Set<AstroPoint>
       get() = tSquares.flatMap { it.points }.toSet()
 
@@ -210,7 +211,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
   /**
    * [Hexagon] : 六芒星 (兩組 [GrandTrine]大三角 , 彼此交角60度 )
    */
-  data class Hexagon(val grandTrines: Set<GrandTrine>, override val score: Double? = null) : AstroPattern() {
+  data class Hexagon(val grandTrines: Set<GrandTrine>, override val score: Score? = null) : AstroPattern() {
     override fun getNotes(locale: Locale): String {
         val (g1, g2) = grandTrines.toList().let { it[0] to it[1] }
         return StringBuilder().apply {
@@ -239,7 +240,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
    * [Wedge] : 楔子
    * 180 沖 , 逢 第三顆星 , 以 60/120 介入，緩和局勢
    */
-  data class Wedge(val oppoPoints: Set<AstroPoint>, val moderator: PointSignHouse, override val score: Double? = null) : AstroPattern() {
+  data class Wedge(val oppoPoints: Set<AstroPoint>, val moderator: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     override val points: Collection<AstroPoint>
       get() = oppoPoints.plus(moderator.point)
 
@@ -265,7 +266,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
    * 兩組 [Wedge] 對沖，兩個60度，兩個120度，這也會形成壓力，但是彼此間又可以釋放壓力，非常詭異
    * @param points 總共4顆星
    */
-  data class MysticRectangle(override val points: Set<AstroPoint>, override val score: Double? = null) : AstroPattern() {
+  data class MysticRectangle(override val points: Set<AstroPoint>, override val score: Score? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is MysticRectangle) return false
@@ -284,7 +285,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
    * [Pentagram] : 五芒星 五個 [GoldenYod]
    * @param points 總共5顆星
    * */
-  data class Pentagram(override val points: Set<AstroPoint>, override val score: Double? = null) : AstroPattern() {
+  data class Pentagram(override val points: Set<AstroPoint>, override val score: Score? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is Pentagram) return false
@@ -302,7 +303,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
   /**
    * [StelliumSign] : 聚集星座 (至少四顆星)
    */
-  data class StelliumSign(override val points: Set<AstroPoint>, val sign: ZodiacSign, override val score: Double? = null) : AstroPattern() {
+  data class StelliumSign(override val points: Set<AstroPoint>, val sign: ZodiacSign, override val score: Score? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is StelliumSign) return false
@@ -323,7 +324,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
   /**
    * [StelliumHouse] : 聚集宮位 (至少四顆星)
    */
-  data class StelliumHouse(override val points: Set<AstroPoint>, val house: Int, override val score: Double? = null) : AstroPattern() {
+  data class StelliumHouse(override val points: Set<AstroPoint>, val house: Int, override val score: Score? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is StelliumHouse) return false
@@ -345,7 +346,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
    * [Confrontation] 對峙
    * 兩組 三顆星以上的合相星群 彼此對沖
    */
-  data class Confrontation(val clusters: Set<Set<AstroPoint>>, override val score: Double? = null) : AstroPattern() {
+  data class Confrontation(val clusters: Set<Set<AstroPoint>>, override val score: Score? = null) : AstroPattern() {
     override val points: Set<AstroPoint>
       get() = clusters.flatten().toSet()
 

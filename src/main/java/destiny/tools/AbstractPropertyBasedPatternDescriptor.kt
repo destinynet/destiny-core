@@ -19,7 +19,6 @@ import java.util.*
  * 利用 [IPattern]::class.java.simpleName 作為 nameKey
  * 而 另外帶入 commentKey (常用 "comment") 當作 commentKey
  *
- * @param doubleFormat : 用來表示若是 double 值，其輸出的 pattern 為何 (內定為小數點後一位）
  */
 abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
                                                       private val commentKey: String,
@@ -47,11 +46,15 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
   }
 
   /** 設定註解參數 , 檢查參數是否是 [ILocaleString] , 如果是的話 , 就轉為適當的 locale
-   * ex : {0} 位於第 {1} 宮 , 就要處理 {0} {1} , 填入 commentParameters  */
+   * ex : {0} 位於第 {1} 宮 , 就要處理 {0} {1} , 填入 commentParameters
+   *
+   * score (0~1 的 double 值) 改用百分比呈現
+   * */
   private fun getCommentParameters(locale: Locale, commentParameters: List<Any>): Array<Any> {
 
     fun objectToString(it : Any) : String {
       return when(it) {
+        is Score -> (it.value * 100).toInt().toString()
         is ILocaleString -> it.getTitle(locale)
         is Double -> String.format( doubleFormat?:"%.1f", it)
         is AstroPoint -> it.toString(locale)
