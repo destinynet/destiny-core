@@ -28,7 +28,7 @@ data class Choice(val text: String,
                   val index: Int,
                   val logprobs: Int?,
                   @SerialName("finish_reason")
-                  val finishReason: String)
+                  val finishReason: String?)
 
 @Serializable
 data class CompletionResult(val id: String,
