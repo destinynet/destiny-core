@@ -24,22 +24,49 @@ data class Usage(@SerialName("prompt_tokens")
                  val totalTokens: Int)
 
 @Serializable
-data class Choice(val text: String,
-                  val index: Int,
-                  val logprobs: Int?,
-                  @SerialName("finish_reason")
-                  val finishReason: String?)
+data class ChoiceText(val text: String,
+                      val index: Int,
+                      val logprobs: Int? = null,
+                      @SerialName("finish_reason")
+                      val finishReason: String?)
 
 @Serializable
-data class CompletionResult(val id: String,
-                            /** always 'text_completion' */
-                            val `object`: String,
-                            val created: Long,
-                            /** maybe 'text-davinci-003' */
-                            val model: String,
-                            val choices: List<Choice>,
-                            val usage: Usage
-)
+data class CompletionTextResult(val id: String,
+                                /** always 'text_completion' */
+                                val `object`: String,
+                                val created: Long,
+                                /** maybe 'text-davinci-003' */
+                                val model: String,
+                                val choices: List<ChoiceText>,
+                                val usage: Usage)
+
+
+@Serializable
+data class ChoiceChat(val message : IOpenAi.Msg,
+                      val index: Int,
+                      val logprobs: Int? = null,
+                      @SerialName("finish_reason")
+                      val finishReason: String?)
+
+@Serializable
+data class CompletionChatResult(val id: String,
+                                /** always 'chat.completion' */
+                                val `object`: String,
+                                val created: Long,
+                                /** maybe 'gpt-3.5-turbo-0301' */
+                                val model: String,
+                                val choices: List<ChoiceChat>,
+                                val usage: Usage)
+
+@Serializable
+data class CompletionResult<T>(val id: String,
+                               /** maybe 'chat.completion' or 'text_completion' */
+                               val `object`: String,
+                               val created: Long,
+                               /** maybe 'gpt-3.5-turbo-0301' or 'text-davinci-003' */
+                               val model: String,
+                               val choices: List<T>,
+                               val usage: Usage)
 
 @Serializable
 data class Error(val message: String,
