@@ -96,10 +96,10 @@ class ZodiacDegreeTest {
 
   @Test
   fun testMin() {
-    assertEquals(0 , 0.toZodiacDegree().min)
-    assertEquals(6 , 0.1.toZodiacDegree().min)
-    assertEquals(30 , 0.5.toZodiacDegree().min)
-    assertEquals(54 , 0.9.toZodiacDegree().min)
+    assertEquals(0 , 0.toZodiacDegree().intMin)
+    assertEquals(6 , 0.1.toZodiacDegree().intMin)
+    assertEquals(30 , 0.5.toZodiacDegree().intMin)
+    assertEquals(54 , 0.9.toZodiacDegree().intMin)
   }
 
 }

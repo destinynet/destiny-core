@@ -63,9 +63,7 @@ class ReturnContext(
     val convergentGmtJulDay = getConvergentTime(natalGmtJulDay, nowGmtJulDay)
     val convergentGmt = julDayResolver.getLocalDateTime(convergentGmtJulDay)
 
-
     val convergentLmt = TimeTools.getLmtFromGmt(convergentGmt, nowLoc)
-
 
     val config = HoroscopeConfig(
       setOf(*Planet.values, *Axis.array, LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN),

@@ -17,7 +17,10 @@ value class ZodiacDegree private constructor(val value: Double) : Serializable {
   val signDegree: Pair<ZodiacSign, Double>
     get() = sign to value % 30
 
-  val min: Int
+  val intDeg : Int
+    get() = (value % 30).toInt()
+
+  val intMin: Int
     get() = ((value - value.toInt()) * 60).toInt()
 
   fun getAngle(to: ZodiacDegree): Double {
