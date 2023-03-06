@@ -13,8 +13,20 @@ import destiny.core.calendar.TimeTools
 import destiny.tools.Feature
 import mu.KotlinLogging
 import java.io.Serializable
-import java.time.chrono.ChronoLocalDateTime
 import kotlin.math.absoluteValue
+
+data class ReturnModel(val model: IHoroscopeModel, val natalCuspDegreeMap : Map<Int, ZodiacDegree>) : Serializable {
+
+  /** return盤的星體，投影到本命盤上，在地盤的第幾宮，距離宮首、宮尾各幾度 */
+  fun getRelativeHouse(p: AstroPoint): Triple<Int, Double, Double>? {
+    return model.getPosition(p)?.lngDeg?.let { zodiacDegree ->
+      val house = IHoroscopeModel.getHouse(zodiacDegree, natalCuspDegreeMap)
+      val toHead = zodiacDegree.getAngle(natalCuspDegreeMap.getCuspDegree(house))
+      val toTail = zodiacDegree.getAngle(natalCuspDegreeMap.getCuspDegree(house + 1))
+      Triple(house, toHead, toTail)
+    }
+  }
+}
 
 interface IReturnContext : Conversable, IDiscrete {
 
@@ -27,13 +39,8 @@ interface IReturnContext : Conversable, IDiscrete {
   val precession: Boolean
 
   /** 對外主要的 method , 取得 return 盤  */
-  fun getReturnHoroscope(natalGmtJulDay: GmtJulDay, natalLoc: ILocation, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): IHoroscopeModel
+  fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel
 
-  fun getReturnHoroscope(natalLmt: ChronoLocalDateTime<*>, natalLoc: ILocation, nowLmt: ChronoLocalDateTime<*>, nowLoc: ILocation): IHoroscopeModel {
-    val natalGmtJulDay = TimeTools.getGmtJulDay(natalLmt, natalLoc)
-    val nowGmtJulDay = TimeTools.getGmtJulDay(nowLmt, nowLoc)
-    return getReturnHoroscope(natalGmtJulDay, natalLoc, nowGmtJulDay, nowLoc)
-  }
 }
 
 
@@ -59,8 +66,8 @@ class ReturnContext(
 ) : IReturnContext, Serializable {
 
 
-  override fun getReturnHoroscope(natalGmtJulDay: GmtJulDay, natalLoc: ILocation, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): IHoroscopeModel {
-    val convergentGmtJulDay = getConvergentTime(natalGmtJulDay, nowGmtJulDay)
+  override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel {
+    val convergentGmtJulDay = getConvergentTime(natalModel.gmtJulDay, nowGmtJulDay)
     val convergentGmt = julDayResolver.getLocalDateTime(convergentGmtJulDay)
 
     val convergentLmt = TimeTools.getLmtFromGmt(convergentGmt, nowLoc)
@@ -74,8 +81,8 @@ class ReturnContext(
       1013.25,
       VoidCourseImpl.Medieval
     )
-
-    return horoscopeFeature.getModel(convergentLmt, nowLoc, config)
+    val returnModel = horoscopeFeature.getModel(convergentLmt, nowLoc, config)
+    return ReturnModel(returnModel, natalModel.cuspDegreeMap)
   }
 
 

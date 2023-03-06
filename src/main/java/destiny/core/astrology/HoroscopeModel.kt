@@ -143,6 +143,17 @@ interface IHoroscopeModel : ITimeLoc {
   }
 
   /**
+   * 黃道幾度，落於第幾宮 ( 1<= house <= 12) , 以及，距離宮首、宮尾各幾度
+   */
+  fun getHousePartition(zodiacDegree: ZodiacDegree): Triple<Int , Double, Double> {
+    val house = Companion.getHouse(zodiacDegree, cuspDegreeMap)
+    val toHead = getCuspDegree(house).aheadOf(zodiacDegree)
+    val toTail = getCuspDegree(house + 1).aheadOf(zodiacDegree)
+    return Triple(house, toHead, toTail)
+  }
+
+
+  /**
    * 取得第幾宮內的星星列表 , 1 <= index <=12 , 並且按照黃道度數「由小到大」排序
    */
   fun getHousePoints(index: Int): List<AstroPoint> {
@@ -170,11 +181,7 @@ interface IHoroscopeModel : ITimeLoc {
    * @param cusp 1 <= cusp <= 12
    */
   fun getCuspDegree(cusp: Int): ZodiacDegree {
-    if (cusp > 12)
-      return getCuspDegree(cusp - 12)
-    else if (cusp < 1)
-      return getCuspDegree(cusp + 12)
-    return cuspDegreeMap.getValue(cusp)
+    return cuspDegreeMap.getCuspDegree(cusp)
   }
 
 
@@ -270,6 +277,14 @@ interface IHoroscopeModel : ITimeLoc {
   } // companion
 
 } // interface
+
+fun Map<Int, ZodiacDegree>.getCuspDegree(cusp: Int): ZodiacDegree {
+  if (cusp > 12)
+    return this.getCuspDegree(cusp - 12)
+  else if (cusp < 1)
+    return this.getCuspDegree(cusp + 12)
+  return this.getValue(cusp)
+}
 
 
 data class HoroscopeModel(
