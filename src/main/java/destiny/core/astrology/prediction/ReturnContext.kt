@@ -15,18 +15,6 @@ import mu.KotlinLogging
 import java.io.Serializable
 import kotlin.math.absoluteValue
 
-data class ReturnModel(val model: IHoroscopeModel, val natalCuspDegreeMap : Map<Int, ZodiacDegree>) : Serializable {
-
-  /** return盤的星體，投影到本命盤上，在地盤的第幾宮，距離宮首、宮尾各幾度 */
-  fun getRelativeHouse(p: AstroPoint): Triple<Int, Double, Double>? {
-    return model.getPosition(p)?.lngDeg?.let { zodiacDegree ->
-      val house = IHoroscopeModel.getHouse(zodiacDegree, natalCuspDegreeMap)
-      val toHead = zodiacDegree.getAngle(natalCuspDegreeMap.getCuspDegree(house))
-      val toTail = zodiacDegree.getAngle(natalCuspDegreeMap.getCuspDegree(house + 1))
-      Triple(house, toHead, toTail)
-    }
-  }
-}
 
 interface IReturnContext : Conversable, IDiscrete {
 
@@ -39,7 +27,7 @@ interface IReturnContext : Conversable, IDiscrete {
   val precession: Boolean
 
   /** 對外主要的 method , 取得 return 盤  */
-  fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel
+  fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): IHoroscopeModel
 
 }
 
@@ -66,7 +54,7 @@ class ReturnContext(
 ) : IReturnContext, Serializable {
 
 
-  override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel {
+  override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): IHoroscopeModel {
     val convergentGmtJulDay = getConvergentTime(natalModel.gmtJulDay, nowGmtJulDay)
     val convergentGmt = julDayResolver.getLocalDateTime(convergentGmtJulDay)
 
@@ -81,8 +69,7 @@ class ReturnContext(
       1013.25,
       VoidCourseImpl.Medieval
     )
-    val returnModel = horoscopeFeature.getModel(convergentLmt, nowLoc, config)
-    return ReturnModel(returnModel, natalModel.cuspDegreeMap)
+    return horoscopeFeature.getModel(convergentLmt, nowLoc, config)
   }
 
 

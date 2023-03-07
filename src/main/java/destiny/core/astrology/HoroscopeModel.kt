@@ -145,11 +145,17 @@ interface IHoroscopeModel : ITimeLoc {
   /**
    * 黃道幾度，落於第幾宮 ( 1<= house <= 12) , 以及，距離宮首、宮尾各幾度
    */
-  fun getHousePartition(zodiacDegree: ZodiacDegree): Triple<Int , Double, Double> {
+  fun getHousePartition(zodiacDegree: ZodiacDegree): HousePartition {
     val house = Companion.getHouse(zodiacDegree, cuspDegreeMap)
-    val toHead = getCuspDegree(house).aheadOf(zodiacDegree)
-    val toTail = getCuspDegree(house + 1).aheadOf(zodiacDegree)
-    return Triple(house, toHead, toTail)
+    val toHead = zodiacDegree.getAngle(getCuspDegree(house))
+    val toTail = zodiacDegree.getAngle(getCuspDegree(house + 1))
+    return HousePartition(house, toHead, toTail)
+  }
+
+  fun getHousePartition(p : AstroPoint): HousePartition? {
+    return getPosition(p)?.lngDeg?.let {
+      getHousePartition(it)
+    }
   }
 
 
