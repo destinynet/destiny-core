@@ -7,8 +7,8 @@ import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
 
 /**
- * 推運，其實是 『可對應（收斂 , Converge）到某個日期』的推運法。<BR></BR>
- * 例如 ProgressionSecondary , ProgressionTertiary , ProgressionMinor , Solar Return , Lunar Return 皆屬此類 <BR></BR>
+ * 推運，其實是 『可對應（收斂 , Converge）到某個日期』的推運法。
+ * 例如 ProgressionSecondary , ProgressionTertiary , ProgressionMinor , Solar Return , Lunar Return 皆屬此類
  * 而太陽弧 (Solar Arc) 則不屬於此類。因為其星盤並沒有可對應的日期
  */
 interface Mappable {

@@ -9,12 +9,12 @@ import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.TimeTools
 import destiny.tools.Feature
 import mu.KotlinLogging
 import java.io.Serializable
 import kotlin.math.absoluteValue
 
+data class ReturnModel(val horoscope: IHoroscopeModel, val from: GmtJulDay, val to: GmtJulDay)
 
 interface IReturnContext : Conversable, IDiscrete {
 
@@ -27,7 +27,7 @@ interface IReturnContext : Conversable, IDiscrete {
   val precession: Boolean
 
   /** 對外主要的 method , 取得 return 盤  */
-  fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): IHoroscopeModel
+  fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel
 
 }
 
@@ -53,42 +53,63 @@ class ReturnContext(
   private val julDayResolver: JulDayResolver
 ) : IReturnContext, Serializable {
 
+  override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel {
+    return getConvergentClamps(natalModel.gmtJulDay , nowGmtJulDay).let { (from , to) ->
 
-  override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): IHoroscopeModel {
-    val convergentGmtJulDay = getConvergentTime(natalModel.gmtJulDay, nowGmtJulDay)
-    val convergentGmt = julDayResolver.getLocalDateTime(convergentGmtJulDay)
-
-    val convergentLmt = TimeTools.getLmtFromGmt(convergentGmt, nowLoc)
-
-    val config = HoroscopeConfig(
-      setOf(*Planet.values, *Axis.array, LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN),
-      HouseSystem.PLACIDUS,
-      Coordinate.ECLIPTIC,
-      Centric.GEO,
-      0.0,
-      1013.25,
-      VoidCourseImpl.Medieval
-    )
-    return horoscopeFeature.getModel(convergentLmt, nowLoc, config)
+      val config = HoroscopeConfig(
+        setOf(*Planet.values, *Axis.array, LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN),
+        HouseSystem.PLACIDUS,
+        Coordinate.ECLIPTIC,
+        Centric.GEO,
+        0.0,
+        1013.25,
+        VoidCourseImpl.Medieval
+      )
+      val horoscope = horoscopeFeature.getModel(from, nowLoc, config)
+      ReturnModel(horoscope, from, to)
+    }
   }
 
 
   override fun getConvergentTime(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): GmtJulDay {
     val coordinate = if (precession) Coordinate.SIDEREAL else Coordinate.ECLIPTIC
-    //先計算出生盤中，該星體的黃道位置
+    // 先計算出生盤中，該星體的黃道位置
     val natalPlanetDegree: ZodiacDegree = starPositionWithAzimuthImpl.getPosition(planet, natalGmtJulDay, Centric.GEO, coordinate).lngDeg
 
-    //再從現在的時刻，往前(prior , before) 推 , 取得 planet 與 natal planet 呈現 orb 的時刻
+    // 再從現在的時刻，往前(prior , before) 推 , 取得 planet 與 natal planet 呈現 orb 的時刻
     return if (!converse) {
-      //順推
+      // 順推
       starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay, false, coordinate) //false 代表逆推，往before算
     } else {
       // converse == true , 逆推
-      //從出生時間往前(before)推
+      // 從出生時間往前(before)推
       val d = (natalGmtJulDay - nowGmtJulDay).absoluteValue
-      val beforeNatalGmtJulDay = natalGmtJulDay - d // TimeTools.getGmtJulDay(natalTime.minus(d))
-      //要確認最後一個參數，到底是要用 true , 還是 false , 要找相關定義 , 我覺得這裡應該是順推
+      val beforeNatalGmtJulDay = natalGmtJulDay - d
+
       starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), beforeNatalGmtJulDay, true, coordinate) //true 代表順推 , 往 after 算
+    }
+  }
+
+  override fun getConvergentClamps(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): Pair<GmtJulDay, GmtJulDay> {
+    val coordinate = if (precession) Coordinate.SIDEREAL else Coordinate.ECLIPTIC
+    // 先計算出生盤中，該星體的黃道位置
+    val natalPlanetDegree: ZodiacDegree = starPositionWithAzimuthImpl.getPosition(planet, natalGmtJulDay, Centric.GEO, coordinate).lngDeg
+
+    // 再從現在的時刻，往前(prior , before) 推 , 取得 planet 與 natal planet 呈現 orb 的時刻
+    return if (!converse) {
+      // 順推
+      val from = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay, false, coordinate)
+      val to = starTransitImpl.getNextTransitGmt(planet , (natalPlanetDegree + orb), nowGmtJulDay, true, coordinate)
+      from to to
+    } else {
+      // converse == true , 逆推
+      // 從出生時間往前(before)推
+      val d = (natalGmtJulDay - nowGmtJulDay).absoluteValue
+      val beforeNatalGmtJulDay = natalGmtJulDay - d
+
+      val from = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), beforeNatalGmtJulDay, true, coordinate)
+      val to = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), beforeNatalGmtJulDay, false, coordinate)
+      from to to
     }
   }
 
