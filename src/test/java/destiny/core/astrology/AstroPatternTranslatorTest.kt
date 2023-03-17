@@ -176,7 +176,7 @@ class AstroPatternTranslatorTest {
       assertEquals("大三角" , d.getTitle(Locale.SIMPLIFIED_CHINESE))
       assertEquals("大三角" , d.getTitle(Locale.ENGLISH))
       assertEquals("大三角" , d.getTitle(Locale.FRANCE))
-      assertEquals("大三角" , d.getTitle(Locale.JAPANESE))
+      assertEquals("グランドトライン" , d.getTitle(Locale.JAPANESE))
     }
   }
 

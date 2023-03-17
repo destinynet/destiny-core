@@ -17,7 +17,7 @@ class ZodiacSignTest : EnumTest() {
 
   @Test
   fun testString() {
-    testEnums(ZodiacSign::class)
+    testEnums(ZodiacSign::class, locales = listOf(Locale.TAIWAN, Locale.CHINA, Locale.ENGLISH, Locale.JAPAN))
   }
 
   @Test
