@@ -10,7 +10,7 @@ interface IOpenAi {
   }
 
   @Serializable
-  data class Msg(val role: Role, val content: String)
+  data class Msg(val role: Role, val content: String) : java.io.Serializable
 
   suspend fun chatComplete(messages: List<Msg>, user: String? = null): OpenAiReply
 
