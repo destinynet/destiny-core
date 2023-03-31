@@ -59,7 +59,9 @@ class CollectionOfLightImpl(private val besiegedImpl: IBesieged,
     // 若形成光線搜尋模式， 傳回的 List<Planet> size 必定 = 2
 
     val twoPlanets =
-      besiegedImpl.getBesiegingPlanets(planet, h.gmtJulDay, true, Aspect.getAspects(Aspect.Importance.HIGH))
+      besiegedImpl.getBesiegingPlanets(planet, h.gmtJulDay, true, Aspect.getAspects(Aspect.Importance.HIGH)).takeIf {
+        it.size == setOf(it).size
+      } ?: return null
 
     val (p1, p2) = twoPlanets.iterator().let { it.next() to it.next() }
 

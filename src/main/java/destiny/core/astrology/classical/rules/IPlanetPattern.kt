@@ -6,7 +6,6 @@ package destiny.core.astrology.classical.rules
 import destiny.core.IPattern
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
-import destiny.core.astrology.classical.IMutualData
 import java.io.Serializable
 
 interface IClassicalPattern : IPattern
@@ -29,5 +28,3 @@ interface IPlanetPatternFactory : Serializable {
   fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern>
 
 }
-
-interface IMutualPattern : IClassicalPattern, IMutualData

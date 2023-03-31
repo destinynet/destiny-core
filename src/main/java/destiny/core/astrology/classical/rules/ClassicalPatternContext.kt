@@ -121,7 +121,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * RR / EE / RE 互容
    */
-  private val beneficialMutualReception = object : IPlanetPatternFactory {
+  val beneficialMutualReception = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return with(essentialImpl) {
@@ -191,7 +191,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * ====================================== for [AccidentalDignity] ======================================
    */
 
-  private val house_1_10 = object : IPlanetPatternFactory {
+  val house_1_10 = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return h.getHouse(planet)
         ?.takeIf { it == 1 || it == 10 }
@@ -202,7 +202,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
-  private val house_4_7_11 = object : IPlanetPatternFactory {
+  val house_4_7_11 = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return h.getHouse(planet)
         ?.takeIf { intArrayOf(4, 7, 11).contains(it) }
@@ -213,7 +213,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
-  private val house_2_5 = object : IPlanetPatternFactory {
+  val house_2_5 = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return h.getHouse(planet)
         ?.takeIf { it == 2 || it == 5 }
@@ -224,7 +224,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
-  private val house_9 = object : IPlanetPatternFactory {
+  val house_9 = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return h.getHouse(planet)
         ?.takeIf { it == 9 }
@@ -236,7 +236,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   }
 
 
-  private val house_3 = object : IPlanetPatternFactory {
+  val house_3 = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return h.getHouse(planet)
         ?.takeIf { it == 3 }
@@ -284,7 +284,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * Mars, Jupiter, or Saturn oriental of (rising before) the Sun.
    * 火星、木星、土星 是否 東出 於 太陽
    */
-  private val orientalGood = object : IPlanetPatternFactory {
+  val orientalGood = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return arrayOf(MARS, JUPITER, SATURN)
@@ -304,7 +304,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Mercury, or Venus occidental of (rising after) the Sun.
    * */
-  private val occidentalGood = object : IPlanetPatternFactory {
+  val occidentalGood = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return planet.takeIf { it === MERCURY || it === VENUS }
@@ -322,7 +322,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Moon increasing in light (月增光/上弦月) , or occidental of the Sun.
    * */
-  private val moonIncreaseLight = object : IPlanetPatternFactory {
+  val moonIncreaseLight = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return planet.takeIf { it === MOON }?.let { h.getPosition(it) }?.lngDeg?.let { moonDeg ->
@@ -340,7 +340,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * Free from combustion and the Sun's rays. 只要脫離了太陽左右 17度，就算 Free Combustion !?
    * TODO : refine the definition , it is too broad
    */
-  private val freeCombustion = object : IPlanetPatternFactory {
+  val freeCombustion = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return planet.takeIf { it !== SUN }
         ?.takeIf { h.getAngle(it, SUN) > 17 }
@@ -354,7 +354,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Cazimi (within 17 minutes of the Sun).
    * */
-  private val cazimi = object : IPlanetPatternFactory {
+  val cazimi = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return planet.takeIf { it !== SUN }
         ?.takeIf { h.getAngle(it, SUN) < 17.0 / 60.0 }
@@ -367,7 +367,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * Partile conjunction with Jupiter or Venus.
    * 和金星或木星合相，交角 1 度內
    * */
-  private val partileConjJupiterVenus = object : IPlanetPatternFactory {
+  val partileConjJupiterVenus = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       val planetDeg = h.getPosition(planet)?.lngDeg
       val jupiterDeg = h.getPosition(JUPITER)?.lngDeg
@@ -390,7 +390,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Partile aspect with Dragon's Head (Moon's North Node).
    */
-  private val partileConjNorthNode = object : IPlanetPatternFactory {
+  val partileConjNorthNode = object : IPlanetPatternFactory {
 
     /** 內定採用 [NodeType.MEAN] */
     val north: LunarNode = LunarNode.of(News.NorthSouth.NORTH, NodeType.MEAN)
@@ -413,7 +413,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Partile trine Jupiter or Venus.
    */
-  private val partileTrineJupiterVenus = object : IPlanetPatternFactory {
+  val partileTrineJupiterVenus = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       val planetDeg = h.getPosition(planet)?.lngDeg
       val jupiterDeg = h.getPosition(JUPITER)?.lngDeg
@@ -443,7 +443,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Partile aspect Jupiter or Venus.
    */
-  private val partileSextileJupiterVenus = object : IPlanetPatternFactory {
+  val partileSextileJupiterVenus = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       val planetDeg = h.getPosition(planet)?.lngDeg
       val jupiterDeg = h.getPosition(JUPITER)?.lngDeg
@@ -467,7 +467,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Partile conjunct Cor Leonis (Regulus) at 29deg50' Leo in January 2000.
    * */
-  private val partileConjRegulus = object : IPlanetPatternFactory {
+  val partileConjRegulus = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
@@ -484,7 +484,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Partile conjunct Spica at 23deg50' Libra in January 2000.
    * */
-  private val partileConjSpica = object : IPlanetPatternFactory {
+  val partileConjSpica = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
@@ -509,7 +509,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * Jupiter in 11th.
    * Saturn in 12th.
    */
-  private val joyHouse = object : IPlanetPatternFactory {
+  val joyHouse = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return h.getHouse(planet)?.takeIf { house ->
@@ -536,7 +536,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * 相對於得時的，是「不得時」 [outOfSect]
    *
    */
-  private val hayz = object : IPlanetPatternFactory {
+  val hayz = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)
@@ -568,7 +568,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * 角度考量 0/60/90/120/180
    * 中間不能與其他行星形成角度
    */
-  private val besiegedJupiterVenus = object : IPlanetPatternFactory {
+  val besiegedJupiterVenus = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return planet.takeIf { arrayOf(SUN, MOON, MERCURY, MARS, SATURN).contains(it) }?.takeIf {
@@ -580,7 +580,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
-  private val translationOfLight = object : IPlanetPatternFactory {
+  val translationOfLight = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return translationOfLightImpl.getResult(planet, h)
         ?.let { (from, to, aspectType) ->
@@ -596,7 +596,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * 目前只將「收集好光 (DIGNITIES) 」視為 Collection of Light ，而「蒐集穢光 (DEBILITIES) 」不納入考慮
    */
-  private val collectionOfLight = object : IPlanetPatternFactory {
+  val collectionOfLight = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return collectionOfLightImpl.getResult(planet, h, ICollectionOfLight.CollectType.DIGNITIES)?.let { twoPlanets ->
         // {0} 從 {1} 與 {2} 收集光線。 {1} 與 {2} 交角 {3} 度。
@@ -609,7 +609,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * 在與火星或土星形成交角之前，臨陣退縮，代表避免厄運
    */
-  private val refrainFromMarsSaturn = object : IPlanetPatternFactory {
+  val refrainFromMarsSaturn = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return planet.takeIf { it !== MOON && it !== SUN }
         ?.let {
@@ -662,7 +662,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Peregrine : 漂泊、茫游、外出狀態
    */
-  private val peregrine = object : IPlanetPatternFactory {
+  val peregrine = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
@@ -690,7 +690,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
-  private val house_12 = object : IPlanetPatternFactory {
+  val house_12 = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return h.getHouse(planet)
         ?.takeIf { it == 12 }
@@ -699,7 +699,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
-  private val house_6_8 = object : IPlanetPatternFactory {
+  val house_6_8 = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return h.getHouse(planet)
         ?.takeIf { it == 6 || it == 8 }
@@ -734,7 +734,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * 火星、木星、或土星，在太陽西方
    */
-  private val occidentalBad = object : IPlanetPatternFactory {
+  val occidentalBad = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return arrayOf(MARS, JUPITER, SATURN)
         .takeIf { it.contains(planet) }
@@ -754,7 +754,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * 金星、水星，是否 東出 於 太陽
    *
    */
-  private val orientalBad = object : IPlanetPatternFactory {
+  val orientalBad = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return arrayOf(MERCURY, VENUS)
         .takeIf { it.contains(planet) }
@@ -772,7 +772,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Moon decreasing in light.
    * */
-  private val moonDecreaseLight = object : IPlanetPatternFactory {
+  val moonDecreaseLight = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return planet
         .takeIf { it === MOON }
@@ -790,7 +790,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Combust the Sun (between 17' and 8.5 from Sol).
    */
-  private val combustion = object : IPlanetPatternFactory {
+  val combustion = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return planet.takeIf { it !== SUN }
         ?.takeIf { h.getAngle(planet, SUN) > 17.0 / 60.0 && h.getAngle(planet, SUN) <= 8.5 }
@@ -802,7 +802,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Under the Sunbeams (between 8.5 and 17 from Sol).
    */
-  private val sunbeam = object : IPlanetPatternFactory {
+  val sunbeam = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return planet.takeIf { it !== SUN }
         ?.takeIf { h.getAngle(it, SUN) > 8.5 && h.getAngle(it, SUN) <= 17.0 }
@@ -811,7 +811,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
-  private val partileConjMarsSaturn = object : IPlanetPatternFactory {
+  val partileConjMarsSaturn = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
@@ -836,7 +836,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Partile conjunction with Dragon's Tail (Moon's South Node).
    * */
-  private val partileConjSouthNode = object : IPlanetPatternFactory {
+  val partileConjSouthNode = object : IPlanetPatternFactory {
 
     /** 內定採用 [NodeType.MEAN]  */
     val south = LunarNode.of(News.NorthSouth.SOUTH, NodeType.MEAN)
@@ -862,7 +862,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * 前一個角度與火土之一形成 0/90/180 , 後一個角度又與火土另一顆形成 0/90/180
    * 中間不能與其他行星形成角度
    */
-  private val besiegedMarsSaturn = object : IPlanetPatternFactory {
+  val besiegedMarsSaturn = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return planet.takeIf { arrayOf(SUN, MOON, MERCURY, VENUS).contains(it) }
@@ -879,7 +879,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Partile opposite Mars or Saturn.
    */
-  private val partileOppoMarsSaturn = object : IPlanetPatternFactory {
+  val partileOppoMarsSaturn = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
 
@@ -903,7 +903,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Partile square Mars or Saturn.
    * */
-  private val partileSquareMarsSaturn = object : IPlanetPatternFactory {
+  val partileSquareMarsSaturn = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
 
@@ -927,7 +927,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Within 5 deg of Caput Algol at 26 deg 10' Taurus in January 2000.
    * */
-  private val conjAlgol = object : IPlanetPatternFactory {
+  val conjAlgol = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
         h.getPosition(FixedStar.ALGOL)?.lngDeg?.takeIf { algolDeg ->
@@ -948,7 +948,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    *
    * 相對於不得時的，是「得時」 [hayz]
    */
-  private val outOfSect = object : IPlanetPatternFactory {
+  val outOfSect = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return h.getZodiacSign(planet)?.let { sign ->
@@ -973,7 +973,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
-  private val refrainFromVenusJupiter = object : IPlanetPatternFactory {
+  val refrainFromVenusJupiter = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       // 太陽 / 月亮不會逆行
       return planet.takeIf { it !== SUN && it !== MOON }?.let {
