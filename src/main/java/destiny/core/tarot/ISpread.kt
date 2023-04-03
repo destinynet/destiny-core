@@ -8,9 +8,4 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-sealed interface ISpread : Descriptive, java.io.Serializable {
-
-  val key: String
-    get() = javaClass.simpleName
-
-}
+sealed interface ISpread : Descriptive, java.io.Serializable
