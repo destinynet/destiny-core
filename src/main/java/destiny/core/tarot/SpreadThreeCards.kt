@@ -23,4 +23,11 @@ data class SpreadThreeCards(val card1: CardOrientation,
       else -> { "三牌法" }
     }
   }
+
+  companion object {
+    fun of(list : List<CardOrientation>) : SpreadThreeCards {
+      require(list.size == 3)
+      return SpreadThreeCards(list[0] , list[1] , list[2])
+    }
+  }
 }
