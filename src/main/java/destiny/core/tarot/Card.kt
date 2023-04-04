@@ -3,16 +3,18 @@
  */
 package destiny.core.tarot
 
+import destiny.core.astrology.Element
+import destiny.core.astrology.Element.*
 import destiny.core.tarot.Suit.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-enum class Suit {
-  MAJOR,
-  WANDS,
-  CUPS,
-  SWORDS,
-  PENTACLES
+enum class Suit(val element: Element?) {
+  MAJOR(null),
+  WANDS(FIRE),
+  CUPS(WATER),
+  SWORDS(AIR),
+  PENTACLES(EARTH)
 }
 
 @Serializable

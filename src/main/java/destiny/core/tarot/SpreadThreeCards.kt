@@ -18,9 +18,9 @@ data class SpreadThreeCards(@SerialName("c1") val card1: CardOrientation,
 
   override fun getTitle(locale: Locale): String {
     return when (locale.language) {
-      "en" -> { "Three Card Spread" }
-      "ja" -> { "三枚カード" }
-      else -> { "三牌法" }
+      "en" -> "Three Card Spread"
+      "ja" -> "三枚カード"
+      else -> "三牌法"
     }
   }
 
