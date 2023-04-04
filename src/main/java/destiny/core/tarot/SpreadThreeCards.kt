@@ -11,10 +11,10 @@ import java.util.*
  * maybe Major Arcana
  */
 @Serializable
-@SerialName("SpreadThreeCards")
-data class SpreadThreeCards(val card1: CardOrientation,
-                            val card2: CardOrientation,
-                            val card3: CardOrientation) : ISpread {
+@SerialName("3cards")
+data class SpreadThreeCards(@SerialName("c1") val card1: CardOrientation,
+                            @SerialName("c2") val card2: CardOrientation,
+                            @SerialName("c3") val card3: CardOrientation) : ISpread {
 
   override fun getTitle(locale: Locale): String {
     return when (locale.language) {

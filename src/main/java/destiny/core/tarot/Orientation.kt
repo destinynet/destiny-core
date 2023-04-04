@@ -3,13 +3,19 @@
  */
 package destiny.core.tarot
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 
+@Serializable
 enum class Orientation {
+  @SerialName("U")
   UPRIGHT,
+  @SerialName("R")
   REVERSED
 }
 
 @Serializable
-data class CardOrientation(val card: Card, val orientation: Orientation = Orientation.UPRIGHT)
+@SerialName("CO")
+data class CardOrientation(@SerialName("c") val card: Card,
+                           @SerialName("o") val orientation: Orientation = Orientation.UPRIGHT)
