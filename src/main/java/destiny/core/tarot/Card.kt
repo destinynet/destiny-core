@@ -17,49 +17,27 @@ enum class Suit {
 
 @Serializable
 enum class Card(val suit: Suit) {
-  @SerialName("Mf")
   FOOL(MAJOR),
-  @SerialName("Mmc")
   MAGICIAN(MAJOR),
-  @SerialName("Mp")
   HIGH_PRIESTESS(MAJOR),
-  @SerialName("Meps")
   EMPRESS(MAJOR),
-  @SerialName("Mepr")
   EMPEROR(MAJOR),
-  @SerialName("Mhp")
   HIEROPHANT(MAJOR),
-  @SerialName("Ml")
   LOVERS(MAJOR),
-  @SerialName("Mc")
   CHARIOT(MAJOR),
-  @SerialName("Msn")
   STRENGTH(MAJOR),
-  @SerialName("Mh")
   HERMIT(MAJOR),
-  @SerialName("Mwf")
   WHEEL_OF_FORTUNE(MAJOR),
-  @SerialName("Mjc")
   JUSTICE(MAJOR),
-  @SerialName("Mhm")
   HANGED_MAN(MAJOR),
-  @SerialName("Mdt")
   DEATH(MAJOR),
-  @SerialName("Mtr")
   TEMPERANCE(MAJOR),
-  @SerialName("Mdv")
   DEVIL(MAJOR),
-  @SerialName("Mtw")
   TOWER(MAJOR),
-  @SerialName("Msr")
   STAR(MAJOR),
-  @SerialName("Mm")
   MOON(MAJOR),
-  @SerialName("Ms")
   SUN(MAJOR),
-  @SerialName("Mjm")
   JUDGEMENT(MAJOR),
-  @SerialName("Mw")
   WORLD(MAJOR),
 
   @SerialName("W1")

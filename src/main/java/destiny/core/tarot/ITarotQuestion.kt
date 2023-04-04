@@ -4,6 +4,7 @@
 package destiny.core.tarot
 
 import destiny.core.Gender
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,6 +15,7 @@ sealed interface ITarotQuestion {
 }
 
 @Serializable
+@SerialName("TarotQuestion")
 data class TarotQuestion(
   override val spread: ISpread,
   override val gender: Gender?,
