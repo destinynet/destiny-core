@@ -4,10 +4,6 @@
 package destiny.core.tarot
 
 import destiny.core.IDigest
-import kotlin.reflect.KClass
 
 
-interface ISpreadDigest<T : ISpread> : IDigest<T , String> {
-
-  val spreadClass : KClass<out ISpread>
-}
+interface ISpreadDigest<T : ISpread> : IDigest<T , String>
