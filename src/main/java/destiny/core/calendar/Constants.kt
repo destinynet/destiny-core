@@ -28,7 +28,7 @@ object Constants {
     /**
      * UNIX 開始日，往前推算到 Gregorian 開始日 (西元 1582-10-15) , 倒數 141427 整天
      */
-    const val FROM_UNIXEPOCH_DAYS = -141427
+    private const val FROM_UNIXEPOCH_DAYS = -141427
 
     /** 承上 , 距離秒數 : -12219292800 */
     const val FROM_UNIXEPOCH_SECONDS = FROM_UNIXEPOCH_DAYS * SECONDS_OF_DAY

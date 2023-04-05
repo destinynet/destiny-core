@@ -236,7 +236,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
           if (lmt.get(ChronoField.HOUR_OF_DAY) > 12) {
             localDate.plus(1, ChronoUnit.DAYS) to 丑
           } else {
-            localDate to ( if (next) currentBranch.next else currentBranch.prev )
+            localDate to currentBranch.next
           }
         }
       }

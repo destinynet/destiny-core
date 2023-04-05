@@ -17,7 +17,7 @@ import kotlin.math.abs
 @Named
 class AspectEffectiveModern(
   /** 「不考慮行星」的交角容許度 */
-  val aspectOrbsImpl: IAspectOrbs = AspectOrbsDefaultImpl(),
+  private val aspectOrbsImpl: IAspectOrbs = AspectOrbsDefaultImpl(),
   /** 「考量行星的」交角容許度實作 */
   val aspectOrbsPlanetImpl: IAspectOrbsPlanet = AspectOrbsPlanetDefaultImpl()
 ) : IAspectEffective, Serializable {

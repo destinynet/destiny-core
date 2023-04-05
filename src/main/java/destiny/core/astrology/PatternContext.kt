@@ -101,7 +101,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
           }.map { threeSet ->
             val score: Double? = threeSet.takeIf { sets -> sets.all { it.score != null } }?.map { it.score!! }?.average()
             val oppoPoints: List<AstroPoint> = threeSet.first { it.aspect == OPPOSITION }.points
-            val squared = threeSet.flatMap { it.points }.toSet().minus(oppoPoints).first().signHouse(posMap, cuspDegreeMap)
+            val squared = threeSet.flatMap { it.points }.toSet().minus(oppoPoints.toSet()).first().signHouse(posMap, cuspDegreeMap)
             AstroPattern.TSquared(oppoPoints.toSet(), squared, score?.toScore())
           }
         }?.toSet() ?: emptySet()
@@ -132,7 +132,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             .map { (twoSets, errorAndScore) ->
               val score: Double? = twoSets.takeIf { sets -> sets.all { it.score != null } }?.map { it.score!! }?.plus(errorAndScore.second)?.average()
               val (set1: IPointAspectPattern, set2: IPointAspectPattern) = twoSets.toList().let { it[0] to it[1] }
-              val pointer = set1.points.intersect(set2.points).first().signHouse(posMap, cuspDegreeMap)
+              val pointer = set1.points.intersect(set2.points.toSet()).first().signHouse(posMap, cuspDegreeMap)
               val bottoms: Set<AstroPoint> = twoSets.flatMap { it.points }.toSet().minus(pointer.point)
               AstroPattern.Yod(bottoms, pointer, score?.toScore())
             }
@@ -187,7 +187,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
               val score = threePairs.takeIf { pairs -> pairs.all { it.score != null } }?.map { it.score!! }?.average()
 
               val bottoms = threePairs.first { it.aspect == QUINTILE }.points
-              val pointer = threePairs.flatMap { it.points }.toSet().minus(bottoms).first()
+              val pointer = threePairs.flatMap { it.points }.toSet().minus(bottoms.toSet()).first()
 
               AstroPattern.GoldenYod(bottoms, pointer.signHouse(posMap, cuspDegreeMap), score?.toScore())
             }
@@ -314,7 +314,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             val score = threePairs.takeIf { pairs -> pairs.all { it.score != null } }?.map { it.score!! }?.average()
 
             val oppoPoints = threePairs.first { it.aspect == OPPOSITION }.points
-            val moderator = threePairs.flatMap { it.points }.toSet().minus(oppoPoints).first()
+            val moderator = threePairs.flatMap { it.points }.toSet().minus(oppoPoints.toSet()).first()
 
             AstroPattern.Wedge(oppoPoints.toSet(), moderator.signHouse(posMap, cuspDegreeMap), score?.toScore())
           }.toSet()
