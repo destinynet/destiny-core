@@ -3,10 +3,8 @@
  */
 package destiny.core.tarot
 
-import destiny.tools.random.RandomService
-
 
 interface ITarotRandomBuilder<T : ISpread> {
 
-  fun random(randomService: RandomService): T
+  fun random(): T
 }
