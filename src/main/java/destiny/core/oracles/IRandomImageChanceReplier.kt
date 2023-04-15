@@ -3,6 +3,8 @@
  */
 package destiny.core.oracles
 
+import destiny.core.Gender
+
 
 interface IRandomImageChanceReplier<M> {
 
@@ -27,7 +29,7 @@ interface IRandomImageChanceReplier<M> {
     }
 
   /** 隨機求籤 */
-  fun getViewModel(question: String?): M
+  fun getViewModel(question: String?, gender: Gender?): M
 
 }
 
