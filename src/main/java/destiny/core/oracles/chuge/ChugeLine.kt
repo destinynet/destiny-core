@@ -4,9 +4,10 @@
  */
 package destiny.core.oracles.chuge
 
-import java.io.Serializable
+import destiny.core.oracles.IClause
+import java.util.*
 
-interface IChugeLine : Serializable {
+interface IChugeLine : IClause {
   /** 籤詩  */
   val content: String
   /** 解籤  */
@@ -20,5 +21,10 @@ data class ChugeLine(private val yinyang: Boolean,
                      /** 籤詩  */
                      override val content: String,
                      /** 解籤  */
-                     override val explanation: String) : IChugeLine
+                     override val explanation: String) : IChugeLine {
+
+  override fun getTitle(locale: Locale): String {
+    return "諸葛神數"
+  }
+                     }
 

@@ -3,8 +3,9 @@
  */
 package destiny.core.oracles.phrom
 
+import destiny.core.oracles.IClause
 import destiny.core.oracles.Verdict
-import java.io.Serializable
+import java.util.*
 
 /** 四面佛三十籤 */
 data class Phrom(
@@ -17,7 +18,11 @@ data class Phrom(
   val poems: List<String>,
 
   val verdicts: Set<Verdict>
-) : Serializable {
+) : IClause {
 
   enum class Level { 上, 中, 下 }
+
+  override fun getTitle(locale: Locale): String {
+    return "四面佛"
+  }
 }

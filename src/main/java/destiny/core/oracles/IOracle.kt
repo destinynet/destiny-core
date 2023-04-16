@@ -6,7 +6,7 @@ package destiny.core.oracles
 
 import kotlin.reflect.KClass
 
-interface IOracle<T> {
+interface IOracle<T : IClause> {
 
   /** 取得該籤詩集的所有條文 */
   val clauses: List<T>

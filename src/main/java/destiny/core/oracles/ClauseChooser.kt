@@ -15,7 +15,7 @@ object ClauseChooser {
    * 從n個阿拉伯數字，取出一個條文
    * 演算法 : 直接求餘數即可
    */
-  fun <T> choose(digits: List<Int>, oracle: IOracle<T>): Pair<Int, T> {
+  fun <T : IClause> choose(digits: List<Int>, oracle: IOracle<T>): Pair<Int, T> {
 
     require(digits.all { it in 0..9 }) {
       "Some tokens inside $digits is out of 0..9"
@@ -38,7 +38,7 @@ object ClauseChooser {
     return index to oracle.getClause(index)!!
   }
 
-  fun <T> choose(randomService: RandomService, seed: String, oracle: IOracle<T>): Pair<Int, T> {
+  fun <T : IClause> choose(randomService: RandomService, seed: String, oracle: IOracle<T>): Pair<Int, T> {
     require(seed.isNotEmpty()) {
       "Question is null !"
     }

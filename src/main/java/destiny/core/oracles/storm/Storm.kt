@@ -4,8 +4,9 @@
 package destiny.core.oracles.storm
 
 import destiny.core.chinese.Stem
+import destiny.core.oracles.IClause
 import destiny.core.oracles.Verdict
-import java.io.Serializable
+import java.util.*
 
 
 data class Storm(val index: Int,
@@ -29,7 +30,12 @@ data class Storm(val index: Int,
                  /** 碧仙註 , 五言絕句 or 七言絕句 */
                  val greenNote: List<String>,
                  /** 斷曰 */
-                 val verdicts: Set<Verdict>) : Serializable {
+                 val verdicts: Set<Verdict>) : IClause {
+
+  override fun getTitle(locale: Locale): String {
+    return "雷雨師籤"
+  }
+
   init {
     require(stems.size == 2)
     require(poem.size == 4)

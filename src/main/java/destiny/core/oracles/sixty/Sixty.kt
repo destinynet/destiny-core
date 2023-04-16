@@ -7,8 +7,9 @@ package destiny.core.oracles.sixty
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
 import destiny.core.iching.Hexagram
+import destiny.core.oracles.IClause
 import destiny.core.oracles.Verdict
-import java.io.Serializable
+import java.util.*
 
 
 /**
@@ -46,7 +47,12 @@ data class Sixty(
 
   val verdicts: Set<Verdict> = emptySet()
 
-) : Serializable
+) : IClause {
+  override fun getTitle(locale: Locale): String {
+    return "六十甲子籤詩"
+  }
+
+}
 
 
 /**
