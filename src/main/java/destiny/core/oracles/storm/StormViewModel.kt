@@ -4,7 +4,7 @@
 package destiny.core.oracles.storm
 
 import destiny.core.Gender
-import destiny.core.oracles.IOracleQuestion
+import destiny.core.oracles.IOracleViewModel
 
 
 data class StormViewModel(override val matcher: Int,
@@ -13,4 +13,4 @@ data class StormViewModel(override val matcher: Int,
                           /** 東坡解、碧仙註 的背景 */
                           val bgUrl2: String,
                           override val question: String? = null,
-                          override val gender: Gender? = null) : IOracleQuestion<Storm, Int>
+                          override val gender: Gender? = null) : IOracleViewModel<Storm, Int>
