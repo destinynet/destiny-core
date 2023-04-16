@@ -8,7 +8,7 @@ import destiny.core.chinese.IYinYang
 import destiny.core.chinese.YinYang
 import java.io.Serializable
 
-enum class Hexagram constructor(
+enum class Hexagram(
   override val upperSymbol: Symbol,
   override val lowerSymbol: Symbol) : IHexagram, Serializable {
 
