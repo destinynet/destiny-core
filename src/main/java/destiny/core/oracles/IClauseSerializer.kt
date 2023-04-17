@@ -7,14 +7,13 @@ import destiny.core.oracles.dizang.Dizang
 import destiny.core.oracles.guanyin.Guanyin
 import destiny.core.oracles.sixty.Sixty
 import destiny.core.oracles.storm.Storm
+import destiny.tools.searchImpl
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.*
-import mu.KotlinLogging
-import java.lang.reflect.ParameterizedType
 import javax.inject.Named
 import kotlin.reflect.KClass
 
@@ -32,9 +31,9 @@ class IClauseSerializer(val oracles: Set<IOracle<*>>) : KSerializer<IClause> {
     return encoder.encodeStructure(descriptor) {
       encodeStringElement(descriptor, 0, value::class.simpleName!!)
       encodeIntElement(descriptor, 1, run {
-        val oracle: IOracle<*> = oracles.searchImpl(value::class)
-        logger.trace { "oracle = $oracle" }
-        oracle.getIntLocator(value)
+        oracles.searchImpl(value::class.java, IOracle::class.java)
+          ?.getIntLocator(value)
+          ?: throw SerializationException("err when serialize")
       })
     }
   }
@@ -56,30 +55,17 @@ class IClauseSerializer(val oracles: Set<IOracle<*>>) : KSerializer<IClause> {
       }
 
       if (clause != null && indexFromOne != null) {
-        val oracle = oracles.searchImpl(clause!!)
-        oracle.getClause(indexFromOne)!!
-
+        oracles.searchImpl(clause!!.java , IOracle::class.java)
+          ?.getClause(indexFromOne)
+          ?: throw SerializationException("err when deserialize")
       } else {
-        throw RuntimeException("err")
+        throw SerializationException("err when deserialize")
       }
     }
   }
 
 
   companion object {
-    private val logger = KotlinLogging.logger { }
-
-    private fun Set<IOracle<*>>.searchImpl(kClass: KClass<out IClause>): IOracle<*> {
-
-      return this.first { oracle ->
-        val oracleModelClass = (oracle.javaClass.genericInterfaces.firstOrNull {
-          it is ParameterizedType && it.rawType == IOracle::class.java
-        } as? ParameterizedType)?.actualTypeArguments?.get(0)
-
-        oracleModelClass != null && oracleModelClass == kClass.java
-      }
-    }
-
     val supportedClazz = setOf(Dizang::class, Guanyin::class, Sixty::class, Storm::class)
   }
 
