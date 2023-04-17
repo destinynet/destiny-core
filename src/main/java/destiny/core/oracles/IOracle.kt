@@ -28,10 +28,18 @@ interface IOracle<T : IClause> {
       ?.getClauseFromMatcher(matcher)
   }
 
+  @Suppress("UNCHECKED_CAST")
+  fun getIntLocator(clause : IClause) : Int {
+    val locator: Locator<Int, T> = (getLocatorMap()[Int::class] as Locator<Int, T>)
+    return locator.getMatcherFromClause(clause)
+  }
+
 }
 
 interface Locator<in M, T> {
 
   fun getClauseFromMatcher(matcher: M): T?
+
+  fun getMatcherFromClause(clause: IClause): @UnsafeVariance M
 }
 
