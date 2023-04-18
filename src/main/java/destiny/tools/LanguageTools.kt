@@ -6,11 +6,19 @@ package destiny.tools
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
-fun <E> Collection<E>.searchImpl(type: Type, clazz: Class<*>): E? {
+fun <E> Collection<E>.searchImpl(type: Type, containerClazz: Class<*>? = null): E? {
   return this.firstOrNull { each: E ->
-    val eachClass = (each!!::class.java.genericInterfaces.firstOrNull {
-      it is ParameterizedType && it.rawType == clazz
-    } as? ParameterizedType)?.actualTypeArguments?.get(0)
-    eachClass != null && eachClass == type
+    (each!!::class.java.genericInterfaces.firstOrNull {
+      it is ParameterizedType
+    } as? ParameterizedType)?.let {
+      it.rawType to it.actualTypeArguments?.get(0)
+    }?.let { (containerType, argumentType) ->
+      if (containerClazz != null) {
+        containerType == containerClazz && argumentType == type
+      } else {
+        argumentType == type
+      }
+    } ?: false
+
   }
 }

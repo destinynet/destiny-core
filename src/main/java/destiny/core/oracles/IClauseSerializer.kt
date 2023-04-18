@@ -31,7 +31,7 @@ class IClauseSerializer(val oracles: Set<IOracle<*>>) : KSerializer<IClause> {
     return encoder.encodeStructure(descriptor) {
       encodeStringElement(descriptor, 0, value::class.simpleName!!)
       encodeIntElement(descriptor, 1, run {
-        oracles.searchImpl(value::class.java, IOracle::class.java)
+        oracles.searchImpl(value::class.java)
           ?.getIntLocator(value)
           ?: throw SerializationException("err when serialize")
       })
@@ -55,7 +55,7 @@ class IClauseSerializer(val oracles: Set<IOracle<*>>) : KSerializer<IClause> {
       }
 
       if (clause != null && indexFromOne != null) {
-        oracles.searchImpl(clause!!.java , IOracle::class.java)
+        oracles.searchImpl(clause!!.java)
           ?.getClause(indexFromOne)
           ?: throw SerializationException("err when deserialize")
       } else {
