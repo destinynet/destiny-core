@@ -6,6 +6,9 @@ package destiny.tools
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
+/**
+ * Set<Container<IAnimal>> to find which container contains [type] == Cat
+ */
 fun <E> Collection<E>.searchImpl(type: Type, containerClazz: Class<*>? = null): E? {
   return this.firstOrNull { each: E ->
     (each!!::class.java.genericInterfaces.firstOrNull {

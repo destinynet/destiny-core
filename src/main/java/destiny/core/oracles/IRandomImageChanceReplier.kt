@@ -6,7 +6,7 @@ package destiny.core.oracles
 import destiny.core.Gender
 
 
-interface IRandomImageChanceReplier<M> {
+interface IRandomImageChanceReplier<M : IOracleViewModel<*, *>> {
 
   /** 底圖的寬度比 */
   val photoRatioW: Double
