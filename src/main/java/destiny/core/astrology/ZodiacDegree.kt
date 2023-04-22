@@ -32,7 +32,7 @@ value class ZodiacDegree private constructor(val value: Double) : Serializable {
   }
 
   /**
-   * @return 計算 此點 是否在 to 的東邊 (度數小，為東邊) , true 就是東邊 , false 就是西邊(含對沖/合相)
+   * @return 計算 此點 是否在 [to] 的東邊 (度數小，為東邊) , true 就是東邊 , false 就是西邊(含對沖/合相)
    */
   fun isOriental(to: ZodiacDegree): Boolean {
     return if (value < to.value && to.value - value < 180)
@@ -43,7 +43,7 @@ value class ZodiacDegree private constructor(val value: Double) : Serializable {
 
 
   /**
-   * @return 計算 此點 是否在 to 的西邊 (度數大，為西邊) , true 就是西邊 , false 就是東邊(含對沖/合相)
+   * @return 計算 此點 是否在 [to] 的西邊 (度數大，為西邊) , true 就是西邊 , false 就是東邊(含對沖/合相)
    */
   fun isOccidental(to: ZodiacDegree): Boolean {
     return if (value < to.value && to.value - value > 180)
@@ -61,6 +61,17 @@ value class ZodiacDegree private constructor(val value: Double) : Serializable {
 
   fun aheadOf(other: ZodiacDegree): Double {
     return value.aheadOf(other.value)
+  }
+
+  /**
+   * 此度數是否被 [from] 與 [to] 包圍 ( 180度(不含) 以內)
+   */
+  fun between(from: ZodiacDegree, to: ZodiacDegree): Boolean {
+    return if (from.isOriental(to)) {
+      from.isOriental(this) && this.isOriental(to)
+    } else {
+      from.isOccidental(this) && this.isOccidental(to)
+    }
   }
 
   operator fun compareTo(other: ZodiacDegree): Int {
