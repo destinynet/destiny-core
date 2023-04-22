@@ -4,7 +4,6 @@
 package destiny.core.astrology
 
 import mu.KotlinLogging
-import kotlin.math.min
 
 object HoroscopeFunctions {
 
@@ -43,22 +42,11 @@ object HoroscopeFunctions {
       val axisDeg: ZodiacDegree = this.getCuspDegree(axis)
       val axisAngle: Double = axisDeg.getAngle(planetDeg)
 
-      val fromAngle: Double = from.getAngle(planetDeg)
-      val toAngle: Double = to.getAngle(planetDeg)
-      val rangeAngle: Double = from.getAngle(to)
-
-      val edgeAngle: Double = min(fromAngle, toAngle)
-
-      logger.trace { "planetDeg = ${planetDeg.value} , axisDeg = ${axisDeg.value} , 影響力 from ${from.value} to ${to.value} , rangeAngle = $rangeAngle , axisAngle = $axisAngle , edgeAngle = $edgeAngle" }
-
-      val score = if (planetDeg.between(axisDeg, from)) {
+      if (planetDeg.between(axisDeg, from)) {
         1 - axisAngle / axisDeg.getAngle(from)
       } else {
         1 - axisAngle / axisDeg.getAngle(to)
       }
-
-      logger.trace { "$planet 在 $axis 宮 的範圍內 .  距離中軸 ${axisAngle.toString().take(3)} 度 , range = ${rangeAngle.toInt()} , 得分 $score " }
-      score
     }
   }
 
