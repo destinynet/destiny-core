@@ -10,7 +10,7 @@ object HoroscopeFunctions {
 
   val logger = KotlinLogging.logger { }
 
-  fun IHoroscopeModel.getAxisScore(planet: Planet, axisHouses: Set<Int> = setOf(1, 4, 7, 11)): Double? {
+  fun IHoroscopeModel.getAxisScore(planet: Planet, axisHouses: Set<Int> = setOf(1, 4, 7, 10)): Double? {
 
     return this.getPosition(planet)?.lngDeg?.let { planetDeg ->
 
