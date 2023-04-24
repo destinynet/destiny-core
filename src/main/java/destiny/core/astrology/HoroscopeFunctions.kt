@@ -49,7 +49,6 @@ object HoroscopeFunctions {
           Triple(house, fromTo.first, fromTo.second)
         }
 
-
       val axisDeg: ZodiacDegree = this.getCuspDegree(axis.toHouse()).minus(rotatingDeg)
       logger.trace { "$axis deg = ${axisDeg.value} , from ${from.value} to ${to.value}" }
       val axisAngle: Double = axisDeg.getAngle(planetDeg)

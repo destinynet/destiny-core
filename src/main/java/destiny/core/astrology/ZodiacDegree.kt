@@ -65,12 +65,15 @@ value class ZodiacDegree private constructor(val value: Double) : Serializable {
 
   /**
    * 此度數是否被 [from] 與 [to] 包圍 ( 180度(不含) 以內)
+   * 其中 oriental 者 inclusive , 另一邊 exclusive
    */
   fun between(from: ZodiacDegree, to: ZodiacDegree): Boolean {
     return if (from.isOriental(to)) {
-      from.isOriental(this) && this.isOriental(to)
+      from.value == this.value ||
+        from.isOriental(this) && this.isOriental(to)
     } else {
-      from.isOccidental(this) && this.isOccidental(to)
+      to.value == this.value ||
+        from.isOccidental(this) && this.isOccidental(to)
     }
   }
 

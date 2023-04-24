@@ -42,6 +42,16 @@ class ZodiacDegreeTest {
     Arguments.of(270, 359.9, 180.1, true),
     Arguments.of(90, 180.1, 359.9, false),
     Arguments.of(90, 359.9, 180.1, false),
+
+    // 以下為 edge 貼合 cases
+    Arguments.of(1.0, 1.0, 2.0, true),
+    Arguments.of(1.0, 2.0, 1.0, true),
+    Arguments.of(359.0, 359.0, 1.0, true),
+    Arguments.of(359.0, 1.0, 359.0, true),
+    Arguments.of(179.0, 179.0, 181.0, true),
+    Arguments.of(179.0, 181.0, 179.0, true),
+
+
   )
 
   @ParameterizedTest
