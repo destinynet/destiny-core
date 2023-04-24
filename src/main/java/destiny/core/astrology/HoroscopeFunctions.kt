@@ -9,21 +9,31 @@ object HoroscopeFunctions {
 
   val logger = KotlinLogging.logger { }
 
-  private fun Axis.toHouse() : Int {
-    return when(this) {
-      Axis.RISING -> 1
-      Axis.NADIR -> 4
-      Axis.SETTING -> 7
+  private fun Axis.toHouse(): Int {
+    return when (this) {
+      Axis.RISING   -> 1
+      Axis.NADIR    -> 4
+      Axis.SETTING  -> 7
       Axis.MERIDIAN -> 10
     }
   }
 
-  fun IHoroscopeModel.getAxisScore(planet: Planet, axes: Set<Axis> = Axis.list.toSet(), rotatingDeg: Double = 0.0): Double? {
+  data class AxisEffect(val axis: Axis, val peak: Double = 1.0, val valley: Double = 0.0)
+
+  /**
+   * @param unAffected 未受影響的範圍內，評分為幾分
+   */
+  fun IHoroscopeModel.getAxisScore(
+    planet: Planet,
+    axisEffects: Collection<AxisEffect> = Axis.list.map { AxisEffect(it) }.toSet(),
+    rotatingDeg: Double = 0.0,
+    unAffected: Double = 0.0
+  ): Double? {
 
     return this.getPosition(planet)?.lngDeg?.let { planetDeg ->
 
-      val (axis, from, to) = axes.map { axis ->
-        axis to when (axis) {
+      axisEffects.map { axisEffect ->
+        axisEffect to when (axisEffect.axis) {
           Axis.RISING   -> this.getCuspDegree(2) + (this.getCuspDegree(2).getAngle(this.getCuspDegree(3))) / 2.0 to
             this.getCuspDegree(11) + (this.getCuspDegree(11).getAngle(this.getCuspDegree(12)) / 2.0)
 
@@ -36,7 +46,7 @@ object HoroscopeFunctions {
           Axis.MERIDIAN -> this.getCuspDegree(8) + (this.getCuspDegree(8).getAngle(this.getCuspDegree(9))) / 2.0 to
             this.getCuspDegree(11) + (this.getCuspDegree(11).getAngle(this.getCuspDegree(12)) / 2.0)
 
-          else          -> throw IllegalArgumentException("Invalid house $axis for axis")
+          else          -> throw IllegalArgumentException("Invalid house $axisEffect for axis")
         }.let { (from, to) -> from.minus(rotatingDeg) to to.minus(rotatingDeg) }
       }
         .map { (house, fromTo) ->
@@ -44,20 +54,25 @@ object HoroscopeFunctions {
 
           val between = planetDeg.between(from, to)
           Triple(house, between, fromTo)
-        }.first { (house, between, fromTo) -> between }
-        .let { (house, between, fromTo) ->
+        }.firstOrNull { (house, between, fromTo) -> between }
+        ?.let { (house, between, fromTo) ->
           Triple(house, fromTo.first, fromTo.second)
-        }
+        }?.let { (axisEffect: AxisEffect, from, to) ->
 
-      val axisDeg: ZodiacDegree = this.getCuspDegree(axis.toHouse()).minus(rotatingDeg)
-      logger.trace { "$axis deg = ${axisDeg.value} , from ${from.value} to ${to.value}" }
-      val axisAngle: Double = axisDeg.getAngle(planetDeg)
+          val axisDeg: ZodiacDegree = this.getCuspDegree(axisEffect.axis.toHouse()).minus(rotatingDeg)
+          logger.trace { "${axisEffect.axis} deg = ${axisDeg.value} , from ${from.value} to ${to.value}" }
+          val axisAngle: Double = axisDeg.getAngle(planetDeg)
 
-      if (planetDeg.between(axisDeg, from)) {
-        1 - axisAngle / axisDeg.getAngle(from)
-      } else {
-        1 - axisAngle / axisDeg.getAngle(to)
-      }
+          (1 - axisAngle / axisDeg.getAngle(
+            if (planetDeg.between(axisDeg, from))
+              from
+            else
+              to
+          )) * (axisEffect.peak - axisEffect.valley) + axisEffect.valley
+
+
+        } ?: unAffected
+
     }
   }
 
