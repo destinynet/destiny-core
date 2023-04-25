@@ -46,7 +46,6 @@ object HoroscopeFunctions {
           Axis.MERIDIAN -> this.getCuspDegree(8) + (this.getCuspDegree(8).getAngle(this.getCuspDegree(9))) / 2.0 to
             this.getCuspDegree(11) + (this.getCuspDegree(11).getAngle(this.getCuspDegree(12)) / 2.0)
 
-          else          -> throw IllegalArgumentException("Invalid house $axisEffect for axis")
         }.let { (from, to) -> from.minus(rotatingDeg) to to.minus(rotatingDeg) }
       }
         .map { (house, fromTo) ->
