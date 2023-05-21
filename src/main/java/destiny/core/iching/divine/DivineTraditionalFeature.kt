@@ -22,9 +22,9 @@ import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import destiny.tools.serializers.IHexagramSerializer
 import destiny.tools.serializers.LocaleSerializer
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.util.*
-import javax.inject.Named
 
 @Serializable
 data class DivineTraditionalConfig(@Serializable(with = IHexagramSerializer::class)

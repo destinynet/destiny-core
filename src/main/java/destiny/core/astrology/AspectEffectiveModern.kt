@@ -5,8 +5,8 @@
 package destiny.core.astrology
 
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
+import jakarta.inject.Named
 import java.io.Serializable
-import javax.inject.Named
 import kotlin.math.abs
 
 /**

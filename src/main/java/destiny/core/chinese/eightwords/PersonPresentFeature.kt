@@ -14,9 +14,9 @@ import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import javax.cache.Cache
-import javax.inject.Named
 
 @Serializable
 data class PersonPresentConfig(val personContextConfig: EightWordsPersonConfig = EightWordsPersonConfig(),

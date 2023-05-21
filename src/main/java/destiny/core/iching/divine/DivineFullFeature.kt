@@ -16,10 +16,10 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
 import destiny.tools.serializers.IEightWordsNullableSerializer
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
-import javax.inject.Named
 
 @Serializable
 data class DivineFullConfig(val traditionalConfig: DivineTraditionalConfig = DivineTraditionalConfig(),

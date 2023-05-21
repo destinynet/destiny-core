@@ -12,8 +12,8 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import javax.inject.Named
 
 enum class RisingSignImpl {
   HouseCusp,

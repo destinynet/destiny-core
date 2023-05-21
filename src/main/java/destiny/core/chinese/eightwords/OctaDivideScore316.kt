@@ -10,7 +10,7 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.SimpleBranch
 import destiny.core.chinese.Stem
-import javax.inject.Named
+import jakarta.inject.Named
 
 
 @Named

@@ -16,11 +16,11 @@ import destiny.tools.Builder
 import destiny.tools.CacheGrain
 import destiny.tools.DestinyMarker
 import destiny.tools.serializers.LocaleSerializer
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 import javax.cache.Cache
-import javax.inject.Named
 
 @Serializable
 data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContextConfig = EightWordsContextConfig(),

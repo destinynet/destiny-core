@@ -16,9 +16,9 @@ import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import javax.inject.Named
 
 enum class FortuneLargeImpl {
   DefaultSpan,    // 傳統、標準大運 (每柱十年)

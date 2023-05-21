@@ -16,13 +16,13 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.Duration
 import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
-import javax.inject.Named
 
 enum class HourImpl {
   TST,

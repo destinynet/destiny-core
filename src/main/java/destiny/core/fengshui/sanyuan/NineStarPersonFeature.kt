@@ -13,8 +13,8 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.tools.AbstractCachedPersonFeature
-import javax.inject.Inject
-import javax.inject.Named
+import jakarta.inject.Inject
+import jakarta.inject.Named
 
 data class NineStarPersonModel(val bdnp: IBirthDataNamePlace, val models: List<NineStarModel>) {
 

@@ -9,8 +9,8 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import javax.inject.Named
 
 enum class DayNightImpl {
   StarPos,  // 日升日落 : 太陽升起至落下，為晝；太陽落下至昇起，為夜

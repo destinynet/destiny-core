@@ -9,8 +9,8 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
+import jakarta.inject.Named
 import java.time.chrono.ChronoLocalDateTime
-import javax.inject.Named
 import kotlin.math.absoluteValue
 
 

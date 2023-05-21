@@ -13,9 +13,9 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.Feature
 import destiny.tools.serializers.AstroPointSerializer
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
-import javax.inject.Named
 import kotlin.math.min
 
 enum class VoidCourseImpl {

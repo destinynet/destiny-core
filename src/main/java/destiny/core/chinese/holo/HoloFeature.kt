@@ -23,10 +23,10 @@ import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
-import javax.inject.Named
 
 @Serializable
 data class HoloConfig(val divineTraditionalConfig: DivineTraditionalConfig = DivineTraditionalConfig(),

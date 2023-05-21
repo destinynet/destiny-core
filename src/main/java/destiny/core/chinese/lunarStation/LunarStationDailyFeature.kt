@@ -16,11 +16,10 @@ import destiny.core.calendar.eightwords.MidnightFeature
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.tools.Feature
+import jakarta.inject.Named
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
-import javax.inject.Named
-
 
 /**
  * 日禽 實作

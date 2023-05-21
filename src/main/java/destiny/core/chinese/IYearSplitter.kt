@@ -8,9 +8,9 @@ import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.calendar.ILocation
+import jakarta.inject.Named
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import javax.inject.Named
 
 interface IYearSplitterBySign {
   fun getYinYang(sign: ZodiacSign): IYinYang

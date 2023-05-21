@@ -19,9 +19,9 @@ import destiny.core.fengshui.sanyuan.NineStarFunctions.getMonthCenterStar
 import destiny.core.fengshui.sanyuan.NineStarFunctions.getYearCenterStar
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import javax.inject.Named
 
 @Serializable
 data class NineStarConfig(val scales: List<Scale> = listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR),

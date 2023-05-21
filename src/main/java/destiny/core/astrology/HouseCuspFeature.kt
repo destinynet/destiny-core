@@ -4,7 +4,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
-import javax.inject.Named
+import jakarta.inject.Named
 
 interface IHouseCuspFeature : Feature<HouseConfig, Map<Int, ZodiacDegree>> {
 

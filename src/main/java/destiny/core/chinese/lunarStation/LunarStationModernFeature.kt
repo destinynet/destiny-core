@@ -14,11 +14,11 @@ import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.random.RandomService
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.cache.Cache
-import javax.inject.Named
 
 @Serializable
 data class LunarStationModernConfig(val lunarStationConfig: LunarStationConfig = LunarStationConfig(),

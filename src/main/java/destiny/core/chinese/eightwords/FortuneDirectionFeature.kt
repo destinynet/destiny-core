@@ -10,7 +10,7 @@ import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.PersonFeature
-import javax.inject.Named
+import jakarta.inject.Named
 
 interface IFortuneDirectionFeature : PersonFeature<EightWordsConfig, Boolean>
 

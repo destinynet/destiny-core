@@ -16,10 +16,10 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import destiny.tools.serializers.AstroPointSerializer
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import javax.cache.Cache
-import javax.inject.Named
 
 
 @Serializable

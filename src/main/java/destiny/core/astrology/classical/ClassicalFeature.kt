@@ -14,9 +14,9 @@ import destiny.core.astrology.classical.rules.PatternTranslator
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
+import jakarta.inject.Named
 import java.util.*
 import javax.cache.Cache
-import javax.inject.Named
 
 
 @Named

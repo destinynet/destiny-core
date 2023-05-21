@@ -22,9 +22,9 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import javax.inject.Named
 
 
 @Serializable

@@ -7,9 +7,9 @@ import destiny.core.Gender
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.IStemBranch
+import jakarta.inject.Named
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import javax.inject.Named
 
 /**
  * 盲派起大運

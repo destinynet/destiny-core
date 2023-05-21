@@ -16,9 +16,9 @@ import destiny.core.chinese.YearType
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.temporal.ChronoField
-import javax.inject.Named
 
 
 @Serializable

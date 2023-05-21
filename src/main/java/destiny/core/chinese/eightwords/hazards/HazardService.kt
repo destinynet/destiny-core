@@ -6,8 +6,8 @@ package destiny.core.chinese.eightwords.hazards
 import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.tools.getTitle
+import jakarta.inject.Named
 import java.util.*
-import javax.inject.Named
 
 
 @Named

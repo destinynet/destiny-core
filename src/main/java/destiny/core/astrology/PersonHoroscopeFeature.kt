@@ -10,8 +10,8 @@ import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import javax.inject.Named
 
 @Serializable
 data class PersonHoroscopeConfig(val horoscopeConfig: HoroscopeConfig = HoroscopeConfig(),

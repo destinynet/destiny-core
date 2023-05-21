@@ -9,10 +9,10 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.TimeTools.toGmtJulDay
+import jakarta.inject.Named
 import java.io.Serializable
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
-import javax.inject.Named
 
 
 /**

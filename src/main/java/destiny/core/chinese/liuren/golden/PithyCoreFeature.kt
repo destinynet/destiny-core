@@ -18,9 +18,9 @@ import destiny.core.chinese.liuren.*
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
-import javax.inject.Named
 
 @Serializable
 data class PithyConfig(val direction: Branch = Branch.子,

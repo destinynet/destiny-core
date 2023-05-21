@@ -16,12 +16,12 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
-import javax.inject.Named
 
 enum class MidnightImpl {
   CLOCK0, // 當地時間手錶零時

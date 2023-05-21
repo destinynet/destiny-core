@@ -4,8 +4,8 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
+import jakarta.inject.Named
 import java.io.Serializable
-import javax.inject.Named
 
 interface INumberize {
   fun getNumber(stem: Stem): Int

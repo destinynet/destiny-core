@@ -8,8 +8,8 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.serializers.AstroPointSerializer
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import javax.inject.Named
 
 @Serializable
 data class ZodiacSignConfig(@Serializable(with = AstroPointSerializer::class)

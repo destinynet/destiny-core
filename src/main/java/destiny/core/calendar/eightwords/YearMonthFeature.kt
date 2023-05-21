@@ -11,8 +11,8 @@ import destiny.core.chinese.StemBranchUnconstrained
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import javax.inject.Named
 
 enum class MonthImpl {
   /** 標準, 節氣劃分月令 */

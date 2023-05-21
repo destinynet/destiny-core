@@ -11,8 +11,8 @@ import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import javax.inject.Named
 
 /**
  * 315.0 : 立春

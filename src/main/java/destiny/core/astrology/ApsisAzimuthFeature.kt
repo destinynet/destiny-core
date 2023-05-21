@@ -9,8 +9,8 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.serializers.AstroPointSerializer
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import javax.inject.Named
 
 @Serializable
 data class ApsisAzimuthConfig(@Serializable(with = AstroPointSerializer::class)

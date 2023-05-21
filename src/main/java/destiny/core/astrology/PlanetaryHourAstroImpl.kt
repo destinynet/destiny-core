@@ -11,11 +11,11 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
+import jakarta.inject.Named
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
-import javax.inject.Named
 
 /**
  * http://www.astrology.com.tr/planetary-hours.asp

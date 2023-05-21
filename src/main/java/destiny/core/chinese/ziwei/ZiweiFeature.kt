@@ -22,6 +22,8 @@ import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.CacheGrain
 import destiny.tools.PersonFeature
 import destiny.tools.getTitle
+import jakarta.inject.Inject
+import jakarta.inject.Named
 import mu.KotlinLogging
 import java.text.MessageFormat
 import java.time.LocalTime
@@ -29,8 +31,6 @@ import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 import javax.cache.Cache
-import javax.inject.Inject
-import javax.inject.Named
 
 
 /** 某時刻對應到的 大運、流年 等資訊 */

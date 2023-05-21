@@ -1,7 +1,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch
-import javax.inject.Named
+import jakarta.inject.Named
 
 /**
  * 紫微星變盤

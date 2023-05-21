@@ -5,8 +5,8 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
 import destiny.tools.AbstractCachedFeature
+import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import javax.inject.Named
 
 @Serializable
 data class TradChineseRisingSignConfig(

@@ -4,8 +4,8 @@
 package destiny.tools.converters
 
 import destiny.core.IBirthDataNamePlace
+import jakarta.inject.Named
 import java.io.Serializable
-import javax.inject.Named
 
 
 // encrypted version

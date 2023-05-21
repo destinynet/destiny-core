@@ -14,9 +14,9 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
+import jakarta.inject.Named
 import java.time.chrono.ChronoLocalDate
 import java.time.temporal.ChronoUnit
-import javax.inject.Named
 
 
 interface IChineseDateFeature : Feature<DayHourConfig, ChineseDate> {
