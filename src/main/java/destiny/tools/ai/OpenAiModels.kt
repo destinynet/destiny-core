@@ -1,4 +1,4 @@
-package destiny.tools.openAi
+package destiny.tools.ai
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
@@ -38,7 +38,8 @@ data class CompletionTextResult(val id: String,
                                 /** maybe 'text-davinci-003' */
                                 val model: String,
                                 val choices: List<ChoiceText>,
-                                val usage: Usage)
+                                val usage: Usage
+)
 
 
 @Serializable
@@ -56,7 +57,8 @@ data class CompletionChatResult(val id: String,
                                 /** maybe 'gpt-3.5-turbo-0301' */
                                 val model: String,
                                 val choices: List<ChoiceChat>,
-                                val usage: Usage)
+                                val usage: Usage
+)
 
 @Serializable
 data class CompletionResult<T>(val id: String,
@@ -66,7 +68,8 @@ data class CompletionResult<T>(val id: String,
                                /** maybe 'gpt-3.5-turbo-0301' or 'text-davinci-003' */
                                val model: String,
                                val choices: List<T>,
-                               val usage: Usage)
+                               val usage: Usage
+)
 
 @Serializable
 data class Error(val message: String,
