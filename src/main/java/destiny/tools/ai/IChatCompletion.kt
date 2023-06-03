@@ -3,13 +3,6 @@ package destiny.tools.ai
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 
-enum class Role {
-  USER,
-  ASSISTANT
-}
-
-data class Msg(val role: Role, val content: String)
-
 sealed class Reply {
 
   data class Normal(val content: String) : Reply()

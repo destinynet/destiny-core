@@ -43,7 +43,7 @@ data class CompletionTextResult(val id: String,
 
 
 @Serializable
-data class ChoiceChat(val message : IOpenAi.Msg,
+data class ChoiceChat(val message : IOpenAi.OpenAiMsg,
                       val index: Int,
                       val logprobs: Int? = null,
                       @SerialName("finish_reason")
