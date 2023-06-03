@@ -14,11 +14,11 @@ interface IOpenAi : IChatCompletion {
   @Serializable
   data class Msg(val role: Role, val content: String) : java.io.Serializable
 
-  suspend fun chatComplete(messages: List<Msg>, user: String? = null, timeout : Duration = Duration.of(60, ChronoUnit.SECONDS)): OpenAiReply
+  suspend fun chatComplete(messages: List<Msg>, user: String? = null, timeout : Duration = Duration.of(60, ChronoUnit.SECONDS)): Reply
 
-  suspend fun textComplete(prompt: String, user: String? = null): OpenAiReply
+  suspend fun textComplete(prompt: String, user: String? = null): Reply
 
-  override suspend fun chatCompletion(messages: List<destiny.tools.ai.Msg>, user: String?, timeout: Duration): String? {
+  override suspend fun chatCompletion(messages: List<destiny.tools.ai.Msg>, user: String?, timeout: Duration): Reply {
 
     val mList = messages.map { msg ->
       Msg(
@@ -30,8 +30,8 @@ interface IOpenAi : IChatCompletion {
       )
     }
     return when(val reply = chatComplete(mList, user, timeout)) {
-      is OpenAiReply.Normal -> reply.content
-      else                  -> null
+      is Reply.Normal -> Reply.Normal(reply.content)
+      else            -> Reply.Error.Unrecoverable.Unknown("unknown , TODO")
     }
   }
 }

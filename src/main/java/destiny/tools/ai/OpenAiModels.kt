@@ -79,20 +79,4 @@ data class Error(val message: String,
                  @Contextual
                  val code: String? = null)
 
-sealed class OpenAiReply {
-  data class Normal(val content: String) : OpenAiReply()
-
-  sealed class Error : OpenAiReply() {
-
-    // recoverable
-    data class TooLong(val message: String) : Error()
-
-    sealed class Unrecoverable : Error() {
-      object InvalidApiKey : Unrecoverable()
-      object Busy : Unrecoverable()
-      data class Unknown(val message: String) : Unrecoverable()
-    }
-  }
-
-}
 
