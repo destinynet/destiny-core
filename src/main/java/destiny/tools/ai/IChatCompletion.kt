@@ -22,7 +22,7 @@ sealed class Reply {
 
 interface IChatCompletion {
 
-  suspend fun chatCompletion(messages: List<Msg>, user: String? = null, timeout: Duration = Duration.of(60, ChronoUnit.SECONDS)) : Reply
+  suspend fun chatComplete(messages: List<Msg>, user: String? = null, timeout: Duration = Duration.of(60, ChronoUnit.SECONDS)) : Reply
 
 }
 
