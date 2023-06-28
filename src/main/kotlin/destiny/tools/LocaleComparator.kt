@@ -5,7 +5,6 @@ package destiny.tools
 
 import java.io.Serializable
 import java.util.*
-import kotlin.Comparator
 
 class LocaleComparator(private val locale: Locale) : Comparator<Locale>, Serializable {
 

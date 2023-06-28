@@ -5,7 +5,6 @@
  */
 package destiny.core.fengshui
 
-import destiny.core.fengshui.Mountain
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame

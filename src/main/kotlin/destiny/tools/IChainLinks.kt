@@ -10,7 +10,6 @@ import java.util.function.Function
 import java.util.function.Supplier
 import java.util.stream.Collector
 import java.util.stream.Collectors
-import kotlin.collections.HashMap
 import kotlin.collections.set
 
 interface IChainLinks {

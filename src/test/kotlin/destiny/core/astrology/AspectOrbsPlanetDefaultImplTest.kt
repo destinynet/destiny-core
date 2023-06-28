@@ -3,7 +3,6 @@
  */
 package destiny.core.astrology
 
-import destiny.core.astrology.Planet
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

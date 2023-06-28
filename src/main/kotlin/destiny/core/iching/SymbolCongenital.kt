@@ -6,7 +6,6 @@
 package destiny.core.iching
 
 import destiny.core.iching.Symbol.*
-import java.util.*
 
 /**
  * <pre>

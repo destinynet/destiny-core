@@ -6,7 +6,6 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUnconstrained
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
