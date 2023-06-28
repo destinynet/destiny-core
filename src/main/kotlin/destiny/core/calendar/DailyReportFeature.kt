@@ -46,19 +46,19 @@ data class DailyReportConfig(val hourBranchConfig: HourBranchConfig = HourBranch
 class DailyReportConfigBuilder : Builder<DailyReportConfig> {
 
   var hourBranchConfig: HourBranchConfig = HourBranchConfig()
-  fun hourBranch(block : HourBranchConfigBuilder.() -> Unit = {}) {
+  fun hourBranch(block : context(HourBranchConfigBuilder) () -> Unit = {}) {
     this.hourBranchConfig = HourBranchConfigBuilder.hourBranchConfig(block)
   }
 
   var lunarStationConfig : LunarStationConfig = LunarStationConfig(
     hourlyConfig = HourlyConfig(impl = HourlyImpl.Fixed)
   )
-  fun lunarStation(block : LunarStationConfigBuilder.() -> Unit = {}) {
+  fun lunarStation(block: context(LunarStationConfigBuilder) () -> Unit = {}) {
     this.lunarStationConfig = LunarStationConfigBuilder.lunarStation(block)
   }
 
   var vocConfig : VoidCourseConfig = VoidCourseConfig()
-  fun vocConfig(block: VoidCourseConfigBuilder.() -> Unit = {}) {
+  fun vocConfig(block: context(VoidCourseConfigBuilder) () -> Unit = {}) {
     this.vocConfig = VoidCourseConfigBuilder.voidCourse(block)
   }
 
