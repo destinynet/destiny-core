@@ -31,8 +31,9 @@ enum class HourImpl {
 
 /** 時辰切割 */
 @Serializable
-data class HourBranchConfig(val hourImpl : HourImpl = HourImpl.TST,
-                            val transConfig: TransConfig = TransConfig()): java.io.Serializable
+data class HourBranchConfig(
+  override var hourImpl : HourImpl = HourImpl.TST,
+  override val transConfig: TransConfig = TransConfig()): IHourBranchConfig , ITransConfig by transConfig
 
 
 @DestinyMarker

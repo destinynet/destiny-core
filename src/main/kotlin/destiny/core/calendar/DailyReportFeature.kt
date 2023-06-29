@@ -10,11 +10,10 @@ import destiny.core.astrology.classical.VoidCourseFeature
 import destiny.core.astrology.eclipse.EclipseTime
 import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.astrology.eclipse.SolarType
-import destiny.core.calendar.eightwords.DayHourConfig
-import destiny.core.calendar.eightwords.HourBranchConfig
-import destiny.core.calendar.eightwords.HourBranchConfigBuilder
-import destiny.core.calendar.eightwords.IHourBranchFeature
+import destiny.core.calendar.chinese.MonthAlgo
+import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
+import destiny.core.chinese.YearType
 import destiny.core.chinese.lunarStation.*
 import destiny.core.toString
 import destiny.tools.AbstractCachedFeature
@@ -35,27 +34,48 @@ import javax.cache.Cache
 
 
 @Serializable
-data class DailyReportConfig(val hourBranchConfig: HourBranchConfig = HourBranchConfig(),
-                             val lunarStationConfig : LunarStationConfig = LunarStationConfig(
-                               hourlyConfig = HourlyConfig(impl = HourlyImpl.Fixed, dayHourConfig = DayHourConfig(hourBranchConfig = hourBranchConfig))
-                             ),
+data class DailyReportConfig(val lunarStationConfig: LunarStationConfig,
                              val vocConfig: VoidCourseConfig = VoidCourseConfig(),
                              @Serializable(with = LocaleSerializer::class)
                              val locale: Locale = Locale.TAIWAN) : java.io.Serializable
+
+context(IEightWordsConfig)
 @DestinyMarker
 class DailyReportConfigBuilder : Builder<DailyReportConfig> {
 
-  var hourBranchConfig: HourBranchConfig = HourBranchConfig()
-  fun hourBranch(block : context(HourBranchConfigBuilder) () -> Unit = {}) {
-    this.hourBranchConfig = HourBranchConfigBuilder.hourBranchConfig(block)
-  }
+  var yearType: YearType = YearType.YEAR_SOLAR
 
-  var lunarStationConfig : LunarStationConfig = LunarStationConfig(
-    hourlyConfig = HourlyConfig(impl = HourlyImpl.Fixed)
-  )
-  fun lunarStation(block: context(LunarStationConfigBuilder) () -> Unit = {}) {
-    this.lunarStationConfig = LunarStationConfigBuilder.lunarStation(block)
-  }
+  var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564
+
+  val yearlyConfig: YearlyConfig
+    get() =
+      YearlyConfig(
+        yearType = yearType,
+        yearEpoch = yearEpoch,
+        dayHourConfig = dayHourConfig
+      )
+
+  var monthlyImpl: MonthlyImpl = MonthlyImpl.AoHead
+
+  var monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
+
+  val monthlyConfig: MonthlyConfig
+    get() = MonthlyConfig(monthlyImpl, monthAlgo, yearlyConfig, eightWordsConfig = ewConfig)
+
+  var hourlyImpl: HourlyImpl = HourlyImpl.Yuan
+
+  val hourlyConfig : HourlyConfig
+    get() = HourlyConfig(hourlyImpl, dayHourConfig)
+
+  val lunarStationConfig: LunarStationConfig
+    get() {
+      return LunarStationConfig(
+        yearlyConfig = yearlyConfig,
+        monthlyConfig = monthlyConfig,
+        hourlyConfig = hourlyConfig,
+        ewConfig = ewConfig
+      )
+    }
 
   var vocConfig : VoidCourseConfig = VoidCourseConfig()
   fun vocConfig(block: context(VoidCourseConfigBuilder) () -> Unit = {}) {
@@ -65,17 +85,19 @@ class DailyReportConfigBuilder : Builder<DailyReportConfig> {
   var locale : Locale = Locale.TAIWAN
 
   override fun build(): DailyReportConfig {
-    return DailyReportConfig(hourBranchConfig, lunarStationConfig, vocConfig, locale)
+    return DailyReportConfig(lunarStationConfig, vocConfig, locale)
   }
 
   companion object {
-    fun dailyReport(block : DailyReportConfigBuilder.() -> Unit = {}) : DailyReportConfig {
+    context(IEightWordsConfig)
+    fun dailyReport(block: DailyReportConfigBuilder.() -> Unit = {}): DailyReportConfig {
       return DailyReportConfigBuilder().apply(block).build()
     }
   }
 }
 
 
+context(IEightWordsConfig)
 @Named
 class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
                          val lunarStationFeature: LunarStationFeature,
@@ -91,7 +113,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
 
   override val key: String = "dailyReport"
 
-  override val defaultConfig: DailyReportConfig = DailyReportConfig()
+  override val defaultConfig: DailyReportConfig = DailyReportConfigBuilder().build()
 
   @Suppress("UNCHECKED_CAST")
   override val lmtCache: Cache<LmtCacheKey<DailyReportConfig>, List<TimeDesc>>
@@ -127,16 +149,18 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
       return TimeDesc.TypeHour(branchStart as LocalDateTime, branch, hourlyLunarStation, descs)
     }
 
+    val hourBranchConfig = config.lunarStationConfig.ewConfig.dayHourConfig.hourBranchConfig
+
     // 12地支 + 隔天的子初
-    val listBranches: List<TimeDesc.TypeHour> = hourBranchFeature.getDailyBranchStartListWithNextDayZi(lmtStart.toLocalDate(), loc, config.hourBranchConfig).let { list ->
-      val branchMiddleMap: Map<Branch, ChronoLocalDateTime<*>> = hourBranchFeature.getDailyBranchMiddleMap(lmtStart.toLocalDate(), loc, config.hourBranchConfig)
+    val listBranches: List<TimeDesc.TypeHour> = hourBranchFeature.getDailyBranchStartListWithNextDayZi(lmtStart.toLocalDate(), loc, hourBranchConfig).let { list ->
+      val branchMiddleMap: Map<Branch, ChronoLocalDateTime<*>> = hourBranchFeature.getDailyBranchMiddleMap(lmtStart.toLocalDate(), loc, hourBranchConfig)
       val list12 = list.take(12).map { (branch , branchStart) ->
         val middleLmt = branchMiddleMap[branch]!!
 
         getTimeDesc(branch, branchStart, middleLmt, loc)
       }
 
-      val tomorrowLunarStationMap = hourBranchFeature.getDailyBranchMiddleMap(lmtStart.toLocalDate().plus(1, ChronoUnit.DAYS), loc, config.hourBranchConfig)
+      val tomorrowLunarStationMap = hourBranchFeature.getDailyBranchMiddleMap(lmtStart.toLocalDate().plus(1, ChronoUnit.DAYS), loc, hourBranchConfig)
       val nextDayZi = list.last().let { (branch , branchStart) ->
         val middleLmt = tomorrowLunarStationMap[Branch.子]!!
 
@@ -149,7 +173,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     val listTransPoints: List<TimeDesc> = TransPoint.values().flatMap { tp ->
       listOf(Planet.SUN, Planet.MOON).map { planet ->
         TimeDesc.TypeTransPoint(
-          riseTransFeature.getLmtTrans(lmtStart, planet, tp, loc, julDayResolver, config.hourBranchConfig.transConfig) as LocalDateTime,
+          riseTransFeature.getLmtTrans(lmtStart, planet, tp, loc, julDayResolver, hourBranchConfig.transConfig) as LocalDateTime,
           planet.toString(Locale.TAIWAN) + tp.getTitle(Locale.TAIWAN),
           planet,
           tp

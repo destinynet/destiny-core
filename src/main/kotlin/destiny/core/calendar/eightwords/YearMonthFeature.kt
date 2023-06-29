@@ -25,16 +25,16 @@ enum class MonthImpl {
 @Serializable
 data class MonthConfig(
   /** 南半球月令是否對沖  */
-  val southernHemisphereOpposition: Boolean = false,
+  override var southernHemisphereOpposition: Boolean = false,
   /**
    * 南半球的判定方法
    * 依據 赤道 [HemisphereBy.EQUATOR] , 還是 赤緯 [HemisphereBy.DECLINATION] 來界定南北半球
    * 舉例，夏至時，太陽在北回歸線，北回歸線過嘉義，則此時，嘉義以南是否算南半球？
    */
-  val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR,
+  override var hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR,
 
-  val monthImpl: MonthImpl = MonthImpl.SolarTerms
-) : java.io.Serializable
+  override var monthImpl: MonthImpl = MonthImpl.SolarTerms
+) : IMonthConfig
 
 
 class MonthConfigBuilder : Builder<MonthConfig> {
@@ -64,9 +64,9 @@ class MonthConfigBuilder : Builder<MonthConfig> {
 
 @Serializable
 data class YearMonthConfig(
-  val yearConfig: YearConfig = YearConfig(),
-  val monthConfig: MonthConfig = MonthConfig()
-) : java.io.Serializable
+  override val yearConfig: YearConfig = YearConfig(),
+  override val monthConfig: MonthConfig = MonthConfig()
+) : IYearMonthConfig , IYearConfig by yearConfig , IMonthConfig by monthConfig
 
 @DestinyMarker
 class YearMonthConfigBuilder : Builder<YearMonthConfig> {

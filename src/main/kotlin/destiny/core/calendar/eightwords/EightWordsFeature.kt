@@ -21,9 +21,9 @@ import javax.cache.Cache
 
 @Serializable
 data class EightWordsConfig(
-  val yearMonthConfig: YearMonthConfig = YearMonthConfig(),
-  val dayHourConfig: DayHourConfig = DayHourConfig()
-): java.io.Serializable
+  override val yearMonthConfig: YearMonthConfig = YearMonthConfig(),
+  override val dayHourConfig: DayHourConfig = DayHourConfig()
+) : IEightWordsConfig, IYearMonthConfig by yearMonthConfig, IDayHourConfig by dayHourConfig
 
 @DestinyMarker
 class EightWordsConfigBuilder : Builder<EightWordsConfig> {
@@ -51,12 +51,14 @@ class EightWordsConfigBuilder : Builder<EightWordsConfig> {
 }
 
 @Named
-class EightWordsFeature(private val yearFeature: YearFeature,
-                        private val yearMonthFeature: YearMonthFeature,
-                        private val dayHourFeature: IDayHourFeature,
-                        private val julDayResolver: JulDayResolver,
-                        @Transient
-                        private val ewFeatureLmtCache : Cache<LmtCacheKey<*> , IEightWords>) : AbstractCachedFeature<EightWordsConfig, IEightWords>() {
+class EightWordsFeature(
+  private val yearFeature: YearFeature,
+  private val yearMonthFeature: YearMonthFeature,
+  private val dayHourFeature: IDayHourFeature,
+  private val julDayResolver: JulDayResolver,
+  @Transient
+  private val ewFeatureLmtCache: Cache<LmtCacheKey<*>, IEightWords>
+) : AbstractCachedFeature<EightWordsConfig, IEightWords>() {
 
   override val key: String = "eightWords"
 
@@ -69,7 +71,7 @@ class EightWordsFeature(private val yearFeature: YearFeature,
   override var lmtCacheGrain: CacheGrain? = CacheGrain.SECOND
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsConfig): IEightWords {
-    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc , julDayResolver)
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getModel(lmt, loc, config)
   }
 

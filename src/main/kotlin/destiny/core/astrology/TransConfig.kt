@@ -3,16 +3,17 @@
  */
 package destiny.core.astrology
 
+import destiny.core.calendar.eightwords.ITransConfig
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class TransConfig(val discCenter: Boolean = false,
-                       val refraction: Boolean = true,
-                       val temperature: Double = 0.0,
-                       val pressure: Double = 1013.25): java.io.Serializable
+data class TransConfig(override var discCenter: Boolean = false,
+                       override var refraction: Boolean = true,
+                       override var temperature: Double = 0.0,
+                       override var pressure: Double = 1013.25): ITransConfig
 
 @DestinyMarker
 class TransConfigBuilder : Builder<TransConfig> {

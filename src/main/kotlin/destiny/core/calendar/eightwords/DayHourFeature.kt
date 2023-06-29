@@ -29,8 +29,10 @@ enum class MidnightImpl {
 }
 
 @Serializable
-data class DayConfig(val changeDayAfterZi: Boolean = true ,
-                     val midnight: MidnightImpl = MidnightImpl.NADIR): java.io.Serializable
+data class DayConfig(
+  override var changeDayAfterZi: Boolean = true,
+  override var midnight: MidnightImpl = MidnightImpl.NADIR
+) : IDayConfig
 
 
 @DestinyMarker
@@ -38,26 +40,25 @@ class DayConfigBuilder : Builder<DayConfig> {
 
   var changeDayAfterZi: Boolean = true
 
-  var midnight : MidnightImpl = MidnightImpl.NADIR
+  var midnight: MidnightImpl = MidnightImpl.NADIR
 
-  override fun build() : DayConfig {
+  override fun build(): DayConfig {
     return DayConfig(changeDayAfterZi, midnight)
   }
 
   companion object {
-    fun dayConfig(block : DayConfigBuilder.() -> Unit = {}): DayConfig {
+    fun dayConfig(block: DayConfigBuilder.() -> Unit = {}): DayConfig {
       return DayConfigBuilder().apply(block).build()
     }
   }
 }
 
 
-
 @Serializable
 data class DayHourConfig(
-  val dayConfig: DayConfig = DayConfig(),
-  val hourBranchConfig: HourBranchConfig = HourBranchConfig()
-): java.io.Serializable
+  override val dayConfig: DayConfig = DayConfig(),
+  override val hourBranchConfig: HourBranchConfig = HourBranchConfig()
+) : IDayHourConfig, IDayConfig by dayConfig, IHourBranchConfig by hourBranchConfig
 
 
 @DestinyMarker
@@ -70,7 +71,7 @@ class DayHourConfigBuilder : Builder<DayHourConfig> {
   }
 
   var hourBranchConfig: HourBranchConfig = HourBranchConfig()
-  fun hourBranch(block : HourBranchConfigBuilder.() -> Unit = {}) {
+  fun hourBranch(block: HourBranchConfigBuilder.() -> Unit = {}) {
     hourBranchConfig = HourBranchConfigBuilder.hourBranchConfig(block)
   }
 
@@ -90,9 +91,11 @@ interface IDayHourFeature : Feature<DayHourConfig, Pair<StemBranch, StemBranch>>
 
 
 @Named
-class DayHourFeature(private val midnightFeature: MidnightFeature,
-                     private val hourBranchFeature: IHourBranchFeature,
-                     private val julDayResolver: JulDayResolver) : AbstractCachedFeature<DayHourConfig, Pair<StemBranch, StemBranch>>(), IDayHourFeature {
+class DayHourFeature(
+  private val midnightFeature: MidnightFeature,
+  private val hourBranchFeature: IHourBranchFeature,
+  private val julDayResolver: JulDayResolver
+) : AbstractCachedFeature<DayHourConfig, Pair<StemBranch, StemBranch>>(), IDayHourFeature {
 
   override val key: String = "dayHour"
 
@@ -109,7 +112,7 @@ class DayHourFeature(private val midnightFeature: MidnightFeature,
     val nextZiStart = hourBranchFeature.getLmtNextStartOf(lmt, loc, 子, config.hourBranchConfig)
 
     // 下個子正時刻
-    val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config.dayConfig) , loc, julDayResolver)
+    val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config.dayConfig), loc, julDayResolver)
       .let { dstSwitchCheck.invoke(it, nextZiStart) }
 
     val day: StemBranch = this.getDay(lmt, loc, nextZiStart, nextMidnightLmt, config)
@@ -123,7 +126,7 @@ class DayHourFeature(private val midnightFeature: MidnightFeature,
   }
 
 
-  private val dstSwitchCheck = { nextMn : ChronoLocalDateTime<*> , nextZiStart : ChronoLocalDateTime<*> ->
+  private val dstSwitchCheck = { nextMn: ChronoLocalDateTime<*>, nextZiStart: ChronoLocalDateTime<*> ->
     val dur = Duration.between(nextZiStart, nextMn).abs()
     if (dur.toMinutes() <= 1) {
       logger.warn("子初子正 幾乎重疊！ 可能是 DST 切換. 下個子初 = {} , 下個子正 = {} . 相隔秒 = {}", nextZiStart, nextMn, dur.seconds) // DST 結束前一天，可能會出錯
@@ -168,18 +171,20 @@ class DayHourFeature(private val midnightFeature: MidnightFeature,
     val nextZiStart = hourBranchFeature.getLmtNextStartOf(lmt, loc, 子, config.hourBranchConfig)
 
     // 下個子正時刻
-    val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config.dayConfig) , loc, julDayResolver)
+    val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config.dayConfig), loc, julDayResolver)
       .let { dstSwitchCheck.invoke(it, nextZiStart) }
 
     return getDay(lmt, loc, nextZiStart, nextMidnightLmt, config)
   }
 
 
-  private fun getDay(lmt: ChronoLocalDateTime<*>,
-                     loc: ILocation,
-                     nextZiStart: ChronoLocalDateTime<*>,
-                     nextMidnightLmt: ChronoLocalDateTime<*>,
-                     config: DayHourConfig): StemBranch {
+  private fun getDay(
+    lmt: ChronoLocalDateTime<*>,
+    loc: ILocation,
+    nextZiStart: ChronoLocalDateTime<*>,
+    nextMidnightLmt: ChronoLocalDateTime<*>,
+    config: DayHourConfig
+  ): StemBranch {
 
     val changeDayAfterZi = config.dayConfig.changeDayAfterZi
 

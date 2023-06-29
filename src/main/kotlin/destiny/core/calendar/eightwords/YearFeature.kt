@@ -19,7 +19,7 @@ import kotlinx.serialization.Serializable
  * 270.0 : 冬至
  */
 @Serializable
-data class YearConfig(val changeYearDegree: Double = 315.0): java.io.Serializable {
+data class YearConfig(override var changeYearDegree: Double = 315.0): IYearConfig {
 
   init {
     require(changeYearDegree > 180 && changeYearDegree < 360)
