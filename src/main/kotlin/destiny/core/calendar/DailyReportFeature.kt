@@ -11,7 +11,8 @@ import destiny.core.astrology.eclipse.EclipseTime
 import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.astrology.eclipse.SolarType
 import destiny.core.calendar.chinese.MonthAlgo
-import destiny.core.calendar.eightwords.*
+import destiny.core.calendar.eightwords.IEightWordsConfig
+import destiny.core.calendar.eightwords.IHourBranchFeature
 import destiny.core.chinese.Branch
 import destiny.core.chinese.YearType
 import destiny.core.chinese.lunarStation.*
@@ -34,7 +35,7 @@ import javax.cache.Cache
 
 
 @Serializable
-data class DailyReportConfig(val lunarStationConfig: LunarStationConfig,
+data class DailyReportConfig(val lunarStationConfig: LunarStationConfig = LunarStationConfig(),
                              val vocConfig: VoidCourseConfig = VoidCourseConfig(),
                              @Serializable(with = LocaleSerializer::class)
                              val locale: Locale = Locale.TAIWAN) : java.io.Serializable
