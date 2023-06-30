@@ -11,6 +11,7 @@ import destiny.core.astrology.eclipse.EclipseTime
 import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.astrology.eclipse.SolarType
 import destiny.core.calendar.chinese.MonthAlgo
+import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.IEightWordsConfig
 import destiny.core.calendar.eightwords.IHourBranchFeature
 import destiny.core.chinese.Branch
@@ -63,7 +64,7 @@ class DailyReportConfigBuilder : Builder<DailyReportConfig> {
   val monthlyConfig: MonthlyConfig
     get() = MonthlyConfig(monthlyImpl, monthAlgo, yearlyConfig, eightWordsConfig = ewConfig)
 
-  var hourlyImpl: HourlyImpl = HourlyImpl.Yuan
+  var hourlyImpl: HourlyImpl = HourlyImpl.Fixed
 
   val hourlyConfig : HourlyConfig
     get() = HourlyConfig(hourlyImpl, dayHourConfig)
@@ -98,7 +99,6 @@ class DailyReportConfigBuilder : Builder<DailyReportConfig> {
 }
 
 
-context(IEightWordsConfig)
 @Named
 class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
                          val lunarStationFeature: LunarStationFeature,
@@ -114,7 +114,9 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
 
   override val key: String = "dailyReport"
 
-  override val defaultConfig: DailyReportConfig = DailyReportConfigBuilder().build()
+  override val defaultConfig: DailyReportConfig = with(EightWordsConfig()) {
+    DailyReportConfigBuilder().build()
+  }
 
   @Suppress("UNCHECKED_CAST")
   override val lmtCache: Cache<LmtCacheKey<DailyReportConfig>, List<TimeDesc>>

@@ -28,12 +28,12 @@ enum class HourlyImpl {
 }
 
 @Serializable
-data class HourlyConfig(val impl: HourlyImpl = HourlyImpl.Yuan,
+data class HourlyConfig(val impl: HourlyImpl = HourlyImpl.Fixed,
                         val dayHourConfig: DayHourConfig = DayHourConfig()): java.io.Serializable
 
 @DestinyMarker
 class HourlyConfigBuilder : Builder<HourlyConfig> {
-  var impl: HourlyImpl = HourlyImpl.Yuan
+  var impl: HourlyImpl = HourlyImpl.Fixed
 
   var dayHourConfig: DayHourConfig = DayHourConfig()
   fun dayHour(block: DayHourConfigBuilder.() -> Unit = {}) {
