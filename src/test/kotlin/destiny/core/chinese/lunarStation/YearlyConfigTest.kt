@@ -4,6 +4,7 @@
 package destiny.core.chinese.lunarStation
 
 import destiny.core.AbstractConfigTest
+import destiny.core.calendar.eightwords.DayHourConfig
 import destiny.core.chinese.YearType
 import destiny.core.chinese.lunarStation.YearlyConfigBuilder.Companion.yearly
 import kotlinx.serialization.KSerializer
@@ -15,10 +16,17 @@ internal class YearlyConfigTest : AbstractConfigTest<YearlyConfig>() {
 
   override val configByConstructor: YearlyConfig = YearlyConfig(YearType.YEAR_LUNAR, YearEpoch.EPOCH_1864)
 
-  override val configByFunction: YearlyConfig = yearly {
-    yearType = YearType.YEAR_LUNAR
-    yearEpoch = YearEpoch.EPOCH_1864
-  }
+  override val configByFunction: YearlyConfig
+    get() {
+
+      val dayHourConfig = DayHourConfig()
+      return with(dayHourConfig) {
+        yearly {
+          yearType = YearType.YEAR_LUNAR
+          yearEpoch = YearEpoch.EPOCH_1864
+        }
+      }
+    }
 
   override val assertion: (String) -> Unit = { raw ->
     assertTrue(raw.contains(""""yearType":\s*"YEAR_LUNAR"""".toRegex()))

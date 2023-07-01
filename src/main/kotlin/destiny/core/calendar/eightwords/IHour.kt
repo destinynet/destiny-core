@@ -19,7 +19,7 @@ import java.time.temporal.ChronoUnit
 /** 時辰的分界點實作 , SwissEph 的實作是 [HourSolarTransImpl]  */
 interface IHour {
 
-  fun getHour(gmtJulDay: GmtJulDay, loc: ILocation, config: HourBranchConfig): Branch
+  fun getHour(gmtJulDay: GmtJulDay, loc: ILocation, config: IHourBranchConfig): Branch
 
 
   /**
@@ -27,7 +27,7 @@ interface IHour {
    * @param loc 當地的經緯度等資料
    * @return 時辰（只有地支）
    */
-  fun getHour(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: HourBranchConfig = HourBranchConfig()): Branch {
+  fun getHour(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IHourBranchConfig = HourBranchConfig()): Branch {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getHour(gmtJulDay, loc, config)
   }
@@ -38,7 +38,7 @@ interface IHour {
    * @param eb 下一個地支
    * @return 下一個地支的開始時刻
    */
-  fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: HourBranchConfig): GmtJulDay
+  fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: IHourBranchConfig): GmtJulDay
 
 
   /**
@@ -47,7 +47,7 @@ interface IHour {
    * @param eb 欲求之下一個地支開始時刻
    * @return 回傳 LMT 時刻
    */
-  fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver, config: HourBranchConfig = HourBranchConfig()): ChronoLocalDateTime<*> {
+  fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver, config: IHourBranchConfig = HourBranchConfig()): ChronoLocalDateTime<*> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     val resultGmtJulDay = getGmtNextStartOf(gmtJulDay, loc, eb, config)
 
@@ -58,9 +58,9 @@ interface IHour {
   /**
    * 取得「前一個」此地支的開始時刻
    */
-  fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: HourBranchConfig): GmtJulDay
+  fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: IHourBranchConfig): GmtJulDay
 
-  fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver, config: HourBranchConfig = HourBranchConfig()): ChronoLocalDateTime<*> {
+  fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver, config: IHourBranchConfig = HourBranchConfig()): ChronoLocalDateTime<*> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     val resultGmtJulDay = getGmtPrevStartOf(gmtJulDay, loc, eb, config)
 

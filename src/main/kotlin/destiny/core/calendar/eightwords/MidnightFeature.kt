@@ -14,7 +14,7 @@ import java.time.chrono.ChronoLocalDateTime
 import kotlin.math.absoluteValue
 
 
-interface IMidnightFeature : Feature<DayConfig, GmtJulDay> {
+interface IMidnightFeature : Feature<IDayConfig, GmtJulDay> {
 
   fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation, impl: MidnightImpl): GmtJulDay
 
@@ -32,18 +32,18 @@ interface IMidnightFeature : Feature<DayConfig, GmtJulDay> {
 /** 取得下一個子正的時刻 */
 @Named
 class MidnightFeature(private val midnightImplMap: Map<MidnightImpl, IMidnight>,
-                      private val julDayResolver: JulDayResolver) : AbstractCachedFeature<DayConfig, GmtJulDay>() , IMidnightFeature {
+                      private val julDayResolver: JulDayResolver) : AbstractCachedFeature<IDayConfig, GmtJulDay>() , IMidnightFeature {
 
   override val key: String = "midnight"
 
-  override val defaultConfig: DayConfig = DayConfig()
+  override val defaultConfig: IDayConfig = DayConfig()
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: DayConfig): GmtJulDay {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IDayConfig): GmtJulDay {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc , julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayConfig): GmtJulDay {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IDayConfig): GmtJulDay {
     val resultLmt = midnightImplMap[config.midnight]!!.getNextMidnight(lmt, loc, julDayResolver)
     return TimeTools.getGmtJulDay(resultLmt, loc)
   }

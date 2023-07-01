@@ -26,12 +26,9 @@ data class LunarStationModernConfig(val lunarStationConfig: LunarStationConfig =
                                     val specifiedGmtJulDay: GmtJulDay? = null ,
                                     val description: String? = null): java.io.Serializable
 
+context(ILunarStationConfig)
 @DestinyMarker
 class LunarStationModernConfigBuilder : Builder<LunarStationModernConfig> {
-  var lunarStationConfig: LunarStationConfig = LunarStationConfig()
-  fun lunarStationConfig(block: LunarStationConfigBuilder.() -> Unit = {}) {
-    this.lunarStationConfig = LunarStationConfigBuilder.lunarStation(block)
-  }
 
   var method: IModernContextModel.Method = IModernContextModel.Method.NOW
   var specifiedGmtJulDay: GmtJulDay? = null
@@ -42,6 +39,7 @@ class LunarStationModernConfigBuilder : Builder<LunarStationModernConfig> {
   }
 
   companion object {
+    context(ILunarStationConfig)
     fun lunarStationModern(block: LunarStationModernConfigBuilder.() -> Unit = {}): LunarStationModernConfig {
       return LunarStationModernConfigBuilder().apply(block).build()
     }

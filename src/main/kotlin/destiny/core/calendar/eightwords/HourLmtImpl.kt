@@ -22,15 +22,15 @@ import java.time.temporal.ChronoUnit.DAYS
  */
 class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
 
-  override fun getHour(gmtJulDay: GmtJulDay, loc: ILocation, config: HourBranchConfig): Branch {
+  override fun getHour(gmtJulDay: GmtJulDay, loc: ILocation, config: IHourBranchConfig): Branch {
     return Lmt.getHourBranch(gmtJulDay, loc, julDayResolver)
   }
 
-  override fun getHour(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: HourBranchConfig): Branch {
+  override fun getHour(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IHourBranchConfig): Branch {
     return Lmt.getHourBranch(lmt)
   }
 
-  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: HourBranchConfig): GmtJulDay {
+  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: IHourBranchConfig): GmtJulDay {
 
     val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
     val lmt = TimeTools.getLmtFromGmt(gmt, loc)
@@ -48,7 +48,7 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
     loc: ILocation,
     eb: Branch,
     julDayResolver: JulDayResolver,
-    config: HourBranchConfig
+    config: IHourBranchConfig
   ): ChronoLocalDateTime<*> {
 
     val lmtAtHourStart = lmt.with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
@@ -74,7 +74,7 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
   /**
    * 取得「前一個」此地支的開始時刻
    */
-  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: HourBranchConfig): GmtJulDay {
+  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: IHourBranchConfig): GmtJulDay {
     val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
     val lmt = TimeTools.getLmtFromGmt(gmt, loc)
     val lmtResult = getLmtPrevStartOf(lmt, loc, eb, julDayResolver, config)
@@ -85,13 +85,7 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
   /**
    * 取得「前一個」此地支的開始時刻
    */
-  override fun getLmtPrevStartOf(
-    lmt: ChronoLocalDateTime<*>,
-    loc: ILocation,
-    eb: Branch,
-    julDayResolver: JulDayResolver,
-    config: HourBranchConfig
-  ): ChronoLocalDateTime<*> {
+  override fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver, config: IHourBranchConfig): ChronoLocalDateTime<*> {
     val lmtAtHourStart = lmt.with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
 
     val hourOfDay = lmt.get(HOUR_OF_DAY)

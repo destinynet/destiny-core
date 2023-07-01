@@ -87,7 +87,7 @@ class DayHourConfigBuilder : Builder<DayHourConfig> {
 }
 
 
-interface IDayHourFeature : Feature<DayHourConfig, Pair<StemBranch, StemBranch>>
+interface IDayHourFeature : Feature<IDayHourConfig, Pair<StemBranch, StemBranch>>
 
 
 @Named
@@ -95,18 +95,18 @@ class DayHourFeature(
   private val midnightFeature: MidnightFeature,
   private val hourBranchFeature: IHourBranchFeature,
   private val julDayResolver: JulDayResolver
-) : AbstractCachedFeature<DayHourConfig, Pair<StemBranch, StemBranch>>(), IDayHourFeature {
+) : AbstractCachedFeature<IDayHourConfig, Pair<StemBranch, StemBranch>>(), IDayHourFeature {
 
   override val key: String = "dayHour"
 
   override val defaultConfig: DayHourConfig = DayHourConfig()
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: DayHourConfig): Pair<StemBranch, StemBranch> {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IDayHourConfig): Pair<StemBranch, StemBranch> {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayHourConfig): Pair<StemBranch, StemBranch> {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IDayHourConfig): Pair<StemBranch, StemBranch> {
 
     // 下個子初時刻
     val nextZiStart = hourBranchFeature.getLmtNextStartOf(lmt, loc, 子, config.hourBranchConfig)
@@ -136,7 +136,7 @@ class DayHourFeature(
     }
   }
 
-  private fun getHourStem(lmt: ChronoLocalDateTime<*>, loc: ILocation, day: StemBranch, hourBranch: Branch, config: DayHourConfig): Stem {
+  private fun getHourStem(lmt: ChronoLocalDateTime<*>, loc: ILocation, day: StemBranch, hourBranch: Branch, config: IDayHourConfig): Stem {
 
     val nextZi = hourBranchFeature.getLmtNextStartOf(lmt, loc, 子, config.hourBranchConfig)
 
@@ -166,7 +166,7 @@ class DayHourFeature(
     return StemBranchUtils.getHourStem(tempDayStem, hourBranch)
   }
 
-  private fun getDay(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayHourConfig): StemBranch {
+  private fun getDay(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IDayHourConfig): StemBranch {
     // 下個子初時刻
     val nextZiStart = hourBranchFeature.getLmtNextStartOf(lmt, loc, 子, config.hourBranchConfig)
 
@@ -183,7 +183,7 @@ class DayHourFeature(
     loc: ILocation,
     nextZiStart: ChronoLocalDateTime<*>,
     nextMidnightLmt: ChronoLocalDateTime<*>,
-    config: DayHourConfig
+    config: IDayHourConfig
   ): StemBranch {
 
     val changeDayAfterZi = config.dayConfig.changeDayAfterZi
@@ -227,7 +227,7 @@ class DayHourFeature(
     lmt: ChronoLocalDateTime<*>,
     loc: ILocation,
     nextZi: ChronoLocalDateTime<*>,
-    config: DayHourConfig
+    config: IDayHourConfig
   ): Int {
 
     var result = index

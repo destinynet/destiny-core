@@ -58,24 +58,24 @@ class EightWordsFeature(
   private val julDayResolver: JulDayResolver,
   @Transient
   private val ewFeatureLmtCache: Cache<LmtCacheKey<*>, IEightWords>
-) : AbstractCachedFeature<EightWordsConfig, IEightWords>() {
+) : AbstractCachedFeature<IEightWordsConfig, IEightWords>() {
 
   override val key: String = "eightWords"
 
   override val defaultConfig: EightWordsConfig = EightWordsConfig()
 
   @Suppress("UNCHECKED_CAST")
-  override val lmtCache: Cache<LmtCacheKey<EightWordsConfig>, IEightWords>
-    get() = ewFeatureLmtCache as Cache<LmtCacheKey<EightWordsConfig>, IEightWords>
+  override val lmtCache: Cache<LmtCacheKey<IEightWordsConfig>, IEightWords>
+    get() = ewFeatureLmtCache as Cache<LmtCacheKey<IEightWordsConfig>, IEightWords>
 
   override var lmtCacheGrain: CacheGrain? = CacheGrain.SECOND
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsConfig): IEightWords {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): IEightWords {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: EightWordsConfig): IEightWords {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IEightWordsConfig): IEightWords {
     val year: StemBranch = yearFeature.getModel(lmt, loc, config.yearMonthConfig.yearConfig)
     val month: IStemBranch = yearMonthFeature.getModel(lmt, loc, config.yearMonthConfig)
 

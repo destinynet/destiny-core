@@ -38,7 +38,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
     transConfig = transConfig.copy(refraction = hasRefraction)
   }
 
-  override fun getHour(gmtJulDay: GmtJulDay, loc: ILocation, config: HourBranchConfig): Branch {
+  override fun getHour(gmtJulDay: GmtJulDay, loc: ILocation, config: IHourBranchConfig): Branch {
     return Tst.getHourBranch(gmtJulDay, loc, riseTransImpl, config.transConfig.copy(discCenter = transConfig.discCenter, refraction = transConfig.refraction))
   }
 
@@ -52,7 +52,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
    * 取得「下一個」此地支的開始時刻
    *
    */
-  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: HourBranchConfig): GmtJulDay {
+  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: IHourBranchConfig): GmtJulDay {
 
     val resultGmt: GmtJulDay
     // 下個午正
@@ -130,7 +130,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
   /**
    * 取得「前一個」此地支的開始時刻
    */
-  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: HourBranchConfig): GmtJulDay {
+  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: IHourBranchConfig): GmtJulDay {
 
     // 下個午正
     val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, loc, transConfig)!!

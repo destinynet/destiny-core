@@ -100,17 +100,17 @@ class YearMonthConfigBuilder : Builder<YearMonthConfig> {
 @Named
 class YearMonthFeature(private val starPositionImpl: IStarPosition<*>,
                        private val starTransitImpl: IStarTransit,
-                       private val julDayResolver: JulDayResolver) : AbstractCachedFeature<YearMonthConfig, IStemBranch>() {
+                       private val julDayResolver: JulDayResolver) : AbstractCachedFeature<IYearMonthConfig, IStemBranch>() {
 
   override val key: String = "month"
 
-  override val defaultConfig: YearMonthConfig = YearMonthConfig()
+  override val defaultConfig: IYearMonthConfig = YearMonthConfig()
 
   val solarTermsImpl: ISolarTerms by lazy {
     SolarTermsImpl(starTransitImpl, starPositionImpl, julDayResolver)
   }
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: YearMonthConfig): IStemBranch {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IYearMonthConfig): IStemBranch {
     // 原始 月干支
     val originalMonth = getMonth(
       gmtJulDay,

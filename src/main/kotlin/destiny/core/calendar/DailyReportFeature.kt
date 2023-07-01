@@ -10,12 +10,8 @@ import destiny.core.astrology.classical.VoidCourseFeature
 import destiny.core.astrology.eclipse.EclipseTime
 import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.astrology.eclipse.SolarType
-import destiny.core.calendar.chinese.MonthAlgo
-import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.IEightWordsConfig
 import destiny.core.calendar.eightwords.IHourBranchFeature
 import destiny.core.chinese.Branch
-import destiny.core.chinese.YearType
 import destiny.core.chinese.lunarStation.*
 import destiny.core.toString
 import destiny.tools.AbstractCachedFeature
@@ -41,43 +37,9 @@ data class DailyReportConfig(val lunarStationConfig: LunarStationConfig = LunarS
                              @Serializable(with = LocaleSerializer::class)
                              val locale: Locale = Locale.TAIWAN) : java.io.Serializable
 
-context(IEightWordsConfig)
+context(ILunarStationConfig)
 @DestinyMarker
 class DailyReportConfigBuilder : Builder<DailyReportConfig> {
-
-  var yearType: YearType = YearType.YEAR_SOLAR
-
-  var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564
-
-  val yearlyConfig: YearlyConfig
-    get() =
-      YearlyConfig(
-        yearType = yearType,
-        yearEpoch = yearEpoch,
-        dayHourConfig = dayHourConfig
-      )
-
-  var monthlyImpl: MonthlyImpl = MonthlyImpl.AoHead
-
-  var monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
-
-  val monthlyConfig: MonthlyConfig
-    get() = MonthlyConfig(monthlyImpl, monthAlgo, yearlyConfig, eightWordsConfig = ewConfig)
-
-  var hourlyImpl: HourlyImpl = HourlyImpl.Fixed
-
-  val hourlyConfig : HourlyConfig
-    get() = HourlyConfig(hourlyImpl, dayHourConfig)
-
-  val lunarStationConfig: LunarStationConfig
-    get() {
-      return LunarStationConfig(
-        yearlyConfig = yearlyConfig,
-        monthlyConfig = monthlyConfig,
-        hourlyConfig = hourlyConfig,
-        ewConfig = ewConfig
-      )
-    }
 
   var vocConfig : VoidCourseConfig = VoidCourseConfig()
   fun vocConfig(block: context(VoidCourseConfigBuilder) () -> Unit = {}) {
@@ -91,7 +53,7 @@ class DailyReportConfigBuilder : Builder<DailyReportConfig> {
   }
 
   companion object {
-    context(IEightWordsConfig)
+    context(ILunarStationConfig)
     fun dailyReport(block: DailyReportConfigBuilder.() -> Unit = {}): DailyReportConfig {
       return DailyReportConfigBuilder().apply(block).build()
     }
@@ -114,7 +76,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
 
   override val key: String = "dailyReport"
 
-  override val defaultConfig: DailyReportConfig = with(EightWordsConfig()) {
+  override val defaultConfig: DailyReportConfig = with(LunarStationConfig()) {
     DailyReportConfigBuilder().build()
   }
 

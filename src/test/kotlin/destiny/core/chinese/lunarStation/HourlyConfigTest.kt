@@ -34,7 +34,7 @@ internal class HourlyConfigTest : AbstractConfigTest<HourlyConfig>() {
   }
 
   override val assertion: (String) -> Unit = { raw ->
-    assertTrue(raw.contains(""""impl":\s*"Fixed"""".toRegex()))
+    assertTrue(raw.contains(""""hourlyImpl":\s*"Fixed"""".toRegex()))
 
     assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
     assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))

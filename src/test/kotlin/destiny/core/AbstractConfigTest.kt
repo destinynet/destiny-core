@@ -15,10 +15,10 @@ import kotlin.test.assertEquals
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class AbstractConfigTest<T> {
 
-  abstract val serializer : KSerializer<T>
+  abstract val serializer: KSerializer<T>
 
   abstract val configByConstructor: T?
-  abstract val configByFunction: T
+  abstract val configByFunction: T?
 
   abstract val assertion: (String) -> Unit
 
@@ -52,7 +52,7 @@ abstract class AbstractConfigTest<T> {
 
   @Test
   fun testEquals() {
-    if (configByConstructor != null) {
+    if (configByConstructor != null && configByFunction != null) {
       assertEquals(configByConstructor, configByFunction)
     }
   }
@@ -64,8 +64,10 @@ abstract class AbstractConfigTest<T> {
       assertAndCompareDecoded(prettyJson, configByConstructor!!, assertion, serializer)
     }
 
-    logger.info { "configByFunction..." }
-    assertAndCompareDecoded(condenseJson, configByFunction, assertion, serializer)
+    if (configByFunction != null) {
+      logger.info { "configByFunction..." }
+      assertAndCompareDecoded(condenseJson, configByFunction!!, assertion, serializer)
+    }
   }
 }
 

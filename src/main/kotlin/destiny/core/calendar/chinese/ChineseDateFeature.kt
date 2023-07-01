@@ -8,6 +8,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.DayHourConfig
+import destiny.core.calendar.eightwords.IDayHourConfig
 import destiny.core.calendar.eightwords.IHourBranchFeature
 import destiny.core.calendar.eightwords.MidnightFeature
 import destiny.core.chinese.Branch
@@ -19,7 +20,7 @@ import java.time.chrono.ChronoLocalDate
 import java.time.temporal.ChronoUnit
 
 
-interface IChineseDateFeature : Feature<DayHourConfig, ChineseDate> {
+interface IChineseDateFeature : Feature<IDayHourConfig, ChineseDate> {
 
   /** 列出該月有幾日  */
   fun getDaysOf(cycle: Int, year: StemBranch, month: Int, leap: Boolean): Int
@@ -36,7 +37,7 @@ interface IChineseDateFeature : Feature<DayHourConfig, ChineseDate> {
 class ChineseDateFeature(private val chineseDateImpl : IChineseDate,
                          private val hourBranchFeature: IHourBranchFeature,
                          private val midnightFeature: MidnightFeature,
-                         private val julDayResolver: JulDayResolver) : AbstractCachedFeature<DayHourConfig, ChineseDate>() , IChineseDateFeature {
+                         private val julDayResolver: JulDayResolver) : AbstractCachedFeature<IDayHourConfig, ChineseDate>(), IChineseDateFeature {
   override val key: String = "chineseDate"
 
   override val defaultConfig: DayHourConfig = DayHourConfig()
@@ -56,7 +57,7 @@ class ChineseDateFeature(private val chineseDateImpl : IChineseDate,
     return chineseDateImpl.getYangDate(cycle, year, leap, month, day)
   }
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: DayHourConfig): ChineseDate {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IDayHourConfig): ChineseDate {
 
     val hour = hourBranchFeature.getModel(gmtJulDay, loc, config.hourBranchConfig)
 
@@ -80,7 +81,7 @@ class ChineseDateFeature(private val chineseDateImpl : IChineseDate,
       // 下個子正的農曆日期
       val nextMidnightDay = chineseDateImpl.getChineseDate(nextMidnightLmt.toLocalDate())
 
-      chineseDateImpl.calculateZi(lmt, lmtDate, nextDate, prevDate, nextMidnightLmt, nextMidnightDay, config.dayConfig.changeDayAfterZi)
+      chineseDateImpl.calculateZi(lmt, lmtDate, nextDate, prevDate, nextMidnightLmt, nextMidnightDay, config.changeDayAfterZi)
     }
 
     //return chineseDateImpl.getChineseDate(lmt, loc, day, hour, midnightFeature, config.dayConfig.changeDayAfterZi, julDayResolver)

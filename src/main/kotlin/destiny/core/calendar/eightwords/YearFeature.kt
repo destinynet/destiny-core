@@ -28,7 +28,7 @@ data class YearConfig(override var changeYearDegree: Double = 315.0): IYearConfi
 }
 
 @DestinyMarker
-class YearConfigBuilder : Builder<YearConfig> {
+class YearConfigBuilder : Builder<IYearConfig> {
 
   var changeYearDegree = 315.0
 
@@ -45,13 +45,13 @@ class YearConfigBuilder : Builder<YearConfig> {
 
 @Named
 class YearFeature(private val starPositionImpl: IStarPosition<*>,
-                  private val julDayResolver: JulDayResolver) : AbstractCachedFeature<YearConfig, StemBranch>() {
+                  private val julDayResolver: JulDayResolver) : AbstractCachedFeature<IYearConfig, StemBranch>() {
 
   override val key: String = "year"
 
   override val defaultConfig: YearConfig = YearConfig()
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: YearConfig): StemBranch {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IYearConfig): StemBranch {
     return getYear(gmtJulDay, loc, config.changeYearDegree, julDayResolver, starPositionImpl)
   }
 }

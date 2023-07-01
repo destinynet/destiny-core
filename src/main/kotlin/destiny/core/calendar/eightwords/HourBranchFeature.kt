@@ -61,7 +61,7 @@ class HourBranchConfigBuilder : Builder<HourBranchConfig> {
 }
 
 
-interface IHourBranchFeature : Feature<HourBranchConfig, Branch> {
+interface IHourBranchFeature : Feature<IHourBranchConfig, Branch> {
   /**
    * 取得下一個地支的開始時刻
    */
@@ -142,18 +142,18 @@ interface IHourBranchFeature : Feature<HourBranchConfig, Branch> {
 
 @Named
 class HourBranchFeature(private val hourImplMap: Map<HourImpl, IHour>,
-                        val julDayResolver: JulDayResolver) : IHourBranchFeature, AbstractCachedFeature<HourBranchConfig, Branch>() {
+                        val julDayResolver: JulDayResolver) : IHourBranchFeature, AbstractCachedFeature<IHourBranchConfig, Branch>() {
 
   override val key: String = "hourBranch"
 
   override val defaultConfig: HourBranchConfig = HourBranchConfig()
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: HourBranchConfig): Branch {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IHourBranchConfig): Branch {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: HourBranchConfig): Branch {
+  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IHourBranchConfig): Branch {
     return hourImplMap[config.hourImpl]!!.getHour(lmt, loc, config)
   }
 

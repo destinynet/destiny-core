@@ -9,9 +9,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.chinese.MonthAlgo
-import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.EightWordsConfigBuilder
-import destiny.core.calendar.eightwords.YearMonthFeature
+import destiny.core.calendar.eightwords.*
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
@@ -25,10 +23,20 @@ enum class MonthlyImpl {
 }
 
 @Serializable
-data class MonthlyConfig(val impl: MonthlyImpl = MonthlyImpl.AoHead,
-                         val monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS,
-                         val yearlyConfig: YearlyConfig = YearlyConfig(),
-                         val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
+data class MonthlyConfig(
+  override var monthlyImpl: MonthlyImpl = MonthlyImpl.AoHead,
+  override var monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS,
+  override val yearlyConfig: YearlyConfig = YearlyConfig(),
+  override val yearMonthConfig: YearMonthConfig = YearMonthConfig(),
+  override val dayHourConfig: DayHourConfig = DayHourConfig()
+) : IMonthlyConfig,
+    IYearlyConfig by yearlyConfig,
+    IYearMonthConfig by yearMonthConfig,
+    IDayHourConfig by dayHourConfig
+
+
+//IEightWordsConfig by eightWordsConfig
+context(IYearlyConfig)
 @DestinyMarker
 class MonthlyConfigBuilder : Builder<MonthlyConfig> {
 
@@ -36,11 +44,11 @@ class MonthlyConfigBuilder : Builder<MonthlyConfig> {
 
   var monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
 
-  var yearlyConfig: YearlyConfig = YearlyConfig()
-
-  fun yearly(block: YearlyConfigBuilder.() -> Unit = {}) {
-    this.yearlyConfig = YearlyConfigBuilder.yearly(block)
-  }
+//  var yearlyConfig: YearlyConfig = YearlyConfig()
+//
+//  fun yearly(block: YearlyConfigBuilder.() -> Unit = {}) {
+//    this.yearlyConfig = YearlyConfigBuilder.yearly(block)
+//  }
 
   var ewConfig: EightWordsConfig = EightWordsConfig()
   fun ewConfig(block: EightWordsConfigBuilder.() -> Unit = {}) {
@@ -48,41 +56,46 @@ class MonthlyConfigBuilder : Builder<MonthlyConfig> {
   }
 
   override fun build(): MonthlyConfig {
-    return MonthlyConfig(impl, monthAlgo, yearlyConfig, ewConfig)
+    return MonthlyConfig(impl, monthAlgo, yearlyConfig, ewConfig.yearMonthConfig)
   }
 
   companion object {
+    context(IYearlyConfig)
     fun monthly(block: MonthlyConfigBuilder.() -> Unit = {}): MonthlyConfig {
       return MonthlyConfigBuilder().apply(block).build()
     }
   }
 }
 
-interface ILunarStationMonthlyFeature : Feature<MonthlyConfig, LunarStation> {
+interface ILunarStationMonthlyFeature : Feature<IMonthlyConfig, LunarStation> {
 
   fun getMonthly(yearStation: LunarStation, monthNumber: Int, monthlyImpl: MonthlyImpl): LunarStation
 }
 
 @Named
-class LunarStationMonthlyFeature(private val yearlyFeature: LunarStationYearlyFeature,
-                                 private val monthFeature: YearMonthFeature,
-                                 private val chineseDateFeature: ChineseDateFeature,
-                                 private val lunarStationImplMap: Map<MonthlyImpl, ILunarStationMonthly>) : ILunarStationMonthlyFeature,
-                                                                                                            AbstractCachedFeature<MonthlyConfig, LunarStation>() {
+class LunarStationMonthlyFeature(
+  private val yearlyFeature: LunarStationYearlyFeature,
+  private val monthFeature: YearMonthFeature,
+  private val chineseDateFeature: ChineseDateFeature,
+  private val lunarStationImplMap: Map<MonthlyImpl, ILunarStationMonthly>
+) : ILunarStationMonthlyFeature,
+    AbstractCachedFeature<IMonthlyConfig, LunarStation>() {
   override val key: String = "lsMonthly"
 
   override val defaultConfig: MonthlyConfig = MonthlyConfig()
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: MonthlyConfig): LunarStation {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IMonthlyConfig): LunarStation {
     val yearStation = yearlyFeature.getModel(gmtJulDay, loc, config.yearlyConfig).station
 
-    val chineseDate = chineseDateFeature.getModel(gmtJulDay, loc, config.eightWordsConfig.dayHourConfig)
-    val monthBranch = monthFeature.getModel(gmtJulDay, loc, config.eightWordsConfig.yearMonthConfig).branch
+    val dayHourConfig = (config as MonthlyConfig).dayHourConfig
+
+    val chineseDate = chineseDateFeature.getModel(gmtJulDay, loc, dayHourConfig)
+    val monthBranch = monthFeature.getModel(gmtJulDay, loc, config).branch
     val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
       chineseDate.month, chineseDate.leapMonth, monthBranch, chineseDate.day, config.monthAlgo
     )
 
-    return lunarStationImplMap[config.impl]!!.getMonthly(yearStation, monthNumber)
+    return lunarStationImplMap[config.monthlyImpl]!!.getMonthly(yearStation, monthNumber)
   }
 
   override fun getMonthly(yearStation: LunarStation, monthNumber: Int, monthlyImpl: MonthlyImpl): LunarStation {

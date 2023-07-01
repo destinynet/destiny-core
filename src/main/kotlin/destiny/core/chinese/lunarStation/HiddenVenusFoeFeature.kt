@@ -32,22 +32,22 @@ class HiddenVenusFoeFeature(private val yearlyFeature: LunarStationYearlyFeature
                             private val hourlyFeature: LunarStationHourlyFeature,
                             private val eightWordsFeature : EightWordsFeature,
                             private val chineseDateFeature: ChineseDateFeature,
-                            private val julDayResolver: JulDayResolver) : AbstractCachedFeature<LunarStationConfig, Set<Pair<Scale, Scale>>>() {
+                            private val julDayResolver: JulDayResolver) : AbstractCachedFeature<ILunarStationConfig, Set<Pair<Scale, Scale>>>() {
 
   override val key: String = "hiddenVenusFoe"
 
-  override val defaultConfig: LunarStationConfig = LunarStationConfig()
+  override val defaultConfig: ILunarStationConfig = LunarStationConfig()
 
   /**
    * @return Pair<Scale,Scale> 前者代表「此時刻的什麼時段」 , 犯了 後者的 暗金伏斷煞
    */
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: LunarStationConfig): Set<Pair<Scale, Scale>> {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: ILunarStationConfig): Set<Pair<Scale, Scale>> {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: LunarStationConfig): Set<Pair<Scale, Scale>> {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ILunarStationConfig): Set<Pair<Scale, Scale>> {
     val yearly = yearlyFeature.getModel(lmt, loc, config.yearlyConfig).station
     val ew: IEightWords = eightWordsFeature.getModel(lmt, loc, config.ewConfig)
     val chineseDate = chineseDateFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig)
@@ -60,7 +60,7 @@ class HiddenVenusFoeFeature(private val yearlyFeature: LunarStationYearlyFeature
     )
 
 
-    val monthlyStation = monthlyFeature.getMonthly(yearly, monthNumber, config.monthlyConfig.impl)
+    val monthlyStation = monthlyFeature.getMonthly(yearly, monthNumber, config.monthlyConfig.monthlyImpl)
     val dailyStation = dailyFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig).station()
     val hourlyStation = hourlyFeature.getModel(lmt, loc, config.hourlyConfig)
 
