@@ -20,18 +20,19 @@ internal class HourlyConfigTest : AbstractConfigTest<HourlyConfig>() {
     )
   )
 
-  override val configByFunction: HourlyConfig = hourly {
-    impl = HourlyImpl.Fixed
-    dayHour {
-      day {
-        changeDayAfterZi = false
-        midnight = MidnightImpl.CLOCK0
-      }
-      hourBranch {
-        hourImpl = HourImpl.LMT
+  override val configByFunction: HourlyConfig
+    get() {
+
+      return with(DayHourConfig()) {
+        hourly {
+          impl = HourlyImpl.Fixed
+
+          changeDayAfterZi = false
+          midnight = MidnightImpl.CLOCK0
+          hourImpl = HourImpl.LMT
+        }
       }
     }
-  }
 
   override val assertion: (String) -> Unit = { raw ->
     assertTrue(raw.contains(""""hourlyImpl":\s*"Fixed"""".toRegex()))

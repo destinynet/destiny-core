@@ -4,10 +4,19 @@
 package destiny.core.chinese.lunarStation
 
 import destiny.core.AbstractConfigTest
+import destiny.core.astrology.TransConfigBuilder.Companion.trans
 import destiny.core.calendar.chinese.MonthAlgo
+import destiny.core.calendar.eightwords.DayConfigBuilder.Companion.dayConfig
+import destiny.core.calendar.eightwords.DayHourConfigBuilder.Companion.dayHour
+import destiny.core.calendar.eightwords.HourBranchConfigBuilder.Companion.hourBranchConfig
+import destiny.core.calendar.eightwords.HourImpl
+import destiny.core.calendar.eightwords.MidnightImpl.CLOCK0
+import destiny.core.calendar.eightwords.YearMonthConfig
 import destiny.core.chinese.YearType
 import destiny.core.chinese.lunarStation.MonthlyConfigBuilder.Companion.monthly
+import destiny.core.chinese.lunarStation.YearlyConfigBuilder.Companion.yearly
 import kotlinx.serialization.KSerializer
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class MonthlyConfigTest : AbstractConfigTest<MonthlyConfig>() {
@@ -21,14 +30,47 @@ internal class MonthlyConfigTest : AbstractConfigTest<MonthlyConfig>() {
 
   override val configByFunction: MonthlyConfig
     get() {
-      val yearlyConfig = YearlyConfig(
-        yearType = YearType.YEAR_LUNAR
-      )
+
+      val transConfig = trans {
+        discCenter = true
+        refraction = false
+        temperature = 23.0
+        pressure = 1000.0
+      }
+
+      val hourBranchConfig = with(transConfig) {
+        hourBranchConfig {
+          hourImpl = HourImpl.TST
+        }
+      }
+
+
+      val dayConfig = dayConfig {
+        changeDayAfterZi = false
+        midnight = CLOCK0
+      }
+
+      // FIXME MonthlyConfig 沒有實作 IDayHourConfig , 這無法傳入
+      val dayHourConfig = with(hourBranchConfig) {
+        with(dayConfig) {
+          dayHour {  }
+        }
+      }
+
+      val yearlyConfig = with(dayHourConfig) {
+        yearly {
+          yearType = YearType.YEAR_LUNAR
+        }
+      }
+
+
 
       return with(yearlyConfig) {
-        monthly {
-          impl = MonthlyImpl.AnimalExplained
-          monthAlgo = MonthAlgo.MONTH_LEAP_SPLIT15
+        with(YearMonthConfig()) {
+          monthly {
+            impl = MonthlyImpl.AnimalExplained
+            monthAlgo = MonthAlgo.MONTH_LEAP_SPLIT15
+          }
         }
       }
 
@@ -37,5 +79,14 @@ internal class MonthlyConfigTest : AbstractConfigTest<MonthlyConfig>() {
   override val assertion: (String) -> Unit = { raw ->
     assertTrue(raw.contains(""""monthlyImpl":\s*"AnimalExplained"""".toRegex()))
     assertTrue(raw.contains(""""monthAlgo":\s*"MONTH_LEAP_SPLIT15"""".toRegex()))
+
+    assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))
+    assertFalse(raw.contains(""""discCenter":\s*false""".toRegex()))
+
+    assertTrue(raw.contains(""""refraction":\s*false""".toRegex()))
+    assertFalse(raw.contains(""""refraction":\s*true""".toRegex()))
+
+    assertTrue(raw.contains(""""temperature":\s*23.0""".toRegex()))
+    assertTrue(raw.contains(""""pressure":\s*1000.0""".toRegex()))
   }
 }

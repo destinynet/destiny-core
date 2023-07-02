@@ -4,7 +4,6 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.astrology.TransConfig
-import destiny.core.astrology.TransConfigBuilder
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -35,25 +34,26 @@ data class HourBranchConfig(
   override var hourImpl : HourImpl = HourImpl.TST,
   override val transConfig: TransConfig = TransConfig()): IHourBranchConfig , ITransConfig by transConfig
 
-
+context(ITransConfig)
 @DestinyMarker
 class HourBranchConfigBuilder : Builder<HourBranchConfig> {
 
   var hourImpl = HourImpl.TST
 
-  var transConfig: TransConfig = TransConfig()
-
-  /** true solar time */
-  fun tst(block: TransConfigBuilder.() -> Unit = {}) {
-    transConfig = TransConfigBuilder.trans(block)
-    hourImpl = HourImpl.TST
-  }
+//  var transConfig: TransConfig = TransConfig()
+//
+//  /** true solar time */
+//  fun tst(block: TransConfigBuilder.() -> Unit = {}) {
+//    transConfig = TransConfigBuilder.trans(block)
+//    hourImpl = HourImpl.TST
+//  }
 
   override fun build(): HourBranchConfig {
     return HourBranchConfig(hourImpl, transConfig)
   }
 
   companion object {
+    context(ITransConfig)
     fun hourBranchConfig(block : HourBranchConfigBuilder.() -> Unit = {}) : HourBranchConfig {
       return HourBranchConfigBuilder().apply(block).build()
     }

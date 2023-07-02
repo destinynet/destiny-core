@@ -26,26 +26,31 @@ internal class PithyConfigTest : AbstractConfigTest<PithyConfig>() {
     eightWordsConfig = EightWordsConfig(),
     monthMaster = MonthMaster.Combined,
     clockwise = Clockwise.DayNightFixed,
-    dayNightConfig = DayNightConfig(impl = DayNightImpl.Half),
+    dayNightConfig = DayNightConfig(dayNightImpl = DayNightImpl.Half),
     tianyi = Tianyi.ZiweiBook,
     generalSeq = GeneralSeq.Zhao,
     generalStemBranch = GeneralStemBranch.Liuren
   )
-  override val configByFunction: PithyConfig = pithyConfig {
-    direction = Branch.丑
-    monthMaster = MonthMaster.Combined
-    clockwise = Clockwise.DayNightFixed
-    dayNightConfig = DayNightConfig(impl = DayNightImpl.Half)
-    tianyi = Tianyi.ZiweiBook
-    generalSeq = GeneralSeq.Zhao
-    generalStemBranch = GeneralStemBranch.Liuren
-  }
+  override val configByFunction: PithyConfig
+    get() {
+      return with(EightWordsConfig()) {
+        pithyConfig {
+          direction = Branch.丑
+          monthMaster = MonthMaster.Combined
+          clockwise = Clockwise.DayNightFixed
+          dayNightConfig = DayNightConfig(dayNightImpl = DayNightImpl.Half)
+          tianyi = Tianyi.ZiweiBook
+          generalSeq = GeneralSeq.Zhao
+          generalStemBranch = GeneralStemBranch.Liuren
+        }
+      }
+    }
 
   override val assertion: (String) -> Unit = { raw ->
     assertTrue(raw.contains(""""direction":\s*"丑"""".toRegex()))
     assertTrue(raw.contains(""""monthMaster":\s*"Combined"""".toRegex()))
     assertTrue(raw.contains(""""clockwise":\s*"DayNightFixed"""".toRegex()))
-    assertTrue(raw.contains(""""impl":\s*"Half"""".toRegex()))
+    assertTrue(raw.contains(""""dayNightImpl":\s*"Half"""".toRegex()))
     assertTrue(raw.contains(""""tianyi":\s*"ZiweiBook"""".toRegex()))
     assertTrue(raw.contains(""""generalSeq":\s*"Zhao"""".toRegex()))
     assertTrue(raw.contains(""""generalStemBranch":\s*"Liuren"""".toRegex()))

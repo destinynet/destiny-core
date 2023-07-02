@@ -9,10 +9,7 @@ import destiny.core.astrology.DayNightFeature
 import destiny.core.astrology.DayNightImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.EightWordsConfigBuilder
-import destiny.core.calendar.eightwords.EightWordsFeature
-import destiny.core.calendar.eightwords.IEightWords
+import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
 import destiny.core.chinese.liuren.*
 import destiny.tools.AbstractCachedFeature
@@ -27,27 +24,23 @@ data class PithyConfig(val direction: Branch = Branch.子,
                        val eightWordsConfig: EightWordsConfig = EightWordsConfig(),
                        val monthMaster : MonthMaster = MonthMaster.StarPosition,
                        val clockwise: Clockwise = Clockwise.XinRenKuiReverse,
-                       val dayNightConfig : DayNightConfig = DayNightConfig(impl = DayNightImpl.StarPos),
+                       val dayNightConfig : DayNightConfig = DayNightConfig(dayNightImpl = DayNightImpl.StarPos),
                        val tianyi: Tianyi = Tianyi.LiurenPithy,
                        val generalSeq : GeneralSeq = GeneralSeq.Default,
                        val generalStemBranch : GeneralStemBranch = GeneralStemBranch.Pithy
                        ) : java.io.Serializable
 
+context(IEightWordsConfig)
 @DestinyMarker
 class PithyConfigBuilder : Builder<PithyConfig> {
 
   var direction: Branch = Branch.子
 
-  var eightWordsConfig: EightWordsConfig = EightWordsConfig()
-  fun ewConfig(block : EightWordsConfigBuilder.() -> Unit = {}) {
-    this.eightWordsConfig = EightWordsConfigBuilder.ewConfig(block)
-  }
-
   var monthMaster : MonthMaster = MonthMaster.StarPosition
 
   var clockwise: Clockwise = Clockwise.XinRenKuiReverse
 
-  var dayNightConfig : DayNightConfig = DayNightConfig(impl = DayNightImpl.StarPos)
+  var dayNightConfig : DayNightConfig = DayNightConfig(dayNightImpl = DayNightImpl.StarPos)
 
   var tianyi: Tianyi = Tianyi.LiurenPithy
 
@@ -56,10 +49,11 @@ class PithyConfigBuilder : Builder<PithyConfig> {
   var generalStemBranch : GeneralStemBranch = GeneralStemBranch.Pithy
 
   override fun build(): PithyConfig {
-    return PithyConfig(direction, eightWordsConfig, monthMaster, clockwise, dayNightConfig, tianyi, generalSeq, generalStemBranch)
+    return PithyConfig(direction, ewConfig, monthMaster, clockwise, dayNightConfig, tianyi, generalSeq, generalStemBranch)
   }
 
   companion object {
+    context(IEightWordsConfig)
     fun pithyConfig(block : PithyConfigBuilder.() -> Unit = {}) : PithyConfig {
       return PithyConfigBuilder().apply(block).build()
     }

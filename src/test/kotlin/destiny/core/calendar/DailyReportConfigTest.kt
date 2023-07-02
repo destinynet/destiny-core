@@ -57,6 +57,7 @@ internal class DailyReportConfigTest : AbstractConfigTest<DailyReportConfig>() {
         )
       )
 
+
       val lsConfig = LunarStationConfig(
         MonthlyConfig(
           yearlyConfig = YearlyConfig(
@@ -67,6 +68,7 @@ internal class DailyReportConfigTest : AbstractConfigTest<DailyReportConfig>() {
         HourlyConfig(
           hourlyImpl = HourlyImpl.Fixed
         ),
+
         //ewConfig = ewConfig
       )
 
@@ -90,8 +92,10 @@ internal class DailyReportConfigTest : AbstractConfigTest<DailyReportConfig>() {
   override val assertion: (String) -> Unit = { raw ->
     assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))
     assertFalse(raw.contains(""""discCenter":\s*false""".toRegex()))
+
     assertTrue(raw.contains(""""refraction":\s*false""".toRegex()))
     assertFalse(raw.contains(""""refraction":\s*true""".toRegex()))
+
     assertTrue(raw.contains(""""yearType":\s*"YEAR_LUNAR"""".toRegex()))
     assertTrue(raw.contains(""""monthlyImpl":\s*"AnimalExplained"""".toRegex()))
     assertTrue(raw.contains(""""hourlyImpl":\s*"Fixed"""".toRegex()))

@@ -32,7 +32,7 @@ data class LunarStationConfig(
                                                               IHourlyConfig by hourlyConfig
 
 
-context(ILunarStationConfig)
+context(IMonthlyConfig, IHourlyConfig)
 @DestinyMarker
 class LunarStationConfigBuilder : Builder<LunarStationConfig> {
 
@@ -42,7 +42,7 @@ class LunarStationConfigBuilder : Builder<LunarStationConfig> {
 
   companion object {
 
-    context(ILunarStationConfig)
+    context(IMonthlyConfig , IHourlyConfig)
     fun lunarStation(block: LunarStationConfigBuilder.() -> Unit = {}): LunarStationConfig {
       return LunarStationConfigBuilder().apply(block).build()
     }

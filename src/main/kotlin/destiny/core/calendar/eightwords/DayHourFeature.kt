@@ -60,26 +60,16 @@ data class DayHourConfig(
   override val hourBranchConfig: HourBranchConfig = HourBranchConfig()
 ) : IDayHourConfig, IDayConfig by dayConfig, IHourBranchConfig by hourBranchConfig
 
-
+context(IHourBranchConfig , IDayConfig)
 @DestinyMarker
 class DayHourConfigBuilder : Builder<DayHourConfig> {
-
-  private var dayConfig = DayConfig()
-
-  fun day(block: DayConfigBuilder.() -> Unit) {
-    this.dayConfig = DayConfigBuilder.dayConfig(block)
-  }
-
-  var hourBranchConfig: HourBranchConfig = HourBranchConfig()
-  fun hourBranch(block: HourBranchConfigBuilder.() -> Unit = {}) {
-    hourBranchConfig = HourBranchConfigBuilder.hourBranchConfig(block)
-  }
 
   override fun build(): DayHourConfig {
     return DayHourConfig(dayConfig, hourBranchConfig)
   }
 
   companion object {
+    context(IHourBranchConfig , IDayConfig)
     fun dayHour(block: DayHourConfigBuilder.() -> Unit = {}): DayHourConfig {
       return DayHourConfigBuilder().apply(block).build()
     }

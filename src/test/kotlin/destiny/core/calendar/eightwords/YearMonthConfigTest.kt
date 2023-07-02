@@ -4,6 +4,8 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.AbstractConfigTest
+import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
+import destiny.core.calendar.eightwords.YearConfigBuilder.Companion.yearConfig
 import destiny.core.calendar.eightwords.YearMonthConfigBuilder.Companion.yearMonthConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
@@ -21,16 +23,24 @@ internal class YearMonthConfigTest : AbstractConfigTest<YearMonthConfig>() {
     )
   )
 
-  override val configByFunction = yearMonthConfig {
-    year {
-      changeYearDegree = 270.0
+  override val configByFunction: YearMonthConfig
+    get() {
+
+      val yearConfig = yearConfig {
+        changeYearDegree = 270.0
+      }
+      val monthConfig = monthConfig {
+        southernHemisphereOpposition = true
+        hemisphereBy = HemisphereBy.DECLINATION
+        monthImpl = MonthImpl.SunSign
+      }
+
+      return with(yearConfig) {
+        with(monthConfig) {
+          yearMonthConfig {  }
+        }
+      }
     }
-    month {
-      southernHemisphereOpposition = true
-      hemisphereBy = HemisphereBy.DECLINATION
-      monthImpl = MonthImpl.SunSign
-    }
-  }
 
   override val assertion = { raw: String ->
     assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))

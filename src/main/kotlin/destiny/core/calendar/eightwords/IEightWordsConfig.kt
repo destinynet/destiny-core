@@ -3,7 +3,9 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.astrology.TransConfig
+import destiny.core.astrology.*
+import destiny.core.calendar.GmtJulDay
+import destiny.core.chinese.eightwords.*
 import java.io.Serializable
 
 interface IYearConfig : Serializable {
@@ -46,6 +48,12 @@ interface ITransConfig : Serializable {
     get() = TransConfig(discCenter, refraction, temperature, pressure)
 }
 
+interface IDayNightConfig : ITransConfig {
+  val dayNightImpl: DayNightImpl
+
+  val dayNightConfig
+    get() = DayNightConfig(dayNightImpl, transConfig)
+}
 
 interface IHourBranchConfig : ITransConfig {
 
@@ -64,4 +72,31 @@ interface IDayHourConfig : IDayConfig, IHourBranchConfig {
 interface IEightWordsConfig : IYearMonthConfig, IDayHourConfig {
   val ewConfig: EightWordsConfig
     get() = EightWordsConfig(yearMonthConfig, dayHourConfig)
+}
+
+interface IEightWordsContextConfig : IEightWordsConfig {
+
+  var risingSignConfig: RisingSignConfig
+  var zodiacSignConfig: ZodiacSignConfig
+  var houseConfig: HouseConfig
+  var place: String?
+
+  val ewContextConfig: EightWordsContextConfig
+    get() = EightWordsContextConfig(ewConfig, risingSignConfig, zodiacSignConfig, houseConfig, place)
+}
+
+
+interface IEightWordsPersonConfig : IEightWordsContextConfig {
+  var fortuneLargeConfig: FortuneLargeConfig
+  var fortuneSmallConfig: FortuneSmallConfig
+  var ewContextScore: EwContextScore
+
+  val ewPersonConfig: EightWordsPersonConfig
+    get() = EightWordsPersonConfig(ewContextConfig, fortuneLargeConfig, fortuneSmallConfig, ewContextScore)
+}
+
+interface IPersonPresentConfig : IEightWordsPersonConfig {
+  var viewGmt: GmtJulDay
+  val personPresentConfig: PersonPresentConfig
+    get() = PersonPresentConfig(ewPersonConfig, viewGmt)
 }

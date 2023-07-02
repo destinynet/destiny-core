@@ -68,26 +68,16 @@ data class YearMonthConfig(
   override val monthConfig: MonthConfig = MonthConfig()
 ) : IYearMonthConfig , IYearConfig by yearConfig , IMonthConfig by monthConfig
 
+context(IYearConfig, IMonthConfig)
 @DestinyMarker
 class YearMonthConfigBuilder : Builder<YearMonthConfig> {
-
-  private var yearConfig: YearConfig = YearConfig()
-
-  fun year(block: YearConfigBuilder.() -> Unit) {
-    this.yearConfig = YearConfigBuilder.yearConfig(block)
-  }
-
-  private var monthConfig: MonthConfig = MonthConfig()
-
-  fun month(block: MonthConfigBuilder.() -> Unit) {
-    this.monthConfig = MonthConfigBuilder.monthConfig(block)
-  }
 
   override fun build(): YearMonthConfig {
     return YearMonthConfig(yearConfig, monthConfig)
   }
 
   companion object {
+    context(IYearConfig, IMonthConfig)
     fun yearMonthConfig(block: YearMonthConfigBuilder.() -> Unit = {}): YearMonthConfig {
       return YearMonthConfigBuilder().apply(block).build()
     }

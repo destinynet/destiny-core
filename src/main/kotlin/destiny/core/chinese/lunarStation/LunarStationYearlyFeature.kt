@@ -27,7 +27,7 @@ data class YearlyConfig(override var yearType: YearType = YearType.YEAR_SOLAR,
                         override val dayHourConfig: DayHourConfig = DayHourConfig()): IYearlyConfig ,
                                                                                       IDayHourConfig by dayHourConfig
 
-//context(IDayHourConfig)
+context(IDayHourConfig)
 @DestinyMarker
 class YearlyConfigBuilder : Builder<YearlyConfig> {
   var yearType: YearType = YearType.YEAR_SOLAR
@@ -43,7 +43,7 @@ class YearlyConfigBuilder : Builder<YearlyConfig> {
   }
 
   companion object {
-    //context(IDayHourConfig)
+    context(IDayHourConfig)
     fun yearly(block: YearlyConfigBuilder.() -> Unit = {}) : YearlyConfig {
       return YearlyConfigBuilder().apply(block).build()
     }

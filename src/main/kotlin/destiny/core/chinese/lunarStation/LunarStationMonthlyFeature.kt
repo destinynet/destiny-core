@@ -35,8 +35,7 @@ data class MonthlyConfig(
     IDayHourConfig by dayHourConfig
 
 
-//IEightWordsConfig by eightWordsConfig
-context(IYearlyConfig)
+context(IYearlyConfig, IYearMonthConfig)
 @DestinyMarker
 class MonthlyConfigBuilder : Builder<MonthlyConfig> {
 
@@ -44,23 +43,12 @@ class MonthlyConfigBuilder : Builder<MonthlyConfig> {
 
   var monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
 
-//  var yearlyConfig: YearlyConfig = YearlyConfig()
-//
-//  fun yearly(block: YearlyConfigBuilder.() -> Unit = {}) {
-//    this.yearlyConfig = YearlyConfigBuilder.yearly(block)
-//  }
-
-  var ewConfig: EightWordsConfig = EightWordsConfig()
-  fun ewConfig(block: EightWordsConfigBuilder.() -> Unit = {}) {
-    this.ewConfig = EightWordsConfigBuilder.ewConfig(block)
-  }
-
   override fun build(): MonthlyConfig {
-    return MonthlyConfig(impl, monthAlgo, yearlyConfig, ewConfig.yearMonthConfig)
+    return MonthlyConfig(impl, monthAlgo, yearlyConfig, yearMonthConfig)
   }
 
   companion object {
-    context(IYearlyConfig)
+    context(IYearlyConfig , IYearMonthConfig)
     fun monthly(block: MonthlyConfigBuilder.() -> Unit = {}): MonthlyConfig {
       return MonthlyConfigBuilder().apply(block).build()
     }

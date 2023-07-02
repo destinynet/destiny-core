@@ -5,7 +5,7 @@ import destiny.core.astrology.DayNightConfig
 import destiny.core.astrology.DayNightConfigBuilder
 import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.EightWordsConfigBuilder
+import destiny.core.calendar.eightwords.IEightWordsConfig
 import destiny.core.chinese.AgeType
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Tianyi
@@ -184,7 +184,7 @@ data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::clas
                        val locale: Locale = Locale.TRADITIONAL_CHINESE
 ) : java.io.Serializable
 
-
+context(IEightWordsConfig)
 @DestinyMarker
 class ZiweiConfigBuilder : Builder<ZiweiConfig> {
 
@@ -255,14 +255,16 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
   /** 歲運註記 */
   var ageNotes: List<IntAgeNote> = defaultConfig.ageNotes
 
-  /** 八字設定 */
-  var ewConfig: EightWordsConfig = defaultConfig.ewConfig
-  fun ewConfig(block: EightWordsConfigBuilder.() -> Unit = {}) {
-    this.ewConfig = EightWordsConfigBuilder.ewConfig(block)
-  }
+//  /** 八字設定 */
+//  var ewConfig: EightWordsConfig = defaultConfig.ewConfig
+//  fun ewConfig(block: EightWordsConfigBuilder.() -> Unit = {}) {
+//    this.ewConfig = EightWordsConfigBuilder.ewConfig(block)
+//  }
 
   /** 晝夜區分 */
   var dayNightConfig: DayNightConfig = defaultConfig.dayNightConfig
+
+
   fun dayNightConfig(block: DayNightConfigBuilder.() -> Unit = {}) {
     this.dayNightConfig = DayNightConfigBuilder.dayNight(block)
   }
@@ -305,6 +307,7 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
   }
 
   companion object {
+    context(IEightWordsConfig)
     fun ziweiConfig(block: ZiweiConfigBuilder.() -> Unit = {}): ZiweiConfig {
       return ZiweiConfigBuilder().apply(block).build()
     }

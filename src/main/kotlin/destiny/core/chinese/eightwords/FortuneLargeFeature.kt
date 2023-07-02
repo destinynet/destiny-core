@@ -9,8 +9,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.EightWordsConfigBuilder
+import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.IStemBranch
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
@@ -31,6 +30,7 @@ data class FortuneLargeConfig(val impl: FortuneLargeImpl = FortuneLargeImpl.Defa
                               val intAgeNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
                               val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
 
+context(IEightWordsConfig)
 @DestinyMarker
 class FortuneLargeConfigBuilder : Builder<FortuneLargeConfig> {
 
@@ -43,17 +43,12 @@ class FortuneLargeConfigBuilder : Builder<FortuneLargeConfig> {
     intAgeNotes = impls
   }
 
-  var eightWordsConfig: EightWordsConfig = EightWordsConfig()
-  fun ewConfig(block : EightWordsConfigBuilder.() -> Unit = {}) {
-    this.eightWordsConfig = EightWordsConfigBuilder.ewConfig(block)
-  }
-
-
   override fun build(): FortuneLargeConfig {
-    return FortuneLargeConfig(impl, span, intAgeNotes, eightWordsConfig)
+    return FortuneLargeConfig(impl, span, intAgeNotes, ewConfig)
   }
 
   companion object {
+    context(IEightWordsConfig)
     fun fortuneLarge(block: FortuneLargeConfigBuilder.() -> Unit = {}) : FortuneLargeConfig {
       return FortuneLargeConfigBuilder().apply(block).build()
     }

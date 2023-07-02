@@ -24,19 +24,15 @@ import javax.cache.Cache
 
 @Serializable
 data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContextConfig = EightWordsContextConfig(),
-                                  val fortuneLargeConfig: FortuneLargeConfig = FortuneLargeConfig(),
-                                  val fortuneSmallConfig: FortuneSmallConfig = FortuneSmallConfig(),
-                                  val ewContextScore: EwContextScore = EwContextScore.OctaDivide316,
+                                  override var fortuneLargeConfig: FortuneLargeConfig = FortuneLargeConfig(eightWordsConfig = eightwordsContextConfig.eightWordsConfig),
+                                  override var fortuneSmallConfig: FortuneSmallConfig = FortuneSmallConfig(eightWordsConfig = eightwordsContextConfig.eightWordsConfig),
+                                  override var ewContextScore: EwContextScore = EwContextScore.OctaDivide316,
                                   @Serializable(with = LocaleSerializer::class)
-                                  val locale : Locale = Locale.getDefault()): java.io.Serializable
+                                  val locale : Locale = Locale.getDefault()): IEightWordsPersonConfig , IEightWordsContextConfig by eightwordsContextConfig
 
+context(IEightWordsContextConfig)
 @DestinyMarker
 class PersonConfigBuilder : Builder<EightWordsPersonConfig> {
-
-  var ewContextConfig: EightWordsContextConfig = EightWordsContextConfig()
-  fun ewContextConfig(block: EightWordsContextConfigBuilder.() -> Unit = {}) {
-    ewContextConfig = EightWordsContextConfigBuilder.ewContext(block)
-  }
 
   var fortuneLargeConfig: FortuneLargeConfig = FortuneLargeConfig()
   fun fortuneLarge(block: FortuneLargeConfigBuilder.() -> Unit = {}) {
@@ -57,6 +53,7 @@ class PersonConfigBuilder : Builder<EightWordsPersonConfig> {
   }
 
   companion object {
+    context(IEightWordsContextConfig)
     fun ewPersonConfig(block: PersonConfigBuilder.() -> Unit = {}) : EightWordsPersonConfig {
       return PersonConfigBuilder().apply(block).build()
     }

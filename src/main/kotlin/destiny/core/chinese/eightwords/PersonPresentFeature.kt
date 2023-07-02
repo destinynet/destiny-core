@@ -8,7 +8,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.chinese.ChineseDateFeature
-import destiny.core.calendar.eightwords.YearFeature
+import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedPersonFeature
@@ -20,16 +20,12 @@ import javax.cache.Cache
 
 @Serializable
 data class PersonPresentConfig(val personContextConfig: EightWordsPersonConfig = EightWordsPersonConfig(),
-                               val viewGmt: GmtJulDay = GmtJulDay.nowCeiling()) : java.io.Serializable
+                               override var viewGmt: GmtJulDay = GmtJulDay.nowCeiling()) : IPersonPresentConfig,
+                                                                                           IEightWordsPersonConfig by personContextConfig
 
+context(IEightWordsPersonConfig)
 @DestinyMarker
 class PersonPresentConfigBuilder : Builder<PersonPresentConfig> {
-
-  var personContextConfig: EightWordsPersonConfig = EightWordsPersonConfig()
-
-  fun ewPersonContext(block: PersonConfigBuilder.() -> Unit = {}) {
-    personContextConfig = PersonConfigBuilder.ewPersonConfig(block)
-  }
 
   /**
    * 內定讓 viewGmt 取整數 GmtJulDay+1 (明日) , 因此，接連兩次 ewPersonPresent{} , 應該會出現相同的 config 物件
@@ -38,10 +34,11 @@ class PersonPresentConfigBuilder : Builder<PersonPresentConfig> {
   var viewGmt: GmtJulDay = GmtJulDay.nowCeiling()
 
   override fun build(): PersonPresentConfig {
-    return PersonPresentConfig(personContextConfig, viewGmt)
+    return PersonPresentConfig(ewPersonConfig, viewGmt)
   }
 
   companion object {
+    context(IEightWordsPersonConfig)
     fun ewPersonPresent(block: PersonPresentConfigBuilder.() -> Unit = {}) : PersonPresentConfig {
       return PersonPresentConfigBuilder().apply(block).build()
     }

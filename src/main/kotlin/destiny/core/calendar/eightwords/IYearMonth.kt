@@ -8,6 +8,8 @@ import destiny.core.Descriptive
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
+import destiny.core.calendar.eightwords.YearConfigBuilder.Companion.yearConfig
 import destiny.core.calendar.eightwords.YearMonthConfigBuilder.Companion.yearMonthConfig
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
@@ -66,19 +68,28 @@ interface IMonth : Serializable {
 interface IYearMonth : IYear, IMonth, Descriptive {
   val config: YearMonthConfig
     get() {
-      return yearMonthConfig {
-        year {
-          changeYearDegree = this@IYearMonth.changeYearDegree
+
+      val yearConfig = yearConfig {
+        changeYearDegree = this@IYearMonth.changeYearDegree
+      }
+
+      val monthConfig = monthConfig {
+        southernHemisphereOpposition = this@IYearMonth.southernHemisphereOpposition
+        hemisphereBy = this@IYearMonth.hemisphereBy
+        monthImpl = when (this@IYearMonth) {
+          is YearMonthSolarTermsStarPositionImpl -> MonthImpl.SolarTerms
+          is YearMonthSunSignImpl                -> MonthImpl.SunSign
+          else                                   -> error("no month")
         }
-        month {
-          southernHemisphereOpposition = this@IYearMonth.southernHemisphereOpposition
-          hemisphereBy = this@IYearMonth.hemisphereBy
-          monthImpl = when (this@IYearMonth) {
-            is YearMonthSolarTermsStarPositionImpl -> MonthImpl.SolarTerms
-            is YearMonthSunSignImpl                -> MonthImpl.SunSign
-            else                                   -> error("no month")
+      }
+
+      return with(yearConfig) {
+        with(monthConfig) {
+          yearMonthConfig {
+
           }
         }
+
       }
     }
 }

@@ -7,6 +7,7 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.eightwords.ITransConfig
 
 /**
  * 計算星體對地球表面某點的 東昇、天頂、西落、天底的時刻
@@ -24,6 +25,6 @@ interface IRiseTrans {
                         star: Star,
                         point: TransPoint,
                         location: ILocation,
-                        transConfig: TransConfig = TransConfig()): GmtJulDay?
+                        transConfig: ITransConfig = TransConfig()): GmtJulDay?
 
 }

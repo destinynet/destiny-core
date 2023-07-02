@@ -37,7 +37,7 @@ class YearConfigBuilder : Builder<IYearConfig> {
   }
 
   companion object {
-    fun yearConfig(block: YearConfigBuilder.() -> Unit = {}): YearConfig {
+    fun yearConfig(block:  YearConfigBuilder.() -> Unit = {}): YearConfig {
       return YearConfigBuilder().apply(block).build()
     }
   }

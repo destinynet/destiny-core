@@ -9,16 +9,14 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.EightWordsConfigBuilder
-import destiny.core.calendar.eightwords.EightWordsFeature
-import destiny.core.calendar.eightwords.IEightWords
+import destiny.core.calendar.eightwords.*
 import destiny.core.fengshui.sanyuan.NineStarFunctions.getDayCenterStar
 import destiny.core.fengshui.sanyuan.NineStarFunctions.getHourCenterStar
 import destiny.core.fengshui.sanyuan.NineStarFunctions.getMonthCenterStar
 import destiny.core.fengshui.sanyuan.NineStarFunctions.getYearCenterStar
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
+import destiny.tools.DestinyMarker
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -27,6 +25,8 @@ import java.time.chrono.ChronoLocalDateTime
 data class NineStarConfig(val scales: List<Scale> = listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR),
                           val ewConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
 
+context(IEightWordsConfig)
+@DestinyMarker
 class NineStarConfigBuilder : Builder<NineStarConfig> {
 
   var scales: List<Scale> = listOf(Scale.YEAR , Scale.MONTH, Scale.DAY, Scale.HOUR)
@@ -35,16 +35,12 @@ class NineStarConfigBuilder : Builder<NineStarConfig> {
     this.scales = scales
   }
 
-  var ewConfig: EightWordsConfig = EightWordsConfig()
-  fun ewConfig(block : EightWordsConfigBuilder.() -> Unit = {}) {
-    ewConfig = EightWordsConfigBuilder.ewConfig(block)
-  }
-
   override fun build(): NineStarConfig {
     return NineStarConfig(scales, ewConfig)
   }
 
   companion object {
+    context(IEightWordsConfig)
     fun nineStarConfig(block: NineStarConfigBuilder.() -> Unit = {}) : NineStarConfig {
       return NineStarConfigBuilder().apply(block).build()
     }

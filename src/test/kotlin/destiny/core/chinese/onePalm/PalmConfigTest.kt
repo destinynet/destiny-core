@@ -19,12 +19,17 @@ internal class PalmConfigTest : AbstractConfigTest<PalmConfig>() {
                                                             MonthAlgo.MONTH_SOLAR_TERMS,
                                                             trueRisingSign = true,
                                                             clockwiseHouse = false)
-  override val configByFunction: PalmConfig = palmConfig {
-    positiveImpl = PositiveImpl.GenderYinYang
-    monthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
-    trueRisingSign = true
-    clockwiseHouse = false
-  }
+  override val configByFunction: PalmConfig
+    get() {
+      return with(EightWordsConfig()) {
+        palmConfig {
+          positiveImpl = PositiveImpl.GenderYinYang
+          monthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
+          trueRisingSign = true
+          clockwiseHouse = false
+        }
+      }
+    }
 
   override val assertion: (String) -> Unit = { raw: String ->
     assertTrue(raw.contains(""""positiveImpl":\s*"GenderYinYang"""".toRegex()))

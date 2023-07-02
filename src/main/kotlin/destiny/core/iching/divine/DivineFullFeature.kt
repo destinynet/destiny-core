@@ -5,9 +5,7 @@ package destiny.core.iching.divine
 
 import destiny.core.Gender
 import destiny.core.calendar.*
-import destiny.core.calendar.eightwords.EightWordsFeature
-import destiny.core.calendar.eightwords.EightWordsNullable
-import destiny.core.calendar.eightwords.IEightWordsNullable
+import destiny.core.calendar.eightwords.*
 import destiny.core.iching.HexagramTextContext
 import destiny.core.iching.IHexagramText
 import destiny.core.iching.contentProviders.*
@@ -28,6 +26,7 @@ data class DivineFullConfig(val traditionalConfig: DivineTraditionalConfig = Div
                             val question: String? = null,
                             val approach: DivineApproach? = null): java.io.Serializable
 
+context(IEightWordsConfig)
 @DestinyMarker
 class DivineFullConfigBuilder : Builder<DivineFullConfig> {
 
@@ -47,6 +46,7 @@ class DivineFullConfigBuilder : Builder<DivineFullConfig> {
   }
 
   companion object {
+    context(IEightWordsConfig)
     fun divineFullConfig(block : DivineFullConfigBuilder.() -> Unit = {}) : DivineFullConfig {
       return DivineFullConfigBuilder().apply(block).build()
     }

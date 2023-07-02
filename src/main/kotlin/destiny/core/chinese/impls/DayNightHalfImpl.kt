@@ -8,6 +8,7 @@ import destiny.core.Descriptive
 import destiny.core.astrology.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.eightwords.ITransConfig
 import destiny.tools.asDescriptive
 import java.io.Serializable
 
@@ -17,7 +18,7 @@ class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight,
                                                                 Serializable {
 
   // TODO : 極區內可能不適用
-  override fun getDayNight(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): DayNight {
+  override fun getDayNight(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: ITransConfig): DayNight {
     val nextMeridianJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, loc, transConfig)!!
     val nextNadirJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
 

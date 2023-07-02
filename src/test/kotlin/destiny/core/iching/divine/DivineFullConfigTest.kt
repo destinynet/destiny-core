@@ -4,6 +4,7 @@
 package destiny.core.iching.divine
 
 import destiny.core.AbstractConfigTest
+import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsNullable
 import destiny.core.chinese.Branch.亥
 import destiny.core.chinese.Branch.寅
@@ -29,16 +30,21 @@ internal class DivineFullConfigTest : AbstractConfigTest<DivineFullConfig>() {
     approach = DivineApproach.RANDOM
   )
 
-  override val configByFunction: DivineFullConfig = divineFullConfig {
-    eightWordsNullable = EightWordsNullable.of(
-      StemBranchOptional(甲, null),
-      StemBranchOptional(null, 亥),
-      StemBranchOptional(丙, 寅),
-      StemBranchOptional(null, null)
-    )
-    question = "請問..."
-    approach = DivineApproach.RANDOM
-  }
+  override val configByFunction: DivineFullConfig
+    get() {
+      return with(EightWordsConfig()) {
+        divineFullConfig {
+          eightWordsNullable = EightWordsNullable.of(
+            StemBranchOptional(甲, null),
+            StemBranchOptional(null, 亥),
+            StemBranchOptional(丙, 寅),
+            StemBranchOptional(null, null)
+          )
+          question = "請問..."
+          approach = DivineApproach.RANDOM
+        }
+      }
+    }
 
   override val assertion: (String) -> Unit = {raw : String ->
     assertTrue(raw.contains(""""eightWordsNullable":\s*"1,0,0,12,3,3,0,0"""".toRegex()))

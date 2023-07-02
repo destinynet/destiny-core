@@ -32,31 +32,22 @@ internal class NineStarConfigTest : AbstractConfigTest<NineStarConfig>() {
     )
   )
 
-  override val configByFunction: NineStarConfig = nineStarConfig {
-    scales = listOf(Scale.YEAR, Scale.DAY)
-    ewConfig {
-      yearMonth {
-        year {
+  override val configByFunction: NineStarConfig
+    get() {
+      return with(EightWordsConfig()) {
+        nineStarConfig {
+          scales = listOf(Scale.YEAR, Scale.DAY)
+
           changeYearDegree = 270.0
-        }
-        month {
           southernHemisphereOpposition = true
           hemisphereBy = HemisphereBy.DECLINATION
           monthImpl = MonthImpl.SunSign
-        }
-      }
-
-      dayHour {
-        day {
           changeDayAfterZi = false
           midnight = MidnightImpl.CLOCK0
-        }
-        hourBranch {
           hourImpl = HourImpl.LMT
         }
       }
     }
-  }
   override val assertion: (String) -> Unit = { raw: String ->
     assertTrue { raw.contains("YEAR") }
     assertTrue { raw.contains("DAY") }

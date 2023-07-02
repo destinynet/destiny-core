@@ -11,10 +11,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.eightwords.DayHourConfig
-import destiny.core.calendar.eightwords.DayHourConfigBuilder
-import destiny.core.calendar.eightwords.IDayHourConfig
-import destiny.core.calendar.eightwords.IDayHourFeature
+import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
@@ -32,20 +29,17 @@ enum class HourlyImpl {
 data class HourlyConfig(override var hourlyImpl: HourlyImpl = HourlyImpl.Fixed,
                         override val dayHourConfig: DayHourConfig = DayHourConfig()): IHourlyConfig , IDayHourConfig by dayHourConfig
 
+context(IDayHourConfig)
 @DestinyMarker
 class HourlyConfigBuilder : Builder<HourlyConfig> {
   var impl: HourlyImpl = HourlyImpl.Fixed
-
-  var dayHourConfig: DayHourConfig = DayHourConfig()
-  fun dayHour(block: DayHourConfigBuilder.() -> Unit = {}) {
-    this.dayHourConfig = DayHourConfigBuilder.dayHour(block)
-  }
 
   override fun build(): HourlyConfig {
     return HourlyConfig(impl, dayHourConfig)
   }
 
   companion object {
+    context(IDayHourConfig)
     fun hourly(block: HourlyConfigBuilder.() -> Unit = {}) : HourlyConfig {
       return HourlyConfigBuilder().apply(block).build()
     }

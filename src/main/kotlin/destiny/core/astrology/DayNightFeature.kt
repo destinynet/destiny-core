@@ -6,6 +6,8 @@ package destiny.core.astrology
 import destiny.core.DayNight
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.eightwords.IDayNightConfig
+import destiny.core.calendar.eightwords.ITransConfig
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
@@ -19,26 +21,22 @@ enum class DayNightImpl {
 }
 
 @Serializable
-data class DayNightConfig(val impl : DayNightImpl = DayNightImpl.StarPos,
+data class DayNightConfig(override val dayNightImpl : DayNightImpl = DayNightImpl.StarPos,
                           /** for [DayNightImpl.StarPos] and [DayNightImpl.Half] */
-                          val transConfig: TransConfig = TransConfig()): java.io.Serializable
-
+                          override val transConfig: TransConfig = TransConfig()): IDayNightConfig,
+                                                                                  ITransConfig by transConfig
+context(ITransConfig)
 @DestinyMarker
 class DayNightConfigBuilder : Builder<DayNightConfig> {
 
-  var impl : DayNightImpl = DayNightImpl.StarPos
-
-  var transConfig: TransConfig = TransConfig()
-
-  fun trans(block : TransConfigBuilder.() -> Unit = {}) {
-    transConfig = TransConfigBuilder.trans(block)
-  }
+  var dayNightImpl : DayNightImpl = DayNightImpl.StarPos
 
   override fun build(): DayNightConfig {
-    return DayNightConfig(impl, transConfig)
+    return DayNightConfig(dayNightImpl, transConfig)
   }
 
   companion object {
+    context(ITransConfig)
     fun dayNight(block : DayNightConfigBuilder.() -> Unit = {}) : DayNightConfig {
       return DayNightConfigBuilder().apply(block).build()
     }
@@ -46,14 +44,14 @@ class DayNightConfigBuilder : Builder<DayNightConfig> {
 }
 
 @Named
-class DayNightFeature(private val dayNightImplMap: Map<DayNightImpl, IDayNight>) : AbstractCachedFeature<DayNightConfig, DayNight>() {
+class DayNightFeature(private val dayNightImplMap: Map<DayNightImpl, IDayNight>) : AbstractCachedFeature<IDayNightConfig, DayNight>() {
 
   override val key: String = "dayNight"
 
-  override val defaultConfig: DayNightConfig = DayNightConfig()
+  override val defaultConfig: IDayNightConfig = DayNightConfig()
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: DayNightConfig): DayNight {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IDayNightConfig): DayNight {
 
-    return dayNightImplMap[config.impl]!!.getDayNight(gmtJulDay, loc, config.transConfig)
+    return dayNightImplMap[config.dayNightImpl]!!.getDayNight(gmtJulDay, loc, config.transConfig)
   }
 }

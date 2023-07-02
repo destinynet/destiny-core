@@ -5,10 +5,7 @@ package destiny.core.iching.divine
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.EightWordsConfigBuilder
-import destiny.core.calendar.eightwords.EightWordsFeature
-import destiny.core.calendar.eightwords.IEightWordsNullable
+import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
 import destiny.core.iching.Hexagram
 import destiny.core.iching.HexagramName
@@ -38,6 +35,7 @@ data class DivineTraditionalConfig(@Serializable(with = IHexagramSerializer::cla
                                    @Serializable(with = LocaleSerializer::class)
                                    val locale: Locale = Locale.TAIWAN,
                                    val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
+context(IEightWordsConfig)
 @DestinyMarker
 class DivineTraditionalConfigBuilder : Builder<DivineTraditionalConfig> {
 
@@ -55,16 +53,12 @@ class DivineTraditionalConfigBuilder : Builder<DivineTraditionalConfig> {
 
   var locale: Locale = Locale.TAIWAN
 
-  var eightWordsConfig: EightWordsConfig = EightWordsConfig()
-  fun ewConfig(block: EightWordsConfigBuilder.() -> Unit = {}) {
-    this.eightWordsConfig = EightWordsConfigBuilder.ewConfig(block)
-  }
-
   override fun build(): DivineTraditionalConfig {
-    return DivineTraditionalConfig(src, dst, settings, hiddenEnergy, tianyi, yangBlade, locale, eightWordsConfig)
+    return DivineTraditionalConfig(src, dst, settings, hiddenEnergy, tianyi, yangBlade, locale, ewConfig)
   }
 
   companion object {
+    context(IEightWordsConfig)
     fun divineTraditionalConfig(block: DivineTraditionalConfigBuilder.() -> Unit = {}) : DivineTraditionalConfig {
       return DivineTraditionalConfigBuilder().apply(block).build()
     }

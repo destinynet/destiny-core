@@ -12,6 +12,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWords
+import destiny.core.calendar.eightwords.IEightWordsConfig
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranch.*
 import destiny.core.chinese.StemBranchCycle
@@ -35,6 +36,7 @@ data class FortuneSmallConfig(val impl: Impl = Impl.Hour,
   }
 }
 
+context(IEightWordsConfig)
 @DestinyMarker
 class FortuneSmallConfigBuilder : Builder<FortuneSmallConfig> {
   var impl: FortuneSmallConfig.Impl = FortuneSmallConfig.Impl.Hour
@@ -45,13 +47,12 @@ class FortuneSmallConfigBuilder : Builder<FortuneSmallConfig> {
     intAgeNotes = impls
   }
 
-  var eightWordsConfig : EightWordsConfig = EightWordsConfig()
-
   override fun build(): FortuneSmallConfig {
-    return FortuneSmallConfig(impl, count, intAgeNotes, eightWordsConfig)
+    return FortuneSmallConfig(impl, count, intAgeNotes, ewConfig)
   }
 
   companion object {
+    context(IEightWordsConfig)
     fun fortuneSmall(block: FortuneSmallConfigBuilder.() -> Unit = {}) : FortuneSmallConfig {
       return FortuneSmallConfigBuilder().apply(block).build()
     }

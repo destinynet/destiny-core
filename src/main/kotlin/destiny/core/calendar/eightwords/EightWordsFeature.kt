@@ -25,25 +25,27 @@ data class EightWordsConfig(
   override val dayHourConfig: DayHourConfig = DayHourConfig()
 ) : IEightWordsConfig, IYearMonthConfig by yearMonthConfig, IDayHourConfig by dayHourConfig
 
+context(IYearMonthConfig, IDayHourConfig)
 @DestinyMarker
 class EightWordsConfigBuilder : Builder<EightWordsConfig> {
-  var yearMonthConfig: YearMonthConfig = YearMonthConfig()
-
-  fun yearMonth(block: YearMonthConfigBuilder.() -> Unit) {
-    this.yearMonthConfig = YearMonthConfigBuilder.yearMonthConfig(block)
-  }
-
-  var dayHourConfig: DayHourConfig = DayHourConfig()
-
-  fun dayHour(block: DayHourConfigBuilder.() -> Unit) {
-    this.dayHourConfig = DayHourConfigBuilder.dayHour(block)
-  }
+//  var yearMonthConfig: YearMonthConfig = YearMonthConfig()
+//
+//  fun yearMonth(block: YearMonthConfigBuilder.() -> Unit) {
+//    this.yearMonthConfig = YearMonthConfigBuilder.yearMonthConfig(block)
+//  }
+//
+//  var dayHourConfig: DayHourConfig = DayHourConfig()
+//
+//  fun dayHour(block: DayHourConfigBuilder.() -> Unit) {
+//    this.dayHourConfig = DayHourConfigBuilder.dayHour(block)
+//  }
 
   override fun build(): EightWordsConfig {
     return EightWordsConfig(yearMonthConfig, dayHourConfig)
   }
 
   companion object {
+    context(IYearMonthConfig, IDayHourConfig)
     fun ewConfig(block: EightWordsConfigBuilder.() -> Unit = {}): EightWordsConfig {
       return EightWordsConfigBuilder().apply(block).build()
     }

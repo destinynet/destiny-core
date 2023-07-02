@@ -20,18 +20,15 @@ import javax.cache.Cache
 @Serializable
 data class EightWordsContextConfig(
   val eightWordsConfig: EightWordsConfig = EightWordsConfig(),
-  val risingSignConfig: RisingSignConfig = RisingSignConfig(),
-  val zodiacSignConfig: ZodiacSignConfig = ZodiacSignConfig(),
-  val houseConfig : HouseConfig = HouseConfig(HouseSystem.MERIDIAN , Coordinate.ECLIPTIC),
-  val place : String? = null
-): java.io.Serializable
+  override var risingSignConfig: RisingSignConfig = RisingSignConfig(),
+  override var zodiacSignConfig: ZodiacSignConfig = ZodiacSignConfig(),
+  override var houseConfig : HouseConfig = HouseConfig(HouseSystem.MERIDIAN, Coordinate.ECLIPTIC),
+  override var place : String? = null
+): IEightWordsContextConfig , IEightWordsConfig by eightWordsConfig
 
+context(IEightWordsConfig)
 @DestinyMarker
 class EightWordsContextConfigBuilder : Builder<EightWordsContextConfig> {
-  var eightWordsConfig: EightWordsConfig = EightWordsConfig()
-  fun ewConfig(block : EightWordsConfigBuilder.() -> Unit = {}) {
-    this.eightWordsConfig = EightWordsConfigBuilder.ewConfig(block)
-  }
 
   var risingSignConfig: RisingSignConfig = RisingSignConfig()
   fun risingSign(block : RisingSignConfigBuilder.() -> Unit = {}) {
@@ -51,10 +48,11 @@ class EightWordsContextConfigBuilder : Builder<EightWordsContextConfig> {
   var place : String? = null
 
   override fun build(): EightWordsContextConfig {
-    return EightWordsContextConfig(eightWordsConfig, risingSignConfig, zodiacSignConfig, houseConfig, place)
+    return EightWordsContextConfig(ewConfig, risingSignConfig, zodiacSignConfig, houseConfig, place)
   }
 
   companion object {
+    context(IEightWordsConfig)
     fun ewContext(block : EightWordsContextConfigBuilder.() -> Unit = {}) : EightWordsContextConfig {
       return EightWordsContextConfigBuilder().apply(block).build()
     }

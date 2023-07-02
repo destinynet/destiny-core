@@ -4,6 +4,7 @@
 package destiny.core.iching.divine
 
 import destiny.core.AbstractConfigTest
+import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.chinese.Tianyi
 import destiny.core.chinese.YangBlade
 import destiny.core.iching.Hexagram
@@ -20,14 +21,19 @@ internal class DivineTraditionalConfigTest : AbstractConfigTest<DivineTraditiona
     SettingsOfStemBranch.TsangShan, HiddenEnergy.GingFang, Tianyi.ZiweiBook, YangBlade.RobCash
   )
 
-  override val configByFunction: DivineTraditionalConfig = divineTraditionalConfig {
-    src = Hexagram.既濟
-    dst = Hexagram.未濟
-    settings = SettingsOfStemBranch.TsangShan
-    hiddenEnergy = HiddenEnergy.GingFang
-    tianyi = Tianyi.ZiweiBook
-    yangBlade = YangBlade.RobCash
-  }
+  override val configByFunction: DivineTraditionalConfig
+    get() {
+      return with(EightWordsConfig()) {
+        divineTraditionalConfig {
+          src = Hexagram.既濟
+          dst = Hexagram.未濟
+          settings = SettingsOfStemBranch.TsangShan
+          hiddenEnergy = HiddenEnergy.GingFang
+          tianyi = Tianyi.ZiweiBook
+          yangBlade = YangBlade.RobCash
+        }
+      }
+    }
 
   override val assertion: (String) -> Unit = { raw: String ->
     assertTrue(raw.contains(""""src":\s*"101010"""".toRegex()))
