@@ -20,7 +20,7 @@ interface IYearlyConfig  {
 }
 
 
-interface IMonthlyConfig : IYearlyConfig , IYearMonthConfig
+interface IMonthlyConfig : IYearlyConfig , IYearMonthConfig //, IDayHourConfig
 {
   var monthlyImpl: MonthlyImpl
   var monthAlgo: MonthAlgo
@@ -42,10 +42,6 @@ interface ILunarStationConfig : IYearlyConfig, IMonthlyConfig, IHourlyConfig, IE
       return LunarStationConfig(
         monthlyConfig = monthlyConfig,
         hourlyConfig = hourlyConfig,
-        //ewConfig = EightWordsConfig(monthlyConfig.yearMonthConfig, hourlyConfig.dayHourConfig)
       )
     }
-
-//  override val ewConfig: EightWordsConfig
-//    get() = EightWordsConfig(monthlyConfig.yearMonthConfig, hourlyConfig.dayHourConfig)
 }
