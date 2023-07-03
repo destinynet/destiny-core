@@ -35,7 +35,8 @@ interface IHourlyConfig : IDayHourConfig {
     get() = HourlyConfig(hourlyImpl, dayHourConfig)
 }
 
-interface ILunarStationConfig : IYearlyConfig, IMonthlyConfig, IHourlyConfig, IEightWordsConfig  {
+interface ILunarStationConfig : IYearlyConfig, IMonthlyConfig, IHourlyConfig, IEightWordsConfig
+{
 
   val lunarStationConfig: LunarStationConfig
     get() {

@@ -27,9 +27,16 @@ import java.time.chrono.ChronoLocalDateTime
 @Serializable
 data class LunarStationConfig(
   override val monthlyConfig: MonthlyConfig = MonthlyConfig(),
-  override val hourlyConfig: HourlyConfig = HourlyConfig()) : ILunarStationConfig,
-                                                              IMonthlyConfig by monthlyConfig,
-                                                              IHourlyConfig by hourlyConfig
+  override val hourlyConfig: HourlyConfig = HourlyConfig()
+) : ILunarStationConfig,
+    IMonthlyConfig by monthlyConfig,
+    IHourlyConfig by hourlyConfig {
+
+  override val ewConfig: EightWordsConfig
+    get() {
+      return EightWordsConfig(monthlyConfig.yearMonthConfig, hourlyConfig.dayHourConfig)
+    }
+}
 
 
 context(IMonthlyConfig, IHourlyConfig)
@@ -143,7 +150,10 @@ class LunarStationFeature(
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ILunarStationConfig): ContextModel {
 
-    val ew = eightWordsFeature.getModel(lmt, loc, config)
+    val ewConfig = (config as LunarStationConfig).ewConfig
+
+
+    val ew = eightWordsFeature.getModel(lmt, loc, ewConfig)
     val models = getScaleMap(lmt, loc, config, listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR))
 
     val dayIndex = dailyFeature.getModel(lmt, loc, config.dayHourConfig)
@@ -176,12 +186,15 @@ class LunarStationFeature(
   }
 
   override fun getScaleMap(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ILunarStationConfig, scales: List<Scale>): Map<Scale, LunarStation> {
+
+    val ewConfig = (config as LunarStationConfig).ewConfig
+
     return scales.associate { scale ->
       when (scale) {
         Scale.YEAR  -> Scale.YEAR to yearlyFeature.getModel(lmt, loc, config.yearlyConfig).station
         Scale.MONTH -> {
           val yearlyStation: LunarStation = yearlyFeature.getModel(lmt, loc, config.yearlyConfig).station
-          val monthBranch = eightWordsFeature.getModel(lmt, loc, config.ewConfig).month.branch
+          val monthBranch = eightWordsFeature.getModel(lmt, loc, ewConfig).month.branch
           val chineseDate = chineseDateFeature.getModel(lmt, loc, config)
           val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
             chineseDate.month, chineseDate.leapMonth, monthBranch, chineseDate.day, config.monthlyConfig.monthAlgo

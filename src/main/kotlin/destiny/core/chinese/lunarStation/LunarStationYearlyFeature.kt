@@ -9,7 +9,6 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.eightwords.DayHourConfig
-import destiny.core.calendar.eightwords.IDayHourConfig
 import destiny.core.calendar.eightwords.YearFeature
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YearType
@@ -24,26 +23,25 @@ import java.time.temporal.ChronoField
 @Serializable
 data class YearlyConfig(override var yearType: YearType = YearType.YEAR_SOLAR,
                         override var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564,
-                        override val dayHourConfig: DayHourConfig = DayHourConfig()): IYearlyConfig ,
-                                                                                      IDayHourConfig by dayHourConfig
+val dayHourConfig: DayHourConfig = DayHourConfig()
+): IYearlyConfig
+                                                                                      //IDayHourConfig by dayHourConfig
 
-context(IDayHourConfig)
+//context(IDayHourConfig)
 @DestinyMarker
 class YearlyConfigBuilder : Builder<YearlyConfig> {
   var yearType: YearType = YearType.YEAR_SOLAR
   var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564
 
-//  var dayHourConfig: DayHourConfig = DayHourConfig()
-//  fun dayConfig(block: DayHourConfigBuilder.() -> Unit = {}) {
-//    dayHourConfig = DayHourConfigBuilder.dayHour(block)
-//  }
+  // TODO : context(IDayHourConfig)
+  var dayHourConfig: DayHourConfig = DayHourConfig()
 
   override fun build(): YearlyConfig {
-    return YearlyConfig(yearType, yearEpoch)
+    return YearlyConfig(yearType, yearEpoch, dayHourConfig)
   }
 
   companion object {
-    context(IDayHourConfig)
+//    context(IDayHourConfig)
     fun yearly(block: YearlyConfigBuilder.() -> Unit = {}) : YearlyConfig {
       return YearlyConfigBuilder().apply(block).build()
     }
