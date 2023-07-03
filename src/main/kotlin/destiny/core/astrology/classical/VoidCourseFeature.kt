@@ -18,6 +18,15 @@ import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import kotlin.math.min
 
+interface IVoidCourseConfig : java.io.Serializable {
+  var planet: Planet
+  var centric: Centric
+  var vocImpl: VoidCourseImpl
+
+  val vocConfig : VoidCourseConfig
+    get() = VoidCourseConfig(planet, centric, vocImpl)
+}
+
 enum class VoidCourseImpl {
   Hellenistic,
   Medieval,
@@ -26,9 +35,9 @@ enum class VoidCourseImpl {
 
 @Serializable
 data class VoidCourseConfig(@Serializable(with = AstroPointSerializer::class)
-                            val planet: Planet = Planet.MOON,
-                            val centric: Centric = Centric.GEO,
-                            val vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval): java.io.Serializable
+                            override var planet: Planet = Planet.MOON,
+                            override var centric: Centric = Centric.GEO,
+                            override var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval): IVoidCourseConfig
 
 class VoidCourseConfigBuilder : Builder<VoidCourseConfig> {
   var planet: Planet = Planet.MOON

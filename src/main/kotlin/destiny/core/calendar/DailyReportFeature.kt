@@ -4,8 +4,8 @@
 package destiny.core.calendar
 
 import destiny.core.astrology.*
+import destiny.core.astrology.classical.IVoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseConfig
-import destiny.core.astrology.classical.VoidCourseConfigBuilder
 import destiny.core.astrology.classical.VoidCourseFeature
 import destiny.core.astrology.eclipse.EclipseTime
 import destiny.core.astrology.eclipse.IEclipseFactory
@@ -31,20 +31,23 @@ import java.util.*
 import javax.cache.Cache
 
 
-@Serializable
-data class DailyReportConfig(val lunarStationConfig: LunarStationConfig = LunarStationConfig(),
-                             val vocConfig: VoidCourseConfig = VoidCourseConfig(),
-                             @Serializable(with = LocaleSerializer::class)
-                             val locale: Locale = Locale.TAIWAN) : java.io.Serializable
+interface IDailyReportConfig : ILunarStationConfig, IVoidCourseConfig {
+  var locale: Locale
 
-context(ILunarStationConfig)
+  val dailyReportConfig : DailyReportConfig
+    get() = DailyReportConfig(lunarStationConfig, vocConfig, locale)
+}
+
+@Serializable
+data class DailyReportConfig(
+  override val lunarStationConfig: LunarStationConfig = LunarStationConfig(),
+  override val vocConfig: VoidCourseConfig = VoidCourseConfig(),
+  @Serializable(with = LocaleSerializer::class)
+  override var locale: Locale = Locale.TAIWAN) : IDailyReportConfig, ILunarStationConfig by lunarStationConfig , IVoidCourseConfig by vocConfig
+
+context(ILunarStationConfig, IVoidCourseConfig)
 @DestinyMarker
 class DailyReportConfigBuilder : Builder<DailyReportConfig> {
-
-  var vocConfig : VoidCourseConfig = VoidCourseConfig()
-  fun vocConfig(block: context(VoidCourseConfigBuilder) () -> Unit = {}) {
-    this.vocConfig = VoidCourseConfigBuilder.voidCourse(block)
-  }
 
   var locale : Locale = Locale.TAIWAN
 
@@ -53,7 +56,7 @@ class DailyReportConfigBuilder : Builder<DailyReportConfig> {
   }
 
   companion object {
-    context(ILunarStationConfig)
+    context(ILunarStationConfig, IVoidCourseConfig)
     fun dailyReport(block: DailyReportConfigBuilder.() -> Unit = {}): DailyReportConfig {
       return DailyReportConfigBuilder().apply(block).build()
     }
@@ -77,7 +80,9 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
   override val key: String = "dailyReport"
 
   override val defaultConfig: DailyReportConfig = with(LunarStationConfig()) {
-    DailyReportConfigBuilder().build()
+    with(VoidCourseConfig()) {
+      DailyReportConfigBuilder().build()
+    }
   }
 
   @Suppress("UNCHECKED_CAST")

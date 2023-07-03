@@ -54,6 +54,8 @@ abstract class AbstractConfigTest<T> {
   fun testEquals() {
     if (configByConstructor != null && configByFunction != null) {
       assertEquals(configByConstructor, configByFunction)
+    } else {
+      logger.info { "configByConstructor is null or configByFunction is null, skipped." }
     }
   }
 
