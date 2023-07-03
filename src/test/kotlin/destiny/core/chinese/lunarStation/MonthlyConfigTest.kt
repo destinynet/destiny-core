@@ -8,10 +8,10 @@ import destiny.core.astrology.TransConfigBuilder.Companion.trans
 import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.DayConfigBuilder.Companion.dayConfig
 import destiny.core.calendar.eightwords.DayHourConfigBuilder.Companion.dayHour
+import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.HourBranchConfigBuilder.Companion.hourBranchConfig
 import destiny.core.calendar.eightwords.HourImpl
 import destiny.core.calendar.eightwords.MidnightImpl.CLOCK0
-import destiny.core.calendar.eightwords.YearMonthConfig
 import destiny.core.chinese.YearType
 import destiny.core.chinese.lunarStation.MonthlyConfigBuilder.Companion.monthly
 import destiny.core.chinese.lunarStation.YearlyConfigBuilder.Companion.yearly
@@ -66,7 +66,7 @@ internal class MonthlyConfigTest : AbstractConfigTest<MonthlyConfig>() {
 
 
       return with(yearlyConfig) {
-        with(YearMonthConfig()) {
+        with(EightWordsConfig()) {
           monthly {
             impl = MonthlyImpl.AnimalExplained
             monthAlgo = MonthAlgo.MONTH_LEAP_SPLIT15
@@ -80,6 +80,7 @@ internal class MonthlyConfigTest : AbstractConfigTest<MonthlyConfig>() {
     assertTrue(raw.contains(""""monthlyImpl":\s*"AnimalExplained"""".toRegex()))
     assertTrue(raw.contains(""""monthAlgo":\s*"MONTH_LEAP_SPLIT15"""".toRegex()))
 
+    // FIXME : failed
     assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))
     assertFalse(raw.contains(""""discCenter":\s*false""".toRegex()))
 

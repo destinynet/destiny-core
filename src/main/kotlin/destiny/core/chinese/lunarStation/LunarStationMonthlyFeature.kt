@@ -27,15 +27,12 @@ data class MonthlyConfig(
   override var monthlyImpl: MonthlyImpl = MonthlyImpl.AoHead,
   override var monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS,
   override val yearlyConfig: YearlyConfig = YearlyConfig(),
-  override val yearMonthConfig: YearMonthConfig = YearMonthConfig(),
-  override val dayHourConfig: DayHourConfig = DayHourConfig()
+  override val ewConfig: EightWordsConfig = EightWordsConfig()
 ) : IMonthlyConfig,
     IYearlyConfig by yearlyConfig,
-    IYearMonthConfig by yearMonthConfig,
-    IDayHourConfig by dayHourConfig
+    IEightWordsConfig by ewConfig
 
-
-context(IYearlyConfig, IYearMonthConfig)
+context(IYearlyConfig, IEightWordsConfig)
 @DestinyMarker
 class MonthlyConfigBuilder : Builder<MonthlyConfig> {
 
@@ -44,11 +41,11 @@ class MonthlyConfigBuilder : Builder<MonthlyConfig> {
   var monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
 
   override fun build(): MonthlyConfig {
-    return MonthlyConfig(impl, monthAlgo, yearlyConfig, yearMonthConfig)
+    return MonthlyConfig(impl, monthAlgo, yearlyConfig, ewConfig)
   }
 
   companion object {
-    context(IYearlyConfig , IYearMonthConfig)
+    context(IYearlyConfig , IEightWordsConfig)
     fun monthly(block: MonthlyConfigBuilder.() -> Unit = {}): MonthlyConfig {
       return MonthlyConfigBuilder().apply(block).build()
     }
