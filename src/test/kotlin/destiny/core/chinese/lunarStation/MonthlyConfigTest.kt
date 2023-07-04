@@ -45,12 +45,12 @@ internal class MonthlyConfigTest : AbstractConfigTest<MonthlyConfig>() {
 
 
       val yearlyConfig: YearlyConfig =
-        yearly {
-          yearType = YearType.YEAR_LUNAR
-          this.dayHourConfig = dayHourConfig
+        with(dayHourConfig) {
+          yearly {
+            yearType = YearType.YEAR_LUNAR
+          }
         }
 
-      logger.info { "yearlyConfig = $yearlyConfig" }
 
       return with(yearMonthConfig) {
         with(dayHourConfig) {
