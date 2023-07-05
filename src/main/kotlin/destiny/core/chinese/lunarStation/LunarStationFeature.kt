@@ -12,8 +12,8 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.chinese.IFinalMonthNumber
-import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsFeature
+import destiny.core.calendar.eightwords.IEightWordsConfig
 import destiny.core.chinese.Branch
 import destiny.core.chinese.lunarStation.ILunarStationFeature.Companion.getOppoHouse
 import destiny.core.chinese.lunarStation.ILunarStationFeature.Companion.getSelfHouse
@@ -33,14 +33,14 @@ data class LunarStationConfig(
     IMonthlyConfig by monthlyConfig,
     IHourlyConfig by hourlyConfig {
 
-  override val ewConfig: EightWordsConfig
-    get() {
-      return EightWordsConfig(monthlyConfig.yearMonthConfig, hourlyConfig.dayHourConfig)
-    }
+//  override val ewConfig: EightWordsConfig
+//    get() {
+//      return EightWordsConfig(monthlyConfig.yearMonthConfig, hourlyConfig.dayHourConfig)
+//    }
 }
 
 
-context(IMonthlyConfig, IHourlyConfig)
+context(IMonthlyConfig, IHourlyConfig, IEightWordsConfig)
 @DestinyMarker
 class LunarStationConfigBuilder : Builder<LunarStationConfig> {
 
@@ -50,7 +50,7 @@ class LunarStationConfigBuilder : Builder<LunarStationConfig> {
 
   companion object {
 
-    context(IMonthlyConfig, IHourlyConfig)
+    context(IMonthlyConfig, IHourlyConfig, IEightWordsConfig)
     fun lunarStation(block: LunarStationConfigBuilder.() -> Unit = {}): LunarStationConfig {
       return LunarStationConfigBuilder().apply(block).build()
     }

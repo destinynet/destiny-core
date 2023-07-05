@@ -7,6 +7,7 @@ import destiny.core.AbstractConfigTest
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.lunarStation.HourlyConfigBuilder.Companion.hourly
 import kotlinx.serialization.KSerializer
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class HourlyConfigTest : AbstractConfigTest<HourlyConfig>() {
@@ -36,6 +37,7 @@ internal class HourlyConfigTest : AbstractConfigTest<HourlyConfig>() {
 
   override val assertion: (String) -> Unit = { raw ->
     assertTrue(raw.contains(""""hourlyImpl":\s*"Fixed"""".toRegex()))
+    assertFalse(raw.contains(""""hourlyImpl":\s*"Yuan"""".toRegex()))
 
     assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
     assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))

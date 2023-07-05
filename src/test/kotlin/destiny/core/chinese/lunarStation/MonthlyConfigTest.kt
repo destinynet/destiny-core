@@ -5,11 +5,8 @@ package destiny.core.chinese.lunarStation
 
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.chinese.MonthAlgo
-import destiny.core.calendar.eightwords.DayHourConfig
-import destiny.core.calendar.eightwords.DayHourConfigBuilder.Companion.dayHour
+import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.MidnightImpl.CLOCK0
-import destiny.core.calendar.eightwords.YearMonthConfig
-import destiny.core.calendar.eightwords.YearMonthConfigBuilder.Companion.yearMonthConfig
 import destiny.core.chinese.YearType
 import destiny.core.chinese.lunarStation.MonthlyConfigBuilder.Companion.monthly
 import destiny.core.chinese.lunarStation.YearlyConfigBuilder.Companion.yearly
@@ -25,32 +22,21 @@ internal class MonthlyConfigTest : AbstractConfigTest<MonthlyConfig>() {
   override val configByFunction: MonthlyConfig
     get() {
 
-      val yearMonthConfig: YearMonthConfig = with(YearMonthConfig()) {
-        yearMonthConfig {
-        }
+      val yearlyConfig: YearlyConfig = yearly {
+        yearType = YearType.YEAR_LUNAR
+        yearEpoch = YearEpoch.EPOCH_1864
       }
 
-      val dayHourConfig: DayHourConfig = with(DayHourConfig()) {
-        dayHour {
-          discCenter = true
-          refraction = false
-          temperature = 23.0
-          pressure = 1000.0
+      return with(EightWordsConfig()) {
+        discCenter = true
+        refraction = false
+        temperature = 23.0
+        pressure = 1000.0
 
-          changeDayAfterZi = false
-          midnight = CLOCK0
-        }
-      }
+        changeDayAfterZi = false
+        midnight = CLOCK0
 
 
-      val yearlyConfig: YearlyConfig =
-        with(dayHourConfig) {
-          yearly {
-            yearType = YearType.YEAR_LUNAR
-          }
-        }
-
-      return with(yearMonthConfig) {
         with(yearlyConfig) {
           monthly {
             impl = MonthlyImpl.AnimalExplained
@@ -58,14 +44,18 @@ internal class MonthlyConfigTest : AbstractConfigTest<MonthlyConfig>() {
           }
         }
       }
-
     }
 
   override val assertion: (String) -> Unit = { raw ->
+    assertTrue(raw.contains(""""yearType":\s*"YEAR_LUNAR"""".toRegex()))
+    assertFalse(raw.contains(""""yearType":\s*"YEAR_SOLAR"""".toRegex()))
+
+    assertTrue(raw.contains(""""yearEpoch":\s*"EPOCH_1864"""".toRegex()))
+    assertFalse(raw.contains(""""yearEpoch":\s*"EPOCH_1564"""".toRegex()))
+
     assertTrue(raw.contains(""""monthlyImpl":\s*"AnimalExplained"""".toRegex()))
     assertTrue(raw.contains(""""monthAlgo":\s*"MONTH_LEAP_SPLIT15"""".toRegex()))
 
-    // FIXME : failed
     assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))
     assertFalse(raw.contains(""""discCenter":\s*false""".toRegex()))
 

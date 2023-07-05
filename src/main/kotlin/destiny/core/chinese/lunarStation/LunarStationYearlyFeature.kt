@@ -9,7 +9,6 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.eightwords.DayHourConfig
-import destiny.core.calendar.eightwords.IDayHourConfig
 import destiny.core.calendar.eightwords.YearFeature
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YearType
@@ -23,22 +22,18 @@ import java.time.temporal.ChronoField
 
 @Serializable
 data class YearlyConfig(override var yearType: YearType = YearType.YEAR_SOLAR,
-                        override var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564,
-                        override val dayHourConfig: DayHourConfig = DayHourConfig()
-): IYearlyConfig , IDayHourConfig by dayHourConfig
+                        override var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564): IYearlyConfig
 
-context(IDayHourConfig)
 @DestinyMarker
 class YearlyConfigBuilder : Builder<YearlyConfig> {
   var yearType: YearType = YearType.YEAR_SOLAR
   var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564
 
   override fun build(): YearlyConfig {
-    return YearlyConfig(yearType, yearEpoch, dayHourConfig)
+    return YearlyConfig(yearType, yearEpoch)
   }
 
   companion object {
-    context(IDayHourConfig)
     fun yearly(block: YearlyConfigBuilder.() -> Unit = {}) : YearlyConfig {
       return YearlyConfigBuilder().apply(block).build()
     }
@@ -73,7 +68,9 @@ class LunarStationYearlyFeature(private val yearFeature: YearFeature,
       val yearSb2: StemBranch = yearFeature.getModel(lmt.with(ChronoField.MONTH_OF_YEAR, 7), loc)
       yearSb to yearSb2
     } else {
-      val dayHourConfig = (config as YearlyConfig).dayHourConfig
+      // YearlyConfig 暫時先移除 dayHourConfig: DayHourConfig = DayHourConfig() , 不然 context 太難設計
+      // val dayHourConfig = (config as YearlyConfig).dayHourConfig
+      val dayHourConfig = DayHourConfig()
 
       // 陰曆初一換年
       val yearSb = chineseDateFeature.getModel(lmt, loc, dayHourConfig).year

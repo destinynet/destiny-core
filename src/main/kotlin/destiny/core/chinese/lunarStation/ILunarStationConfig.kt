@@ -10,7 +10,7 @@ import destiny.core.calendar.eightwords.IYearMonthConfig
 import destiny.core.chinese.YearType
 
 
-interface IYearlyConfig  {
+interface IYearlyConfig {
   var yearType: YearType
 
   var yearEpoch: YearEpoch
@@ -20,8 +20,7 @@ interface IYearlyConfig  {
 }
 
 
-interface IMonthlyConfig : IYearlyConfig , IYearMonthConfig //, IDayHourConfig
-{
+interface IMonthlyConfig : IYearlyConfig, IYearMonthConfig {
   var monthlyImpl: MonthlyImpl
   var monthAlgo: MonthAlgo
 
@@ -35,8 +34,7 @@ interface IHourlyConfig : IDayHourConfig {
     get() = HourlyConfig(hourlyImpl, dayHourConfig)
 }
 
-interface ILunarStationConfig : IYearlyConfig, IMonthlyConfig, IHourlyConfig, IEightWordsConfig
-{
+interface ILunarStationConfig : IYearlyConfig, IMonthlyConfig, IHourlyConfig, IEightWordsConfig {
 
   val lunarStationConfig: LunarStationConfig
     get() {
