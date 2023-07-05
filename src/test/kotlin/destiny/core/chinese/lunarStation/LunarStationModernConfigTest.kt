@@ -4,15 +4,14 @@
 package destiny.core.chinese.lunarStation
 
 import destiny.core.AbstractConfigTest
-import destiny.core.astrology.TransConfig
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.eightwords.DayHourConfig
 import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.HourBranchConfig
 import destiny.core.chinese.YearType
+import destiny.core.chinese.lunarStation.LunarStationConfigBuilder.Companion.lunarStation
 import destiny.core.chinese.lunarStation.LunarStationModernConfigBuilder.Companion.lunarStationModern
 import kotlinx.serialization.KSerializer
 import java.time.LocalDateTime
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class LunarStationModernConfigTest : AbstractConfigTest<LunarStationModernConfig>() {
@@ -28,29 +27,20 @@ internal class LunarStationModernConfigTest : AbstractConfigTest<LunarStationMod
   override val configByFunction: LunarStationModernConfig
     get() {
 
-      val ewConfig = EightWordsConfig(
-        dayHourConfig = DayHourConfig(
-          hourBranchConfig = HourBranchConfig(
-            transConfig = TransConfig(
-              discCenter = true,
-              refraction = false
-            )
-          )
-        )
-      )
+      val lsConfig = with(EightWordsConfig()) {
+        lunarStation {
+          discCenter = true
+          refraction = false
 
-      val lsConfig = LunarStationConfig(
-        MonthlyConfig(
-          yearlyConfig = YearlyConfig(
-            yearType = YearType.YEAR_LUNAR
-          ),
+          yearType = YearType.YEAR_LUNAR
+          yearEpoch = YearEpoch.EPOCH_1864
+
+          changeDayAfterZi = false
           monthlyImpl = MonthlyImpl.AnimalExplained
-        ),
-        HourlyConfig(
           hourlyImpl = HourlyImpl.Fixed
-        ),
-        //ewConfig = ewConfig
-      )
+        }
+      }
+
 
       return with(lsConfig) {
         lunarStationModern {
@@ -63,8 +53,22 @@ internal class LunarStationModernConfigTest : AbstractConfigTest<LunarStationMod
 
   override val assertion: (String) -> Unit = { raw ->
     logger.info { raw }
+
+    assertTrue(raw.contains(""""yearType":\s*"YEAR_LUNAR"""".toRegex()))
+    assertTrue(raw.contains(""""yearEpoch":\s*"EPOCH_1864"""".toRegex()))
+
+    assertTrue(raw.contains(""""yearEpoch":\s*"EPOCH_1864"""".toRegex()))
+    assertFalse(raw.contains(""""yearEpoch":\s*"EPOCH_1564"""".toRegex()))
+
     assertTrue(raw.contains(""""method":\s*"SPECIFIED"""".toRegex()))
     assertTrue(raw.contains(""""specifiedGmtJulDay":\s*2459449\.0""".toRegex()))
     assertTrue(raw.contains(""""description":\s*"test123"""".toRegex()))
+
+    assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))
+    assertFalse(raw.contains(""""discCenter":\s*false""".toRegex()))
+
+    assertTrue(raw.contains(""""refraction":\s*false""".toRegex()))
+    assertFalse(raw.contains(""""refraction":\s*true""".toRegex()))
+
   }
 }

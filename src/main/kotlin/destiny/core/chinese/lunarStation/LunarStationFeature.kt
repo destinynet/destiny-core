@@ -12,9 +12,12 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.chinese.IFinalMonthNumber
+import destiny.core.calendar.chinese.MonthAlgo
+import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWordsConfig
 import destiny.core.chinese.Branch
+import destiny.core.chinese.YearType
 import destiny.core.chinese.lunarStation.ILunarStationFeature.Companion.getOppoHouse
 import destiny.core.chinese.lunarStation.ILunarStationFeature.Companion.getSelfHouse
 import destiny.tools.AbstractCachedFeature
@@ -27,42 +30,40 @@ import java.time.chrono.ChronoLocalDateTime
 
 @Serializable
 data class LunarStationConfig(
-  override val monthlyConfig: MonthlyConfig = MonthlyConfig(),
-  override val hourlyConfig: HourlyConfig = HourlyConfig()
-) : ILunarStationConfig,
-    IMonthlyConfig by monthlyConfig,
-    IHourlyConfig by hourlyConfig {
+  override var yearType: YearType = YearType.YEAR_SOLAR,
+  override var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564,
+  override var monthlyImpl: MonthlyImpl = MonthlyImpl.AoHead,
+  override var monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS,
+  override var hourlyImpl: HourlyImpl = HourlyImpl.Fixed,
+  override val ewConfig: EightWordsConfig = EightWordsConfig(),
+) : ILunarStationConfig, IEightWordsConfig by ewConfig
 
-//  override val ewConfig: EightWordsConfig
-//    get() {
-//      return EightWordsConfig(monthlyConfig.yearMonthConfig, hourlyConfig.dayHourConfig)
-//    }
-}
-
-
-context(IMonthlyConfig, IHourlyConfig, IEightWordsConfig)
+context(IEightWordsConfig)
 @DestinyMarker
 class LunarStationConfigBuilder : Builder<LunarStationConfig> {
+  var yearType: YearType = YearType.YEAR_SOLAR
+  var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564
+  var monthlyImpl: MonthlyImpl = MonthlyImpl.AoHead
+  var monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
+  var hourlyImpl: HourlyImpl = HourlyImpl.Fixed
 
   override fun build(): LunarStationConfig {
-    return LunarStationConfig(monthlyConfig, hourlyConfig)
+    return LunarStationConfig(yearType, yearEpoch, monthlyImpl, monthAlgo, hourlyImpl, ewConfig)
   }
 
   companion object {
-
-    context(IMonthlyConfig, IHourlyConfig, IEightWordsConfig)
+    context(IEightWordsConfig)
     fun lunarStation(block: LunarStationConfigBuilder.() -> Unit = {}): LunarStationConfig {
       return LunarStationConfigBuilder().apply(block).build()
     }
   }
-
 }
 
 
 /**
  * 禽星排盤 interface
  */
-interface ILunarStationFeature : Feature<ILunarStationConfig, ContextModel>{
+interface ILunarStationFeature : Feature<ILunarStationConfig, ContextModel> {
 
   fun getScaleMap(
     lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ILunarStationConfig,
@@ -136,10 +137,11 @@ class LunarStationFeature(
   private val monthlyFeature: ILunarStationMonthlyFeature,
   private val dailyFeature: LunarStationDailyFeature,
   val hourlyFeature: LunarStationHourlyFeature,
-  private val eightWordsFeature : EightWordsFeature,
+  private val eightWordsFeature: EightWordsFeature,
   private val chineseDateFeature: ChineseDateFeature,
   private val hiddenVenusFoeFeature: HiddenVenusFoeFeature,
-  private val julDayResolver: JulDayResolver) : ILunarStationFeature, AbstractCachedFeature<ILunarStationConfig, ContextModel>() {
+  private val julDayResolver: JulDayResolver
+) : ILunarStationFeature, AbstractCachedFeature<ILunarStationConfig, ContextModel>() {
   override val key: String = "lunarStation"
 
   override val defaultConfig: ILunarStationConfig = LunarStationConfig()
@@ -192,16 +194,17 @@ class LunarStationFeature(
 
     return scales.associate { scale ->
       when (scale) {
-        Scale.YEAR  -> Scale.YEAR to yearlyFeature.getModel(lmt, loc, config.yearlyConfig).station
+        Scale.YEAR  -> Scale.YEAR to yearlyFeature.getModel(lmt, loc, config).station
         Scale.MONTH -> {
-          val yearlyStation: LunarStation = yearlyFeature.getModel(lmt, loc, config.yearlyConfig).station
+          val yearlyStation: LunarStation = yearlyFeature.getModel(lmt, loc, config).station
           val monthBranch = eightWordsFeature.getModel(lmt, loc, ewConfig).month.branch
           val chineseDate = chineseDateFeature.getModel(lmt, loc, config)
           val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
-            chineseDate.month, chineseDate.leapMonth, monthBranch, chineseDate.day, config.monthlyConfig.monthAlgo
+            chineseDate.month, chineseDate.leapMonth, monthBranch, chineseDate.day, config.monthAlgo
           )
-          Scale.MONTH to monthlyFeature.getMonthly(yearlyStation, monthNumber, config.monthlyConfig.monthlyImpl)
+          Scale.MONTH to monthlyFeature.getMonthly(yearlyStation, monthNumber, config.monthlyImpl)
         }
+
         Scale.DAY   -> Scale.DAY to dailyFeature.getModel(lmt, loc, config.dayHourConfig).station()
         Scale.HOUR  -> Scale.HOUR to hourlyFeature.getModel(lmt, loc, config)
       }

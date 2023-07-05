@@ -111,7 +111,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     val set = sortedSetOf<TimeDesc>()
 
     fun getTimeDesc(branch: Branch, branchStart: ChronoLocalDateTime<*>, middleLmt: ChronoLocalDateTime<*>, loc: ILocation): TimeDesc.TypeHour {
-      val hourlyLunarStation = lunarStationFeature.hourlyFeature.getModel(middleLmt, loc, config.lunarStationConfig.hourlyConfig)
+      val hourlyLunarStation = lunarStationFeature.hourlyFeature.getModel(middleLmt, loc, config.lunarStationConfig)
       val descs = buildList {
         add("$branch 初")
         add(hourlyLunarStation.getFullName(config.locale))

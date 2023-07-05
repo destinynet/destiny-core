@@ -13,11 +13,8 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import jakarta.inject.Named
-import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 enum class HourlyImpl {
@@ -25,43 +22,21 @@ enum class HourlyImpl {
   Fixed   // 《剋擇講義》
 }
 
-@Serializable
-data class HourlyConfig(override var hourlyImpl: HourlyImpl = HourlyImpl.Fixed,
-                        override val dayHourConfig: DayHourConfig = DayHourConfig()): IHourlyConfig , IDayHourConfig by dayHourConfig
-
-context(IDayHourConfig)
-@DestinyMarker
-class HourlyConfigBuilder : Builder<HourlyConfig> {
-  var impl: HourlyImpl = HourlyImpl.Fixed
-
-  override fun build(): HourlyConfig {
-    return HourlyConfig(impl, dayHourConfig)
-  }
-
-  companion object {
-    context(IDayHourConfig)
-    fun hourly(block: HourlyConfigBuilder.() -> Unit = {}) : HourlyConfig {
-      return HourlyConfigBuilder().apply(block).build()
-    }
-  }
-}
-
-
 @Named
 class LunarStationHourlyFeature(private val dailyFeature: LunarStationDailyFeature,
                                 private val dayHourFeature: IDayHourFeature,
-                                private val julDayResolver: JulDayResolver) : Feature<IHourlyConfig, LunarStation> {
+                                private val julDayResolver: JulDayResolver) : Feature<ILunarStationConfig, LunarStation> {
   override val key: String = "lsHourly"
 
-  override val defaultConfig: HourlyConfig = HourlyConfig()
+  override val defaultConfig: ILunarStationConfig = LunarStationConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: IHourlyConfig): LunarStation {
+  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: ILunarStationConfig): LunarStation {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IHourlyConfig): LunarStation {
+  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ILunarStationConfig): LunarStation {
     //return implMap[config.impl]!!.getHourly(lmt, loc)
 
     return when (config.hourlyImpl) {

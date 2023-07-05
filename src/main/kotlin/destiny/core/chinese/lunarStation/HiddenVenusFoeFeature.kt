@@ -48,7 +48,7 @@ class HiddenVenusFoeFeature(private val yearlyFeature: LunarStationYearlyFeature
   }
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ILunarStationConfig): Set<Pair<Scale, Scale>> {
-    val yearly = yearlyFeature.getModel(lmt, loc, config.yearlyConfig).station
+    val yearly = yearlyFeature.getModel(lmt, loc, config).station
     val ew: IEightWords = eightWordsFeature.getModel(lmt, loc, config.ewConfig)
     val chineseDate = chineseDateFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig)
     val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
@@ -56,13 +56,13 @@ class HiddenVenusFoeFeature(private val yearlyFeature: LunarStationYearlyFeature
       chineseDate.leapMonth,
       ew.month.branch,
       chineseDate.day,
-      config.monthlyConfig.monthAlgo
+      config.monthAlgo
     )
 
 
-    val monthlyStation = monthlyFeature.getMonthly(yearly, monthNumber, config.monthlyConfig.monthlyImpl)
+    val monthlyStation = monthlyFeature.getMonthly(yearly, monthNumber, config.monthlyImpl)
     val dailyStation = dailyFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig).station()
-    val hourlyStation = hourlyFeature.getModel(lmt, loc, config.hourlyConfig)
+    val hourlyStation = hourlyFeature.getModel(lmt, loc, config)
 
     return mutableSetOf<Pair<Scale, Scale>>().apply {
       // 年

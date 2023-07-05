@@ -5,6 +5,7 @@ package destiny.core.chinese.lunarStation
 
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.chinese.MonthAlgo
+import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.chinese.YearType
 import destiny.core.chinese.lunarStation.LunarStationConfigBuilder.Companion.lunarStation
 import kotlinx.serialization.KSerializer
@@ -19,7 +20,7 @@ internal class LunarStationConfigTest : AbstractConfigTest<LunarStationConfig>()
 
   override val configByFunction: LunarStationConfig
     get() {
-      return with(LunarStationConfig()) {
+      return with(EightWordsConfig()) {
         lunarStation {
           discCenter = true
           refraction = false

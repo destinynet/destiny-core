@@ -8,48 +8,23 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDateFeature
-import destiny.core.calendar.eightwords.DayHourConfig
 import destiny.core.calendar.eightwords.YearFeature
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YearType
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import jakarta.inject.Named
-import kotlinx.serialization.Serializable
 import java.time.temporal.ChronoField
-
-
-@Serializable
-data class YearlyConfig(override var yearType: YearType = YearType.YEAR_SOLAR,
-                        override var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564): IYearlyConfig
-
-@DestinyMarker
-class YearlyConfigBuilder : Builder<YearlyConfig> {
-  var yearType: YearType = YearType.YEAR_SOLAR
-  var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564
-
-  override fun build(): YearlyConfig {
-    return YearlyConfig(yearType, yearEpoch)
-  }
-
-  companion object {
-    fun yearly(block: YearlyConfigBuilder.() -> Unit = {}) : YearlyConfig {
-      return YearlyConfigBuilder().apply(block).build()
-    }
-  }
-}
 
 @Named
 class LunarStationYearlyFeature(private val yearFeature: YearFeature,
                                 private val chineseDateFeature: ChineseDateFeature,
-                                private val julDayResolver: JulDayResolver) : AbstractCachedFeature<IYearlyConfig, YearIndex>() {
+                                private val julDayResolver: JulDayResolver) : AbstractCachedFeature<ILunarStationConfig, YearIndex>() {
 
   override val key: String = "lsYearly"
 
-  override val defaultConfig: YearlyConfig = YearlyConfig()
+  override val defaultConfig: ILunarStationConfig = LunarStationConfig()
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IYearlyConfig): YearIndex {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: ILunarStationConfig): YearIndex {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
@@ -68,9 +43,7 @@ class LunarStationYearlyFeature(private val yearFeature: YearFeature,
       val yearSb2: StemBranch = yearFeature.getModel(lmt.with(ChronoField.MONTH_OF_YEAR, 7), loc)
       yearSb to yearSb2
     } else {
-      // YearlyConfig 暫時先移除 dayHourConfig: DayHourConfig = DayHourConfig() , 不然 context 太難設計
-      // val dayHourConfig = (config as YearlyConfig).dayHourConfig
-      val dayHourConfig = DayHourConfig()
+      val dayHourConfig = config.dayHourConfig
 
       // 陰曆初一換年
       val yearSb = chineseDateFeature.getModel(lmt, loc, dayHourConfig).year
