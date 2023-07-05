@@ -26,27 +26,21 @@ data class YearlyConfig(override var yearType: YearType = YearType.YEAR_SOLAR,
                         override var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564,
                         override val dayHourConfig: DayHourConfig = DayHourConfig()
 ): IYearlyConfig , IDayHourConfig by dayHourConfig
-//IDayHourConfig by dayHourConfig
 
-//context(IDayHourConfig)
+context(IDayHourConfig)
 @DestinyMarker
 class YearlyConfigBuilder : Builder<YearlyConfig> {
   var yearType: YearType = YearType.YEAR_SOLAR
   var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564
 
-  private var innerDayHourConfig: DayHourConfig = DayHourConfig()
-
   override fun build(): YearlyConfig {
-    println("creating YearlyConfig with dayHourConfig = $innerDayHourConfig")
-    return YearlyConfig(yearType, yearEpoch, innerDayHourConfig)
+    return YearlyConfig(yearType, yearEpoch, dayHourConfig)
   }
 
   companion object {
     context(IDayHourConfig)
     fun yearly(block: YearlyConfigBuilder.() -> Unit = {}) : YearlyConfig {
-      return YearlyConfigBuilder().apply(block).apply {
-        innerDayHourConfig = dayHourConfig
-      }.build()
+      return YearlyConfigBuilder().apply(block).build()
     }
   }
 }

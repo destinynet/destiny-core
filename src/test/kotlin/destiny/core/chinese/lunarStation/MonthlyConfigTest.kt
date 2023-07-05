@@ -22,7 +22,6 @@ internal class MonthlyConfigTest : AbstractConfigTest<MonthlyConfig>() {
 
   override val configByConstructor: MonthlyConfig? = null
 
-
   override val configByFunction: MonthlyConfig
     get() {
 
@@ -51,14 +50,11 @@ internal class MonthlyConfigTest : AbstractConfigTest<MonthlyConfig>() {
           }
         }
 
-
       return with(yearMonthConfig) {
-        with(dayHourConfig) {
-          with(yearlyConfig) {
-            monthly {
-              impl = MonthlyImpl.AnimalExplained
-              monthAlgo = MonthAlgo.MONTH_LEAP_SPLIT15
-            }
+        with(yearlyConfig) {
+          monthly {
+            impl = MonthlyImpl.AnimalExplained
+            monthAlgo = MonthAlgo.MONTH_LEAP_SPLIT15
           }
         }
       }
