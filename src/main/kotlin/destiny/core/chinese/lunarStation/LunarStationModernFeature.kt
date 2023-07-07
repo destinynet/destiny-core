@@ -21,10 +21,11 @@ import java.time.LocalDateTime
 import javax.cache.Cache
 
 @Serializable
-data class LunarStationModernConfig(val lunarStationConfig: LunarStationConfig = LunarStationConfig(),
-                                    val method: IModernContextModel.Method = IModernContextModel.Method.NOW,
-                                    val specifiedGmtJulDay: GmtJulDay? = null ,
-                                    val description: String? = null): java.io.Serializable
+data class LunarStationModernConfig(
+  override val lunarStationConfig: LunarStationConfig = LunarStationConfig(),
+  override var method: IModernContextModel.Method = IModernContextModel.Method.NOW,
+  override var specifiedGmtJulDay: GmtJulDay? = null,
+  override var description: String? = null): ILunarStationModernConfig, ILunarStationConfig by lunarStationConfig
 
 context(ILunarStationConfig)
 @DestinyMarker
