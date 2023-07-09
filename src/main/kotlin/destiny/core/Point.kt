@@ -54,9 +54,7 @@ abstract class Point(
     if (this === other) return true
     if (other !is Point) return false
 
-    if (nameKey != other.nameKey) return false
-
-    return true
+    return nameKey == other.nameKey
   }
 
   override fun hashCode(): Int {

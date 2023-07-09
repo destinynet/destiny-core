@@ -34,9 +34,7 @@ data class ProgressedAspect(override val progressedPoint: AstroPoint,
     if (progressedPoint != other.progressedPoint) return false
     if (natalPoint != other.natalPoint) return false
     if (aspect != other.aspect) return false
-    if (type != other.type) return false
-
-    return true
+    return type == other.type
   }
 
   override fun hashCode(): Int {

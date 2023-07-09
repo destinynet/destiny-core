@@ -28,7 +28,7 @@ data class SeasonalSymbolConfig(val impl: Impl = Impl.Chinese) : java.io.Seriali
 
     @Serializable
     @SerialName("Chinese")
-    object Chinese : Impl()
+    data object Chinese : Impl()
 
     @Serializable
     @SerialName("Holo")

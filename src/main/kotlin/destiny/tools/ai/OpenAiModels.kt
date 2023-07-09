@@ -61,17 +61,6 @@ data class CompletionChatResult(val id: String,
 )
 
 @Serializable
-data class CompletionResult<T>(val id: String,
-                               /** maybe 'chat.completion' or 'text_completion' */
-                               val `object`: String,
-                               val created: Long,
-                               /** maybe 'gpt-3.5-turbo-0301' or 'text-davinci-003' */
-                               val model: String,
-                               val choices: List<T>,
-                               val usage: Usage
-)
-
-@Serializable
 data class Error(val message: String,
                  val type: String,
                  @Contextual

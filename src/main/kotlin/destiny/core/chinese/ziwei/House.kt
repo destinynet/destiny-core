@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 /**
  * 十二宮位 (遷移 or 相貌)
  */
-enum class House constructor(val value: String, val abbr: Char) {
+enum class House(val value: String, val abbr: Char) {
   命宮("命宮", '命'),
   兄弟("兄弟", '兄'),
   夫妻("夫妻", '偶'),

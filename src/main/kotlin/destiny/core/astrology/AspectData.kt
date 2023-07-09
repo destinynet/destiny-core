@@ -54,9 +54,7 @@ data class AspectData internal constructor(
 
     if (points != other.points) return false
     if (aspect != other.aspect) return false
-    if (type != other.type) return false
-
-    return true
+    return type == other.type
   }
 
   override fun hashCode(): Int {

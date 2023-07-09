@@ -353,8 +353,8 @@ val p君臣慶會 = object : PatternMultipleImpl() {
       ?.takeIf { b -> branches.contains(b) }
       ?.let { b ->
         // 紫微地支
-        val goods: Set<GoodCombo>? = mutableSetOf<GoodCombo>().apply {
-          // 必備條件
+
+        val goods: Set<GoodCombo>? = buildSet {
           if (it.輔弼().intersect(it.三方(b)).isNotEmpty()) {
             add(GoodCombo.輔弼)
           }
@@ -364,7 +364,7 @@ val p君臣慶會 = object : PatternMultipleImpl() {
           if (it.魁鉞().intersect(it.三方(b)).isNotEmpty()) {
             add(GoodCombo.魁鉞)
           }
-        }.takeIf { it.size == 3 }?.apply {
+        }.takeIf { it.size == 3 }?.toMutableSet()?.apply {
           // 附加條件
           if (it.三方四正有祿權科星(b)) {
             add(GoodCombo.祿權科星)
@@ -373,6 +373,7 @@ val p君臣慶會 = object : PatternMultipleImpl() {
             add(GoodCombo.祿存)
           }
         }?.toSet()
+
         b to goods
       }
       ?.takeIf { (_, goods) -> goods != null && goods.size >= 3 }

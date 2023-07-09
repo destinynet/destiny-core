@@ -12,8 +12,8 @@ sealed class Reply {
     data class TooLong(val message: String) : Error()
 
     sealed class Unrecoverable : Error() {
-      object InvalidApiKey : Unrecoverable()
-      object Busy : Unrecoverable()
+      data object InvalidApiKey : Unrecoverable()
+      data object Busy : Unrecoverable()
       data class Unknown(val message: String) : Unrecoverable()
     }
   }

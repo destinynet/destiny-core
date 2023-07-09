@@ -18,82 +18,82 @@ enum class Book {
 
 sealed class ChildHazard : EwPattern {
 
-  object 百日關 : ChildHazard()
+  data object 百日關 : ChildHazard()
 
-  object 千日關 : ChildHazard()
+  data object 千日關 : ChildHazard()
 
-  object 閻王關 : ChildHazard()
+  data object 閻王關 : ChildHazard()
 
-  object 鬼門關 : ChildHazard()
+  data object 鬼門關 : ChildHazard()
 
-  object 雞飛關 : ChildHazard()
+  data object 雞飛關 : ChildHazard()
 
-  object 鐵蛇關 : ChildHazard()
+  data object 鐵蛇關 : ChildHazard()
 
-  object 斷橋關 : ChildHazard()
+  data object 斷橋關 : ChildHazard()
 
-  object 落井關 : ChildHazard()
+  data object 落井關 : ChildHazard()
 
-  object 四柱關 : ChildHazard()
+  data object 四柱關 : ChildHazard()
 
-  object 短命關 : ChildHazard()
+  data object 短命關 : ChildHazard()
 
-  object 浴盆關 : ChildHazard()
+  data object 浴盆關 : ChildHazard()
 
-  object 湯火關 : ChildHazard()
+  data object 湯火關 : ChildHazard()
 
-  object 水火關 : ChildHazard()
+  data object 水火關 : ChildHazard()
 
-  object 深水關 : ChildHazard()
+  data object 深水關 : ChildHazard()
 
-  object 夜啼關 : ChildHazard()
+  data object 夜啼關 : ChildHazard()
 
-  object 白虎關 : ChildHazard()
+  data object 白虎關 : ChildHazard()
 
-  object 天狗關 : ChildHazard()
+  data object 天狗關 : ChildHazard()
 
-  object 四季關 : ChildHazard()
+  data object 四季關 : ChildHazard()
 
-  object 急腳關 : ChildHazard()
+  data object 急腳關 : ChildHazard()
 
-  object 急腳煞 : ChildHazard()
+  data object 急腳煞 : ChildHazard()
 
-  object 五鬼關 : ChildHazard()
+  data object 五鬼關 : ChildHazard()
 
-  object 金鎖關 : ChildHazard()
+  data object 金鎖關 : ChildHazard()
 
-  object 直難關 : ChildHazard()
+  data object 直難關 : ChildHazard()
 
-  object 取命關 : ChildHazard()
+  data object 取命關 : ChildHazard()
 
-  object 斷腸關 : ChildHazard()
+  data object 斷腸關 : ChildHazard()
 
-  object 埋兒關 : ChildHazard()
+  data object 埋兒關 : ChildHazard()
 
-  object 天吊關 : ChildHazard()
+  data object 天吊關 : ChildHazard()
 
-  object 和尚關 : ChildHazard()
+  data object 和尚關 : ChildHazard()
 
-  object 撞命關 : ChildHazard()
+  data object 撞命關 : ChildHazard()
 
-  object 下情關 : ChildHazard()
+  data object 下情關 : ChildHazard()
 
-  object 劫煞關 : ChildHazard()
+  data object 劫煞關 : ChildHazard()
 
-  object 血刃關 : ChildHazard()
+  data object 血刃關 : ChildHazard()
 
-  object 基敗關 : ChildHazard()
+  data object 基敗關 : ChildHazard()
 
-  object 將軍箭 : ChildHazard()
+  data object 將軍箭 : ChildHazard()
 
   /** 雷公打腦關 */
-  object 雷公關 : ChildHazard()
+  data object 雷公關 : ChildHazard()
 
-  //object 桃花煞 : ChildHazard()
+  //data object 桃花煞 : ChildHazard()
 
-  //object 紅豔煞 : ChildHazard()
+  //data object 紅豔煞 : ChildHazard()
 
-  //object 流霞煞 : ChildHazard()
+  //data object 流霞煞 : ChildHazard()
 
 
   /** 不實作 [getNotes] , 交由 [ChildHazardDescriptor.getDescription] 處理 (避免 depend on [ResourceBundle] ) */

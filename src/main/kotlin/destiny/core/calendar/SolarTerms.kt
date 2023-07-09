@@ -6,7 +6,7 @@ import destiny.core.chinese.Branch.寅
 import destiny.tools.ArrayTools
 import java.util.*
 
-enum class SolarTerms constructor(val zodiacDegree: Int) {
+enum class SolarTerms(val zodiacDegree: Int) {
   立春(315),
   雨水(330),
   驚蟄(345),

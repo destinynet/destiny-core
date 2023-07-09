@@ -75,9 +75,7 @@ sealed class ZStar : Point, Comparable<ZStar>  {
     if (other !is ZStar) return false
     if (!super.equals(other)) return false
 
-    if (type != other.type) return false
-
-    return true
+    return type == other.type
   }
 
   override fun hashCode(): Int {

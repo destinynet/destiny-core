@@ -77,9 +77,7 @@ data class PointAspectPattern internal constructor(override val points: List<Ast
 
     if (points != other.points) return false
     if (angle != other.angle) return false
-    if (type != other.type) return false
-
-    return true
+    return type == other.type
   }
 
   override fun hashCode(): Int {

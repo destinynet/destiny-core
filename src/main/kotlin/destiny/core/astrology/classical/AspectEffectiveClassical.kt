@@ -73,9 +73,7 @@ class AspectEffectiveClassical(
 
     if (planetOrbsImpl != other.planetOrbsImpl) return false
     if (defaultThreshold != other.defaultThreshold) return false
-    if (applicableAspects != other.applicableAspects) return false
-
-    return true
+    return applicableAspects == other.applicableAspects
   }
 
   override fun hashCode(): Int {

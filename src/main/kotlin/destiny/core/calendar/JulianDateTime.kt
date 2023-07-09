@@ -251,9 +251,7 @@ class JulianDateTime private constructor(private val date: JulianDate, private v
     if (other !is JulianDateTime) return false
 
     if (date != other.date) return false
-    if (time != other.time) return false
-
-    return true
+    return time == other.time
   }
 
   override fun hashCode(): Int {

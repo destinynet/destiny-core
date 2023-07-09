@@ -29,9 +29,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (other !is GrandTrine) return false
 
       if (points != other.points) return false
-      if (element != other.element) return false
-
-      return true
+      return element == other.element
     }
 
     override fun hashCode(): Int {
@@ -54,9 +52,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
 
       if (head != other.head) return false
       if (wings != other.wings) return false
-      if (tail != other.tail) return false
-
-      return true
+      return tail == other.tail
     }
 
     override fun hashCode(): Int {
@@ -79,9 +75,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (other !is TSquared) return false
 
       if (oppoPoints != other.oppoPoints) return false
-      if (squared != other.squared) return false
-
-      return true
+      return squared == other.squared
     }
 
     override fun hashCode(): Int {
@@ -104,9 +98,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (other !is Yod) return false
 
       if (bottoms != other.bottoms) return false
-      if (pointer != other.pointer) return false
-
-      return true
+      return pointer == other.pointer
     }
 
     override fun hashCode(): Int {
@@ -129,9 +121,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (other !is Boomerang) return false
 
       if (yod != other.yod) return false
-      if (oppoPoint != other.oppoPoint) return false
-
-      return true
+      return oppoPoint == other.oppoPoint
     }
 
     override fun hashCode(): Int {
@@ -153,9 +143,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (other !is GoldenYod) return false
 
       if (bottoms != other.bottoms) return false
-      if (pointer != other.pointer) return false
-
-      return true
+      return pointer == other.pointer
     }
 
     override fun hashCode(): Int {
@@ -175,9 +163,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (other !is GrandCross) return false
 
       if (points != other.points) return false
-      if (quality != other.quality) return false
-
-      return true
+      return quality == other.quality
     }
 
     override fun hashCode(): Int {
@@ -198,9 +184,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (this === other) return true
       if (other !is DoubleT) return false
 
-      if (tSquares != other.tSquares) return false
-
-      return true
+      return tSquares == other.tSquares
     }
 
     override fun hashCode(): Int {
@@ -226,9 +210,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (this === other) return true
       if (other !is Hexagon) return false
 
-      if (grandTrines != other.grandTrines) return false
-
-      return true
+      return grandTrines == other.grandTrines
     }
 
     override fun hashCode(): Int {
@@ -249,9 +231,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (other !is Wedge) return false
 
       if (oppoPoints != other.oppoPoints) return false
-      if (moderator != other.moderator) return false
-
-      return true
+      return moderator == other.moderator
     }
 
     override fun hashCode(): Int {
@@ -271,9 +251,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (this === other) return true
       if (other !is MysticRectangle) return false
 
-      if (points != other.points) return false
-
-      return true
+      return points == other.points
     }
 
     override fun hashCode(): Int {
@@ -290,9 +268,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (this === other) return true
       if (other !is Pentagram) return false
 
-      if (points != other.points) return false
-
-      return true
+      return points == other.points
     }
 
     override fun hashCode(): Int {
@@ -309,9 +285,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (other !is StelliumSign) return false
 
       if (points != other.points) return false
-      if (sign != other.sign) return false
-
-      return true
+      return sign == other.sign
     }
 
     override fun hashCode(): Int {
@@ -330,9 +304,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (other !is StelliumHouse) return false
 
       if (points != other.points) return false
-      if (house != other.house) return false
-
-      return true
+      return house == other.house
     }
 
     override fun hashCode(): Int {
@@ -354,9 +326,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
       if (this === other) return true
       if (other !is Confrontation) return false
 
-      if (clusters != other.clusters) return false
-
-      return true
+      return clusters == other.clusters
     }
 
     override fun hashCode(): Int {

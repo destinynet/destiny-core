@@ -36,9 +36,7 @@ sealed class EssentialDignity : IPlanetPattern {
       if (this === other) return true
       if (other !is MutualReception) return false
 
-      if (mutualData != other.mutualData) return false
-
-      return true
+      return mutualData == other.mutualData
     }
 
     override fun hashCode(): Int {
@@ -61,7 +59,7 @@ sealed class AccidentalDignity : IPlanetPattern {
   data class Swift(override val planet: Planet) : AccidentalDignity()
   data class Oriental(override val planet: Planet) : AccidentalDignity()
   data class Occidental(override val planet: Planet) : AccidentalDignity()
-  object Moon_Increase_Light : AccidentalDignity() {
+  data object Moon_Increase_Light : AccidentalDignity() {
     override val planet: Planet = Planet.MOON
   }
 
@@ -96,7 +94,7 @@ sealed class Debility : IPlanetPattern {
   data class Slower(override val planet: Planet) : Debility()
   data class Occidental(override val planet: Planet) : Debility()
   data class Oriental(override val planet: Planet) : Debility()
-  object Moon_Decrease_Light : Debility() {
+  data object Moon_Decrease_Light : Debility() {
     override val planet: Planet = Planet.MOON
   }
 
@@ -122,9 +120,7 @@ sealed class Debility : IPlanetPattern {
       if (this === other) return true
       if (other !is MutualDeception) return false
 
-      if (mutualData != other.mutualData) return false
-
-      return true
+      return mutualData == other.mutualData
     }
 
     override fun hashCode(): Int {
