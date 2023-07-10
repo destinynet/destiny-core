@@ -9,6 +9,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import mu.KotlinLogging
+import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -16,7 +17,7 @@ import java.time.temporal.ChronoUnit
  * 真太陽時計算介面 <br></br>
  * Swiss Ephemeris 實作是 TrueSolarTimeImpl
  */
-interface ITrueSolarTime {
+interface ITrueSolarTime : Serializable {
 
   /**
    * E : Equation of Time
