@@ -11,7 +11,6 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.*
 import kotlin.reflect.KClass
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
 inline fun <T, R : Any> Iterable<T>.firstNotNullResult(crossinline transform: (T) -> R?): R? {
@@ -77,7 +76,6 @@ val Throwable.stackTraceString: String
   }
 
 
-@ExperimentalTime
 inline fun <T> measureTimed(durationFun : (kotlin.time.Duration) -> Unit, function : () -> T) : T {
 
   val (result , duration) = measureTimedValue(function)
