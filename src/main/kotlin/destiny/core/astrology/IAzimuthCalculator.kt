@@ -6,13 +6,12 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import java.io.Serializable
 
 /**
  * 計算地平方位角 , 與 Point/Star/Planet/...等星體種類皆無關，只要座標即可
  * 內定實作是 AzimuthImpl
  */
-interface IAzimuthCalculator : Serializable {
+interface IAzimuthCalculator {
 
   fun IPos.getAzimuth(coordinate: Coordinate,
                       gmtJulDay: GmtJulDay,

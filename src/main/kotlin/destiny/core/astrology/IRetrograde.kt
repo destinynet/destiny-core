@@ -4,13 +4,12 @@
 package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
-import java.io.Serializable
 
 /**
  * 計算星體在黃道帶上 逆行 / Stationary (停滯) 的介面，目前 SwissEph 的實作只支援 Planet , Asteroid , Moon's Node (只有 True Node。 Mean 不會逆行！)
  * SwissEph 內定實作是 RetrogradeImpl
  */
-interface IRetrograde : Serializable {
+interface IRetrograde {
 
   enum class StationaryType {
     DIRECT_TO_RETROGRADE, // 順轉逆

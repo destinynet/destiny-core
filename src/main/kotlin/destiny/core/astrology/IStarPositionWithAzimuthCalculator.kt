@@ -5,13 +5,14 @@
 package destiny.core.astrology
 
 import destiny.core.calendar.ILocation
+import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 /**
  * 計算星體位置 + 地平方位角 (限定 Star) ,
  * Swiss Ephemeris 實作為 StarPositionWithAzimuthImpl
  */
-interface IStarPositionWithAzimuthCalculator : IStarPosition<IStarPos> {
+interface IStarPositionWithAzimuthCalculator : IStarPosition<IStarPos> , Serializable {
 
 
   fun getPositionFromGmt(star: Star,
