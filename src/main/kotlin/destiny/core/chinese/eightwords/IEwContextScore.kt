@@ -26,7 +26,7 @@ interface IEwContextScore : java.io.Serializable {
    * 每柱的干支各貢獻幾分
    */
   fun getScoreMap(ewContext: IEightWordsContextModel): Map<Scale, Pair<Double, Double>> {
-    return Scale.values().associateWith { scale ->
+    return Scale.entries.associateWith { scale ->
       getPillarScore(scale, ewContext.eightWords, ewContext.gmtJulDay, ewContext.solarTermsTimePos)
     }.onEach { (scale, score) ->
       logger.trace { "\t${scale.getTitle(Locale.TAIWAN)} 貢獻 $score 分" }

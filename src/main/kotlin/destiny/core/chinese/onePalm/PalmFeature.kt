@@ -100,7 +100,7 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
     val steps = Branch.卯.getAheadOf(hourBranch)
     val main = hour.next(steps * positiveValue)
 
-    val houseMap = (0..11).map { i -> if (config.clockwiseHouse) main.next(i) else main.prev(i) }.zip(IPalmModel.House.values()).toMap()
+    val houseMap = (0..11).map { i -> if (config.clockwiseHouse) main.next(i) else main.prev(i) }.zip(IPalmModel.House.entries.toTypedArray()).toMap()
 
     return PalmModel(gender, yearBranch, month, day, hour, houseMap)
   }
@@ -142,7 +142,7 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
     }
 
     val houseMap = (0..11).map { i -> if (config.clockwiseHouse) main.next(i) else main.prev(i) }
-      .zip(IPalmModel.House.values()).toMap()
+      .zip(IPalmModel.House.entries.toTypedArray()).toMap()
 
     return PalmModel(gender, ew.year.branch, month, day, hour, houseMap)
   }

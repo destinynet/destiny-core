@@ -140,7 +140,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     }
 
     // 日月 四個至點
-    val listTransPoints: List<TimeDesc> = TransPoint.values().flatMap { tp ->
+    val listTransPoints: List<TimeDesc> = TransPoint.entries.flatMap { tp ->
       listOf(Planet.SUN, Planet.MOON).map { planet ->
         TimeDesc.TypeTransPoint(
           riseTransFeature.getLmtTrans(lmtStart, planet, tp, loc, julDayResolver, hourBranchConfig.transConfig) as LocalDateTime,
@@ -181,7 +181,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     val toGmtJulDay = TimeTools.getGmtJulDay(lmtEnd, loc)
 
     // 日食
-    eclipseImpl.getNextSolarEclipse(fromGmtJulDay, true, SolarType.values().toList()).also { eclipse ->
+    eclipseImpl.getNextSolarEclipse(fromGmtJulDay, true, SolarType.entries).also { eclipse ->
       val begin = TimeTools.getLmtFromGmt(eclipse.begin, loc, julDayResolver) as LocalDateTime
       val max = TimeTools.getLmtFromGmt(eclipse.max, loc, julDayResolver) as LocalDateTime
       val end = TimeTools.getLmtFromGmt(eclipse.end, loc, julDayResolver) as LocalDateTime

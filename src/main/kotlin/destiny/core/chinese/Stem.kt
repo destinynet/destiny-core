@@ -80,16 +80,16 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang , ILoop<Stem> {
      * @return
      */
     operator fun get(index: Int): Stem {
-      return ArrayTools[values(), index]
+      return ArrayTools[entries.toTypedArray(), index]
     }
 
     operator fun get(c: Char): Stem? {
-      return values().firstOrNull { it.name == c.toString() }
+      return entries.firstOrNull { it.name == c.toString() }
     }
 
     /** 甲[0] ... 癸[9]  */
     fun getIndex(hs: Stem): Int {
-      return values().indexOf(hs)//  Arrays.binarySearch(values(), hs)
+      return entries.indexOf(hs)//  Arrays.binarySearch(values(), hs)
     }
   }
 

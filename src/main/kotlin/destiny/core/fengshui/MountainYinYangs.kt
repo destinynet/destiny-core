@@ -15,13 +15,13 @@ interface IMountainYinYang {
   /** 陽山 */
   val yangMountains: Set<Mountain>
     get() {
-      return Mountain.values().filter { m -> getYinYang(m) }.toSet()
+      return Mountain.entries.filter { m -> getYinYang(m) }.toSet()
     }
 
   /** 陰山 */
   val yinMountains: Set<Mountain>
     get() {
-      return Mountain.values().subtract(yangMountains)
+      return Mountain.entries.toTypedArray().subtract(yangMountains)
     }
 }
 

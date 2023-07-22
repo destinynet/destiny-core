@@ -45,7 +45,7 @@ enum class Dignity(val nameKey: String) : Comparator<Dignity> {
   DETRIMENT("Dignity.DETRIMENT");
 
   override fun compare(o1: Dignity?, o2: Dignity?): Int {
-    return values().let { array ->
+    return entries.toTypedArray().let { array ->
       array.indexOf(o1) - array.indexOf(o2)
     }
   }

@@ -112,7 +112,7 @@ object ChartMntRules {
       }
     }
 
-    return Symbol.values().all {
+    return Symbol.entries.toTypedArray().all {
       chart.getChartBlockFromSymbol(it).let { block ->
         distance(block.period, block.mnt) <= 2
           && distance(block.period, block.dir) <= 2
@@ -138,7 +138,7 @@ object ChartMntRules {
     val set2 = setOf(2.toPeriod(), 5.toPeriod(), 8.toPeriod())
     val set3 = setOf(3.toPeriod(), 6.toPeriod(), 9.toPeriod())
 
-    return Symbol.values().all {
+    return Symbol.entries.toTypedArray().all {
       val blockNums: Set<Period> = chart.getChartBlockFromSymbol(it).let { chartBlock ->
         setOf(chartBlock.period, chartBlock.mnt, chartBlock.dir)
       }

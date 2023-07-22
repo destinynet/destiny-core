@@ -100,7 +100,7 @@ interface IEssential {
     dayNight: DayNight? = null,
     dignities: Collection<Dignity>): Map<Dignity, AstroPoint> {
 
-    return Dignity.values().filter { dignities.contains(it) }.map { dignity ->
+    return Dignity.entries.filter { dignities.contains(it) }.map { dignity ->
 
 
       when (dignity) {
@@ -120,7 +120,7 @@ interface IEssential {
   fun AstroPoint.getReceptionsFromSign(map: Map<AstroPoint, ZodiacSign>,
                                   dayNight: DayNight? = null,
                                   dignities: Collection<Dignity>): Map<Dignity, AstroPoint> {
-    return Dignity.values().filter { dignities.contains(it) }.map { dignity ->
+    return Dignity.entries.filter { dignities.contains(it) }.map { dignity ->
       when (dignity) {
         Dignity.RULER -> Dignity.RULER to this.receivingRulerFromSignMap(map)
         Dignity.EXALTATION -> Dignity.EXALTATION to this.receivingExaltFromSignMap(map)

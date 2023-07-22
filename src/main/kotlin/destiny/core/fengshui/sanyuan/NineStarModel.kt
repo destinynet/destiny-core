@@ -29,10 +29,10 @@ fun List<NineStarModel>.toTriGridModel(view: Symbol): List<TriGridModel> {
   // 後天八卦，在以此 view 為底 的 九宮分佈
   val acquiredGridMap: Map<TriGrid, Symbol?> = TriGrid.getGridMap(view, SymbolAcquired)
 
-  return TriGrid.values().map { triGrid ->
+  return TriGrid.entries.map { triGrid ->
     val symbol: Symbol? = acquiredGridMap[triGrid]
 
-    val map = Scale.values().mapNotNull { scale ->
+    val map = Scale.entries.mapNotNull { scale ->
       this.firstOrNull { it.scale == scale }?.let { nineStarModel: NineStarModel ->
         val nineStar: NineStar = symbol?.let { s ->
           nineStarModel.map[s]

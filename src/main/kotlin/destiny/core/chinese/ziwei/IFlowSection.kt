@@ -18,7 +18,7 @@ interface IFlowSection : Descriptive {
 
   /** 計算每個地支 的 大限 起訖 歲數 (不考慮實歲或虛歲 )  */
   fun getFlowSectionAgeMap(branchHouseMap: Map<Branch, House>, set: Int, birthYear: StemBranch, gender: Gender, houseSeq: IHouseSeq): Map<Branch, Pair<Int, Int>> {
-    return Branch.values().associateWith { branch ->
+    return Branch.entries.associateWith { branch ->
       getAgeRange(branchHouseMap.getValue(branch), set, birthYear.stem, gender, houseSeq)
     }
   }

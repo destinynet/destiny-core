@@ -16,7 +16,6 @@ import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
-import destiny.core.chinese.Branch.values
 import destiny.core.toString
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.CacheGrain
@@ -494,7 +493,7 @@ class ZiweiFeature(
     val transFourImpl = transFourImplMap[config.transFour]!!
     val flyMap: Map<StemBranch, Set<Triple<T4Value, ZStar, Branch>>> = stemBranchHouseMap.keys.associateWith { sb: StemBranch ->
 
-      T4Value.values()
+      T4Value.entries
         .map { value ->
           val flyStar: ZStar = transFourImpl.getStarOf(sb.stem, value)
           value to flyStar
@@ -524,7 +523,7 @@ class ZiweiFeature(
     val flowSectionAgeMap = flowSectionImpl.getSortedFlowSectionAgeMap(branchHouseBiMap, 五行局, lunarYear, gender, houseSeqImpl)
 
     // 小限 mapping
-    val branchSmallRangesMap: Map<Branch, List<Int>> = values()
+    val branchSmallRangesMap: Map<Branch, List<Int>> = Branch.entries
       .associateWith { branch ->
         ISmallRange.getRanges(branch, lunarYear.branch, gender)
       }
@@ -542,7 +541,7 @@ class ZiweiFeature(
 
     // 哪個地支 裡面 有哪些星體 (可能會有空宮 , 若星體很少的話)
     val branchStarMap: Map<Branch, List<ZStar>?> =
-      Branch.values().associateWith {
+      Branch.entries.associateWith {
         // 可能為 null (空宮)
           branch ->
         branchStarsMap[branch]
@@ -705,7 +704,7 @@ class ZiweiFeature(
   override fun getFlowSection(plate: IPlate, section: StemBranch, config: ZiweiConfig): IPlateSection {
     // 在此大限中，每個地支，對應到哪個宮位
 
-    val newBranchHouseMap: Map<Branch, House> = values().associateWith { branch ->
+    val newBranchHouseMap: Map<Branch, House> = Branch.entries.associateWith { branch ->
       val steps = branch.getAheadOf(section.branch)
 
       houseSeqImplMap[config.houseSeq]!!.prev(House.命宮, steps)
@@ -726,7 +725,7 @@ class ZiweiFeature(
     // 流年命宮
     val yearlyMain = flowYearImplMap[config.flowYear]!!.getFlowYear(flowYear.branch, plate.finalMonthNumForMonthStars, plate.hour)
 
-    val branchHouseMap = values().associateWith { branch ->
+    val branchHouseMap = Branch.entries.associateWith { branch ->
       val steps = branch.getAheadOf(yearlyMain)
       houseSeqImplMap[config.houseSeq]!!.prev(House.命宮, steps)
     }
@@ -791,7 +790,7 @@ class ZiweiFeature(
     // 流月命宮
     val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, plate.finalMonthNumForMonthStars, plate.hour)
 
-    val branchHouseMap = values().associateWith { branch ->
+    val branchHouseMap = Branch.entries.associateWith { branch ->
       val steps = branch.getAheadOf(monthlyMain)
       houseSeqImplMap[config.houseSeq]!!.prev(House.命宮, steps)
     }
@@ -813,7 +812,7 @@ class ZiweiFeature(
 
     // 流日命宮
     val dailyMain = flowDayImplMap[config.flowDay]!!.getFlowDay(flowDay.branch, flowDayNum, monthlyMain)
-    val branchHouseMap = values().associateWith { branch ->
+    val branchHouseMap = Branch.entries.associateWith { branch ->
       val steps = branch.getAheadOf(dailyMain)
       houseSeqImplMap[config.houseSeq]!!.prev(House.命宮, steps)
     }
@@ -837,7 +836,7 @@ class ZiweiFeature(
     // 流時命宮
     val hourlyMain = flowHourImplMap[config.flowHour]!!.getFlowHour(flowHour.branch, dailyMain)
 
-    val branchHouseMap = values().associateWith { branch ->
+    val branchHouseMap = Branch.entries.associateWith { branch ->
       val steps = branch.getAheadOf(hourlyMain)
       houseSeqImplMap[config.houseSeq]!!.prev(House.命宮, steps)
     }

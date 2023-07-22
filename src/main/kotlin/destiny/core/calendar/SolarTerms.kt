@@ -69,11 +69,11 @@ enum class SolarTerms(val zodiacDegree: Int) {
      * @return 傳回 index , 立春為 0 , 雨水為 1 , ... , 大寒 為 23
      */
     fun getIndex(solarTerm: SolarTerms): Int {
-      return Arrays.binarySearch(values(), solarTerm)
+      return Arrays.binarySearch(entries.toTypedArray(), solarTerm)
     }
 
     fun of(branch: Branch) : List<SolarTerms> {
-      return values().filter { it.branch == branch }.toList()
+      return entries.filter { it.branch == branch }.toList()
     }
 
     /**
@@ -81,7 +81,7 @@ enum class SolarTerms(val zodiacDegree: Int) {
      * @return 0 傳回立春 , 1 傳回 雨水 , ... , 23 傳回 大寒 , 接著連續 24 傳回立春
      */
     operator fun get(solarTermsIndex: Int): SolarTerms {
-      return ArrayTools[values(), solarTermsIndex]
+      return ArrayTools[entries.toTypedArray(), solarTermsIndex]
     }
 
     /**

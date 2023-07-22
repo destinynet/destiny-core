@@ -16,7 +16,7 @@ class ChildHazardDescriptor(hazard: ChildHazard) : AbstractPropertyBasedPatternD
 
     val hazard = pattern as ChildHazard
 
-    return Book.values().map { book ->
+    return Book.entries.map { book ->
       book to hazard.getBookNote(locale, book)
     }.filter { (_, note) ->
       note != null

@@ -61,11 +61,11 @@ enum class Aspect(val nameKey: String,
 
   companion object {
 
-    private val importanceAngles: Map<Importance, List<Aspect>> = values().groupBy { it.importance }
+    private val importanceAngles: Map<Importance, List<Aspect>> = entries.groupBy { it.importance }
 
     /** 從「英文」的 aspect name 來反找 Aspect , 找不到則傳回 null  */
     fun getAspectFromName(value: String): Aspect? {
-      return values().firstOrNull { name -> name.getTitle(Locale.ENGLISH).equals(value.trim { it <= ' '}, ignoreCase = true) }
+      return entries.firstOrNull { name -> name.getTitle(Locale.ENGLISH).equals(value.trim { it <= ' '}, ignoreCase = true) }
     }
 
     /**
@@ -91,7 +91,7 @@ enum class Aspect(val nameKey: String,
       return if (degree > 180)
         getAspect(360 - degree)
       else
-        values().firstOrNull { aspect -> abs(aspect.degree - degree) <  0.01 }
+        entries.firstOrNull { aspect -> abs(aspect.degree - degree) <  0.01 }
     }
 
   }

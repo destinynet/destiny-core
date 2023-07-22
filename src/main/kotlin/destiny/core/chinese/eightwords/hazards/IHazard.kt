@@ -1061,7 +1061,7 @@ val h天狗關 = object : IHazardFactory {
     }
 
     override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
-      return (Branch.values()
+      return (Branch.entries
         .map { b -> b to b.prev(2) }
         .toSet().contains(eightWords.year.branch to eightWords.hour.branch)
         )

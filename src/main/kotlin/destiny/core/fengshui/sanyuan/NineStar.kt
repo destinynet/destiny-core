@@ -33,7 +33,7 @@ enum class NineStar(val period: Period, val color: Char, val fiveElement: FiveEl
 
     /** 透過數字，反查九星 */
     fun Int.toStar(): NineStar {
-      return ArrayTools[values(), this - 1]
+      return ArrayTools[entries.toTypedArray(), this - 1]
     }
 
     fun of(period: Period): NineStar {

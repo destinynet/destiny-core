@@ -49,13 +49,13 @@ enum class Mountain(val mnt: SealedMnt, val symbol: Symbol) {
 
   /** 0 ~ 23 */
   val index: Int by lazy {
-     values().indexOf(this)
+     entries.indexOf(this)
   }
 
   val opposite: Mountain
     get() {
       val newIndex = normalize(this.index + 12)
-      return values()[newIndex]
+      return entries[newIndex]
     }
 
   companion object {

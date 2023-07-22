@@ -197,7 +197,7 @@ object Ziwei {
    * 取得此日的12個時辰
    */
   fun getHoursOfDay(day: StemBranch): List<StemBranch> {
-    return Branch.values().map { b ->
+    return Branch.entries.map { b ->
       val stem = StemBranchUtils.getHourStem(day.stem, b)
       StemBranch[stem, b]
     }.toList()

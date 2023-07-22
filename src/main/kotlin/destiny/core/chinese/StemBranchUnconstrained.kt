@@ -168,7 +168,7 @@ enum class StemBranchUnconstrained(override val stem: Stem,
   }
 
   private fun getIndex(sbu: StemBranchUnconstrained): Int {
-    return values().indexOf(sbu)
+    return entries.indexOf(sbu)
   }
 
   override val naYin: NaYin?
@@ -180,11 +180,11 @@ enum class StemBranchUnconstrained(override val stem: Stem,
 
     /** 0[甲子] ~ 119[甲亥] */
     operator fun get(index: Int): StemBranchUnconstrained {
-      return ArrayTools[values(), index]
+      return ArrayTools[entries.toTypedArray(), index]
     }
 
     operator fun get(stem: Stem, branch: Branch): StemBranchUnconstrained? {
-      return values().firstOrNull { it.stem == stem && it.branch == branch }
+      return entries.firstOrNull { it.stem == stem && it.branch == branch }
     }
   }
 }

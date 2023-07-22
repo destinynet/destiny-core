@@ -41,7 +41,7 @@ enum class General(val shortName: Char, val positive: Boolean, val fiveElement: 
   companion object {
 
     operator fun get(branch: Branch, stemBranchConfig: IGeneralStemBranch): General {
-      return values().first { g -> stemBranchConfig.getStemBranch(g).branch === branch }
+      return entries.first { g -> stemBranchConfig.getStemBranch(g).branch === branch }
     }
   }
 }

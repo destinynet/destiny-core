@@ -69,7 +69,7 @@ interface IHoroscopeModel : ITimeLoc {
    * 星座星體列表，按照黃道經度排列
    */
   val signPointsMap : Map<ZodiacSign , List<AstroPoint>>
-    get() = ZodiacSign.values().associateWith { sign ->
+    get() = ZodiacSign.entries.associateWith { sign ->
       pointSignMap.filter { (k, v) -> sign == v }
         .map { (k, v) -> k }
         .sortedBy { p -> positionMap[p]!!.lng }

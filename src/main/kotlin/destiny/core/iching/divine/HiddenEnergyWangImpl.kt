@@ -49,7 +49,7 @@ class HiddenEnergyWangImpl : IHiddenEnergy,
       (1..6).map { SimpleBranch.getFiveElement(settings.getStemBranch(hexagram, it).branch) }.distinct()
 
     // 此卦所缺少的五行
-    val lackingFiveElement: List<FiveElement> = listOf(*FiveElement.values())
+    val lackingFiveElement: List<FiveElement> = FiveElement.entries
       .filterNot { containingFiveElements.contains(it) }
 
     return settings.getStemBranch(首宮卦, lineIndex)

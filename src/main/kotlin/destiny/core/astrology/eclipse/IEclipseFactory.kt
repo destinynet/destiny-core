@@ -19,14 +19,14 @@ interface IEclipseFactory {
 
   /** 承上 , 不指定 日食類型 [ISolarEclipse.SolarType]]  */
   fun getNextSolarEclipse(fromGmtJulDay: GmtJulDay, forward: Boolean): AbstractSolarEclipse {
-    return getNextSolarEclipse(fromGmtJulDay, forward, listOf(*SolarType.values()))
+    return getNextSolarEclipse(fromGmtJulDay, forward, SolarType.entries)
   }
 
   /** 全球，某時間範圍內的日食記錄  */
   fun getRangeSolarEclipses(fromGmt: GmtJulDay,
                             toGmt: GmtJulDay,
-                            types: Collection<SolarType> = listOf(
-                              *SolarType.values())): List<AbstractSolarEclipse> {
+                            types: Collection<SolarType> = SolarType.entries
+  ): List<AbstractSolarEclipse> {
     require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
 
     return generateSequence (getNextSolarEclipse(fromGmt , true , types)) {
@@ -57,8 +57,8 @@ interface IEclipseFactory {
   /** 全球，某時間範圍內的月食記錄 */
   fun getRangeLunarEclipses(fromGmt: GmtJulDay,
                             toGmt: GmtJulDay,
-                            types: Collection<LunarType> = listOf(
-                              *LunarType.values())): List<AbstractLunarEclipse> {
+                            types: Collection<LunarType> = LunarType.entries
+  ): List<AbstractLunarEclipse> {
     require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
 
     return generateSequence( getNextLunarEclipse(fromGmt , true)) {

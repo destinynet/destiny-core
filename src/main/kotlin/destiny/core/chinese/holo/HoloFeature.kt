@@ -720,7 +720,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
   override fun getMonthlyHexagrams(yearHexagram: IHoloHexagramWithStemBranch, settings: SettingsOfStemBranch): List<IHoloHexagramWithStemBranch> {
     // 立春開始
     val springStart = yearHexagram.start
-    return SolarTerms.values()
+    return SolarTerms.entries
       .filter { it.major }  // 只要「節」即可 , 共取出 12 節 , from 立春 to 小寒
       .foldIndexed(mutableListOf()) { indexFrom0, list, solarTerms ->
         val lastOddHex: IHoloHexagramWithStemBranch = if (list.isEmpty()) yearHexagram else {
@@ -768,7 +768,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
 
     val monthNum = solarTerms.branch.getAheadOf(寅) + 1 // 1~12
 
-    val list: List<Pair<IHexagram, Int>> = SolarTerms.values()
+    val list: List<Pair<IHexagram, Int>> = SolarTerms.entries
       .filter { it.major }  // 只要「節」即可 , 共取出 12 節 , from 立春 to 小寒
       .foldIndexed(mutableListOf<Pair<IHexagram, Int>>()) { indexFrom0, list, _ ->
         val lastOddHex: Pair<IHexagram, Int> = if (list.isEmpty()) yearHexagram to yearYuanTang else {

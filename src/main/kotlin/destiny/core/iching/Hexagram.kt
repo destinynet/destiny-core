@@ -101,7 +101,7 @@ enum class Hexagram(
   companion object {
 
     fun of(upper: Symbol, lower: Symbol): Hexagram {
-      return values().first {
+      return entries.first {
         it.upperSymbol === upper && it.lowerSymbol === lower
       }
     }

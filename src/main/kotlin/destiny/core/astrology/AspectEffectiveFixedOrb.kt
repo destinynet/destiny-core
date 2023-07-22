@@ -11,7 +11,7 @@ import kotlin.math.abs
  */
 class AspectEffectiveFixedOrb(val orb: Double) : IAspectEffective {
 
-  override val applicableAspects: Set<Aspect> = Aspect.values().toSet()
+  override val applicableAspects: Set<Aspect> = Aspect.entries.toSet()
 
   override fun getEffectiveErrorAndScore(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree, aspect: Aspect): Pair<Double, Double>? {
 

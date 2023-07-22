@@ -74,7 +74,7 @@ interface IHour {
   fun getDailyBranchStartMap(day: ChronoLocalDate, loc: ILocation, julDayResolver: JulDayResolver, config: HourBranchConfig): Map<Branch, ChronoLocalDateTime<*>> {
     val lmtStart = day.atTime(LocalTime.MIDNIGHT)
 
-    return Branch.values().map { b ->
+    return Branch.entries.map { b ->
       val lmt = if (b == Branch.子) {
         getLmtNextStartOf(lmtStart.minus(12, ChronoUnit.HOURS), loc, b, julDayResolver, config)
       } else {

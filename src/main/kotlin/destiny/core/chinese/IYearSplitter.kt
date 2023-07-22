@@ -47,6 +47,6 @@ class YearSplitterSignImpl(private val zodiacSignImpl: IZodiacSign) : IYearSplit
     val formerHalfYear = setOf(CAPRICORN, AQUARIUS, PISCES, ARIES, TAURUS, GEMINI)
 
     // 夏至 到 冬至 (後半年)
-    val laterHalfYear = values().toSet().minus(formerHalfYear)
+    val laterHalfYear = entries.toSet().minus(formerHalfYear)
   }
 }

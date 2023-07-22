@@ -48,7 +48,7 @@ abstract class AbstractMountainCompass : ICompass<Mountain> {
     val index = with(CircleTools) {
       (degree.aheadOf(initDegree) / stepDegree).toInt()
     }
-    return Mountain.values()[index]
+    return Mountain.entries[index]
   }
 
   abstract fun getSymbol(mnt: Mountain): Symbol

@@ -42,7 +42,7 @@ abstract class PatternMultipleImpl : IPatternFactory, Serializable {
   override fun getPattern(it: IPlate, pContext: ZPatternContext): ZPattern? {
     return when (pContext.target) {
       ZPatternContext.Target.MAIN  -> getMultiple(it, setOf(it.mainHouse.branch), pContext)
-      ZPatternContext.Target.EVERY -> getMultiple(it, Branch.values().toSet(), pContext)
+      ZPatternContext.Target.EVERY -> getMultiple(it, Branch.entries.toSet(), pContext)
     }
   }
 

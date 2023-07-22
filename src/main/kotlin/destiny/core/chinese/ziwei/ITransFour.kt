@@ -46,7 +46,7 @@ interface ITransFour : Descriptive {
   /** 類似前者，但逆算：計算此星於此干，是否有四化，若有的話，其為何者  */
   fun getValueOf(star: ZStar, stem: Stem): T4Value? {
     // 先把本年四化的四顆星都找出來
-    val map = T4Value.values().associateBy { type -> getStarOf(stem, type) }
+    val map = T4Value.entries.associateBy { type -> getStarOf(stem, type) }
 
     return map[star]
   }

@@ -23,7 +23,7 @@ enum class Period(val value: Int) : ILoop<Period> {
   companion object {
 
     fun Int.toPeriod(): Period {
-      return ArrayTools[values(), this - 1]
+      return ArrayTools[entries.toTypedArray(), this - 1]
     }
 
     fun of(value: Int): Period {

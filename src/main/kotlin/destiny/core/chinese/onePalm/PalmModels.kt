@@ -157,7 +157,7 @@ data class PalmModel(
    * @return 取得哪些宮位有「柱」坐落其中，列出來
    */
   override val nonEmptyPillars: Map<Branch, Collection<Scale>>
-    get() = Branch.values().filter { pillarMap.values.contains(it) }.associateWith { branch -> pillarMap.filter { (_, v) -> v === branch }.keys }
+    get() = Branch.entries.filter { pillarMap.values.contains(it) }.associateWith { branch -> pillarMap.filter { (_, v) -> v === branch }.keys }
 
   /**
    * 取得在某一地支宮位，包含了哪些「柱」 (年/月/日/時)

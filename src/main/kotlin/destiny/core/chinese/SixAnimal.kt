@@ -31,11 +31,11 @@ enum class SixAnimal(val shortName:String) : ILoop<SixAnimal> {
     }
 
     operator fun get(index: Int): SixAnimal {
-      return ArrayTools[values(), index]
+      return ArrayTools[entries.toTypedArray(), index]
     }
 
     private fun getIndex(animal: SixAnimal): Int {
-      return values().indexOf(animal)
+      return entries.indexOf(animal)
     }
   }
 }

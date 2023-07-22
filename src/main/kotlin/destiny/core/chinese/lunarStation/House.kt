@@ -16,12 +16,12 @@ enum class SelfHouse(val house: House) : ILoop<SelfHouse> {
   刀(House.刀), 砧(House.砧), 路(House.路), 江(House.江), 湖(House.湖), 田(House.田);
 
   override fun next(n: Int): SelfHouse {
-    return get(values().indexOf(this) + n)
+    return get(entries.indexOf(this) + n)
   }
 
   companion object {
     operator fun get(index: Int): SelfHouse {
-      return ArrayTools[values(), index]
+      return ArrayTools[entries.toTypedArray(), index]
     }
   }
 }
@@ -31,12 +31,12 @@ enum class OppoHouse(val house: House) : ILoop<OppoHouse> {
   天(House.天), 草(House.草), 岸(House.岸), 風(House.風), 湯火(House.湯火), 月(House.月);
 
   override fun next(n: Int): OppoHouse {
-    return get(values().indexOf(this) + n)
+    return get(entries.indexOf(this) + n)
   }
 
   companion object {
     operator fun get(index: Int): OppoHouse {
-      return ArrayTools[values(), index]
+      return ArrayTools[entries.toTypedArray(), index]
     }
   }
 }

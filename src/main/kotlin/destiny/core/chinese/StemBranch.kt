@@ -132,7 +132,7 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
    * @return 0[甲子] ~ 59[癸亥]
    */
   private fun getIndex(sb: StemBranch): Int {
-    return values().indexOf(sb)
+    return entries.indexOf(sb)
   }
 
   /** 取得「空亡」的兩個地支  */
@@ -158,7 +158,7 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
      * @param index 0[甲子] ~ 59[癸亥]
      */
     operator fun get(index: Int): StemBranch {
-      return ArrayTools[values(), index]
+      return ArrayTools[entries.toTypedArray(), index]
     }
 
     fun of(stem: Stem?, branch: Branch?): StemBranch? {
@@ -221,15 +221,15 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
      * @return 0[甲子] ~ 59[癸亥]
      */
     private fun getIndex(sb: StemBranch): Int {
-      return values().indexOf(sb)
+      return entries.indexOf(sb)
     }
 
     operator fun iterator(): Iterator<StemBranch> {
-      return values().iterator()
+      return entries.iterator()
     }
 
     fun iterable(): Iterable<StemBranch> {
-      return listOf(*values())
+      return entries
     }
 
     fun getCycle(sb: StemBranch): StemBranchCycle {

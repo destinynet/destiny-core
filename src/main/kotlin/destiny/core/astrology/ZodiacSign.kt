@@ -64,11 +64,11 @@ enum class ZodiacSign(val abbrKey: String,
 
   /** 取得對沖的星座  */
   val oppositeSign: ZodiacSign
-    get() = values()[normalize(this.index + 6)]
+    get() = entries[normalize(this.index + 6)]
 
   /** 取得星座的 index , 為 0-based , 牡羊座為 0 , 金牛座為 1 , ... , 雙魚座為 11  */
   val index: Int by lazy {
-    values().indexOf(this)
+    entries.indexOf(this)
   }
 
   /**
@@ -120,13 +120,13 @@ enum class ZodiacSign(val abbrKey: String,
      * 11 : 雙魚
      */
     operator fun get(index: Int): ZodiacSign {
-      return ArrayTools[values(), index]
+      return ArrayTools[entries.toTypedArray(), index]
     }
 
     /** 取得黃道帶上的某度，屬於哪個星座  */
     fun of(degree: Double): ZodiacSign {
       val index = (degree.normalize() / 30).toInt()
-      return values()[index]
+      return entries[index]
     }
 
     /** 此黃道帶的度數，等於什麼星座幾度  */
@@ -153,7 +153,7 @@ enum class ZodiacSign(val abbrKey: String,
      * 找尋 某種 [Element] 星座
      */
     fun of(element: Element): Set<ZodiacSign> {
-      return values().filter { it.element == element }.toSet()
+      return entries.filter { it.element == element }.toSet()
 
     }
 

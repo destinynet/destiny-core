@@ -20,7 +20,7 @@ interface ITianyi : Descriptive {
 
   /** 取得天干對應的天乙貴人，不分晝夜，一起傳回來  */
   fun getTianyis(stem: Stem): List<Branch> {
-    return DayNight.values().map { dayNight -> getFirstTianyi(stem, dayNight) }
+    return DayNight.entries.map { dayNight -> getFirstTianyi(stem, dayNight) }
   }
 
 }

@@ -88,19 +88,19 @@ enum class Branch : ILoop<Branch> {
      * 11 為 亥
      */
     operator fun get(index: Int): Branch {
-      return ArrayTools[values(), index]
+      return ArrayTools[entries.toTypedArray(), index]
     }
 
 
     operator fun get(c: Char): Branch? {
-      return values().firstOrNull { it.name == c.toString() }
+      return entries.firstOrNull { it.name == c.toString() }
     }
 
     /**
      * 子[0] ~ 亥[11]
      */
     fun getIndex(eb: Branch): Int {
-      return values().indexOf(eb)
+      return entries.indexOf(eb)
     }
   }
 }
