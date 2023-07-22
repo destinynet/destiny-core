@@ -19,7 +19,7 @@ class AyanamsaTest {
 
     assertEquals("LAHIRI" , Ayanamsa.LAHIRI.toString())
 
-    for (each in Ayanamsa.values()) {
+    for (each in Ayanamsa.entries) {
       assertNotNull(each.toString())
       assertNotSame('!', each.toString()[0])
 

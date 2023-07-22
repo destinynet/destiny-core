@@ -14,7 +14,7 @@ class NaYinTest {
 
   @Test
   fun testNaYin() {
-    StemBranch.values().forEach { sb ->
+    StemBranch.entries.forEach { sb ->
       assertNotNull(NaYin.getFiveElement(sb))
       assertNotNull(NaYin.getDesc(sb, Locale.TAIWAN))
       logger.info("{} : {} , 簡體 : {} , 五行 : {}" ,

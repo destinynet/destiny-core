@@ -18,7 +18,7 @@ class ChartMntRulesTest {
   @Test
   fun 八純卦() {
     val shouldBeEmpty = (1..9).flatMap { period ->
-      Mountain.values().mapNotNull { mnt ->
+      Mountain.entries.mapNotNull { mnt ->
         ChartMntContext.getChartMnt(period.toPeriod() , mnt).let { chart ->
           ChartMntRules.pure(chart)?.let { chart }
         }
@@ -28,7 +28,7 @@ class ChartMntRulesTest {
     assertTrue(shouldBeEmpty.isEmpty())
 
     val matches = (1..9).flatMap { period ->
-      Mountain.values().mapNotNull { mnt ->
+      Mountain.entries.mapNotNull { mnt ->
         ChartMntContext.getChartMnt(period.toPeriod() , mnt , replaceImpl).let { chart ->
           ChartMntRules.pure(chart)?.let { chart }
         }
@@ -47,7 +47,7 @@ class ChartMntRulesTest {
   fun 七星打劫() {
 
     val matches: List<IChartMnt> = (1..9).flatMap { period ->
-      Mountain.values().mapNotNull { mnt ->
+      Mountain.entries.mapNotNull { mnt ->
         ChartMntContext.getChartMnt(period.toPeriod(), mnt).let { chart ->
           ChartMntRules.robbery(chart)?.let {
             //println("$period 運 $mnt 山 :  ${it.symbol} : ${it.map}")
@@ -109,7 +109,7 @@ class ChartMntRulesTest {
   fun 全盤連珠三般卦_十六局() {
     val matches =
       (1..9).flatMap{  period ->
-        Mountain.values().mapNotNull { mnt ->
+        Mountain.entries.mapNotNull { mnt ->
           ChartMntContext.getChartMnt(period.toPeriod(), mnt).let { chart ->
             ChartMntRules.contTriplet(chart)?.let {
               // 「連珠三般卦」必是上山下水的格局
@@ -131,7 +131,7 @@ class ChartMntRulesTest {
   fun 全盤父母三般卦_十六局() {
     val matches: List<Pair<Int, Mountain>> =
       (1..9).flatMap{  period ->
-        Mountain.values().mapNotNull { mnt ->
+        Mountain.entries.mapNotNull { mnt ->
           ChartMntContext.getChartMnt(period.toPeriod(), mnt).let { chart ->
             ChartMntRules.parentTriplet(chart)?.let {
               // 「父母三般卦」必是上山下水的格局
@@ -175,7 +175,7 @@ class ChartMntRulesTest {
 
     // 印出全部 (共24局)
     (1..9).forEach { period ->
-      Mountain.values().forEach { mnt ->
+      Mountain.entries.forEach { mnt ->
         ChartMntContext.getChartMnt(period.toPeriod(), mnt).let { chart ->
           ChartMntRules.match10(chart).let { rule ->
             rule?.let {
@@ -210,7 +210,7 @@ class ChartMntRulesTest {
 
     // 印出全部 (共24局)
     (1..9).forEach { period ->
-      Mountain.values().forEach { mnt ->
+      Mountain.entries.forEach { mnt ->
         ChartMntContext.getChartMnt(period.toPeriod(), mnt).let { chart ->
           ChartMntRules.beneathSameOrigin(chart)?.let {
             println("伏吟 : $period 運 , $mnt 山 ${mnt.opposite} 向 : ${it.mntDir}盤 伏吟")
@@ -243,7 +243,7 @@ class ChartMntRulesTest {
 
     // 印出全部 (共24局)
     (1..9).forEach { period ->
-      Mountain.values().forEach { mnt ->
+      Mountain.entries.forEach { mnt ->
         ChartMntContext.getChartMnt(period.toPeriod(), mnt).let { chart ->
           ChartMntRules.reversed(chart).let { rule ->
             rule?.let {

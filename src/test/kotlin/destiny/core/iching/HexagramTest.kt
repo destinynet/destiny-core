@@ -42,7 +42,7 @@ class HexagramTest {
 
   @Test
   fun testUnicode() {
-    values().forEach { h ->
+    entries.forEach { h ->
       assertNotNull(h.unicode)
       println("$h = ${h.unicode}")
     }
@@ -156,7 +156,7 @@ class HexagramTest {
   fun testHexagram() {
     val set = mutableSetOf<Hexagram>()
 
-    for (h in values()) {
+    for (h in entries) {
       assertTrue(!set.contains(h))
       set.add(h)
       assertNotNull(h)

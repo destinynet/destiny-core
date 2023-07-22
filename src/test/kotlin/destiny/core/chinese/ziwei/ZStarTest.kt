@@ -40,7 +40,7 @@ class ZStarTest {
     logger.info("map1 = {}", map1)  // map1 = {子=[紫微, 天同], 丑=[七殺]}
 
 
-    val map2 = Branch.values().map { branch ->
+    val map2 = Branch.entries.map { branch ->
       branch to map1[branch]
     }.toMap()
 
@@ -48,7 +48,7 @@ class ZStarTest {
     logger.info("map2 = {}", map2)
 
 
-    val map3 = Branch.values().map { branch ->
+    val map3 = Branch.entries.map { branch ->
       branch to starBranchMap.entries.groupBy { it.value }
         .mapValues { it -> it.value.map { it.key } }[branch]
     }.toMap()

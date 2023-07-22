@@ -40,7 +40,7 @@ class ChartMntContextTest {
 
   @Test
   fun 印出一運所有山之城門訣() {
-    Mountain.values().forEach { mnt ->
+    Mountain.entries.forEach { mnt ->
       ChartMntContext.getChartMnt(1.toPeriod(), mnt).getGates().also { map ->
         println("$mnt 山 , 正 = ${map[Gate.正城門]} , 副 = ${map[Gate.副城門]}")
       }
@@ -172,7 +172,7 @@ class ChartMntContextTest {
   @Test
   fun testGetMntDirSpec() {
     (1..9).forEach { period ->
-      Mountain.values().forEach { mnt ->
+      Mountain.entries.forEach { mnt ->
         ChartMntContext.getChartMnt(period.toPeriod(), mnt).also {
           println("$period 運 $mnt 山 : ${it.getMntDirSpec()}")
         }
@@ -181,7 +181,7 @@ class ChartMntContextTest {
 
     val repImpl = ReplacementDefaultImpl()
     (1..9).forEach { period ->
-      Mountain.values().forEach { mnt ->
+      Mountain.entries.forEach { mnt ->
         ChartMntContext.getChartMnt(period.toPeriod(), mnt, repImpl).also {
           println("[替] $period 運 $mnt 山 : ${it.getMntDirSpec()}")
         }
@@ -193,7 +193,7 @@ class ChartMntContextTest {
   fun getChartMnt() {
     val repImpl = ReplacementDefaultImpl()
 
-    Mountain.values().forEach { mnt ->
+    Mountain.entries.forEach { mnt ->
       println("\n7運 $mnt 山 : 用替 ")
       ChartMntContext.getChartMnt(7.toPeriod(), mnt, repImpl).also {
         println(it)

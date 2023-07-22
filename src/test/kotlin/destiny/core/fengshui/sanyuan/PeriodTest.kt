@@ -13,8 +13,8 @@ internal class PeriodTest {
 
   @Test
   fun testCompare() {
-    val shuffled = Period.values().toList().shuffled()
-    assertEquals(Period.values().toList() , shuffled.sorted())
+    val shuffled = entries.shuffled()
+    assertEquals(entries, shuffled.sorted())
   }
 
   @Test

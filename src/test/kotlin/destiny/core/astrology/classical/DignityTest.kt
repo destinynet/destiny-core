@@ -28,7 +28,7 @@ class DignityTest {
 
     assertEquals("RULER", Dignity.RULER.toString())
 
-    for (each in Dignity.values()) {
+    for (each in Dignity.entries) {
       assertNotNull(each.toString())
       assertNotSame('!', each.toString()[0])
 

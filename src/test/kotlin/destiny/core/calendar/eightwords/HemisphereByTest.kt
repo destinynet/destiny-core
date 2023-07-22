@@ -22,7 +22,7 @@ class HemisphereByTest {
 
   @Test
   fun testHemisphereBy() {
-    for (each in HemisphereBy.values()) {
+    for (each in HemisphereBy.entries) {
       assertNotNull(each.toString())
       assertNotSame('!', each.toString()[0])
 

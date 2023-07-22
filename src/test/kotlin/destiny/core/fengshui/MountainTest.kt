@@ -12,7 +12,7 @@ class MountainTest {
 
   @Test
   fun opposite() {
-    Mountain.values().forEach { mnt ->
+    Mountain.entries.forEach { mnt ->
       logger.trace {
         """mnt = $mnt , index = ${mnt.index} , oppo = ${mnt.opposite}"""
       }

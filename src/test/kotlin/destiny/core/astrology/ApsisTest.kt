@@ -22,7 +22,7 @@ class ApsisTest {
 
   @Test
   fun testApsis() {
-    for (each in Apsis.values()) {
+    for (each in Apsis.entries) {
       assertNotNull(each.toString())
       assertNotSame('!', each.toString()[0])
 

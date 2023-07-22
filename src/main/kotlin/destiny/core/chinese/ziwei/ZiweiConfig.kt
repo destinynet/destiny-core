@@ -255,12 +255,6 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
   /** 歲運註記 */
   var ageNotes: List<IntAgeNote> = defaultConfig.ageNotes
 
-//  /** 八字設定 */
-//  var ewConfig: EightWordsConfig = defaultConfig.ewConfig
-//  fun ewConfig(block: EightWordsConfigBuilder.() -> Unit = {}) {
-//    this.ewConfig = EightWordsConfigBuilder.ewConfig(block)
-//  }
-
   /** 晝夜區分 */
   var dayNightConfig: DayNightConfig = defaultConfig.dayNightConfig
 

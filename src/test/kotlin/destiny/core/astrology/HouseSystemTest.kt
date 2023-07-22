@@ -18,7 +18,7 @@ class HouseSystemTest {
     assertEquals("Placidus" , HouseSystem.PLACIDUS.toString(Locale.SIMPLIFIED_CHINESE))
     assertEquals("Placidus" , HouseSystem.PLACIDUS.toString(Locale.ENGLISH))
 
-    for (each in HouseSystem.values()) {
+    for (each in HouseSystem.entries) {
       assertNotNull(each.toString())
       assertNotSame('!', each.toString()[0])
 

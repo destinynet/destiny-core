@@ -27,7 +27,7 @@ class CentricTest : EnumTest() {
 
     assertEquals("TopoCentric", Centric.TOPO.getTitle(Locale.ENGLISH))
 
-    for (each in Centric.values()) {
+    for (each in Centric.entries) {
       assertNotNull(each.toString())
       assertNotSame('!', each.toString()[0])
 

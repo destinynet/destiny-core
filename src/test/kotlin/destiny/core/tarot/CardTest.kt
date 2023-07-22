@@ -22,7 +22,7 @@ class CardTest : EnumTest() {
 
   @Test
   fun testImages() {
-    Card.values().forEach { c ->
+    Card.entries.forEach { c ->
       val res = "/destiny/core/tarot/waite/${c.suit}/${c.name}.jpeg"
       val img: BufferedImage = ImageIO.read(javaClass.getResource(res))
       assertNotNull(img)

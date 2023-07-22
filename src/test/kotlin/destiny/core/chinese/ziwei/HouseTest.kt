@@ -31,7 +31,7 @@ class HouseTest : EnumTest() {
 
     assertEquals("遷移", House.遷移.toString())
 
-    House.values().forEach { house ->
+    House.entries.forEach { house ->
       assertNotNull(house.toString())
       logger.info("{}", house.toString())
     }

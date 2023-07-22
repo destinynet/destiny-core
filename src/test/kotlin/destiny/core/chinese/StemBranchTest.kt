@@ -18,7 +18,7 @@ class StemBranchTest {
 
   @Test
   fun testSerializeDefault() {
-    StemBranch.values().forEach { sb ->
+    StemBranch.entries.forEach { sb ->
       val encoded = Json.encodeToString(sb)
       assertEquals(""""${sb.name}"""", encoded)
       assertSame(sb, Json.decodeFromString(encoded))
@@ -29,7 +29,7 @@ class StemBranchTest {
   fun testSerializeWithSerializer() {
     val serializer: KSerializer<StemBranch> = StemBranch.serializer()
 
-    StemBranch.values().forEach { sb ->
+    StemBranch.entries.forEach { sb ->
       val encoded = Json.encodeToString(serializer, sb)
       assertEquals(""""${sb.name}"""", encoded)
       assertSame(sb, Json.decodeFromString(serializer, encoded))
@@ -55,7 +55,7 @@ class StemBranchTest {
 
   @Test
   fun testList() {
-    StemBranch.values().joinToString(",") { it.toString() }.let { println(it) }
+    StemBranch.entries.joinToString(",") { it.toString() }.let { println(it) }
   }
 
   @Test

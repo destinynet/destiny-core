@@ -29,7 +29,7 @@ class CoordinateTest : EnumTest() {
     assertEquals("Equatorial", Coordinate.EQUATORIAL.getTitle(Locale.ENGLISH))
     assertEquals("Sidereal", Coordinate.SIDEREAL.getTitle(Locale.ENGLISH))
 
-    for (each in Coordinate.values()) {
+    for (each in Coordinate.entries) {
       assertNotNull(each.toString())
       assertNotSame('!', each.toString()[0])
 

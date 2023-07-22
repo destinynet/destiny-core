@@ -21,7 +21,7 @@ internal class AnimalTest : EnumTest() {
 
   @Test
   fun testToString() {
-    values().forEach { animal ->
+    entries.forEach { animal ->
       assertTrue(animal.getTitle(Locale.TAIWAN).length == 1)
       assertTrue(animal.getTitle(Locale.SIMPLIFIED_CHINESE).length == 1)
       assertNotNull(animal.getTitle(Locale.ENGLISH))

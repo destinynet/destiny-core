@@ -10,8 +10,8 @@ import java.util.*
 sealed class News : Serializable {
 
   sealed class NorthSouth : News() {
-    object NORTH : NorthSouth()
-    object SOUTH : NorthSouth()
+    data object NORTH : NorthSouth()
+    data object SOUTH : NorthSouth()
     companion object {
       fun of(c: Char): NorthSouth? {
         if (c == 'N' || c == 'n')
@@ -24,8 +24,8 @@ sealed class News : Serializable {
   }
 
   sealed class EastWest : News() {
-    object EAST : EastWest()
-    object WEST : EastWest()
+    data object EAST : EastWest()
+    data object WEST : EastWest()
 
     companion object {
       fun of(c: Char): EastWest? {

@@ -28,7 +28,7 @@ internal class ChildHazardTest {
       .mapNotNull { it.objectInstance }
       .map { it as ChildHazard }
       .flatMap { childHazard ->
-        Book.values().flatMap { book ->
+        Book.entries.flatMap { book ->
           locales.map { locale ->
             Triple(childHazard, book, locale)
           }
