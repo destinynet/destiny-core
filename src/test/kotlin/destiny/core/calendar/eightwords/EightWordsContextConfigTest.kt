@@ -7,6 +7,7 @@ import destiny.core.AbstractConfigTest
 import destiny.core.astrology.*
 import destiny.core.calendar.eightwords.EightWordsContextConfigBuilder.Companion.ewContext
 import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
+import destiny.core.calendar.eightwords.RisingSignConfigBuilder.Companion.risingSign
 import destiny.core.calendar.eightwords.YearConfigBuilder.Companion.yearConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertFalse
@@ -15,26 +16,28 @@ import kotlin.test.assertTrue
 internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContextConfig>() {
   override val serializer: KSerializer<EightWordsContextConfig> = EightWordsContextConfig.serializer()
 
-  override val configByConstructor: EightWordsContextConfig = EightWordsContextConfig(
-    EightWordsConfig(
-      YearMonthConfig(
-        YearConfig(270.0),
-        MonthConfig(true, HemisphereBy.DECLINATION, MonthImpl.SunSign)
-      ),
-      DayHourConfig(
-        DayConfig(changeDayAfterZi = false , MidnightImpl.CLOCK0),
-        HourBranchConfig(HourImpl.LMT, TransConfig(true, false, 23.0, 1000.0))
+  override val configByConstructor: EightWordsContextConfig
+    get() {
+      return EightWordsContextConfig(
+        EightWordsConfig(
+          YearMonthConfig(
+            YearConfig(270.0),
+            MonthConfig(true, HemisphereBy.DECLINATION, MonthImpl.SunSign)
+          ),
+          DayHourConfig(
+            DayConfig(changeDayAfterZi = false , MidnightImpl.CLOCK0),
+            HourBranchConfig(HourImpl.LMT, TransConfig(true, false, 23.0, 1000.0))
+          )
+        ),
+        RisingSignConfig(
+          HouseConfig(HouseSystem.EQUAL , Coordinate.SIDEREAL),
+          TradChineseRisingSignConfig(HourImpl.LMT),
+          RisingSignImpl.TradChinese
+        ),
+        ZodiacSignConfig(Planet.SUN),
+        "台北市"
       )
-    ),
-    RisingSignConfig(
-      HouseConfig(HouseSystem.EQUAL , Coordinate.SIDEREAL),
-      TradChineseRisingSignConfig(HourImpl.LMT),
-      RisingSignImpl.TradChinese
-    ),
-    ZodiacSignConfig(Planet.SUN),
-    HouseConfig(HouseSystem.EQUAL , Coordinate.SIDEREAL),
-    "台北市"
-  )
+    }
 
   override val configByFunction: EightWordsContextConfig
     get() {
@@ -90,29 +93,23 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
         }
       }
 
-      return with(ewConfig) {
-        ewContext {
-          risingSign {
-            houseCusp {
-              houseSystem = HouseSystem.EQUAL
-              coordinate = Coordinate.SIDEREAL
-            }
-            tradChinese {
-              hourImpl = HourImpl.LMT
-            }
+      val risingSignConfig = with(HouseConfig()) {
+        houseSystem = HouseSystem.EQUAL
+        coordinate = Coordinate.SIDEREAL
+        risingSign {
+          tradChinese {
+            hourImpl = HourImpl.LMT
           }
-          zodiacSign {
-            star = Planet.SUN
-          }
-          house {
-            houseSystem = HouseSystem.EQUAL
-            coordinate = Coordinate.SIDEREAL
-          }
-          place = "台北市"
         }
       }
 
-
+      return with(ewConfig) {
+        with(risingSignConfig) {
+          ewContext {
+            place = "台北市"
+          }
+        }
+      }
     }
 
   override val assertion = { raw: String ->

@@ -5,11 +5,10 @@ package destiny.core.chinese.eightwords
 
 import destiny.core.AbstractConfigTest
 import destiny.core.IntAgeNote
-import destiny.core.astrology.Coordinate
-import destiny.core.astrology.HouseSystem
-import destiny.core.astrology.Planet
-import destiny.core.astrology.TransConfigBuilder
+import destiny.core.astrology.*
 import destiny.core.calendar.eightwords.*
+import destiny.core.calendar.eightwords.EightWordsContextConfigBuilder.Companion.ewContext
+import destiny.core.calendar.eightwords.RisingSignConfigBuilder.Companion.risingSign
 import destiny.core.chinese.eightwords.PersonConfigBuilder.Companion.ewPersonConfig
 import kotlinx.serialization.KSerializer
 import java.util.*
@@ -75,25 +74,24 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
         }
       }
 
+      val risingSignConfig = with(HouseConfig()) {
+        houseSystem = HouseSystem.EQUAL
+        coordinate = Coordinate.SIDEREAL
+        risingSign {
+          tradChinese {
+            hourImpl = HourImpl.LMT
+          }
+        }
+      }
+
       val ewContextConfig = with(ewConfig) {
-        EightWordsContextConfigBuilder.ewContext {
-          risingSign {
-            houseCusp {
-              houseSystem = HouseSystem.EQUAL
-              coordinate = Coordinate.SIDEREAL
+        with(risingSignConfig) {
+          ewContext {
+            zodiacSign {
+              star = Planet.SUN
             }
-            tradChinese {
-              hourImpl = HourImpl.LMT
-            }
+            place = "台北市"
           }
-          zodiacSign {
-            star = Planet.SUN
-          }
-          house {
-            houseSystem = HouseSystem.EQUAL
-            coordinate = Coordinate.SIDEREAL
-          }
-          place = "台北市"
         }
       }
 

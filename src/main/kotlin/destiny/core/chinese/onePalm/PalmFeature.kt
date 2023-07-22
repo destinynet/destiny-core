@@ -36,18 +36,13 @@ data class PalmConfig(
   val clockwiseHouse: Boolean = true
 ) : java.io.Serializable
 
-context(IEightWordsConfig)
+context(IEightWordsConfig , IRisingSignConfig)
 @DestinyMarker
 class PalmConfigBuilder : Builder<PalmConfig> {
 
   var positiveImpl: PositiveImpl = PositiveImpl.Gender
 
   var monthAlgo: MonthAlgo = MonthAlgo.MONTH_FIXED_THIS
-
-  var risingSignConfig : RisingSignConfig = RisingSignConfig()
-  fun risingSign(block: RisingSignConfigBuilder.() -> Unit = {}) {
-    this.risingSignConfig = RisingSignConfigBuilder.risingSign(block)
-  }
 
   var trueRisingSign: Boolean = false
 
@@ -58,7 +53,7 @@ class PalmConfigBuilder : Builder<PalmConfig> {
   }
 
   companion object {
-    context(IEightWordsConfig)
+    context(IEightWordsConfig, IRisingSignConfig)
     fun palmConfig(block: PalmConfigBuilder.() -> Unit = {}): PalmConfig {
       return PalmConfigBuilder().apply(block).build()
     }

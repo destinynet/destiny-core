@@ -4,7 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.astrology.HouseConfig
-import destiny.core.astrology.HouseConfigBuilder
+import destiny.core.astrology.IHouseConfig
 import destiny.core.astrology.IHouseCuspFeature
 import destiny.core.astrology.ZodiacSign
 import destiny.core.calendar.GmtJulDay
@@ -22,22 +22,16 @@ enum class RisingSignImpl {
 
 @Serializable
 data class RisingSignConfig(
-  val houseConfig: HouseConfig = HouseConfig(),
-  val tradChineseRisingSignConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig(),
-  val impl: RisingSignImpl = RisingSignImpl.HouseCusp
-): java.io.Serializable
+  override val houseConfig: HouseConfig = HouseConfig(),
+  override var tradChineseRisingSignConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig(),
+  override var risingSignImpl: RisingSignImpl = RisingSignImpl.HouseCusp
+): IRisingSignConfig , IHouseConfig by houseConfig
 
-
+context(IHouseConfig)
 @DestinyMarker
 class RisingSignConfigBuilder : Builder<RisingSignConfig> {
 
-  var impl: RisingSignImpl = RisingSignImpl.HouseCusp
-
-  private var houseConfig: HouseConfig = HouseConfig()
-  fun houseCusp(block: HouseConfigBuilder.() -> Unit = {}) {
-    houseConfig = HouseConfigBuilder.houseCusp(block)
-    impl = RisingSignImpl.HouseCusp
-  }
+  var risingSignImpl: RisingSignImpl = RisingSignImpl.HouseCusp
 
   @DestinyMarker
   class TradChineseRisingSignConfigBuilder : Builder<TradChineseRisingSignConfig> {
@@ -52,14 +46,15 @@ class RisingSignConfigBuilder : Builder<RisingSignConfig> {
   private var tradChineseRisingSignConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig()
   fun tradChinese(block: TradChineseRisingSignConfigBuilder.() -> Unit = {}) {
     tradChineseRisingSignConfig = TradChineseRisingSignConfigBuilder().apply(block).build()
-    impl = RisingSignImpl.TradChinese
+    risingSignImpl = RisingSignImpl.TradChinese
   }
 
   override fun build(): RisingSignConfig {
-    return RisingSignConfig(houseConfig, tradChineseRisingSignConfig, impl)
+    return RisingSignConfig(houseConfig, tradChineseRisingSignConfig, risingSignImpl)
   }
 
   companion object {
+    context(IHouseConfig)
     fun risingSign(block: RisingSignConfigBuilder.() -> Unit = {}): RisingSignConfig {
       return RisingSignConfigBuilder().apply(block).build()
     }
@@ -78,7 +73,7 @@ class RisingSignFeature(private val houseCuspFeature: IHouseCuspFeature,
   override val defaultConfig: RisingSignConfig = RisingSignConfig()
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: RisingSignConfig): ZodiacSign {
-    return when (config.impl) {
+    return when (config.risingSignImpl) {
       RisingSignImpl.HouseCusp   -> houseCuspFeature.getRisingSign(gmtJulDay, loc, config.houseConfig)
       RisingSignImpl.TradChinese -> tradChineseRisingSignFeature.getModel(gmtJulDay, loc, config.tradChineseRisingSignConfig)
     }

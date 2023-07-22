@@ -19,11 +19,16 @@ internal class RisingSignConfigTest : AbstractConfigTest<RisingSignConfig>() {
     RisingSignImpl.TradChinese
   )
 
-  override val configByFunction = risingSign {
-    tradChinese {
-      hourImpl = HourImpl.LMT
+  override val configByFunction: RisingSignConfig
+    get() {
+      return with(HouseConfig()) {
+        risingSign {
+          tradChinese {
+            hourImpl = HourImpl.LMT
+          }
+        }
+      }
     }
-  }
 
   override val assertion = { raw: String ->
     assertTrue(raw.contains(""""tradChineseRisingSignConfig""".toRegex()))

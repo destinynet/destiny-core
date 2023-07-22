@@ -6,6 +6,7 @@ package destiny.core.chinese.onePalm
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.EightWordsConfig
+import destiny.core.calendar.eightwords.RisingSignConfig
 import destiny.core.chinese.onePalm.PalmConfigBuilder.Companion.palmConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
@@ -22,11 +23,13 @@ internal class PalmConfigTest : AbstractConfigTest<PalmConfig>() {
   override val configByFunction: PalmConfig
     get() {
       return with(EightWordsConfig()) {
-        palmConfig {
-          positiveImpl = PositiveImpl.GenderYinYang
-          monthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
-          trueRisingSign = true
-          clockwiseHouse = false
+        with(RisingSignConfig()) {
+          palmConfig {
+            positiveImpl = PositiveImpl.GenderYinYang
+            monthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
+            trueRisingSign = true
+            clockwiseHouse = false
+          }
         }
       }
     }

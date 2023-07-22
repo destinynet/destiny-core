@@ -7,11 +7,13 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
 
+
+
 @Serializable
 data class HouseConfig(
-  val houseSystem: HouseSystem = HouseSystem.PLACIDUS,
-  val coordinate: Coordinate = Coordinate.ECLIPTIC
-): java.io.Serializable
+  override var houseSystem: HouseSystem = HouseSystem.PLACIDUS,
+  override var coordinate: Coordinate = Coordinate.ECLIPTIC
+): IHouseConfig
 
 @DestinyMarker
 class HouseConfigBuilder : Builder<HouseConfig> {

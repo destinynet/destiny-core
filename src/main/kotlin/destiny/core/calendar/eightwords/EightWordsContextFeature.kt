@@ -20,39 +20,29 @@ import javax.cache.Cache
 @Serializable
 data class EightWordsContextConfig(
   val eightWordsConfig: EightWordsConfig = EightWordsConfig(),
-  override var risingSignConfig: RisingSignConfig = RisingSignConfig(),
+  override val risingSignConfig: RisingSignConfig = RisingSignConfig(),
   override var zodiacSignConfig: ZodiacSignConfig = ZodiacSignConfig(),
-  override var houseConfig : HouseConfig = HouseConfig(HouseSystem.MERIDIAN, Coordinate.ECLIPTIC),
   override var place : String? = null
-): IEightWordsContextConfig , IEightWordsConfig by eightWordsConfig
+  //override var houseConfig : HouseConfig = HouseConfig(HouseSystem.MERIDIAN, Coordinate.ECLIPTIC),
+): IEightWordsContextConfig , IEightWordsConfig by eightWordsConfig , IRisingSignConfig by risingSignConfig
 
-context(IEightWordsConfig)
+context(IEightWordsConfig, IRisingSignConfig)
 @DestinyMarker
 class EightWordsContextConfigBuilder : Builder<EightWordsContextConfig> {
-
-  var risingSignConfig: RisingSignConfig = RisingSignConfig()
-  fun risingSign(block : RisingSignConfigBuilder.() -> Unit = {}) {
-    this.risingSignConfig = RisingSignConfigBuilder.risingSign(block)
-  }
 
   private var zodiacSignConfig: ZodiacSignConfig = ZodiacSignConfig()
   fun zodiacSign(block : ZodiacSignBuilder.() -> Unit = {}) {
     this.zodiacSignConfig = ZodiacSignBuilder.zodiacSign(block)
   }
 
-  var houseConfig : HouseConfig = HouseConfig(HouseSystem.MERIDIAN , Coordinate.ECLIPTIC)
-  fun house(block: HouseConfigBuilder.() -> Unit = {}) {
-    this.houseConfig = HouseConfigBuilder.houseCusp(block)
-  }
-
   var place : String? = null
 
   override fun build(): EightWordsContextConfig {
-    return EightWordsContextConfig(ewConfig, risingSignConfig, zodiacSignConfig, houseConfig, place)
+    return EightWordsContextConfig(ewConfig, risingSignConfig, zodiacSignConfig, place)
   }
 
   companion object {
-    context(IEightWordsConfig)
+    context(IEightWordsConfig, IRisingSignConfig)
     fun ewContext(block : EightWordsContextConfigBuilder.() -> Unit = {}) : EightWordsContextConfig {
       return EightWordsContextConfigBuilder().apply(block).build()
     }

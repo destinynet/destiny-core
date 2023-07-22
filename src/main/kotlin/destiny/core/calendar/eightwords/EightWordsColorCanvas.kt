@@ -189,7 +189,7 @@ class EightWordsColorCanvas(
       cc.setText("命宮：", risingLine, 1, foreColor = null, backColor = null, title = "命宮")
 
       cc.setText(mainHouse, risingLine, 7, foreColor = "FF0000", backColor =  null, title = mainHouse)
-      cc.setText("（" + config.risingSignConfig.impl.getTitle(Locale.TAIWAN) + "）", risingLine, 19)
+      cc.setText("（" + config.risingSignConfig.risingSignImpl.getTitle(Locale.TAIWAN) + "）", risingLine, 19)
 
       val linkLine = 9
       if (linkUrl != null) {
