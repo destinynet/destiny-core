@@ -135,7 +135,7 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
         '+' -> true
         '-' -> false
         else -> {
-          logger.info { "Cannot debug debugString : $s" }
+          logger.debug { "Cannot debug debugString : $s" }
           null
         }
       }?.let { ad ->
