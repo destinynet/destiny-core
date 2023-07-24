@@ -13,6 +13,7 @@ import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.chrono.ChronoZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.time.temporal.ChronoField.*
 import java.time.temporal.ChronoUnit
 import java.time.temporal.JulianFields.JULIAN_DAY
@@ -289,7 +290,14 @@ object TimeTools {
     val trimmed = s.clean()
     logger.trace("clean '{}' => '{}' ", s, trimmed)
     return when {
-      trimmed.startsWith('G') -> LocalDateTime.parse(trimmed.substring(1), DateTimeFormatter.ISO_DATE_TIME)
+      trimmed.startsWith('G') -> trimmed.substring(1).let {
+        try {
+          LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
+        } catch (e: DateTimeParseException) {
+          logger.trace { "Cannot parse $it" }
+          null
+        }
+      }
       trimmed.startsWith('J') -> {
         val date = s.substring(1, s.indexOf('T'))
         val (year, month, day) = date.split("-").let {
