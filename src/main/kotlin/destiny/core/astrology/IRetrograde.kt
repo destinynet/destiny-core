@@ -176,9 +176,9 @@ interface IRetrograde {
    * 取得某範圍內，此星體的順逆三態
    */
   fun getNextStationaryCycles(star: Star, fromGmt: GmtJulDay, toGmtJulDay: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): List<StarRetrogradeCycle> {
-    return generateSequence(getNextStationaryCycle(star, fromGmt, starPositionImpl = starPositionImpl, transit = transit)) {
+    return generateSequence(getNextStationaryCycle(star, fromGmt, true, starPositionImpl, transit)) {
       val next = it.leavingGmt + 1
-      getNextStationaryCycle(star, next, starPositionImpl = starPositionImpl, transit = transit)
+      getNextStationaryCycle(star, next, true, starPositionImpl, transit)
     }.takeWhile { it.preparingGmt < toGmtJulDay }
       .toList()
   }
