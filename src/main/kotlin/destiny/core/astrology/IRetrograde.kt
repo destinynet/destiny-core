@@ -86,8 +86,8 @@ interface IRetrograde {
   /**
    * 取得星體逆行三態 , 目前只支援順行推導
    */
-  fun getNextStationaryCycle(star: Star, fromGmt: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): StarRetrogradeCycle {
-    val (nextStationary, nextPos, type) = getNextStationaryPosType(star, fromGmt, true, starPositionImpl)
+  fun getNextStationaryCycle(star: Star, fromGmt: GmtJulDay, forward: Boolean = true, starPositionImpl: IStarPosition<*>, transit: IStarTransit): StarRetrogradeCycle {
+    val (nextStationary, nextPos, type) = getNextStationaryPosType(star, fromGmt, forward, starPositionImpl)
 
     val retrogradingGmt: GmtJulDay
     val retrogradingPos: IPos
@@ -98,35 +98,68 @@ interface IRetrograde {
     when (type) {
       DIRECT_TO_RETROGRADE -> {
 
-        val (prevReturningGmt, prevReturningPos) = getNextStationaryPos(star, fromGmt, false, starPositionImpl)
-        val (prevRetroGmt, prevRetroPos) = getNextStationaryPos(star, prevReturningGmt - 1, false, starPositionImpl)
-        val leavingGmt = transit.getNextTransitGmt(star, prevRetroPos.lngDeg, prevReturningGmt, true, ECLIPTIC)
-        if (leavingGmt > fromGmt) {
-          // 處理剛離開 returning 還未到 leaving 的狀態
-          retrogradingGmt = prevRetroGmt
-          retrogradingPos = prevRetroPos
+        if (forward) {
+          // 順推
+          val (prevReturningGmt, prevReturningPos) = getNextStationaryPos(star, fromGmt, false, starPositionImpl)
+          val (prevRetroGmt, prevRetroPos) = getNextStationaryPos(star, prevReturningGmt - 1, false, starPositionImpl)
+          val leftGmt = transit.getNextTransitGmt(star, prevRetroPos.lngDeg, prevReturningGmt, true, ECLIPTIC)
+          if (leftGmt > fromGmt) {
+            // 處理 returning 到 leaving 的範圍
+            retrogradingGmt = prevRetroGmt
+            retrogradingPos = prevRetroPos
 
-          returningGmt = prevReturningGmt
-          returningPos = prevReturningPos
+            returningGmt = prevReturningGmt
+            returningPos = prevReturningPos
+          } else {
+            getNextStationaryPos(star, nextStationary + 1, true, starPositionImpl).also {
+              returningGmt = it.first
+              returningPos = it.second
+            }
+
+            retrogradingGmt = nextStationary
+            retrogradingPos = nextPos
+          }
         } else {
+          // 逆推
           getNextStationaryPos(star, nextStationary + 1, true, starPositionImpl).also {
             returningGmt = it.first
             returningPos = it.second
           }
-
           retrogradingGmt = nextStationary
           retrogradingPos = nextPos
         }
       }
 
       RETROGRADE_TO_DIRECT -> {
-        getNextStationaryPos(star, fromGmt, false, starPositionImpl).also {
-          retrogradingGmt = it.first
-          retrogradingPos = it.second
-        }
+        if (forward) {
+          // 順推
+          getNextStationaryPos(star, fromGmt, false, starPositionImpl).also {
+            retrogradingGmt = it.first
+            retrogradingPos = it.second
+          }
+          returningGmt = nextStationary
+          returningPos = nextPos
+        } else {
+          // 逆推
+          val (nextRetrogradeGmt, nextRetrogradePos) = getNextStationaryPos(star, fromGmt, true, starPositionImpl)
+          val (nextReturnGmt, nextReturnPos) = getNextStationaryPos(star, nextRetrogradeGmt + 1, true, starPositionImpl)
+          val prepareGmt = transit.getNextTransitGmt(star, nextReturnPos.lngDeg, nextRetrogradeGmt, false, ECLIPTIC)
+          if (fromGmt > prepareGmt) {
+            // 處理 preparing 到 retrograde 的範圍
+            retrogradingGmt = nextRetrogradeGmt
+            retrogradingPos = nextRetrogradePos
 
-        returningGmt = nextStationary
-        returningPos = nextPos
+            returningGmt = nextReturnGmt
+            returningPos = nextReturnPos
+          } else {
+            getNextStationaryPos(star, nextStationary - 1, false, starPositionImpl).also {
+              retrogradingGmt = it.first
+              retrogradingPos = it.second
+            }
+            returningGmt = nextStationary
+            returningPos = nextPos
+          }
+        }
       }
     }
 
@@ -143,9 +176,9 @@ interface IRetrograde {
    * 取得某範圍內，此星體的順逆三態
    */
   fun getNextStationaryCycles(star: Star, fromGmt: GmtJulDay, toGmtJulDay: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): List<StarRetrogradeCycle> {
-    return generateSequence(getNextStationaryCycle(star, fromGmt, starPositionImpl, transit)) {
+    return generateSequence(getNextStationaryCycle(star, fromGmt, starPositionImpl = starPositionImpl, transit = transit)) {
       val next = it.leavingGmt + 1
-      getNextStationaryCycle(star, next, starPositionImpl, transit)
+      getNextStationaryCycle(star, next, starPositionImpl = starPositionImpl, transit = transit)
     }.takeWhile { it.preparingGmt < toGmtJulDay }
       .toList()
   }
