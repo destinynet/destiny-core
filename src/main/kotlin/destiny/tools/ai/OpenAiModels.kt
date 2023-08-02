@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CompletionRequest(val prompt: String,
                              val user : String? = null,
+                             // 未來會改用 gpt-3.5-turbo-instruct , 但還沒 available (2023/8/3)
                              val model : String = "text-davinci-003",
                              @SerialName("max_tokens")
                              val maxTokens : Int = 2048,
