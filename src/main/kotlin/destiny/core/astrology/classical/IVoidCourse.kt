@@ -58,18 +58,18 @@ sealed interface IVoidCourse : Descriptive {
         logger.trace { "沒有 VOC : ${julDayResolver.getLocalDateTime(gmt)} " }
 
         getNextVoc(gmt)?.takeIf { nextVoc ->
-          nextVoc.beginGmt < toGmt
+          nextVoc.fromGmt < toGmt
         }
       } else {
-        logger.trace { "免進下一步，直接得到 VOC , 開始於 ${gmtVoc.beginGmt.let { julDayResolver.getLocalDateTime(it) }}" }
+        logger.trace { "免進下一步，直接得到 VOC , 開始於 ${gmtVoc.fromGmt.let { julDayResolver.getLocalDateTime(it) }}" }
         gmtVoc
       }
     }
 
     return generateSequence(getVoc(fromGmt)) {
-      val newGmt = (min(it.endGmt.value , it.exactAspectAfter.gmtJulDay.value) + 0.01).toGmtJulDay()
+      val newGmt = (min(it.toGmt.value, it.exactAspectAfter.gmtJulDay.value) + 0.01).toGmtJulDay()
       if (newGmt < toGmt) {
-        getVoc(newGmt)?.takeIf { voc -> voc.beginGmt < toGmt }
+        getVoc(newGmt)?.takeIf { voc -> voc.fromGmt < toGmt }
       } else
         null
     }.toList()
@@ -115,19 +115,20 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
         val p1 = exactAspectPrior.points.first { it != planet } as Planet
         val p2 = exactAspectAfter.points.first { it != planet } as Planet
 
-        val pos1 = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay, loc).lngDeg
-        val pos2 = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay, loc).lngDeg
+        val pos1 = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay, loc)
+        val pos2 = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay, loc)
+
 
         pointPosFuncMap[planet]?.getPosition(gmtJulDay, loc, centric)?.lngDeg?.let { planetDeg: ZodiacDegree ->
           planet.takeIf {
-            pos1.getAngle(pos2) > 30
+            pos1.lngDeg.getAngle(pos2.lngDeg) > 30
           }?.let {
             logger.trace {
               """
             ${planet}目前在 ${planetDeg.value} 度.
-            之前運行到 ${pos1.value} 時，曾與 $p1 形成 ${exactAspectPrior.aspect} , 
-            之後運行到 ${pos2.value} 時，將與 $p2 形成 ${exactAspectAfter.aspect} ,
-            橫跨共 ${pos1.getAngle(pos2)} 度 , 超過 30度。
+            之前運行到 ${pos1.lngDeg.value} 時，曾與 $p1 形成 ${exactAspectPrior.aspect} , 
+            之後運行到 ${pos2.lngDeg.value} 時，將與 $p2 形成 ${exactAspectAfter.aspect} ,
+            橫跨共 ${pos1.lngDeg.getAngle(pos2.lngDeg)} 度 , 超過 30度。
           """.trimIndent()
             }
             Misc.VoidCourse(planet, exactAspectPrior.gmtJulDay, pos1, exactAspectAfter.gmtJulDay, pos2, exactAspectPrior, exactAspectAfter)
@@ -155,7 +156,7 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
  * 月亮先離開與 p1交角+6分之後 , VOC 開始
  * 直到碰到 p2 - (月半徑/2 + p2半徑/2) 點，就會進入 p2 交角勢力範圍 , VOC 結束
  *
- * may be replaced with [VoidCourseConfig.VoidCourseImpl.WilliamLilly]
+ * may be replaced with [VoidCourseConfig.vocImpl.WilliamLilly]
  */
 class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
                              private val starPositionImpl: IStarPosition<*>,
@@ -223,7 +224,7 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
  *
  * 月亮(或其他)剛離開與其他星體的「準確」交角，直到進入下一個星座時，都還沒與其他星體形成準確交角
  *
- * may be replaced with [VoidCourseConfig.VoidCourseImpl.Medieval]
+ * may be replaced with [VoidCourseConfig.vocImpl.Medieval]
  */
 class VoidCourseMedieval(private val besiegedImpl: IBesieged,
                          private val starPositionImpl: IStarPosition<*>,
@@ -247,7 +248,7 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
             // 計算進入下一個星座的時間
             val nextSign = planetDeg.sign.next
             val beginGmt = exactAspectPrior.gmtJulDay
-            val beginDegree = starPositionImpl.getPosition(planet, beginGmt, loc).lngDeg
+            val beginDegree = starPositionImpl.getPosition(planet, beginGmt, loc)
             val endGmt = starTransitImpl.getNextTransitGmt(planet, nextSign.degree.toZodiacDegree(), gmtJulDay, true)
             val endDegree = nextSign.degree.toZodiacDegree()
             Misc.VoidCourse(

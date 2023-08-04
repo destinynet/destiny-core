@@ -136,7 +136,7 @@ sealed class Misc : IPlanetPattern {
   /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [exactAspectPrior] , 後一個準確交角資訊為 [exactAspectAfter]
    * */
   data class VoidCourse(override val planet: Planet,
-                        val beginGmt : GmtJulDay, val beginDegree : ZodiacDegree,
-                        val endGmt : GmtJulDay, val endDegree : ZodiacDegree,
-                        val exactAspectPrior: IAspectData, val exactAspectAfter: IAspectData) : Misc()
+                        override val fromGmt : GmtJulDay, override val fromPos : IZodiacDegree,
+                        override val toGmt : GmtJulDay, override val toPos : IZodiacDegree,
+                        val exactAspectPrior: IAspectData, val exactAspectAfter: IAspectData) : Misc() , IEvent
 }

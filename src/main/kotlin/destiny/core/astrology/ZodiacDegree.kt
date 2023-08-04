@@ -7,21 +7,28 @@ import destiny.tools.CircleTools.aheadOf
 import destiny.tools.CircleTools.normalize
 import java.io.Serializable
 
-/** 黃道帶度數 */
-@JvmInline
-value class ZodiacDegree private constructor(val value: Double) : Serializable {
+interface IZodiacDegree : Serializable {
+  val zDeg: Double
 
   val sign: ZodiacSign
-    get() = ZodiacSign.of(value)
+    get() = ZodiacSign.of(zDeg)
 
   val signDegree: Pair<ZodiacSign, Double>
-    get() = sign to value % 30
+    get() = sign to zDeg % 30
 
-  val intDeg : Int
-    get() = (value % 30).toInt()
+  val intDeg: Int
+    get() = (zDeg % 30).toInt()
 
   val intMin: Int
-    get() = ((value - value.toInt()) * 60).toInt()
+    get() = ((zDeg - zDeg.toInt()) * 60).toInt()
+}
+
+/** 黃道帶度數 */
+@JvmInline
+value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree {
+
+  override val zDeg: Double
+    get() = value
 
   fun getAngle(to: ZodiacDegree): Double {
     return Companion.getAngle(this.value, to.value)

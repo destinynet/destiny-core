@@ -228,10 +228,10 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     // 月亮空亡
     voidCourseFeature.getVoidCourses(fromGmtJulDay, toGmtJulDay, loc, relativeTransitImpl, config.vocConfig)
       .forEach { voc ->
-        if (voc.beginGmt > fromGmtJulDay) {
+        if (voc.fromGmt > fromGmtJulDay) {
           set.add(TimeDesc.VoidMoon.Begin(voc, loc))
         }
-        if (voc.endGmt < toGmtJulDay) {
+        if (voc.toGmt < toGmtJulDay) {
           set.add(TimeDesc.VoidMoon.End(voc, loc))
         }
       }
