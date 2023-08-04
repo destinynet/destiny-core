@@ -12,7 +12,6 @@ import java.time.chrono.IsoEra
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField.YEAR_OF_ERA
 import java.time.temporal.ChronoUnit
-import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -59,8 +58,8 @@ class LocalDateTimeTest {
   fun testLocalDateTime1582() {
     val ldt = LocalDateTime.of(1582, 10, 16, 0, 0)
     //TimeZone tz = TimeZone.getTimeZone("America/New_York");
-    val tz = TimeZone.getTimeZone("Asia/Taipei")
-    var zdt = ldt.atZone(tz.toZoneId())
+    val tz = ZoneId.of("Asia/Taipei")
+    var zdt = ldt.atZone(tz)
     for (i in 0..9) {
       zdt = ZonedDateTime.from(zdt).minusDays(1)
       logger.info("zdt = {}", zdt)

@@ -84,15 +84,6 @@ interface ILocation : ILatLng {
   /** 高度（公尺） */
   val altitudeMeter: Double?
 
-  val timeZone: TimeZone
-    get() = tzid?.let {
-      TimeZone.getTimeZone(it)
-    } ?: minuteOffset?.let {
-      TimeTools.findZoneIdByMinutes(it)?.let { tzid ->
-        TimeZone.getTimeZone(tzid)
-      }
-    } ?: TimeZone.getTimeZone(GMT)
-
   val zoneId: ZoneId
     get() = tzid?.let {
       ZoneId.of(it)

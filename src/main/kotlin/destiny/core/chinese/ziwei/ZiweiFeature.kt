@@ -1013,7 +1013,7 @@ class ZiweiFeature(
       notesBuilders.add(Pair("dst", arrayOf()))
       logger.trace("[DST]:校正日光節約時間...")
       logger.trace("lmt = {} , location = {} . location.hasMinuteOffset = {}", lmt, loc, loc.hasMinuteOffset)
-      logger.trace("loc tz = {} , minuteOffset = {}", loc.timeZone.id, loc.finalMinuteOffset)
+      logger.trace("loc tz = {} , minuteOffset = {}", loc.zoneId.id, loc.finalMinuteOffset)
       logger.trace("有日光節約時間 ,  GMT 時差 : {}", minuteOffset)
       logger.trace("時辰 = {} . hourImpl = {}", hour, config.ewConfig.dayHourConfig.hourBranchConfig.hourImpl)
     }

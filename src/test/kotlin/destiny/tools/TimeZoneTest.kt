@@ -3,7 +3,6 @@ package destiny.tools
 
 import mu.KotlinLogging
 import java.time.ZoneId
-import java.time.format.TextStyle
 import java.time.zone.ZoneRulesException
 import java.util.*
 import kotlin.test.Test
@@ -23,22 +22,6 @@ class TimeZoneTest {
     assertNotEquals(tp, sh)
   }
 
-  /**
-   * 列出東八區 的 tz
-   */
-  @Test
-  fun testGetAvailableIds() {
-    for (tz in TimeZone.getAvailableIDs(8 * 60 * 60 * 1000)) {
-      val timezone = TimeZone.getTimeZone(tz)
-      val zoneId = timezone.toZoneId()
-      logger.info("tz = {} , \tzoneId = {} , \tdisplayName(ENG) = {} , \tdisplayName(TW) = {}",
-        timezone.getDisplayName(false, TimeZone.SHORT, Locale.ENGLISH),
-        zoneId,
-        zoneId.getDisplayName(TextStyle.FULL, Locale.ENGLISH),
-        zoneId.getDisplayName(TextStyle.FULL, Locale.TAIWAN)
-      )
-    }
-  }
 
   /**
    * zoneId count = 595

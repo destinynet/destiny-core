@@ -34,19 +34,15 @@ class LocationTest {
   @Test
   fun `沒帶入 tzid , 但有帶入 minuteOffset , 將會反查 tzid 找出相符合的 tzid`() {
     val loc = Location(25.0, 121.0, null, 480, null)
-    assertEquals("Etc/GMT-8", loc.timeZone.id)
     /** 定義於 [java.time.ZoneId.SHORT_IDS] */
     assertEquals("Etc/GMT-8", loc.zoneId.id)
-    logger.info("{}", loc.timeZone)
     assertEquals(480, loc.finalMinuteOffset)
   }
 
   @Test
   fun `有帶入 tzid , 但帶入非平時的 minuteOffset`() {
     val loc = Location(25.0, 121.0, "Asia/Taipei", 540, null)
-    assertEquals("Asia/Taipei", loc.timeZone.id)
     assertEquals("Asia/Taipei", loc.zoneId.id)
-    logger.info("{}", loc.timeZone)
     assertEquals(540, loc.finalMinuteOffset)
   }
 

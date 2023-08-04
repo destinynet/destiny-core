@@ -9,7 +9,6 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -31,10 +30,10 @@ class LocalDateTime_AsiaTaipei_Test {
 
     logger.info("lmt = {}" , lmt)
 
-    val tz = TimeZone.getTimeZone("Asia/Taipei")
+    val tz = ZoneId.of("Asia/Taipei")
 
     //日光節約時間前一秒
-    lmt.atZone(tz.toZoneId()).also { zdt ->
+    lmt.atZone(tz).also { zdt ->
       logger.info("zdt = {}" , zdt)
 
       assertEquals(ZoneOffset.ofHours(8) , zdt.offset)
@@ -298,20 +297,16 @@ class LocalDateTime_AsiaTaipei_Test {
   /**
    * 1945-09-21 01:00 之前， GMT+9
    * 之後 , GMT+8
-   * 測試印出每秒的 offset
    */
   @Test
   fun testTaiwan1945() {
-    val lmt: LocalDateTime = LocalDateTime.of(1945, 9, 20, 23, 59, 0)
-    var zdt: ZonedDateTime
+    val zid = ZoneId.of("Asia/Taipei")
 
-    val tz = TimeZone.getTimeZone("Asia/Taipei")
-    zdt = lmt.atZone(tz.toZoneId())
-
-    do {
-      zdt = zdt.plusSeconds(1)
-      println("localDateTime = " + zdt.toLocalDateTime() + " , offset = " + zdt.offset)
-    } while (zdt.offset.toString().equals("+09:00", ignoreCase = true))
-
+    assertEquals("+09:00", ZonedDateTime.of(LocalDateTime.of(1945, 9, 20, 23, 59, 0), zid).offset.toString())
+    assertEquals("+09:00", ZonedDateTime.of(LocalDateTime.of(1945, 9, 20, 0, 0, 0), zid).offset.toString())
+    assertEquals("+09:00", ZonedDateTime.of(LocalDateTime.of(1945, 9, 20, 0, 59, 59), zid).offset.toString())
+    // 凌晨一點，切換回 GMT+8
+    assertEquals("+08:00", ZonedDateTime.of(LocalDateTime.of(1945, 9, 21, 1, 0, 0), zid).offset.toString())
+    assertEquals("+08:00", ZonedDateTime.of(LocalDateTime.of(1945, 9, 21, 1, 0, 1), zid).offset.toString())
   }
 }

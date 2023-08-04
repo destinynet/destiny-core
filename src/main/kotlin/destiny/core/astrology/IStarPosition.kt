@@ -72,7 +72,7 @@ interface IStarPosition<out T : IStarPos> {
                   coordinate: Coordinate,
                   temperature: Double = 0.0,
                   pressure: Double = 1013.25): IPos {
-    val gmt = TimeTools.getGmtFromLmt(lmt, location.timeZone.toZoneId())
+    val gmt = TimeTools.getGmtFromLmt(lmt, location.zoneId)
     return getPosition(star, gmt, centric, coordinate, location, temperature, pressure)
   }
 

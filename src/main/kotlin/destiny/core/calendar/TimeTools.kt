@@ -17,8 +17,6 @@ import java.time.format.DateTimeParseException
 import java.time.temporal.ChronoField.*
 import java.time.temporal.ChronoUnit
 import java.time.temporal.JulianFields.JULIAN_DAY
-import java.time.zone.ZoneRulesException
-import java.util.*
 import kotlin.math.abs
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -163,7 +161,7 @@ object TimeTools {
       val secOffset = loc.finalMinuteOffset * 60
       lmt.plus((0 - secOffset).toLong(), ChronoUnit.SECONDS)
     } else {
-      getGmtFromLmt(lmt, loc.timeZone.toZoneId())
+      getGmtFromLmt(lmt, loc.zoneId)
     }
   }
 
@@ -174,25 +172,6 @@ object TimeTools {
     val zfs = ZoneOffset.ofTotalSeconds(secondOffset)
     return getGmtFromLmt(lmt, zfs)
   }
-
-  /**
-   * LMT (with TimeZone) to GMT
-   *
-   * ZoneId.of(string) 可能會出現 ZoneRulesException
-   * 例如 : ZoneRulesException: Unknown time-zone ID: CTT
-   * 因為某些 三字元的 zoneId 被 deprecated
-   * 參照
-   * http://stackoverflow.com/a/41683097/298430
-   */
-  fun getGmtFromLmt(lmt: ChronoLocalDateTime<*>, timeZone: TimeZone): ChronoLocalDateTime<*> {
-    val zoneId = try {
-      ZoneId.of(timeZone.id)
-    } catch (ignored: ZoneRulesException) {
-      ZoneId.of("Asia/Taipei") // 若無法 parse , 則採用 Asia/Taipei
-    }
-    return getGmtFromLmt(lmt, zoneId)
-  }
-
 
   // ======================================== GMT -> LMT ========================================
 
@@ -207,9 +186,9 @@ object TimeTools {
   fun getLmtFromGmt(gmt: ChronoLocalDateTime<*>, loc: ILocation): ChronoLocalDateTime<*> {
     return (if (loc.hasMinuteOffset) {
       val secOffset = loc.finalMinuteOffset * 60
-      gmt.plus(secOffset.toLong(), ChronoUnit.SECONDS).atZone(loc.timeZone.toZoneId()).toLocalDateTime()
+      gmt.plus(secOffset.toLong(), ChronoUnit.SECONDS).atZone(loc.zoneId).toLocalDateTime()
     } else {
-      getLmtFromGmt(gmt, loc.timeZone.toZoneId())
+      getLmtFromGmt(gmt, loc.zoneId)
     }).fixError()
   }
 
@@ -225,15 +204,15 @@ object TimeTools {
 
 
   /**
-   * @return 此時刻，此 TimeZone ，是否有日光節約時間
+   * @return 此時刻，此 zoneId ，是否有日光節約時間
    */
-  fun isDst(lmt: ChronoLocalDateTime<*>, tz: TimeZone): Boolean {
-    val zdt = lmt.atZone(tz.toZoneId())
+  fun isDst(lmt: ChronoLocalDateTime<*>, zoneId: ZoneId): Boolean {
+    val zdt = lmt.atZone(zoneId)
     return zdt.zone.rules.isDaylightSavings(zdt.toInstant())
   }
 
   fun isDst(lmt: ChronoLocalDateTime<*>, loc: ILocation): Boolean {
-    return isDst(lmt, loc.timeZone)
+    return isDst(lmt, loc.zoneId)
   }
 
   fun getSecondsOffset(lmt: ChronoLocalDateTime<*>, zoneId: ZoneId): Int {
@@ -244,29 +223,16 @@ object TimeTools {
     return lmt.atZone(zoneId).offset.totalSeconds.toDuration(DurationUnit.SECONDS)
   }
 
-  /**
-   * @return 取得此地點、此時刻，與 GMT 的「秒差」 (不論是否有日光節約時間）
-   *
-   * 此演算法得到的結果，與下方相同
-   * zoneId.getRules().getOffset(lmt.atZone(zoneId).toInstant()).getTotalSeconds();
-   */
-  private fun getSecondsOffset(lmt: ChronoLocalDateTime<*>, tz: TimeZone): Int {
-    return getSecondsOffset(lmt, tz.toZoneId())
-  }
-
-  private fun getOffset(lmt: ChronoLocalDateTime<*>, tz: TimeZone): kotlin.time.Duration {
-    return getOffset(lmt, tz.toZoneId())
-  }
 
   /**
    * @return 取得此地點、此時刻，與 GMT 的「秒差」 (不論是否有日光節約時間）
    */
   private fun getSecondsOffset(lmt: ChronoLocalDateTime<*>, loc: ILocation): Int {
-    return getSecondsOffset(lmt, loc.timeZone)
+    return getSecondsOffset(lmt, loc.zoneId)
   }
 
   fun getOffset(lmt: ChronoLocalDateTime<*>, loc: ILocation): kotlin.time.Duration {
-    return getOffset(lmt, loc.timeZone)
+    return getOffset(lmt, loc.zoneId)
   }
 
   /** @return 確認此時刻，是否有DST。不論是否有沒有DST，都傳回與GMT誤差幾秒 */
