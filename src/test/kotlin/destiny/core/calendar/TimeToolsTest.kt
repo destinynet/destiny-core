@@ -34,6 +34,26 @@ class TimeToolsTest {
   private val logger = KotlinLogging.logger { }
 
   @Test
+  fun testFindZoneIdByUtcOffsetMinutes() {
+    assertEquals("Etc/GMT-8", TimeTools.findZoneIdByMinutes(60 * 8))
+    assertEquals("Etc/GMT-0", TimeTools.findZoneIdByMinutes(0))
+    assertEquals("Etc/GMT+5", TimeTools.findZoneIdByMinutes(- 60 * 5))
+  }
+
+  @Test
+  fun testFindZoneIds() {
+    // offset + 1 hour
+    TimeTools.findZoneIds(60 * 60).also {
+      assertEquals(32 , it.size)
+    }
+
+    // offset + 8 hour
+    TimeTools.findZoneIds(60 * 60 * 8).also {
+      assertEquals(25 , it.size)
+    }
+  }
+
+  @Test
   fun fixErrorTest() {
     assertEquals(LocalDateTime.of(2022, 2, 17, 18, 30, 0), LocalDateTime.of(2022, 2, 17, 18, 29, 59, 999_900_001).fixError())
     assertEquals(LocalDateTime.of(2022, 2, 17, 18, 0, 0), LocalDateTime.of(2022, 2, 17, 17, 59, 59, 999_900_001).fixError())

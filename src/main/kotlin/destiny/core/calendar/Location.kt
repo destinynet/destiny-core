@@ -9,8 +9,8 @@ import destiny.core.News.EastWest.WEST
 import destiny.core.News.NorthSouth.NORTH
 import destiny.core.News.NorthSouth.SOUTH
 import destiny.tools.LocaleTools
-import destiny.tools.location.TimeZoneUtils
 import java.io.Serializable
+import java.time.Instant
 import java.time.ZoneId
 import java.util.*
 import kotlin.math.abs
@@ -77,7 +77,9 @@ interface ILocation : ILatLng {
     get() = minuteOffset != null
 
   val finalMinuteOffset: Int
-    get() = minuteOffset ?: (TimeZone.getTimeZone(tzid).rawOffset / (60 * 1000))
+    get() {
+      return minuteOffset ?: (ZoneId.of(tzid).rules.getStandardOffset(Instant.now()).totalSeconds / 1000)
+    }
 
   /** 高度（公尺） */
   val altitudeMeter: Double?
@@ -86,14 +88,16 @@ interface ILocation : ILatLng {
     get() = tzid?.let {
       TimeZone.getTimeZone(it)
     } ?: minuteOffset?.let {
-      TimeZoneUtils.getTimeZone(it)
+      TimeTools.findZoneIdByMinutes(it)?.let { tzid ->
+        TimeZone.getTimeZone(tzid)
+      }
     } ?: TimeZone.getTimeZone(GMT)
 
   val zoneId: ZoneId
     get() = tzid?.let {
       ZoneId.of(it)
     } ?: minuteOffset?.let {
-      TimeZoneUtils.getTimeZone(it).toZoneId()
+      TimeTools.findZoneIdByMinutes(it)?.let { id -> ZoneId.of(id) }
     } ?: GMT
 
 } // ILocation

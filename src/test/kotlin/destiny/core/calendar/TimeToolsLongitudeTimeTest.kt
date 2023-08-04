@@ -7,7 +7,6 @@ package destiny.core.calendar
 import destiny.core.News.EastWest.EAST
 import destiny.core.News.EastWest.WEST
 import destiny.core.News.NorthSouth.NORTH
-import destiny.tools.location.TimeZoneUtils
 import java.time.LocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -59,7 +58,7 @@ class TimeToolsLongitudeTimeTest {
   @Test
   fun testGetLocalTimeWest1() {
     val lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0)
-    val location = Location(WEST, 76.5, NORTH, 25.0, TimeZoneUtils.getTimeZone(-300).id)
+    val location = Location(WEST, 76.5, NORTH, 25.0, TimeTools.findZoneIdByMinutes(-300)!!)
     val expected = LocalDateTime.of(2007, 3, 13, 23, 54, 0)
     assertEquals(expected, TimeTools.getLongitudeTime(lmt, location))
   }
@@ -68,7 +67,7 @@ class TimeToolsLongitudeTimeTest {
   @Test
   fun testGetLocalTimeWest2() {
     val lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0)
-    val location = Location(WEST, 85.0, NORTH, 25.0, TimeZoneUtils.getTimeZone(-300).id)
+    val location = Location(WEST, 85.0, NORTH, 25.0, TimeTools.findZoneIdByMinutes(-300)!!)
     val expected = LocalDateTime.of(2007, 3, 13, 23, 20, 0)
     assertEquals(expected, TimeTools.getLongitudeTime(lmt, location))
   }
@@ -77,7 +76,7 @@ class TimeToolsLongitudeTimeTest {
   @Test
   fun testGetLocalTimeWest3() {
     val lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0)
-    val location = Location(WEST, 70.5, NORTH, 25.0, TimeZoneUtils.getTimeZone(-300).id, null, 0.0)
+    val location = Location(WEST, 70.5, NORTH, 25.0, TimeTools.findZoneIdByMinutes(-300)!!, null, 0.0)
     val expected = LocalDateTime.of(2007, 3, 14, 0, 18, 0)
     assertEquals(expected, TimeTools.getLongitudeTime(lmt, location))
 
@@ -87,7 +86,7 @@ class TimeToolsLongitudeTimeTest {
   @Test
   fun testGetLocalTimeWest4() {
     val lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0)
-    val location = Location(WEST, 65.0, NORTH, 25.0, TimeZoneUtils.getTimeZone(-300).id, null, 0.0)
+    val location = Location(WEST, 65.0, NORTH, 25.0, TimeTools.findZoneIdByMinutes(-300)!!, null, 0.0)
     val expected = LocalDateTime.of(2007, 3, 14, 0, 40, 0)
     assertEquals(expected, TimeTools.getLongitudeTime(lmt, location))
   }

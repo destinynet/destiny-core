@@ -27,9 +27,36 @@ val GMT: ZoneId = ZoneId.of("GMT")
 
 object TimeTools {
 
-
-
   private val logger = KotlinLogging.logger { }
+
+  /** by Utc Offset Seconds */
+  fun findZoneIds(offsetSeconds : Int): List<String> {
+    val offset = ZoneOffset.ofTotalSeconds(offsetSeconds)
+
+    val zoneOffsets = ZoneId.getAvailableZoneIds().associateWith { zidString ->
+      ZoneId.of(zidString).rules.getOffset(Instant.now())
+    }
+
+    return zoneOffsets.entries.filter { (_, zOffset) ->
+      zOffset == offset
+    }.map { (zidString , _) -> zidString }
+      .toList()
+  }
+
+  /**
+   * find best matching tzid , 若有 Etc 開頭，先傳回，若沒有，再傳回最短字串
+   */
+  fun findZoneIdBySeconds(offsetSeconds: Int): String? {
+    val list = findZoneIds(offsetSeconds)
+    return list.firstOrNull { it.startsWith("Etc/") } ?: list.minByOrNull { it.length }
+  }
+
+  /**
+   * 承上 , minute 版本
+   */
+  fun findZoneIdByMinutes(offsetMinutes: Int): String? {
+    return findZoneIdBySeconds(offsetMinutes * 60)
+  }
 
   /**
    * ======================================== GMT [Instant] -> julian day [GmtJulDay] ========================================

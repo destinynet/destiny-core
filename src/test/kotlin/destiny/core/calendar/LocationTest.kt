@@ -4,10 +4,8 @@
  */
 package destiny.core.calendar
 
-import destiny.core.News
 import destiny.core.News.EastWest
 import destiny.core.News.NorthSouth
-import destiny.tools.location.TimeZoneUtils
 import mu.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -36,9 +34,9 @@ class LocationTest {
   @Test
   fun `沒帶入 tzid , 但有帶入 minuteOffset , 將會反查 tzid 找出相符合的 tzid`() {
     val loc = Location(25.0, 121.0, null, 480, null)
-    assertEquals("CTT", loc.timeZone.id)
+    assertEquals("Etc/GMT-8", loc.timeZone.id)
     /** 定義於 [java.time.ZoneId.SHORT_IDS] */
-    assertEquals("Asia/Shanghai", loc.zoneId.id)
+    assertEquals("Etc/GMT-8", loc.zoneId.id)
     logger.info("{}", loc.timeZone)
     assertEquals(480, loc.finalMinuteOffset)
   }
@@ -71,26 +69,26 @@ class LocationTest {
   @Test
   fun testLocation() {
     assertEquals(
-      Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id),
-      Location(-12, 23, 45.0, -23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id))
+      Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeTools.findZoneIdByMinutes(120)!!),
+      Location(-12, 23, 45.0, -23, 34, 56.0, TimeTools.findZoneIdByMinutes(120)!!))
 
     assertEquals(
-      Location(EastWest.EAST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id),
-      Location(12, 23, 45.0, -23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id))
+      Location(EastWest.EAST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeTools.findZoneIdByMinutes(120)!!),
+      Location(12, 23, 45.0, -23, 34, 56.0, TimeTools.findZoneIdByMinutes(120)!!))
 
     assertEquals(
-      Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.NORTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id),
-      Location(-12, 23, 45.0, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id))
+      Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.NORTH, 23, 34, 56.0, TimeTools.findZoneIdByMinutes(120)!!),
+      Location(-12, 23, 45.0, 23, 34, 56.0, TimeTools.findZoneIdByMinutes(120)!!))
 
     assertEquals(
-      Location(EastWest.EAST, 12, 23, 45.0, NorthSouth.NORTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id),
-      Location(12, 23, 45.0, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id))
+      Location(EastWest.EAST, 12, 23, 45.0, NorthSouth.NORTH, 23, 34, 56.0, TimeTools.findZoneIdByMinutes(120)!!),
+      Location(12, 23, 45.0, 23, 34, 56.0, TimeTools.findZoneIdByMinutes(120)!!))
   }
 
 
   @Test
   fun testLocationEastWestDoubleNorthSouthDoubleInt() {
-    val location = Location(News.EastWest.EAST, 121.51, News.NorthSouth.NORTH, 25.33, "Asia/Taipei")
+    val location = Location(EastWest.EAST, 121.51, NorthSouth.NORTH, 25.33, "Asia/Taipei")
     assertEquals(121, location.lngDeg.toLong())
     assertEquals(30, location.lngMin.toLong())
     assertEquals(36.0, location.lngSec)

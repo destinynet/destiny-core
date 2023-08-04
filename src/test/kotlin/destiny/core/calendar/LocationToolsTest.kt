@@ -5,7 +5,6 @@ package destiny.core.calendar
 
 import destiny.core.News.EastWest.EAST
 import destiny.core.News.NorthSouth.*
-import destiny.tools.location.TimeZoneUtils
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -111,16 +110,16 @@ class LocationToolsTest {
 
   @Test
   fun testEncode2012() {
-    var location = Location(EAST, 120, 30, 12.50, NORTH, 25, 3, 12.30, TimeZoneUtils.getTimeZone(480).id, null, 12.3456)
-    assertEquals("+12030 12.5+25 312.30 12.3456 CTT", LocationTools.encode2012(location))
+    var location = Location(EAST, 120, 30, 12.50, NORTH, 25, 3, 12.30, TimeTools.findZoneIdByMinutes(480)!!, null, 12.3456)
+    assertEquals("+12030 12.5+25 312.30 12.3456 Etc/GMT-8", LocationTools.encode2012(location))
 
-    location = Location(EAST, 121, 30, 12.44, NORTH, 25, 3, 12.44, TimeZoneUtils.getTimeZone(-60).id, null, 0.0)
+    location = Location(EAST, 121, 30, 12.44, NORTH, 25, 3, 12.44, TimeTools.findZoneIdByMinutes(-60)!!, null, 0.0)
     assertEquals("+1213012.44+25 312.44 0.0 Etc/GMT+1", LocationTools.encode2012(location))
 
-    location = Location(EAST, 121, 30, 12.44, NORTH, 25, 3, 12.44, TimeZoneUtils.getTimeZone(-60).id, null, -1000.0)
+    location = Location(EAST, 121, 30, 12.44, NORTH, 25, 3, 12.44, TimeTools.findZoneIdByMinutes(-60)!!, null, -1000.0)
     assertEquals("+1213012.44+25 312.44 -1000.0 Etc/GMT+1", LocationTools.encode2012(location))
 
-    location = Location(EAST, 121, 30, 12.44, NORTH, 25, 3, 12.44, TimeZoneUtils.getTimeZone(-60).id, 120, -1000.0)
+    location = Location(EAST, 121, 30, 12.44, NORTH, 25, 3, 12.44, TimeTools.findZoneIdByMinutes(-60)!!, 120, -1000.0)
     assertEquals("+1213012.44+25 312.44 -1000.0 Etc/GMT+1 120", LocationTools.encode2012(location))
   }
 

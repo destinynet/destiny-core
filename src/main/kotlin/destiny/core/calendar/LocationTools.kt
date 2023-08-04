@@ -7,7 +7,6 @@ import destiny.core.News.EastWest
 import destiny.core.News.NorthSouth.NORTH
 import destiny.core.News.NorthSouth.SOUTH
 import destiny.tools.AlignTools
-import destiny.tools.location.TimeZoneUtils
 import mu.KotlinLogging
 import java.time.ZoneId
 import java.util.*
@@ -183,9 +182,10 @@ object LocationTools {
           altitudeMeter = restTokens.toDouble()
           //parse 成功，代表舊款
           tzid = if (firstToken[0] == '+')
-            TimeZoneUtils.getTimeZone(firstToken.substring(1).toInt()).id
-          else
-            TimeZoneUtils.getTimeZone(firstToken.toInt()).id
+            TimeTools.findZoneIdByMinutes(firstToken.substring(1).toInt())!!
+          else{
+            TimeTools.findZoneIdByMinutes(firstToken.toInt())!!
+          }
         } catch (e: NumberFormatException) {
           //新款
           //println("新款 , firstToken = $firstToken")
