@@ -155,7 +155,7 @@ class LocalDateTimeTest {
   fun testEpochSecond() {
     val ldt = LocalDateTime.of(1970, 1, 1, 0, 0)
     logger.info("ldt = {}", ldt)
-    assertEquals(0, ldt.atZone(ZoneId.of("GMT")).toEpochSecond())
+    assertEquals(0, ldt.atZone(GMT).toEpochSecond())
     assertEquals((-60 * 60 * 8).toLong(), ldt.atZone(ZoneId.of("Asia/Taipei")).toEpochSecond())
 
   }

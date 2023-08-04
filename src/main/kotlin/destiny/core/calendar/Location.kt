@@ -87,14 +87,14 @@ interface ILocation : ILatLng {
       TimeZone.getTimeZone(it)
     } ?: minuteOffset?.let {
       TimeZoneUtils.getTimeZone(it)
-    } ?: TimeZone.getTimeZone("GMT")
+    } ?: TimeZone.getTimeZone(GMT)
 
   val zoneId: ZoneId
     get() = tzid?.let {
       ZoneId.of(it)
     } ?: minuteOffset?.let {
       TimeZoneUtils.getTimeZone(it).toZoneId()
-    } ?: ZoneId.of("GMT")
+    } ?: GMT
 
 } // ILocation
 

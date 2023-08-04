@@ -23,9 +23,11 @@ import kotlin.math.abs
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
+val GMT: ZoneId = ZoneId.of("GMT")
+
 object TimeTools {
 
-  private val GMT = ZoneId.of("GMT")
+
 
   private val logger = KotlinLogging.logger { }
 
@@ -83,6 +85,10 @@ object TimeTools {
     return getGmtJulDay(this , loc)
   }
 
+  fun ChronoLocalDateTime<*>.toGmtJulDay(zoneId: ZoneId): GmtJulDay {
+    return getGmtJulDay(this, zoneId)
+  }
+
   /**
    * 承上， date + time 拆開來的版本
    */
@@ -96,14 +102,16 @@ object TimeTools {
    */
 
 
-  /**
-   * 直接從 LMT 傳回 gmt 的 jul day
-   */
+  /** 直接從 LMT 傳回 gmt 的 jul day */
   fun getGmtJulDay(lmt: ChronoLocalDateTime<*>, loc: ILocation): GmtJulDay {
     val gmt = getGmtFromLmt(lmt, loc)
     return getGmtJulDay(gmt)
   }
 
+  fun getGmtJulDay(lmt: ChronoLocalDateTime<*>, zoneId: ZoneId): GmtJulDay {
+    val gmt = getGmtFromLmt(lmt, zoneId)
+    return getGmtJulDay(gmt)
+  }
 
 
   // ======================================== LMT -> GMT ========================================

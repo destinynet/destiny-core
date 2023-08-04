@@ -53,7 +53,7 @@ class InstantTest {
   @Test
   fun testInstantEpochSecond() {
     val firstDay = LocalDateTime.of(1582, 10, 15, 0, 0)
-    val instant = firstDay.atZone(ZoneId.of("GMT")).toInstant()
+    val instant = firstDay.atZone(GMT).toInstant()
     logger.info("1582-10-15 instant = {} , 秒數 = {}", instant, instant.epochSecond)
 
     // 減去一秒
@@ -63,7 +63,7 @@ class InstantTest {
 
     logger.info(
       "Greg 前一秒 : {}",
-      DateHourMinSecDecorator.getOutputString(instant2.atZone(ZoneId.of("GMT")).toLocalDateTime(), Locale.TAIWAN)
+      DateHourMinSecDecorator.getOutputString(instant2.atZone(GMT).toLocalDateTime(), Locale.TAIWAN)
     )
 
     assertEquals(LocalDateTime.of(1582, 10, 14, 23, 59, 59).toEpochSecond(ZoneOffset.UTC), instant2.epochSecond)
@@ -83,36 +83,36 @@ class InstantTest {
 
     // 當天午夜
     var instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT)
-    var halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY)
+    var halfAddedJulDay = instant.atZone(GMT).getLong(JULIAN_DAY)
     assertEquals(REAL_JUL_DAY_PLUS_HALF, halfAddedJulDay)
     assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5, TimeTools.getJulDay(instant).value)        // jul day + 0
 
     // 當天 6:00
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT + 60 * 60 * 6)
-    halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY)
+    halfAddedJulDay = instant.atZone(GMT).getLong(JULIAN_DAY)
     assertEquals(REAL_JUL_DAY_PLUS_HALF, halfAddedJulDay)
     assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 0.25, TimeTools.getJulDay(instant).value)  // jul day + 0.25
 
     // 當天中午 12:00
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT + 60 * 60 * 12)
-    halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY)
+    halfAddedJulDay = instant.atZone(GMT).getLong(JULIAN_DAY)
     assertEquals(REAL_JUL_DAY_PLUS_HALF, halfAddedJulDay)
     assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 0.5, TimeTools.getJulDay(instant).value)   // jul day + 0.5
 
     // 當天下午 18:00
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT + 60 * 60 * 18)
-    halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY)
+    halfAddedJulDay = instant.atZone(GMT).getLong(JULIAN_DAY)
     assertEquals(REAL_JUL_DAY_PLUS_HALF, halfAddedJulDay)
     assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 0.75, TimeTools.getJulDay(instant).value)   // jul day + 0.75
 
     // 當天下午 23:59
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT + (60 * 60 * 23).toLong() + (60 * 59).toLong() + 59)
-    halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY)
+    halfAddedJulDay = instant.atZone(GMT).getLong(JULIAN_DAY)
     assertEquals(REAL_JUL_DAY_PLUS_HALF, halfAddedJulDay)
 
     // 當天晚上 24:00 , julDay 就 +1
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT + (60 * 60 * 23).toLong() + (60 * 59).toLong() + 60)
-    halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY)
+    halfAddedJulDay = instant.atZone(GMT).getLong(JULIAN_DAY)
     assertEquals(REAL_JUL_DAY_PLUS_HALF + 1, halfAddedJulDay)
     assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 1, TimeTools.getJulDay(instant).value)   // jul day + 1
   }

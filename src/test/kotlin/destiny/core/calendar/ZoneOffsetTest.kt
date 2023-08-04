@@ -26,7 +26,7 @@ class ZoneOffsetTest {
   @Test
   fun sqlTimestamp() {
     val epochLMT = LocalDateTime.of(1970, 1, 1, 0, 0)
-    val epochZonedGMT = ZonedDateTime.of(epochLMT, ZoneId.of("GMT"))
+    val epochZonedGMT = ZonedDateTime.of(epochLMT, GMT)
     val cldt = LocalDateTime.of(1970, 1, 1, 0, 0)
     val sysDefaultZoneId = ZoneId.systemDefault()
 

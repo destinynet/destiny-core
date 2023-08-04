@@ -31,9 +31,6 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
 
   companion object {
 
-    private val GMT = ZoneId.of("GMT")
-
-
     private val logger = KotlinLogging.logger {  }
 
     /**

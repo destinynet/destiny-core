@@ -469,7 +469,7 @@ class TimeToolsTest {
     val lmt = LocalDateTime.of(2017, 9, 30, 14, 0)
     val zdt = TimeTools.getGmtFromZonedDateTime(lmt.atZone(asiaTaipeiZoneId))
     // 確認傳回的是 GMT 時區
-    assertEquals(ZoneId.of("GMT"), zdt.zone)
+    assertEquals(GMT, zdt.zone)
     // GMT 為清晨 6點
     assertEquals(LocalDateTime.of(2017, 9, 30, 6, 0), zdt.toLocalDateTime())
     assertEquals(2458026.75, TimeTools.getJulDay(zdt).value)
@@ -541,7 +541,7 @@ class TimeToolsTest {
     var zdt: ChronoZonedDateTime<*> =
       TimeTools.getGmtFromZonedDateTime(lmt.atOffset(ZoneOffset.ofHours(8)).atZoneSameInstant(asiaTaipeiZoneId))
     // 確認傳回的是 GMT 時區
-    assertEquals(ZoneId.of("GMT"), zdt.zone)
+    assertEquals(GMT, zdt.zone)
     // GMT 為清晨 0點
     assertEquals(LocalDateTime.of(1582, 10, 15, 0, 0), zdt.toLocalDateTime())
     assertEquals(Constants.CutOver1582.JULIAN_DAY, TimeTools.getJulDay(zdt).value)
@@ -552,7 +552,7 @@ class TimeToolsTest {
     zdt =
       TimeTools.getGmtFromZonedDateTime(lmt.atOffset(ZoneOffset.ofHours(9)).atZoneSameInstant(ZoneId.of("Asia/Tokyo")))
     // 確認傳回的是 GMT 時區
-    assertEquals(ZoneId.of("GMT"), zdt.zone)
+    assertEquals(GMT, zdt.zone)
     // GMT 為清晨 0點
     logger.info("gmt = {}", zdt)
     assertEquals(LocalDateTime.of(1582, 10, 15, 0, 0), zdt.toLocalDateTime())

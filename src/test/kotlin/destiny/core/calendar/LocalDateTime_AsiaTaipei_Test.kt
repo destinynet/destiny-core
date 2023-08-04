@@ -38,11 +38,11 @@ class LocalDateTime_AsiaTaipei_Test {
       logger.info("zdt = {}" , zdt)
 
       assertEquals(ZoneOffset.ofHours(8) , zdt.offset)
-      println("zoned gmt = " + zdt.withZoneSameInstant(ZoneId.of("GMT")))
+      println("zoned gmt = " + zdt.withZoneSameInstant(GMT))
 
-      zdt.withZoneSameInstant(ZoneId.of("GMT")).also { gmtZdt: ZonedDateTime ->
+      zdt.withZoneSameInstant(GMT).also { gmtZdt: ZonedDateTime ->
         logger.info("zoned gmt = {}" , gmtZdt)
-        assertEquals(ZonedDateTime.of(1974 , 3, 31 , 15 , 59 , 59 , 0 , ZoneId.of("GMT")) , gmtZdt)
+        assertEquals(ZonedDateTime.of(1974 , 3, 31 , 15 , 59 , 59 , 0 , GMT) , gmtZdt)
       }
     }
 
