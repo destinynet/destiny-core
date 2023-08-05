@@ -18,10 +18,13 @@ enum class RetrogradePhase {
 }
 
 /** 星體順逆三相之一 , Span  */
-data class RetrogradeSpan(override val fromGmt: GmtJulDay,
-                          override val toGmt: GmtJulDay,
-                          override val fromPos: IPos,
-                          override val toPos: IPos) : IEvent
+data class RetrogradeSpan(
+  override val star: Star,
+  override val fromGmt: GmtJulDay,
+  override val toGmt: GmtJulDay,
+  override val fromPos: IPos,
+  override val toPos: IPos
+) : IEvent
 
 /** 星體停滯資訊 */
 data class Stationary(val gmtJulDay: GmtJulDay, val star: Star, val type: StationaryType, val pos: IPos) : Serializable
@@ -37,9 +40,9 @@ data class RetrogradeCycle(
   /** 星體順逆三相 Map */
   val phaseMap: Map<RetrogradePhase, RetrogradeSpan> by lazy {
     mapOf(
-      PREPARING to RetrogradeSpan(preparingGmt, retrogradingGmt, preparingPos, retrogradingPos),
-      RETROGRADING to RetrogradeSpan(retrogradingGmt, returningGmt, retrogradingPos, returningPos),
-      LEAVING to RetrogradeSpan(returningGmt, leavingGmt, returningPos, leavingPos)
+      PREPARING to RetrogradeSpan(star, preparingGmt, retrogradingGmt, preparingPos, retrogradingPos),
+      RETROGRADING to RetrogradeSpan(star, retrogradingGmt, returningGmt, retrogradingPos, returningPos),
+      LEAVING to RetrogradeSpan(star, returningGmt, leavingGmt, returningPos, leavingPos)
     )
   }
 
@@ -237,7 +240,7 @@ interface IRetrograde {
   /**
    * 取得一段時間內，這些星體的順逆過程，按照時間排序
    */
-  fun getStarsPeriodStationary(stars: Set<Star>, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>): List<Stationary> {
+  fun getPeriodStationaries(stars: Set<Star>, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>): List<Stationary> {
     require(fromGmt < toGmt) {
       "toGmt ($toGmt) should >= fromGmt($fromGmt)"
     }
@@ -247,6 +250,35 @@ interface IRetrograde {
         getNextStationary(star, it.gmtJulDay + (1 / 1440.0), true, starPositionImpl)
       }.takeWhile { it.gmtJulDay <= toGmt }
     }.sortedBy { it.gmtJulDay }
+      .toList()
+  }
+
+
+  fun getPeriodCycles(stars: Set<Star>, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): List<RetrogradeCycle> {
+    require(fromGmt < toGmt) {
+      "toGmt ($toGmt) should >= fromGmt($fromGmt)"
+    }
+
+    return stars.flatMap { star ->
+      generateSequence(getNextStationaryCycle(star, fromGmt, true, starPositionImpl, transit)) {
+        getNextStationaryCycle(star, it.leavingGmt + 1, true, starPositionImpl, transit)
+      }.takeWhile { it.preparingGmt <= toGmt }
+    }.sortedBy { it.retrogradingGmt }
+      .toList()
+  }
+
+  /**
+   * 取得一段時間內，這些星體的逆行過程，按照時間排序
+   * 只取 [RETROGRADING]
+   */
+  fun getPeriodRetrogrades(stars: Set<Star>, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): List<RetrogradeSpan> {
+    require(fromGmt < toGmt) {
+      "toGmt ($toGmt) should >= fromGmt($fromGmt)"
+    }
+
+    return getPeriodCycles(stars, fromGmt, toGmt, starPositionImpl, transit)
+      .filter { it.retrogradingGmt in fromGmt..toGmt || it.returningGmt in fromGmt..toGmt }
+      .map { c -> c.phaseMap[RETROGRADING]!! }
       .toList()
   }
 

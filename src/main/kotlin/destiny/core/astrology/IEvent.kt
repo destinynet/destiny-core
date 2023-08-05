@@ -9,6 +9,7 @@ import kotlin.time.Duration
 
 
 interface IEvent {
+  val star: Star
   val fromGmt: GmtJulDay
   val toGmt: GmtJulDay
   val fromPos: IZodiacDegree
