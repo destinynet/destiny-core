@@ -6,6 +6,8 @@ package destiny.core.astrology
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.toInstant
 import java.io.Serializable
+import java.time.ZoneId
+import java.time.chrono.ChronoLocalDateTime
 import kotlin.time.Duration
 
 
@@ -22,7 +24,10 @@ interface IStarEventSpan : Serializable {
     }
 }
 
-interface IStarEventSpanDescription : IStarEventSpan {
+interface IStarLocalEventSpan : IStarEventSpan {
+  val fromLmt : ChronoLocalDateTime<*>
+  val toLmt : ChronoLocalDateTime<*>
+  val zoneId: ZoneId
   val title: String
   val description: String
 }

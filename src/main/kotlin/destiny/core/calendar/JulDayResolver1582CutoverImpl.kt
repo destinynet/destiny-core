@@ -85,14 +85,10 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
       val day = (u2 - floor(365.25 * u3) - floor(30.6001 * u4)).toInt()
       val y = (u3 + floor((u4 - 2.0) / 12.0) - 4800).toInt()
 
-      var ad = true
-      val year: Int
-
-      if (y <= 0) {
-        ad = false
-        year = -(y - 1) // 取正值
+      val (ad, year) = if (y <= 0) {
+        false to (-(y - 1)) // 取正值
       } else {
-        year = y
+        true to y
       }
 
       val h = (gmtJulDay - floor(gmtJulDay + 0.5) + 0.5) * 24.0

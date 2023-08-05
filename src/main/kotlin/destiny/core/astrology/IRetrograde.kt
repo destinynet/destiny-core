@@ -19,6 +19,7 @@ enum class RetrogradePhase {
 
 /** 星體順逆三相之一 , Span  */
 data class RetrogradeSpan(
+  val phase: RetrogradePhase,
   override val star: Star,
   override val fromGmt: GmtJulDay,
   override val toGmt: GmtJulDay,
@@ -40,9 +41,9 @@ data class RetrogradeCycle(
   /** 星體順逆三相 Map */
   val phaseMap: Map<RetrogradePhase, RetrogradeSpan> by lazy {
     mapOf(
-      PREPARING to RetrogradeSpan(star, preparingGmt, retrogradingGmt, preparingPos, retrogradingPos),
-      RETROGRADING to RetrogradeSpan(star, retrogradingGmt, returningGmt, retrogradingPos, returningPos),
-      LEAVING to RetrogradeSpan(star, returningGmt, leavingGmt, returningPos, leavingPos)
+      PREPARING to RetrogradeSpan(PREPARING, star, preparingGmt, retrogradingGmt, preparingPos, retrogradingPos),
+      RETROGRADING to RetrogradeSpan(RETROGRADING, star, retrogradingGmt, returningGmt, retrogradingPos, returningPos),
+      LEAVING to RetrogradeSpan(LEAVING, star, returningGmt, leavingGmt, returningPos, leavingPos)
     )
   }
 
@@ -269,16 +270,20 @@ interface IRetrograde {
 
   /**
    * 取得一段時間內，這些星體的逆行過程，按照時間排序
-   * 只取 [RETROGRADING]
+   * [phases] : 搜尋哪些 [RetrogradePhase]
    */
-  fun getPeriodRetrogrades(stars: Set<Star>, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): List<RetrogradeSpan> {
+  fun getPeriodRetrogrades(stars: Set<Star>, fromGmt: GmtJulDay, toGmt: GmtJulDay, phases : Set<RetrogradePhase> = setOf(RETROGRADING), starPositionImpl: IStarPosition<*>, transit: IStarTransit): List<RetrogradeSpan> {
     require(fromGmt < toGmt) {
       "toGmt ($toGmt) should >= fromGmt($fromGmt)"
     }
 
     return getPeriodCycles(stars, fromGmt, toGmt, starPositionImpl, transit)
-      .filter { it.retrogradingGmt in fromGmt..toGmt || it.returningGmt in fromGmt..toGmt }
-      .map { c -> c.phaseMap[RETROGRADING]!! }
+      .flatMap { it.phaseMap.toList() }
+      .filter { (phase, _) -> phases.contains(phase) }
+      .filter { (_, span) ->
+        span.fromGmt in fromGmt..toGmt || span.toGmt in fromGmt .. toGmt
+      }
+      .map { pair -> pair.second }
       .toList()
   }
 

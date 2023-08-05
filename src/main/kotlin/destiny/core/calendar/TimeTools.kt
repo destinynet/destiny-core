@@ -200,6 +200,11 @@ object TimeTools {
     return getLmtFromGmt(gmt, location)
   }
 
+  fun getLmtFromGmt(gmtJulDay: GmtJulDay, zoneId: ZoneId, julDayResolver: JulDayResolver) : ChronoLocalDateTime<*> {
+    val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
+    return getLmtFromGmt(gmt, zoneId)
+  }
+
   // ======================================== DST 查詢 ========================================
 
 
@@ -384,7 +389,7 @@ object TimeTools {
   /** 將 double 的秒數，拆為 long秒數 以及 longNano 兩個值  */
   fun splitSecond(seconds: Double): Pair<Int, Int> {
     val secs = seconds.toInt()
-    val nano = ((seconds - secs) * 1000000000).toInt()
+    val nano = ((seconds - secs) * 1_000_000_000).toInt()
     return Pair(secs, nano)
   }
 
