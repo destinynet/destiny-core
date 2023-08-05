@@ -100,7 +100,7 @@ sealed interface IVoidCourse : Descriptive {
 /**
  * The Moon does not complete an exact Ptolemaic aspect with any planet within the next 30 degrees.
  *
- * may be replaced with [VoidCourseConfig.VoidCourseImpl.Hellenistic]
+ * may be replaced with [VoidCourseConfig.vocImpl.Hellenistic]
  */
 class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
                             private val starPositionImpl: IStarPosition<*>) : IVoidCourse, Serializable {

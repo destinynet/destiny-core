@@ -24,7 +24,7 @@ data class RetrogradeSpan(
   override val toGmt: GmtJulDay,
   override val fromPos: IPos,
   override val toPos: IPos
-) : IEvent
+) : IStarEventSpan
 
 /** 星體停滯資訊 */
 data class Stationary(val gmtJulDay: GmtJulDay, val star: Star, val type: StationaryType, val pos: IPos) : Serializable

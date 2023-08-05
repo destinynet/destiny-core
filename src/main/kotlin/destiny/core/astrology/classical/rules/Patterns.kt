@@ -138,7 +138,7 @@ sealed class Misc : IPlanetPattern {
   data class VoidCourse(override val planet: Planet,
                         override val fromGmt : GmtJulDay, override val fromPos : IZodiacDegree,
                         override val toGmt : GmtJulDay, override val toPos : IZodiacDegree,
-                        val exactAspectPrior: IAspectData, val exactAspectAfter: IAspectData) : Misc() , IEvent {
+                        val exactAspectPrior: IAspectData, val exactAspectAfter: IAspectData) : Misc(), IStarEventSpan {
     override val star: Star = planet
                         }
 }

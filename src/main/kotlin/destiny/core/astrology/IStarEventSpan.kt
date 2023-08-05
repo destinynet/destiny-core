@@ -5,10 +5,11 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.toInstant
+import java.io.Serializable
 import kotlin.time.Duration
 
 
-interface IEvent {
+interface IStarEventSpan : Serializable {
   val star: Star
   val fromGmt: GmtJulDay
   val toGmt: GmtJulDay
@@ -19,4 +20,9 @@ interface IEvent {
     get() {
       return toGmt.toInstant().minus(fromGmt.toInstant())
     }
+}
+
+interface IStarEventSpanDescription : IStarEventSpan {
+  val title: String
+  val description: String
 }
