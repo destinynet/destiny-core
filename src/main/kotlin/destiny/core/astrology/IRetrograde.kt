@@ -207,10 +207,10 @@ interface IRetrograde {
   /**
    * 取得某範圍內，此星體的順逆三態
    */
-  fun getNextStationaryCycles(planet: Planet, fromGmt: GmtJulDay, toGmtJulDay: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): List<RetrogradeCycle> {
-    return generateSequence(getNextStationaryCycle(planet, fromGmt, true, starPositionImpl, transit)) {
+  fun getNextStationaryCycles(star: Star, fromGmt: GmtJulDay, toGmtJulDay: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): List<RetrogradeCycle> {
+    return generateSequence(getNextStationaryCycle(star, fromGmt, true, starPositionImpl, transit)) {
       val next = it.leavingGmt + 1
-      getNextStationaryCycle(planet, next, true, starPositionImpl, transit)
+      getNextStationaryCycle(star, next, true, starPositionImpl, transit)
     }.takeWhile { it.preparingGmt < toGmtJulDay }
       .toList()
   }
@@ -222,13 +222,13 @@ interface IRetrograde {
   /**
    * 列出一段時間內，某星體的順逆過程
    */
-  fun getPeriodStationary(planet: Planet, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>): List<Stationary> {
+  fun getPeriodStationary(star: Star, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>): List<Stationary> {
     require(fromGmt < toGmt) {
       "toGmt ($toGmt) should >= fromGmt($fromGmt)"
     }
 
-    return generateSequence(getNextStationary(planet, fromGmt, true, starPositionImpl)) {
-      getNextStationary(planet, it.gmtJulDay + (1 / 1440.0), true, starPositionImpl)
+    return generateSequence(getNextStationary(star, fromGmt, true, starPositionImpl)) {
+      getNextStationary(star, it.gmtJulDay + (1 / 1440.0), true, starPositionImpl)
     }.takeWhile { it.gmtJulDay <= toGmt }
       .toList()
   }
@@ -237,14 +237,14 @@ interface IRetrograde {
   /**
    * 取得一段時間內，這些星體的順逆過程，按照時間排序
    */
-  fun getStarsPeriodStationary(planets: Set<Planet>, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>): List<Stationary> {
+  fun getStarsPeriodStationary(stars: Set<Star>, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>): List<Stationary> {
     require(fromGmt < toGmt) {
       "toGmt ($toGmt) should >= fromGmt($fromGmt)"
     }
 
-    return planets.flatMap { planet ->
-      generateSequence(getNextStationary(planet, fromGmt, true, starPositionImpl)) {
-        getNextStationary(planet, it.gmtJulDay + (1 / 1440.0), true, starPositionImpl)
+    return stars.flatMap { star ->
+      generateSequence(getNextStationary(star, fromGmt, true, starPositionImpl)) {
+        getNextStationary(star, it.gmtJulDay + (1 / 1440.0), true, starPositionImpl)
       }.takeWhile { it.gmtJulDay <= toGmt }
     }.sortedBy { it.gmtJulDay }
       .toList()
