@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
  * 代表黃白道的交點，以及近遠點 , 繼承圖如下：
  *
  *       LunarPoint (Abstract)
- *              日月交點
+ *           月亮交點
  *              |
  *              |
  *     +--------+--------+

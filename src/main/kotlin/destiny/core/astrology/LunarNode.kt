@@ -50,11 +50,31 @@ sealed class LunarNode(nameKey: String,
    */
   object SOUTH_MEAN : LunarNode("LunarNode.SOUTH", "LunarNode.SOUTH_ABBR", SOUTH, MEAN, '☋')
 
+
+
   override fun compareTo(other: LunarNode): Int {
     if (this == other)
       return 0
 
     return inner_values.indexOf(this) - inner_values.indexOf(other)
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is LunarNode) return false
+    if (!super.equals(other)) return false
+
+    if (northSouth != other.northSouth) return false
+    if (nodeType != other.nodeType) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = super.hashCode()
+    result = 31 * result + northSouth.hashCode()
+    result = 31 * result + nodeType.hashCode()
+    return result
   }
 
   companion object : IPoints<LunarNode> {
@@ -69,7 +89,7 @@ sealed class LunarNode(nameKey: String,
     val trueList by lazy { listOf(*trueArray) }
     val meanList by lazy { listOf(*meanArray) }
 
-    override val values: Array<LunarNode> by lazy { meanArray }
+    override val values: Array<LunarNode> by lazy { trueArray }
 
     override fun fromString(value: String, locale: Locale): LunarNode? {
       return values.firstOrNull {

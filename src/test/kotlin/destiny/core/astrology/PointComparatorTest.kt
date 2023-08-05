@@ -18,16 +18,18 @@ class PointComparatorTest {
     pc.compare(Planet.SATURN, Planet.PLUTO).also { assertTrue(it < 0) }
 
 
+    pc.compare(LunarNode.NORTH_TRUE, LunarNode.SOUTH_TRUE).also { assertTrue(it < 0) }
     pc.compare(LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN).also { assertTrue(it < 0) }
 
-
-
+    pc.compare(LunarNode.SOUTH_TRUE, Asteroid.CERES).also { assertTrue(it < 0) }
     pc.compare(LunarNode.SOUTH_MEAN, Asteroid.CERES).also { assertTrue(it < 0) }
 
+    pc.compare(LunarNode.SOUTH_TRUE, Asteroid.PALLAS).also { assertTrue(it < 0) }
     pc.compare(LunarNode.SOUTH_MEAN, Asteroid.PALLAS).also { assertTrue(it < 0) }
 
     pc.compare(Planet.SUN, LunarNode.NORTH_TRUE).also { assertTrue(it < 0) }
 
+    pc.compare(Planet.MOON, LunarNode.SOUTH_TRUE).also { assertTrue(it < 0) }
     pc.compare(Planet.MOON, LunarNode.SOUTH_MEAN).also { assertTrue(it < 0) }
 
     pc.compare(Asteroid.JUNO, FixedStar.ALGOL).also { assertTrue(it < 0) }

@@ -8,7 +8,6 @@ import destiny.core.astrology.*
 import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver
 import destiny.tools.Feature
 import mu.KotlinLogging
 import java.io.Serializable
@@ -49,15 +48,14 @@ class ReturnContext(
   private val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator,
   /** 計算星體到黃道幾度的時刻，的介面  */
   private var starTransitImpl: IStarTransit,
-  private val horoscopeFeature: Feature<HoroscopeConfig, IHoroscopeModel>,
-  private val julDayResolver: JulDayResolver
+  private val horoscopeFeature: Feature<HoroscopeConfig, IHoroscopeModel>
 ) : IReturnContext, Serializable {
 
   override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel {
     return getConvergentClamps(natalModel.gmtJulDay , nowGmtJulDay).let { (from , to) ->
 
       val config = HoroscopeConfig(
-        setOf(*Planet.values, *Axis.array, LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN),
+        setOf(*Planet.values, *Axis.array, LunarNode.NORTH_TRUE, LunarNode.SOUTH_MEAN),
         HouseSystem.PLACIDUS,
         Coordinate.ECLIPTIC,
         Centric.GEO,

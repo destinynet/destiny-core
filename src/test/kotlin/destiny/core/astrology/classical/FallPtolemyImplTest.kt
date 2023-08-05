@@ -41,7 +41,7 @@ class FallPtolemyImplTest {
     with(fallImpl) {
       assertSame(ARIES, SATURN.getFallingSign())
       assertSame(GEMINI, LunarNode.SOUTH_TRUE.getFallingSign())
-      assertSame(GEMINI, LunarNode.SOUTH_MEAN.getFallingSign())
+      assertSame(GEMINI, LunarNode.SOUTH_TRUE.getFallingSign())
       assertSame(CANCER, MARS.getFallingSign())
       assertSame(VIRGO, VENUS.getFallingSign())
       assertSame(LIBRA, SUN.getFallingSign())
