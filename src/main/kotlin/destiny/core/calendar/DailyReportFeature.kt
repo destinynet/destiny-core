@@ -121,7 +121,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
         add(hourlyLunarStation.getFullName(config.locale))
       }
 
-      return TimeDesc.TypeHour(branchStartGmtJulDay, zoneId, branch, hourlyLunarStation, descs)
+      return TimeDesc.TypeHour(branchStartGmtJulDay, branch, hourlyLunarStation, descs)
     }
 
     val hourBranchConfig = config.lunarStationConfig.ewConfig.dayHourConfig.hourBranchConfig
@@ -150,13 +150,13 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     val listTransPoints: List<TimeDesc> = TransPoint.entries.flatMap { tp ->
       listOf(SUN, MOON).map { planet ->
         val gmt = riseTransFeature.getGmtTrans(fromGmt, planet, tp, loc, hourBranchConfig.transConfig)!!
-        TimeDesc.TypeTransPoint(gmt, zoneId, planet.toString(Locale.TAIWAN) + tp.getTitle(Locale.TAIWAN), planet, tp)
+        TimeDesc.TypeTransPoint(gmt, planet.toString(Locale.TAIWAN) + tp.getTitle(Locale.TAIWAN), planet, tp)
       }
     }
 
     // 節氣
     val listSolarTerms: List<TimeDesc> = solarTermsImpl.getPeriodSolarTermsEvents(fromGmt, toGmt).map { event ->
-      TimeDesc.TypeSolarTerms(event.begin, loc.zoneId, event.solarTerms.toString(), event.solarTerms)
+      TimeDesc.TypeSolarTerms(event.begin, event.solarTerms.toString(), event.solarTerms)
     }
 
     // 日月交角
@@ -168,7 +168,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     ).flatMap { (deg, phase) ->
       relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(MOON, SUN, fromGmt, toGmt, deg)
         .filter { day -> day in fromGmt .. toGmt }
-        .map { TimeDesc.TypeSunMoon(it , loc.zoneId, phase) }
+        .map { TimeDesc.TypeSunMoon(it, phase) }
     }
 
     set.addAll(listBranches)
@@ -182,7 +182,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     // 日食
     eclipseImpl.getNextSolarEclipse(fromGmt, true, SolarType.entries).also { eclipse ->
       if (eclipse.begin in fromGmt .. toGmt) {
-        set.add(TimeDesc.TypeSolarEclipse(eclipse.begin, zoneId, eclipse.solarType, EclipseTime.BEGIN))
+        set.add(TimeDesc.TypeSolarEclipse(eclipse.begin, eclipse.solarType, EclipseTime.BEGIN))
       }
 
       if (eclipse.max in fromGmt .. toGmt) {
@@ -194,25 +194,25 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
           }
         }
         set.add(
-          TimeDesc.TypeSolarEclipse(eclipse.max, zoneId, eclipse.solarType, EclipseTime.MAX, locPlace)
+          TimeDesc.TypeSolarEclipse(eclipse.max, eclipse.solarType, EclipseTime.MAX, locPlace)
         )
       }
 
       if (eclipse.end in fromGmt .. toGmt) {
-        set.add(TimeDesc.TypeSolarEclipse(eclipse.end, zoneId, eclipse.solarType, EclipseTime.END))
+        set.add(TimeDesc.TypeSolarEclipse(eclipse.end, eclipse.solarType, EclipseTime.END))
       }
     }
 
     // 月食
     eclipseImpl.getNextLunarEclipse(fromGmt, true).also { eclipse ->
       if (eclipse.begin in fromGmt .. toGmt) {
-        set.add(TimeDesc.TypeLunarEclipse(eclipse.begin, zoneId, eclipse.lunarType, EclipseTime.BEGIN))
+        set.add(TimeDesc.TypeLunarEclipse(eclipse.begin, eclipse.lunarType, EclipseTime.BEGIN))
       }
       if (eclipse.begin in fromGmt .. toGmt) {
-        set.add(TimeDesc.TypeLunarEclipse(eclipse.max, zoneId, eclipse.lunarType, EclipseTime.MAX))
+        set.add(TimeDesc.TypeLunarEclipse(eclipse.max, eclipse.lunarType, EclipseTime.MAX))
       }
       if (eclipse.end in fromGmt .. toGmt) {
-        set.add(TimeDesc.TypeLunarEclipse(eclipse.end, zoneId, eclipse.lunarType, EclipseTime.END))
+        set.add(TimeDesc.TypeLunarEclipse(eclipse.end, eclipse.lunarType, EclipseTime.END))
       }
     }
 

@@ -9,7 +9,6 @@ import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.MutualDataWithSign
 import destiny.core.calendar.GmtJulDay
 import destiny.core.chinese.YinYang
-import java.time.ZoneId
 
 /**
  * 行星的 25種狀態
@@ -141,6 +140,5 @@ sealed class Misc : IPlanetPattern {
                         override val end : GmtJulDay, override val toPos : IZodiacDegree,
                         val exactAspectPrior: IAspectData, val exactAspectAfter: IAspectData) : Misc(), IStarEventSpan {
     override val star: Star = planet
-    override val zoneId: ZoneId? = null
                         }
 }

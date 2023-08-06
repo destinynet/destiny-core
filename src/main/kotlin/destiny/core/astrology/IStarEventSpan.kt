@@ -4,7 +4,6 @@
 package destiny.core.astrology
 
 import destiny.core.calendar.IEventSpan
-import java.time.ZoneId
 
 
 interface IStarEventSpan : IEventSpan {
@@ -14,7 +13,6 @@ interface IStarEventSpan : IEventSpan {
 }
 
 interface IStarLocalEventSpan : IStarEventSpan {
-  override val zoneId: ZoneId
   val title: String
   val description: String
 }

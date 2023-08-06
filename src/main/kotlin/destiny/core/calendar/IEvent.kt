@@ -8,7 +8,6 @@ import kotlin.time.Duration
 /** 單一時間點 */
 interface IEvent : Serializable , Comparable<IEvent>{
   val begin: GmtJulDay
-  val zoneId: ZoneId?
 
   override fun compareTo(other: IEvent): Int {
     return when {
