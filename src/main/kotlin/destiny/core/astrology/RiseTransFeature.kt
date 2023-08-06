@@ -49,6 +49,11 @@ interface IRiseTransFeature : Feature<RiseTransConfig, GmtJulDay?> {
   /**
    * 來源、目標時間都是 GMT
    */
+  fun getGmtTrans(fromGmt : GmtJulDay , star: Star, point: TransPoint, loc: ILocation,
+                  transConfig: TransConfig = TransConfig()): GmtJulDay? {
+    return getModel(fromGmt, loc, RiseTransConfig(star, point, transConfig))
+  }
+
   fun getGmtTrans(
     fromGmt: ChronoLocalDateTime<*>, star: Star, point: TransPoint, loc: ILocation,
     julDayResolver: JulDayResolver, transConfig: TransConfig = TransConfig()

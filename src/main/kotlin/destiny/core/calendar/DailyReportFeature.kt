@@ -4,6 +4,7 @@
 package destiny.core.calendar
 
 import destiny.core.astrology.*
+import destiny.core.astrology.Planet.*
 import destiny.core.astrology.classical.IVoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseFeature
@@ -23,7 +24,6 @@ import destiny.tools.serializers.LocaleSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
-import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
@@ -105,18 +105,23 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
 
 
   private fun calculate(lmtStart: ChronoLocalDateTime<*>, lmtEnd: ChronoLocalDateTime<*>, loc: ILocation, config: DailyReportConfig): List<TimeDesc> {
+    val zoneId = loc.zoneId
+
+    val fromGmt: GmtJulDay = TimeTools.getGmtJulDay(lmtStart, loc)
+    val toGmt = TimeTools.getGmtJulDay(lmtEnd, loc)
 
     logger.info { "from $lmtStart to $lmtEnd" }
 
     val set = sortedSetOf<TimeDesc>()
 
-    fun getTimeDesc(branch: Branch, branchStart: ChronoLocalDateTime<*>, middleLmt: ChronoLocalDateTime<*>, loc: ILocation): TimeDesc.TypeHour {
+    fun getTimeDesc(branch: Branch, branchStartGmtJulDay: GmtJulDay, middleLmt: ChronoLocalDateTime<*>, loc: ILocation): TimeDesc.TypeHour {
       val hourlyLunarStation = lunarStationFeature.hourlyFeature.getModel(middleLmt, loc, config.lunarStationConfig)
       val descs = buildList {
         add("$branch 初")
         add(hourlyLunarStation.getFullName(config.locale))
       }
-      return TimeDesc.TypeHour(branchStart as LocalDateTime, branch, hourlyLunarStation, descs)
+
+      return TimeDesc.TypeHour(branchStartGmtJulDay, zoneId, branch, hourlyLunarStation, descs)
     }
 
     val hourBranchConfig = config.lunarStationConfig.ewConfig.dayHourConfig.hourBranchConfig
@@ -127,37 +132,34 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
       val list12 = list.take(12).map { (branch , branchStart) ->
         val middleLmt = branchMiddleMap[branch]!!
 
-        getTimeDesc(branch, branchStart, middleLmt, loc)
+        val branchStartGmtJulDay = TimeTools.getGmtJulDay(branchStart, loc)
+        getTimeDesc(branch, branchStartGmtJulDay, middleLmt, loc)
       }
 
       val tomorrowLunarStationMap = hourBranchFeature.getDailyBranchMiddleMap(lmtStart.toLocalDate().plus(1, ChronoUnit.DAYS), loc, hourBranchConfig)
       val nextDayZi = list.last().let { (branch , branchStart) ->
         val middleLmt = tomorrowLunarStationMap[Branch.子]!!
 
-        getTimeDesc(branch, branchStart, middleLmt, loc)
+        val branchStartGmtJulDay = TimeTools.getGmtJulDay(branchStart, loc)
+        getTimeDesc(branch, branchStartGmtJulDay, middleLmt, loc)
       }
       list12.plus(nextDayZi)
     }
 
     // 日月 四個至點
     val listTransPoints: List<TimeDesc> = TransPoint.entries.flatMap { tp ->
-      listOf(Planet.SUN, Planet.MOON).map { planet ->
-        TimeDesc.TypeTransPoint(
-          riseTransFeature.getLmtTrans(lmtStart, planet, tp, loc, julDayResolver, hourBranchConfig.transConfig) as LocalDateTime,
-          planet.toString(Locale.TAIWAN) + tp.getTitle(Locale.TAIWAN),
-          planet,
-          tp
-        )
+      listOf(SUN, MOON).map { planet ->
+        val gmt = riseTransFeature.getGmtTrans(fromGmt, planet, tp, loc, hourBranchConfig.transConfig)!!
+        TimeDesc.TypeTransPoint(gmt, zoneId, planet.toString(Locale.TAIWAN) + tp.getTitle(Locale.TAIWAN), planet, tp)
       }
     }
 
     // 節氣
-    val listSolarTerms: List<TimeDesc> =
-      solarTermsImpl.getPeriodSolarTermsLMTs(lmtStart, lmtEnd, loc).map { solarTermsTime ->
-        TimeDesc.TypeSolarTerms(
-          solarTermsTime.time as LocalDateTime, solarTermsTime.solarTerms.toString(), solarTermsTime.solarTerms
-        )
-      }
+    val listSolarTerms: List<TimeDesc> = solarTermsImpl.getPeriodSolarTermsGMTs(fromGmt, toGmt).map { solarTermsTime ->
+      val gmt = TimeTools.getGmtJulDay(solarTermsTime.time)
+      TimeDesc.TypeSolarTerms(gmt , loc.zoneId, solarTermsTime.solarTerms.toString(), solarTermsTime.solarTerms)
+    }
+
 
     // 日月交角
     val listSunMoonAngle: List<TimeDesc> = listOf(
@@ -166,9 +168,9 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
       180.0 to LunarPhase.FULL,
       270.0 to LunarPhase.LAST_QUARTER
     ).flatMap { (deg, phase) ->
-      relativeTransitImpl.getPeriodRelativeTransitLMTs(Planet.MOON, Planet.SUN, lmtStart, lmtEnd, loc, deg, julDayResolver)
-        .filter { t -> TimeTools.isBetween(t, lmtStart, lmtEnd) }
-        .map { t -> TimeDesc.TypeSunMoon(t as LocalDateTime, phase) }
+      relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(MOON, SUN, fromGmt, toGmt, deg)
+        .filter { day -> day in fromGmt .. toGmt }
+        .map { TimeDesc.TypeSunMoon(it , loc.zoneId, phase) }
     }
 
     set.addAll(listBranches)
@@ -177,20 +179,15 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     set.addAll(listSunMoonAngle)
 
 
-    val fromGmtJulDay = TimeTools.getGmtJulDay(lmtStart, loc)
-    val toGmtJulDay = TimeTools.getGmtJulDay(lmtEnd, loc)
+
 
     // 日食
-    eclipseImpl.getNextSolarEclipse(fromGmtJulDay, true, SolarType.entries).also { eclipse ->
-      val begin = TimeTools.getLmtFromGmt(eclipse.begin, loc, julDayResolver) as LocalDateTime
-      val max = TimeTools.getLmtFromGmt(eclipse.max, loc, julDayResolver) as LocalDateTime
-      val end = TimeTools.getLmtFromGmt(eclipse.end, loc, julDayResolver) as LocalDateTime
-
-      if (TimeTools.isBetween(begin, lmtStart, lmtEnd)) {
-        set.add(TimeDesc.TypeSolarEclipse(begin, eclipse.solarType, EclipseTime.BEGIN))
+    eclipseImpl.getNextSolarEclipse(fromGmt, true, SolarType.entries).also { eclipse ->
+      if (eclipse.begin in fromGmt .. toGmt) {
+        set.add(TimeDesc.TypeSolarEclipse(eclipse.begin, zoneId, eclipse.solarType, EclipseTime.BEGIN))
       }
 
-      if (TimeTools.isBetween(max, lmtStart, lmtEnd)) {
+      if (eclipse.max in fromGmt .. toGmt) {
         // 日食 食甚 觀測資料
         val locPlace: LocationPlace? = eclipseImpl.getEclipseCenterInfo(eclipse.max)?.let { (obs, _) ->
           val maxLoc = Location(obs.lat, obs.lng)
@@ -199,39 +196,35 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
           }
         }
         set.add(
-          TimeDesc.TypeSolarEclipse(max, eclipse.solarType, EclipseTime.MAX, locPlace)
+          TimeDesc.TypeSolarEclipse(eclipse.max, zoneId, eclipse.solarType, EclipseTime.MAX, locPlace)
         )
       }
 
-      if (TimeTools.isBetween(end, lmtStart, lmtEnd)) {
-        set.add(TimeDesc.TypeSolarEclipse(end, eclipse.solarType, EclipseTime.END))
+      if (eclipse.end in fromGmt .. toGmt) {
+        set.add(TimeDesc.TypeSolarEclipse(eclipse.end, zoneId, eclipse.solarType, EclipseTime.END))
       }
     }
 
     // 月食
-    eclipseImpl.getNextLunarEclipse(fromGmtJulDay, true).also { eclipse ->
-      val begin = TimeTools.getLmtFromGmt(eclipse.begin, loc, julDayResolver) as LocalDateTime
-      val max = TimeTools.getLmtFromGmt(eclipse.max, loc, julDayResolver) as LocalDateTime
-      val end = TimeTools.getLmtFromGmt(eclipse.end, loc, julDayResolver) as LocalDateTime
-
-      if (TimeTools.isBetween(begin, lmtStart, lmtEnd)) {
-        set.add(TimeDesc.TypeLunarEclipse(begin, eclipse.lunarType, EclipseTime.BEGIN))
+    eclipseImpl.getNextLunarEclipse(fromGmt, true).also { eclipse ->
+      if (eclipse.begin in fromGmt .. toGmt) {
+        set.add(TimeDesc.TypeLunarEclipse(eclipse.begin, zoneId, eclipse.lunarType, EclipseTime.BEGIN))
       }
-      if (TimeTools.isBetween(max, lmtStart, lmtEnd)) {
-        set.add(TimeDesc.TypeLunarEclipse(max, eclipse.lunarType, EclipseTime.MAX))
+      if (eclipse.begin in fromGmt .. toGmt) {
+        set.add(TimeDesc.TypeLunarEclipse(eclipse.max, zoneId, eclipse.lunarType, EclipseTime.MAX))
       }
-      if (TimeTools.isBetween(end, lmtStart, lmtEnd)) {
-        set.add(TimeDesc.TypeLunarEclipse(end, eclipse.lunarType, EclipseTime.END))
+      if (eclipse.end in fromGmt .. toGmt) {
+        set.add(TimeDesc.TypeLunarEclipse(eclipse.end, zoneId, eclipse.lunarType, EclipseTime.END))
       }
     }
 
     // 月亮空亡
-    voidCourseFeature.getVoidCourses(fromGmtJulDay, toGmtJulDay, loc, relativeTransitImpl, config.vocConfig)
+    voidCourseFeature.getVoidCourses(fromGmt, toGmt, loc, relativeTransitImpl, config.vocConfig)
       .forEach { voc ->
-        if (voc.begin > fromGmtJulDay) {
+        if (voc.begin > fromGmt) {
           set.add(TimeDesc.VoidMoon.Begin(voc, loc))
         }
-        if (voc.end < toGmtJulDay) {
+        if (voc.end < toGmt) {
           set.add(TimeDesc.VoidMoon.End(voc, loc))
         }
       }

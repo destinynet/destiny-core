@@ -10,51 +10,49 @@ import destiny.core.astrology.eclipse.LunarType
 import destiny.core.astrology.eclipse.SolarType
 import destiny.core.chinese.Branch
 import destiny.tools.getTitle
-import java.io.Serializable
-import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 
-sealed class TimeDesc(open val lmt: LocalDateTime,
-                      open val descs: List<String>) : Serializable, Comparable<TimeDesc> {
 
-  constructor(lmt: LocalDateTime, desc: String) : this(lmt, listOf(desc))
+sealed class TimeDesc(override val begin : GmtJulDay,
+                      override val zoneId: ZoneId,
+                      open val descs: List<String>) : IEvent {
 
-  override fun compareTo(other: TimeDesc): Int {
-    return when {
-      lmt.isBefore(other.lmt) -> -1
-      lmt.isAfter(other.lmt) -> 1
-      else -> 0
-    }
-  }
+  constructor(begin: GmtJulDay, zoneId: ZoneId, desc: String) : this(begin, zoneId, listOf(desc))
 
   /** 時辰開始 */
-  data class TypeHour(override val lmt: LocalDateTime,
+  data class TypeHour(override val begin: GmtJulDay,
+                      override val zoneId: ZoneId,
                       val b: Branch,
                       val lunarStation: LunarStation?,
-                      override val descs: List<String>) : TimeDesc(lmt, descs)
+                      override val descs: List<String>) : TimeDesc(begin, zoneId, descs)
 
 
   /** 日、月 四個至點 */
-  data class TypeTransPoint(override val lmt: LocalDateTime,
+  data class TypeTransPoint(override val begin: GmtJulDay,
+                            override val zoneId: ZoneId,
                             val desc: String,
                             val point: AstroPoint,
-                            val tp: TransPoint) : TimeDesc(lmt, listOf(desc))
+                            val tp: TransPoint) : TimeDesc(begin, zoneId, listOf(desc))
 
   /** 節氣 */
-  data class TypeSolarTerms(override val lmt: LocalDateTime,
+  data class TypeSolarTerms(override val begin: GmtJulDay,
+                            override val zoneId: ZoneId,
                             val desc: String,
-                            val solarTerms: SolarTerms) : TimeDesc(lmt, listOf(desc))
+                            val solarTerms: SolarTerms) : TimeDesc(begin, zoneId, listOf(desc))
 
   /** 日月交角 */
-  data class TypeSunMoon(override val lmt: LocalDateTime,
-                         val phase: LunarPhase) : TimeDesc(lmt , phase.getTitle(Locale.getDefault()))
+  data class TypeSunMoon(override val begin: GmtJulDay,
+                         override val zoneId: ZoneId,
+                         val phase: LunarPhase) : TimeDesc(begin, zoneId , phase.getTitle(Locale.getDefault()))
 
   /** 日食 */
-  data class TypeSolarEclipse(override val lmt: LocalDateTime,
+  data class TypeSolarEclipse(override val begin: GmtJulDay,
+                              override val zoneId: ZoneId,
                               val type: SolarType,
                               val time: EclipseTime,
                               val locPlace: ILocationPlace? = null) :
-    TimeDesc(lmt,
+    TimeDesc(begin, zoneId,
              buildString {
                append(type.getTitle(Locale.getDefault()))
                append(" ")
@@ -67,27 +65,30 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
     )
 
   /** 月食 */
-  data class TypeLunarEclipse(override val lmt: LocalDateTime,
+  data class TypeLunarEclipse(override val begin: GmtJulDay,
+                              override val zoneId: ZoneId,
                               val type: LunarType,
                               val time: EclipseTime
-  ) : TimeDesc(lmt, when (type) {
+  ) : TimeDesc(begin, zoneId, when (type) {
     LunarType.PARTIAL -> LunarType.PARTIAL.getTitle(Locale.getDefault()) + " " + time.getTitle(Locale.getDefault())
     LunarType.TOTAL -> LunarType.TOTAL.getTitle(Locale.getDefault()) + time.getTitle(Locale.getDefault())
     LunarType.PENUMBRA -> LunarType.PENUMBRA.getTitle(Locale.getDefault()) + time.getTitle(Locale.getDefault())
   })
 
 
-  sealed class VoidMoon(override val lmt: LocalDateTime , desc: String) : TimeDesc(lmt , desc) {
+  sealed class VoidMoon(override val begin: GmtJulDay,
+                        override val zoneId: ZoneId,
+                        desc: String) : TimeDesc(begin, zoneId , desc) {
 
     /** 月空亡開始 */
     data class Begin(val voidCourse: Misc.VoidCourse, val loc: ILocation) : VoidMoon(
-      TimeTools.getLmtFromGmt(voidCourse.begin, loc, julDayResolver) as LocalDateTime,
+      voidCourse.begin, loc.zoneId,
       "月空亡開始，剛離開與 ${voidCourse.exactAspectPrior.points.first { it != Planet.MOON }} 的 ${voidCourse.exactAspectPrior.aspect.getTitle(Locale.TAIWAN)} "
     )
 
     /** 月空亡結束 */
     data class End(val voidCourse: Misc.VoidCourse, val loc: ILocation) : VoidMoon(
-      TimeTools.getLmtFromGmt(voidCourse.end, loc, julDayResolver) as LocalDateTime, "月空亡結束"
+      voidCourse.end, loc.zoneId, "月空亡結束"
     )
   }
 
