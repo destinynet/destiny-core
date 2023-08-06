@@ -379,9 +379,7 @@ object Tst {
 /** 平均太陽時 */
 object Lmt {
   fun getHourBranch(gmtJulDay: GmtJulDay, location: ILocation, julDayResolver: JulDayResolver): Branch {
-    val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
-
-    val lmt = TimeTools.getLmtFromGmt(gmt, location)
+    val lmt = gmtJulDay.toLmt(location, julDayResolver)
     return getHourBranch(lmt)
   }
 

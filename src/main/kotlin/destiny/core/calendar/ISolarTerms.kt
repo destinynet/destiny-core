@@ -39,24 +39,8 @@ interface ISolarTerms {
 
   /**
    * 計算從某時(fromGmtTime) 到某時(toGmtTime) 之間的節氣 , in GMT
-   * @return List <SolarTermsTime>
-   */
-  @Deprecated("")
-  fun getPeriodSolarTermsGMTs(fromGmt: GmtJulDay, toGmt: GmtJulDay): List<SolarTermsTime>
-
-  /**
-   * 計算從某時(fromGmtTime) 到某時(toGmtTime) 之間的節氣 , in GMT
    */
   fun getPeriodSolarTermsEvents(fromGmt: GmtJulDay, toGmt: GmtJulDay): List<SolarTermsEvent>
-
-
-  /**
-   * @return 傳回某段時間內的節氣列表， GMT 時刻
-   */
-  fun getPeriodSolarTermsGMTs(fromGmtTime: ChronoLocalDateTime<*>,
-                              toGmtTime: ChronoLocalDateTime<*>): List<SolarTermsTime> {
-    return getPeriodSolarTermsGMTs(TimeTools.getGmtJulDay(fromGmtTime), TimeTools.getGmtJulDay(toGmtTime))
-  }
 
   /**
    * 計算從某時(fromLmtTime) 到某時(toLmtTime) 之間的節氣 , in LMT
@@ -66,14 +50,11 @@ interface ISolarTerms {
    */
   fun getPeriodSolarTermsLMTs(fromLmt: ChronoLocalDateTime<*>,
                               toLmt: ChronoLocalDateTime<*>,
-                              location: ILocation): List<SolarTermsTime> {
+                              location: ILocation): List<SolarTermsEvent> {
     val fromGmt = TimeTools.getGmtJulDay(fromLmt, location)
     val toGmt = TimeTools.getGmtJulDay(toLmt, location)
 
-    return getPeriodSolarTermsGMTs(fromGmt, toGmt).map { stt ->
-      val gmt = stt.time
-      SolarTermsTime(stt.solarTerms, TimeTools.getLmtFromGmt(gmt, location))
-    }.toList()
+    return getPeriodSolarTermsEvents(fromGmt, toGmt)
   }
 
 
