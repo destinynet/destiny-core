@@ -9,6 +9,7 @@ import java.time.chrono.ChronoLocalDateTime
 /**
  * 存放 一對 SolarTerms 以及 Time 的小 class
  */
+@Deprecated(message = "", replaceWith = ReplaceWith("SolarTermsEvent"))
 data class SolarTermsTime internal constructor(
   /** 節氣  */
   val solarTerms: SolarTerms,

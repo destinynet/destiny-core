@@ -155,11 +155,9 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     }
 
     // 節氣
-    val listSolarTerms: List<TimeDesc> = solarTermsImpl.getPeriodSolarTermsGMTs(fromGmt, toGmt).map { solarTermsTime ->
-      val gmt = TimeTools.getGmtJulDay(solarTermsTime.time)
-      TimeDesc.TypeSolarTerms(gmt , loc.zoneId, solarTermsTime.solarTerms.toString(), solarTermsTime.solarTerms)
+    val listSolarTerms: List<TimeDesc> = solarTermsImpl.getPeriodSolarTermsEvents(fromGmt, toGmt).map { event ->
+      TimeDesc.TypeSolarTerms(event.begin, loc.zoneId, event.solarTerms.toString(), event.solarTerms)
     }
-
 
     // 日月交角
     val listSunMoonAngle: List<TimeDesc> = listOf(

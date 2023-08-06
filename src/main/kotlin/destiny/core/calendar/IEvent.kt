@@ -19,10 +19,8 @@ interface IEvent : Serializable , Comparable<IEvent>{
   }
 }
 
-fun IEvent.getFromLmt(julDayResolver: JulDayResolver): ChronoLocalDateTime<*>? {
-  return zoneId?.let { id ->
-    TimeTools.getLmtFromGmt(begin, id, julDayResolver)
-  }
+fun IEvent.getBeginLmt(julDayResolver: JulDayResolver, zoneId : ZoneId): ChronoLocalDateTime<*>? {
+  return TimeTools.getLmtFromGmt(begin, zoneId, julDayResolver)
 }
 
 /** 時間範圍，有開始以及結束 */
@@ -35,8 +33,6 @@ interface IEventSpan : IEvent {
     }
 }
 
-fun IEventSpan.getToLmt(julDayResolver: JulDayResolver): ChronoLocalDateTime<*>? {
-  return zoneId?.let { id ->
-    TimeTools.getLmtFromGmt(end, id, julDayResolver)
-  }
+fun IEventSpan.getEndLmt(julDayResolver: JulDayResolver, zoneId: ZoneId): ChronoLocalDateTime<*>? {
+  return TimeTools.getLmtFromGmt(end, zoneId, julDayResolver)
 }

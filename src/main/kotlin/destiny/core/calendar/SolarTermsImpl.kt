@@ -44,6 +44,7 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
    *
    * @return List <SolarTermsTime>
   </SolarTermsTime> */
+  @Deprecated("")
   override fun getPeriodSolarTermsGMTs(fromGmt: GmtJulDay, toGmt: GmtJulDay): List<SolarTermsTime> {
     var nowST = getSolarTermsFromGMT(fromGmt)
     var fromGmtValue = fromGmt
@@ -63,6 +64,29 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
       nowST = nowST.next()
       solarTermsTime = SolarTermsTime(nowST, fromGmtTime)
       resultList.add(solarTermsTime)
+      nextZodiacDegree += 15
+    }
+    return resultList
+  }
+
+  override fun getPeriodSolarTermsEvents(fromGmt: GmtJulDay, toGmt: GmtJulDay): List<SolarTermsEvent> {
+    var nowST = getSolarTermsFromGMT(fromGmt)
+    var fromGmtValue = fromGmt
+
+    var nextZodiacDegree = nowST.zodiacDegree.toZodiacDegree() + 15
+
+    val resultList = mutableListOf<SolarTermsEvent>()
+
+    while (fromGmtValue < toGmt) {
+      val event: SolarTermsEvent
+
+      fromGmtValue = starTransitImpl.getNextTransitGmt(SUN, nextZodiacDegree, fromGmtValue, true, ECLIPTIC)
+
+      if (fromGmtValue > toGmt)
+        break
+      nowST = nowST.next()
+      event = SolarTermsEvent(fromGmtValue, nowST)
+      resultList.add(event)
       nextZodiacDegree += 15
     }
     return resultList

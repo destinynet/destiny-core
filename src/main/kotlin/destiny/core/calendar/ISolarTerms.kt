@@ -41,7 +41,13 @@ interface ISolarTerms {
    * 計算從某時(fromGmtTime) 到某時(toGmtTime) 之間的節氣 , in GMT
    * @return List <SolarTermsTime>
    */
+  @Deprecated("")
   fun getPeriodSolarTermsGMTs(fromGmt: GmtJulDay, toGmt: GmtJulDay): List<SolarTermsTime>
+
+  /**
+   * 計算從某時(fromGmtTime) 到某時(toGmtTime) 之間的節氣 , in GMT
+   */
+  fun getPeriodSolarTermsEvents(fromGmt: GmtJulDay, toGmt: GmtJulDay): List<SolarTermsEvent>
 
 
   /**
