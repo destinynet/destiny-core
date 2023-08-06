@@ -6,9 +6,17 @@ import java.time.chrono.ChronoLocalDateTime
 import kotlin.time.Duration
 
 /** 單一時間點 */
-interface IEvent : Serializable {
+interface IEvent : Serializable , Comparable<IEvent>{
   val begin: GmtJulDay
   val zoneId: ZoneId?
+
+  override fun compareTo(other: IEvent): Int {
+    return when {
+      begin < other.begin -> -1
+      begin > other.begin -> 1
+      else                -> 0
+    }
+  }
 }
 
 fun IEvent.getFromLmt(julDayResolver: JulDayResolver): ChronoLocalDateTime<*>? {

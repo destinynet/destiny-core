@@ -14,7 +14,6 @@ import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
 
-
 sealed class TimeDesc(open val lmt: LocalDateTime,
                       open val descs: List<String>) : Serializable, Comparable<TimeDesc> {
 
