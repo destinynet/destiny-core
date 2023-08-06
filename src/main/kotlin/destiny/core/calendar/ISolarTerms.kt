@@ -63,16 +63,16 @@ interface ISolarTerms {
    * 上一個 節/氣 是什麼，其 GMT JulDay 為何
    * 下一個 節/氣 是什麼，其 GMT JulDay 為何
    */
-  fun getSolarTermsBetween(gmtJulDay: GmtJulDay): Pair<Pair<SolarTerms, GmtJulDay>, Pair<SolarTerms, GmtJulDay>>
+  fun getSolarTermsBetween(gmtJulDay: GmtJulDay): Pair<SolarTermsEvent, SolarTermsEvent>
 
   /**
    * 計算此時刻的...
    * 上一個「節」是什麼，其 GMT JulDay 為何
    * 下一個「節」是什麼，其 GMT JulDay 為何
    */
-  fun getMajorSolarTermsGmtBetween(gmtJulDay: GmtJulDay) : Pair<Pair<SolarTerms, GmtJulDay>, Pair<SolarTerms, GmtJulDay>>
+  fun getMajorSolarTermsGmtBetween(gmtJulDay: GmtJulDay) : Pair<SolarTermsEvent, SolarTermsEvent>
 
-  fun getMajorSolarTermsGmtBetween(lmt: ChronoLocalDateTime<*> , location: ILocation) : Pair<Pair<SolarTerms, GmtJulDay>, Pair<SolarTerms, GmtJulDay>> {
+  fun getMajorSolarTermsGmtBetween(lmt: ChronoLocalDateTime<*> , location: ILocation) : Pair<SolarTermsEvent, SolarTermsEvent> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     return getMajorSolarTermsGmtBetween(gmtJulDay)
   }
@@ -83,9 +83,9 @@ interface ISolarTerms {
   fun getMajorSolarTermsBetween(lmt: ChronoLocalDateTime<*> , location: ILocation) : Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     val (prevPair , nextPair) = getMajorSolarTermsGmtBetween(lmt, location)
-    val dur1 = (gmtJulDay - prevPair.second.value).value * SECONDS_OF_DAY
-    val dur2 = (nextPair.second.value - gmtJulDay.value) * SECONDS_OF_DAY
-    return Pair(Pair(prevPair.first , dur1) , Pair(nextPair.first , dur2))
+    val dur1 = (gmtJulDay - prevPair.begin.value).value * SECONDS_OF_DAY
+    val dur2 = (nextPair.begin.value - gmtJulDay.value) * SECONDS_OF_DAY
+    return Pair(Pair(prevPair.solarTerms , dur1) , Pair(nextPair.solarTerms , dur2))
   }
 
 

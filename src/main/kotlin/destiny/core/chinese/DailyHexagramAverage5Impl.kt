@@ -19,14 +19,14 @@ class DailyHexagramAverage5Impl(val solarTermsImpl: ISolarTerms) : IDailyHexagra
   override fun getHexagram(gmtJulDay: GmtJulDay): Pair<Hexagram, Pair<GmtJulDay, GmtJulDay>> {
     val majorBetween = solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay)
 
-    val avgGap: Double = (majorBetween.second.second - majorBetween.first.second) / 5
+    val avgGap: Double = (majorBetween.second.begin - majorBetween.first.begin) / 5
 
     // 0~4
-    val index: Int = ((gmtJulDay - majorBetween.first.second) / avgGap).toInt()
+    val index: Int = ((gmtJulDay - majorBetween.first.begin) / avgGap).toInt()
 
-    val hex: Hexagram = branchHexagramsMap.getValue(majorBetween.first.first.branch)[index]
+    val hex: Hexagram = branchHexagramsMap.getValue(majorBetween.first.solarTerms.branch)[index]
 
-    return hex to majorBetween.first.second.let { init: GmtJulDay ->
+    return hex to majorBetween.first.begin.let { init: GmtJulDay ->
       (init + avgGap * index) to (init + avgGap * (index + 1))
     }
   }

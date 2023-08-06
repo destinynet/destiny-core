@@ -796,7 +796,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
     val settingsImpl = settingsMap[settings]!!
     val stemBranches = (1..6).map { settingsImpl.getStemBranch(monthHex, it) }
     val (start, end) = solarTermsImpl.getMajorSolarTermsGmtBetween(gmt).let { (from, to) ->
-      from.second to to.second
+      from.begin to to.begin
     }
 
     val holoHexagram = HoloHexagram(IHoloHexagram.Scale.MONTH, monthHex, monthYuanTang, stemBranches, start, end)
@@ -813,8 +813,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
    */
   override fun getDailyHexagram(monthHexagram: IHexagram, monthYuanTang: Int, viewGmt: GmtJulDay, loc: ILocation, settings: SettingsOfStemBranch, dayHourConfig: DayHourConfig): IHoloHexagramWithStemBranch {
     // 計算此時刻，處於何節氣中 , 開始為何時
-    val (_, startGmt) = solarTermsImpl.getMajorSolarTermsGmtBetween(viewGmt).first
-
+    val (startGmt, _) = solarTermsImpl.getMajorSolarTermsGmtBetween(viewGmt).first
 
     val startSB = dayHourFeature.getModel(startGmt, loc, dayHourConfig).first
     val viewSB = dayHourFeature.getModel(viewGmt, loc, dayHourConfig).first

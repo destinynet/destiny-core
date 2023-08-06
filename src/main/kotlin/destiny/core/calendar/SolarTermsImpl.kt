@@ -76,23 +76,23 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
    * 上一個「節」是什麼，其 GMT JulDay 為何
    * 下一個「節」是什麼，其 GMT JulDay 為何
    */
-  override fun getMajorSolarTermsGmtBetween(gmtJulDay: GmtJulDay): Pair<Pair<SolarTerms, GmtJulDay>, Pair<SolarTerms, GmtJulDay>> {
+  override fun getMajorSolarTermsGmtBetween(gmtJulDay: GmtJulDay): Pair<SolarTermsEvent, SolarTermsEvent> {
 
-    return getSolarTermsBetween(gmtJulDay).let { pair ->
-      if (pair.first.first.major) {
+    return getSolarTermsBetween(gmtJulDay).let { (prior , after) ->
+      if (prior.solarTerms.major) {
         // 前半段
-        val nextMajorSolarTerms = pair.second.first.next()
+        val nextMajorSolarTerms = after.solarTerms.next()
         val nextMajorSolarTermsTime = starTransitImpl.getNextTransitGmt(
           SUN, nextMajorSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, true, ECLIPTIC
         )
-        pair.first to (nextMajorSolarTerms to nextMajorSolarTermsTime)
+        prior to  SolarTermsEvent(nextMajorSolarTermsTime, nextMajorSolarTerms)
       } else {
         // 後半段
-        val prevMajorSolarTerms = pair.first.first.previous()
+        val prevMajorSolarTerms = prior.solarTerms.previous()
         val prevMajorSolarTermsTime = starTransitImpl.getNextTransitGmt(
           SUN, prevMajorSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, false, ECLIPTIC
         )
-        (prevMajorSolarTerms to prevMajorSolarTermsTime) to pair.second
+        SolarTermsEvent(prevMajorSolarTermsTime, prevMajorSolarTerms) to after
       }
     }
   }
@@ -102,34 +102,36 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
    * 上一個 節/氣 是什麼，其 GMT JulDay 為何
    * 下一個 節/氣 是什麼，其 GMT JulDay 為何
    */
-  override fun getSolarTermsBetween(gmtJulDay: GmtJulDay): Pair<Pair<SolarTerms, GmtJulDay>, Pair<SolarTerms, GmtJulDay>> {
+  override fun getSolarTermsBetween(gmtJulDay: GmtJulDay): Pair<SolarTermsEvent, SolarTermsEvent> {
     val prevSolarTerms = getSolarTermsFromGMT(gmtJulDay)
     val prevGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, prevSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, false, ECLIPTIC)
     val nextSolarTerms = prevSolarTerms.next()
     val nextGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, nextSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, true, ECLIPTIC)
-    return Pair(prevSolarTerms to prevGmtJulDay , nextSolarTerms to nextGmtJulDay)
+    return SolarTermsEvent(prevGmtJulDay, prevSolarTerms) to SolarTermsEvent(nextGmtJulDay, nextSolarTerms)
   }
 
   /** 取得目前時刻與 兩個主要「節」、一個「氣」的相對位置 */
   override fun getSolarTermsPosition(gmtJulDay: GmtJulDay): SolarTermsTimePos {
 
-    return getSolarTermsBetween(gmtJulDay).let { pair ->
-      if (pair.first.first.major) {
+    return getSolarTermsBetween(gmtJulDay).let { (prior , after) ->
+      if (prior.solarTerms.major) {
         // 前半段
-        val middle = pair.second
+        val middle = after
 
-
-        val endSolarTerms = middle.first.next()
+        val endSolarTerms = middle.solarTerms.next()
         val nextGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, endSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, true, ECLIPTIC)
-
-        SolarTermsTimePos(gmtJulDay , pair.first , middle , (endSolarTerms to nextGmtJulDay))
+        SolarTermsTimePos(gmtJulDay,
+                          Pair(prior.solarTerms ,prior.begin) ,
+                          Pair(middle.solarTerms , middle.begin),
+                          Pair(endSolarTerms, nextGmtJulDay))
       } else {
         // 後半段
-
-        val prevSolarTerms = pair.first.first.previous()
+        val prevSolarTerms = prior.solarTerms.previous()
         val prevGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, prevSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, false, ECLIPTIC)
-
-        SolarTermsTimePos(gmtJulDay , (prevSolarTerms to prevGmtJulDay) , pair.first , pair.second)
+        SolarTermsTimePos(gmtJulDay,
+                          Pair(prevSolarTerms , prevGmtJulDay),
+                          Pair(prior.solarTerms , prior.begin),
+                          Pair(after.solarTerms ,after.begin))
       }
     }
   }

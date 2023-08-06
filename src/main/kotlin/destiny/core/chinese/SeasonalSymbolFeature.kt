@@ -112,7 +112,7 @@ class SeasonalSymbolFeature(val solarTermsImpl: ISolarTerms) : AbstractCachedFea
 
     return solarTerms.branch.takeIf { listOf(辰, 戌, 丑, 未).contains(it) }
       ?.let {
-        solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay).second.second
+        solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay).second.begin
       }?.takeIf {
         when (endSeasonSymbolSpan) {
           DAYS_18    -> abs(it - gmtJulDay) <= 18
