@@ -17,7 +17,7 @@ interface IEclipseFactory {
   fun getNextSolarEclipse(fromGmtJulDay: GmtJulDay, forward: Boolean, types: Collection<SolarType>):
     AbstractSolarEclipse
 
-  /** 承上 , 不指定 日食類型 [ISolarEclipse.SolarType]]  */
+  /** 承上 , 不指定 日食類型 [ISolarEclipse.solarType]]  */
   fun getNextSolarEclipse(fromGmtJulDay: GmtJulDay, forward: Boolean): AbstractSolarEclipse {
     return getNextSolarEclipse(fromGmtJulDay, forward, SolarType.entries)
   }
@@ -35,20 +35,6 @@ interface IEclipseFactory {
       .toList()
   }
 
-  /** 承上 , [ChronoLocalDateTime] 版本 , 搜尋 全部 種類的日食 */
-  fun getRangeSolarEclipses(fromGmt: ChronoLocalDateTime<*>,
-                            toGmt: ChronoLocalDateTime<*>): List<AbstractSolarEclipse> {
-    return getRangeSolarEclipses(TimeTools.getGmtJulDay(fromGmt), TimeTools.getGmtJulDay(toGmt))
-  }
-
-  /** 承上 , [ChronoLocalDateTime] 版本 , 搜尋 單一種類的日食 */
-  fun getRangeSolarEclipses(fromGmt: ChronoLocalDateTime<*>,
-                            toGmt: ChronoLocalDateTime<*>,
-                            type: SolarType
-  ): List<AbstractSolarEclipse> {
-    return getRangeSolarEclipses(TimeTools.getGmtJulDay(fromGmt), TimeTools.getGmtJulDay(toGmt), listOf(type))
-  }
-
   // ================================== 月食 ==================================
 
   /** 從此時之後，全球各地的「一場」月食資料 (型態、開始、最大、結束...）  */
@@ -57,20 +43,13 @@ interface IEclipseFactory {
   /** 全球，某時間範圍內的月食記錄 */
   fun getRangeLunarEclipses(fromGmt: GmtJulDay,
                             toGmt: GmtJulDay,
-                            types: Collection<LunarType> = LunarType.entries
-  ): List<AbstractLunarEclipse> {
+                            types: Collection<LunarType> = LunarType.entries): List<AbstractLunarEclipse> {
     require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
 
     return generateSequence( getNextLunarEclipse(fromGmt , true)) {
       getNextLunarEclipse(it.end , true)
     }.takeWhile { it.end < toGmt }
       .toList()
-  }
-
-  /** 承上 , [ChronoLocalDateTime] 版本 , 搜尋 全部 種類的月食  */
-  fun getRangeLunarEclipses(fromGmt: ChronoLocalDateTime<*>,
-                            toGmt: ChronoLocalDateTime<*>): List<AbstractLunarEclipse> {
-    return getRangeLunarEclipses(TimeTools.getGmtJulDay(fromGmt), TimeTools.getGmtJulDay(toGmt))
   }
 
   // ================================== 日食觀測 ==================================
