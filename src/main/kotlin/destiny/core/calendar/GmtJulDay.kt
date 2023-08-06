@@ -4,6 +4,8 @@ import destiny.tools.serializers.GmtJulDaySerializer
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import java.io.Serializable
+import java.time.ZoneId
+import java.time.chrono.ChronoLocalDateTime
 import kotlin.math.ceil
 
 @JvmInline
@@ -44,6 +46,7 @@ value class GmtJulDay(val value: Double) : Comparable<GmtJulDay>, Serializable {
 
 }
 
+/** to kotlin [Instant] */
 fun GmtJulDay.toInstant(): Instant {
   return ((value - Constants.UnixEpoch.JULIAN_DAY) * Constants.SECONDS_OF_DAY).let { secDouble ->
     val second = secDouble.toLong()
@@ -52,7 +55,16 @@ fun GmtJulDay.toInstant(): Instant {
   }
 }
 
+/** from kotlin [Instant] */
 fun Instant.toGmtJulDay(): GmtJulDay {
   val millis = this.toEpochMilliseconds()
   return GmtJulDay((millis + Constants.UnixEpoch.JULIAN_MILLI_SECONDS) / (Constants.SECONDS_OF_DAY * 1000).toDouble())
+}
+
+fun GmtJulDay.toLmt(loc: ILocation, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
+  return TimeTools.getLmtFromGmt(this, loc, julDayResolver)
+}
+
+fun GmtJulDay.toLmt(zoneId: ZoneId, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
+  return TimeTools.getLmtFromGmt(this, zoneId, julDayResolver)
 }

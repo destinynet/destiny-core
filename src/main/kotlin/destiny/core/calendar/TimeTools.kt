@@ -193,9 +193,7 @@ object TimeTools {
   }
 
 
-  fun getLmtFromGmt(gmtJulDay: GmtJulDay,
-                    location: ILocation,
-                    julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
+  fun getLmtFromGmt(gmtJulDay: GmtJulDay, location: ILocation, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
     val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
     return getLmtFromGmt(gmt, location)
   }
