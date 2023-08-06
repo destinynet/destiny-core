@@ -64,8 +64,8 @@ class OctaDivideScore316 : AbstractOctaDivideScore() {
       }
     } else {
 
-      val proportion = (gmtJulDay - solarTermsTimePos.prevMajor.second) /
-        (solarTermsTimePos.nextMajor.second - solarTermsTimePos.prevMajor.second)
+      val proportion = (gmtJulDay - solarTermsTimePos.prevMajor.begin) /
+        (solarTermsTimePos.nextMajor.begin - solarTermsTimePos.prevMajor.begin)
 
       logger.debug { "proportion = $proportion" }
 

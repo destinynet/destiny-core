@@ -74,7 +74,7 @@ class OctaDivideScore46 : AbstractOctaDivideScore() {
     } else {
       // 土月
 
-      val toEndDays = (solarTermsTimePos.nextMajor.second - gmtJulDay)
+      val toEndDays = (solarTermsTimePos.nextMajor.begin - gmtJulDay)
       logger.info { "toEndDays = $toEndDays" }
 
 

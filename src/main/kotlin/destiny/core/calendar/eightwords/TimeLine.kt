@@ -24,29 +24,29 @@ class TimeLine(val model: IEightWordsContextModel,
       }
 
     // 最左邊 節氣
-    model.solarTermsTimePos.prevMajor.also { pair: Pair<SolarTerms, GmtJulDay> ->
-      val lmt = TimeTools.getLmtFromGmt(pair.second, model.location, julDayResolver)
+    model.solarTermsTimePos.prevMajor.also { event: SolarTermsEvent ->
+      val lmt = TimeTools.getLmtFromGmt(event.begin, model.location, julDayResolver)
       val title = timeDecorator.getOutputString(lmt)
-      setText(pair.first.toString(), 1, 1, title = title)
+      setText(event.solarTerms.toString(), 1, 1, title = title)
       setText(monthDayFormatter.format(lmt.toLocalDate()), 2, 1, title = title)
       //setText(pair.first.branch.toString() , 1 , 5 , "white" , "teal" , null)
-      setText(pair.first.branch.toString(), 1, 5, "white", "teal", null, null, false, null)
+      setText(event.solarTerms.branch.toString(), 1, 5, "white", "teal", null, null, false, null)
     }
 
     // 最右邊 節氣
-    model.solarTermsTimePos.nextMajor.also { pair ->
-      val lmt = TimeTools.getLmtFromGmt(pair.second, model.location, julDayResolver)
+    model.solarTermsTimePos.nextMajor.also { event: SolarTermsEvent ->
+      val lmt = TimeTools.getLmtFromGmt(event.begin, model.location, julDayResolver)
       val title = timeDecorator.getOutputString(lmt)
-      setText(pair.first.toString(), 1, 63, title = title)
+      setText(event.solarTerms.toString(), 1, 63, title = title)
       setText(monthDayFormatter.format(lmt.toLocalDate()), 2, 63, title = title)
-      setText(pair.first.branch.toString(), 1, 67, "white", "teal", null, null, false, null)
+      setText(event.solarTerms.branch.toString(), 1, 67, "white", "teal", null, null, false, null)
     }
 
     // 中間 星座
 
     centerSign.also { sign ->
 
-      val middle = model.solarTermsTimePos.prevMajor.first.next().toString() + "／" + sign.first.toString()
+      val middle = model.solarTermsTimePos.prevMajor.solarTerms.next().toString() + "／" + sign.first.toString()
       val lmt = TimeTools.getLmtFromGmt(centerSign.second, model.location, julDayResolver)
       val title = timeDecorator.getOutputString(lmt)
       setText("$middle→", 1, 29, title = title)
@@ -62,8 +62,8 @@ class TimeLine(val model: IEightWordsContextModel,
 
     // 到 左邊 節氣 的天數
 
-    val toLeftDays = (model.gmtJulDay - model.solarTermsTimePos.prevMajor.second)
-    val toRightDays = (model.solarTermsTimePos.nextMajor.second - model.gmtJulDay)
+    val toLeftDays = (model.gmtJulDay - model.solarTermsTimePos.prevMajor.begin)
+    val toRightDays = (model.solarTermsTimePos.nextMajor.begin - model.gmtJulDay)
 
     val leftBlocks = ((toLeftDays / (toLeftDays + toRightDays)) * 30).toInt().let {
       when {

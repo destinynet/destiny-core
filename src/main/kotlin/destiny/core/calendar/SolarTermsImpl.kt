@@ -116,22 +116,14 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
     return getSolarTermsBetween(gmtJulDay).let { (prior , after) ->
       if (prior.solarTerms.major) {
         // 前半段
-        val middle = after
-
-        val endSolarTerms = middle.solarTerms.next()
+        val endSolarTerms = after.solarTerms.next()
         val nextGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, endSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, true, ECLIPTIC)
-        SolarTermsTimePos(gmtJulDay,
-                          Pair(prior.solarTerms ,prior.begin) ,
-                          Pair(middle.solarTerms , middle.begin),
-                          Pair(endSolarTerms, nextGmtJulDay))
+        SolarTermsTimePos(gmtJulDay, prior, after, SolarTermsEvent(nextGmtJulDay, endSolarTerms))
       } else {
         // 後半段
         val prevSolarTerms = prior.solarTerms.previous()
         val prevGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, prevSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, false, ECLIPTIC)
-        SolarTermsTimePos(gmtJulDay,
-                          Pair(prevSolarTerms , prevGmtJulDay),
-                          Pair(prior.solarTerms , prior.begin),
-                          Pair(after.solarTerms ,after.begin))
+        SolarTermsTimePos(gmtJulDay, SolarTermsEvent(prevGmtJulDay, prevSolarTerms), prior, after)
       }
     }
   }
