@@ -10,6 +10,7 @@ import destiny.core.astrology.StationaryType.DIRECT_TO_RETROGRADE
 import destiny.core.astrology.StationaryType.RETROGRADE_TO_DIRECT
 import destiny.core.calendar.GmtJulDay
 import java.io.Serializable
+import java.time.ZoneId
 
 enum class RetrogradePhase {
   PREPARING,
@@ -21,11 +22,14 @@ enum class RetrogradePhase {
 data class RetrogradeSpan(
   val phase: RetrogradePhase,
   override val star: Star,
-  override val fromGmt: GmtJulDay,
-  override val toGmt: GmtJulDay,
+  override val begin: GmtJulDay,
+  override val end: GmtJulDay,
   override val fromPos: IPos,
   override val toPos: IPos
-) : IStarEventSpan
+) : IStarEventSpan {
+  override val zoneId: ZoneId? = null
+
+}
 
 /** 星體停滯資訊 */
 data class Stationary(val gmtJulDay: GmtJulDay, val star: Star, val type: StationaryType, val pos: IPos) : Serializable
@@ -281,7 +285,7 @@ interface IRetrograde {
       .flatMap { it.phaseMap.toList() }
       .filter { (phase, _) -> phases.contains(phase) }
       .filter { (_, span) ->
-        span.fromGmt in fromGmt..toGmt || span.toGmt in fromGmt .. toGmt
+        span.begin in fromGmt..toGmt || span.end in fromGmt .. toGmt
       }
       .map { pair -> pair.second }
       .toList()

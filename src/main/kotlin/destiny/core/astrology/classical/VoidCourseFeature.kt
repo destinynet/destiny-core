@@ -117,18 +117,18 @@ class VoidCourseFeature(private val vocMap: Map<VoidCourseImpl, IVoidCourse>,
         logger.trace { "沒有 VOC : ${julDayResolver.getLocalDateTime(gmt)} " }
 
         getNextVoc(gmt)?.takeIf { nextVoc ->
-          nextVoc.fromGmt < toGmt
+          nextVoc.begin < toGmt
         }
       } else {
-        logger.trace { "免進下一步，直接得到 VOC , 開始於 ${gmtVoc.fromGmt.let { julDayResolver.getLocalDateTime(it) }}" }
+        logger.trace { "免進下一步，直接得到 VOC , 開始於 ${gmtVoc.begin.let { julDayResolver.getLocalDateTime(it) }}" }
         gmtVoc
       }
     }
 
     return generateSequence(getVoc(fromGmt , config)) {
-      val newGmt = (min(it.toGmt.value, it.exactAspectAfter.gmtJulDay.value) + 0.01).toGmtJulDay()
+      val newGmt = (min(it.end.value, it.exactAspectAfter.gmtJulDay.value) + 0.01).toGmtJulDay()
       if (newGmt < toGmt) {
-        getVoc(newGmt, config)?.takeIf { voc -> voc.fromGmt < toGmt }
+        getVoc(newGmt, config)?.takeIf { voc -> voc.begin < toGmt }
       } else
         null
     }.toList()

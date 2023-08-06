@@ -82,13 +82,13 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
 
     /** 月空亡開始 */
     data class Begin(val voidCourse: Misc.VoidCourse, val loc: ILocation) : VoidMoon(
-      TimeTools.getLmtFromGmt(voidCourse.fromGmt, loc, julDayResolver) as LocalDateTime,
+      TimeTools.getLmtFromGmt(voidCourse.begin, loc, julDayResolver) as LocalDateTime,
       "月空亡開始，剛離開與 ${voidCourse.exactAspectPrior.points.first { it != Planet.MOON }} 的 ${voidCourse.exactAspectPrior.aspect.getTitle(Locale.TAIWAN)} "
     )
 
     /** 月空亡結束 */
     data class End(val voidCourse: Misc.VoidCourse, val loc: ILocation) : VoidMoon(
-      TimeTools.getLmtFromGmt(voidCourse.toGmt, loc, julDayResolver) as LocalDateTime, "月空亡結束"
+      TimeTools.getLmtFromGmt(voidCourse.end, loc, julDayResolver) as LocalDateTime, "月空亡結束"
     )
   }
 

@@ -4,14 +4,17 @@
 package destiny.core.astrology.eclipse
 
 import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.IEventSpan
+import java.time.ZoneId
 
 /** 日食、月食 的最上層 抽象 class  */
-interface IEclipse {
-  val begin: GmtJulDay
+interface IEclipse : IEventSpan {
 
   /** 不論是 全食、偏食、還是環食，都會有「最大值」  */
   val max: GmtJulDay
-  val end: GmtJulDay
+
+  override val zoneId: ZoneId?
+    get() = null
 }
 
 enum class SolarType {
