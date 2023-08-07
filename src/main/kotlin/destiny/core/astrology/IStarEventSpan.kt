@@ -12,7 +12,7 @@ interface IStarEventSpan : IEventSpan {
   val toPos: IZodiacDegree
 }
 
-interface IStarLocalEventSpan : IStarEventSpan {
+sealed interface IStarLocalEventSpan : IStarEventSpan {
   val title: String
   val description: String
 }
