@@ -3,9 +3,12 @@ package destiny.core.calendar
 import destiny.tools.serializers.GmtJulDaySerializer
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.toJavaInstant
 import java.io.Serializable
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.chrono.ChronoLocalDateTime
+import java.util.*
 import kotlin.math.ceil
 
 @JvmInline
@@ -67,4 +70,9 @@ fun GmtJulDay.toLmt(loc: ILocation, julDayResolver: JulDayResolver): ChronoLocal
 
 fun GmtJulDay.toLmt(zoneId: ZoneId, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
   return TimeTools.getLmtFromGmt(this, zoneId, julDayResolver)
+}
+
+fun GmtJulDay.toDate(zoneId: ZoneId): Date {
+  val zdt: ZonedDateTime = this.toInstant().toJavaInstant().atZone(zoneId)
+  return Date.from(zdt.toInstant())
 }
