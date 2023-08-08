@@ -260,7 +260,7 @@ interface IRetrograde {
       "toGmt ($toGmt) should >= fromGmt($fromGmt)"
     }
 
-    return stars.flatMap { star ->
+    return stars.filter { it != Planet.MOON }.flatMap { star ->
       generateSequence(getNextStationaryCycle(star, fromGmt, true, starPositionImpl, transit)) {
         getNextStationaryCycle(star, it.leavingGmt + 1, true, starPositionImpl, transit)
       }.takeWhile { it.preparingGmt <= toGmt }
