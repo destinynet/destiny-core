@@ -180,7 +180,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
 
 
     // 日食
-    eclipseImpl.getNextSolarEclipse(fromGmt, true, SolarType.entries).also { eclipse ->
+    eclipseImpl.getNextSolarEclipse(fromGmt, true, SolarType.entries.toSet()).also { eclipse ->
       if (eclipse.begin in fromGmt .. toGmt) {
         set.add(TimeDesc.TypeSolarEclipse(eclipse.begin, eclipse.solarType, EclipseTime.BEGIN))
       }

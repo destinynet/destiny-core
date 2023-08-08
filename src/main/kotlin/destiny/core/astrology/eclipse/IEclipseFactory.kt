@@ -13,19 +13,18 @@ interface IEclipseFactory {
 
   // ================================== 日食 ==================================
 
-  /** 從此時之後，全球各地的「一場」日食資料 (型態、開始、最大、結束...）  */
-  fun getNextSolarEclipse(fromGmtJulDay: GmtJulDay, forward: Boolean, types: Collection<SolarType>):
-    AbstractSolarEclipse
+  /** 從此時之後，全球各地的「一場」日食資料 (型態、開始、最大、結束...） , 比對的是 eclipse 的 max 時刻  */
+  fun getNextSolarEclipse(fromGmtJulDay: GmtJulDay, forward: Boolean, types: Set<SolarType>): AbstractSolarEclipse
 
   /** 承上 , 不指定 日食類型 [ISolarEclipse.solarType]]  */
   fun getNextSolarEclipse(fromGmtJulDay: GmtJulDay, forward: Boolean): AbstractSolarEclipse {
-    return getNextSolarEclipse(fromGmtJulDay, forward, SolarType.entries)
+    return getNextSolarEclipse(fromGmtJulDay, forward, SolarType.entries.toSet())
   }
 
   /** 全球，某時間範圍內的日食記錄  */
   fun getRangeSolarEclipses(fromGmt: GmtJulDay,
                             toGmt: GmtJulDay,
-                            types: Collection<SolarType> = SolarType.entries
+                            types: Set<SolarType> = SolarType.entries.toSet()
   ): List<AbstractSolarEclipse> {
     require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
 
