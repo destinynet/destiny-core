@@ -7,6 +7,9 @@ import kotlin.time.Duration
 interface IEvent : Serializable , Comparable<IEvent>{
   val begin: GmtJulDay
 
+  val title: String
+    get() = javaClass.simpleName
+
   override fun compareTo(other: IEvent): Int {
     return when {
       begin < other.begin -> -1

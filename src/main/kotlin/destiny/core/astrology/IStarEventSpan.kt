@@ -13,6 +13,5 @@ interface IStarEventSpan : IEventSpan {
 }
 
 sealed interface IStarLocalEventSpan : IStarEventSpan {
-  val title: String
   val description: String
 }
