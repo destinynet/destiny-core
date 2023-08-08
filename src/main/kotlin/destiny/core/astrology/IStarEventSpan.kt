@@ -11,7 +11,3 @@ interface IStarEventSpan : IEventSpan {
   val fromPos: IZodiacDegree
   val toPos: IZodiacDegree
 }
-
-sealed interface IStarLocalEventSpan : IStarEventSpan {
-  val description: String
-}

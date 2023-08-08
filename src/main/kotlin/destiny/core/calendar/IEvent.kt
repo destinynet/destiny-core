@@ -10,6 +10,9 @@ interface IEvent : Serializable , Comparable<IEvent>{
   val title: String
     get() = javaClass.simpleName
 
+  val description: String
+    get() = title
+
   override fun compareTo(other: IEvent): Int {
     return when {
       begin < other.begin -> -1
