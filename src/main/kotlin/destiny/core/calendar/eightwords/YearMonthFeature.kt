@@ -97,7 +97,7 @@ class YearMonthFeature(private val starPositionImpl: IStarPosition<*>,
   override val defaultConfig: IYearMonthConfig = YearMonthConfig()
 
   val solarTermsImpl: ISolarTerms by lazy {
-    SolarTermsImpl(starTransitImpl, starPositionImpl, julDayResolver)
+    SolarTermsImpl(starTransitImpl, starPositionImpl)
   }
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IYearMonthConfig): IStemBranch {

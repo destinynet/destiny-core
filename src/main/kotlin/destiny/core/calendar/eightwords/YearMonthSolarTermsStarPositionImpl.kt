@@ -38,7 +38,7 @@ class YearMonthSolarTermsStarPositionImpl(
   }
 
   val solarTermsImpl: ISolarTerms by lazy {
-    SolarTermsImpl(starTransitImpl, starPositionImpl, julDayResolver)
+    SolarTermsImpl(starTransitImpl, starPositionImpl)
   }
 
   /**

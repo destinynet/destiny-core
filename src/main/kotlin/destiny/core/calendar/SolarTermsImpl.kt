@@ -11,15 +11,14 @@ import destiny.core.astrology.IStarPosition
 import destiny.core.astrology.IStarTransit
 import destiny.core.astrology.Planet.SUN
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
+import mu.KotlinLogging
 import java.io.Serializable
 
 /**
  * 節氣實作
  */
 class SolarTermsImpl(private val starTransitImpl: IStarTransit,
-                     private val starPositionImpl: IStarPosition<*>,
-                     private val julDayResolver: JulDayResolver
-) : ISolarTerms, Serializable {
+                     private val starPositionImpl: IStarPosition<*>) : ISolarTerms, Serializable {
 
 
   /**
@@ -43,24 +42,20 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
    * 計算從某時(fromGmtTime) 到某時(toGmtTime) 之間的節氣 , in GMT
    */
   override fun getPeriodSolarTermsEvents(fromGmt: GmtJulDay, toGmt: GmtJulDay): List<SolarTermsEvent> {
-    var nowST = getSolarTermsFromGMT(fromGmt)
-    var fromGmtValue = fromGmt
 
-    var nextZodiacDegree = nowST.zodiacDegree.toZodiacDegree() + 15
+    val nowST = getSolarTermsFromGMT(fromGmt)
+    val nextST = nowST.next()
 
-    val resultList = mutableListOf<SolarTermsEvent>()
+    val nextGmt = starTransitImpl.getNextTransitGmt(SUN, nextST.zodiacDegree.toZodiacDegree(), fromGmt, true, ECLIPTIC)
+    return generateSequence(nextST to nextGmt) { (st, gmt) ->
 
-    while (fromGmtValue < toGmt) {
-      fromGmtValue = starTransitImpl.getNextTransitGmt(SUN, nextZodiacDegree, fromGmtValue, true, ECLIPTIC)
-
-      if (fromGmtValue > toGmt)
-        break
-      nowST = nowST.next()
-      val event = SolarTermsEvent(fromGmtValue, nowST)
-      resultList.add(event)
-      nextZodiacDegree += 15
-    }
-    return resultList
+      st.next().let {
+        it to starTransitImpl.getNextTransitGmt(SUN, it.zodiacDegree.toZodiacDegree(), gmt, true, ECLIPTIC)
+      }
+    }.takeWhile { (_, gmt) -> gmt in fromGmt..toGmt }
+      .map { (st, gmt) ->
+        SolarTermsEvent(gmt, st)
+      }.toList()
   }
 
   /**
@@ -126,6 +121,10 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
         SolarTermsTimePos(gmtJulDay, SolarTermsEvent(prevGmtJulDay, prevSolarTerms), prior, after)
       }
     }
+  }
+
+  companion object {
+    val logger = KotlinLogging.logger {  }
   }
 
 
