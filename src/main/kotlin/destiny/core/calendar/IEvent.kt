@@ -1,17 +1,20 @@
 package destiny.core.calendar
 
 import java.io.Serializable
+import java.util.*
 import kotlin.time.Duration
 
 /** 單一時間點 */
 interface IEvent : Serializable , Comparable<IEvent>{
   val begin: GmtJulDay
 
-  val title: String
-    get() = javaClass.simpleName
+  fun getTitle(locale: Locale): String {
+    return javaClass.simpleName
+  }
 
-  val description: String
-    get() = title
+  fun getDescription(locale: Locale) : String {
+    return  getTitle(locale)
+  }
 
   override fun compareTo(other: IEvent): Int {
     return when {

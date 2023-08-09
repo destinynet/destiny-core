@@ -3,7 +3,16 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.getTitle
+import java.util.*
+
 
 data class SolarTermsEvent(override val begin: GmtJulDay,
                            /** 節氣  */
-                           val solarTerms: SolarTerms) : IEvent
+                           val solarTerms: SolarTerms) : IEvent {
+
+  override fun getTitle(locale: Locale): String {
+    return solarTerms.getTitle(locale)
+  }
+
+}
