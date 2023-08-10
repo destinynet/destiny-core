@@ -9,6 +9,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.eightwords.hazards.IHazardService
 import destiny.tools.AbstractCachedPersonFeature
@@ -92,7 +93,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
 
     val ewModel: IEightWordsContextModel = eightWordsContextFeature.getModel(lmt, loc, config.eightwordsContextConfig.copy(place = place))
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val gmtJulDay = lmt.toGmtJulDay(loc)
     // 1到120歲 , 每歲的開始、以及結束
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = intAgeImpl.getRangesMap(gender, gmtJulDay, loc, 1, 120)
 

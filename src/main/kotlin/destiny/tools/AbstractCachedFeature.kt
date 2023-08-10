@@ -5,7 +5,7 @@ package destiny.tools
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.fixError
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDate
@@ -84,8 +84,7 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
   }
 
   open fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: @UnsafeVariance Config): Model {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getModel(gmtJulDay, loc, config)
+    return getModel(lmt.toGmtJulDay(loc), loc, config)
   }
 
   companion object {

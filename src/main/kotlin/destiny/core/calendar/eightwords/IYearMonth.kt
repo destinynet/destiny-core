@@ -7,7 +7,7 @@ package destiny.core.calendar.eightwords
 import destiny.core.Descriptive
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
 import destiny.core.calendar.eightwords.YearConfigBuilder.Companion.yearConfig
 import destiny.core.calendar.eightwords.YearMonthConfigBuilder.Companion.yearMonthConfig
@@ -31,8 +31,7 @@ interface IYear : Serializable {
    * @return 年干支（天干地支皆傳回）
    */
   fun getYear(lmt: ChronoLocalDateTime<*>, loc: ILocation): StemBranch {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getYear(gmtJulDay, loc)
+    return getYear(lmt.toGmtJulDay(loc), loc)
   }
 
 }
@@ -55,8 +54,7 @@ interface IMonth : Serializable {
   fun getMonth(gmtJulDay: GmtJulDay, location: ILocation): IStemBranch
 
   fun getMonth(lmt: ChronoLocalDateTime<*>, loc: ILocation): IStemBranch {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getMonth(gmtJulDay, loc)
+    return getMonth(lmt.toGmtJulDay(loc), loc)
   }
 
 }

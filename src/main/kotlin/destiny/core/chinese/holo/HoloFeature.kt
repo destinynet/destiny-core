@@ -8,6 +8,7 @@ import destiny.core.Gender
 import destiny.core.astrology.IZodiacSign
 import destiny.core.astrology.Planet
 import destiny.core.calendar.*
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.chinese.Yuan
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
@@ -584,7 +585,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: HoloConfig): IHolo {
     val yuan = sanYuanImpl.getYuan(lmt, loc)
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val gmtJulDay = lmt.toGmtJulDay(loc)
 
     val ew: IEightWords = eightWordsFeature.getModel(lmt, loc, config.eightWordsConfig)
 

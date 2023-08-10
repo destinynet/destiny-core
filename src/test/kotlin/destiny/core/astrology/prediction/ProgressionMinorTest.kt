@@ -6,6 +6,7 @@ package destiny.core.astrology.prediction
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.locationOf
 import mu.KotlinLogging
 import java.time.Duration
@@ -27,12 +28,11 @@ internal class ProgressionMinorTest {
   @Test
   fun test2022() {
     val natalLmt = LocalDateTime.of(2000, 1, 1, 0, 0)
-    val natalGmtJulDay = TimeTools.getGmtJulDay(natalLmt, loc)
+    val natalGmtJulDay = natalLmt.toGmtJulDay(loc)
 
     val now = LocalDateTime.of(2022, 7, 26, 0, 30)
-    val nowGmtJulDay = TimeTools.getGmtJulDay(now, loc)
 
-    progression.getConvergentTime(natalGmtJulDay, nowGmtJulDay).also { convergentJulDay: GmtJulDay ->
+    progression.getConvergentTime(natalGmtJulDay, now.toGmtJulDay(loc)).also { convergentJulDay: GmtJulDay ->
       logger.info { "convergentJulDay = $convergentJulDay" }
       val convergentLmt = TimeTools.getLmtFromGmt(convergentJulDay, loc, julDayResolver)
       logger.info { "convergentLmt = $convergentLmt" }

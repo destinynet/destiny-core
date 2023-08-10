@@ -9,6 +9,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.DayHourConfig
 import destiny.core.calendar.eightwords.IDayHourFeature
 import destiny.core.calendar.eightwords.IHourBranchFeature
@@ -103,8 +104,7 @@ class LunarStationDailyFeature(private val hourBranchFeature: IHourBranchFeature
   private fun getNextZiMidnightDuration(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayHourConfig): Duration {
 
     val nextMidnight = run {
-      val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-      val gmtResultJulDay = midnightFeature.getModel(gmtJulDay, loc, config.dayConfig)
+      val gmtResultJulDay = midnightFeature.getModel(lmt.toGmtJulDay(loc), loc, config.dayConfig)
       val gmtResult = julDayResolver.getLocalDateTime(gmtResultJulDay)
       TimeTools.getLmtFromGmt(gmtResult, loc)
     }

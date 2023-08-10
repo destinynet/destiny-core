@@ -7,6 +7,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
 import jakarta.inject.Named
@@ -45,7 +46,7 @@ class MidnightFeature(private val midnightImplMap: Map<MidnightImpl, IMidnight>,
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IDayConfig): GmtJulDay {
     val resultLmt = midnightImplMap[config.midnight]!!.getNextMidnight(lmt, loc, julDayResolver)
-    return TimeTools.getGmtJulDay(resultLmt, loc)
+    return resultLmt.toGmtJulDay(loc)
   }
 
   override fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation, impl: MidnightImpl): GmtJulDay {

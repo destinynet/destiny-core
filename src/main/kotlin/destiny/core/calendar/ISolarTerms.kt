@@ -7,6 +7,7 @@ package destiny.core.calendar
 
 
 import destiny.core.calendar.Constants.SECONDS_OF_DAY
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -51,10 +52,7 @@ interface ISolarTerms {
   fun getPeriodSolarTermsLMTs(fromLmt: ChronoLocalDateTime<*>,
                               toLmt: ChronoLocalDateTime<*>,
                               location: ILocation): List<SolarTermsEvent> {
-    val fromGmt = TimeTools.getGmtJulDay(fromLmt, location)
-    val toGmt = TimeTools.getGmtJulDay(toLmt, location)
-
-    return getPeriodSolarTermsEvents(fromGmt, toGmt)
+    return getPeriodSolarTermsEvents(fromLmt.toGmtJulDay(location), toLmt.toGmtJulDay(location))
   }
 
 
@@ -73,15 +71,14 @@ interface ISolarTerms {
   fun getMajorSolarTermsGmtBetween(gmtJulDay: GmtJulDay) : Pair<SolarTermsEvent, SolarTermsEvent>
 
   fun getMajorSolarTermsGmtBetween(lmt: ChronoLocalDateTime<*> , location: ILocation) : Pair<SolarTermsEvent, SolarTermsEvent> {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
-    return getMajorSolarTermsGmtBetween(gmtJulDay)
+    return getMajorSolarTermsGmtBetween(lmt.toGmtJulDay(location))
   }
 
   /**
    * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
    */
   fun getMajorSolarTermsBetween(lmt: ChronoLocalDateTime<*> , location: ILocation) : Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    val gmtJulDay = lmt.toGmtJulDay(location)
     val (prevPair , nextPair) = getMajorSolarTermsGmtBetween(lmt, location)
     val dur1 = (gmtJulDay - prevPair.begin.value).value * SECONDS_OF_DAY
     val dur2 = (nextPair.begin.value - gmtJulDay.value) * SECONDS_OF_DAY

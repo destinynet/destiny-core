@@ -4,8 +4,11 @@
  */
 package destiny.core
 
-import destiny.core.calendar.*
+import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.IEvent
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools.toGmtJulDay
+import destiny.core.calendar.locationOf
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
@@ -25,7 +28,7 @@ interface ITimeLoc : IGmtJulDay, IEvent {
 
   override val gmtJulDay: GmtJulDay
     get() {
-      return TimeTools.getGmtJulDay(time, location)
+      return time.toGmtJulDay(location)
     }
 }
 

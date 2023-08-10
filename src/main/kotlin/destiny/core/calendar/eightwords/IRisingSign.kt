@@ -9,7 +9,7 @@ import destiny.core.astrology.HouseSystem
 import destiny.core.astrology.ZodiacSign
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -24,8 +24,7 @@ interface IRisingSign : Descriptive {
    * 但是 [HouseSystem.VEHLOW_EQUAL] 的確會影響上升星座！
    */
   fun getRisingSign(lmt: ChronoLocalDateTime<*>, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): ZodiacSign {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
-    return getRisingSign(gmtJulDay, location, houseSystem, coordinate)
+    return getRisingSign(lmt.toGmtJulDay(location), location, houseSystem, coordinate)
   }
 
 }

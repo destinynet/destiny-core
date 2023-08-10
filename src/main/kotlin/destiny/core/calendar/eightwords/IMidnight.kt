@@ -10,6 +10,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import java.time.chrono.ChronoLocalDateTime
 import kotlin.math.absoluteValue
 
@@ -36,8 +37,7 @@ interface IMidnight : Descriptive {
 
   /** 取得下一個「子正」的 LMT 時刻 */
   fun getNextMidnight(lmt: ChronoLocalDateTime<*>, loc: ILocation, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    val gmtResultJulDay = getNextMidnight(gmtJulDay, loc)
+    val gmtResultJulDay = getNextMidnight(lmt.toGmtJulDay(loc), loc)
     val gmtResult = julDayResolver.getLocalDateTime(gmtResultJulDay)
     return TimeTools.getLmtFromGmt(gmtResult, loc)
   }
@@ -46,9 +46,7 @@ interface IMidnight : Descriptive {
    * 取得上一個「子正」的 LMT 時刻
    */
   fun getPrevMidnight(lmt: ChronoLocalDateTime<*>, loc: ILocation, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val gmt = TimeTools.getGmtFromLmt(lmt, loc)
-    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-    return getPrevMidnight(gmtJulDay, loc).let {
+    return getPrevMidnight(lmt.toGmtJulDay(loc), loc).let {
       val gmtResult = julDayResolver.getLocalDateTime(it)
       TimeTools.getLmtFromGmt(gmtResult , loc)
     }

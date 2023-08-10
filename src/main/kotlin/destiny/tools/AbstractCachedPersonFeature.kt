@@ -6,7 +6,7 @@ package destiny.tools
 import destiny.core.Gender
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.fixError
 import destiny.tools.AbstractCachedFeature.Companion.grainDay
 import destiny.tools.AbstractCachedFeature.Companion.grainHour
@@ -97,9 +97,7 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
   }
 
   open fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String? ,place: String? ,config: @UnsafeVariance Config) : Model {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getPersonModel(gmtJulDay, loc, gender, name, place, config)
-    //return calculate(gmtJulDay, loc, gender, name, place, config)
+    return getPersonModel(lmt.toGmtJulDay(loc), loc, gender, name, place, config)
   }
 
   companion object {

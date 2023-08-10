@@ -4,7 +4,7 @@ import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import java.time.chrono.ChronoLocalDateTime
 
 interface PersonFeature<out Config : Any, Model> : Feature<Config, Model> {
@@ -22,8 +22,7 @@ interface PersonFeature<out Config : Any, Model> : Feature<Config, Model> {
                      name: String?,
                      place: String?,
                      config: @UnsafeVariance Config = defaultConfig): Model {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getPersonModel(gmtJulDay, loc, gender, name, place, config)
+    return getPersonModel(lmt.toGmtJulDay(loc), loc, gender, name, place, config)
   }
 
   fun getPersonModel(bdnp: IBirthDataNamePlace, config: @UnsafeVariance Config = defaultConfig): Model {

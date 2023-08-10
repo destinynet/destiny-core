@@ -6,6 +6,7 @@ package destiny.core.calendar.eightwords
 import destiny.core.News
 import destiny.core.astrology.*
 import destiny.core.calendar.*
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import mu.KotlinLogging
@@ -284,7 +285,7 @@ private fun getIndex(
 object Tst {
 
   fun getHourBranch(lmt: ChronoLocalDateTime<*>, loc: ILocation, riseTransFeature: RiseTransFeature, transConfig: TransConfig): Branch {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val gmtJulDay = lmt.toGmtJulDay(loc)
     val nextMeridian = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN , TransPoint.MERIDIAN , transConfig))!!
     val nextNadir = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN , TransPoint.NADIR , transConfig))!!
 

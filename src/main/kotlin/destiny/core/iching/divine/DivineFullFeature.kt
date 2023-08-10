@@ -5,6 +5,7 @@ package destiny.core.iching.divine
 
 import destiny.core.Gender
 import destiny.core.calendar.*
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.*
 import destiny.core.iching.HexagramTextContext
 import destiny.core.iching.IHexagramText
@@ -91,8 +92,7 @@ class DivineFullFeature(private val divineTraditionalFeature: DivineTraditionalF
 
     val meta = Meta(config.settings, config.hiddenEnergy)
 
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    val divineMeta = DivineMeta(gender, question, approach, gmtJulDay, loc, place, decoratedDate, decoratedDateTime, meta, null)
+    val divineMeta = DivineMeta(gender, question, approach, lmt.toGmtJulDay(loc), loc, place, decoratedDate, decoratedDateTime, meta, null)
 
     val textContext: IHexagramProvider<IHexagramText> =
       HexagramTextContext(hexagramNameFull, hexagramNameShort, hexExpressionImpl, hexImageImpl, hexJudgement)

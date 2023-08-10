@@ -6,6 +6,7 @@ package destiny.core.astrology.prediction
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.locationOf
 import mu.KotlinLogging
 import java.time.Duration
@@ -30,10 +31,10 @@ internal class ProgressionSecondaryTest {
     val progression = ProgressionSecondary()
 
     val natalLmt = LocalDateTime.of(2000, 1, 1, 0, 0)
-    val natalGmtJulDay = TimeTools.getGmtJulDay(natalLmt, loc)
+    val natalGmtJulDay = natalLmt.toGmtJulDay(loc)
 
     val now = LocalDateTime.of(2022, 7, 26, 0, 30)
-    val nowGmtJulDay = TimeTools.getGmtJulDay(now, loc)
+    val nowGmtJulDay = now.toGmtJulDay(loc)
 
     progression.getConvergentTime(natalGmtJulDay, nowGmtJulDay).also { convergentJulDay: GmtJulDay ->
 
@@ -64,10 +65,10 @@ internal class ProgressionSecondaryTest {
     val progression = ProgressionSecondary(true)
 
     val natalLmt = LocalDateTime.of(2000, 1, 1, 0, 0)
-    val natalGmtJulDay = TimeTools.getGmtJulDay(natalLmt, loc)
+    val natalGmtJulDay = natalLmt.toGmtJulDay(loc)
 
     val now = LocalDateTime.of(2022, 7, 26, 0, 30)
-    val nowGmtJulDay = TimeTools.getGmtJulDay(now, loc)
+    val nowGmtJulDay = now.toGmtJulDay(loc)
 
     progression.getConvergentTime(natalGmtJulDay, nowGmtJulDay).also { convergentJulDay: GmtJulDay ->
       logger.info { "convergentJulDay = $convergentJulDay" }

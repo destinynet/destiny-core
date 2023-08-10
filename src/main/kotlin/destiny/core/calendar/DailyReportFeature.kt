@@ -11,6 +11,7 @@ import destiny.core.astrology.classical.VoidCourseFeature
 import destiny.core.astrology.eclipse.EclipseTime
 import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.astrology.eclipse.SolarType
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.IHourBranchFeature
 import destiny.core.chinese.Branch
 import destiny.core.chinese.lunarStation.*
@@ -105,10 +106,9 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
 
 
   private fun calculate(lmtStart: ChronoLocalDateTime<*>, lmtEnd: ChronoLocalDateTime<*>, loc: ILocation, config: DailyReportConfig): List<TimeDesc> {
-    val zoneId = loc.zoneId
 
-    val fromGmt: GmtJulDay = TimeTools.getGmtJulDay(lmtStart, loc)
-    val toGmt = TimeTools.getGmtJulDay(lmtEnd, loc)
+    val fromGmt: GmtJulDay = lmtStart.toGmtJulDay(loc)
+    val toGmt = lmtEnd.toGmtJulDay(loc)
 
     logger.info { "from $lmtStart to $lmtEnd" }
 
@@ -132,7 +132,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
       val list12 = list.take(12).map { (branch , branchStart) ->
         val middleLmt = branchMiddleMap[branch]!!
 
-        val branchStartGmtJulDay = TimeTools.getGmtJulDay(branchStart, loc)
+        val branchStartGmtJulDay = branchStart.toGmtJulDay(loc)
         getTimeDesc(branch, branchStartGmtJulDay, middleLmt, loc)
       }
 
@@ -140,7 +140,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
       val nextDayZi = list.last().let { (branch , branchStart) ->
         val middleLmt = tomorrowLunarStationMap[Branch.子]!!
 
-        val branchStartGmtJulDay = TimeTools.getGmtJulDay(branchStart, loc)
+        val branchStartGmtJulDay = branchStart.toGmtJulDay(loc)
         getTimeDesc(branch, branchStartGmtJulDay, middleLmt, loc)
       }
       list12.plus(nextDayZi)

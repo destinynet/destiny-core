@@ -78,7 +78,7 @@ interface ILocation : ILatLng {
 
   val finalMinuteOffset: Int
     get() {
-      return minuteOffset ?: (ZoneId.of(tzid).rules.getStandardOffset(Instant.now()).totalSeconds / 1000)
+      return minuteOffset ?: (ZoneId.of(tzid).rules.getStandardOffset(Instant.now()).totalSeconds / 60)
     }
 
   /** 高度（公尺） */

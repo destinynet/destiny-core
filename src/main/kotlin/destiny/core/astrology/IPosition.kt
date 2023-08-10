@@ -5,7 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import java.time.chrono.ChronoLocalDateTime
 
 interface IPosition<out T : AstroPoint> {
@@ -24,8 +24,7 @@ interface IPosition<out T : AstroPoint> {
                   loc: ILocation,
                   centric: Centric = Centric.GEO,
                   coordinate: Coordinate = Coordinate.ECLIPTIC): IPos {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getPosition(gmtJulDay, loc, centric, coordinate, 0.0, 1013.25)
+    return getPosition(lmt.toGmtJulDay(loc), loc, centric, coordinate, 0.0, 1013.25)
   }
 
 

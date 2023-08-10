@@ -8,6 +8,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.亥
 import destiny.core.chinese.Branch.子
@@ -68,7 +69,7 @@ interface IHourBranchFeature : Feature<IHourBranchConfig, Branch> {
   fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver, config: HourBranchConfig): GmtJulDay {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     val resultLmt: ChronoLocalDateTime<*> = getLmtNextStartOf(lmt, loc, eb, config)
-    return TimeTools.getGmtJulDay(resultLmt, loc)
+    return resultLmt.toGmtJulDay(loc)
   }
 
 
@@ -80,7 +81,7 @@ interface IHourBranchFeature : Feature<IHourBranchConfig, Branch> {
   fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver, config: HourBranchConfig): GmtJulDay {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     val resultLmt: ChronoLocalDateTime<*> = getLmtPrevStartOf(lmt, loc, eb, config)
-    return TimeTools.getGmtJulDay(resultLmt, loc)
+    return resultLmt.toGmtJulDay(loc)
   }
 
   fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, config: HourBranchConfig): ChronoLocalDateTime<*>

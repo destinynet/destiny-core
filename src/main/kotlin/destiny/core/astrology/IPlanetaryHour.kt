@@ -5,8 +5,11 @@ package destiny.core.astrology
 
 import destiny.core.DayNight
 import destiny.core.astrology.Planet.*
-import destiny.core.calendar.*
 import destiny.core.calendar.Constants
+import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import mu.KotlinLogging
 import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
@@ -74,8 +77,7 @@ interface IPlanetaryHour {
   }
 
   fun getPlanetaryHour(lmt: ChronoLocalDateTime<*>, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig = TransConfig()): Planet? {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getPlanetaryHour(gmtJulDay, loc, julDayResolver, transConfig)?.planet
+    return getPlanetaryHour(lmt.toGmtJulDay(loc), loc, julDayResolver, transConfig)?.planet
   }
 
   fun getPlanetaryHours(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig = TransConfig()): List<PlanetaryHour> {
@@ -98,9 +100,7 @@ interface IPlanetaryHour {
   }
 
   fun getPlanetaryHours(fromLmt: ChronoLocalDateTime<*>, toLmt: ChronoLocalDateTime<*>, loc: ILocation, julDayResolver: JulDayResolver, transConfig: TransConfig = TransConfig()): List<PlanetaryHour> {
-    val fromGmt = TimeTools.getGmtJulDay(fromLmt, loc)
-    val toGmt = TimeTools.getGmtJulDay(toLmt, loc)
-    return getPlanetaryHours(fromGmt, toGmt, loc, julDayResolver, transConfig)
+    return getPlanetaryHours(fromLmt.toGmtJulDay(loc), toLmt.toGmtJulDay(loc), loc, julDayResolver, transConfig)
   }
 
   fun getDailyPlanetaryHours(date : ChronoLocalDate , loc: ILocation , julDayResolver: JulDayResolver , transConfig: TransConfig = TransConfig()) : List<PlanetaryHour> {

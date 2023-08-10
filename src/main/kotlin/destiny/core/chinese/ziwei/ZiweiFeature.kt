@@ -10,6 +10,7 @@ import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.astrology.*
 import destiny.core.calendar.*
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDateFeature
 import destiny.core.calendar.chinese.IFinalMonthNumber
@@ -887,7 +888,7 @@ class ZiweiFeature(
       ?.takeIf { plate.getAgeMap(config.sectionAgeType) != null }
       ?.let { targetLmt ->
         val loc = plate.location ?: locationOf(Locale.getDefault())
-        val targetGmtJulDay = TimeTools.getGmtJulDay(targetLmt, loc)
+        val targetGmtJulDay = targetLmt.toGmtJulDay(loc)
 
         val ageMap = plate.getAgeMap(config.sectionAgeType)!!
 
@@ -1032,9 +1033,9 @@ class ZiweiFeature(
     val dayNight = dayNightFeature.getModel(lmt, loc, config.dayNightConfig)
 
     // 虛歲時刻 , gmt Julian Day
-    val vageMap = intVageImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, loc), loc, 1, 130)
+    val vageMap = intVageImpl.getRangesMap(gender, lmt.toGmtJulDay(loc), loc, 1, 130)
     // 實歲時刻 , gmt Julian Day
-    val rageMap = intRageImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, loc), loc, 0, 130)
+    val rageMap = intRageImpl.getRangesMap(gender, lmt.toGmtJulDay(loc), loc, 0, 130)
 
     val appendingNotes = notesBuilders.build(config.locale)
 

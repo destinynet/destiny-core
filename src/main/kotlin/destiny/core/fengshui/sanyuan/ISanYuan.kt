@@ -7,6 +7,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.chinese.Yuan
 import destiny.core.chinese.StemBranch
 import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
@@ -72,7 +73,7 @@ class SanYuanImpl(val solarTermsImpl: ISolarTerms) : ISanYuan, Serializable {
       ISanYuan.getYuan(prolepticYear)
     } else {
       // 每 60年交會，要特別計算 立春
-      val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+      val gmtJulDay = lmt.toGmtJulDay(loc)
       val startOfYear = gmt.with(LocalDate.of(prolepticYear, 1, 1))
         .with(LocalTime.of(0, 0))
       val startOfYearGmtJulDay = TimeTools.getGmtJulDay(startOfYear)

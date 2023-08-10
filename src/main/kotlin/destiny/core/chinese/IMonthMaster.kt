@@ -6,7 +6,7 @@ package destiny.core.chinese
 import destiny.core.Descriptive
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.chinese.Branch.*
 import java.time.chrono.ChronoLocalDateTime
 
@@ -22,8 +22,7 @@ interface IMonthMaster : Descriptive {
   fun getBranch(gmtJulDay: GmtJulDay, loc: ILocation): Branch
 
   fun getBranch(lmt: ChronoLocalDateTime<*>, location: ILocation): Branch {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
-    return getBranch(gmtJulDay, location)
+    return getBranch(lmt.toGmtJulDay(location), location)
   }
 
   companion object {

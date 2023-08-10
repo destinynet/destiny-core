@@ -7,6 +7,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
@@ -70,7 +71,7 @@ interface IRiseTransFeature : Feature<RiseTransConfig, GmtJulDay?> {
     fromLmtTime: ChronoLocalDateTime<*>, star: Star, point: TransPoint, loc: ILocation,
     julDayResolver: JulDayResolver, transConfig: TransConfig = TransConfig()
   ): ChronoLocalDateTime<*>? {
-    val fromGmtJulDay = TimeTools.getGmtJulDay(fromLmtTime, loc)
+    val fromGmtJulDay = fromLmtTime.toGmtJulDay(loc)
 
     return getModel(fromGmtJulDay, loc, RiseTransConfig(star, point, transConfig))?.let { resultGmt ->
       TimeTools.getLmtFromGmt(resultGmt, loc, julDayResolver)

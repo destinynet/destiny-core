@@ -15,6 +15,7 @@ import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.calendar.*
 import destiny.core.calendar.Constants.SECONDS_OF_DAY
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.IStemBranch
@@ -44,7 +45,7 @@ class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, config: FortuneLargeConfig): List<FortuneData> {
     val eightWords: IEightWords = eightWordsFeature.getModel(lmt, loc, config.eightWordsConfig)
     val forward = fortuneDirectionFeature.getPersonModel(lmt, loc, gender, null, null)
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val gmtJulDay = lmt.toGmtJulDay(loc)
 
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, loc)
 

@@ -9,6 +9,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.*
 import destiny.core.fengshui.sanyuan.NineStarFunctions.getDayCenterStar
 import destiny.core.fengshui.sanyuan.NineStarFunctions.getHourCenterStar
@@ -63,7 +64,7 @@ class NineStarFeature(private val sanYuanImpl: ISanYuan,
   }
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: NineStarConfig): List<NineStarModel> {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val gmtJulDay = lmt.toGmtJulDay(loc)
     val yuan = sanYuanImpl.getYuan(lmt, loc)
     val eightWords: IEightWords = ewFeature.getModel(lmt, loc, config.ewConfig)
     val zodiacDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lng

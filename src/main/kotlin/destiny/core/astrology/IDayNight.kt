@@ -8,7 +8,7 @@ import destiny.core.DayNight
 import destiny.core.Descriptive
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.ITransConfig
 import java.time.chrono.ChronoLocalDateTime
 
@@ -20,7 +20,6 @@ interface IDayNight : Descriptive {
   fun getDayNight(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: ITransConfig = TransConfig(discCenter = false, refraction = true)): DayNight
 
   fun getDayNight(lmt: ChronoLocalDateTime<*>, loc: ILocation, transConfig: ITransConfig = TransConfig(discCenter = false, refraction = true)): DayNight {
-    val gmt = TimeTools.getGmtFromLmt(lmt, loc)
-    return getDayNight(TimeTools.getGmtJulDay(gmt), loc, transConfig)
+    return getDayNight(lmt.toGmtJulDay(loc), loc, transConfig)
   }
 }

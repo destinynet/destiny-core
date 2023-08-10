@@ -5,7 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import java.time.chrono.ChronoLocalDateTime
 
 data class ZodiacSignModel(
@@ -27,8 +27,7 @@ interface IZodiacSign {
   }
 
   fun getSignsBetween(star: Star, lmt: ChronoLocalDateTime<*>, location: ILocation): ZodiacSignModel {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
-    return getSignsBetween(star, gmtJulDay)
+    return getSignsBetween(star, lmt.toGmtJulDay(location))
   }
 }
 

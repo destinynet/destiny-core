@@ -3,7 +3,11 @@
  */
 package destiny.core.chinese
 
-import destiny.core.calendar.*
+import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.ILocation
+import destiny.core.calendar.ISolarTerms
+import destiny.core.calendar.SolarTerms
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement.*
 import destiny.core.iching.Symbol
@@ -18,8 +22,7 @@ interface ISeasonalSymbol {
   fun getSeasonalSymbol(gmtJulDay: GmtJulDay): Set<Symbol>
 
   fun getSeasonalSymbol(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Symbol> {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getSeasonalSymbol(gmtJulDay)
+    return getSeasonalSymbol(lmt.toGmtJulDay(loc))
   }
 }
 

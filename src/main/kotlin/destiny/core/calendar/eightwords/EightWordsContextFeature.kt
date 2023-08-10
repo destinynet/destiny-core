@@ -5,6 +5,7 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.astrology.*
 import destiny.core.calendar.*
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
@@ -122,7 +123,7 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
 
 
     val (prevSolarSign, nextSolarSign) = zodiacSignFeature.getModel(lmt, loc)
-    val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(TimeTools.getGmtJulDay(lmt, loc))
+    val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(lmt.toGmtJulDay(loc))
     val aspectDataSet = aspectsCalculator.getAspectPatterns(starPosMap)
 
     return EightWordsContextModel(

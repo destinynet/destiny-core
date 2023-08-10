@@ -9,6 +9,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.IStemBranch
 import destiny.tools.AbstractCachedPersonFeature
@@ -65,8 +66,7 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
   fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch?
 
   fun getStemBranch(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch? {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getStemBranch(gmtJulDay, loc, gender, fromGmtJulDay, config)
+    return getStemBranch(lmt.toGmtJulDay(loc), loc, gender, fromGmtJulDay, config)
   }
 }
 

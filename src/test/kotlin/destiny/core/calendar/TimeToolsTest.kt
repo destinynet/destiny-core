@@ -4,6 +4,7 @@
 package destiny.core.calendar
 
 import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.TimeTools.yearToStemBranch
 import destiny.core.chinese.StemBranch
 import mu.KotlinLogging
@@ -93,7 +94,7 @@ class TimeToolsTest {
 
     logger.info("loc = {}", loc)
 
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val gmtJulDay = lmt.toGmtJulDay(loc)
     logger.info("gmtJulDay = {}", gmtJulDay)
 
 
