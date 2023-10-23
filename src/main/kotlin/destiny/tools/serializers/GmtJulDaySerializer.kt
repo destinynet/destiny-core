@@ -12,7 +12,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 
-class GmtJulDaySerializer : KSerializer<GmtJulDay> {
+object GmtJulDaySerializer : KSerializer<GmtJulDay> {
   override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("gmtJulDay", PrimitiveKind.DOUBLE)
 
   override fun serialize(encoder: Encoder, value: GmtJulDay) {
