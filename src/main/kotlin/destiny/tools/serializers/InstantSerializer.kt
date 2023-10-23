@@ -12,7 +12,7 @@ import kotlinx.serialization.encoding.Encoder
 import java.time.Instant
 
 
-class InstantSerializer : KSerializer<Instant> {
+object InstantSerializer : KSerializer<Instant> {
   override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Instant", PrimitiveKind.LONG)
 
   override fun deserialize(decoder: Decoder): Instant {
