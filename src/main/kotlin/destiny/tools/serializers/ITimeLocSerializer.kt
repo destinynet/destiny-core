@@ -23,7 +23,7 @@ import java.util.*
 
 object ITimeLocSerializer : KSerializer<ITimeLoc> {
 
-  override val descriptor: SerialDescriptor = buildClassSerialDescriptor("TimeLoc") {
+  override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ITimeLoc") {
     element<Long>("time")
     element<ILocation>("loc")
   }

@@ -4,10 +4,10 @@
 package destiny.tools.serializers
 
 import destiny.core.calendar.ILocation
+import destiny.tools.serializers.Assertions.assertLocEquals
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class ILocationSerializerTest {
   private val logger = KotlinLogging.logger { }
@@ -27,11 +27,7 @@ class ILocationSerializerTest {
     logger.info { serialized }
     val deserialized = json.decodeFromString(ILocationSerializer, serialized)
 
-    assertEquals(location.lat, deserialized.lat)
-    assertEquals(location.lng, deserialized.lng)
-    assertEquals(location.tzid, deserialized.tzid)
-    assertEquals(location.minuteOffset, deserialized.minuteOffset)
-    assertEquals(location.altitudeMeter, deserialized.altitudeMeter)
+    assertLocEquals(location, deserialized)
   }
 
   @Test
@@ -48,10 +44,6 @@ class ILocationSerializerTest {
     logger.info { serialized }
     val deserialized = json.decodeFromString(ILocationSerializer, serialized)
 
-    assertEquals(location.lat, deserialized.lat)
-    assertEquals(location.lng, deserialized.lng)
-    assertEquals(location.tzid, deserialized.tzid)
-    assertEquals(location.minuteOffset, deserialized.minuteOffset)
-    assertEquals(location.altitudeMeter, deserialized.altitudeMeter)
+    assertLocEquals(location, deserialized)
   }
 }
