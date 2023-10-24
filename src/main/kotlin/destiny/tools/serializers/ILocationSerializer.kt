@@ -25,9 +25,9 @@ object ILocationSerializer : KSerializer<ILocation> {
   override fun serialize(encoder: Encoder, value: ILocation) {
     encoder.encodeStructure(descriptor) {
       encodeSerializableElement(descriptor, 0, ILatLngSerializer, value)
-      value.tzid?.let { encodeStringElement(descriptor, 1, it) }
-      value.minuteOffset?.let { encodeIntElement(descriptor, 2, it) }
-      value.altitudeMeter?.let { encodeDoubleElement(descriptor, 3, it) }
+      value.tzid?.also { encodeStringElement(descriptor, 1, it) }
+      value.minuteOffset?.also { encodeIntElement(descriptor, 2, it) }
+      value.altitudeMeter?.also { encodeDoubleElement(descriptor, 3, it) }
     }
   }
 
