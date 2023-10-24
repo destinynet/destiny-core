@@ -4,6 +4,7 @@
 package destiny.tools.serializers
 
 import destiny.core.IBirthData
+import destiny.core.IBirthDataNamePlace
 import destiny.core.ITimeLoc
 import destiny.core.calendar.ILocation
 import kotlin.test.assertEquals
@@ -27,5 +28,11 @@ object Assertions {
   fun assertBirthDataEquals(expected: IBirthData, actual: IBirthData) {
     assertSame(expected.gender, actual.gender)
     assertTimeLocEquals(expected, actual)
+  }
+
+  fun assertBdnpEquals(expected: IBirthDataNamePlace, actual: IBirthDataNamePlace) {
+    assertBirthDataEquals(expected, actual)
+    assertEquals(expected.name, actual.name)
+    assertEquals(expected.place, actual.place)
   }
 }

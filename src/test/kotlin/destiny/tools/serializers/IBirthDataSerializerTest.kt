@@ -27,7 +27,6 @@ class IBirthDataSerializerTest {
   fun testSerializeDeserialize() {
     val timeLoc: ITimeLoc = TimeLoc(LocalDateTime.of(2023, 10, 24, 21, 40), locationOf(Locale.TAIWAN))
     val gender = Gender.女
-
     val birthData = BirthData(timeLoc, gender)
 
     val serialized = json.encodeToString(IBirthDataSerializer, birthData)
