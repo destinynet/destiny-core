@@ -1,4 +1,4 @@
-package destiny.tools.ai
+package destiny.tools.model
 
 import destiny.tools.converters.EnumMapConverter
 import destiny.tools.converters.ParserCommons
