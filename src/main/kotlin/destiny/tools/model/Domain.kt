@@ -1,28 +1,71 @@
 package destiny.tools.model
 
-import destiny.tools.converters.EnumMapConverter
-import destiny.tools.converters.ParserCommons
+import destiny.tools.converters.MapConverter
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import java.util.*
 
-enum class Domain {
+
+@Serializable(with = DomainSerializer::class)
+sealed class Domain {
+
   /** 紫微斗數 */
-  ZIWEI,
+  data object ZIWEI : Domain()
 
   /** 易經隨機起卦 */
-  ICHING_RAND,
+  data object ICHING_RAND : Domain()
 
   /** 占星本命盤 */
-  HOROSCOPE,
+  data object HOROSCOPE : Domain()
 
   /** 塔羅占卜 */
-  TAROT,
+  data object TAROT : Domain()
 
   /** 籤詩 */
-  CHANCE,
+  data object CHANCE : Domain()
 }
 
-object DomainConverter : EnumMapConverter<Domain>("domain") {
+fun Domain.getTitle(locale: Locale): String {
+  val resource = Domain::class.qualifiedName!!
+  return ResourceBundle.getBundle(resource, locale).getString("$this.title")
+}
+
+object DomainConverter : MapConverter<Domain> {
+
   private fun readResolve(): Any = DomainConverter
-  override fun getContext(map: Map<String, String>): Domain? {
-    return ParserCommons.parseEnum(key, Domain::class.java, map)
+
+  override val key: String = "domain"
+
+  override fun getMap(context: Domain): Map<String, String> {
+    return mapOf(key to context.toString())
   }
+
+  override fun getContext(map: Map<String, String>): Domain? {
+    return map[key]?.let { s ->
+      Domain::class.sealedSubclasses.firstOrNull { it.simpleName == s }?.objectInstance
+    }
+  }
+}
+
+object DomainSerializer: KSerializer<Domain> {
+
+  override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Domain", PrimitiveKind.STRING)
+
+  override fun serialize(encoder: Encoder, value: Domain) {
+    encoder.encodeString(value.toString())
+  }
+
+  override fun deserialize(decoder: Decoder): Domain {
+    return decoder.decodeString().let { s ->
+      Domain::class.sealedSubclasses.firstOrNull { it.simpleName == s }?.objectInstance!!
+    }
+  }
+
+
+
 }
