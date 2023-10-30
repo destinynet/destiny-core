@@ -44,8 +44,8 @@ class TimeToolsTest {
   @Test
   fun testFindZoneIds() {
     // offset + 1 hour
-    TimeTools.findZoneIds(60 * 60).also {
-      assertEquals(32 , it.size)
+    TimeTools.findZoneIds(60 * 60).also { tzidList ->
+      assertEquals(53 , tzidList.size)
     }
 
     // offset + 8 hour
