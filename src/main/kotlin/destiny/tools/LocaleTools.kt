@@ -7,23 +7,25 @@ import java.util.*
 
 object LocaleTools {
   /** 將 string 以 _ 切開，傳回 Locale 物件  */
-  fun getLocale(string: String): Locale? {
-    return StringTokenizer(string, "_-")
-      .takeIf { it.countTokens() > 0 }
-      ?.let { st ->
-        val lang = st.nextToken().substringBefore('#')
+  fun getLocale(string: String?): Locale? {
+    return string?.let { s ->
+      StringTokenizer(s, "_-")
+        .takeIf { it.countTokens() > 0 }
+        ?.let { st ->
+          val lang = st.nextToken().substringBefore('#')
 
-        val country = if (st.hasMoreTokens())
-          st.nextToken().substringBefore('#')
-        else
-          ""
+          val country = if (st.hasMoreTokens())
+            st.nextToken().substringBefore('#')
+          else
+            ""
 
-        val variant = if (st.hasMoreTokens())
-          st.nextToken().substringBefore('#')
-        else
-          ""
-        Locale(lang, country, variant)
-      }
+          val variant = if (st.hasMoreTokens())
+            st.nextToken().substringBefore('#')
+          else
+            ""
+          Locale(lang, country, variant)
+        }
+    }
   }
 
   /**
