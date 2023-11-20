@@ -10,7 +10,7 @@ object StringTools {
    * 以及移除前後空白
    * https://stackoverflow.com/a/11020944/298430
    */
-  fun String.clean() : String {
+  fun String.clean(): String {
     val out = StringBuilder()
     var current: Char
     if ("" == this) {
@@ -30,5 +30,13 @@ object StringTools {
 
     }
     return out.toString().replace("\\s".toRegex(), " ").trim()
+  }
+
+  fun String.takeAndEllipsis(limit: Int): String {
+    return if (this.length <= limit) {
+      this
+    } else {
+      this.take(limit)+"…"
+    }
   }
 }
