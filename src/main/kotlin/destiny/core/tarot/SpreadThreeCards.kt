@@ -16,6 +16,9 @@ data class SpreadThreeCards(@SerialName("c1") val card1: CardOrientation,
                             @SerialName("c2") val card2: CardOrientation,
                             @SerialName("c3") val card3: CardOrientation) : ISpread {
 
+  override val cards: List<CardOrientation>
+    get() = listOf(card1, card2, card3)
+
   override fun getTitle(locale: Locale): String {
     return when (locale.language) {
       "en" -> "Three Card Spread"

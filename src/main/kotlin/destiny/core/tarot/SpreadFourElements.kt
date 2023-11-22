@@ -15,6 +15,10 @@ data class SpreadFourElements(val fire : CardOrientation,
                               val water : CardOrientation,
                               val earth : CardOrientation,
                               val air : CardOrientation) : ISpread {
+
+  override val cards: List<CardOrientation>
+    get() = listOf(fire, water, earth, air)
+
   override fun getTitle(locale: Locale): String {
     return when (locale.language) {
       "en" -> "The Four Elements Spread"

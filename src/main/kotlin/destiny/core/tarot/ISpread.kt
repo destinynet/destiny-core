@@ -8,4 +8,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-sealed interface ISpread : Descriptive, java.io.Serializable
+sealed interface ISpread : Descriptive, java.io.Serializable {
+
+  val cards : List<CardOrientation>
+}
