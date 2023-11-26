@@ -21,10 +21,16 @@ data class SpreadFiveCross(
     get() = listOf(center, left, right, top, bottom)
 
   override fun getTitle(locale: Locale): String {
-    return when(locale.language) {
-      "en" -> "The Cross Spread"
-      "ja" -> "十字のスプレッド"
-      else -> "十字陣"
+    return SpreadFiveCross.getTitle(locale)
+  }
+
+  companion object {
+    fun getTitle(locale: Locale): String {
+      return when (locale.language) {
+        "en" -> "The Cross Spread"
+        "ja" -> "十字のスプレッド"
+        else -> "十字陣"
+      }
     }
   }
 }

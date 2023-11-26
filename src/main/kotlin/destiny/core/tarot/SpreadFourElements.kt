@@ -20,11 +20,7 @@ data class SpreadFourElements(val fire : CardOrientation,
     get() = listOf(fire, water, earth, air)
 
   override fun getTitle(locale: Locale): String {
-    return when (locale.language) {
-      "en" -> "The Four Elements Spread"
-      "ja" -> "四元素スプレッド"
-      else -> "四要素"
-    }
+    return SpreadFourElements.getTitle(locale)
   }
 
   fun getCardOrientation(element: Element): CardOrientation {
@@ -40,6 +36,14 @@ data class SpreadFourElements(val fire : CardOrientation,
     fun of(map : Map<Element, CardOrientation>): SpreadFourElements {
       require(map.size == 4)
       return SpreadFourElements(map[Element.FIRE]!!, map[Element.WATER]!!, map[Element.EARTH]!!, map[Element.AIR]!!)
+    }
+
+    fun getTitle(locale: Locale): String {
+      return when (locale.language) {
+        "en" -> "The Four Elements Spread"
+        "ja" -> "四元素スプレッド"
+        else -> "四要素"
+      }
     }
   }
 }
