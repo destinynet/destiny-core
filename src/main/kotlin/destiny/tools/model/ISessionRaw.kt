@@ -22,6 +22,10 @@ sealed interface ISessionRaw<T> {
 
 }
 
+data class SessionEw(override val model: IBirthDataNamePlace, override val raw: String? = null) : ISessionRaw<IBirthDataNamePlace> {
+  override val domain: Domain = Domain.EW
+}
+
 data class SessionZiwei(override val model: IBirthDataNamePlace, override val raw: String? = null) : ISessionRaw<IBirthDataNamePlace> {
   override val domain: Domain = Domain.ZIWEI
 }

@@ -14,6 +14,9 @@ import java.util.*
 @Serializable(with = DomainSerializer::class)
 sealed class Domain {
 
+  /** 八字 */
+  data object EW : Domain()
+
   /** 紫微斗數 */
   data object ZIWEI : Domain()
 

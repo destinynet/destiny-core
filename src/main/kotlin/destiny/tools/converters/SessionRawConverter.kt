@@ -26,6 +26,7 @@ class SessionRawConverter<T>(val domain: Domain, private val modelConverter: ICo
 
       modelConverter.getContext(map)?.let { model: T ->
         when (domain) {
+          Domain.EW          -> SessionEw(model as IBirthDataNamePlace, raw) as ISessionRaw<T>
           Domain.ZIWEI       -> SessionZiwei(model as IBirthDataNamePlace, raw) as ISessionRaw<T>
           Domain.ICHING_RAND -> SessionIChingRand(model as IPairHexQuestion, raw) as ISessionRaw<T>
           Domain.HOROSCOPE   -> SessionHoroscope(model as IBirthDataNamePlace, raw) as ISessionRaw<T>
