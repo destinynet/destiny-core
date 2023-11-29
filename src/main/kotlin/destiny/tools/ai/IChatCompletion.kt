@@ -5,7 +5,7 @@ import java.time.temporal.ChronoUnit
 
 sealed class Reply {
 
-  data class Normal(val content: String) : Reply()
+  data class Normal(val content: String, val provider: String, val model: String) : Reply()
 
   sealed class Error : Reply() {
 
