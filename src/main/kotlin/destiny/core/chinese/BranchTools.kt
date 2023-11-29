@@ -3,27 +3,35 @@
  */
 package destiny.core.chinese
 
+import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement.*
 
 object BranchTools {
 
+  val trilogies: Set<Pair<Set<Branch>, FiveElement>>
+    get() {
+      return setOf(
+        setOf(申, 子, 辰) to 水,
+        setOf(巳, 酉, 丑) to 金,
+        setOf(亥, 卯, 未) to 木,
+        setOf(寅, 午, 戌) to 火,
+      )
+    }
+
   /** 地支三合  */
   fun trilogy(branch: Branch): FiveElement {
-    return when (branch) {
-      Branch.申, Branch.子, Branch.辰 -> 水
-      Branch.巳, Branch.酉, Branch.丑 -> 金
-      Branch.亥, Branch.卯, Branch.未 -> 木
-      Branch.寅, Branch.午, Branch.戌 -> 火
-    }
+    return trilogies.first {
+      it.first.contains(branch)
+    }.second
   }
 
   /** 地支三會  */
   fun direction(branch: Branch): FiveElement {
     return when (branch) {
-      Branch.亥, Branch.子, Branch.丑 -> 水
-      Branch.寅, Branch.卯, Branch.辰 -> 木
-      Branch.巳, Branch.午, Branch.未 -> 火
-      Branch.申, Branch.酉, Branch.戌 -> 金
+      亥, 子, 丑 -> 水
+      寅, 卯, 辰 -> 木
+      巳, 午, 未 -> 火
+      申, 酉, 戌 -> 金
     }
   }
 
