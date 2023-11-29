@@ -5,6 +5,7 @@
  */
 package destiny.core.chinese
 
+import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.Stem.*
 import mu.KotlinLogging
 import java.util.*
@@ -17,6 +18,20 @@ import kotlin.test.assertTrue
 class StemTest {
 
   val logger = KotlinLogging.logger { }
+
+  @Test
+  fun testCombined() {
+    assertEquals(己 to 土, 甲.combined)
+    assertEquals(庚 to 金, 乙.combined)
+    assertEquals(辛 to 水, 丙.combined)
+    assertEquals(壬 to 木, 丁.combined)
+    assertEquals(癸 to 火, 戊.combined)
+    assertEquals(甲 to 土, 己.combined)
+    assertEquals(乙 to 金, 庚.combined)
+    assertEquals(丙 to 水, 辛.combined)
+    assertEquals(丁 to 木, 壬.combined)
+    assertEquals(戊 to 火, 癸.combined)
+  }
 
   @Test
   fun testGetAheadOf() {
@@ -95,9 +110,9 @@ class StemTest {
 
   @Test
   fun testValueOf() {
-    assertEquals(甲, valueOf("甲"))
-    assertSame(甲, valueOf("甲"))
-    assertEquals(癸, valueOf("癸"))
+    assertEquals(甲, Stem.valueOf("甲"))
+    assertSame(甲, Stem.valueOf("甲"))
+    assertEquals(癸, Stem.valueOf("癸"))
   }
 
   @Test
@@ -116,16 +131,16 @@ class StemTest {
 
   @Test
   fun testGetFiveElements() {
-    assertEquals(FiveElement.木, 甲.fiveElement)
-    assertEquals(FiveElement.木, 乙.fiveElement)
-    assertEquals(FiveElement.火, 丙.fiveElement)
-    assertEquals(FiveElement.火, 丁.fiveElement)
-    assertEquals(FiveElement.土, 戊.fiveElement)
-    assertEquals(FiveElement.土, 己.fiveElement)
-    assertEquals(FiveElement.金, 庚.fiveElement)
-    assertEquals(FiveElement.金, 辛.fiveElement)
-    assertEquals(FiveElement.水, 壬.fiveElement)
-    assertEquals(FiveElement.水, 癸.fiveElement)
+    assertEquals(木, 甲.fiveElement)
+    assertEquals(木, 乙.fiveElement)
+    assertEquals(火, 丙.fiveElement)
+    assertEquals(火, 丁.fiveElement)
+    assertEquals(土, 戊.fiveElement)
+    assertEquals(土, 己.fiveElement)
+    assertEquals(金, 庚.fiveElement)
+    assertEquals(金, 辛.fiveElement)
+    assertEquals(水, 壬.fiveElement)
+    assertEquals(水, 癸.fiveElement)
   }
 
   @Test
@@ -163,30 +178,30 @@ class StemTest {
 
   @Test
   fun testGetHeavenlyStems() {
-    assertSame(甲, Stem[FiveElement.木, true])
-    assertSame(乙, Stem[FiveElement.木, false])
-    assertSame(丙, Stem[FiveElement.火, true])
-    assertSame(丁, Stem[FiveElement.火, false])
-    assertSame(戊, Stem[FiveElement.土, true])
-    assertSame(己, Stem[FiveElement.土, false])
-    assertSame(庚, Stem[FiveElement.金, true])
-    assertSame(辛, Stem[FiveElement.金, false])
-    assertSame(壬, Stem[FiveElement.水, true])
-    assertSame(癸, Stem[FiveElement.水, false])
+    assertSame(甲, Stem[木, true])
+    assertSame(乙, Stem[木, false])
+    assertSame(丙, Stem[火, true])
+    assertSame(丁, Stem[火, false])
+    assertSame(戊, Stem[土, true])
+    assertSame(己, Stem[土, false])
+    assertSame(庚, Stem[金, true])
+    assertSame(辛, Stem[金, false])
+    assertSame(壬, Stem[水, true])
+    assertSame(癸, Stem[水, false])
   }
 
 
   @Test
   fun testHashCode() {
-    logger.info("{}", 甲.hashCode())
-    logger.info("{}", 乙.hashCode())
-    logger.info("{}", 丙.hashCode())
-    logger.info("{}", 丁.hashCode())
-    logger.info("{}", 戊.hashCode())
-    logger.info("{}", 己.hashCode())
-    logger.info("{}", 庚.hashCode())
-    logger.info("{}", 辛.hashCode())
-    logger.info("{}", 壬.hashCode())
-    logger.info("{}", 癸.hashCode())
+    logger.info("${甲.hashCode()}")
+    logger.info("${乙.hashCode()}")
+    logger.info("${丙.hashCode()}")
+    logger.info("${丁.hashCode()}")
+    logger.info("${戊.hashCode()}")
+    logger.info("${己.hashCode()}")
+    logger.info("${庚.hashCode()}")
+    logger.info("${辛.hashCode()}")
+    logger.info("${壬.hashCode()}")
+    logger.info("${癸.hashCode()}")
   }
 }

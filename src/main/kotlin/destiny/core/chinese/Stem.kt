@@ -57,6 +57,20 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang , ILoop<Stem> {
   override val booleanValue: Boolean
     get() = getIndex(this) % 2 == 0
 
+  val combined: Pair<Stem, FiveElement>
+    get() {
+      val stem = get(this.index + 5)
+      return stem to
+        when (index % 5) {
+          0    -> 土
+          1    -> 金
+          2    -> 水
+          3    -> 木
+          4    -> 火
+          else -> throw RuntimeException("impossible")
+        }
+    }
+
   companion object {
 
     /** 從五行 以及 陰陽 建立天干  */
