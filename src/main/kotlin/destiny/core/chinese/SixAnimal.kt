@@ -34,6 +34,13 @@ enum class SixAnimal(val shortName:String) : ILoop<SixAnimal> {
       return ArrayTools[entries.toTypedArray(), index]
     }
 
+    fun getSixAnimals(dayStem: Stem): List<SixAnimal> {
+      var count = 0
+      return generateSequence { SixAnimal.get(dayStem).next(count++) }
+        .take(6)
+        .toList()
+    }
+
     private fun getIndex(animal: SixAnimal): Int {
       return entries.indexOf(animal)
     }

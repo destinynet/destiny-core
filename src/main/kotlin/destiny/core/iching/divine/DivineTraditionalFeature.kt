@@ -5,7 +5,10 @@ package destiny.core.iching.divine
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.eightwords.*
+import destiny.core.calendar.eightwords.EightWordsConfig
+import destiny.core.calendar.eightwords.EightWordsFeature
+import destiny.core.calendar.eightwords.IEightWordsConfig
+import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.chinese.*
 import destiny.core.iching.Hexagram
 import destiny.core.iching.HexagramName
@@ -164,7 +167,7 @@ class DivineTraditionalFeature(private val eightWordsFeature: EightWordsFeature,
     // 羊刃
     val yangBlade: Branch? = day?.stem?.let { yangBladeImplMap[config.yangBlade]!!.getYangBlade(it) }
     // 六獸
-    val sixAnimals: List<SixAnimal> = day?.let { SixAnimals.getSixAnimals(it.stem) } ?: emptyList()
+    val sixAnimals: List<SixAnimal> = day?.let { SixAnimal.getSixAnimals(it.stem) } ?: emptyList()
 
 
     return CombinedWithMetaNameDayMonth(combinedWithMetaName, eightWordsNullable, voids, horse, flower, tianyis, yangBlade, sixAnimals)
