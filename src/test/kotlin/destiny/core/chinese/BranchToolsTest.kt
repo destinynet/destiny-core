@@ -8,6 +8,7 @@ import destiny.core.chinese.BranchTools.trilogy
 import destiny.core.chinese.FiveElement.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class BranchToolsTest {
 
@@ -28,5 +29,15 @@ class BranchToolsTest {
     assertEquals(火, trilogy(寅))
     assertEquals(火, trilogy(午))
     assertEquals(火, trilogy(戌))
+  }
+
+  @Test
+  fun trilogyBranchesTest() {
+    assertEquals(木, trilogy(亥, 卯, 未))
+    assertEquals(水, trilogy(申, 子, 辰))
+    assertEquals(金, trilogy(巳, 酉, 丑))
+    assertEquals(火, trilogy(寅, 午, 戌))
+    assertNull(trilogy(寅, 午, 子))
+    assertNull(trilogy(寅, 午, 午))
   }
 }

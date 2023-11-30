@@ -25,6 +25,15 @@ object BranchTools {
     }.second
   }
 
+  fun trilogy(branch1: Branch, branch2: Branch, branch3: Branch): FiveElement? {
+    return setOf(branch1, branch2, branch3).takeIf { it.size == 3 }
+      ?.let { all3 ->
+        trilogies.firstOrNull { (set, _) ->
+          set.containsAll(all3)
+        }?.second
+      }
+  }
+
   /** 地支三會  */
   fun direction(branch: Branch): FiveElement {
     return when (branch) {
