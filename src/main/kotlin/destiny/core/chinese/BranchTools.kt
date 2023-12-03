@@ -34,14 +34,31 @@ object BranchTools {
       }
   }
 
+
+  val directions : Set<Pair<Set<Branch> , FiveElement>>
+    get() {
+      return setOf(
+        setOf(亥, 子, 丑) to 水,
+        setOf(寅, 卯, 辰) to 木,
+        setOf(巳, 午, 未) to 火,
+        setOf(申, 酉, 戌) to 金,
+      )
+    }
+
   /** 地支三會  */
   fun direction(branch: Branch): FiveElement {
-    return when (branch) {
-      亥, 子, 丑 -> 水
-      寅, 卯, 辰 -> 木
-      巳, 午, 未 -> 火
-      申, 酉, 戌 -> 金
-    }
+    return directions.first {
+      it.first.contains(branch)
+    }.second
+  }
+
+  fun direction(branch1: Branch, branch2: Branch, branch3: Branch) : FiveElement? {
+    return setOf(branch1, branch2, branch3).takeIf { it.size == 3 }
+      ?.let { all3 ->
+        directions.firstOrNull { (set, _) ->
+          set.containsAll(all3)
+        }?.second
+      }
   }
 
 }
