@@ -11,13 +11,13 @@ import java.time.ZoneId
 
 interface IEventSpanService {
 
+  /** 年度事件 : 節氣、逆行、日蝕、月蝕  (無空亡) */
   fun getYearlyEvents(stars: Set<Star>, year: Int, zoneId: ZoneId, phases: Set<RetrogradePhase> = setOf(RetrogradePhase.RETROGRADING)): List<IEvent>
 
+  /** 月份事件 : 節氣、逆行、月空亡、日蝕、月蝕 */
   fun getMonthlyEventSpans(stars: Set<Star>, year: Int, month: Int, loc: ILocation, phases: Set<RetrogradePhase> = setOf(RetrogradePhase.RETROGRADING)): List<IEvent>
 
-  /**
-   * 節氣、星體逆行、空亡、日蝕、月蝕
-   */
+  /** 當日事件 : 節氣、星體逆行、空亡、日蝕、月蝕 */
   fun getDailyEventPoints(stars: Set<Star>, localDate: LocalDate, loc: ILocation): List<IEvent>
 
   /**
