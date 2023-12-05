@@ -42,7 +42,7 @@ interface IEclipseFactory {
   /** 全球，某時間範圍內的月食記錄 */
   fun getRangeLunarEclipses(fromGmt: GmtJulDay,
                             toGmt: GmtJulDay,
-                            types: Collection<LunarType> = LunarType.entries): List<AbstractLunarEclipse> {
+                            types: Set<LunarType> = LunarType.entries.toSet()): List<AbstractLunarEclipse> {
     require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
 
     return generateSequence( getNextLunarEclipse(fromGmt , true)) {
