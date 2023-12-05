@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.calendar.IEvent
 import destiny.core.calendar.ILocation
+import java.time.LocalDate
 import java.time.ZoneId
 
 
@@ -12,7 +13,9 @@ interface IEventSpanService {
 
   fun getYearlyEvents(stars: Set<Star>, year: Int, zoneId: ZoneId, phases: Set<RetrogradePhase> = setOf(RetrogradePhase.RETROGRADING)): List<IEvent>
 
-  fun getMonthlyEvents(stars: Set<Star>, year: Int, month: Int, loc: ILocation, phases: Set<RetrogradePhase> = setOf(RetrogradePhase.RETROGRADING)): List<IEvent>
+  fun getMonthlyEventSpans(stars: Set<Star>, year: Int, month: Int, loc: ILocation, phases: Set<RetrogradePhase> = setOf(RetrogradePhase.RETROGRADING)): List<IEvent>
+
+  fun getDailyEventPoints(stars: Set<Star>, localDate: LocalDate, loc: ILocation): List<IEvent>
 
   /**
    * 內容

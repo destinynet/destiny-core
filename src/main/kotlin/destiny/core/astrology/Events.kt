@@ -3,6 +3,8 @@ package destiny.core.astrology
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.AbstractLunarEclipse
 import destiny.core.astrology.eclipse.AbstractSolarEclipse
+import destiny.core.astrology.eclipse.ILunarEclipse
+import destiny.core.astrology.eclipse.ISolarEclipse
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.getTitle
 import java.util.*
@@ -49,7 +51,7 @@ data class VocEvent(val voc: Misc.VoidCourse) : IStarEventSpan by voc {
 
 data class SolarEclipseEvent(val eclipse: AbstractSolarEclipse,
                              override val fromPos: IZodiacDegree,
-                             override val toPos: IZodiacDegree) : IStarEventSpan {
+                             override val toPos: IZodiacDegree) : IStarEventSpan, ISolarEclipse by eclipse {
   override val star: Star = Planet.SUN
   override val begin: GmtJulDay = eclipse.begin
   override val end: GmtJulDay = eclipse.end
@@ -67,7 +69,7 @@ data class SolarEclipseEvent(val eclipse: AbstractSolarEclipse,
 
 data class LunarEclipseEvent(val eclipse : AbstractLunarEclipse,
                              override val fromPos: IZodiacDegree,
-                             override val toPos: IZodiacDegree) : IStarEventSpan {
+                             override val toPos: IZodiacDegree) : IStarEventSpan, ILunarEclipse by eclipse {
   override val star: Star = Planet.MOON
   override val begin: GmtJulDay = eclipse.begin
   override val end: GmtJulDay = eclipse.end

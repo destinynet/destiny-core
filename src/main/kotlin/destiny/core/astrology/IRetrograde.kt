@@ -9,7 +9,7 @@ import destiny.core.astrology.RetrogradePhase.*
 import destiny.core.astrology.StationaryType.DIRECT_TO_RETROGRADE
 import destiny.core.astrology.StationaryType.RETROGRADE_TO_DIRECT
 import destiny.core.calendar.GmtJulDay
-import java.io.Serializable
+import destiny.core.calendar.IEvent
 
 enum class RetrogradePhase {
   PREPARING,
@@ -28,7 +28,11 @@ data class RetrogradeSpan(
 ) : IStarEventSpan
 
 /** 星體停滯資訊 */
-data class Stationary(val gmtJulDay: GmtJulDay, val star: Star, val type: StationaryType, val pos: IPos) : Serializable
+data class Stationary(val gmtJulDay: GmtJulDay, val star: Star, val type: StationaryType, val pos: IPos) : IEvent {
+  override val begin: GmtJulDay
+    get() = gmtJulDay
+}
+
 
 data class RetrogradeCycle(
   val star: Star,
