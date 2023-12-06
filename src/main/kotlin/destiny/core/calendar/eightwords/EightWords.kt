@@ -30,14 +30,10 @@ sealed interface IEightWordsNullable {
     }
   }
 
+  fun getScaleMap() : Map<Scale , IStemBranchOptional>
 
   fun getScale(scale: Scale): IStemBranchOptional {
-    return when (scale) {
-      Scale.YEAR  -> year
-      Scale.MONTH -> month
-      Scale.DAY   -> day
-      Scale.HOUR  -> hour
-    }
+    return getScaleMap()[scale]!!
   }
 }
 
@@ -83,13 +79,17 @@ interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
   override val eightWordsNullable: IEightWordsNullable
     get() = EightWordsNullable.of(year, month, day, hour)
 
+  override fun getScaleMap(): Map<Scale, IStemBranch> {
+    return mapOf(
+      Scale.YEAR to year,
+      Scale.MONTH to month,
+      Scale.DAY to day,
+      Scale.HOUR to hour,
+    )
+  }
+
   override fun getScale(scale: Scale) : IStemBranch {
-    return when(scale) {
-      Scale.YEAR -> year
-      Scale.MONTH -> month
-      Scale.DAY -> day
-      Scale.HOUR -> hour
-    }
+    return getScaleMap()[scale]!!
   }
 }
 
@@ -102,6 +102,15 @@ data class EightWordsNullable private constructor(override val year: IStemBranch
 
   override val eightWordsNullable: EightWordsNullable
     get() = this
+
+  override fun getScaleMap(): Map<Scale, IStemBranchOptional> {
+    return mapOf(
+      Scale.YEAR to year,
+      Scale.MONTH to month,
+      Scale.DAY to day,
+      Scale.HOUR to hour,
+    )
+  }
 
   override fun toString(): String {
 
