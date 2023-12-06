@@ -30,7 +30,7 @@ interface IEclipseFactory {
 
     return generateSequence (getNextSolarEclipse(fromGmt , true , types)) {
       getNextSolarEclipse(it.end , true , types)
-    }.takeWhile { it.max > fromGmt && it.max < toGmt }
+    }.takeWhile { it.begin in fromGmt..toGmt || it.end in fromGmt..toGmt }
       .toList()
   }
 
@@ -47,7 +47,7 @@ interface IEclipseFactory {
 
     return generateSequence( getNextLunarEclipse(fromGmt , true)) {
       getNextLunarEclipse(it.end , true)
-    }.takeWhile { it.end < toGmt }
+    }.takeWhile { it.begin in fromGmt..toGmt || it.end in fromGmt..toGmt }
       .toList()
   }
 

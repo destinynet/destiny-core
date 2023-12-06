@@ -18,7 +18,11 @@ interface IEventSpanService {
   fun getMonthlyEventSpans(stars: Set<Star>, year: Int, month: Int, loc: ILocation, phases: Set<RetrogradePhase> = setOf(RetrogradePhase.RETROGRADING)): List<IEvent>
 
   /** 當日事件 : 節氣、星體逆行、空亡、日蝕、月蝕 */
+  @Deprecated("")
   fun getDailyEventPoints(stars: Set<Star>, localDate: LocalDate, loc: ILocation): List<IEvent>
+
+  /** 當日事件 : 節氣、星體逆行、空亡、日蝕、月蝕 */
+  fun getDailyEventSpans(stars: Set<Star>, localDate: LocalDate, loc: ILocation, phases: Set<RetrogradePhase> = setOf(RetrogradePhase.RETROGRADING)): List<IEvent>
 
   /**
    * 內容
