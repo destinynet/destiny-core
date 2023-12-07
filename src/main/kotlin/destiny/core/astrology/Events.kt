@@ -39,7 +39,7 @@ data class VocEvent(val voc: Misc.VoidCourse) : IStarEventSpan by voc {
 
   override fun getDescription(locale: Locale): String {
     return buildString {
-      append("為期 ")
+      append(" 為期 ")
       if (voc.duration.inWholeHours > 0) {
         append(voc.duration.inWholeHours).append("小時")
       } else {
