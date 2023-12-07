@@ -25,19 +25,14 @@ sealed interface IVoidCourse : Descriptive {
   ): Misc.VoidCourse?
 
   fun getVoidCourses(
-    fromGmt: GmtJulDay,
-    toGmt: GmtJulDay,
-    loc: ILocation,
-    pointPosFuncMap: Map<AstroPoint, IPosition<*>>,
-    relativeTransitImpl: IRelativeTransit,
-    centric: Centric = Centric.GEO,
-    planet: Planet = Planet.MOON
+    fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>,
+    relativeTransitImpl: IRelativeTransit, centric: Centric = Centric.GEO, planet: Planet = Planet.MOON
   ): List<Misc.VoidCourse> {
 
     val planets = Planet.classicalList
     val aspects = Aspect.getAspects(Aspect.Importance.HIGH)
 
-    fun getNextVoc(gmt : GmtJulDay): Misc.VoidCourse? {
+    fun getNextVoc(gmt: GmtJulDay): Misc.VoidCourse? {
 
       return relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, planets, gmt, aspects, true)
         ?.takeIf { nextAspectData: IAspectData -> nextAspectData.gmtJulDay < toGmt }
@@ -51,7 +46,7 @@ sealed interface IVoidCourse : Descriptive {
         }
     }
 
-    fun getVoc(gmt: GmtJulDay) : Misc.VoidCourse? {
+    fun getVoc(gmt: GmtJulDay): Misc.VoidCourse? {
       val gmtVoc: Misc.VoidCourse? = getVoidCourse(gmt, loc, pointPosFuncMap, planet, centric)
 
       return if (gmtVoc == null) {
@@ -75,7 +70,7 @@ sealed interface IVoidCourse : Descriptive {
     }.toList()
   }
 
-  fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>> , points: Collection<AstroPoint>): Map<Planet, Misc.VoidCourse> {
+  fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, points: Collection<AstroPoint>): Map<Planet, Misc.VoidCourse> {
     return points.filterIsInstance<Planet>()
       .map { planet -> planet to getVoidCourse(gmtJulDay, loc, pointPosFuncMap, planet) }
       .filter { (_, voc) -> voc != null }
@@ -92,7 +87,7 @@ sealed interface IVoidCourse : Descriptive {
   }
 
   companion object {
-    val logger = KotlinLogging.logger {  }
+    val logger = KotlinLogging.logger { }
     val julDayResolver = JulDayResolver1582CutoverImpl()
   }
 }
@@ -102,8 +97,10 @@ sealed interface IVoidCourse : Descriptive {
  *
  * may be replaced with [VoidCourseConfig.vocImpl.Hellenistic]
  */
-class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
-                            private val starPositionImpl: IStarPosition<*>) : IVoidCourse, Serializable {
+class VoidCourseHellenistic(
+  private val besiegedImpl: IBesieged,
+  private val starPositionImpl: IStarPosition<*>
+) : IVoidCourse, Serializable {
   override fun getVoidCourse(
     gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, planet: Planet, centric: Centric
   ): Misc.VoidCourse? {
@@ -136,8 +133,9 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
         }
       }
   }
+
   companion object {
-    val logger = KotlinLogging.logger {  }
+    val logger = KotlinLogging.logger { }
   }
 }
 
@@ -214,7 +212,7 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
   }
 
   companion object {
-    val logger = KotlinLogging.logger {  }
+    val logger = KotlinLogging.logger { }
   }
 }
 
