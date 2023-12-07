@@ -216,14 +216,14 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
       }
     }
 
-    // 月亮空亡
+    // 星體空亡
     voidCourseFeature.getVoidCourses(fromGmt, toGmt, loc, relativeTransitImpl, config.vocConfig)
       .forEach { voc ->
         if (voc.begin > fromGmt) {
-          set.add(TimeDesc.VoidMoon.Begin(voc, loc))
+          set.add(TimeDesc.Void.Begin(voc))
         }
         if (voc.end < toGmt) {
-          set.add(TimeDesc.VoidMoon.End(voc, loc))
+          set.add(TimeDesc.Void.End(voc))
         }
       }
 

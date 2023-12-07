@@ -3,7 +3,10 @@
  */
 package destiny.core.calendar
 
-import destiny.core.astrology.*
+import destiny.core.astrology.AstroPoint
+import destiny.core.astrology.LunarPhase
+import destiny.core.astrology.LunarStation
+import destiny.core.astrology.TransPoint
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.EclipseTime
 import destiny.core.astrology.eclipse.LunarType
@@ -47,8 +50,12 @@ sealed class TimeDesc(override val begin : GmtJulDay,
                               val locPlace: ILocationPlace? = null) :
     TimeDesc(begin, buildString {
       append(type.getTitle(Locale.getDefault()))
-      append(" ")
       time.getTitle(Locale.getDefault())
+        .takeIf { it.isNotBlank() }
+        ?.also {
+          append(" ")
+          append(it)
+        }
     }.let {
       locPlace?.let { lp ->
         it + " 於 " + lp.place
@@ -69,18 +76,18 @@ sealed class TimeDesc(override val begin : GmtJulDay,
   )
 
 
-  sealed class VoidMoon(override val begin: GmtJulDay,
-                        desc: String) : TimeDesc(begin, desc) {
+  sealed class Void(override val begin: GmtJulDay,
+                    desc: String) : TimeDesc(begin, desc) {
 
     /** 月空亡開始 */
-    data class Begin(val voidCourse: Misc.VoidCourse, val loc: ILocation) : VoidMoon(
+    data class Begin(val voidCourse: Misc.VoidCourse) : Void(
       voidCourse.begin,
-      "月空亡開始，剛離開與 ${voidCourse.exactAspectPrior.points.first { it != Planet.MOON }} 的 ${voidCourse.exactAspectPrior.aspect.getTitle(Locale.TAIWAN)} "
+      "${voidCourse.star}空亡開始，剛離開與 ${voidCourse.exactAspectPrior.points.first { it != voidCourse.star }} 的 ${voidCourse.exactAspectPrior.aspect.getTitle(Locale.TAIWAN)} "
     )
 
     /** 月空亡結束 */
-    data class End(val voidCourse: Misc.VoidCourse, val loc: ILocation) : VoidMoon(
-      voidCourse.end, "月空亡結束"
+    data class End(val voidCourse: Misc.VoidCourse) : Void(
+      voidCourse.end, "${voidCourse.star}空亡結束"
     )
   }
 

@@ -3,6 +3,13 @@
  */
 package destiny.core.astrology
 
+import destiny.core.astrology.eclipse.EclipseTime
+import destiny.core.astrology.eclipse.ILunarEclipse
+import destiny.core.astrology.eclipse.ISolarEclipse
+import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.IEvent
+import destiny.core.calendar.SolarTermsEvent
+import destiny.core.calendar.TimeDesc
 import mu.KotlinLogging
 
 object HoroscopeFunctions {
@@ -73,6 +80,59 @@ object HoroscopeFunctions {
         } ?: unAffected
 
     }
+  }
+
+  fun List<IEvent>.toTimeDesc(fromGmt: GmtJulDay, toGmt: GmtJulDay): List<TimeDesc> {
+    return this.flatMap { event: IEvent ->
+      when (event) {
+        // 節氣
+        is SolarTermsEvent      -> setOf<TimeDesc>(TimeDesc.TypeSolarTerms(event.begin, event.solarTerms.toString(), event.solarTerms))
+        // 日蝕
+        is ISolarEclipse -> {
+          buildSet {
+            if (event.begin in fromGmt..toGmt) {
+              add(TimeDesc.TypeSolarEclipse(event.begin, event.solarType, EclipseTime.BEGIN))
+            }
+            if (event.max in fromGmt..toGmt) {
+              add(TimeDesc.TypeSolarEclipse(event.max, event.solarType, EclipseTime.MAX))
+            }
+            if (event.end in fromGmt..toGmt) {
+              add(TimeDesc.TypeSolarEclipse(event.end, event.solarType, EclipseTime.END))
+            }
+          }
+        }
+
+        // 空亡
+        is VocEvent -> {
+          buildSet {
+            if (event.voc.begin in fromGmt .. toGmt) {
+              add(TimeDesc.Void.Begin(event.voc))
+            }
+            if (event.voc.end in fromGmt .. toGmt) {
+              add(TimeDesc.Void.End(event.voc))
+            }
+          }
+        }
+
+        // 月蝕
+        is ILunarEclipse -> {
+          buildSet {
+            if (event.begin in fromGmt..toGmt) {
+              add(TimeDesc.TypeLunarEclipse(event.begin, event.lunarType, EclipseTime.BEGIN))
+            }
+            if (event.max in fromGmt..toGmt) {
+              add(TimeDesc.TypeLunarEclipse(event.max, event.lunarType, EclipseTime.MAX))
+            }
+            if (event.end in fromGmt..toGmt) {
+              add(TimeDesc.TypeLunarEclipse(event.end, event.lunarType, EclipseTime.END))
+            }
+          }
+        }
+
+        else                    -> emptySet()
+      }
+    }.sortedBy { it }
+      .toList()
   }
 
 }

@@ -64,7 +64,7 @@ sealed interface IVoidCourse : Descriptive {
     return generateSequence(getVoc(fromGmt)) {
       val newGmt = (min(it.end.value, it.exactAspectAfter.gmtJulDay.value) + 0.01).toGmtJulDay()
       if (newGmt < toGmt) {
-        getVoc(newGmt)?.takeIf { voc -> voc.begin < toGmt }
+        getVoc(newGmt)?.takeIf { voc -> voc.begin in fromGmt..toGmt || voc.end in fromGmt..toGmt }
       } else
         null
     }.toList()
