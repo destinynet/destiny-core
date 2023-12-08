@@ -15,13 +15,7 @@ import java.time.ZoneId
 interface IEventPointService {
 
   /** 某範圍內的事件 : 節氣、星體逆行、空亡、日蝕、月蝕 */
-  fun getEvents(
-    planets: Set<Planet>,
-    fromGmt: GmtJulDay,
-    toGmt: GmtJulDay,
-    loc: ILocation,
-    phases: Set<RetrogradePhase> = setOf(RetrogradePhase.RETROGRADING)
-  ): List<IEvent>
+  fun getEvents(planets: Set<Planet>, fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, phases: Set<RetrogradePhase> = setOf(RetrogradePhase.RETROGRADING)): List<IEvent>
 
   /** 月份事件 : 節氣、逆行、月空亡、日蝕、月蝕 */
   fun getMonthlyEvents(planets: Set<Planet>, year: Int, month: Int, loc: ILocation, phases: Set<RetrogradePhase> = setOf(RetrogradePhase.RETROGRADING)): List<IEvent> {
