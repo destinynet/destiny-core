@@ -56,10 +56,21 @@ interface IEclipseFactory {
                             types: Set<LunarType> = LunarType.entries.toSet()): List<AbstractLunarEclipse> {
     require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
 
-    return generateSequence( getNextLunarEclipse(fromGmt , true)) {
-      getNextLunarEclipse(it.end , true)
-    }.takeWhile { it.begin in fromGmt..toGmt || it.end in fromGmt..toGmt }
-      .toList()
+    val backwardSeq = generateSequence(getNextLunarEclipse(fromGmt, false)) {
+      getNextLunarEclipse(it.begin, false)
+    }.takeWhile {
+      it.begin in fromGmt..toGmt || it.end in fromGmt..toGmt
+        || it.begin < fromGmt && toGmt < it.end
+    }
+
+    val forwardSeq = generateSequence(getNextLunarEclipse(fromGmt, true)) {
+      getNextLunarEclipse(it.end, true)
+    }.takeWhile {
+      it.begin in fromGmt..toGmt || it.end in fromGmt..toGmt
+        || it.begin < fromGmt && toGmt < it.end
+    }
+
+    return sequenceOf(backwardSeq, forwardSeq).flatten().sortedBy { it.begin }.toList()
   }
 
   // ================================== 日食觀測 ==================================
