@@ -765,7 +765,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
    * @param yearYuanTang 該年元堂
    */
   override fun getMonthlyHexagram(yearStem: Stem, yearHexagram: IHexagram, yearYuanTang: Int, gmt: GmtJulDay, settings: SettingsOfStemBranch): IHoloHexagramWithStemBranch {
-    val solarTerms: SolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt)
+    val solarTerms: SolarTerms = solarTermsImpl.getSolarTerms(gmt)
 
     val monthNum = solarTerms.branch.getAheadOf(寅) + 1 // 1~12
 

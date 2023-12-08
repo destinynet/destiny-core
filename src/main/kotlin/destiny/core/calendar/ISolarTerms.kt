@@ -16,20 +16,13 @@ import java.time.chrono.ChronoLocalDateTime
 interface ISolarTerms {
 
   /** 計算某時刻當下的節氣  */
-  fun getSolarTermsFromGMT(gmtJulDay: GmtJulDay): SolarTerms
-
-  /** 承上， ChronoLocalDateTime 版本  */
-  fun getSolarTermsFromGMT(gmt: ChronoLocalDateTime<*>): SolarTerms {
-    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-    return getSolarTermsFromGMT(gmtJulDay)
-  }
+  fun getSolarTerms(gmtJulDay: GmtJulDay): SolarTerms
 
   /**
    * 承上 , LMT + Location 版本
    */
   fun getSolarTerms(lmt: ChronoLocalDateTime<*>, location: ILocation): SolarTerms {
-    val gmt = TimeTools.getGmtFromLmt(lmt, location)
-    return getSolarTermsFromGMT(gmt)
+    return getSolarTerms(TimeTools.getGmtJulDay(lmt, location))
   }
 
   /**

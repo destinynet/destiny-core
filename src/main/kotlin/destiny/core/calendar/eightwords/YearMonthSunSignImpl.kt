@@ -44,7 +44,7 @@ class YearMonthSunSignImpl(private val ymSolarTermsStarPositionImpl: YearMonthSo
     val originalMonth = ymSolarTermsStarPositionImpl.getMonth(gmtJulDay, location)
 
     // 目前的節氣
-    val solarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
+    val solarTerms = solarTermsImpl.getSolarTerms(gmtJulDay)
 
     return if (solarTerms.major) {
       // 單數 : 立春 、 驚蟄 ...

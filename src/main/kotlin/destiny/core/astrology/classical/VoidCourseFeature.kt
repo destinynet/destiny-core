@@ -4,7 +4,7 @@
 package destiny.core.astrology.classical
 
 import destiny.core.astrology.*
-import destiny.core.astrology.classical.rules.Misc.VoidCourse
+import destiny.core.astrology.classical.rules.Misc.VoidCourseSpan
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.calendar.ILocation
@@ -59,9 +59,9 @@ class VoidCourseConfigBuilder : Builder<VoidCourseConfig> {
 /**
  * 星體空亡 interface
  */
-interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourse?> {
+interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourseSpan?> {
 
-  fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation , points: Collection<AstroPoint> , config: VoidCourseConfig): Map<Planet, VoidCourse> {
+  fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation , points: Collection<AstroPoint> , config: VoidCourseConfig): Map<Planet, VoidCourseSpan> {
     return points.filterIsInstance<Planet>()
       .map { planet ->
 
@@ -71,7 +71,7 @@ interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourse?> {
       .associate { (planet, voc) -> planet to voc!! }
   }
 
-  fun getVoidCourses(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, relativeTransitImpl: IRelativeTransit, config: VoidCourseConfig): List<VoidCourse>
+  fun getVoidCourses(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, relativeTransitImpl: IRelativeTransit, config: VoidCourseConfig): List<VoidCourseSpan>
 }
 
 /**
@@ -80,23 +80,23 @@ interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourse?> {
 @Named
 class VoidCourseFeature(private val vocMap: Map<VoidCourseImpl, IVoidCourse>,
                         private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>,
-                        private val julDayResolver: JulDayResolver) : IVoidCourseFeature , AbstractCachedFeature<VoidCourseConfig , VoidCourse?>() {
+                        private val julDayResolver: JulDayResolver) : IVoidCourseFeature , AbstractCachedFeature<VoidCourseConfig , VoidCourseSpan?>() {
   
   override val key: String = "voidCourse"
 
   override val defaultConfig: VoidCourseConfig = VoidCourseConfig()
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: VoidCourseConfig): VoidCourse? {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: VoidCourseConfig): VoidCourseSpan? {
 
     return vocMap[config.vocImpl]!!.getVoidCourse(gmtJulDay, loc, pointPosFuncMap, config.planet, config.centric)
   }
 
-  override fun getVoidCourses(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, relativeTransitImpl: IRelativeTransit, config: VoidCourseConfig): List<VoidCourse> {
+  override fun getVoidCourses(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, relativeTransitImpl: IRelativeTransit, config: VoidCourseConfig): List<VoidCourseSpan> {
 
     val planets = Planet.classicalList
     val aspects = Aspect.getAspects(Aspect.Importance.HIGH)
 
-    fun getNextVoc(gmt : GmtJulDay): VoidCourse? {
+    fun getNextVoc(gmt : GmtJulDay): VoidCourseSpan? {
 
       return relativeTransitImpl.getNearestRelativeTransitGmtJulDay(config.planet, planets, gmt, aspects, true)
         ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay < toGmt }
@@ -110,8 +110,8 @@ class VoidCourseFeature(private val vocMap: Map<VoidCourseImpl, IVoidCourse>,
         }
     }
 
-    fun getVoc(gmt: GmtJulDay , config: VoidCourseConfig) : VoidCourse? {
-      val gmtVoc: VoidCourse? = getModel(gmt, loc , config)
+    fun getVoc(gmt: GmtJulDay , config: VoidCourseConfig) : VoidCourseSpan? {
+      val gmtVoc: VoidCourseSpan? = getModel(gmt, loc, config)
 
       return if (gmtVoc == null) {
         logger.trace { "沒有 VOC : ${julDayResolver.getLocalDateTime(gmt)} " }

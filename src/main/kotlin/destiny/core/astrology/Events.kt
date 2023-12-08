@@ -1,6 +1,5 @@
 package destiny.core.astrology
 
-import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.AbstractLunarEclipse
 import destiny.core.astrology.eclipse.AbstractSolarEclipse
 import destiny.core.astrology.eclipse.ILunarEclipse
@@ -16,12 +15,7 @@ data class RetrogradeEvent(val span: RetrogradeSpan) : IStarEventSpan by span {
     return buildString {
       append(span.star)
       append(" ")
-      val name = when (span.phase) {
-        RetrogradePhase.PREPARING    -> "準備逆行"
-        RetrogradePhase.RETROGRADING -> "逆行"
-        RetrogradePhase.LEAVING      -> "結束逆行"
-      }
-      append(name)
+      append(span.phase.getTitle(locale))
     }
   }
 
@@ -30,28 +24,9 @@ data class RetrogradeEvent(val span: RetrogradeSpan) : IStarEventSpan by span {
   }
 }
 
-
-data class VocEvent(val voc: Misc.VoidCourse) : IStarEventSpan by voc {
-
-  override fun getTitle(locale: Locale): String {
-    return "${voc.star} 空亡"
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return buildString {
-      append(" 為期 ")
-      if (voc.duration.inWholeHours > 0) {
-        append(voc.duration.inWholeHours).append("小時")
-      } else {
-        append(voc.duration.inWholeMinutes).append("分鐘")
-      }
-    }
-  }
-}
-
-data class SolarEclipseEvent(val eclipse: AbstractSolarEclipse,
-                             override val fromPos: IZodiacDegree,
-                             override val toPos: IZodiacDegree) : IStarEventSpan, ISolarEclipse by eclipse {
+data class SolarEclipseSpan(val eclipse: AbstractSolarEclipse,
+                            override val fromPos: IZodiacDegree,
+                            override val toPos: IZodiacDegree) : IStarEventSpan, ISolarEclipse by eclipse {
   override val star: Star = Planet.SUN
   override val begin: GmtJulDay = eclipse.begin
   override val end: GmtJulDay = eclipse.end
@@ -67,9 +42,9 @@ data class SolarEclipseEvent(val eclipse: AbstractSolarEclipse,
 
 
 
-data class LunarEclipseEvent(val eclipse : AbstractLunarEclipse,
-                             override val fromPos: IZodiacDegree,
-                             override val toPos: IZodiacDegree) : IStarEventSpan, ILunarEclipse by eclipse {
+data class LunarEclipseSpan(val eclipse : AbstractLunarEclipse,
+                            override val fromPos: IZodiacDegree,
+                            override val toPos: IZodiacDegree) : IStarEventSpan, ILunarEclipse by eclipse {
   override val star: Star = Planet.MOON
   override val begin: GmtJulDay = eclipse.begin
   override val end: GmtJulDay = eclipse.end

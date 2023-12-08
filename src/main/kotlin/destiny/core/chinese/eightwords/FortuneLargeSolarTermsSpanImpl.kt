@@ -110,7 +110,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFe
     val reverse = index < 0
     var stepGmtJulDay = gmtJulDay
     //現在的 節氣
-    val currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
+    val currentSolarTerms = solarTermsImpl.getSolarTerms(gmtJulDay)
     //var stepSolarTerms = if (reverse) currentSolarTerms.previous() else currentSolarTerms.next()
     var stepSolarTerms = if (reverse) currentSolarTerms else currentSolarTerms.next()
 
@@ -158,7 +158,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFe
             stepGmtJulDay = targetGmtJulDay + 1
           }
 
-          stepSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay).next()
+          stepSolarTerms = solarTermsImpl.getSolarTerms(stepGmtJulDay).next()
           i++
         } // while (i <= index)
       } // 順推
@@ -189,7 +189,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFe
             stepGmtJulDay = targetGmtJulDay - 1
           }
 
-          stepSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay)
+          stepSolarTerms = solarTermsImpl.getSolarTerms(stepGmtJulDay)
           i--
         } //while (i >= index)
       } // 逆推

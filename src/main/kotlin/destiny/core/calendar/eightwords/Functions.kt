@@ -105,7 +105,7 @@ fun getMonth(
   //先算出太陽在黃經上的度數
 
   // 目前的節氣
-  val solarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
+  val solarTerms = solarTermsImpl.getSolarTerms(gmtJulDay)
 
   val monthIndex = (SolarTerms.getIndex(solarTerms) / 2 + 2).let {
     if (it >= 12)

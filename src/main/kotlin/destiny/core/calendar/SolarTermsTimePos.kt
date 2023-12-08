@@ -5,6 +5,10 @@ import java.io.Serializable
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 
+interface ISolarTermsSpan : IEventSpan {
+  val solarTerms: SolarTerms
+}
+
 data class SolarTermsTimePos(
   /** 目前時刻 */
   val gmtJulDay : GmtJulDay,
@@ -16,7 +20,7 @@ data class SolarTermsTimePos(
   val middle: SolarTermsEvent,
 
   /** 下一個「節」， 及其 GMT JulDay */
-  val nextMajor: SolarTermsEvent) : Serializable {
+  val nextMajor: SolarTermsEvent) : ISolarTermsSpan , Serializable {
 
   /** 前半部 (節 to 中氣) */
   val firstHalf : Boolean by lazy {
@@ -29,12 +33,18 @@ data class SolarTermsTimePos(
   }
 
   /** 取得「節」或「氣」, 若在前半部，則取 [prevMajor] , 若在後半部，則取 [middle] */
-  val solarTerms : SolarTerms by lazy {
+  override val solarTerms : SolarTerms by lazy {
     if (firstHalf)
       prevMajor.solarTerms
     else
       middle.solarTerms
   }
+
+  override val begin: GmtJulDay
+    get() = prevMajor.begin
+
+  override val end: GmtJulDay
+    get() = nextMajor.begin
 
   /** 距離「節」的開始有幾秒 */
   val toPrevMajorSeconds : Double by lazy {

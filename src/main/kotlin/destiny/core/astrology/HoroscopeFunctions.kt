@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.EclipseTime
 import destiny.core.astrology.eclipse.ILunarEclipse
 import destiny.core.astrology.eclipse.ISolarEclipse
@@ -87,6 +88,11 @@ object HoroscopeFunctions {
       when (event) {
         // 節氣
         is SolarTermsEvent      -> setOf<TimeDesc>(TimeDesc.TypeSolarTerms(event.begin, event.solarTerms.toString(), event.solarTerms))
+        // 逆行
+        is RetrogradeSpan -> {
+          TODO()
+        }
+
         // 日蝕
         is ISolarEclipse -> {
           buildSet {
@@ -103,13 +109,13 @@ object HoroscopeFunctions {
         }
 
         // 空亡
-        is VocEvent -> {
+        is Misc.VoidCourseSpan -> {
           buildSet {
-            if (event.voc.begin in fromGmt .. toGmt) {
-              add(TimeDesc.Void.Begin(event.voc))
+            if (event.begin in fromGmt .. toGmt) {
+              add(TimeDesc.Void.Begin(event))
             }
-            if (event.voc.end in fromGmt .. toGmt) {
-              add(TimeDesc.Void.End(event.voc))
+            if (event.end in fromGmt .. toGmt) {
+              add(TimeDesc.Void.End(event))
             }
           }
         }

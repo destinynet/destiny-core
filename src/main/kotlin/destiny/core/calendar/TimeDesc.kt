@@ -3,15 +3,13 @@
  */
 package destiny.core.calendar
 
-import destiny.core.astrology.AstroPoint
-import destiny.core.astrology.LunarPhase
-import destiny.core.astrology.LunarStation
-import destiny.core.astrology.TransPoint
+import destiny.core.astrology.*
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.EclipseTime
 import destiny.core.astrology.eclipse.LunarType
 import destiny.core.astrology.eclipse.SolarType
 import destiny.core.chinese.Branch
+import destiny.core.toString
 import destiny.tools.getTitle
 import java.util.*
 
@@ -61,17 +59,22 @@ sealed class TimeDesc(override val begin: GmtJulDay, open val descs: List<String
     }
   )
 
+  /** 逆行 開始/結束 */
+  sealed class Retrograde(stationary: Stationary) : TimeDesc(
+    stationary.begin,
+    stationary.star.toString(Locale.getDefault()) + " " + stationary.type.getTitle(Locale.getDefault())
+  )
 
   sealed class Void(override val begin: GmtJulDay, desc: String) : TimeDesc(begin, desc) {
 
     /** 空亡開始 */
-    data class Begin(val voidCourse: Misc.VoidCourse) : Void(
+    data class Begin(val voidCourse: Misc.VoidCourseSpan) : Void(
       voidCourse.begin,
       "${voidCourse.star}空亡開始，剛離開與 ${voidCourse.exactAspectPrior.points.first { it != voidCourse.star }} 的 ${voidCourse.exactAspectPrior.aspect.getTitle(Locale.TAIWAN)} "
     )
 
     /** 空亡結束 */
-    data class End(val voidCourse: Misc.VoidCourse) : Void(
+    data class End(val voidCourse: Misc.VoidCourseSpan) : Void(
       voidCourse.end, "${voidCourse.star}空亡結束"
     )
   }

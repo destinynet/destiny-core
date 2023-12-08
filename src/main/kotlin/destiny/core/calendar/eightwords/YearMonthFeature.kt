@@ -117,7 +117,7 @@ class YearMonthFeature(private val starPositionImpl: IStarPosition<*>,
       MonthImpl.SolarTerms -> originalMonth
       MonthImpl.SunSign    -> {
         // 目前的節氣
-        val solarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
+        val solarTerms = solarTermsImpl.getSolarTerms(gmtJulDay)
 
         if (solarTerms.major) {
           // 單數 : 立春 、 驚蟄 ...

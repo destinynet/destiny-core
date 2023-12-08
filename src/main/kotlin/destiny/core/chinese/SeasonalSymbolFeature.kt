@@ -78,7 +78,7 @@ class SeasonalSymbolFeature(val solarTermsImpl: ISolarTerms) : AbstractCachedFea
    * 東方設定：四立點
    */
   private fun chinese(gmtJulDay: GmtJulDay): Set<Symbol> {
-    val solarTerms: SolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
+    val solarTerms: SolarTerms = solarTermsImpl.getSolarTerms(gmtJulDay)
 
     val branch = solarTerms.branch
 
@@ -108,7 +108,7 @@ class SeasonalSymbolFeature(val solarTermsImpl: ISolarTerms) : AbstractCachedFea
    * 若為 [FULL_MONTH] , 則 「季月」 的「坤、艮」旺全月
    */
   private fun holo(gmtJulDay: GmtJulDay, endSeasonSymbolSpan: SeasonalSymbolConfig.Impl.Holo.EndSeasonSymbolSpan): Set<Symbol> {
-    val solarTerms: SolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
+    val solarTerms: SolarTerms = solarTermsImpl.getSolarTerms(gmtJulDay)
 
     return solarTerms.branch.takeIf { listOf(辰, 戌, 丑, 未).contains(it) }
       ?.let {

@@ -32,7 +32,7 @@ interface ISeasonalSymbol {
 class SeasonalSymbolChineseImpl(val solarTermsImpl: ISolarTerms) : ISeasonalSymbol, Serializable {
 
   override fun getSeasonalSymbol(gmtJulDay: GmtJulDay): Set<Symbol> {
-    val solarTerms: SolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
+    val solarTerms: SolarTerms = solarTermsImpl.getSolarTerms(gmtJulDay)
 
     val branch = solarTerms.branch
 

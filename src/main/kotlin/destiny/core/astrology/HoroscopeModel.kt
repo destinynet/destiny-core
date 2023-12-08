@@ -46,7 +46,7 @@ interface IHoroscopeModel : ITimeLoc {
   val cuspDegreeMap: Map<Int, ZodiacDegree>
 
   /** 行星空亡表 */
-  val vocMap: Map<Planet, Misc.VoidCourse>
+  val vocMap: Map<Planet, Misc.VoidCourseSpan>
 
   /** 行星時 , Planetary Hour */
   val planetaryHour : PlanetaryHour?
@@ -310,7 +310,7 @@ data class HoroscopeModel(
   override val cuspDegreeMap: Map<Int, ZodiacDegree>,
 
   /** 行星空亡表 */
-  override val vocMap: Map<Planet, Misc.VoidCourse>,
+  override val vocMap: Map<Planet, Misc.VoidCourseSpan>,
 
   /** 行星時 , Planetary Hour */
   override val planetaryHour: PlanetaryHour?

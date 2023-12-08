@@ -9,6 +9,8 @@ import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.MutualDataWithSign
 import destiny.core.calendar.GmtJulDay
 import destiny.core.chinese.YinYang
+import destiny.core.toString
+import java.util.*
 
 /**
  * 行星的 25種狀態
@@ -135,10 +137,26 @@ sealed class Misc : IPlanetPattern {
 
   /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [exactAspectPrior] , 後一個準確交角資訊為 [exactAspectAfter]
    * */
-  data class VoidCourse(override val planet: Planet,
-                        override val begin : GmtJulDay, override val fromPos : IZodiacDegree,
-                        override val end : GmtJulDay, override val toPos : IZodiacDegree,
-                        val exactAspectPrior: IAspectData, val exactAspectAfter: IAspectData) : Misc(), IStarEventSpan {
+  data class VoidCourseSpan(override val planet: Planet,
+                            override val begin : GmtJulDay, override val fromPos : IZodiacDegree,
+                            override val end : GmtJulDay, override val toPos : IZodiacDegree,
+                            val exactAspectPrior: IAspectData, val exactAspectAfter: IAspectData) : Misc(), IStarEventSpan {
     override val star: Star = planet
-                        }
+
+    override fun getTitle(locale: Locale): String {
+      return planet.toString(Locale.getDefault()) + " 空亡"
+    }
+
+    override fun getDescription(locale: Locale): String {
+      return buildString {
+        append(" 為期 ")
+        if (duration.inWholeHours > 0) {
+          append(duration.inWholeHours).append("小時")
+        } else {
+          append(duration.inWholeMinutes).append("分鐘")
+        }
+      }
+    }
+                            }
+
 }
