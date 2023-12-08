@@ -21,17 +21,28 @@ interface IEclipseFactory {
     return getNextSolarEclipse(fromGmtJulDay, forward, SolarType.entries.toSet())
   }
 
-  /** 全球，某時間範圍內的日食記錄  */
+  /** 全球，某時間範圍內的日食記錄 */
   fun getRangeSolarEclipses(fromGmt: GmtJulDay,
                             toGmt: GmtJulDay,
                             types: Set<SolarType> = SolarType.entries.toSet()
   ): List<AbstractSolarEclipse> {
     require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
 
-    return generateSequence (getNextSolarEclipse(fromGmt , true , types)) {
-      getNextSolarEclipse(it.end , true , types)
-    }.takeWhile { it.begin in fromGmt..toGmt || it.end in fromGmt..toGmt }
-      .toList()
+    val backwardSeq = generateSequence(getNextSolarEclipse(fromGmt, false, types)) {
+      getNextSolarEclipse(it.begin, false, types)
+    }.takeWhile {
+      it.begin in fromGmt..toGmt || it.end in fromGmt..toGmt
+        || it.begin < fromGmt && toGmt < it.end
+    }
+
+    val forwardSeq = generateSequence(getNextSolarEclipse(fromGmt, true, types)) {
+      getNextSolarEclipse(it.end, true, types)
+    }.takeWhile {
+      it.begin in fromGmt..toGmt || it.end in fromGmt..toGmt
+        || it.begin < fromGmt && toGmt < it.end
+    }
+
+    return sequenceOf(backwardSeq , forwardSeq).flatten().sortedBy { it.begin }.toList()
   }
 
   // ================================== 月食 ==================================
