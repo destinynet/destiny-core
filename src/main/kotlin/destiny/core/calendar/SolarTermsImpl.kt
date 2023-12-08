@@ -41,7 +41,7 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
   /**
    * 計算從某時(fromGmtTime) 到某時(toGmtTime) 之間的節氣 , in GMT
    */
-  override fun getPeriodSolarTermsEvents(fromGmt: GmtJulDay, toGmt: GmtJulDay): List<SolarTermsEvent> {
+  override fun getSolarTermsEvents(fromGmt: GmtJulDay, toGmt: GmtJulDay): List<SolarTermsEvent> {
 
     val nowST = getSolarTerms(fromGmt)
     val nextST = nowST.next()

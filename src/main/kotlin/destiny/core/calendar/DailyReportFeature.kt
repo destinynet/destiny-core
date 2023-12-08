@@ -155,7 +155,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     }
 
     // 節氣
-    val listSolarTerms: List<TimeDesc> = solarTermsImpl.getPeriodSolarTermsEvents(fromGmt, toGmt).map { event ->
+    val listSolarTerms: List<TimeDesc> = solarTermsImpl.getSolarTermsEvents(fromGmt, toGmt).map { event ->
       TimeDesc.TypeSolarTerms(event.begin, event.solarTerms.toString(), event.solarTerms)
     }
 

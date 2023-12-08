@@ -14,5 +14,13 @@ data class SolarTermsEvent(override val begin: GmtJulDay,
   override fun getTitle(locale: Locale): String {
     return solarTerms.getTitle(locale)
   }
-
 }
+
+interface ISolarTermsSpan : IEventSpan {
+  val solarTerms: SolarTerms
+}
+
+data class SolarTermsSpan(
+  override val solarTerms: SolarTerms,
+  override val begin: GmtJulDay,
+  override val end : GmtJulDay) : ISolarTermsSpan
