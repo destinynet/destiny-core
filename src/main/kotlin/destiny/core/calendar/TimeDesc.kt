@@ -60,10 +60,14 @@ sealed class TimeDesc(override val begin: GmtJulDay, open val descs: List<String
   )
 
   /** 逆行 開始/結束 */
-  sealed class Retrograde(stationary: Stationary) : TimeDesc(
-    stationary.begin,
-    stationary.star.toString(Locale.getDefault()) + " " + stationary.type.getTitle(Locale.getDefault())
-  )
+  sealed class Retrograde(star: Star , type : StationaryType , begin: GmtJulDay) : TimeDesc(
+    begin,
+    star.toString(Locale.getDefault()) + " " + type.getTitle(Locale.getDefault())
+  ) {
+
+    data class Begin(val stationary: Stationary) : Retrograde(stationary.star, StationaryType.DIRECT_TO_RETROGRADE, stationary.begin)
+    data class End(val stationary: Stationary) : Retrograde(stationary.star, StationaryType.RETROGRADE_TO_DIRECT, stationary.begin)
+  }
 
   sealed class Void(override val begin: GmtJulDay, desc: String) : TimeDesc(begin, desc) {
 

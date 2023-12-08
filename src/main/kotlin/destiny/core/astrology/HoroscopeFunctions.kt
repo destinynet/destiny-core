@@ -89,9 +89,14 @@ object HoroscopeFunctions {
         // 節氣
         is SolarTermsEvent      -> setOf<TimeDesc>(TimeDesc.TypeSolarTerms(event.begin, event.solarTerms.toString(), event.solarTerms))
         // 逆行
-        is RetrogradeSpan -> {
-          TODO()
-        }
+        is Stationary -> setOf(
+          when(event.type) {
+            StationaryType.DIRECT_TO_RETROGRADE -> TimeDesc.Retrograde.Begin(event)
+            StationaryType.RETROGRADE_TO_DIRECT -> TimeDesc.Retrograde.End(event)
+          }
+        )
+
+        is TimeDesc -> setOf(event)
 
         // 日蝕
         is ISolarEclipse -> {
