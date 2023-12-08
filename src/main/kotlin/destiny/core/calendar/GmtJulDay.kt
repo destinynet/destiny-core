@@ -1,15 +1,22 @@
 package destiny.core.calendar
 
+import destiny.core.calendar.Constants.SECONDS_OF_DAY
 import destiny.tools.serializers.GmtJulDaySerializer
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toJavaLocalDateTime
 import java.io.Serializable
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
+import kotlin.math.absoluteValue
 import kotlin.math.ceil
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 @JvmInline
 @kotlinx.serialization.Serializable(with = GmtJulDaySerializer::class)
@@ -75,4 +82,12 @@ fun GmtJulDay.toLmt(zoneId: ZoneId, julDayResolver: JulDayResolver): ChronoLocal
 fun GmtJulDay.toDate(zoneId: ZoneId): Date {
   val zdt: ZonedDateTime = this.toInstant().toJavaInstant().atZone(zoneId)
   return Date.from(zdt.toInstant())
+}
+
+fun GmtJulDay.absDuration(lmt: LocalDateTime, zoneId: ZoneId): Duration {
+  return ((this - TimeTools.getGmtJulDay(lmt, zoneId)).absoluteValue * SECONDS_OF_DAY).toDuration(DurationUnit.SECONDS)
+}
+
+fun GmtJulDay.absDuration(lmt: kotlinx.datetime.LocalDateTime, zoneId: ZoneId): Duration {
+  return absDuration(lmt.toJavaLocalDateTime(), zoneId)
 }

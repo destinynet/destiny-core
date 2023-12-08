@@ -267,7 +267,10 @@ interface IRetrograde {
     return stars.filter { it != Planet.MOON }.flatMap { star ->
       generateSequence(getNextStationaryCycle(star, fromGmt, true, starPositionImpl, transit)) {
         getNextStationaryCycle(star, it.leavingGmt + 1, true, starPositionImpl, transit)
-      }.takeWhile { it.preparingGmt <= toGmt }
+      }.takeWhile {
+        it.preparingGmt in fromGmt..toGmt || it.leavingGmt in fromGmt..toGmt
+          || it.preparingGmt < fromGmt && toGmt < it.leavingGmt
+      }
     }.sortedBy { it.retrogradingGmt }
       .toList()
   }
@@ -286,6 +289,7 @@ interface IRetrograde {
       .filter { (phase, _) -> phases.contains(phase) }
       .filter { (_, span) ->
         span.begin in fromGmt..toGmt || span.end in fromGmt .. toGmt
+          || span.begin < fromGmt && toGmt < span.end
       }
       .map { pair -> pair.second }
       .toList()
