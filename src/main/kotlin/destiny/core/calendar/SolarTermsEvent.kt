@@ -23,4 +23,8 @@ interface ISolarTermsSpan : IEventSpan {
 data class SolarTermsSpan(
   override val solarTerms: SolarTerms,
   override val begin: GmtJulDay,
-  override val end : GmtJulDay) : ISolarTermsSpan
+  override val end : GmtJulDay) : ISolarTermsSpan {
+  override fun getTitle(locale: Locale): String {
+    return solarTerms.getTitle(locale)
+  }
+}
