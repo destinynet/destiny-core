@@ -62,7 +62,7 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
   /**
    * secondary progression calculation
    */
-  fun getSecondaryProgression(model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Collection<Aspect>,
+  fun getSecondaryProgression(model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
                               aspectsCalculator : IAspectsCalculator , config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
     val progression = ProgressionSecondary(converse)
 
@@ -72,7 +72,7 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
   /**
    * Tertiary Progression calculation
    */
-  fun getTertiaryProgression(model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Collection<Aspect>,
+  fun getTertiaryProgression(model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
                              aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
     val progression = ProgressionTertiary(converse)
 
@@ -82,20 +82,20 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
   /**
    * Minor Progression calculation
    */
-  fun getMinorProgression(model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Collection<Aspect>,
+  fun getMinorProgression(model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
                           aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
     val progression = ProgressionMinor(converse)
 
     return getProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
   }
 
-  fun transit(model: IHoroscopeModel, transitTime: GmtJulDay, aspects: Collection<Aspect>,
+  fun transit(model: IHoroscopeModel, transitTime: GmtJulDay, aspects: Set<Aspect>,
               aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig, converse: Boolean = false): IProgressionModel {
     val progression = Transit(converse)
     return getProgression(progression, model, transitTime, aspects, aspectsCalculator, config)
   }
 
-  fun getProgression(progression : AbstractProgression, model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Collection<Aspect>,
+  fun getProgression(progression : AbstractProgression, model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
                      aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig) : IProgressionModel {
 
     // inner : natal chart

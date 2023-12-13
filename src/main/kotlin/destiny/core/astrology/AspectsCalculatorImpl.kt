@@ -15,7 +15,7 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
 
   override fun getAspectPatterns(p1: AstroPoint, p2: AstroPoint,
                                  p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,
-                                 laterForP1: () -> IPos?, laterForP2: () -> IPos?, aspects: Collection<Aspect>): IPointAspectPattern? {
+                                 laterForP1: () -> IPos?, laterForP2: () -> IPos?, aspects: Set<Aspect>): IPointAspectPattern? {
     return aspects
       .intersect(aspectEffectiveImpl.applicableAspects)
       .asSequence()
@@ -42,7 +42,7 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
   }
 
 
-  private fun IHoroscopeModel.getAspectData(twoPoints: Set<AstroPoint>, aspects: Collection<Aspect>): IPointAspectPattern? {
+  private fun IHoroscopeModel.getAspectData(twoPoints: Set<AstroPoint>, aspects: Set<Aspect>): IPointAspectPattern? {
 
     val posMap: Map<AstroPoint, IPosWithAzimuth> = this.positionMap
 
@@ -67,7 +67,7 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
   }
 
   /** 針對整體 */
-  override fun IHoroscopeModel.getAspectPatterns(points: Collection<AstroPoint>, aspects: Collection<Aspect>): Set<IPointAspectPattern> {
+  override fun IHoroscopeModel.getAspectPatterns(points: Set<AstroPoint>, aspects: Set<Aspect>): Set<IPointAspectPattern> {
     return Sets.combinations(points.toSet(), 2)
       .asSequence()
       .mapNotNull { this.getAspectData(it, aspects) }
@@ -77,8 +77,8 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
   /** 針對單一 */
   override fun getAspectPatterns(point: AstroPoint,
                                  h: IHoroscopeModel,
-                                 points: Collection<AstroPoint>,
-                                 aspects: Collection<Aspect>): Set<IPointAspectPattern> {
+                                 points: Set<AstroPoint>,
+                                 aspects: Set<Aspect>): Set<IPointAspectPattern> {
     return points
       .asSequence()
       .map { eachPoint -> setOf(point, eachPoint) }
@@ -88,8 +88,8 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
 
   override fun getPointAspectAndScore(point: AstroPoint,
                                       positionMap: Map<AstroPoint, IPos>,
-                                      points: Collection<AstroPoint>,
-                                      aspects: Collection<Aspect>): Set<Triple<AstroPoint, Aspect, Double>> {
+                                      points: Set<AstroPoint>,
+                                      aspects: Set<Aspect>): Set<Triple<AstroPoint, Aspect, Double>> {
     return positionMap[point]?.lngDeg?.let { starDeg ->
       points
         .filter { it !== point }

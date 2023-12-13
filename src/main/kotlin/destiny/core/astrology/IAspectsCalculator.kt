@@ -18,20 +18,20 @@ interface IAspectsCalculator  {
   fun getAspectPatterns(p1: AstroPoint, p2: AstroPoint,
                         p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,
                         laterForP1: () -> IPos?, laterForP2: () -> IPos?,
-                        aspects: Collection<Aspect>): IPointAspectPattern?
+                        aspects: Set<Aspect>): IPointAspectPattern?
 
   /** 取得此星盤中，所有的交角資料 */
   fun IHoroscopeModel.getAspectPatterns(
-                    points : Collection<AstroPoint> = this.positionMap.keys,
-                    aspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)) : Set<IPointAspectPattern>
+                    points : Set<AstroPoint> = this.positionMap.keys,
+                    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()) : Set<IPointAspectPattern>
 
   /**
    * 取得於此 [AstroPoint] , 在此星盤 [h] 中 , 形成交角的資料
    */
   fun getAspectPatterns(point: AstroPoint,
                         h: IHoroscopeModel,
-                        points : Collection<AstroPoint> = h.positionMap.keys,
-                        aspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)) : Set<IPointAspectPattern>
+                        points : Set<AstroPoint> = h.positionMap.keys,
+                        aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()) : Set<IPointAspectPattern>
 
   /**
    * 取得與 [AstroPoint] 形成交角的星體，以及其交角是哪種，以及交角緊密度 (0~1)
@@ -39,8 +39,8 @@ interface IAspectsCalculator  {
    * */
   fun getPointAspectAndScore(point: AstroPoint,
                              positionMap: Map<AstroPoint, IPos>,
-                             points: Collection<AstroPoint> = positionMap.keys,
-                             aspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)
+                             points: Set<AstroPoint> = positionMap.keys,
+                             aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
   ): Set<Triple<AstroPoint , Aspect , Double>>
 
   /**
@@ -48,8 +48,8 @@ interface IAspectsCalculator  {
    * */
   fun getPointAspect(point: AstroPoint,
                      positionMap: Map<AstroPoint, IPos>,
-                     points: Collection<AstroPoint> = positionMap.keys,
-                     aspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)
+                     points: Set<AstroPoint> = positionMap.keys,
+                     aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
   ): Map<AstroPoint, Aspect> {
     return getPointAspectAndScore(point, positionMap, points, aspects).associate { (point, aspect, _) ->
       point to aspect
@@ -58,8 +58,8 @@ interface IAspectsCalculator  {
 
 
   fun IHoroscopeModel.getPointAspect(point: AstroPoint,
-                     points: Collection<AstroPoint>,
-                     aspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)): Map<AstroPoint, Aspect> {
+                     points: Set<AstroPoint>,
+                     aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()): Map<AstroPoint, Aspect> {
     return getPointAspect(point, this.positionMap, points, aspects)
   }
 
@@ -71,8 +71,8 @@ interface IAspectsCalculator  {
    * 如果沒有形成任何交角（不太可能 , 除非 points 很少 ），則傳回 size = 0 之 Set
    */
   fun getAspectPatterns(positionMap: Map<AstroPoint, IPos>,
-                        points: Collection<AstroPoint> = positionMap.keys,
-                        aspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)): Set<IPointAspectPattern> {
+                        points: Set<AstroPoint> = positionMap.keys,
+                        aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()): Set<IPointAspectPattern> {
 
     return points.asSequence().map { p1 ->
       getPointAspectAndScore(p1, positionMap, points, aspects)
