@@ -40,6 +40,7 @@ sealed class Planet(nameKey: String,
 
     override val values by lazy { arrayOf(*classicalArray, URANUS, NEPTUNE, PLUTO) }
     val list by lazy { listOf(*values) }
+    val planetSet by lazy { setOf(*values) }
 
     private val weekPlanets by lazy {
       arrayOf(SUN, MOON, MARS, MERCURY, JUPITER, VENUS, SATURN)
