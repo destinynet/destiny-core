@@ -92,7 +92,7 @@ class AstroPatternTranslatorTest {
     GoldenYod(
       bottoms = setOf(SUN, VENUS),
       pointer = PointSignHouse(JUPITER, AQUARIUS, 2)
-             ).also {
+    ).also {
       assertEquals("黃金指", it.title)
       assertEquals("黃金指：木星為指尖（指向水瓶座，第2宮），太陽,金星兩星為底。", it.zhDesc)
       assertEquals("Golden Yod : Jupiter is the apex（located at Aquarius, House 2); Sun and Venus are the base.", it.enDesc)

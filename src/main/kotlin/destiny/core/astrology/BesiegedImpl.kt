@@ -20,7 +20,7 @@ class BesiegedImpl(private val relativeTransitImpl: IRelativeTransit) : IBesiege
    */
   override fun getBesiegingPlanetsByDegrees(planet: Planet,
                                             gmtJulDay: GmtJulDay,
-                                            otherPlanets: Collection<Planet>,
+                                            otherPlanets: Set<Planet>,
                                             angles: Set<Double>): Pair<IAngleData?, IAngleData?> {
 
     /**

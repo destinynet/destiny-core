@@ -186,7 +186,8 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
               val score = threePairs.takeIf { pairs -> pairs.all { it.score != null } }?.map { it.score!! }?.average()
 
-              val bottoms = threePairs.first { it.aspect == QUINTILE }.points
+              // caution : list.toSet() !
+              val bottoms = threePairs.first { it.aspect == QUINTILE }.points.toSet()
               val pointer = threePairs.flatMap { it.points }.toSet().minus(bottoms.toSet()).first()
 
               AstroPattern.GoldenYod(bottoms, pointer.signHouse(posMap, cuspDegreeMap), score?.toScore())

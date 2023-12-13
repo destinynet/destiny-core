@@ -33,7 +33,7 @@ object HoroscopeFunctions {
    */
   fun IHoroscopeModel.getAxisScore(
     planet: Planet,
-    axisEffects: Collection<AxisEffect> = Axis.list.map { AxisEffect(it) }.toSet(),
+    axisEffects: Set<AxisEffect> = Axis.list.map { AxisEffect(it) }.toSet(),
     rotatingDeg: Double = 0.0,
     unAffected: Double = 0.0
   ): Double? {

@@ -26,12 +26,12 @@ interface IBesieged {
    */
   fun getBesiegingPlanetsByDegrees(planet: Planet,
                                    gmtJulDay: GmtJulDay,
-                                   otherPlanets: Collection<Planet>,
+                                   otherPlanets: Set<Planet>,
                                    angles: Set<Double>): Pair<IAngleData? , IAngleData?>
 
   fun getBesiegingPlanetsByAspects(planet: Planet,
                                    gmtJulDay: GmtJulDay,
-                                   otherPlanets: Collection<Planet>,
+                                   otherPlanets: Set<Planet>,
                                    aspects: Set<Aspect>): Pair<IAspectData?, IAspectData?> {
     return getBesiegingPlanetsByDegrees(planet, gmtJulDay, otherPlanets, aspects.map { it.degree }.toSet()).let { (prior, after) ->
       prior?.toAspectData() to after?.toAspectData()
@@ -98,13 +98,13 @@ interface IBesieged {
    * @param planet  取得除了 planet 之外的其他行星
    * @param classical 是否只取得 classical 之星 (true = 過濾三王星)
    */
-  private fun getPlanetsExcept(planet: Planet, classical: Boolean): List<Planet> {
+  private fun getPlanetsExcept(planet: Planet, classical: Boolean): Set<Planet> {
     return Planet.values.filter { it !== planet }.filter {
       if (classical) {
         !arrayOf(Planet.URANUS, Planet.NEPTUNE, Planet.PLUTO).contains(it)
       } else
         true
-    }
+    }.toSet()
   }
 
   companion object {

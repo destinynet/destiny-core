@@ -39,10 +39,10 @@ interface IAspectEffective {
   }
 
   fun isEffective(p1: AstroPoint, deg1: Double, p2: AstroPoint, deg2: Double, vararg aspects: Aspect): Boolean {
-    return isEffective(p1, deg1, p2, deg2, listOf(*aspects))
+    return isEffective(p1, deg1, p2, deg2, setOf(*aspects))
   }
 
-  fun isEffective(p1: AstroPoint, deg1: Double, p2: AstroPoint, deg2: Double, aspects: Collection<Aspect>): Boolean {
+  fun isEffective(p1: AstroPoint, deg1: Double, p2: AstroPoint, deg2: Double, aspects: Set<Aspect>): Boolean {
     return aspects.any { isEffective(p1, deg1.toZodiacDegree(), p2, deg2.toZodiacDegree(), it) }
   }
 

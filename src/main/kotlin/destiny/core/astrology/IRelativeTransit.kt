@@ -60,7 +60,7 @@ interface IRelativeTransit {
   fun getNearestRelativeTransitGmtJulDay(transitStar: Star,
                                          relativeStar: Star,
                                          fromGmtJulDay: GmtJulDay,
-                                         angles: Collection<Double>,
+                                         angles: Set<Double>,
                                          forward: Boolean): Pair<GmtJulDay, Double>? {
     /**
      * 相交 270 度也算 90 度
@@ -105,7 +105,7 @@ interface IRelativeTransit {
   fun getNearestRelativeTransitGmtJulDay(transitStar: Star,
                                          relativeStar: Star,
                                          fromGmt: ChronoLocalDateTime<*>,
-                                         angles: Collection<Double>,
+                                         angles: Set<Double>,
                                          isForward: Boolean): Pair<GmtJulDay, Double>? {
     val gmtJulDay = TimeTools.getGmtJulDay(fromGmt)
     return getNearestRelativeTransitGmtJulDay(transitStar, relativeStar, gmtJulDay, angles, isForward)
@@ -114,10 +114,10 @@ interface IRelativeTransit {
   /**
    * 找尋下一個與 [transitStar] 形成交角的資料
    */
-  fun getNearestRelativeTransitGmtJulDay(transitStar: Star, relativeStars: Collection<Star>, fromGmtJulDay: GmtJulDay, aspects : Collection<Aspect>, forward: Boolean): IAspectData? {
+  fun getNearestRelativeTransitGmtJulDay(transitStar: Star, relativeStars: Set<Star>, fromGmtJulDay: GmtJulDay, aspects : Set<Aspect>, forward: Boolean): IAspectData? {
 
     return relativeStars.filter { it != transitStar }.mapNotNull { eachOther ->
-      getNearestRelativeTransitGmtJulDay(transitStar, eachOther, fromGmtJulDay, aspects.map { it.degree }, forward)
+      getNearestRelativeTransitGmtJulDay(transitStar, eachOther, fromGmtJulDay, aspects.map { it.degree }.toSet(), forward)
         ?.let { (gmt , deg) -> Triple(eachOther , gmt, deg) }
     }.map { (other , gmt , deg) -> AspectData.of(transitStar, other , Aspect.getAspect(deg)!! , 0.0 , 0.0 , null , gmt) }
       .let { list ->

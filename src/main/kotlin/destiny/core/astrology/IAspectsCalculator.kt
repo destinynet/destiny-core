@@ -92,7 +92,7 @@ interface IAspectsCalculator  {
   }
 
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */
-  fun IHoroscopeModel.getAspectAndType(p1: AstroPoint, p2: AstroPoint, aspects: Collection<Aspect>): Pair<Aspect , Type>? {
+  fun IHoroscopeModel.getAspectAndType(p1: AstroPoint, p2: AstroPoint, aspects: Set<Aspect>): Pair<Aspect , Type>? {
     return aspects.asSequence().map { aspect ->
       aspect to this.getAspectType(p1, p2, aspect)
     }.filter { (_, type) ->
@@ -103,7 +103,7 @@ interface IAspectsCalculator  {
   }
 
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */
-  fun IHoroscopeModel.getAspectType(p1: AstroPoint, p2: AstroPoint, aspects: Collection<Aspect>): Type? {
+  fun IHoroscopeModel.getAspectType(p1: AstroPoint, p2: AstroPoint, aspects: Set<Aspect>): Type? {
     return getAspectAndType(p1, p2, aspects)?.second
   }
 

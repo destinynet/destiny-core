@@ -57,15 +57,15 @@ class TranslationOfLightImpl(private val aspectsCalculator: IAspectsCalculator,
 
           with(aspectsCalculator) {
             mapOf(
-              p1 to h.getAspectType(planet, p1, Aspect.getAspects(Aspect.Importance.HIGH)),
-              p2 to h.getAspectType(planet, p2, Aspect.getAspects(Aspect.Importance.HIGH))
+              p1 to h.getAspectType(planet, p1, Aspect.getAspects(Aspect.Importance.HIGH).toSet()),
+              p2 to h.getAspectType(planet, p2, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
             ).takeIf { map -> map.values.all { it != null } }?.mapValues { (_, maybeAspectType) -> maybeAspectType!! }?.takeIf { map ->
                 // 分別形成 出相位 以及 入相位
                 map.values.toSet() == setOf(IPointAspectPattern.Type.APPLYING, IPointAspectPattern.Type.SEPARATING)
               }?.let { map: Map<Planet, IPointAspectPattern.Type> ->
 
                 // p1 , p2 不一定有交角
-                val typeOptional: IPointAspectPattern.Type? = h.getAspectType(p1, p2, Aspect.getAspects(Aspect.Importance.HIGH))
+                val typeOptional: IPointAspectPattern.Type? = h.getAspectType(p1, p2, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
 
                 // 出相位
                 val separatingPoint = map.keys.first { p -> map.getValue(p) === IPointAspectPattern.Type.SEPARATING }

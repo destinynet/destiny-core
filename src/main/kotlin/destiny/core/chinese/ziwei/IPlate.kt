@@ -105,9 +105,9 @@ interface IPlate : Serializable {
     }
 
   /** 宮位地支 -> 星體s  */
-  val branchStarMap: Map<Branch, Collection<ZStar>>
+  val branchStarMap: Map<Branch, Set<ZStar>>
     get() {
-      return houseDataSet.groupBy { it.stemBranch.branch }.mapValues { it.value.flatMap { hData -> hData.stars } }
+      return houseDataSet.groupBy { it.stemBranch.branch }.mapValues { it.value.flatMap { hData -> hData.stars }.toSet() }
     }
 
   /** 宮位名稱 -> 星體s  */

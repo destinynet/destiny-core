@@ -36,6 +36,7 @@ sealed class Planet(nameKey: String,
 
     val classicalArray by lazy { arrayOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN) }
     val classicalList by lazy { listOf(*classicalArray) }
+    val classicalSet by lazy { setOf(*classicalArray) }
 
     override val values by lazy { arrayOf(*classicalArray, URANUS, NEPTUNE, PLUTO) }
     val list by lazy { listOf(*values) }

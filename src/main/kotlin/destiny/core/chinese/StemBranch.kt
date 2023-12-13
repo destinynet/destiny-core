@@ -136,7 +136,7 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
   }
 
   /** 取得「空亡」的兩個地支  */
-  val empties: Collection<Branch>
+  val empties: Set<Branch>
     get() = getEmpties(this)
 
   /** 哪一「旬」 */
@@ -245,14 +245,14 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
     }
 
     /** 取得「空亡」的兩個地支  */
-    fun getEmpties(sb: StemBranch): Collection<Branch> {
+    fun getEmpties(sb: StemBranch): Set<Branch> {
       return when (sb.cycle) {
-        StemBranchCycle.甲子 -> listOf(戌, 亥)
-        StemBranchCycle.甲戌 -> listOf(申, 酉)
-        StemBranchCycle.甲申 -> listOf(午, 未)
-        StemBranchCycle.甲午 -> listOf(辰, 巳)
-        StemBranchCycle.甲辰 -> listOf(寅, 卯)
-        StemBranchCycle.甲寅 -> listOf(子, 丑)
+        StemBranchCycle.甲子 -> setOf(戌, 亥)
+        StemBranchCycle.甲戌 -> setOf(申, 酉)
+        StemBranchCycle.甲申 -> setOf(午, 未)
+        StemBranchCycle.甲午 -> setOf(辰, 巳)
+        StemBranchCycle.甲辰 -> setOf(寅, 卯)
+        StemBranchCycle.甲寅 -> setOf(子, 丑)
       }
     }
   } // companion

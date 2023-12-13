@@ -28,11 +28,11 @@ interface IRefranation {
    *   「先」臨陣脫逃者，是哪顆星
    *   以及，他們原本要形成什麼交角
    */
-  fun getResult(horoscope: IHoroscopeModel, planet: Planet, otherPoint: AstroPoint, aspects: Collection<Aspect>): Pair<AstroPoint, Aspect>?
+  fun getResult(horoscope: IHoroscopeModel, planet: Planet, otherPoint: AstroPoint, aspects: Set<Aspect>): Pair<AstroPoint, Aspect>?
 
   /** 取得重要交角 [Aspect.Importance.HIGH] 的結果 */
   fun getImportantResult(horoscope: IHoroscopeModel, planet: Planet, otherPoint: AstroPoint): Pair<AstroPoint, Aspect>? {
-    return getResult(horoscope, planet, otherPoint, Aspect.getAspects(Aspect.Importance.HIGH))
+    return getResult(horoscope, planet, otherPoint, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
   }
 
 }
@@ -47,7 +47,7 @@ class RefranationImpl(private val aspectsCalculator: IAspectsCalculator,
   override fun getResult(horoscope: IHoroscopeModel,
                          planet: Planet,
                          otherPoint: AstroPoint,
-                         aspects: Collection<Aspect>): Pair<AstroPoint, Aspect>? {
+                         aspects: Set<Aspect>): Pair<AstroPoint, Aspect>? {
 
     return aspects.asSequence().map { aspect ->
       /** 此兩星正在 apply 哪個交角  */

@@ -118,8 +118,8 @@ interface IEssential {
 
   /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 , 但是不計算 [Dignity.TERM] 以及 [Dignity.FACE] , 因為這兩者需要度數 */
   fun AstroPoint.getReceptionsFromSign(map: Map<AstroPoint, ZodiacSign>,
-                                  dayNight: DayNight? = null,
-                                  dignities: Collection<Dignity>): Map<Dignity, AstroPoint> {
+                                       dayNight: DayNight? = null,
+                                       dignities: Set<Dignity>): Map<Dignity, AstroPoint> {
     return Dignity.entries.filter { dignities.contains(it) }.map { dignity ->
       when (dignity) {
         Dignity.RULER -> Dignity.RULER to this.receivingRulerFromSignMap(map)
@@ -168,8 +168,8 @@ interface IEssential {
 
   /** 查詢 p 在此星盤中 , 是否有與其他任何星，互相接納 (不論 Dignity 是否相等) . 只考量星座，故，無法計算 [Dignity.TERM] 或 [Dignity.FALL] */
   fun AstroPoint.getMutualDataFromSign(map: Map<AstroPoint, ZodiacSign>,
-                                  dayNight: DayNight?,
-                                  dignities: Collection<Dignity>): Set<MutualData> {
+                                       dayNight: DayNight?,
+                                       dignities: Set<Dignity>): Set<MutualData> {
     return map.keys.filter { it !== this }
       .flatMap { p2 ->
         p2.getReceptionsFromSign(map, dayNight, dignities)

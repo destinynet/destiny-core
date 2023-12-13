@@ -294,7 +294,7 @@ class EssentialImplTest {
     with(essentialImpl) {
 
       // 廟、旺
-      MARS.getReceptionsFromSign(signMap, null, listOf(RULER, EXALTATION, TRIPLICITY, TERM)).also {
+      MARS.getReceptionsFromSign(signMap, null, setOf(RULER, EXALTATION, TRIPLICITY, TERM)).also {
         assertEquals(VENUS, it[RULER])
         assertEquals(SATURN, it[EXALTATION])
       }

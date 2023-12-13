@@ -58,7 +58,7 @@ class VoidCourseConfigBuilder : Builder<VoidCourseConfig> {
  */
 interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourseSpan?> {
 
-  fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation , points: Collection<AstroPoint> , config: VoidCourseConfig): Map<Planet, VoidCourseSpan> {
+  fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation , points: Set<AstroPoint> , config: VoidCourseConfig): Map<Planet, VoidCourseSpan> {
     return points.filterIsInstance<Planet>()
       .map { planet ->
 

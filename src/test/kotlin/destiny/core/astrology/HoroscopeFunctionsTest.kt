@@ -91,7 +91,7 @@ class HoroscopeFunctionsTest {
     @Test
     fun default() {
 
-      val axisEffects = setOf(Axis.RISING, Axis.MERIDIAN).map { axis -> HoroscopeFunctions.AxisEffect(axis) }
+      val axisEffects = setOf(Axis.RISING, Axis.MERIDIAN).map { axis -> HoroscopeFunctions.AxisEffect(axis) }.toSet()
 
 
       run {
@@ -118,7 +118,7 @@ class HoroscopeFunctionsTest {
     @Test
     fun modifiedPeakValley() {
 
-      val axisEffects = setOf(Axis.RISING, Axis.MERIDIAN).map { axis -> HoroscopeFunctions.AxisEffect(axis, 2.0, 0.5) }
+      val axisEffects = setOf(Axis.RISING, Axis.MERIDIAN).map { axis -> HoroscopeFunctions.AxisEffect(axis, 2.0, 0.5) }.toSet()
 
       run {
         every { model.getPosition(planet) }.returns(PosWithAzimuth(Pos(0.0, 0.0), azimuth))

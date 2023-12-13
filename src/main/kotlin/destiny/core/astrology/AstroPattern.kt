@@ -16,7 +16,7 @@ data class PointSignHouse(val point: AstroPoint,
                           val sign: ZodiacSign,
                           val house: Int)
 
-sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
+sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
                           open val score: Score? = null) : IAstroPattern {
 
   /**
@@ -134,8 +134,8 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
   /**
    * [GoldenYod] : 黃金指 72 , 144 , 144
    * */
-  data class GoldenYod(val bottoms: Collection<AstroPoint>, val pointer: PointSignHouse, override val score: Score? = null) : AstroPattern() {
-    override val points: Collection<AstroPoint>
+  data class GoldenYod(val bottoms: Set<AstroPoint>, val pointer: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+    override val points: Set<AstroPoint>
       get() = bottoms.plus(pointer.point)
 
     override fun equals(other: Any?): Boolean {
