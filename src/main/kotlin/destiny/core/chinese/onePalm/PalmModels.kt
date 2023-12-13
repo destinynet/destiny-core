@@ -38,13 +38,13 @@ interface IPalmModel {
   /**
    * 取得哪些宮位有「柱」坐落其中，列出來
    */
-  val nonEmptyPillars: Map<Branch, Collection<Scale>>
+  val nonEmptyPillars: Map<Branch, Set<Scale>>
 
 
   /**
    * 取得在某一地支宮位，包含了哪些「柱」 (年/月/日/時)
    */
-  fun getPillars(branch: Branch): Collection<Scale>
+  fun getPillars(branch: Branch): Set<Scale>
 
   /**
    * 取得此柱，在哪個地支
@@ -156,13 +156,13 @@ data class PalmModel(
   /**
    * @return 取得哪些宮位有「柱」坐落其中，列出來
    */
-  override val nonEmptyPillars: Map<Branch, Collection<Scale>>
+  override val nonEmptyPillars: Map<Branch, Set<Scale>>
     get() = Branch.entries.filter { pillarMap.values.contains(it) }.associateWith { branch -> pillarMap.filter { (_, v) -> v === branch }.keys }
 
   /**
    * 取得在某一地支宮位，包含了哪些「柱」 (年/月/日/時)
    */
-  override fun getPillars(branch: Branch): Collection<Scale> {
+  override fun getPillars(branch: Branch): Set<Scale> {
     return pillarMap.filter { (_, v) -> v === branch }.keys
   }
 }

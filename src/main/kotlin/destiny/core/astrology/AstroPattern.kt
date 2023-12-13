@@ -67,7 +67,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
    * [TSquared] : 三刑會沖
    */
   data class TSquared(val oppoPoints: Set<AstroPoint>, val squared: PointSignHouse, override val score: Score? = null) : AstroPattern() {
-    override val points: Collection<AstroPoint>
+    override val points: Set<AstroPoint>
       get() = oppoPoints.plus(squared.point)
 
     override fun equals(other: Any?): Boolean {
@@ -223,7 +223,7 @@ sealed class AstroPattern(open val points: Collection<AstroPoint> = emptySet(),
    * 180 沖 , 逢 第三顆星 , 以 60/120 介入，緩和局勢
    */
   data class Wedge(val oppoPoints: Set<AstroPoint>, val moderator: PointSignHouse, override val score: Score? = null) : AstroPattern() {
-    override val points: Collection<AstroPoint>
+    override val points: Set<AstroPoint>
       get() = oppoPoints.plus(moderator.point)
 
     override fun equals(other: Any?): Boolean {

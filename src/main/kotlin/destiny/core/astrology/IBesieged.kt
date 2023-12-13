@@ -27,13 +27,13 @@ interface IBesieged {
   fun getBesiegingPlanetsByDegrees(planet: Planet,
                                    gmtJulDay: GmtJulDay,
                                    otherPlanets: Collection<Planet>,
-                                   angles: Collection<Double>): Pair<IAngleData? , IAngleData?>
+                                   angles: Set<Double>): Pair<IAngleData? , IAngleData?>
 
   fun getBesiegingPlanetsByAspects(planet: Planet,
                                    gmtJulDay: GmtJulDay,
                                    otherPlanets: Collection<Planet>,
-                                   aspects: Collection<Aspect>): Pair<IAspectData?, IAspectData?> {
-    return getBesiegingPlanetsByDegrees(planet, gmtJulDay, otherPlanets, aspects.map { it.degree }).let { (prior, after) ->
+                                   aspects: Set<Aspect>): Pair<IAspectData?, IAspectData?> {
+    return getBesiegingPlanetsByDegrees(planet, gmtJulDay, otherPlanets, aspects.map { it.degree }.toSet()).let { (prior, after) ->
       prior?.toAspectData() to after?.toAspectData()
     }
   }
@@ -46,7 +46,7 @@ interface IBesieged {
   fun getBesiegingPlanets(planet: Planet,
                           gmtJulDay: GmtJulDay,
                           classicalPlanets: Boolean = true,
-                          aspects: Collection<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH)): List<Planet> {
+                          aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet()): List<Planet> {
     val otherPlanets = getPlanetsExcept(planet, classicalPlanets)
 
     return getBesiegingPlanetsByAspects(planet, gmtJulDay, otherPlanets, aspects).let { (prior, after) ->
@@ -57,7 +57,7 @@ interface IBesieged {
   }
 
   // 承上 , gmt 版本
-  fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, classicalPlanets: Boolean, aspects: Collection<Aspect>): List<Planet> {
+  fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, classicalPlanets: Boolean, aspects: Set<Aspect>): List<Planet> {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getBesiegingPlanets(planet, gmtJulDay, classicalPlanets, aspects)
   }
@@ -72,7 +72,7 @@ interface IBesieged {
 
     val otherPlanets = getPlanetsExcept(planet, classicalPlanets)
 
-    val searchingAspects = Aspect.getAspects(Aspect.Importance.HIGH)
+    val searchingAspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()
 
     val constrainingAspects = searchingAspects.filter {
       if (onlyHardAspects) {

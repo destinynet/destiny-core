@@ -21,7 +21,7 @@ class BesiegedImpl(private val relativeTransitImpl: IRelativeTransit) : IBesiege
   override fun getBesiegingPlanetsByDegrees(planet: Planet,
                                             gmtJulDay: GmtJulDay,
                                             otherPlanets: Collection<Planet>,
-                                            angles: Collection<Double>): Pair<IAngleData?, IAngleData?> {
+                                            angles: Set<Double>): Pair<IAngleData?, IAngleData?> {
 
     /**
      * 先逆推，計算此 planet 「之前」與其他行星呈現 交角的最近時間

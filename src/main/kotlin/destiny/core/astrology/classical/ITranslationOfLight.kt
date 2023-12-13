@@ -41,7 +41,7 @@ class TranslationOfLightImpl(private val aspectsCalculator: IAspectsCalculator,
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Triple<Planet, Planet, IPointAspectPattern.Type?>? {
     // 不考慮合相的交角
-    val aspects = listOf(Aspect.SEXTILE, Aspect.SQUARE, Aspect.TRINE, Aspect.OPPOSITION)
+    val aspects = setOf(Aspect.SEXTILE, Aspect.SQUARE, Aspect.TRINE, Aspect.OPPOSITION)
 
     val (p1, p2) = besiegedImpl.getBesiegingPlanets(planet, h.gmtJulDay, true, aspects).iterator().let {
       it.next() to it.next()

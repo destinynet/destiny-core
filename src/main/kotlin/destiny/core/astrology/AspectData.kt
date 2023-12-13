@@ -77,7 +77,7 @@ data class AspectData internal constructor(
       return AspectData(points, aspect, type, orb, score, gmtJulDay)
     }
 
-    fun of(points: Collection<AstroPoint>, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null, gmtJulDay: GmtJulDay): AspectData? {
+    fun of(points: List<AstroPoint>, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null, gmtJulDay: GmtJulDay): AspectData? {
       return points.takeIf { it.toSet().size == 2 }
         ?.let { ps ->
           val (p1, p2) = ps.iterator().let { it.next() to it.next() }

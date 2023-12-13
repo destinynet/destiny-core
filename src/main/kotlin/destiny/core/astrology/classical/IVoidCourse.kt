@@ -105,7 +105,7 @@ class VoidCourseHellenistic(
     gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, planet: Planet, centric: Centric
   ): Misc.VoidCourseSpan? {
 
-    return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
+    return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->
@@ -165,7 +165,7 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
   override fun getVoidCourse(
     gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, planet: Planet, centric: Centric
   ): Misc.VoidCourseSpan? {
-    return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
+    return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->
@@ -231,7 +231,7 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
     gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, planet: Planet, centric: Centric
   ): Misc.VoidCourseSpan? {
 
-    return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
+    return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->

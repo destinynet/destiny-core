@@ -98,7 +98,7 @@ interface IEssential {
   fun AstroPoint.getReceptions(
     map: Map<AstroPoint, ZodiacDegree>,
     dayNight: DayNight? = null,
-    dignities: Collection<Dignity>): Map<Dignity, AstroPoint> {
+    dignities: Set<Dignity>): Map<Dignity, AstroPoint> {
 
     return Dignity.entries.filter { dignities.contains(it) }.map { dignity ->
 
@@ -141,7 +141,7 @@ interface IEssential {
    * */
   fun getReceptionMap(map: Map<AstroPoint, ZodiacDegree>,
                       dayNight: DayNight,
-                      dignities: Collection<Dignity>): Set<Triple<AstroPoint, Dignity, AstroPoint?>> {
+                      dignities: Set<Dignity>): Set<Triple<AstroPoint, Dignity, AstroPoint?>> {
     return map.keys.flatMap { p ->
       p.getReceptions(map, dayNight, dignities).map { (dignity, point) ->
         Triple(p, dignity, point)
@@ -151,8 +151,8 @@ interface IEssential {
 
   /** 查詢 [this]此星 在此星盤中 , 是否有與其他任何星，互相接納 (不論 Dignity 是否相等) */
   fun AstroPoint.getMutualData(map: Map<AstroPoint, ZodiacDegree>,
-                          dayNight: DayNight?,
-                          dignities: Collection<Dignity>): Set<MutualData> {
+                               dayNight: DayNight?,
+                               dignities: Set<Dignity>): Set<MutualData> {
     return map.keys.filter { it !== this }
       .flatMap { p2 ->
         p2.getReceptions(map, dayNight, dignities)
@@ -188,7 +188,7 @@ interface IEssential {
   /** 所有能量的互容 , 不論相等或是不相等 */
   fun getMutualReceptionMap(map: Map<AstroPoint, ZodiacDegree>,
                             dayNight: DayNight?,
-                            dignities: Collection<Dignity>): Set<MutualData> {
+                            dignities: Set<Dignity>): Set<MutualData> {
     return map.keys
       .flatMap { p1 ->
         p1.getReceptions(map, dayNight, dignities)
@@ -205,13 +205,13 @@ interface IEssential {
   /** 能量不相等的互容 */
   fun getMixedReceptionMap(map: Map<AstroPoint, ZodiacDegree>,
                            dayNight: DayNight,
-                           dignities: Collection<Dignity>): Set<MutualData> {
+                           dignities: Set<Dignity>): Set<MutualData> {
     return map.keys.flatMap { p ->
       p.getReceptions(map, dayNight, dignities)
         .filter { (_, p2) -> p2 !== p }
         .map { (dig2, p2) -> p2 to dig2 }
         .flatMap { (p2, dig2) ->
-          p2.getReceptions(map, dayNight, dignities.filter { it !== dig2 })
+          p2.getReceptions(map, dayNight, dignities.filter { it !== dig2 }.toSet())
             .filter { (_, point) -> point === p && p !== p2 }
             .map { (dig1, _) -> MutualData(p, dig1, p2, dig2) }
         }
