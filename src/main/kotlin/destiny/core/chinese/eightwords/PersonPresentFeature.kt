@@ -53,25 +53,25 @@ class PersonPresentFeature(private val personContextFeature: PersonContextFeatur
                            private val chineseDateFeature: ChineseDateFeature,
                            private val julDayResolver: JulDayResolver,
                            @Transient
-                           private val ewPersonPresentFeatureCache: Cache<GmtCacheKey<*>, IPersonPresentModel>) : AbstractCachedPersonFeature<PersonPresentConfig , IPersonPresentModel>() {
+                           private val ewPersonPresentFeatureCache: Cache<GmtCacheKey<*>, IPersonPresentModel>) : AbstractCachedPersonFeature<IPersonPresentConfig , IPersonPresentModel>() {
 
   override val key: String = "personPresent"
 
-  override val defaultConfig: PersonPresentConfig = PersonPresentConfig()
+  override val defaultConfig: IPersonPresentConfig = PersonPresentConfig()
 
   @Suppress("UNCHECKED_CAST")
-  override val gmtPersonCache: Cache<GmtCacheKey<PersonPresentConfig>, IPersonPresentModel>
-    get() = ewPersonPresentFeatureCache as Cache<GmtCacheKey<PersonPresentConfig>, IPersonPresentModel>
+  override val gmtPersonCache: Cache<GmtCacheKey<IPersonPresentConfig>, IPersonPresentModel>
+    get() = ewPersonPresentFeatureCache as Cache<GmtCacheKey<IPersonPresentConfig>, IPersonPresentModel>
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: PersonPresentConfig): IPersonPresentModel {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: IPersonPresentConfig): IPersonPresentModel {
 
     val viewGmtTime = julDayResolver.getLocalDateTime(config.viewGmt)
 
     val viewChineseDate = chineseDateFeature.getModel(config.viewGmt, loc)
 
-    val pcm: IPersonContextModel = personContextFeature.getPersonModel(gmtJulDay, loc, gender, name, place, config.personContextConfig)
+    val pcm: IPersonContextModel = personContextFeature.getPersonModel(gmtJulDay, loc, gender, name, place, config.ewPersonConfig)
     // 目前所處的大運
-    val selectedFortuneLarge: IStemBranch? = personLargeFeature.getStemBranch(gmtJulDay, loc, gender, config.viewGmt, config.personContextConfig.fortuneLargeConfig)
+    val selectedFortuneLarge: IStemBranch? = personLargeFeature.getStemBranch(gmtJulDay, loc, gender, config.viewGmt, config.fortuneLargeConfig)
 
     // 選定的十年流年
     val selectedFortuneLargeYears: List<StemBranch> = pcm.fortuneDataLarges.firstOrNull { it.stemBranch == selectedFortuneLarge }?.let { fortuneData ->

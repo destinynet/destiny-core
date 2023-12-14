@@ -5,65 +5,27 @@ package destiny.core.astrology
 
 import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
-import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.prediction.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.Feature
-import destiny.tools.serializers.AstroPointSerializer
 import jakarta.inject.Named
-import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import javax.cache.Cache
 
 
-@Serializable
-data class HoroscopeConfig(
-  val points: Set<@Serializable(with = AstroPointSerializer::class) AstroPoint> = setOf(*Planet.values, *LunarNode.values, Axis.RISING, Axis.MERIDIAN),
-  val houseSystem: HouseSystem = HouseSystem.PLACIDUS,
-  val coordinate: Coordinate = Coordinate.ECLIPTIC,
-  val centric: Centric = Centric.GEO,
-  val temperature: Double = 0.0,
-  val pressure: Double = 1013.25,
-  val vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval,
-  val place: String? = null
-): java.io.Serializable
-
-@DestinyMarker
-class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
-  var points: Set<AstroPoint> = setOf(*Planet.values, *LunarNode.values)
-  var houseSystem: HouseSystem = HouseSystem.PLACIDUS
-  var coordinate: Coordinate = Coordinate.ECLIPTIC
-  var centric: Centric = Centric.GEO
-  var temperature: Double = 0.0
-  var pressure: Double = 1013.25
-  var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval
-  var place: String? = null
-
-  override fun build(): HoroscopeConfig {
-    return HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, place)
-  }
-
-  companion object {
-    fun horoscope(block : HoroscopeConfigBuilder.() -> Unit = {}) : HoroscopeConfig {
-      return HoroscopeConfigBuilder().apply(block).build()
-    }
-  }
-}
-
-
-interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
+interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
 
   /**
    * secondary progression calculation
    */
-  fun getSecondaryProgression(model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
-                              aspectsCalculator : IAspectsCalculator , config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
+  fun getSecondaryProgression(
+    model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
+    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig, converse: Boolean = false
+  ): IProgressionModel {
     val progression = ProgressionSecondary(converse)
 
     return getProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
@@ -72,8 +34,10 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
   /**
    * Tertiary Progression calculation
    */
-  fun getTertiaryProgression(model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
-                             aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
+  fun getTertiaryProgression(
+    model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
+    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig, converse: Boolean = false
+  ): IProgressionModel {
     val progression = ProgressionTertiary(converse)
 
     return getProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
@@ -82,21 +46,27 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
   /**
    * Minor Progression calculation
    */
-  fun getMinorProgression(model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
-                          aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig, converse: Boolean = false) : IProgressionModel {
+  fun getMinorProgression(
+    model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
+    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig, converse: Boolean = false
+  ): IProgressionModel {
     val progression = ProgressionMinor(converse)
 
     return getProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
   }
 
-  fun transit(model: IHoroscopeModel, transitTime: GmtJulDay, aspects: Set<Aspect>,
-              aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig, converse: Boolean = false): IProgressionModel {
+  fun transit(
+    model: IHoroscopeModel, transitTime: GmtJulDay, aspects: Set<Aspect>,
+    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig, converse: Boolean = false
+  ): IProgressionModel {
     val progression = Transit(converse)
     return getProgression(progression, model, transitTime, aspects, aspectsCalculator, config)
   }
 
-  fun getProgression(progression : AbstractProgression, model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
-                     aspectsCalculator: IAspectsCalculator, config: HoroscopeConfig) : IProgressionModel {
+  fun getProgression(
+    progression: AbstractProgression, model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
+    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig
+  ): IProgressionModel {
 
     // inner : natal chart
     val posMapInner = model.positionMap
@@ -132,29 +102,29 @@ interface IHoroscopeFeature : Feature<HoroscopeConfig, IHoroscopeModel> {
   }
 
 
-
-
   companion object {
     private val logger = KotlinLogging.logger { }
   }
 }
 
 @Named
-class HoroscopeFeature(private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>,
-                       private val houseCuspFeature: IHouseCuspFeature,
-                       private val voidCourseFeature: IVoidCourseFeature,
-                       private val planetHourFeature: Feature<PlanetaryHourConfig, PlanetaryHour?>,
-                       @Transient
-                       private val horoscopeFeatureCache : Cache<GmtCacheKey<*>, IHoroscopeModel>) : AbstractCachedFeature<HoroscopeConfig, IHoroscopeModel>(), IHoroscopeFeature {
+class HoroscopeFeature(
+  private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>,
+  private val houseCuspFeature: IHouseCuspFeature,
+  private val voidCourseFeature: IVoidCourseFeature,
+  private val planetHourFeature: Feature<PlanetaryHourConfig, PlanetaryHour?>,
+  @Transient
+  private val horoscopeFeatureCache: Cache<GmtCacheKey<*>, IHoroscopeModel>
+) : AbstractCachedFeature<IHoroscopeConfig, IHoroscopeModel>(), IHoroscopeFeature {
   override val key: String = "horoscope"
 
   override val defaultConfig: HoroscopeConfig = HoroscopeConfig()
 
   @Suppress("UNCHECKED_CAST")
-  override val gmtCache: Cache<GmtCacheKey<HoroscopeConfig>, IHoroscopeModel>
-    get() = horoscopeFeatureCache as Cache<GmtCacheKey<HoroscopeConfig>, IHoroscopeModel>
+  override val gmtCache: Cache<GmtCacheKey<IHoroscopeConfig>, IHoroscopeModel>
+    get() = horoscopeFeatureCache as Cache<GmtCacheKey<IHoroscopeConfig>, IHoroscopeModel>
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: HoroscopeConfig): IHoroscopeModel {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IHoroscopeConfig): IHoroscopeModel {
 
     val positionMap: Map<AstroPoint, IPosWithAzimuth> = config.points.map { point ->
       point to pointPosFuncMap[point]?.getPosition(gmtJulDay, loc, config.centric, config.coordinate, config.temperature, config.pressure)
@@ -168,7 +138,8 @@ class HoroscopeFeature(private val pointPosFuncMap: Map<AstroPoint, IPosition<*>
     val vocMap: Map<Planet, Misc.VoidCourseSpan> = voidCourseFeature.getVocMap(gmtJulDay, loc, config.points, VoidCourseConfig(vocImpl = config.vocImpl))
 
     // 行星時 Planetary Hour
-    val planetaryHour = planetHourFeature.getModel(gmtJulDay, loc, PlanetaryHourConfig(PlanetaryHourType.ASTRO, TransConfig(temperature = config.temperature, pressure = config.pressure)))
+    val planetaryHour =
+      planetHourFeature.getModel(gmtJulDay, loc, PlanetaryHourConfig(PlanetaryHourType.ASTRO, TransConfig(temperature = config.temperature, pressure = config.pressure)))
 
     return HoroscopeModel(gmtJulDay, loc, config, positionMap, cuspDegreeMap, vocMap, planetaryHour)
   }

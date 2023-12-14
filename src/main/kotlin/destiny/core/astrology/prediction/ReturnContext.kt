@@ -48,7 +48,7 @@ class ReturnContext(
   private val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator,
   /** 計算星體到黃道幾度的時刻，的介面  */
   private var starTransitImpl: IStarTransit,
-  private val horoscopeFeature: Feature<HoroscopeConfig, IHoroscopeModel>
+  private val horoscopeFeature: Feature<IHoroscopeConfig, IHoroscopeModel>
 ) : IReturnContext, Serializable {
 
   override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel {

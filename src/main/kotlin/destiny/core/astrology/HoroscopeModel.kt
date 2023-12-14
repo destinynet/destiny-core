@@ -300,7 +300,7 @@ data class HoroscopeModel(
 
   override val location: ILocation,
 
-  val config: HoroscopeConfig,
+  val config: IHoroscopeConfig,
 
 
   /** 星體位置表 */

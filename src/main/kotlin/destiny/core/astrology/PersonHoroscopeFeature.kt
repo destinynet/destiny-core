@@ -41,7 +41,7 @@ class PersonHoroscopeConfigBuilder : Builder<PersonHoroscopeConfig> {
 }
 
 @Named
-class PersonHoroscopeFeature(private val horoscopeFeature: Feature<HoroscopeConfig, IHoroscopeModel>) : AbstractCachedPersonFeature<PersonHoroscopeConfig, IPersonHoroscopeModel>() {
+class PersonHoroscopeFeature(private val horoscopeFeature: Feature<IHoroscopeConfig, IHoroscopeModel>) : AbstractCachedPersonFeature<PersonHoroscopeConfig, IPersonHoroscopeModel>() {
 
   override val key: String = "personHoroscope"
 
