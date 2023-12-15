@@ -1,7 +1,8 @@
 package destiny.core.astrology
 
+import destiny.core.astrology.classical.ClassicalConfig
+import destiny.core.astrology.classical.IClassicalConfig
 import destiny.core.astrology.classical.VoidCourseImpl
-import destiny.core.astrology.classical.rules.IPlanetPatternFactory
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
@@ -59,23 +60,12 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
 }
 
 
-interface IHoroscopeClassicalConfig : IHoroscopeConfig {
-  var factories: List<IPlanetPatternFactory>
-  val classicalConfig: HoroscopeClassicalConfig
-    get() = HoroscopeClassicalConfig(this, factories)
-}
-
-data class HoroscopeClassicalConfig(
-  val horoConfig: IHoroscopeConfig = HoroscopeConfig(),
-  override var factories: List<IPlanetPatternFactory>
-) : IHoroscopeClassicalConfig, IHoroscopeConfig by horoConfig
-
-interface IHoroscopePresentConfig : IHoroscopeClassicalConfig {
+interface IHoroscopePresentConfig : IClassicalConfig {
   var viewGmt: GmtJulDay
 }
 
 // TODO : DSL
 data class HoroscopePresentConfig(
-  val horoscopeClassicConfig: HoroscopeClassicalConfig,
+  val horoscopeClassicConfig: ClassicalConfig,
   override var viewGmt: GmtJulDay = GmtJulDay.now()
-) : IHoroscopePresentConfig, IHoroscopeClassicalConfig by horoscopeClassicConfig
+) : IHoroscopePresentConfig, IClassicalConfig by horoscopeClassicConfig

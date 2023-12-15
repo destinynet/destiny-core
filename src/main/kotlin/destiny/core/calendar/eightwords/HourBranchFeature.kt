@@ -41,14 +41,6 @@ class HourBranchConfigBuilder : Builder<HourBranchConfig> {
 
   var hourImpl = HourImpl.TST
 
-//  var transConfig: TransConfig = TransConfig()
-//
-//  /** true solar time */
-//  fun tst(block: TransConfigBuilder.() -> Unit = {}) {
-//    transConfig = TransConfigBuilder.trans(block)
-//    hourImpl = HourImpl.TST
-//  }
-
   override fun build(): HourBranchConfig {
     return HourBranchConfig(hourImpl, transConfig)
   }
