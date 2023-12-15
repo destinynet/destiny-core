@@ -13,19 +13,17 @@ import destiny.tools.Feature
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class PersonHoroscopeConfig(val horoscopeConfig: HoroscopeConfig = HoroscopeConfig(),
-                                 val gender:Gender = Gender.男,
-                                 val name : String? = null): java.io.Serializable
 
+
+@Serializable
+data class PersonHoroscopeConfig(
+  override val horoscopeConfig: HoroscopeConfig = HoroscopeConfig(),
+  override var gender: Gender = Gender.男,
+  override var name: String? = null) : IPersonHoroscopeConfig, IHoroscopeConfig by horoscopeConfig
+
+context(IHoroscopeConfig)
 @DestinyMarker
 class PersonHoroscopeConfigBuilder : Builder<PersonHoroscopeConfig> {
-
-  var horoscopeConfig: HoroscopeConfig = HoroscopeConfig()
-  fun horoscope(block : HoroscopeConfigBuilder.() -> Unit = {}) {
-    this.horoscopeConfig = HoroscopeConfigBuilder.horoscope(block)
-  }
-
   var gender: Gender = Gender.男
   var name: String? = null
 
@@ -34,6 +32,7 @@ class PersonHoroscopeConfigBuilder : Builder<PersonHoroscopeConfig> {
   }
 
   companion object {
+    context(IHoroscopeConfig)
     fun personHoroscope(block: PersonHoroscopeConfigBuilder.() -> Unit = {}): PersonHoroscopeConfig {
       return PersonHoroscopeConfigBuilder().apply(block).build()
     }
@@ -41,13 +40,13 @@ class PersonHoroscopeConfigBuilder : Builder<PersonHoroscopeConfig> {
 }
 
 @Named
-class PersonHoroscopeFeature(private val horoscopeFeature: Feature<IHoroscopeConfig, IHoroscopeModel>) : AbstractCachedPersonFeature<PersonHoroscopeConfig, IPersonHoroscopeModel>() {
+class PersonHoroscopeFeature(private val horoscopeFeature: Feature<IHoroscopeConfig, IHoroscopeModel>) : AbstractCachedPersonFeature<IPersonHoroscopeConfig, IPersonHoroscopeModel>() {
 
   override val key: String = "personHoroscope"
 
-  override val defaultConfig: PersonHoroscopeConfig = PersonHoroscopeConfig()
+  override val defaultConfig: IPersonHoroscopeConfig = PersonHoroscopeConfig()
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: PersonHoroscopeConfig): IPersonHoroscopeModel {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: IPersonHoroscopeConfig): IPersonHoroscopeModel {
     val horoscopeModel = horoscopeFeature.getModel(gmtJulDay, loc, config.horoscopeConfig)
     return PersonHoroscopeModel(horoscopeModel, gender, name)
   }

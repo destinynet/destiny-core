@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.AbstractConfigTest
 import destiny.core.Gender
+import destiny.core.astrology.HoroscopeConfigBuilder.Companion.horoscope
 import destiny.core.astrology.PersonHoroscopeConfigBuilder.Companion.personHoroscope
 import destiny.core.astrology.classical.VoidCourseImpl
 import kotlinx.serialization.KSerializer
@@ -27,20 +28,25 @@ internal class PersonHoroscopeConfigTest : AbstractConfigTest<PersonHoroscopeCon
     ), Gender.女, "小明"
   )
 
-  override val configByFunction: PersonHoroscopeConfig = personHoroscope {
-    horoscope {
-      points = setOf(Planet.MOON, Asteroid.CERES, FixedStar.ALGOL, Hamburger.ADMETOS)
-      houseSystem = HouseSystem.MERIDIAN
-      coordinate = Coordinate.EQUATORIAL
-      centric = Centric.TOPO
-      temperature = 23.0
-      pressure = 1000.0
-      vocImpl = VoidCourseImpl.Hellenistic
-      place = "台北市"
+  override val configByFunction: PersonHoroscopeConfig
+    get() {
+      val horoscopeConfig = horoscope {
+        points = setOf(Planet.MOON, Asteroid.CERES, FixedStar.ALGOL, Hamburger.ADMETOS)
+        houseSystem = HouseSystem.MERIDIAN
+        coordinate = Coordinate.EQUATORIAL
+        centric = Centric.TOPO
+        temperature = 23.0
+        pressure = 1000.0
+        vocImpl = VoidCourseImpl.Hellenistic
+        place = "台北市"
+      }
+      return with(horoscopeConfig) {
+        personHoroscope {
+          gender = Gender.女
+          name = "小明"
+        }
+      }
     }
-    gender = Gender.女
-    name = "小明"
-  }
 
   override val assertion: (String) -> Unit = { raw: String ->
     assertTrue(raw.contains("Planet.MOON"))
