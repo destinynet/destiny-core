@@ -7,30 +7,32 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.serializers.AstroPointSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 
 interface IHoroscopeConfig : java.io.Serializable {
-  val points: Set<@Serializable(with = AstroPointSerializer::class) AstroPoint>
-  val houseSystem: HouseSystem
-  val coordinate: Coordinate
-  val centric: Centric
-  val temperature: Double
-  val pressure: Double
-  val vocImpl: VoidCourseImpl
-  val place: String?
+  var points: Set<@Serializable(with = AstroPointSerializer::class) AstroPoint>
+  var houseSystem: HouseSystem
+  var coordinate: Coordinate
+  var centric: Centric
+  var temperature: Double
+  var pressure: Double
+  var vocImpl: VoidCourseImpl
+  var place: String?
+
+  val horoscopeConfig: HoroscopeConfig
+    get() = HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, place)
 }
 
 
 @Serializable
 data class HoroscopeConfig(
-  override val points: Set<@Serializable(with = AstroPointSerializer::class) AstroPoint> = setOf(*Planet.values, *LunarNode.values, Axis.RISING, Axis.MERIDIAN),
-  override val houseSystem: HouseSystem = HouseSystem.PLACIDUS,
-  override val coordinate: Coordinate = Coordinate.ECLIPTIC,
-  override val centric: Centric = Centric.GEO,
-  override val temperature: Double = 0.0,
-  override val pressure: Double = 1013.25,
-  override val vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval,
-  override val place: String? = null
+  override var points: Set<@Serializable(with = AstroPointSerializer::class) AstroPoint> = setOf(*Planet.values, *LunarNode.values, Axis.RISING, Axis.MERIDIAN),
+  override var houseSystem: HouseSystem = HouseSystem.PLACIDUS,
+  override var coordinate: Coordinate = Coordinate.ECLIPTIC,
+  override var centric: Centric = Centric.GEO,
+  override var temperature: Double = 0.0,
+  override var pressure: Double = 1013.25,
+  override var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval,
+  override var place: String? = null
 ) : IHoroscopeConfig
 
 
@@ -58,21 +60,22 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
 
 
 interface IHoroscopeClassicalConfig : IHoroscopeConfig {
-  val locale: Locale
-  val factories: List<IPlanetPatternFactory>
+  var factories: List<IPlanetPatternFactory>
+  val classicalConfig: HoroscopeClassicalConfig
+    get() = HoroscopeClassicalConfig(this, factories)
 }
 
 data class HoroscopeClassicalConfig(
-  override val locale: Locale = Locale.getDefault(),
   val horoConfig: IHoroscopeConfig = HoroscopeConfig(),
-  override val factories: List<IPlanetPatternFactory>
+  override var factories: List<IPlanetPatternFactory>
 ) : IHoroscopeClassicalConfig, IHoroscopeConfig by horoConfig
 
 interface IHoroscopePresentConfig : IHoroscopeClassicalConfig {
   var viewGmt: GmtJulDay
 }
+
 // TODO : DSL
 data class HoroscopePresentConfig(
-  val horoscopeConfigConfig: HoroscopeClassicalConfig ,
+  val horoscopeClassicConfig: HoroscopeClassicalConfig,
   override var viewGmt: GmtJulDay = GmtJulDay.now()
-) : IHoroscopePresentConfig, IHoroscopeClassicalConfig by horoscopeConfigConfig
+) : IHoroscopePresentConfig, IHoroscopeClassicalConfig by horoscopeClassicConfig

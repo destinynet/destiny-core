@@ -28,17 +28,6 @@ data class EightWordsConfig(
 context(IYearMonthConfig, IDayHourConfig)
 @DestinyMarker
 class EightWordsConfigBuilder : Builder<EightWordsConfig> {
-//  var yearMonthConfig: YearMonthConfig = YearMonthConfig()
-//
-//  fun yearMonth(block: YearMonthConfigBuilder.() -> Unit) {
-//    this.yearMonthConfig = YearMonthConfigBuilder.yearMonthConfig(block)
-//  }
-//
-//  var dayHourConfig: DayHourConfig = DayHourConfig()
-//
-//  fun dayHour(block: DayHourConfigBuilder.() -> Unit) {
-//    this.dayHourConfig = DayHourConfigBuilder.dayHour(block)
-//  }
 
   override fun build(): EightWordsConfig {
     return EightWordsConfig(yearMonthConfig, dayHourConfig)
