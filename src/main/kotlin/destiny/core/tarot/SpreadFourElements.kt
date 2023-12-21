@@ -4,6 +4,7 @@
 package destiny.core.tarot
 
 import destiny.core.astrology.Element
+import destiny.tools.ILocaleString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -11,10 +12,12 @@ import java.util.*
 
 @Serializable
 @SerialName("4ElementsSpread")
-data class SpreadFourElements(val fire : CardOrientation,
-                              val water : CardOrientation,
-                              val earth : CardOrientation,
-                              val air : CardOrientation) : ISpread {
+data class SpreadFourElements(
+  val fire: CardOrientation,
+  val water: CardOrientation,
+  val earth: CardOrientation,
+  val air: CardOrientation
+) : ISpread {
 
   override val cards: List<CardOrientation>
     get() = listOf(fire, water, earth, air)
@@ -25,20 +28,20 @@ data class SpreadFourElements(val fire : CardOrientation,
 
   fun getCardOrientation(element: Element): CardOrientation {
     return when (element) {
-      Element.FIRE -> fire
+      Element.FIRE  -> fire
       Element.WATER -> water
       Element.EARTH -> earth
-      Element.AIR -> air
+      Element.AIR   -> air
     }
   }
 
-  companion object {
-    fun of(map : Map<Element, CardOrientation>): SpreadFourElements {
+  companion object : ILocaleString {
+    fun of(map: Map<Element, CardOrientation>): SpreadFourElements {
       require(map.size == 4)
       return SpreadFourElements(map[Element.FIRE]!!, map[Element.WATER]!!, map[Element.EARTH]!!, map[Element.AIR]!!)
     }
 
-    fun getTitle(locale: Locale): String {
+    override fun getTitle(locale: Locale): String {
       return when (locale.language) {
         "en" -> "The Four Elements Spread"
         "ja" -> "四元素スプレッド"

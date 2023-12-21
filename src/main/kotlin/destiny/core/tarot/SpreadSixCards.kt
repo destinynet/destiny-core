@@ -1,5 +1,6 @@
 package destiny.core.tarot
 
+import destiny.tools.ILocaleString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -16,8 +17,8 @@ data class SpreadSixCards(val lt: CardOrientation, val mt: CardOrientation, val 
     return SpreadSixCards.getTitle(locale)
   }
 
-  companion object {
-    fun getTitle(locale: Locale): String {
+  companion object : ILocaleString {
+    override fun getTitle(locale: Locale): String {
       return when (locale.language) {
         "en" -> "Six Card Spread"
         "ja" -> "六枚カード"

@@ -3,6 +3,7 @@
  */
 package destiny.core.tarot
 
+import destiny.tools.ILocaleString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -24,8 +25,8 @@ data class SpreadFiveCross(
     return SpreadFiveCross.getTitle(locale)
   }
 
-  companion object {
-    fun getTitle(locale: Locale): String {
+  companion object : ILocaleString {
+    override fun getTitle(locale: Locale): String {
       return when (locale.language) {
         "en" -> "The Cross Spread"
         "ja" -> "十字のスプレッド"

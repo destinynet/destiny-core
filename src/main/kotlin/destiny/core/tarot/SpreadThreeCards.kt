@@ -3,6 +3,7 @@
  */
 package destiny.core.tarot
 
+import destiny.tools.ILocaleString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -23,13 +24,13 @@ data class SpreadThreeCards(@SerialName("c1") val card1: CardOrientation,
     return SpreadThreeCards.getTitle(locale)
   }
 
-  companion object {
-    fun of(list : List<CardOrientation>) : SpreadThreeCards {
+  companion object : ILocaleString {
+    fun of(list: List<CardOrientation>): SpreadThreeCards {
       require(list.size == 3)
-      return SpreadThreeCards(list[0] , list[1] , list[2])
+      return SpreadThreeCards(list[0], list[1], list[2])
     }
 
-    fun getTitle(locale: Locale): String {
+    override fun getTitle(locale: Locale): String {
       return when (locale.language) {
         "en" -> "Three Card Spread"
         "ja" -> "三枚カード"
