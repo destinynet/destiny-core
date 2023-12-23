@@ -9,7 +9,7 @@ import jakarta.inject.Named
 @Named
 class PurpleRelocationMutator(private val prevMonthDaysImpl: IPrevMonthDays) : IHouseMutator, java.io.Serializable {
 
-  override fun mutate(plate: IPlate, config: ZiweiConfig): Set<HouseData>? {
+  override fun mutate(plate: IPlate, config: IZiweiConfig): Set<HouseData>? {
 
     return config.purpleFixedBranch?.let { purpleFixedBranch ->
       val prevMonthDays = if (plate.chineseDate.leapMonth)

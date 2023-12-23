@@ -9,6 +9,6 @@ package destiny.core.chinese.ziwei
 interface IHouseMutator {
 
   /** 有修改過才傳回，否則傳回 null , 意味沒有修改過 */
-  fun mutate(plate: IPlate, config: ZiweiConfig): Set<HouseData>?
+  fun mutate(plate: IPlate, config: IZiweiConfig): Set<HouseData>?
 
 }

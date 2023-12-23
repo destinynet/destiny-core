@@ -125,70 +125,182 @@ enum class ChineseDateImpl {
   Civil
 }
 
+interface IZiweiConfig : IEightWordsConfig , java.io.Serializable {
+  val stars: Set<@Serializable(with = ZStarSerializer::class) ZStar>
+  /** 命宮、身宮 演算法  */
+  var mainBodyHouse: MainBodyHouse
+
+  /** 紫微星，在閏月時，該如何處理  */
+  var purpleStarBranch: PurpleStarBranch
+
+  /**
+   * 命宮、身宮、紫微等14顆主星 對於月份，如何計算 . 若 [mainBodyHouse] 為占星實作 [MainBodyHouse.Astro] , 此值會被忽略
+   * 注意，此值可能為 null , 因為若是 '命宮、身宮 演算法' 是占星實作的話 , client 端會把此值填為 null
+   * */
+  var mainStarsAlgo: MonthAlgo?
+
+  /** 月系星，如何計算月令  */
+  var monthStarsAlgo: MonthAlgo
+
+  /** 年系星系 , 初一為界，還是 [destiny.core.calendar.SolarTerms.立春] 為界 */
+  var yearType: YearType
+
+  /** 宮位名字  */
+  var houseSeq: HouseSeq
+
+  /** [StarLucky.天魁] , [StarLucky.天鉞] (貴人) 算法  */
+  var tianyi: Tianyi
+
+  /** 火鈴 */
+  var fireBell: FireBell
+
+  /** 天馬 */
+  var skyHorse: SkyHorse
+
+  /** 天使天傷 */
+  var hurtAngel: HurtAngel
+
+  /** 紅豔 */
+  var redBeauty: RedBeauty
+
+  /** 四化設定 */
+  var transFour: TransFour
+
+  /** 廟旺弱陷 */
+  var strength: Strength
+
+  /** 流年 */
+  var flowYear: FlowYear
+
+  /** 流月 */
+  var flowMonth: FlowMonth
+
+  /** 流日 */
+  var flowDay: FlowDay
+
+  /** 流時 */
+  var flowHour: FlowHour
+
+  /** 大限計算方式 */
+  var bigRange: BigRange
+
+  /** 大限歲數 , 實歲 or 虛歲 */
+  var sectionAgeType: AgeType
+
+  /** 歲運註記 */
+  val ageNotes: List<IntAgeNote>
+
+  /** 八字設定 設定 */
+  //val ewConfig: EightWordsConfig = EightWordsConfig()
+
+  /** 晝夜區分 */
+  val dayNightConfig: DayNightConfig
+
+  /** 曆法 */
+  var chineseDateImpl: ChineseDateImpl
+
+  /** 紫微強制地支 */
+  var purpleFixedBranch: Branch?
+
+  var locale: Locale
+
+  val ziweiConfig : ZiweiConfig
+    get() = ZiweiConfig(
+      stars,
+      mainBodyHouse,
+      purpleStarBranch,
+      mainStarsAlgo,
+      monthStarsAlgo,
+      yearType,
+      houseSeq,
+      tianyi,
+      fireBell,
+      skyHorse,
+      hurtAngel,
+      redBeauty,
+      transFour,
+      strength,
+      flowYear,
+      flowMonth,
+      flowDay,
+      flowHour,
+      bigRange,
+      sectionAgeType,
+      ageNotes,
+      ewConfig,
+      dayNightConfig,
+      chineseDateImpl,
+      purpleFixedBranch,
+      locale
+    )
+}
+
 @Serializable
-data class ZiweiConfig(val stars: Set<@Serializable(with = ZStarSerializer::class) ZStar> = setOf(*StarMain.values, *StarMinor.values, *StarLucky.values, *StarUnlucky.values,
-                                                                                                  *StarDoctor.values, *StarGeneralFront.values, *StarLongevity.values, *StarYearFront.values
+data class ZiweiConfig(
+  override val stars: Set<@Serializable(with = ZStarSerializer::class) ZStar> = setOf(
+    *StarMain.values, *StarMinor.values, *StarLucky.values, *StarUnlucky.values,
+    *StarDoctor.values, *StarGeneralFront.values, *StarLongevity.values, *StarYearFront.values
 ),
-                       /** 命宮、身宮 演算法  */
-                       val mainBodyHouse: MainBodyHouse = MainBodyHouse.Trad,
-                       /** 紫微星，在閏月時，該如何處理  */
-                       val purpleStarBranch: PurpleStarBranch = PurpleStarBranch.Default,
-                       /**
+  /** 命宮、身宮 演算法  */
+  override var mainBodyHouse: MainBodyHouse = MainBodyHouse.Trad,
+  /** 紫微星，在閏月時，該如何處理  */
+  override var purpleStarBranch: PurpleStarBranch = PurpleStarBranch.Default,
+  /**
                         * 命宮、身宮、紫微等14顆主星 對於月份，如何計算 . 若 [mainBodyHouse] 為占星實作 [MainBodyHouse.Astro] , 此值會被忽略
                         * 注意，此值可能為 null , 因為若是 '命宮、身宮 演算法' 是占星實作的話 , client 端會把此值填為 null
                         * */
-                       val mainStarsAlgo: MonthAlgo? = MonthAlgo.MONTH_FIXED_THIS,
-                       /** 月系星，如何計算月令  */
-                       val monthStarsAlgo: MonthAlgo = MonthAlgo.MONTH_FIXED_THIS,
-                       /** 年系星系 , 初一為界，還是 [destiny.core.calendar.SolarTerms.立春] 為界 */
-                       val yearType: YearType = YearType.YEAR_LUNAR,
-                       /** 宮位名字  */
-                       val houseSeq: HouseSeq = HouseSeq.Default,
-                       /** [StarLucky.天魁] , [StarLucky.天鉞] (貴人) 算法  */
-                       val tianyi: Tianyi = Tianyi.ZiweiBook,
-                       /** 火鈴 */
-                       val fireBell: FireBell = FireBell.FIREBELL_COLLECT,
-                       /** 天馬 */
-                       val skyHorse: SkyHorse = SkyHorse.YEAR,
-                       /** 天使天傷 */
-                       val hurtAngel: HurtAngel = HurtAngel.HURT_ANGEL_FIXED,
-                       /** 紅豔 */
-                       val redBeauty: RedBeauty = RedBeauty.RED_BEAUTY_DIFF,
-                       /** 四化設定 */
-                       val transFour: TransFour = TransFour.FullBook,
-                       /** 廟旺弱陷 */
-                       val strength: Strength = Strength.FullBook,
-                       /** 流年 */
-                       val flowYear: FlowYear = FlowYear.Branch,
-                       /** 流月 */
-                       val flowMonth: FlowMonth = FlowMonth.Default,
-                       /** 流日 */
-                       val flowDay: FlowDay = FlowDay.FromFlowMonthMainHouse,
-                       /** 流時 */
-                       val flowHour: FlowHour = FlowHour.MainHouseDep,
-                       /** 大限計算方式 */
-                       val bigRange: BigRange = BigRange.FromMain,
-                       /** 大限歲數 , 實歲 or 虛歲 */
-                       val sectionAgeType: AgeType = AgeType.VIRTUAL,
-                       /** 歲運註記 */
-                       val ageNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
-                       /** 八字設定 設定 */
-                       val ewConfig: EightWordsConfig = EightWordsConfig(),
-                       /** 晝夜區分 */
-                       val dayNightConfig: DayNightConfig = DayNightConfig(),
-                       /** 曆法 */
-                       val chineseDateImpl: ChineseDateImpl = ChineseDateImpl.Civil,
-                       /** 紫微強制地支 */
-                       val purpleFixedBranch : Branch? = null,
-                       @Serializable(with = LocaleSerializer::class)
-                       val locale: Locale = Locale.TRADITIONAL_CHINESE
-) : java.io.Serializable
+  override var mainStarsAlgo: MonthAlgo? = MonthAlgo.MONTH_FIXED_THIS,
+  /** 月系星，如何計算月令  */
+  override var monthStarsAlgo: MonthAlgo = MonthAlgo.MONTH_FIXED_THIS,
+  /** 年系星系 , 初一為界，還是 [destiny.core.calendar.SolarTerms.立春] 為界 */
+  override var yearType: YearType = YearType.YEAR_LUNAR,
+  /** 宮位名字  */
+  override var houseSeq: HouseSeq = HouseSeq.Default,
+  /** [StarLucky.天魁] , [StarLucky.天鉞] (貴人) 算法  */
+  override var tianyi: Tianyi = Tianyi.ZiweiBook,
+  /** 火鈴 */
+  override var fireBell: FireBell = FireBell.FIREBELL_COLLECT,
+  /** 天馬 */
+  override var skyHorse: SkyHorse = SkyHorse.YEAR,
+  /** 天使天傷 */
+  override var hurtAngel: HurtAngel = HurtAngel.HURT_ANGEL_FIXED,
+  /** 紅豔 */
+  override var redBeauty: RedBeauty = RedBeauty.RED_BEAUTY_DIFF,
+  /** 四化設定 */
+  override var transFour: TransFour = TransFour.FullBook,
+  /** 廟旺弱陷 */
+  override var strength: Strength = Strength.FullBook,
+  /** 流年 */
+  override var flowYear: FlowYear = FlowYear.Branch,
+  /** 流月 */
+  override var flowMonth: FlowMonth = FlowMonth.Default,
+  /** 流日 */
+  override var flowDay: FlowDay = FlowDay.FromFlowMonthMainHouse,
+  /** 流時 */
+  override var flowHour: FlowHour = FlowHour.MainHouseDep,
+  /** 大限計算方式 */
+  override var bigRange: BigRange = BigRange.FromMain,
+  /** 大限歲數 , 實歲 or 虛歲 */
+  override var sectionAgeType: AgeType = AgeType.VIRTUAL,
+  /** 歲運註記 */
+  override val ageNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
+  /** 八字設定 設定 */
+  override val ewConfig: EightWordsConfig = EightWordsConfig(),
+  /** 晝夜區分 */
+  override val dayNightConfig: DayNightConfig = DayNightConfig(),
+  /** 曆法 */
+  override var chineseDateImpl: ChineseDateImpl = ChineseDateImpl.Civil,
+  /** 紫微強制地支 */
+  override var purpleFixedBranch : Branch? = null,
+  @Serializable(with = LocaleSerializer::class)
+  override var locale: Locale = Locale.TRADITIONAL_CHINESE
+) : IZiweiConfig , IEightWordsConfig by ewConfig
 
 context(IEightWordsConfig)
 @DestinyMarker
 class ZiweiConfigBuilder : Builder<ZiweiConfig> {
 
-  private val defaultConfig: ZiweiConfig = ZiweiConfig()
+  private val defaultConfig: IZiweiConfig = ZiweiConfig()
 
   var stars: Set<@Contextual ZStar> = defaultConfig.stars
 

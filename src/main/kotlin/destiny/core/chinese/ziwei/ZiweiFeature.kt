@@ -37,17 +37,17 @@ import javax.cache.Cache
 data class Flow(val section: StemBranch?, val year: StemBranch) : java.io.Serializable
 
 
-interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
+interface IZiweiFeature : PersonFeature<IZiweiConfig, IPlate> {
 
   /** 取命宮、身宮地支  */
-  fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ZiweiConfig): Triple<Branch, Branch, Int?>
+  fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IZiweiConfig): Triple<Branch, Branch, Int?>
 
   /**
    * @param flowType  在[本命、大限、流年]... (之一)
    * @param flowStem  天干為
    * @return 傳回四化 (若有的話)
    */
-  fun getTrans4Map(flowType: FlowType, flowStem: Stem, config: ZiweiConfig): Map<Pair<ZStar, FlowType>, T4Value>
+  fun getTrans4Map(flowType: FlowType, flowStem: Stem, config: IZiweiConfig): Map<Pair<ZStar, FlowType>, T4Value>
 
   /**
    * 本命盤
@@ -79,7 +79,7 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
     optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = null,
     optionalRageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = null,
     appendingNotes: List<String> = emptyList(),
-    config: ZiweiConfig
+    config: IZiweiConfig
   ): IPlate
 
   fun getModernBirthPlate(
@@ -103,29 +103,29 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
     optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = null,
     optionalRageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = null,
     appendingNotes: List<String> = emptyList(),
-    config: ZiweiConfig
+    config: IZiweiConfig
   ): IPlate
 
   /** 計算 大限盤  */
-  fun getFlowSection(plate: IPlate, section: StemBranch, config:ZiweiConfig): IPlateSection
+  fun getFlowSection(plate: IPlate, section: StemBranch, config: IZiweiConfig): IPlateSection
 
   /** 計算 流年盤 */
-  fun getFlowYear(plate: IPlate, section: StemBranch, flowYear: StemBranch, config: ZiweiConfig): IPlateYear
+  fun getFlowYear(plate: IPlate, section: StemBranch, flowYear: StemBranch, config: IZiweiConfig): IPlateYear
 
   /** 計算 流月盤 */
-  fun getFlowMonth(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): IPlateMonth
+  fun getFlowMonth(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: IZiweiConfig): IPlateMonth
 
   /** 計算 流日盤 */
-  fun getFlowDay(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): IPlateDay
+  fun getFlowDay(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: IZiweiConfig): IPlateDay
 
   /** 計算 流時盤 */
-  fun getFlowHour(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlateHour
+  fun getFlowHour(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: IZiweiConfig): IPlateHour
 
   /** 反推大限、流年等資訊 */
-  fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Flow?
+  fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: IZiweiConfig): Flow?
 
   /** 計算大限盤 */
-  fun getFlowSection(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): IPlateSection? {
+  fun getFlowSection(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: IZiweiConfig): IPlateSection? {
     return reverseFlows(plate, lmt, config)?.section?.let {
       getFlowSection(plate, it, config)
     }
@@ -134,7 +134,7 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
   /**
    * 列出到當下所經過的大限盤 (unfinished inclusive)
    */
-  fun getFlowSections(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): List<IPlate> {
+  fun getFlowSections(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: IZiweiConfig): List<IPlate> {
     return reverseFlows(plate, lmt, config)?.section?.let { section ->
 
       val sections = plate.flowSectionAgeMap.keys.asSequence().takeWhile { it != section }.toList().toMutableList().apply {
@@ -146,7 +146,7 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
   }
 
   /** 計算大限、流年盤 */
-  fun getFlowYear(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): IPlate? {
+  fun getFlowYear(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: IZiweiConfig): IPlate? {
     return reverseFlows(plate, lmt, config)?.let { flow ->
       flow.section?.let { section ->
         getFlowYear(plate, section, flow.year, config)
@@ -164,7 +164,7 @@ interface IZiweiFeature : PersonFeature<ZiweiConfig, IPlate> {
   fun getDaysOfMonth(cycle: Int, flowYear: StemBranch, flowMonth: Int, leap: Boolean): List<Triple<ChineseDate, ChronoLocalDate, StemBranch>>
 
   /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「歲數」各別是幾歲 */
-  fun getYearsOfFlowSection(plate: IPlate, section: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>>
+  fun getYearsOfFlowSection(plate: IPlate, section: Branch, config: IZiweiConfig): List<Triple<Int, StemBranch, Int>>
 }
 
 @Named
@@ -198,20 +198,20 @@ class ZiweiFeature(
   private val intRageImpl: IIntAge,
 
   private val purpleRelocationMutator : IHouseMutator
-) : AbstractCachedPersonFeature<ZiweiConfig, IPlate>(), IZiweiFeature {
+) : AbstractCachedPersonFeature<IZiweiConfig, IPlate>(), IZiweiFeature {
 
   @Inject
   @Transient
   private lateinit var ziweiCache: Cache<LmtCacheKey<*>, IPlate>
 
-  override val lmtPersonCache: Cache<LmtCacheKey<ZiweiConfig>, IPlate>
-    get() = ziweiCache as Cache<LmtCacheKey<ZiweiConfig>, IPlate>
+  override val lmtPersonCache: Cache<LmtCacheKey<IZiweiConfig>, IPlate>
+    get() = ziweiCache as Cache<LmtCacheKey<IZiweiConfig>, IPlate>
 
-  override val defaultConfig: ZiweiConfig = ZiweiConfig()
+  override val defaultConfig: IZiweiConfig = ZiweiConfig()
 
   override var lmtCacheGrain: CacheGrain? = CacheGrain.MINUTE
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): IPlate {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: IZiweiConfig): IPlate {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getPersonModel(lmt, loc, gender, name, place, config)
   }
@@ -219,7 +219,7 @@ class ZiweiFeature(
   /**
    * @return 命宮、身宮 、以及「最後要給主星所使用的月數 (若為占星算法，此值為空) 」
    *  */
-  override fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ZiweiConfig): Triple<Branch, Branch, Int?> {
+  override fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IZiweiConfig): Triple<Branch, Branch, Int?> {
     return when (config.mainBodyHouse) {
       MainBodyHouse.Trad  -> {
         val cDate: ChineseDate = chineseDateFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig)
@@ -294,15 +294,15 @@ class ZiweiFeature(
     optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
     optionalRageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
     appendingNotes: List<String>,
-    config: ZiweiConfig
+    config: IZiweiConfig
   ): IPlate {
 
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
 
     /**
-     * 14主星的「月數」 [ZiweiConfig.mainStarsAlgo]
-     * 與「月系星」的月數 [ZiweiConfig.monthStarsAlgo]
+     * 14主星的「月數」 [IZiweiConfig.mainStarsAlgo]
+     * 與「月系星」的月數 [IZiweiConfig.monthStarsAlgo]
      * 可以分開設定 , 故，這裡產生兩個 finalMonthNum
      */
 
@@ -655,7 +655,7 @@ class ZiweiFeature(
     optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
     optionalRageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
     appendingNotes: List<String>,
-    config: ZiweiConfig
+    config: IZiweiConfig
   ): IPlate {
 
     val plate: IPlate = getBirthPlate(
@@ -691,7 +691,7 @@ class ZiweiFeature(
    * @param flowStem  天干為
    * @return 傳回四化 (若有的話)
    */
-  override fun getTrans4Map(flowType: FlowType, flowStem: Stem, config: ZiweiConfig): Map<Pair<ZStar, FlowType>, T4Value> {
+  override fun getTrans4Map(flowType: FlowType, flowStem: Stem, config: IZiweiConfig): Map<Pair<ZStar, FlowType>, T4Value> {
     return config.stars.map { star ->
       val key = star to flowType
       val value: T4Value? = transFourImplMap[config.transFour]!!.getValueOf(star, flowStem)
@@ -702,7 +702,7 @@ class ZiweiFeature(
   }
 
   /** 計算 大限盤  */
-  override fun getFlowSection(plate: IPlate, section: StemBranch, config: ZiweiConfig): IPlateSection {
+  override fun getFlowSection(plate: IPlate, section: StemBranch, config: IZiweiConfig): IPlateSection {
     // 在此大限中，每個地支，對應到哪個宮位
 
     val newBranchHouseMap: Map<Branch, House> = Branch.entries.associateWith { branch ->
@@ -722,7 +722,7 @@ class ZiweiFeature(
   }
 
   /** 計算 流年盤  */
-  override fun getFlowYear(plate: IPlate, section: StemBranch, flowYear: StemBranch, config: ZiweiConfig): IPlateYear {
+  override fun getFlowYear(plate: IPlate, section: StemBranch, flowYear: StemBranch, config: IZiweiConfig): IPlateYear {
     // 流年命宮
     val yearlyMain = flowYearImplMap[config.flowYear]!!.getFlowYear(flowYear.branch, plate.finalMonthNumForMonthStars, plate.hour)
 
@@ -786,7 +786,7 @@ class ZiweiFeature(
   }
 
   /** 計算 流月盤  */
-  override fun getFlowMonth(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: ZiweiConfig): IPlateMonth {
+  override fun getFlowMonth(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, config: IZiweiConfig): IPlateMonth {
 
     // 流月命宮
     val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, plate.finalMonthNumForMonthStars, plate.hour)
@@ -807,7 +807,7 @@ class ZiweiFeature(
   }
 
   /** 計算 流日盤  */
-  override fun getFlowDay(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: ZiweiConfig): IPlateDay {
+  override fun getFlowDay(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, config: IZiweiConfig): IPlateDay {
     // 流月命宮
     val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, plate.finalMonthNumForMonthStars, plate.hour)
 
@@ -829,7 +829,7 @@ class ZiweiFeature(
   }
 
   /** 計算 流時盤 */
-  override fun getFlowHour(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: ZiweiConfig): IPlateHour {
+  override fun getFlowHour(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: IZiweiConfig): IPlateHour {
     // 流月命宮
     val monthlyMain = flowMonthImplMap[config.flowMonth]!!.getFlowMonth(flowYear.branch, flowMonth.branch, plate.finalMonthNumForMonthStars, plate.hour)
     // 流日命宮
@@ -883,7 +883,7 @@ class ZiweiFeature(
 
 
   /** 反推大限、流年等資訊 */
-  override fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: ZiweiConfig): Flow? {
+  override fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: IZiweiConfig): Flow? {
     return lmt.takeIf { it.isAfter(plate.localDateTime) }
       ?.takeIf { plate.getAgeMap(config.sectionAgeType) != null }
       ?.let { targetLmt ->
@@ -937,7 +937,7 @@ class ZiweiFeature(
   }
 
   /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「歲數」各別是幾歲  */
-  override fun getYearsOfFlowSection(plate: IPlate, section: Branch, config: ZiweiConfig): List<Triple<Int, StemBranch, Int>> {
+  override fun getYearsOfFlowSection(plate: IPlate, section: Branch, config: IZiweiConfig): List<Triple<Int, StemBranch, Int>> {
 
     val birthYear = plate.chineseDate.year
     val birthCycle = plate.chineseDate.cycleOrZero
@@ -974,7 +974,7 @@ class ZiweiFeature(
     }
   }
 
-  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: ZiweiConfig): IPlate {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: IZiweiConfig): IPlate {
 
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()

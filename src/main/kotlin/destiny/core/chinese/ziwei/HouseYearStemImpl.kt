@@ -8,7 +8,7 @@ import destiny.core.chinese.Stem
 
 /**
  * 年干 系星
- * 必須判斷 [ZiweiConfig.yearType]
+ * 必須判斷 [IZiweiConfig.yearType]
  */
 abstract class HouseYearStemImpl internal constructor(star: ZStar) : HouseAbstractImpl<Stem>(star) {
 

@@ -3,15 +3,21 @@
  */
 package destiny.core.chinese.ziwei
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.IntAgeNote
 import destiny.core.calendar.chinese.MonthAlgo
+import destiny.core.calendar.eightwords.DayConfig
+import destiny.core.calendar.eightwords.DayHourConfig
 import destiny.core.calendar.eightwords.EightWordsConfig
+import destiny.core.calendar.eightwords.MidnightImpl
 import destiny.core.chinese.AgeType
 import destiny.core.chinese.Tianyi
 import destiny.core.chinese.YearType
 import destiny.core.chinese.ziwei.ZiweiConfigBuilder.Companion.ziweiConfig
 import kotlinx.serialization.KSerializer
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
@@ -42,13 +48,24 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     FlowHour.Branch,
     BigRange.SkipMain,
     AgeType.REAL,
-    listOf(IntAgeNote.WestYear)
+    listOf(IntAgeNote.WestYear),
+    EightWordsConfig(
+      dayHourConfig = DayHourConfig(
+        DayConfig(changeDayAfterZi = false, midnight = MidnightImpl.CLOCK0),
+      )
+    )
   )
 
   override val configByFunction: ZiweiConfig
     get() {
 
-      return with(EightWordsConfig()) {
+      val ewConfig = EightWordsConfig(
+        dayHourConfig = DayHourConfig(
+          DayConfig(changeDayAfterZi = false, midnight = MidnightImpl.CLOCK0),
+        )
+      )
+
+      return with(ewConfig) {
         ziweiConfig {
           stars = setOf(
             *StarMain.values, *StarMinor.values, *StarLucky.values, *StarUnlucky.values,
@@ -101,5 +118,8 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     assertTrue(raw.contains(""""bigRange":\s*"SkipMain"""".toRegex()))
     assertTrue(raw.contains(""""sectionAgeType":\s*"REAL"""".toRegex()))
     assertTrue(raw.contains(""""ageNotes":\s*\[\s*"WestYear"\s*]""".toRegex()))
+    val docCtx = JsonPath.parse(raw)
+    assertFalse(docCtx.read("$.ewConfig.dayHourConfig.dayConfig.changeDayAfterZi", Boolean::class.java))
+    assertEquals("CLOCK0", docCtx.read("$.ewConfig.dayHourConfig.dayConfig.midnight", String::class.java))
   }
 }

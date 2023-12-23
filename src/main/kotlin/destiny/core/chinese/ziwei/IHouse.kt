@@ -27,7 +27,7 @@ data class HouseCalContext(/** 「陰曆」的年干支 */
                            val leap: Boolean,
                            /** 「陰曆」 上個月有幾日 */
                            val prevMonthDays: Int,
-                           val config: ZiweiConfig,
+                           val config: IZiweiConfig,
                            /** 預先計算好的「命宮」 */
                            val predefinedMainHouse: Branch?,
                            val purpleStarBranchImplMap: Map<PurpleStarBranch, IPurpleStarBranch>,

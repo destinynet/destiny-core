@@ -8,7 +8,7 @@ import destiny.core.chinese.StemBranch
 
 /**
  * 年干支 ，用於旬空兩顆星
- * 必須判斷 [ZiweiConfig.yearType]
+ * 必須判斷 [IZiweiConfig.yearType]
  */
 abstract class HouseYearImpl internal constructor(star: ZStar) : HouseAbstractImpl<StemBranch>(star) {
 

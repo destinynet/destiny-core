@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.TransConfig
 import destiny.core.astrology.TransConfigBuilder.Companion.trans
@@ -14,6 +15,7 @@ import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
 import destiny.core.calendar.eightwords.YearConfigBuilder.Companion.yearConfig
 import destiny.core.calendar.eightwords.YearMonthConfigBuilder.Companion.yearMonthConfig
 import kotlinx.serialization.KSerializer
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -99,18 +101,18 @@ internal class EightWordsConfigTest : AbstractConfigTest<EightWordsConfig>() {
     }
 
   override val assertion = { raw: String ->
-    assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
+    val docCtx = JsonPath.parse(raw)
+    assertEquals(270.0 , docCtx.read("$.yearMonthConfig.yearConfig.changeYearDegree", Double::class.java))
+    assertEquals(true , docCtx.read("$.yearMonthConfig.monthConfig.southernHemisphereOpposition", Boolean::class.java))
+    assertEquals("DECLINATION", docCtx.read("$.yearMonthConfig.monthConfig.hemisphereBy", String::class.java))
+    assertEquals("SunSign", docCtx.read("$.yearMonthConfig.monthConfig.monthImpl", String::class.java))
+    assertFalse(docCtx.read("$.dayHourConfig.dayConfig.changeDayAfterZi", Boolean::class.java))
+    assertEquals("CLOCK0", docCtx.read("$.dayHourConfig.dayConfig.midnight", String::class.java))
+    assertEquals("LMT", docCtx.read("$.dayHourConfig.hourBranchConfig.hourImpl", String::class.java))
 
-    assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
-    assertFalse(raw.contains(""""southernHemisphereOpposition":\s*false""".toRegex()))
-
-    assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))
-    assertTrue(raw.contains(""""monthImpl":\s*"SunSign"""".toRegex()))
-
-    assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
-    assertFalse(raw.contains(""""changeDayAfterZi":\s*true""".toRegex()))
-
-    assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))
-    assertTrue(raw.contains(""""hourImpl":\s*"LMT"""".toRegex()))
+    assertTrue(docCtx.read("$.dayHourConfig.hourBranchConfig.transConfig.discCenter", Boolean::class.java))
+    assertFalse(docCtx.read("$.dayHourConfig.hourBranchConfig.transConfig.refraction", Boolean::class.java))
+    assertEquals(23.0, docCtx.read("$.dayHourConfig.hourBranchConfig.transConfig.temperature", Double::class.java))
+    assertEquals(1000.0, docCtx.read("$.dayHourConfig.hourBranchConfig.transConfig.pressure", Double::class.java))
   }
 }
