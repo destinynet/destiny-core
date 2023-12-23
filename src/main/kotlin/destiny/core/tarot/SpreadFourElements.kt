@@ -15,12 +15,12 @@ import java.util.*
 data class SpreadFourElements(
   val fire: CardOrientation,
   val water: CardOrientation,
-  val earth: CardOrientation,
-  val air: CardOrientation
+  val air: CardOrientation,
+  val earth: CardOrientation
 ) : ISpread {
 
   override val cards: List<CardOrientation>
-    get() = listOf(fire, water, earth, air)
+    get() = listOf(fire, water, air, earth)
 
   override fun getTitle(locale: Locale): String {
     return SpreadFourElements.getTitle(locale)

@@ -157,6 +157,15 @@ enum class Card(val suit: Suit) {
   @SerialName("PQ")
   PENTACLES_QUEEN(PENTACLES),
   @SerialName("PK")
-  PENTACLES_KING(PENTACLES),
+  PENTACLES_KING(PENTACLES);
 
+  companion object {
+    fun list(suit : Suit): List<Card> {
+      return entries.filter { c -> c.suit == suit }.toList()
+    }
+
+    fun list(element: Element) : List<Card> {
+      return entries.filter { c -> c.suit.element == element }.toList()
+    }
+  }
 }
