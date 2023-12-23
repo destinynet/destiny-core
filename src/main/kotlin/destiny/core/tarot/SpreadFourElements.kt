@@ -30,15 +30,15 @@ data class SpreadFourElements(
     return when (element) {
       Element.FIRE  -> fire
       Element.WATER -> water
-      Element.EARTH -> earth
       Element.AIR   -> air
+      Element.EARTH -> earth
     }
   }
 
   companion object : ILocaleString {
     fun of(map: Map<Element, CardOrientation>): SpreadFourElements {
       require(map.size == 4)
-      return SpreadFourElements(map[Element.FIRE]!!, map[Element.WATER]!!, map[Element.EARTH]!!, map[Element.AIR]!!)
+      return SpreadFourElements(map[Element.FIRE]!!, map[Element.WATER]!!, map[Element.AIR]!!, map[Element.EARTH]!!)
     }
 
     override fun getTitle(locale: Locale): String {
