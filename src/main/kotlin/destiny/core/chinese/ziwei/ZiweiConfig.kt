@@ -1,8 +1,10 @@
 package destiny.core.chinese.ziwei
 
+import destiny.core.IPresentConfig
 import destiny.core.IntAgeNote
 import destiny.core.astrology.DayNightConfig
 import destiny.core.astrology.DayNightConfigBuilder
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.IEightWordsConfig
@@ -419,3 +421,8 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
     }
   }
 }
+
+interface IZiweiPresentConfig : IZiweiConfig , IPresentConfig
+
+data class ZiweiPresentConfig(override val ziweiConfig : ZiweiConfig = ZiweiConfig(),
+                              override var viewGmt: GmtJulDay = GmtJulDay.nowCeiling()) : IZiweiPresentConfig , IZiweiConfig by ziweiConfig

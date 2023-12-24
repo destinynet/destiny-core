@@ -3,11 +3,11 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.IPresentConfig
 import destiny.core.astrology.DayNightConfig
 import destiny.core.astrology.DayNightImpl
 import destiny.core.astrology.TransConfig
 import destiny.core.astrology.ZodiacSignConfig
-import destiny.core.calendar.GmtJulDay
 import destiny.core.chinese.eightwords.*
 import java.io.Serializable
 
@@ -95,8 +95,7 @@ interface IEightWordsPersonConfig : IEightWordsContextConfig {
     get() = EightWordsPersonConfig(ewContextConfig, fortuneLargeConfig, fortuneSmallConfig, ewContextScore)
 }
 
-interface IPersonPresentConfig : IEightWordsPersonConfig {
-  var viewGmt: GmtJulDay
+interface IPersonPresentConfig : IEightWordsPersonConfig , IPresentConfig {
   val personPresentConfig: PersonPresentConfig
     get() = PersonPresentConfig(ewPersonConfig, viewGmt)
 }

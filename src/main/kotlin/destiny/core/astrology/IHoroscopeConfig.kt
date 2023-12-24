@@ -1,6 +1,7 @@
 package destiny.core.astrology
 
 import destiny.core.Gender
+import destiny.core.IPresentConfig
 import destiny.core.astrology.classical.ClassicalConfig
 import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.astrology.classical.rules.IPlanetPatternFactory
@@ -37,9 +38,7 @@ interface IPersonHoroscopeConfig : IHoroscopeConfig {
     }
 }
 
-interface IHoroscopePresentConfig : IPersonHoroscopeConfig {
-  var viewGmt: GmtJulDay
-}
+interface IHoroscopePresentConfig : IPersonHoroscopeConfig , IPresentConfig
 
 // TODO : DSL
 data class HoroscopePresentConfig(
