@@ -1,3 +1,6 @@
+/**
+ * Created by smallufo on 2023-12-19.
+ */
 package destiny.core.tarot
 
 import destiny.tools.ILocaleString
@@ -5,9 +8,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
 
-/**
- * Created by smallufo on 2023-12-19.
- */
 @Serializable
 @SerialName("6cards")
 data class SpreadSixCards(val lt: CardOrientation, val mt: CardOrientation, val rt: CardOrientation,
