@@ -33,7 +33,7 @@ import java.util.*
 import javax.cache.Cache
 
 
-/** 某時刻對應到的 大運、流年 等資訊 */
+/** 某時刻對應到的 大運、流年 兩資訊 */
 data class Flow(val section: StemBranch?, val year: StemBranch) : java.io.Serializable
 
 
@@ -121,8 +121,14 @@ interface IZiweiFeature : PersonFeature<IZiweiConfig, IPlate> {
   /** 計算 流時盤 */
   fun getFlowHour(plate: IPlate, section: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch, config: IZiweiConfig): IPlateHour
 
-  /** 反推大限、流年等資訊 */
-  fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: IZiweiConfig): Flow?
+  /** 反推大限、流年兩資訊 */
+  fun reverseFlows(plate: IPlate, viewGmt: GmtJulDay, config: IZiweiConfig): Flow?
+  fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: IZiweiConfig): Flow? {
+    return plate.location?.let { loc ->
+      val viewGmt = lmt.toGmtJulDay(loc)
+      reverseFlows(plate , viewGmt, config)
+    }
+  }
 
   /** 計算大限盤 */
   fun getFlowSection(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: IZiweiConfig): IPlateSection? {
@@ -882,35 +888,30 @@ class ZiweiFeature(
   }
 
 
-  /** 反推大限、流年等資訊 */
-  override fun reverseFlows(plate: IPlate, lmt: ChronoLocalDateTime<*>, config: IZiweiConfig): Flow? {
-    return lmt.takeIf { it.isAfter(plate.localDateTime) }
-      ?.takeIf { plate.getAgeMap(config.sectionAgeType) != null }
-      ?.let { targetLmt ->
-        val loc = plate.location ?: locationOf(Locale.getDefault())
-        val targetGmtJulDay = targetLmt.toGmtJulDay(loc)
-
-        val ageMap = plate.getAgeMap(config.sectionAgeType)!!
-
-        ageMap.entries.firstOrNull { (_ , pair) ->
-                val (fromGmt , toGmt) = pair
-                targetGmtJulDay in fromGmt..toGmt
-              }?.key?.let { targetAge -> // target歲數
-
-          val section: StemBranch? = plate.flowSectionAgeMap.entries.firstOrNull { (_, pair) ->
-            targetAge >= pair.first && targetAge <= pair.second
-          }?.key
-
-
-          val flowYear: StemBranch = when (config.sectionAgeType) {
-            AgeType.VIRTUAL -> plate.year.next(targetAge - 1)
-            AgeType.REAL    -> plate.year.next(targetAge)
+  /** 反推大限、流年兩資訊 */
+  override fun reverseFlows(plate: IPlate, viewGmt: GmtJulDay, config: IZiweiConfig): Flow? {
+    return plate.location?.let { loc ->
+      plate.localDateTime?.let { lmt ->
+        lmt.toGmtJulDay(loc).takeIf { birthGmtJulDay ->
+          viewGmt > birthGmtJulDay
+        }?.let {
+          val ageMap = plate.getAgeMap(config.sectionAgeType)!!
+          ageMap.entries.firstOrNull { (_, pair) ->
+            val (fromGmt, toGmt) = pair
+            viewGmt in fromGmt..toGmt
+          }?.key?.let { targetAge -> // target歲數
+            val section: StemBranch? = plate.flowSectionAgeMap.entries.firstOrNull { (_, pair) ->
+              targetAge >= pair.first && targetAge <= pair.second
+            }?.key
+            val flowYear: StemBranch = when (config.sectionAgeType) {
+              AgeType.VIRTUAL -> plate.year.next(targetAge - 1)
+              AgeType.REAL    -> plate.year.next(targetAge)
+            }
+            Flow(section, flowYear)
           }
-
-          Flow(section, flowYear)
-
         }
       }
+    }
   }
 
 
