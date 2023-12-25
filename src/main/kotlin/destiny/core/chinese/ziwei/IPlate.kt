@@ -156,6 +156,13 @@ interface IPlate : Serializable {
     }
   }
 
+  /** 某時刻，是幾歲 */
+  fun getAge(gmtJulDay: GmtJulDay, ageType: AgeType): Int? {
+    return getAgeMap(ageType)?.asSequence()?.filter { (_: Int, range: Pair<GmtJulDay, GmtJulDay>) ->
+      gmtJulDay in range.first..range.second
+    }?.firstOrNull()?.key
+  }
+
   /** 取得這些星體所在宮位的地支 */
   fun getBranches(vararg stars: ZStar): List<Branch> {
     return stars.mapNotNull { star -> starMap[star]?.stemBranch?.branch }
