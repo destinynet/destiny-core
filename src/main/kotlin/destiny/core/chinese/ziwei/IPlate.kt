@@ -225,6 +225,12 @@ interface IPlate : Serializable {
     return getHouseDataOf(star)!!
   }
 
+  fun getTransFourStarOf(value: T4Value, type: FlowType = FlowType.MAIN): ZStar? {
+    return transFours.entries.asSequence().filter { (_ , map) ->
+      map[type] == value
+    }.firstOrNull()?.key
+  }
+
   /** 取得在此地支宮位的主星 */
   fun getMainStarsIn(branch: Branch): List<ZStar> {
     return houseDataSet.filter { it.stemBranch.branch == branch }
