@@ -900,9 +900,7 @@ class ZiweiFeature(
             val (fromGmt, toGmt) = pair
             viewGmt in fromGmt..toGmt
           }?.key?.let { targetAge -> // target歲數
-            val section: StemBranch? = plate.flowSectionAgeMap.entries.firstOrNull { (_, pair) ->
-              targetAge >= pair.first && targetAge <= pair.second
-            }?.key
+            val section: StemBranch? = plate.findSection(targetAge)
             val flowYear: StemBranch = when (config.sectionAgeType) {
               AgeType.VIRTUAL -> plate.year.next(targetAge - 1)
               AgeType.REAL    -> plate.year.next(targetAge)

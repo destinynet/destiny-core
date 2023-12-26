@@ -139,6 +139,12 @@ interface IPlate : Serializable {
         .toMap()
     }
 
+  /** 承上 , 找出此 age 屬於哪個大限中 */
+  fun findSection(age : Int): StemBranch? {
+    return flowSectionAgeMap.entries.firstOrNull { (_, pair) ->
+      age >= pair.first && age <= pair.second
+    }?.key
+  }
 
 
   // =========== 以上 ↑↑ functions ↑↑ ===========
