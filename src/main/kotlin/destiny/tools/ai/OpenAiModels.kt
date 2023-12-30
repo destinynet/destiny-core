@@ -8,7 +8,10 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class OpenAiMsg(val role: String, val content: String?,
+data class OpenAiMsg(val role: String,
+                     val content: String?,
+                     @SerialName("tool_call_id")
+                     val toolCallId : String? = null,
                      @SerialName("tool_calls")
                      val toolCalls : List<ToolCall>? = null) {
 
@@ -25,6 +28,7 @@ data class OpenAiMsg(val role: String, val content: String?,
     )
   }
 }
+
 
 
 @Serializable
