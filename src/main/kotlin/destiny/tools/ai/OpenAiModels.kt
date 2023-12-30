@@ -4,62 +4,58 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class CompletionRequest(val prompt: String,
-                             val user : String? = null,
-                             // 未來會改用 gpt-3.5-turbo-instruct , 但還沒 available (2023/8/3)
-                             val model : String = "text-davinci-003",
-                             @SerialName("max_tokens")
-                             val maxTokens : Int = 2048,
-                             val temperature: Double = 1.0,
-                             val n : Int = 1,
-                             val stream: Boolean = false)
+
 
 
 @Serializable
-data class Usage(@SerialName("prompt_tokens")
-                 val promptTokens: Int,
-                 @SerialName("completion_tokens")
-                 val completionTokens: Int? = null,
-                 @SerialName("total_tokens")
-                 val totalTokens: Int)
+data class OpenAiMsg(val role: String, val content: String?,
+                     @SerialName("tool_calls")
+                     val toolCalls : List<ToolCall>? = null) {
 
-@Serializable
-data class ChoiceText(val text: String,
-                      val index: Int,
-                      val logprobs: Int? = null,
-                      @SerialName("finish_reason")
-                      val finishReason: String?)
-
-@Serializable
-data class CompletionTextResult(val id: String,
-                                /** always 'text_completion' */
-                                val `object`: String,
-                                val created: Long,
-                                /** maybe 'text-davinci-003' */
-                                val model: String,
-                                val choices: List<ChoiceText>,
-                                val usage: Usage
-)
+  @Serializable
+  data class ToolCall(
+    val id: String,
+    val type: String,
+    val function: ToolCallFunction
+  ) {
+    @Serializable
+    data class ToolCallFunction(
+      val name: String,
+      val arguments: String
+    )
+  }
+}
 
 
 @Serializable
-data class ChoiceChat(val message : IOpenAi.OpenAiMsg,
-                      val index: Int,
-                      val logprobs: Int? = null,
-                      @SerialName("finish_reason")
-                      val finishReason: String?)
+data class OpenAiResult(val id: String,
+                        /** always 'chat.completion' */
+                        val `object`: String,
+                        val created: Long,
+                        /** maybe 'gpt-3.5-turbo-0301' */
+                        val model: String,
+                        val choices: List<Choice>,
+                        val usage: Usage) {
+  @Serializable
+  data class Choice(
+    val message: OpenAiMsg,
+    val index: Int,
+    val logprobs: Int? = null,
+    @SerialName("finish_reason")
+    val finishReason: String?
+  )
 
-@Serializable
-data class CompletionChatResult(val id: String,
-                                /** always 'chat.completion' */
-                                val `object`: String,
-                                val created: Long,
-                                /** maybe 'gpt-3.5-turbo-0301' */
-                                val model: String,
-                                val choices: List<ChoiceChat>,
-                                val usage: Usage
-)
+  @Serializable
+  data class Usage(
+    @SerialName("prompt_tokens")
+    val promptTokens: Int,
+    @SerialName("completion_tokens")
+    val completionTokens: Int? = null,
+    @SerialName("total_tokens")
+    val totalTokens: Int
+  )
+
+}
 
 @Serializable
 data class Error(val message: String,
@@ -70,3 +66,38 @@ data class Error(val message: String,
                  val code: String? = null)
 
 
+@Serializable
+data class OpenAiFun(
+  val type: String,
+  val function: Function
+) {
+  @Serializable
+  data class Function(
+    val name: String,
+    val description: String,
+    val parameters: Parameters
+  ) {
+    @Serializable
+    data class Parameters(
+      val type: String,
+      val properties: Map<String, Argument>,
+      val required: List<String>
+    ) {
+      @Serializable
+      data class Argument(
+        val type: String,
+        val enum: List<String>? = null,
+        val description: String
+      )
+    }
+  }
+}
+
+@Serializable
+data class ChatModel(
+  val messages: List<OpenAiMsg>,
+  val user: String?,
+  /** ex : "gpt-3.5-turbo" */
+  val model: String,
+  val tools: List<OpenAiFun>? = null
+)
