@@ -12,16 +12,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class GeminiTest {
-//
-//  @OptIn(ExperimentalSerializationApi::class)
-//  val json = Json {
-//    encodeDefaults = true
-//    prettyPrint = true
-//    // skip null fields , get rid of null user error
-//    explicitNulls = false
-//    // to ignore unknown keys
-//    ignoreUnknownKeys = true
-//  }
 
   @Nested
   inner class FunctionDeclarationSerializationTests {
