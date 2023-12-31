@@ -4,7 +4,8 @@
 package destiny.tools.ai
 
 
-interface IOpenAiFunctionCall {
+/** used by OpenAI and Gemini */
+interface IFunctionDeclaration {
   data class Parameter(val name: String, val type: String, val description: String, val required: Boolean)
   val name: String
   val description : String
