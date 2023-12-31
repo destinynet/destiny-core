@@ -15,9 +15,14 @@ class Gemini {
   @Serializable
   data class Content(val role: String, val parts: List<Part>?) {
     @Serializable
-    data class Part(val text: String?, val functionCall: FunctionCall?) {
+    data class Part(val text: String?, val functionCall: FunctionCall?, val functionResponse : FunctionResponse?) {
       @Serializable
       data class FunctionCall(val name: String, val args: Map<String, String>)
+      @Serializable
+      data class FunctionResponse(val name : String , val response : Response) {
+        @Serializable
+        data class Response(val name: String, val content: String)
+      }
     }
   }
 
@@ -56,6 +61,12 @@ class Gemini {
     data class CandidateContainer(val candidates: List<Candidate>) : Response() {
       @Serializable
       data class Candidate(val content: Content)
+
+      /** contents with functionCall */
+      val contentsWithFunctionCall: List<Content>
+        get() {
+          return candidates.mapNotNull { candidate -> candidate.content.takeIf { c -> c.parts?.any { p -> p.functionCall != null } ?: false } }
+        }
     }
 
     @Serializable
