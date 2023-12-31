@@ -10,13 +10,20 @@ import kotlinx.serialization.Serializable
 class Gemini {
 
   @Serializable
+  data class GeminiMsg(val author: String, val content: String)
+
+  @Serializable
   data class Content(val role: String, val parts: List<Part>?) {
     @Serializable
-    data class Part(val text: String)
+    data class Part(val text: String?, val functionCall: FunctionCall?) {
+      @Serializable
+      data class FunctionCall(val name: String, val args: Map<String, String>)
+    }
   }
 
   @Serializable
   data class Request(val contents: List<Content>,
+                     val tools : List<Tool>? = null,
                      @SerialName("generation_config")
                      val config: Config) {
     @Serializable
@@ -31,6 +38,9 @@ class Gemini {
       val topK: Int = 32
     )
   }
+
+  @Serializable
+  data class Tool(@SerialName("function_declarations") val functionDeclarations: List<FunctionDeclaration>)
 
   @Serializable
   data class FunctionDeclaration(val name: String, val description: String, val parameters: Parameters) {
