@@ -15,7 +15,7 @@ class Gemini {
   @Serializable
   data class Content(val role: String, val parts: List<Part>?) {
     @Serializable
-    data class Part(val text: String?, val functionCall: FunctionCall?, val functionResponse : FunctionResponse?) {
+    data class Part(val text: String?, val functionCall: FunctionCall? = null, val functionResponse : FunctionResponse? = null) {
       @Serializable
       data class FunctionCall(val name: String, val args: Map<String, String>)
       @Serializable
