@@ -10,14 +10,17 @@ import kotlinx.serialization.Serializable
 class Gemini {
 
   @Serializable
-  data class GeminiMsg(val author: String, val content: String)
-
-  @Serializable
   data class Content(val role: String, val parts: List<Part>?) {
     @Serializable
-    data class Part(val text: String?, val functionCall: FunctionCall? = null, val functionResponse : FunctionResponse? = null) {
+    data class Part(val text: String?, @SerialName("inlineData") val inlineData: InlineData? = null,
+                    val functionCall: FunctionCall? = null, val functionResponse: FunctionResponse? = null) {
       @Serializable
-      data class FunctionCall(val name: String, val args: Map<String, String>)
+      data class InlineData(val mimeType: String, val data: String)
+      @Serializable
+      data class FunctionCall(val name: String, val args: Map<String, String>) {
+        val argsList : List<Pair<String,String>>
+          get() = args.map { (k, v) -> k to v }.toList()
+      }
       @Serializable
       data class FunctionResponse(val name : String , val response : Response) {
         @Serializable
