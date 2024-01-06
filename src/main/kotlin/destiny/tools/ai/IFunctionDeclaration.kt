@@ -14,6 +14,12 @@ interface IFunctionDeclaration {
   fun invoke(parameters: List<Pair<String, Any>>): String
 }
 
+fun Set<IFunctionDeclaration>.toMap(): Map<String, IFunctionDeclaration> {
+  return this.associateBy { impl ->
+    impl.name
+  }
+}
+
 fun IFunctionDeclaration.toOpenAi(): OpenAi.FunctionDeclaration {
   return OpenAi.FunctionDeclaration(
     "function",

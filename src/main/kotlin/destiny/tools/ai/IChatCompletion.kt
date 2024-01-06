@@ -23,11 +23,5 @@ sealed class Reply {
 interface IChatCompletion {
 
   suspend fun chatComplete(messages: List<Msg>, user: String? = null, timeout: Duration = Duration.of(60, ChronoUnit.SECONDS)) : Reply
-
-  fun Set<IFunctionDeclaration>.toMap() : Map<String, IFunctionDeclaration> {
-    return this.associateBy { impl ->
-      impl.name
-    }
-  }
 }
 
