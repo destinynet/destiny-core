@@ -36,9 +36,14 @@ class Gemini {
                      val config: Config) {
     @Serializable
     data class Config(
+      /**
+       * max
+       * gemini-pro : 8192 ,
+       * gemini-pro-vision : 2048
+       */
       val maxOutputTokens: Int = 2048,
       val temperature: Double = 0.9,
-      val topP: Double = 1.0,
+      val topP: Double = 0.75,
       /**
        * Default for gemini-pro-vision: 32
        * Default for gemini-pro: none
