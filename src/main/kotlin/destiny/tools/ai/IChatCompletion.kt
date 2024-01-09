@@ -29,3 +29,12 @@ interface IChatCompletion {
   }
 }
 
+abstract class AbstractChatCompletion : IChatCompletion {
+
+  abstract suspend fun doChatComplete(messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration): Reply
+
+  override suspend fun chatComplete(messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration): Reply {
+    val filteredFunCalls = funCalls.filter { it.applied(messages) }.toSet()
+    return doChatComplete(messages, user, filteredFunCalls, timeout)
+  }
+}
