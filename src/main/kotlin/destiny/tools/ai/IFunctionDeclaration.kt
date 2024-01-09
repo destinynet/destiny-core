@@ -11,6 +11,7 @@ interface IFunctionDeclaration {
   val name: String
   val description: String
   val parameters: List<Parameter>
+  fun applied(msgs: List<Msg>): Boolean
   fun invoke(parameters: List<Pair<String, Any>>): String
 }
 
