@@ -11,6 +11,7 @@ import destiny.core.chinese.StemBranchUnconstrained
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.Feature
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
@@ -84,13 +85,31 @@ class YearMonthConfigBuilder : Builder<YearMonthConfig> {
   }
 }
 
+data class MonthRange(val year: IStemBranch, val month: IStemBranch, override val begin: GmtJulDay, override val end: GmtJulDay) : IEventSpan
+
+interface IYearMonthFeature : Feature<IYearMonthConfig, IStemBranch> {
+
+  fun getMonthRange(gmtJulDay: GmtJulDay, loc: ILocation, config: IYearMonthConfig): MonthRange
+
+  fun getMonthRanges(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, config: IYearMonthConfig): List<MonthRange> {
+    require(fromGmt < toGmt) { "Invalid. from = $fromGmt , to = $toGmt" }
+
+    return generateSequence(getMonthRange(fromGmt, loc, config)) { monthRange ->
+      getMonthRange(monthRange.end + 0.01, loc, config)
+    }.takeWhile {
+      it.begin in fromGmt..toGmt || it.end in fromGmt..toGmt
+        || it.begin < fromGmt && toGmt < it.end
+    }.toList()
+  }
+}
+
 /**
  * 月干支
  */
 @Named
 class YearMonthFeature(private val starPositionImpl: IStarPosition<*>,
                        private val starTransitImpl: IStarTransit,
-                       private val julDayResolver: JulDayResolver) : AbstractCachedFeature<IYearMonthConfig, IStemBranch>() {
+                       private val julDayResolver: JulDayResolver) : IYearMonthFeature, AbstractCachedFeature<IYearMonthConfig, IStemBranch>() {
 
   override val key: String = "month"
 
@@ -128,5 +147,13 @@ class YearMonthFeature(private val starPositionImpl: IStarPosition<*>,
       }
     }
   }
+
+  override fun getMonthRange(gmtJulDay: GmtJulDay, loc: ILocation, config: IYearMonthConfig): MonthRange {
+    val year = getYear(gmtJulDay, loc, config.changeYearDegree, julDayResolver, starPositionImpl)
+    val month = getMonth(gmtJulDay, loc, solarTermsImpl, starPositionImpl, config.southernHemisphereOpposition, config.hemisphereBy, config.changeYearDegree, julDayResolver)
+    val (begin, end) = solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay).let { (p1, p2) -> p1.begin to p2.begin }
+    return MonthRange(year, month, begin, end)
+  }
+
 
 }
