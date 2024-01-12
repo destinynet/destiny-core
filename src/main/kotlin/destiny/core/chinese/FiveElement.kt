@@ -66,8 +66,32 @@ enum class FiveElement : IFiveElement, Serializable {
   override val fiveElement: FiveElement
     get() = this
 
+  fun isSame(f: IFiveElement): Boolean {
+    return f.fiveElement == this
+  }
 
 
+  /** 此五行是否生另一五行  */
+  fun isProducingTo(f: IFiveElement): Boolean {
+    return f.fiveElement.producer == this
+  }
+
+
+  /** 此五行是否被另一五行所生  */
+  fun isProducedBy(f: IFiveElement): Boolean {
+    return f.fiveElement.product == this
+  }
+
+
+  /** 此五行是否剋另一五行 , Dominator : 支配者  */
+  fun isDominatorOf(f: IFiveElement): Boolean {
+    return f.fiveElement.dominator == this
+  }
+
+  /** 此五行是否被另一五行所剋  */
+  fun isDominatedBy(f: IFiveElement): Boolean {
+    return f.fiveElement.dominateOver == this
+  }
 
   companion object {
     fun of(news: News): FiveElement {
@@ -77,6 +101,36 @@ enum class FiveElement : IFiveElement, Serializable {
         News.EastWest.WEST -> 金
         News.NorthSouth.NORTH -> 水
       }
+    }
+
+    fun FiveElement.sameCount(vararg elements: IFiveElement): Int {
+      return elements.map { each: IFiveElement ->
+        if (this.isSame(each)) 1 else 0
+      }.sum()
+    }
+
+    fun FiveElement.producingCount(vararg elements: IFiveElement): Int {
+      return elements.map { each ->
+        if (this.isProducingTo(each)) 1 else 0
+      }.sum()
+    }
+
+    fun FiveElement.producedCount(vararg elements: IFiveElement): Int {
+      return elements.map { each ->
+        if (this.isProducedBy(each)) 1 else 0
+      }.sum()
+    }
+
+    fun FiveElement.dominatorCount(vararg elements: IFiveElement): Int {
+      return elements.map { each ->
+        if (this.isDominatorOf(each)) 1 else 0
+      }.sum()
+    }
+
+    fun FiveElement.beatenCount(vararg elements: IFiveElement): Int {
+      return elements.map { each ->
+        if (this.isDominatedBy(each)) 1 else 0
+      }.sum()
     }
   }
 }

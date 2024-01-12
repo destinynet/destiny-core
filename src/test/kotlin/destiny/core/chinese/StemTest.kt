@@ -7,6 +7,7 @@ package destiny.core.chinese
 
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.Stem.*
+import destiny.core.chinese.Stem.Companion.combinedCount
 import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
@@ -31,6 +32,12 @@ class StemTest {
     assertEquals(丙 to 水, 辛.combined)
     assertEquals(丁 to 木, 壬.combined)
     assertEquals(戊 to 火, 癸.combined)
+  }
+
+  @Test
+  fun testCombinedCount() {
+    assertEquals(0 , 甲.combinedCount(甲 , 乙, 丙, 丁, 戊, 庚, 辛, 壬, 癸))
+    assertEquals(3 , 甲.combinedCount(己, 己, 己))
   }
 
   @Test

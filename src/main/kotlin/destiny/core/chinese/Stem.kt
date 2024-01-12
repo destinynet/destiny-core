@@ -105,6 +105,12 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang , ILoop<Stem> {
     fun getIndex(hs: Stem): Int {
       return entries.indexOf(hs)//  Arrays.binarySearch(values(), hs)
     }
+
+    fun Stem.combinedCount(vararg elements: Stem): Int {
+      return elements.map { each ->
+        if (this.combined.first == each) 1 else 0
+      }.sum()
+    }
   }
 
 }
