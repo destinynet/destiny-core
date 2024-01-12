@@ -67,32 +67,7 @@ enum class FiveElement : IFiveElement, Serializable {
     get() = this
 
 
-  fun isSame(f: IFiveElement): Boolean {
-    return f.fiveElement == this
-  }
 
-
-  /** 此五行是否生另一五行  */
-  fun isProducingTo(f: IFiveElement): Boolean {
-    return f.fiveElement.producer == this
-  }
-
-
-  /** 此五行是否被另一五行所生  */
-  fun isProducedBy(f: IFiveElement): Boolean {
-    return f.fiveElement.product == this
-  }
-
-
-  /** 此五行是否剋另一五行 , Dominator : 支配者  */
-  fun isDominatorOf(f: IFiveElement): Boolean {
-    return f.fiveElement.dominator == this
-  }
-
-  /** 此五行是否被另一五行所剋  */
-  fun isDominatedBy(f: IFiveElement): Boolean {
-    return f.fiveElement.dominateOver == this
-  }
 
   companion object {
     fun of(news: News): FiveElement {
