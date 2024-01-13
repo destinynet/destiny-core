@@ -4,6 +4,7 @@
 package destiny.core.chinese
 
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.BranchTools.trilogy
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.Stem.*
 
@@ -12,7 +13,7 @@ object Characters {
 
   /** 驛馬 */
   fun getHorse(branch : Branch) : Branch {
-    return when (BranchTools.trilogy(branch)) {
+    return when (branch.trilogy()) {
       水 -> 寅
       木 -> 巳
       金 -> 亥
@@ -23,7 +24,7 @@ object Characters {
 
   /** 桃花、咸池 : Peach */
   fun getPeach(branch: Branch) : Branch {
-    return when (BranchTools.trilogy(branch)) {
+    return when (branch.trilogy()) {
       水 -> 酉
       木 -> 子
       金 -> 午

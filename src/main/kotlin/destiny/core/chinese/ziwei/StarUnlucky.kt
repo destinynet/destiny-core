@@ -7,7 +7,7 @@ import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.BranchTools
+import destiny.core.chinese.BranchTools.trilogy
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
@@ -88,7 +88,7 @@ sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::cl
      */
     /** 火星 (全書): 年支 -> 地支  */
     val fun火星_全書 = { year: Branch ->
-      when (BranchTools.trilogy(year)) {
+      when (year.trilogy()) {
         火 -> 丑 // 寅午戌人[丑]卯方
         水 -> 寅 // 子申辰人[寅]戌揚
         金 -> 卯 // 巳酉丑人[卯]戌位
@@ -99,7 +99,7 @@ sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::cl
 
     /** 鈴星 (全書): 年支 -> 地支  */
     val fun鈴星_全書 = { year: Branch ->
-      when (BranchTools.trilogy(year)) {
+      when (year.trilogy()) {
         火 -> 卯 // 寅午戌人丑[卯]方
         水 -> 戌 // 子申辰人寅[戌]揚
         金 -> 戌 // 巳酉丑人卯[戌]位
@@ -119,7 +119,7 @@ sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::cl
 
     /** 火星 (全集): (年支、時支) -> 地支 (子由使用) */
     val fun火星_全集 = { year: Branch, hour: Branch ->
-      when (BranchTools.trilogy(year)) {
+      when (year.trilogy()) {
         火 -> Branch[hour.index + 1]
         水 -> Branch[hour.index + 2]
         金 -> Branch[hour.index + 3]
@@ -130,7 +130,7 @@ sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::cl
 
     /** 鈴星 (全集) : (年支、時支) -> 地支 (子由使用)  */
     val fun鈴星_全集 = { year : Branch , hour : Branch->
-      when (BranchTools.trilogy(year)) {
+      when (year.trilogy()) {
         火 -> Branch[hour.index + 3]
         水, 金, 木 -> Branch[hour.index + 10]
         else -> throw AssertionError("年支 = $year , 時支 = $hour")

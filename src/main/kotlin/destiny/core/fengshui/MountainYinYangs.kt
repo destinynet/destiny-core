@@ -4,7 +4,7 @@
 package destiny.core.fengshui
 
 import destiny.core.chinese.Branch
-import destiny.core.chinese.BranchTools
+import destiny.core.chinese.BranchTools.trilogy
 import destiny.core.chinese.FiveElement
 import destiny.core.iching.Symbol
 import java.io.Serializable
@@ -106,7 +106,7 @@ class MountainYinYangTrilogyImpl : IMountainYinYang, Serializable {
   override fun getYinYang(m: Mountain): Boolean {
     return when (m.mnt) {
       is SealedMnt.MntBranch -> {
-        when (BranchTools.trilogy(m.mnt.branch)) {
+        when (m.mnt.branch.trilogy()) {
           FiveElement.水, FiveElement.火 -> true
           FiveElement.木, FiveElement.金 -> false
           FiveElement.土 -> throw IllegalStateException("三合不可能為土 : ${m.mnt.branch}")

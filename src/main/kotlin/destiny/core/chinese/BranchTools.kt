@@ -8,7 +8,7 @@ import destiny.core.chinese.FiveElement.*
 
 object BranchTools {
 
-  val trilogies: Set<Pair<Set<Branch>, FiveElement>>
+  private val trilogies: Set<Pair<Set<Branch>, FiveElement>>
     get() {
       return setOf(
         setOf(申, 子, 辰) to 水,
@@ -19,9 +19,9 @@ object BranchTools {
     }
 
   /** 地支三合  */
-  fun trilogy(branch: Branch): FiveElement {
+  fun Branch.trilogy() : FiveElement {
     return trilogies.first {
-      it.first.contains(branch)
+      it.first.contains(this)
     }.second
   }
 
@@ -32,6 +32,12 @@ object BranchTools {
           set.containsAll(all3)
         }?.second
       }
+  }
+
+  fun Branch.trilogyCount(vararg branches: Branch) : Int {
+    return branches.map { b ->
+      if (this.trilogy() == b.trilogy()) 1 else 0
+    }.sum()
   }
 
 

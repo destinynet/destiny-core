@@ -7,7 +7,7 @@ import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.BranchTools
+import destiny.core.chinese.BranchTools.trilogy
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.SimpleBranch
 import destiny.core.chinese.Stem.*
@@ -698,7 +698,7 @@ val h短命關 = object : IHazardFactory {
     }
 
     override fun test(eightWords: IEightWords, gender: Gender?): Boolean {
-      return when (BranchTools.trilogy(eightWords.year.branch)) {
+      return when (eightWords.year.branch.trilogy()) {
         火    -> 辰
         金    -> 寅
         水    -> 巳
