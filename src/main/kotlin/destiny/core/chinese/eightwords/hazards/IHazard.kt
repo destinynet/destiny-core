@@ -7,12 +7,12 @@ import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.BranchTools.trilogy
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.SimpleBranch
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.eightwords.hazards.Book.*
 import destiny.core.chinese.eightwords.hazards.ChildHazard.*
+import destiny.core.chinese.trilogy
 
 private val 子午卯酉 = setOf(子, 午, 卯, 酉)
 private val 寅申巳亥 = setOf(寅, 申, 巳, 亥)

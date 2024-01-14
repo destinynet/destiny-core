@@ -4,7 +4,6 @@
 package destiny.core.chinese
 
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.BranchTools.trilogy
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.Stem.*
 

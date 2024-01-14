@@ -2,6 +2,7 @@ package destiny.core.chinese
 
 
 import destiny.core.ILoop
+import destiny.core.chinese.Branch.*
 import destiny.tools.ArrayTools
 
 /**
@@ -135,4 +136,63 @@ fun Collection<Branch?>.grip(): Branch? {
     } else
       null
   }
+}
+
+private val trilogies: Set<Pair<Set<Branch>, FiveElement>>
+  get() {
+    return setOf(
+      setOf(申, 子, 辰) to FiveElement.水,
+      setOf(巳, 酉, 丑) to FiveElement.金,
+      setOf(亥, 卯, 未) to FiveElement.木,
+      setOf(寅, 午, 戌) to FiveElement.火,
+    )
+  }
+
+/** 地支三合  */
+fun Branch.trilogy(): FiveElement {
+  return trilogies.first {
+    it.first.contains(this)
+  }.second
+}
+
+fun trilogy(branch1: Branch, branch2: Branch, branch3: Branch): FiveElement? {
+  return setOf(branch1, branch2, branch3).takeIf { it.size == 3 }
+    ?.let { all3 ->
+      trilogies.firstOrNull { (set, _) ->
+        set.containsAll(all3)
+      }?.second
+    }
+}
+
+fun Branch.trilogyCount(vararg branches: Branch): Int {
+  return branches.map { b ->
+    if (this.trilogy() == b.trilogy()) 1 else 0
+  }.sum()
+}
+
+
+val directions: Set<Pair<Set<Branch>, FiveElement>>
+  get() {
+    return setOf(
+      setOf(亥, 子, 丑) to FiveElement.水,
+      setOf(寅, 卯, 辰) to FiveElement.木,
+      setOf(巳, 午, 未) to FiveElement.火,
+      setOf(申, 酉, 戌) to FiveElement.金,
+    )
+  }
+
+/** 地支三會  */
+fun Branch.direction(): FiveElement {
+  return directions.first {
+    it.first.contains(this)
+  }.second
+}
+
+fun direction(branch1: Branch, branch2: Branch, branch3: Branch): FiveElement? {
+  return setOf(branch1, branch2, branch3).takeIf { it.size == 3 }
+    ?.let { all3 ->
+      directions.firstOrNull { (set, _) ->
+        set.containsAll(all3)
+      }?.second
+    }
 }

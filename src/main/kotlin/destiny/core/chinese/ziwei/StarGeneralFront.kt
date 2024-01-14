@@ -7,9 +7,9 @@ import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.BranchTools.trilogy
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.FiveElement.*
+import destiny.core.chinese.trilogy
 import java.util.*
 import kotlin.reflect.KClass
 

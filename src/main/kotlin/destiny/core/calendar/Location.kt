@@ -215,6 +215,10 @@ fun locationOf(locale: Locale): Location {
   return Location(loc.lat, loc.lng, loc.tzid, loc.minuteOffset, loc.altitudeMeter)
 }
 
+fun locationOf(tzid : String) : Location? {
+  return locMap.entries.firstOrNull { (_, loc) -> loc.tzid == tzid }?.value
+}
+
 
 val locMap = mapOf(
   // de , 柏林

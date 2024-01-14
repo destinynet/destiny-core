@@ -7,6 +7,7 @@ package destiny.core.calendar
 import destiny.core.News.EastWest
 import destiny.core.News.NorthSouth
 import mu.KotlinLogging
+import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -94,5 +95,9 @@ class LocationTest {
     assertEquals(48.0, location.latSec)
   }
 
+  @Test
+  fun testLocationOfTzid() {
+    assertEquals(locationOf(Locale.TAIWAN), locationOf("Asia/Taipei"))
+  }
 
 }

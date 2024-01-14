@@ -10,7 +10,6 @@ import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.BranchTools.trilogy
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun右弼_月支
@@ -345,7 +344,7 @@ sealed class StarMinor(nameKey: String, type: Type) : ZStar(nameKey, ZStar::clas
 
     /** 孤辰 : 年支 -> 地支  */
     val fun孤辰 = { year: Branch ->
-      when (BranchTools.direction(year)) {
+      when (year.direction()) {
         水 -> 寅
         木 -> 巳
         火 -> 申
@@ -356,7 +355,7 @@ sealed class StarMinor(nameKey: String, type: Type) : ZStar(nameKey, ZStar::clas
 
     /** 寡宿 : 年支 -> 地支  */
     val fun寡宿 = { year: Branch ->
-      when (BranchTools.direction(year)) {
+      when (year.direction()) {
         水 -> 戌
         木 -> 丑
         火 -> 辰
