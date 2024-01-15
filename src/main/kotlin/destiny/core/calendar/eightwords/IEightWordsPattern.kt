@@ -26,3 +26,4 @@ sealed class BothAffecting(open val scale: Scale, open val stem: Stem, val react
   data class Beaten(override val scale: Scale, override val stem: Stem) : BothAffecting(scale, stem, Reacting.BEATEN)
 }
 
+data class StemCombined(val scale: Scale, val stem: Stem, val flowScale: Scale) : IEightWordsFlowMonthPattern

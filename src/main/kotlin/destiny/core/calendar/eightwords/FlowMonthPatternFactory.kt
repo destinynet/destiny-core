@@ -36,9 +36,22 @@ val bothAffecting = object : IFlowMonthPatternFactory {
   }
 }
 
+val stemCombined = object : IFlowMonthPatternFactory {
+  override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<IEightWordsFlowMonthPattern> {
+    return getScaleMap().entries.asSequence().map { (scale: Scale, v) -> scale to v.stem }.flatMap { (scale , stem) ->
+      buildSet {
+        if (stem.combined.first == flowYear.stem)
+          add(StemCombined(scale, stem, Scale.YEAR))
+        if (stem.combined.first == flowMonth.stem)
+          add(StemCombined(scale, stem, Scale.MONTH))
+      }
+    }.toSet()
+  }
+}
+
 fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<IEightWordsFlowMonthPattern> {
   return setOf(
-    bothAffecting
+    bothAffecting, stemCombined
   ).flatMap { factory: IFlowMonthPatternFactory ->
     with(factory) {
       this@getPatterns.getPatterns(flowYear, flowMonth)
