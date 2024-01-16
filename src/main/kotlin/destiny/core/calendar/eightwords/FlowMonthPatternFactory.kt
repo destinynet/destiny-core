@@ -66,7 +66,7 @@ val branchCombined = object : IFlowMonthPatternFactory {
 }
 
 val trilogyToFlow = object : IFlowMonthPatternFactory {
-  override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<IEightWordsFlowMonthPattern> {
+  override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<TrilogyToFlow> {
     return getScaleMap().entries.map { (scale, v) -> scale to v.branch }.let { pillars ->
       Sets.combinations(pillars.toSet(), 2).asSequence().filter { twoPillars: Set<Pair<Scale, Branch>> ->
         val (p1, p2) = twoPillars.toList().let { it[0] to it[1] }
@@ -84,9 +84,21 @@ val trilogyToFlow = object : IFlowMonthPatternFactory {
   }
 }
 
+val toFlowTrilogy = object : IFlowMonthPatternFactory {
+  override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<ToFlowTrilogy> {
+    return getScaleMap().entries.asSequence().map { (scale, v) -> scale to v.branch }.mapNotNull { (scale , branch) ->
+      if (trilogy(branch, flowYear.branch, flowMonth.branch) != null)
+        ToFlowTrilogy(scale, branch, Scale.YEAR to flowYear.branch, Scale.MONTH to flowMonth.branch)
+      else
+        null
+    }.toSet()
+  }
+
+}
+
 fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<IEightWordsFlowMonthPattern> {
   return setOf(
-    bothAffecting, stemCombined, branchCombined, trilogyToFlow
+    bothAffecting, stemCombined, branchCombined, trilogyToFlow, toFlowTrilogy
   ).flatMap { factory: IFlowMonthPatternFactory ->
     with(factory) {
       this@getPatterns.getPatterns(flowYear, flowMonth)

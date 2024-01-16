@@ -135,5 +135,38 @@ class FlowMonthPatternFactoryTest {
     }
   }
 
+  @Nested
+  inner class ToFlowTrilogyTest {
+
+    @Test
+    fun singlePillar() {
+      val ew = EightWords(丙子, 乙未, 乙丑, 甲申)
+      with(toFlowTrilogy) {
+        ew.getPatterns(甲辰, 丙子).also { patterns ->
+          assertEquals(
+            setOf(
+              ToFlowTrilogy(HOUR, 申, YEAR to 辰, MONTH to 子)
+            ), patterns
+          )
+        }
+      }
+    }
+
+    @Test
+    fun multiplePillars() {
+      val ew = EightWords(丙子, 乙未, 乙丑, 丙子)
+      with(toFlowTrilogy) {
+        ew.getPatterns(甲辰, 壬申).also { patterns ->
+          assertEquals(
+            setOf(
+              ToFlowTrilogy(YEAR, 子, YEAR to 辰, MONTH to 申),
+              ToFlowTrilogy(HOUR, 子, YEAR to 辰, MONTH to 申),
+            ), patterns
+          )
+        }
+      }
+    }
+  }
+
 
 }
