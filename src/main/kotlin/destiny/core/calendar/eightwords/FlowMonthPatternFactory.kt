@@ -3,13 +3,16 @@
  */
 package destiny.core.calendar.eightwords
 
+import com.google.common.collect.Sets
 import destiny.core.Scale
+import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement.Companion.beatenCount
 import destiny.core.chinese.FiveElement.Companion.dominatorCount
 import destiny.core.chinese.FiveElement.Companion.producedCount
 import destiny.core.chinese.FiveElement.Companion.producingCount
 import destiny.core.chinese.FiveElement.Companion.sameCount
 import destiny.core.chinese.IStemBranch
+import destiny.core.chinese.trilogy
 
 
 interface IFlowMonthPatternFactory {
@@ -37,7 +40,7 @@ val bothAffecting = object : IFlowMonthPatternFactory {
 }
 
 val stemCombined = object : IFlowMonthPatternFactory {
-  override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<IEightWordsFlowMonthPattern> {
+  override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<StemCombined> {
     return getScaleMap().entries.asSequence().map { (scale: Scale, v) -> scale to v.stem }.flatMap { (scale, stem) ->
       buildSet {
         if (stem.combined.first == flowYear.stem)
@@ -50,7 +53,7 @@ val stemCombined = object : IFlowMonthPatternFactory {
 }
 
 val branchCombined = object : IFlowMonthPatternFactory {
-  override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<IEightWordsFlowMonthPattern> {
+  override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<BranchCombined> {
     return getScaleMap().entries.asSequence().map { (scale, v) -> scale to v.branch }.flatMap { (scale, branch) ->
       buildSet {
         if (branch.combined == flowYear.branch)
@@ -62,9 +65,28 @@ val branchCombined = object : IFlowMonthPatternFactory {
   }
 }
 
+val trilogyToFlow = object : IFlowMonthPatternFactory {
+  override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<IEightWordsFlowMonthPattern> {
+    return getScaleMap().entries.map { (scale, v) -> scale to v.branch }.let { pillars ->
+      Sets.combinations(pillars.toSet(), 2).asSequence().filter { twoPillars: Set<Pair<Scale, Branch>> ->
+        val (p1, p2) = twoPillars.toList().let { it[0] to it[1] }
+        p1.second.trilogy() == p2.second.trilogy()
+      }.flatMap { twoPillars: Set<Pair<Scale, Branch>> ->
+        val (p1, p2) = twoPillars.toList().let { it[0] to it[1] }
+        setOf(
+          Triple(p1, p2, Scale.YEAR to flowYear.branch),
+          Triple(p1, p2, Scale.MONTH to flowMonth.branch)
+        )
+      }.filter { (p1, p2, pFlow) ->
+        trilogy(p1.second, p2.second, pFlow.second) != null
+      }.map { (pair1: Pair<Scale, Branch>, pair2, pairFlow) -> TrilogyToFlow(setOf(pair1, pair2), pairFlow) }
+    }.toSet()
+  }
+}
+
 fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<IEightWordsFlowMonthPattern> {
   return setOf(
-    bothAffecting, stemCombined, branchCombined
+    bothAffecting, stemCombined, branchCombined, trilogyToFlow
   ).flatMap { factory: IFlowMonthPatternFactory ->
     with(factory) {
       this@getPatterns.getPatterns(flowYear, flowMonth)

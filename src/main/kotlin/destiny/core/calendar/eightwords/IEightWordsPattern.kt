@@ -30,3 +30,5 @@ sealed class BothAffecting(open val scale: Scale, open val stem: Stem, val react
 data class StemCombined(val scale: Scale, val stem: Stem, val flowScale: Scale) : IEightWordsFlowMonthPattern
 
 data class BranchCombined(val scale: Scale, val branch: Branch, val flowScale: Scale) : IEightWordsFlowMonthPattern
+
+data class TrilogyToFlow(val pairs: Set<Pair<Scale, Branch>>, val pairFlow: Pair<Scale, Branch>) : IEightWordsFlowMonthPattern
