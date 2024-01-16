@@ -38,7 +38,7 @@ val bothAffecting = object : IFlowMonthPatternFactory {
 
 val stemCombined = object : IFlowMonthPatternFactory {
   override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<IEightWordsFlowMonthPattern> {
-    return getScaleMap().entries.asSequence().map { (scale: Scale, v) -> scale to v.stem }.flatMap { (scale , stem) ->
+    return getScaleMap().entries.asSequence().map { (scale: Scale, v) -> scale to v.stem }.flatMap { (scale, stem) ->
       buildSet {
         if (stem.combined.first == flowYear.stem)
           add(StemCombined(scale, stem, Scale.YEAR))
@@ -49,9 +49,22 @@ val stemCombined = object : IFlowMonthPatternFactory {
   }
 }
 
+val branchCombined = object : IFlowMonthPatternFactory {
+  override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<IEightWordsFlowMonthPattern> {
+    return getScaleMap().entries.asSequence().map { (scale, v) -> scale to v.branch }.flatMap { (scale, branch) ->
+      buildSet {
+        if (branch.combined == flowYear.branch)
+          add(BranchCombined(scale , branch , Scale.YEAR))
+        if (branch.combined == flowMonth.branch)
+          add(BranchCombined(scale , branch, Scale.MONTH))
+      }
+    }.toSet()
+  }
+}
+
 fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<IEightWordsFlowMonthPattern> {
   return setOf(
-    bothAffecting, stemCombined
+    bothAffecting, stemCombined, branchCombined
   ).flatMap { factory: IFlowMonthPatternFactory ->
     with(factory) {
       this@getPatterns.getPatterns(flowYear, flowMonth)

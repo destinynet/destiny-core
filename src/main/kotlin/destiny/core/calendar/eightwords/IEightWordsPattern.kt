@@ -5,6 +5,7 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.IPattern
 import destiny.core.Scale
+import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 
 
@@ -27,3 +28,5 @@ sealed class BothAffecting(open val scale: Scale, open val stem: Stem, val react
 }
 
 data class StemCombined(val scale: Scale, val stem: Stem, val flowScale: Scale) : IEightWordsFlowMonthPattern
+
+data class BranchCombined(val scale: Scale, val branch: Branch, val flowScale: Scale) : IEightWordsFlowMonthPattern
