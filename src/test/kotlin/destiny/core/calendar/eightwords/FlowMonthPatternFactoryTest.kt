@@ -4,6 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.Scale.*
+import destiny.core.calendar.eightwords.IEightWordsFlowMonthPattern.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch.*

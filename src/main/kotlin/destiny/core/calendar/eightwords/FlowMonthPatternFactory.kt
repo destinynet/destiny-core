@@ -7,6 +7,7 @@ import com.google.common.collect.Sets
 import destiny.core.Scale
 import destiny.core.Scale.MONTH
 import destiny.core.Scale.YEAR
+import destiny.core.calendar.eightwords.IEightWordsFlowMonthPattern.*
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement.Companion.beatenCount
 import destiny.core.chinese.FiveElement.Companion.dominatorCount
