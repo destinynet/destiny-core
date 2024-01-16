@@ -145,7 +145,7 @@ class FlowMonthPatternFactoryTest {
         ew.getPatterns(甲辰, 丙子).also { patterns ->
           assertEquals(
             setOf(
-              ToFlowTrilogy(HOUR, 申, YEAR to 辰, MONTH to 子)
+              ToFlowTrilogy(HOUR, 申, setOf(YEAR to 辰, MONTH to 子))
             ), patterns
           )
         }
@@ -159,8 +159,8 @@ class FlowMonthPatternFactoryTest {
         ew.getPatterns(甲辰, 壬申).also { patterns ->
           assertEquals(
             setOf(
-              ToFlowTrilogy(YEAR, 子, YEAR to 辰, MONTH to 申),
-              ToFlowTrilogy(HOUR, 子, YEAR to 辰, MONTH to 申),
+              ToFlowTrilogy(YEAR, 子, setOf(YEAR to 辰, MONTH to 申)),
+              ToFlowTrilogy(HOUR, 子, setOf(YEAR to 辰, MONTH to 申)),
             ), patterns
           )
         }

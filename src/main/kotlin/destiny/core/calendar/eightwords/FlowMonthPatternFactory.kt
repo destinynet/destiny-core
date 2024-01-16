@@ -5,6 +5,8 @@ package destiny.core.calendar.eightwords
 
 import com.google.common.collect.Sets
 import destiny.core.Scale
+import destiny.core.Scale.MONTH
+import destiny.core.Scale.YEAR
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement.Companion.beatenCount
 import destiny.core.chinese.FiveElement.Companion.dominatorCount
@@ -44,9 +46,9 @@ val stemCombined = object : IFlowMonthPatternFactory {
     return getScaleMap().entries.asSequence().map { (scale: Scale, v) -> scale to v.stem }.flatMap { (scale, stem) ->
       buildSet {
         if (stem.combined.first == flowYear.stem)
-          add(StemCombined(scale, stem, Scale.YEAR))
+          add(StemCombined(scale, stem, YEAR))
         if (stem.combined.first == flowMonth.stem)
-          add(StemCombined(scale, stem, Scale.MONTH))
+          add(StemCombined(scale, stem, MONTH))
       }
     }.toSet()
   }
@@ -57,9 +59,9 @@ val branchCombined = object : IFlowMonthPatternFactory {
     return getScaleMap().entries.asSequence().map { (scale, v) -> scale to v.branch }.flatMap { (scale, branch) ->
       buildSet {
         if (branch.combined == flowYear.branch)
-          add(BranchCombined(scale , branch , Scale.YEAR))
+          add(BranchCombined(scale , branch , YEAR))
         if (branch.combined == flowMonth.branch)
-          add(BranchCombined(scale , branch, Scale.MONTH))
+          add(BranchCombined(scale , branch, MONTH))
       }
     }.toSet()
   }
@@ -74,8 +76,8 @@ val trilogyToFlow = object : IFlowMonthPatternFactory {
       }.flatMap { twoPillars: Set<Pair<Scale, Branch>> ->
         val (p1, p2) = twoPillars.toList().let { it[0] to it[1] }
         setOf(
-          Triple(p1, p2, Scale.YEAR to flowYear.branch),
-          Triple(p1, p2, Scale.MONTH to flowMonth.branch)
+          Triple(p1, p2, YEAR to flowYear.branch),
+          Triple(p1, p2, MONTH to flowMonth.branch)
         )
       }.filter { (p1, p2, pFlow) ->
         trilogy(p1.second, p2.second, pFlow.second) != null
@@ -88,7 +90,7 @@ val toFlowTrilogy = object : IFlowMonthPatternFactory {
   override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<ToFlowTrilogy> {
     return getScaleMap().entries.asSequence().map { (scale, v) -> scale to v.branch }.mapNotNull { (scale , branch) ->
       if (trilogy(branch, flowYear.branch, flowMonth.branch) != null)
-        ToFlowTrilogy(scale, branch, Scale.YEAR to flowYear.branch, Scale.MONTH to flowMonth.branch)
+        ToFlowTrilogy(scale, branch, setOf(YEAR to flowYear.branch, MONTH to flowMonth.branch))
       else
         null
     }.toSet()
