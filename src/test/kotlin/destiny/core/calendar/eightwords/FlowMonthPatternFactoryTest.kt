@@ -10,6 +10,7 @@ import destiny.core.chinese.StemBranch.*
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class FlowMonthPatternFactoryTest {
 
@@ -33,6 +34,13 @@ class FlowMonthPatternFactoryTest {
 
   @Nested
   inner class StemCombined {
+
+    @Test
+    fun empty() {
+      with(stemCombined) {
+        assertTrue { EightWords(丙子, 乙未, 乙未, 庚辰).getPatterns(甲辰, 甲戌).isEmpty() }
+      }
+    }
 
     @Test
     fun singlePillar() {
@@ -71,6 +79,13 @@ class FlowMonthPatternFactoryTest {
   inner class BranchCombined {
 
     @Test
+    fun empty() {
+      with(branchCombined) {
+        assertTrue { EightWords(丙子, 乙未, 乙未, 己卯).getPatterns(甲辰, 乙亥).isEmpty() }
+      }
+    }
+
+    @Test
     fun singlePillar() {
       val ew = EightWords(丙子, 乙未, 乙未, 己卯)
       with(branchCombined) {
@@ -106,6 +121,14 @@ class FlowMonthPatternFactoryTest {
   inner class TrilogyToFlow {
 
     @Test
+    fun empty() {
+      with(trilogyToFlow) {
+        assertTrue { EightWords(丙子, 乙未, 乙丑, 甲申).getPatterns(癸卯, 壬戌).isEmpty() }
+        assertTrue { EightWords(丙子, 乙未, 乙丑, 乙酉).getPatterns(甲辰, 丙子).isEmpty() }
+      }
+    }
+
+    @Test
     fun singlePillar() {
       val ew = EightWords(丙子, 乙未, 乙丑, 甲申)
       with(trilogyToFlow) {
@@ -136,7 +159,15 @@ class FlowMonthPatternFactoryTest {
   }
 
   @Nested
-  inner class ToFlowTrilogyTest {
+  inner class ToFlowTrilogy {
+
+    @Test
+    fun empty() {
+      with(toFlowTrilogy) {
+        assertTrue { EightWords(丙子, 乙未, 乙丑, 甲申).getPatterns(癸卯, 壬戌).isEmpty() }
+        assertTrue { EightWords(丙子, 乙未, 乙丑, 乙酉).getPatterns(甲辰, 丙子).isEmpty() }
+      }
+    }
 
     @Test
     fun singlePillar() {
@@ -168,5 +199,46 @@ class FlowMonthPatternFactoryTest {
     }
   }
 
+  @Nested
+  inner class BranchOpposition {
 
+    @Test
+    fun empty() {
+      with(branchOpposition) {
+        assertTrue { EightWords(丙子, 乙未, 乙未, 己卯).getPatterns(甲辰, 乙亥).isEmpty() }
+      }
+    }
+
+    @Test
+    fun singlePillar() {
+      val ew = EightWords(丙子, 乙未, 乙未, 己卯)
+      with(branchOpposition) {
+        ew.getPatterns(甲辰, 癸酉).also { patterns ->
+          println(patterns)
+          assertEquals(
+            setOf(
+              BranchOpposition(HOUR, 卯, MONTH)
+            ), patterns
+          )
+        }
+      }
+    }
+
+    @Test
+    fun multiplePillars() {
+      val ew = EightWords(丙子, 乙未, 乙未, 己卯)
+      with(branchOpposition) {
+        ew.getPatterns(辛丑, 辛丑).also { patterns ->
+          assertEquals(
+            setOf(
+              BranchOpposition(MONTH, 未, YEAR),
+              BranchOpposition(MONTH, 未, MONTH),
+              BranchOpposition(DAY, 未, YEAR),
+              BranchOpposition(DAY, 未, MONTH),
+            ), patterns
+          )
+        }
+      }
+    }
+  }
 }

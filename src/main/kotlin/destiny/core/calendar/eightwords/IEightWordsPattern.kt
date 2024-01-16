@@ -34,3 +34,5 @@ data class BranchCombined(val scale: Scale, val branch: Branch, val flowScale: S
 data class TrilogyToFlow(val pairs: Set<Pair<Scale, Branch>>, val pairFlow: Pair<Scale, Branch>) : IEightWordsFlowMonthPattern
 
 data class ToFlowTrilogy(val scale: Scale, val branch: Branch, val flows: Set<Pair<Scale ,Branch>>) : IEightWordsFlowMonthPattern
+
+data class BranchOpposition(val scale: Scale, val branch: Branch, val flowScale: Scale) : IEightWordsFlowMonthPattern

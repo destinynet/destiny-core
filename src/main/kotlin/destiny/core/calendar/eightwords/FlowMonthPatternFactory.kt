@@ -95,12 +95,24 @@ val toFlowTrilogy = object : IFlowMonthPatternFactory {
         null
     }.toSet()
   }
+}
 
+val branchOpposition = object : IFlowMonthPatternFactory {
+  override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<IEightWordsFlowMonthPattern> {
+    return getScaleMap().entries.asSequence().map { (scale, v) -> scale to v.branch }.flatMap { (scale , branch) ->
+      buildSet {
+        if (branch.opposite == flowYear.branch)
+          add(BranchOpposition(scale, branch, YEAR))
+        if (branch.opposite == flowMonth.branch)
+          add(BranchOpposition(scale, branch, MONTH))
+      }
+    }.toSet()
+  }
 }
 
 fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<IEightWordsFlowMonthPattern> {
   return setOf(
-    bothAffecting, stemCombined, branchCombined, trilogyToFlow, toFlowTrilogy
+    bothAffecting, stemCombined, branchCombined, trilogyToFlow, toFlowTrilogy, branchOpposition
   ).flatMap { factory: IFlowMonthPatternFactory ->
     with(factory) {
       this@getPatterns.getPatterns(flowYear, flowMonth)
