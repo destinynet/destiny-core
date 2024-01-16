@@ -4,6 +4,12 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.Scale.*
+import destiny.core.calendar.eightwords.FlowMonthPatterns.bothAffecting
+import destiny.core.calendar.eightwords.FlowMonthPatterns.branchCombined
+import destiny.core.calendar.eightwords.FlowMonthPatterns.branchOpposition
+import destiny.core.calendar.eightwords.FlowMonthPatterns.stemCombined
+import destiny.core.calendar.eightwords.FlowMonthPatterns.toFlowTrilogy
+import destiny.core.calendar.eightwords.FlowMonthPatterns.trilogyToFlow
 import destiny.core.calendar.eightwords.IEightWordsFlowMonthPattern.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
@@ -13,7 +19,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class FlowMonthPatternFactoryTest {
+class FlowMonthPatternsTest {
 
   @Test
   fun testBothAffecting() {

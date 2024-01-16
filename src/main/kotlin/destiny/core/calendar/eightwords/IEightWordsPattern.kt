@@ -20,7 +20,9 @@ enum class Reacting {
 }
 
 
-interface IEightWordsFlowYearPattern : IEightWordsPattern
+interface IEightWordsFlowYearPattern : IEightWordsPattern {
+  data class StemCombined(val scales: Set<Scale>, val stem: Stem) : IEightWordsFlowYearPattern
+}
 
 sealed interface IEightWordsFlowMonthPattern : IEightWordsFlowYearPattern {
   sealed class BothAffecting(open val scale: Scale, open val stem: Stem, val reacting: Reacting) : IEightWordsFlowMonthPattern {
