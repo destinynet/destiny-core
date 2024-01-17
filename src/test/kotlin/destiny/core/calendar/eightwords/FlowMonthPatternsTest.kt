@@ -4,13 +4,13 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.Scale.*
+import destiny.core.calendar.eightwords.EightWordsFlowMonthPattern.*
 import destiny.core.calendar.eightwords.FlowMonthPatterns.bothAffecting
 import destiny.core.calendar.eightwords.FlowMonthPatterns.branchCombined
 import destiny.core.calendar.eightwords.FlowMonthPatterns.branchOpposition
 import destiny.core.calendar.eightwords.FlowMonthPatterns.stemCombined
 import destiny.core.calendar.eightwords.FlowMonthPatterns.toFlowTrilogy
 import destiny.core.calendar.eightwords.FlowMonthPatterns.trilogyToFlow
-import destiny.core.calendar.eightwords.IEightWordsFlowMonthPattern.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch.*
@@ -68,7 +68,7 @@ class FlowMonthPatternsTest {
     fun multiplePillars() {
       val ew = EightWords(丙子, 乙未, 己巳, 己巳)
       with(stemCombined) {
-        ew.getPatterns(甲辰, 甲戌).also { results: Set<IEightWordsFlowMonthPattern> ->
+        ew.getPatterns(甲辰, 甲戌).also { results: Set<EightWordsFlowMonthPattern> ->
           assertEquals(
             setOf(
               StemCombined(DAY, 己, YEAR),

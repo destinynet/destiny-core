@@ -20,12 +20,13 @@ enum class Reacting {
 }
 
 
-interface IEightWordsFlowYearPattern : IEightWordsPattern {
-  data class StemCombined(val scales: Set<Scale>, val stem: Stem) : IEightWordsFlowYearPattern
+sealed class EightWordsFlowYearPattern : IEightWordsPattern {
+  data class StemCombined(val scales: Set<Scale>, val stem: Stem) : EightWordsFlowYearPattern()
+  data class BranchOpposite(val scales: Set<Scale>, val branch: Branch) : EightWordsFlowYearPattern()
 }
 
-sealed interface IEightWordsFlowMonthPattern : IEightWordsFlowYearPattern {
-  sealed class BothAffecting(open val scale: Scale, open val stem: Stem, val reacting: Reacting) : IEightWordsFlowMonthPattern {
+sealed class EightWordsFlowMonthPattern : IEightWordsPattern {
+  sealed class BothAffecting(open val scale: Scale, open val stem: Stem, val reacting: Reacting) : EightWordsFlowMonthPattern() {
     data class Same(override val scale: Scale, override val stem: Stem) : BothAffecting(scale, stem, Reacting.SAME)
     data class Producing(override val scale: Scale, override val stem: Stem) : BothAffecting(scale, stem, Reacting.PRODUCING)
     data class Produced(override val scale: Scale, override val stem: Stem) : BothAffecting(scale, stem, Reacting.PRODUCED)
@@ -33,15 +34,15 @@ sealed interface IEightWordsFlowMonthPattern : IEightWordsFlowYearPattern {
     data class Beaten(override val scale: Scale, override val stem: Stem) : BothAffecting(scale, stem, Reacting.BEATEN)
   }
 
-  data class StemCombined(val scale: Scale, val stem: Stem, val flowScale: Scale) : IEightWordsFlowMonthPattern
+  data class StemCombined(val scale: Scale, val stem: Stem, val flowScale: Scale) : EightWordsFlowMonthPattern()
 
-  data class BranchCombined(val scale: Scale, val branch: Branch, val flowScale: Scale) : IEightWordsFlowMonthPattern
+  data class BranchCombined(val scale: Scale, val branch: Branch, val flowScale: Scale) : EightWordsFlowMonthPattern()
 
-  data class TrilogyToFlow(val pairs: Set<Pair<Scale, Branch>>, val pairFlow: Pair<Scale, Branch>) : IEightWordsFlowMonthPattern
+  data class TrilogyToFlow(val pairs: Set<Pair<Scale, Branch>>, val pairFlow: Pair<Scale, Branch>) : EightWordsFlowMonthPattern()
 
-  data class ToFlowTrilogy(val scale: Scale, val branch: Branch, val flows: Set<Pair<Scale, Branch>>) : IEightWordsFlowMonthPattern
+  data class ToFlowTrilogy(val scale: Scale, val branch: Branch, val flows: Set<Pair<Scale, Branch>>) : EightWordsFlowMonthPattern()
 
-  data class BranchOpposition(val scale: Scale, val branch: Branch, val flowScale: Scale) : IEightWordsFlowMonthPattern
+  data class BranchOpposition(val scale: Scale, val branch: Branch, val flowScale: Scale) : EightWordsFlowMonthPattern()
 }
 
 
