@@ -19,7 +19,19 @@ object FlowYearPatterns {
         stem.combined.first == flowYear.stem
       }.map { (scale , _) -> scale }
         .toSet()
-      return setOf(StemCombined(scales , flowYear.stem.combined.first))
+      return scales.takeIf { it.isNotEmpty() }?.let {
+        setOf(StemCombined(it, flowYear.stem.combined.first))
+      }?: emptySet()
     }
   }
+}
+
+fun IEightWords.getPatterns(flowYear: IStemBranch): Set<IEightWordsFlowYearPattern> {
+  return setOf(
+    FlowYearPatterns.stemCombined
+  ).flatMap { factory: IFlowYearPatternFactory ->
+    with(factory) {
+      this@getPatterns.getPatterns(flowYear)
+    }
+  }.toSet()
 }
