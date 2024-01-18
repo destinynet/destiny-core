@@ -11,6 +11,7 @@ import destiny.core.calendar.eightwords.FlowMonthPatterns.branchOpposition
 import destiny.core.calendar.eightwords.FlowMonthPatterns.stemCombined
 import destiny.core.calendar.eightwords.FlowMonthPatterns.toFlowTrilogy
 import destiny.core.calendar.eightwords.FlowMonthPatterns.trilogyToFlow
+import destiny.core.calendar.eightwords.Reacting.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch.*
@@ -28,10 +29,10 @@ class FlowMonthPatternsTest {
       ew.getPatterns(甲辰, 甲戌).also { patterns ->
         assertEquals(
           setOf(
-            BothAffecting.Produced(YEAR, 丙),
-            BothAffecting.Produced(DAY, 丙),
-            BothAffecting.Same(MONTH, 乙),
-            BothAffecting.Producing(HOUR, 壬),
+            BothAffecting(YEAR, 丙, PRODUCED),
+            BothAffecting(DAY, 丙, PRODUCED),
+            BothAffecting(MONTH, 乙, SAME),
+            BothAffecting(HOUR, 壬, PRODUCING),
           ), patterns
         )
       }
@@ -221,7 +222,6 @@ class FlowMonthPatternsTest {
       val ew = EightWords(丙子, 乙未, 乙未, 己卯)
       with(branchOpposition) {
         ew.getPatterns(甲辰, 癸酉).also { patterns ->
-          println(patterns)
           assertEquals(
             setOf(
               BranchOpposition(HOUR, 卯, MONTH)
