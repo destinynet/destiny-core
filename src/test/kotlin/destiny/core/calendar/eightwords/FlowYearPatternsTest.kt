@@ -5,7 +5,7 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.FlowScale
 import destiny.core.Scale.*
-import destiny.core.calendar.eightwords.EightWordsFlowYearPattern.*
+import destiny.core.calendar.eightwords.EightWordsFlowPattern.*
 import destiny.core.calendar.eightwords.FlowYearPatterns.bothAffecting
 import destiny.core.calendar.eightwords.FlowYearPatterns.branchCombined
 import destiny.core.calendar.eightwords.FlowYearPatterns.branchOpposition
@@ -30,10 +30,10 @@ class FlowYearPatternsTest {
       ew.getPatterns(甲辰, 甲戌).also { patterns ->
         assertEquals(
           setOf(
-            BothAffecting(YEAR, 丙, PRODUCED),
-            BothAffecting(DAY, 丙, PRODUCED),
-            BothAffecting(MONTH, 乙, SAME),
-            BothAffecting(HOUR, 壬, PRODUCING),
+            BothAffecting(YEAR, 丙, PRODUCED, setOf(FlowScale.LARGE, FlowScale.YEAR)),
+            BothAffecting(DAY, 丙, PRODUCED, setOf(FlowScale.LARGE, FlowScale.YEAR)),
+            BothAffecting(MONTH, 乙, SAME, setOf(FlowScale.LARGE, FlowScale.YEAR)),
+            BothAffecting(HOUR, 壬, PRODUCING, setOf(FlowScale.LARGE, FlowScale.YEAR)),
           ), patterns
         )
       }

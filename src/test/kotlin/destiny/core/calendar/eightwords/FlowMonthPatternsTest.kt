@@ -3,8 +3,9 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.FlowScale
 import destiny.core.Scale.*
-import destiny.core.calendar.eightwords.EightWordsFlowMonthPattern.*
+import destiny.core.calendar.eightwords.EightWordsFlowPattern.*
 import destiny.core.calendar.eightwords.FlowMonthPatterns.bothAffecting
 import destiny.core.calendar.eightwords.FlowMonthPatterns.branchCombined
 import destiny.core.calendar.eightwords.FlowMonthPatterns.branchOpposition
@@ -29,10 +30,10 @@ class FlowMonthPatternsTest {
       ew.getPatterns(甲辰, 甲戌).also { patterns ->
         assertEquals(
           setOf(
-            BothAffecting(YEAR, 丙, PRODUCED),
-            BothAffecting(DAY, 丙, PRODUCED),
-            BothAffecting(MONTH, 乙, SAME),
-            BothAffecting(HOUR, 壬, PRODUCING),
+            BothAffecting(YEAR, 丙, PRODUCED, setOf(FlowScale.YEAR, FlowScale.MONTH)),
+            BothAffecting(DAY, 丙, PRODUCED, setOf(FlowScale.YEAR, FlowScale.MONTH)),
+            BothAffecting(MONTH, 乙, SAME, setOf(FlowScale.YEAR, FlowScale.MONTH)),
+            BothAffecting(HOUR, 壬, PRODUCING, setOf(FlowScale.YEAR, FlowScale.MONTH)),
           ), patterns
         )
       }
@@ -57,8 +58,8 @@ class FlowMonthPatternsTest {
         ew.getPatterns(甲辰, 甲戌).also { patterns ->
           assertEquals(
             setOf(
-              StemCombined(HOUR, 己, YEAR),
-              StemCombined(HOUR, 己, MONTH)
+              StemCombined(HOUR, 己, FlowScale.YEAR),
+              StemCombined(HOUR, 己, FlowScale.MONTH)
             ), patterns
           )
         }
@@ -69,13 +70,13 @@ class FlowMonthPatternsTest {
     fun multiplePillars() {
       val ew = EightWords(丙子, 乙未, 己巳, 己巳)
       with(stemCombined) {
-        ew.getPatterns(甲辰, 甲戌).also { results: Set<EightWordsFlowMonthPattern> ->
+        ew.getPatterns(甲辰, 甲戌).also { results: Set<EightWordsFlowPattern> ->
           assertEquals(
             setOf(
-              StemCombined(DAY, 己, YEAR),
-              StemCombined(DAY, 己, MONTH),
-              StemCombined(HOUR, 己, YEAR),
-              StemCombined(HOUR, 己, MONTH),
+              StemCombined(DAY, 己, FlowScale.YEAR),
+              StemCombined(DAY, 己, FlowScale.MONTH),
+              StemCombined(HOUR, 己, FlowScale.YEAR),
+              StemCombined(HOUR, 己, FlowScale.MONTH),
             ), results
           )
         }
@@ -100,7 +101,7 @@ class FlowMonthPatternsTest {
         ew.getPatterns(甲辰, 甲戌).also { patterns ->
           assertEquals(
             setOf(
-              BranchCombined(HOUR, 卯, MONTH)
+              BranchCombined(HOUR, 卯, FlowScale.MONTH)
             ),
             patterns
           )
@@ -115,9 +116,9 @@ class FlowMonthPatternsTest {
         ew.getPatterns(甲辰, 庚午).also { patterns ->
           assertEquals(
             setOf(
-              BranchCombined(MONTH, 未, MONTH),
-              BranchCombined(DAY, 未, MONTH),
-              BranchCombined(HOUR, 酉, YEAR),
+              BranchCombined(MONTH, 未, FlowScale.MONTH),
+              BranchCombined(DAY, 未, FlowScale.MONTH),
+              BranchCombined(HOUR, 酉, FlowScale.YEAR),
             ), patterns
           )
         }
@@ -143,7 +144,7 @@ class FlowMonthPatternsTest {
         ew.getPatterns(甲辰, 丙子).also { patterns ->
           assertEquals(
             setOf(
-              TrilogyToFlow(setOf(YEAR to 子, HOUR to 申), YEAR to 辰)
+              TrilogyToFlow(setOf(YEAR to 子, HOUR to 申), FlowScale.YEAR to 辰)
             ), patterns
           )
         }
@@ -157,8 +158,8 @@ class FlowMonthPatternsTest {
         ew.getPatterns(甲辰, 戊辰).also { patterns ->
           assertEquals(
             setOf(
-              TrilogyToFlow(setOf(YEAR to 子, HOUR to 申), YEAR to 辰),
-              TrilogyToFlow(setOf(YEAR to 子, HOUR to 申), MONTH to 辰),
+              TrilogyToFlow(setOf(YEAR to 子, HOUR to 申), FlowScale.YEAR to 辰),
+              TrilogyToFlow(setOf(YEAR to 子, HOUR to 申), FlowScale.MONTH to 辰),
             ), patterns
           )
         }
@@ -184,7 +185,7 @@ class FlowMonthPatternsTest {
         ew.getPatterns(甲辰, 丙子).also { patterns ->
           assertEquals(
             setOf(
-              ToFlowTrilogy(HOUR, 申, setOf(YEAR to 辰, MONTH to 子))
+              ToFlowTrilogy(HOUR, 申, setOf(FlowScale.YEAR to 辰, FlowScale.MONTH to 子))
             ), patterns
           )
         }
@@ -198,8 +199,8 @@ class FlowMonthPatternsTest {
         ew.getPatterns(甲辰, 壬申).also { patterns ->
           assertEquals(
             setOf(
-              ToFlowTrilogy(YEAR, 子, setOf(YEAR to 辰, MONTH to 申)),
-              ToFlowTrilogy(HOUR, 子, setOf(YEAR to 辰, MONTH to 申)),
+              ToFlowTrilogy(YEAR, 子, setOf(FlowScale.YEAR to 辰, FlowScale.MONTH to 申)),
+              ToFlowTrilogy(HOUR, 子, setOf(FlowScale.YEAR to 辰, FlowScale.MONTH to 申)),
             ), patterns
           )
         }
@@ -224,7 +225,7 @@ class FlowMonthPatternsTest {
         ew.getPatterns(甲辰, 癸酉).also { patterns ->
           assertEquals(
             setOf(
-              BranchOpposition(HOUR, 卯, MONTH)
+              BranchOpposition(HOUR, 卯, FlowScale.MONTH)
             ), patterns
           )
         }
@@ -238,10 +239,10 @@ class FlowMonthPatternsTest {
         ew.getPatterns(辛丑, 辛丑).also { patterns ->
           assertEquals(
             setOf(
-              BranchOpposition(MONTH, 未, YEAR),
-              BranchOpposition(MONTH, 未, MONTH),
-              BranchOpposition(DAY, 未, YEAR),
-              BranchOpposition(DAY, 未, MONTH),
+              BranchOpposition(MONTH, 未, FlowScale.YEAR),
+              BranchOpposition(MONTH, 未, FlowScale.MONTH),
+              BranchOpposition(DAY, 未, FlowScale.YEAR),
+              BranchOpposition(DAY, 未, FlowScale.MONTH),
             ), patterns
           )
         }

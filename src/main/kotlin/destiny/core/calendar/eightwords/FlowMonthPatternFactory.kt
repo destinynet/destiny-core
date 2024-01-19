@@ -4,10 +4,9 @@
 package destiny.core.calendar.eightwords
 
 import com.google.common.collect.Sets
+import destiny.core.FlowScale
 import destiny.core.Scale
-import destiny.core.Scale.MONTH
-import destiny.core.Scale.YEAR
-import destiny.core.calendar.eightwords.EightWordsFlowMonthPattern.*
+import destiny.core.calendar.eightwords.EightWordsFlowPattern.*
 import destiny.core.calendar.eightwords.FlowMonthPatterns.bothAffecting
 import destiny.core.calendar.eightwords.FlowMonthPatterns.branchCombined
 import destiny.core.calendar.eightwords.FlowMonthPatterns.branchOpposition
@@ -26,23 +25,24 @@ import destiny.core.chinese.trilogy
 
 
 interface IFlowMonthPatternFactory {
-  fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<EightWordsFlowMonthPattern>
+  fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<EightWordsFlowPattern>
 }
 
 object FlowMonthPatterns {
   val bothAffecting = object : IFlowMonthPatternFactory {
     override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<BothAffecting> {
       return getScaleMap().entries.asSequence().map { (scale: Scale, v) -> scale to v.stem }.map { (scale, stem) ->
+        val flowScales = setOf(FlowScale.YEAR, FlowScale.MONTH)
         if (stem.fiveElement.sameCount(flowYear.stem, flowMonth.stem) == 2) {
-          BothAffecting(scale, stem, SAME)
+          BothAffecting(scale, stem, SAME, flowScales)
         } else if (stem.fiveElement.producingCount(flowYear.stem, flowMonth.stem) == 2) {
-          BothAffecting(scale, stem, PRODUCING)
+          BothAffecting(scale, stem, PRODUCING, flowScales)
         } else if (stem.fiveElement.producedCount(flowYear.stem, flowMonth.stem) == 2) {
-          BothAffecting(scale, stem, PRODUCED)
+          BothAffecting(scale, stem, PRODUCED, flowScales)
         } else if (stem.fiveElement.dominatorCount(flowYear.stem, flowMonth.stem) == 2) {
-          BothAffecting(scale, stem, DOMINATING)
+          BothAffecting(scale, stem, DOMINATING, flowScales)
         } else if (stem.fiveElement.beatenCount(flowYear.stem, flowMonth.stem) == 2) {
-          BothAffecting(scale, stem, BEATEN)
+          BothAffecting(scale, stem, BEATEN, flowScales)
         } else {
           null
         }
@@ -55,9 +55,9 @@ object FlowMonthPatterns {
       return getScaleMap().entries.asSequence().map { (scale: Scale, v) -> scale to v.stem }.flatMap { (scale, stem) ->
         buildSet {
           if (stem.combined.first == flowYear.stem)
-            add(StemCombined(scale, stem, YEAR))
+            add(StemCombined(scale, stem, FlowScale.YEAR))
           if (stem.combined.first == flowMonth.stem)
-            add(StemCombined(scale, stem, MONTH))
+            add(StemCombined(scale, stem, FlowScale.MONTH))
         }
       }.toSet()
     }
@@ -68,9 +68,9 @@ object FlowMonthPatterns {
       return getScaleMap().entries.asSequence().map { (scale, v) -> scale to v.branch }.flatMap { (scale, branch) ->
         buildSet {
           if (branch.combined == flowYear.branch)
-            add(BranchCombined(scale, branch, YEAR))
+            add(BranchCombined(scale, branch, FlowScale.YEAR))
           if (branch.combined == flowMonth.branch)
-            add(BranchCombined(scale, branch, MONTH))
+            add(BranchCombined(scale, branch, FlowScale.MONTH))
         }
       }.toSet()
     }
@@ -85,8 +85,8 @@ object FlowMonthPatterns {
         }.flatMap { twoPillars: Set<Pair<Scale, Branch>> ->
           val (p1, p2) = twoPillars.toList().let { it[0] to it[1] }
           setOf(
-            Triple(p1, p2, YEAR to flowYear.branch),
-            Triple(p1, p2, MONTH to flowMonth.branch)
+            Triple(p1, p2, FlowScale.YEAR to flowYear.branch),
+            Triple(p1, p2, FlowScale.MONTH to flowMonth.branch)
           )
         }.filter { (p1, p2, pFlow) ->
           trilogy(p1.second, p2.second, pFlow.second) != null
@@ -99,7 +99,7 @@ object FlowMonthPatterns {
     override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<ToFlowTrilogy> {
       return getScaleMap().entries.asSequence().map { (scale, v) -> scale to v.branch }.mapNotNull { (scale, branch) ->
         if (trilogy(branch, flowYear.branch, flowMonth.branch) != null)
-          ToFlowTrilogy(scale, branch, setOf(YEAR to flowYear.branch, MONTH to flowMonth.branch))
+          ToFlowTrilogy(scale, branch, setOf(FlowScale.YEAR to flowYear.branch, FlowScale.MONTH to flowMonth.branch))
         else
           null
       }.toSet()
@@ -107,13 +107,13 @@ object FlowMonthPatterns {
   }
 
   val branchOpposition = object : IFlowMonthPatternFactory {
-    override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<EightWordsFlowMonthPattern> {
+    override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<BranchOpposition> {
       return getScaleMap().entries.asSequence().map { (scale, v) -> scale to v.branch }.flatMap { (scale, branch) ->
         buildSet {
           if (branch.opposite == flowYear.branch)
-            add(BranchOpposition(scale, branch, YEAR))
+            add(BranchOpposition(scale, branch, FlowScale.YEAR))
           if (branch.opposite == flowMonth.branch)
-            add(BranchOpposition(scale, branch, MONTH))
+            add(BranchOpposition(scale, branch, FlowScale.MONTH))
         }
       }.toSet()
     }
@@ -121,7 +121,7 @@ object FlowMonthPatterns {
 }
 
 
-fun IEightWords.getFlowMonthPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<EightWordsFlowMonthPattern> {
+fun IEightWords.getFlowMonthPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<EightWordsFlowPattern> {
   return setOf(
     bothAffecting, stemCombined, branchCombined, trilogyToFlow, toFlowTrilogy, branchOpposition
   ).flatMap { factory: IFlowMonthPatternFactory ->
