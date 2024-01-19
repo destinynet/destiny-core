@@ -24,7 +24,7 @@ enum class Reacting {
 sealed class EightWordsFlowYearPattern : IEightWordsPattern {
   data class BothAffecting(val scale: Scale, val stem: Stem, val reacting: Reacting) : EightWordsFlowYearPattern()
   data class StemCombined(val scale: Scale, val stem: Stem, val flowScale: FlowScale) : EightWordsFlowYearPattern()
-
+  data class BranchCombined(val scale: Scale, val branch: Branch, val flowScale: FlowScale): EightWordsFlowYearPattern()
   data class TrilogyToFlow(val pairs: Set<Pair<Scale, Branch>>, val flows: Pair<FlowScale, Branch>) : EightWordsFlowYearPattern()
   data class ToFlowTrilogy(val scale: Scale, val branch: Branch, val flows: Set<Pair<FlowScale, Branch>>) : EightWordsFlowYearPattern()
   data class BranchOpposition(val scale: Scale, val branch: Branch, val flowScale: FlowScale) : EightWordsFlowYearPattern()

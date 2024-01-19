@@ -7,6 +7,7 @@ import destiny.core.FlowScale
 import destiny.core.Scale.*
 import destiny.core.calendar.eightwords.EightWordsFlowYearPattern.*
 import destiny.core.calendar.eightwords.FlowYearPatterns.bothAffecting
+import destiny.core.calendar.eightwords.FlowYearPatterns.branchCombined
 import destiny.core.calendar.eightwords.FlowYearPatterns.branchOpposition
 import destiny.core.calendar.eightwords.FlowYearPatterns.stemCombined
 import destiny.core.calendar.eightwords.FlowYearPatterns.toFlowTrilogy
@@ -82,6 +83,47 @@ class FlowYearPatternsTest {
     }
   }
 
+  @Nested
+  inner class BranchCombined {
+
+    @Test
+    fun empty() {
+      with(branchCombined) {
+        assertTrue { EightWords(丙子, 乙未, 乙未, 己卯).getPatterns(甲辰, 乙亥).isEmpty() }
+      }
+    }
+
+    @Test
+    fun single() {
+      val ew = EightWords(丙子, 乙未, 乙未, 己卯)
+      with(branchCombined) {
+        ew.getPatterns(甲辰, 甲戌).also { patterns ->
+          assertEquals(
+            setOf(
+              BranchCombined(HOUR, 卯, FlowScale.YEAR)
+            ),
+            patterns
+          )
+        }
+      }
+    }
+
+    @Test
+    fun multiple() {
+      val ew = EightWords(丙子, 乙未, 乙未, 乙酉)
+      with(branchCombined) {
+        ew.getPatterns(甲辰, 庚午).also { patterns ->
+          assertEquals(
+            setOf(
+              BranchCombined(MONTH, 未, FlowScale.YEAR),
+              BranchCombined(DAY, 未, FlowScale.YEAR),
+              BranchCombined(HOUR, 酉, FlowScale.LARGE),
+            ), patterns
+          )
+        }
+      }
+    }
+  }
 
   @Nested
   inner class TrilogyToFlow {
