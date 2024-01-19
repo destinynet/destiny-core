@@ -9,9 +9,10 @@ import destiny.core.calendar.eightwords.EightWordsFlowYearPattern.*
 import destiny.core.calendar.eightwords.FlowYearPatterns.bothAffecting
 import destiny.core.calendar.eightwords.FlowYearPatterns.branchOpposition
 import destiny.core.calendar.eightwords.FlowYearPatterns.stemCombined
+import destiny.core.calendar.eightwords.FlowYearPatterns.toFlowTrilogy
+import destiny.core.calendar.eightwords.FlowYearPatterns.trilogyToFlow
 import destiny.core.calendar.eightwords.Reacting.*
-import destiny.core.chinese.Branch
-import destiny.core.chinese.Branch.未
+import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch.*
 import org.junit.jupiter.api.Nested
@@ -81,6 +82,89 @@ class FlowYearPatternsTest {
     }
   }
 
+
+  @Nested
+  inner class TrilogyToFlow {
+
+    @Test
+    fun empty() {
+      with(trilogyToFlow) {
+        assertTrue { EightWords(丙子, 乙未, 乙丑, 甲申).getPatterns(癸卯, 壬戌).isEmpty() }
+        assertTrue { EightWords(丙子, 乙未, 乙丑, 乙酉).getPatterns(甲辰, 丙子).isEmpty() }
+      }
+    }
+
+    @Test
+    fun single() {
+      val ew = EightWords(丙子, 乙未, 乙丑, 甲申)
+      with(trilogyToFlow) {
+        ew.getPatterns(甲辰, 丙子).also { patterns ->
+          assertEquals(
+            setOf(
+              TrilogyToFlow(setOf(YEAR to 子, HOUR to 申), FlowScale.LARGE to 辰)
+            ), patterns
+          )
+        }
+      }
+    }
+
+    @Test
+    fun multiple() {
+      val ew = EightWords(丙子, 乙未, 乙丑, 甲申)
+      with(trilogyToFlow) {
+        ew.getPatterns(甲辰, 戊辰).also { patterns ->
+          assertEquals(
+            setOf(
+              TrilogyToFlow(setOf(YEAR to 子, HOUR to 申), FlowScale.LARGE to 辰),
+              TrilogyToFlow(setOf(YEAR to 子, HOUR to 申), FlowScale.YEAR to 辰),
+            ), patterns
+          )
+        }
+      }
+    }
+  }
+
+  @Nested
+  inner class ToFlowTrilogy {
+
+    @Test
+    fun empty() {
+      with(toFlowTrilogy) {
+        assertTrue { EightWords(丙子, 乙未, 乙丑, 甲申).getPatterns(癸卯, 壬戌).isEmpty() }
+        assertTrue { EightWords(丙子, 乙未, 乙丑, 乙酉).getPatterns(甲辰, 丙子).isEmpty() }
+      }
+    }
+
+    @Test
+    fun single() {
+      val ew = EightWords(丙子, 乙未, 乙丑, 甲申)
+      with(toFlowTrilogy) {
+        ew.getPatterns(甲辰, 丙子).also { patterns ->
+          assertEquals(
+            expected = setOf(
+              ToFlowTrilogy(HOUR, 申, setOf(FlowScale.LARGE to 辰, FlowScale.YEAR to 子))
+            ), actual = patterns
+          )
+        }
+      }
+    }
+
+    @Test
+    fun multiple() {
+      val ew = EightWords(丙子, 乙未, 乙丑, 丙子)
+      with(toFlowTrilogy) {
+        ew.getPatterns(甲辰, 壬申).also { patterns ->
+          assertEquals(
+            setOf(
+              ToFlowTrilogy(YEAR, 子, setOf(FlowScale.LARGE to 辰, FlowScale.YEAR to 申)),
+              ToFlowTrilogy(HOUR, 子, setOf(FlowScale.LARGE to 辰, FlowScale.YEAR to 申)),
+            ), patterns
+          )
+        }
+      }
+    }
+  }
+
   @Nested
   inner class BranchOpposite {
 
@@ -98,7 +182,7 @@ class FlowYearPatternsTest {
         ew.getPatterns(甲辰, 癸酉).also { patterns ->
           assertEquals(
             setOf(
-              BranchOpposition(HOUR, Branch.卯, FlowScale.YEAR)
+              BranchOpposition(HOUR, 卯, FlowScale.YEAR)
             ), patterns
           )
         }
