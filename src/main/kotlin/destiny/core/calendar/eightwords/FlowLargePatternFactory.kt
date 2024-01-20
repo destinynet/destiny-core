@@ -6,18 +6,18 @@ package destiny.core.calendar.eightwords
 import com.google.common.collect.Sets
 import destiny.core.FlowScale
 import destiny.core.Scale
-import destiny.core.calendar.eightwords.EightWordsFlowPattern.*
 import destiny.core.calendar.eightwords.FlowLargePatterns.branchCombined
 import destiny.core.calendar.eightwords.FlowLargePatterns.branchOpposition
 import destiny.core.calendar.eightwords.FlowLargePatterns.stemCombined
 import destiny.core.calendar.eightwords.FlowLargePatterns.trilogyToFlow
+import destiny.core.calendar.eightwords.FlowPattern.*
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.trilogy
 
 
 interface IFlowLargePatternFactory {
-  fun IEightWords.getPatterns(flowLarge: IStemBranch): Set<EightWordsFlowPattern>
+  fun IEightWords.getPatterns(flowLarge: IStemBranch): Set<FlowPattern>
 }
 
 object FlowLargePatterns {
@@ -68,7 +68,7 @@ object FlowLargePatterns {
   }
 }
 
-fun IEightWords.getFlowLargePatterns(flowLarge: IStemBranch): Set<EightWordsFlowPattern> {
+fun IEightWords.getFlowLargePatterns(flowLarge: IStemBranch): Set<FlowPattern> {
   return setOf(
     stemCombined, branchCombined, trilogyToFlow, branchOpposition
   ).flatMap { factory: IFlowLargePatternFactory ->

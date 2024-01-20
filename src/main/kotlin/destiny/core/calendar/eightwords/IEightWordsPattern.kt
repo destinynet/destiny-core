@@ -20,13 +20,17 @@ enum class Reacting {
   BEATEN
 }
 
-sealed class EightWordsFlowPattern : IEightWordsPattern {
-  data class BothAffecting(val scale: Scale, val stem: Stem, val reacting: Reacting, val flowScales : Set<FlowScale>) : EightWordsFlowPattern()
-  data class StemCombined(val scale: Scale, val stem: Stem, val flowScale: FlowScale) : EightWordsFlowPattern()
-  data class BranchCombined(val scale: Scale, val branch: Branch, val flowScale: FlowScale): EightWordsFlowPattern()
-  data class TrilogyToFlow(val pairs: Set<Pair<Scale, Branch>>, val flows: Pair<FlowScale, Branch>) : EightWordsFlowPattern()
-  data class ToFlowTrilogy(val scale: Scale, val branch: Branch, val flows: Set<Pair<FlowScale, Branch>>) : EightWordsFlowPattern()
-  data class BranchOpposition(val scale: Scale, val branch: Branch, val flowScale: FlowScale) : EightWordsFlowPattern()
+sealed class IdentityPattern : IEightWordsPattern {
+  data class Trilogy(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
+}
+
+sealed class FlowPattern : IEightWordsPattern {
+  data class BothAffecting(val scale: Scale, val stem: Stem, val reacting: Reacting, val flowScales : Set<FlowScale>) : FlowPattern()
+  data class StemCombined(val scale: Scale, val stem: Stem, val flowScale: FlowScale) : FlowPattern()
+  data class BranchCombined(val scale: Scale, val branch: Branch, val flowScale: FlowScale): FlowPattern()
+  data class TrilogyToFlow(val pairs: Set<Pair<Scale, Branch>>, val flows: Pair<FlowScale, Branch>) : FlowPattern()
+  data class ToFlowTrilogy(val scale: Scale, val branch: Branch, val flows: Set<Pair<FlowScale, Branch>>) : FlowPattern()
+  data class BranchOpposition(val scale: Scale, val branch: Branch, val flowScale: FlowScale) : FlowPattern()
 }
 
 

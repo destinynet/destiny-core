@@ -7,7 +7,7 @@ import com.google.common.collect.Sets
 import destiny.core.FlowScale.LARGE
 import destiny.core.FlowScale.YEAR
 import destiny.core.Scale
-import destiny.core.calendar.eightwords.EightWordsFlowPattern.*
+import destiny.core.calendar.eightwords.FlowPattern.*
 import destiny.core.calendar.eightwords.FlowYearPatterns.bothAffecting
 import destiny.core.calendar.eightwords.FlowYearPatterns.branchCombined
 import destiny.core.calendar.eightwords.FlowYearPatterns.branchOpposition
@@ -26,7 +26,7 @@ import destiny.core.chinese.trilogy
 
 
 interface IFlowYearPatternFactory {
-  fun IEightWords.getPatterns(flowLarge: IStemBranch, flowYear: IStemBranch): Set<EightWordsFlowPattern>
+  fun IEightWords.getPatterns(flowLarge: IStemBranch, flowYear: IStemBranch): Set<FlowPattern>
 }
 
 object FlowYearPatterns {
@@ -66,7 +66,7 @@ object FlowYearPatterns {
   }
 
   val branchCombined = object : IFlowYearPatternFactory {
-    override fun IEightWords.getPatterns(flowLarge: IStemBranch, flowYear: IStemBranch): Set<EightWordsFlowPattern> {
+    override fun IEightWords.getPatterns(flowLarge: IStemBranch, flowYear: IStemBranch): Set<FlowPattern> {
       return getScaleMap().entries.asSequence().map { (scale, v) -> scale to v.branch }.flatMap { (scale , branch) ->
         buildSet {
           if (branch.combined == flowLarge.branch)
@@ -122,7 +122,7 @@ object FlowYearPatterns {
   }
 }
 
-fun IEightWords.getFlowYearPatterns(flowLarge: IStemBranch, flowYear: IStemBranch): Set<EightWordsFlowPattern> {
+fun IEightWords.getFlowYearPatterns(flowLarge: IStemBranch, flowYear: IStemBranch): Set<FlowPattern> {
   return setOf(
     bothAffecting, stemCombined, branchCombined, trilogyToFlow, toFlowTrilogy, branchOpposition
   ).flatMap { factory: IFlowYearPatternFactory ->

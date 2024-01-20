@@ -5,7 +5,7 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.FlowScale
 import destiny.core.Scale.*
-import destiny.core.calendar.eightwords.EightWordsFlowPattern.*
+import destiny.core.calendar.eightwords.FlowPattern.*
 import destiny.core.calendar.eightwords.FlowYearPatterns.bothAffecting
 import destiny.core.calendar.eightwords.FlowYearPatterns.branchCombined
 import destiny.core.calendar.eightwords.FlowYearPatterns.branchOpposition

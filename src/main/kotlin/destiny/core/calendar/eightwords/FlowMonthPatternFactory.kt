@@ -6,13 +6,13 @@ package destiny.core.calendar.eightwords
 import com.google.common.collect.Sets
 import destiny.core.FlowScale
 import destiny.core.Scale
-import destiny.core.calendar.eightwords.EightWordsFlowPattern.*
 import destiny.core.calendar.eightwords.FlowMonthPatterns.bothAffecting
 import destiny.core.calendar.eightwords.FlowMonthPatterns.branchCombined
 import destiny.core.calendar.eightwords.FlowMonthPatterns.branchOpposition
 import destiny.core.calendar.eightwords.FlowMonthPatterns.stemCombined
 import destiny.core.calendar.eightwords.FlowMonthPatterns.toFlowTrilogy
 import destiny.core.calendar.eightwords.FlowMonthPatterns.trilogyToFlow
+import destiny.core.calendar.eightwords.FlowPattern.*
 import destiny.core.calendar.eightwords.Reacting.*
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement.Companion.beatenCount
@@ -25,7 +25,7 @@ import destiny.core.chinese.trilogy
 
 
 interface IFlowMonthPatternFactory {
-  fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<EightWordsFlowPattern>
+  fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<FlowPattern>
 }
 
 object FlowMonthPatterns {
@@ -121,7 +121,7 @@ object FlowMonthPatterns {
 }
 
 
-fun IEightWords.getFlowMonthPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<EightWordsFlowPattern> {
+fun IEightWords.getFlowMonthPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<FlowPattern> {
   return setOf(
     bothAffecting, stemCombined, branchCombined, trilogyToFlow, toFlowTrilogy, branchOpposition
   ).flatMap { factory: IFlowMonthPatternFactory ->
