@@ -6,6 +6,7 @@ package destiny.core.calendar.eightwords
 import com.google.common.collect.Sets
 import destiny.core.Scale
 import destiny.core.calendar.eightwords.IdentityPattern.*
+import destiny.core.calendar.eightwords.IdentityPatterns.branchCombined
 import destiny.core.calendar.eightwords.IdentityPatterns.branchOpposition
 import destiny.core.calendar.eightwords.IdentityPatterns.stemCombined
 import destiny.core.chinese.Branch
@@ -29,6 +30,19 @@ object IdentityPatterns {
           p1.second.combined.first == p2.second
         }.map { pillars -> StemCombined(pillars) }
         .toSet()
+    }
+  }
+
+  val branchCombined = object : IdentityPatternFactory {
+    override fun IEightWords.getPatterns(): Set<BranchCombined> {
+      return Sets.combinations(getScaleMap().entries.map { (scale: Scale, sb: IStemBranch) -> scale to sb.branch }.toSet(), 2).filter { pairs: Set<Pair<Scale, Branch>> ->
+        val pairList = pairs.toList()
+        val p1 = pairList[0]
+        val p2 = pairList[1]
+        p1.second.combined == p2.second
+      }.map { pillars ->
+        BranchCombined(pillars)
+      }.toSet()
     }
   }
 
@@ -63,7 +77,7 @@ object IdentityPatterns {
 
 fun IEightWords.getIdentityPatterns(): Set<IdentityPattern> {
   return setOf(
-    stemCombined, IdentityPatterns.trilogy, branchOpposition
+    stemCombined, branchCombined, IdentityPatterns.trilogy, branchOpposition
   ).flatMap { factory: IdentityPatternFactory ->
     with(factory) {
       this@getIdentityPatterns.getPatterns()

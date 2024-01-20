@@ -22,6 +22,7 @@ enum class Reacting {
 
 sealed class IdentityPattern : IEightWordsPattern {
   data class StemCombined(val pillars: Set<Pair<Scale, Stem>>) : IdentityPattern()
+  data class BranchCombined(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
   data class Trilogy(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
   data class BranchOpposition(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
 }
