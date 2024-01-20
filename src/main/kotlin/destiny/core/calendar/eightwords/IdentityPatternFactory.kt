@@ -9,9 +9,12 @@ import destiny.core.calendar.eightwords.IdentityPattern.*
 import destiny.core.calendar.eightwords.IdentityPatterns.branchCombined
 import destiny.core.calendar.eightwords.IdentityPatterns.branchOpposition
 import destiny.core.calendar.eightwords.IdentityPatterns.stemCombined
+import destiny.core.calendar.eightwords.IdentityPatterns.stemRooted
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.Stem
+import destiny.core.chinese.eightwords.HiddenStemsStandardImpl
+import destiny.core.chinese.eightwords.IHiddenStems
 import destiny.core.chinese.trilogy
 
 interface IdentityPatternFactory {
@@ -61,7 +64,7 @@ object IdentityPatterns {
   }
 
   val branchOpposition = object : IdentityPatternFactory {
-    override fun IEightWords.getPatterns(): Set<IdentityPattern> {
+    override fun IEightWords.getPatterns(): Set<BranchOpposition> {
       return Sets.combinations(getScaleMap().entries.map { (scale: Scale, sb: IStemBranch) -> scale to sb.branch }.toSet(), 2).filter { pairs: Set<Pair<Scale, Branch>> ->
         val pairList = pairs.toList()
         val p1 = pairList[0]
@@ -73,11 +76,34 @@ object IdentityPatterns {
     }
   }
 
+  val stemRooted = object : IdentityPatternFactory {
+    val hidImpl: IHiddenStems = HiddenStemsStandardImpl()
+
+    @Suppress("UNCHECKED_CAST")
+    override fun IEightWords.getPatterns(): Set<StemRooted> {
+      return Sets.cartesianProduct(
+        getScaleMap().map { (scale, sb) -> scale to sb.stem  }.toSet(),
+        getScaleMap ().map { (scale, sb) -> scale to sb.branch  }.toSet()
+      ).asSequence().filter { (stemPair , branchPair: Pair<Scale, Enum<*>>) ->
+        val stem  = stemPair.second as Stem
+        val branch = branchPair.second as Branch
+        hidImpl.getHiddenStems(branch).contains(stem)
+      }.map { (stemPair, branchPair: Pair<Scale, Enum<*>>) -> (stemPair as Pair<Scale, Stem>) to (branchPair as Pair<Scale, Branch>) }
+        .groupBy ({ (stemPair, _) -> stemPair } , {(_ , branchPair) -> branchPair})
+        .map { (stemPair: Pair<Scale, Stem>, branchPairs: List<Pair<Scale, Branch>>) ->
+          val scale = stemPair.first
+          val stem = stemPair.second
+          StemRooted(scale , stem , branchPairs.toSet())
+        }
+        .toSet()
+    }
+  }
+
 }
 
 fun IEightWords.getIdentityPatterns(): Set<IdentityPattern> {
   return setOf(
-    stemCombined, branchCombined, IdentityPatterns.trilogy, branchOpposition
+    stemCombined, branchCombined, IdentityPatterns.trilogy, branchOpposition, stemRooted
   ).flatMap { factory: IdentityPatternFactory ->
     with(factory) {
       this@getIdentityPatterns.getPatterns()

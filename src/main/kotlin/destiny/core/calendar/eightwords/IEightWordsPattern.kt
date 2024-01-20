@@ -25,6 +25,7 @@ sealed class IdentityPattern : IEightWordsPattern {
   data class BranchCombined(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
   data class Trilogy(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
   data class BranchOpposition(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
+  data class StemRooted(val scale: Scale, val stem: Stem, val roots: Set<Pair<Scale, Branch>>) : IdentityPattern()
 }
 
 sealed class FlowPattern : IEightWordsPattern {
