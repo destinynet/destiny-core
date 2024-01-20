@@ -9,6 +9,7 @@ import destiny.core.Scale
 import destiny.core.calendar.eightwords.EightWordsFlowPattern.*
 import destiny.core.calendar.eightwords.FlowLargePatterns.branchCombined
 import destiny.core.calendar.eightwords.FlowLargePatterns.branchOpposition
+import destiny.core.calendar.eightwords.FlowLargePatterns.stemCombined
 import destiny.core.calendar.eightwords.FlowLargePatterns.trilogyToFlow
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
@@ -20,6 +21,15 @@ interface IFlowLargePatternFactory {
 }
 
 object FlowLargePatterns {
+
+  val stemCombined = object : IFlowLargePatternFactory {
+    override fun IEightWords.getPatterns(flowLarge: IStemBranch): Set<StemCombined> {
+      return getScaleMap().entries.asSequence().map { (scale: Scale, v) -> scale to v.stem }
+        .filter { (_, stem) -> stem.combined.first == flowLarge.stem }
+        .map { (scale, stem) -> StemCombined(scale, stem, FlowScale.LARGE) }
+        .toSet()
+    }
+  }
 
   val branchCombined = object : IFlowLargePatternFactory {
     override fun IEightWords.getPatterns(flowLarge: IStemBranch): Set<BranchCombined> {
@@ -60,7 +70,7 @@ object FlowLargePatterns {
 
 fun IEightWords.getFlowLargePatterns(flowLarge: IStemBranch): Set<EightWordsFlowPattern> {
   return setOf(
-    branchCombined, trilogyToFlow, branchOpposition
+    stemCombined, branchCombined, trilogyToFlow, branchOpposition
   ).flatMap { factory: IFlowLargePatternFactory ->
     with(factory) {
       this@getFlowLargePatterns.getPatterns(flowLarge)
