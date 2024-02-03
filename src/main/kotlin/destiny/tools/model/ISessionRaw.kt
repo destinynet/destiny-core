@@ -10,8 +10,7 @@ import destiny.core.tarot.ITarotQuestion
 import kotlinx.serialization.Serializable
 
 
-@Serializable
-sealed interface ISessionRaw<T> {
+interface ISessionRaw<T> {
 
   val domain: Domain
 
@@ -22,21 +21,16 @@ sealed interface ISessionRaw<T> {
 
 }
 
-data class SessionEw(override val model: IBirthDataNamePlace, override val raw: String? = null) : ISessionRaw<IBirthDataNamePlace> {
-  override val domain: Domain = Domain.EW
-}
-
-data class SessionZiwei(override val model: IBirthDataNamePlace, override val raw: String? = null) : ISessionRaw<IBirthDataNamePlace> {
-  override val domain: Domain = Domain.ZIWEI
+data class BdnpSessionRaw(override val domain: Domain, override val model: IBirthDataNamePlace, override val raw: String? = null) : ISessionRaw<IBirthDataNamePlace> {
+  init {
+    require(setOf(Domain.EW, Domain.ZIWEI, Domain.HOROSCOPE).contains(domain))
+  }
 }
 
 data class SessionIChingRand(override val model: IPairHexQuestion, override val raw: String? = null) : ISessionRaw<IPairHexQuestion> {
   override val domain: Domain = Domain.ICHING_RAND
 }
 
-data class SessionHoroscope(override val model: IBirthDataNamePlace, override val raw: String? = null) : ISessionRaw<IBirthDataNamePlace> {
-  override val domain: Domain = Domain.HOROSCOPE
-}
 
 @Serializable
 data class SessionTarot(override val model: ITarotQuestion, override val raw: String? = null) : ISessionRaw<ITarotQuestion> {
