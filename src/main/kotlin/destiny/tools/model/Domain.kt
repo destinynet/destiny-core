@@ -12,25 +12,25 @@ import java.util.*
 
 
 @Serializable(with = DomainSerializer::class)
-sealed class Domain {
+sealed class Domain(val bdnpGenerated: Boolean) {
 
   /** 八字 */
-  data object EW : Domain()
+  data object EW : Domain(true)
 
   /** 紫微斗數 */
-  data object ZIWEI : Domain()
-
-  /** 易經隨機起卦 */
-  data object ICHING_RAND : Domain()
+  data object ZIWEI : Domain(true)
 
   /** 占星本命盤 */
-  data object HOROSCOPE : Domain()
+  data object HOROSCOPE : Domain(true)
+
+  /** 易經隨機起卦 */
+  data object ICHING_RAND : Domain(false)
 
   /** 塔羅占卜 */
-  data object TAROT : Domain()
+  data object TAROT : Domain(false)
 
   /** 籤詩 */
-  data object CHANCE : Domain()
+  data object CHANCE : Domain(false)
 }
 
 fun Domain.getTitle(locale: Locale): String {

@@ -23,7 +23,9 @@ interface ISessionRaw<T> {
 
 data class BdnpSessionRaw(override val domain: Domain, override val model: IBirthDataNamePlace, override val raw: String? = null) : ISessionRaw<IBirthDataNamePlace> {
   init {
-    require(setOf(Domain.EW, Domain.ZIWEI, Domain.HOROSCOPE).contains(domain))
+    require(domain.bdnpGenerated) {
+      "only supports bdnpGenerated = true domains"
+    }
   }
 }
 
