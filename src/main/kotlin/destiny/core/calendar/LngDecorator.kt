@@ -20,6 +20,11 @@ object LngDecorator {
 }
 
 data class Lng(val eastWest: News.EastWest, val deg: Int, val min: Int, val sec: Double) {
+  fun toDouble(): Double {
+    val sign = if (eastWest == News.EastWest.EAST) 1 else -1
+    return sign * (deg + min.toDouble() / 60 + sec / 3600)
+  }
+
   companion object {
     fun of(value: Double): Lng {
       val eastWest = if (value >= 0) News.EastWest.EAST else News.EastWest.WEST

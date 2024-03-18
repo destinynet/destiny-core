@@ -21,6 +21,10 @@ object LatDecorator {
 }
 
 data class Lat(val northSouth: News.NorthSouth, val deg: Int, val min: Int, val sec: Double) {
+  fun toDouble(): Double {
+    val sign = if (northSouth == NORTH) 1 else -1
+    return sign * (deg + min.toDouble() / 60 + sec / 3600)
+  }
   companion object {
     fun of(value: Double): Lat {
       val northSouth = if (value >= 0) NORTH else News.NorthSouth.SOUTH
