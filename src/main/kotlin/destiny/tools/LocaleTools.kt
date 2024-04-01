@@ -108,6 +108,13 @@ object LocaleTools {
   }
 
   /**
+   * @param locales : 找尋最符合的 locale , 如果找不到，則採取此 locales 第一個
+   */
+  fun getBestMatchingLocaleOrFirst(locale: Locale = Locale.getDefault(), locales: Iterable<Locale>): Locale {
+    return getBestMatchingLocale(locale, locales) ?: locales.first()
+  }
+
+  /**
    * 從 locales 中，找尋最符合 locale 的 , 如果找不到，會以系統內定 locale 與 locales 比對 <br/>
    * 如果 locale 為 null , 程式會以系統內定的 locale 取代
    * <pre>

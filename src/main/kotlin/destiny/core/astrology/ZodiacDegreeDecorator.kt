@@ -21,8 +21,7 @@ object ZodiacDegreeDecorator {
   }
 
   fun getSimpOutputString(degree: Double, locale: Locale): String {
-    return implMap.getValue(LocaleTools.getBestMatchingLocale(locale, implMap.keys)
-      ?: implMap.keys.first()).getSimpOutString(degree)
+    return implMap.getValue(LocaleTools.getBestMatchingLocaleOrFirst(locale, implMap.keys)).getSimpOutString(degree)
   }
 }
 

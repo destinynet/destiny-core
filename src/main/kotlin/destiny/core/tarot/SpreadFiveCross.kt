@@ -25,6 +25,26 @@ data class SpreadFiveCross(
     return SpreadFiveCross.getTitle(locale)
   }
 
+  override fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>> {
+    return listOf(
+      center to mapOf(
+        Locale.TAIWAN to "中間"
+      ),
+      left to mapOf(
+        Locale.TAIWAN to "左邊"
+      ),
+      right to mapOf(
+        Locale.TAIWAN to "右邊"
+      ),
+      top to mapOf(
+        Locale.TAIWAN to "上方"
+      ),
+      bottom to mapOf(
+        Locale.TAIWAN to "下方"
+      )
+    )
+  }
+
   companion object : ILocaleString {
     override fun getTitle(locale: Locale): String {
       return when (locale.language) {

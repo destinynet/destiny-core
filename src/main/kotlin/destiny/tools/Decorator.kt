@@ -7,8 +7,8 @@ package destiny.tools
 import java.util.*
 
 
-fun <T> Map<Locale, Decorator<T>>.getOutputString(value : T, locale : Locale) : String {
-  return this.getValue(LocaleTools.getBestMatchingLocale(locale , this.keys) ?: this.keys.first()).getOutputString(value)
+fun <T> Map<Locale, Decorator<T>>.getOutputString(value: T, locale: Locale): String {
+  return this.getValue(LocaleTools.getBestMatchingLocaleOrFirst(locale, this.keys)).getOutputString(value)
 }
 
 interface Decorator<in T> {

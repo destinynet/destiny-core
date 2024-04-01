@@ -35,6 +35,23 @@ data class SpreadFourElements(
     }
   }
 
+  override fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>> {
+    return listOf(
+      fire to mapOf(
+        Locale.TAIWAN to "左上"
+      ),
+      water to mapOf(
+        Locale.TAIWAN to "右上"
+      ),
+      earth to mapOf(
+        Locale.TAIWAN to "左下"
+      ),
+      air to mapOf(
+        Locale.TAIWAN to "右下"
+      )
+    )
+  }
+
   companion object : ILocaleString {
     fun of(map: Map<Element, CardOrientation>): SpreadFourElements {
       require(map.size == 4)

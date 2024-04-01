@@ -15,7 +15,7 @@ object HourMinDecorator {
   )
 
   fun getOutputString(hourMin: Pair<Int, Int>, locale: Locale): String {
-    val bestMatchingLocale = LocaleTools.getBestMatchingLocale(locale, implMap.keys) ?: implMap.keys.first()
+    val bestMatchingLocale = LocaleTools.getBestMatchingLocaleOrFirst(locale, implMap.keys)
     return implMap.getValue(bestMatchingLocale).getOutputString(hourMin)
   }
 }
