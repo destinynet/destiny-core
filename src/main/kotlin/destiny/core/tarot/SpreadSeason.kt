@@ -16,13 +16,6 @@ data class SpreadSeason(
   val center: CardOrientation,
   val map: Map<Element, CardOrientation>
 ) : ISpread {
-  override val cards: List<CardOrientation>
-    get() {
-      return buildList {
-        add(center)
-        addAll(map.map { entry -> entry.value })
-      }
-    }
 
   override fun getTitle(locale: Locale): String {
     return SpreadSeason.getTitle(locale)
@@ -38,7 +31,7 @@ data class SpreadSeason(
 
       add(
         map[Element.FIRE]!! to mapOf(
-          Locale.TAIWAN to "左邊"
+          Locale.TAIWAN to "左方"
         )
       )
 
@@ -50,7 +43,7 @@ data class SpreadSeason(
 
       add(
         map[Element.AIR]!! to mapOf(
-          Locale.TAIWAN to "右邊"
+          Locale.TAIWAN to "右方"
         )
       )
 

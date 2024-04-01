@@ -18,9 +18,6 @@ data class SpreadFiveCross(
   val bottom: CardOrientation
 ) : ISpread {
 
-  override val cards: List<CardOrientation>
-    get() = listOf(center, left, right, top, bottom)
-
   override fun getTitle(locale: Locale): String {
     return SpreadFiveCross.getTitle(locale)
   }
@@ -31,10 +28,10 @@ data class SpreadFiveCross(
         Locale.TAIWAN to "中間"
       ),
       left to mapOf(
-        Locale.TAIWAN to "左邊"
+        Locale.TAIWAN to "左方"
       ),
       right to mapOf(
-        Locale.TAIWAN to "右邊"
+        Locale.TAIWAN to "右方"
       ),
       top to mapOf(
         Locale.TAIWAN to "上方"

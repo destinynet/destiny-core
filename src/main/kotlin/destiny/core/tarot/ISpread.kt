@@ -13,6 +13,7 @@ import java.util.*
 sealed interface ISpread : Descriptive, java.io.Serializable {
 
   val cards : List<CardOrientation>
+    get() = getLocalePosMap().map { it.first }.toList()
 
   fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>>
 

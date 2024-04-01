@@ -17,14 +17,11 @@ data class SpreadThreeCards(@SerialName("c1") val card1: CardOrientation,
                             @SerialName("c2") val card2: CardOrientation,
                             @SerialName("c3") val card3: CardOrientation) : ISpread {
 
-  override val cards: List<CardOrientation>
-    get() = listOf(card1, card2, card3)
-
   override fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>> {
     return listOf(
       card1 to
         mapOf(
-          Locale.TAIWAN to "左邊",
+          Locale.TAIWAN to "左方",
           Locale.ENGLISH to "Left",
         ),
       card2 to mapOf(
@@ -32,7 +29,7 @@ data class SpreadThreeCards(@SerialName("c1") val card1: CardOrientation,
         Locale.ENGLISH to "Middle",
       ),
       card3 to mapOf(
-        Locale.TAIWAN to "右邊",
+        Locale.TAIWAN to "右方",
         Locale.ENGLISH to "Right",
       ),
     )

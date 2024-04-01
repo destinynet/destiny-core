@@ -12,7 +12,6 @@ import java.util.*
 @SerialName("6cards")
 data class SpreadSixCards(val lt: CardOrientation, val mt: CardOrientation, val rt: CardOrientation,
                           val lb: CardOrientation, val mb: CardOrientation, val rb: CardOrientation) : ISpread {
-  override val cards: List<CardOrientation> = listOf(lt, mt, rt, lb, mb, rb)
 
   override fun getTitle(locale: Locale): String {
     return SpreadSixCards.getTitle(locale)

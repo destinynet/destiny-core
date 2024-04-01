@@ -19,9 +19,6 @@ data class SpreadFourElements(
   val earth: CardOrientation
 ) : ISpread {
 
-  override val cards: List<CardOrientation>
-    get() = listOf(fire, water, air, earth)
-
   override fun getTitle(locale: Locale): String {
     return SpreadFourElements.getTitle(locale)
   }
