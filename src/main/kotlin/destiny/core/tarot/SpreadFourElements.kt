@@ -8,6 +8,7 @@ import destiny.tools.ILocaleString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
+import java.util.Locale.*
 
 
 @Serializable
@@ -35,16 +36,24 @@ data class SpreadFourElements(
   override fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>> {
     return listOf(
       fire to mapOf(
-        Locale.TAIWAN to "左上"
+        TAIWAN to "左上",
+        JAPANESE to "左上",
+        ENGLISH to "Left top",
       ),
       water to mapOf(
-        Locale.TAIWAN to "右上"
+        TAIWAN to "右上",
+        JAPANESE to "右上",
+        ENGLISH to "Right top",
       ),
       earth to mapOf(
-        Locale.TAIWAN to "左下"
+        TAIWAN to "左下",
+        JAPANESE to "左下",
+        ENGLISH to "Left bottom",
       ),
       air to mapOf(
-        Locale.TAIWAN to "右下"
+        TAIWAN to "右下",
+        JAPANESE to "右下",
+        ENGLISH to "Right bottom",
       )
     )
   }

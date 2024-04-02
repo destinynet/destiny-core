@@ -7,6 +7,7 @@ import destiny.tools.ILocaleString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
+import java.util.Locale.*
 
 /**
  * maybe Major Arcana
@@ -21,16 +22,19 @@ data class SpreadThreeCards(@SerialName("c1") val card1: CardOrientation,
     return listOf(
       card1 to
         mapOf(
-          Locale.TAIWAN to "左方",
-          Locale.ENGLISH to "Left",
+          TAIWAN to "左方",
+          JAPANESE to "左",
+          ENGLISH to "Left",
         ),
       card2 to mapOf(
-        Locale.TAIWAN to "中間",
-        Locale.ENGLISH to "Middle",
+        TAIWAN to "中央",
+        JAPANESE to "中央",
+        ENGLISH to "Middle",
       ),
       card3 to mapOf(
-        Locale.TAIWAN to "右方",
-        Locale.ENGLISH to "Right",
+        TAIWAN to "右方",
+        JAPANESE to "右方",
+        ENGLISH to "Right",
       ),
     )
   }

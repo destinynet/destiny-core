@@ -7,6 +7,7 @@ import destiny.tools.ILocaleString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
+import java.util.Locale.*
 
 @Serializable
 @SerialName("Cross5Spread")
@@ -25,19 +26,29 @@ data class SpreadFiveCross(
   override fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>> {
     return listOf(
       center to mapOf(
-        Locale.TAIWAN to "中間"
+        TAIWAN to "中央",
+        JAPANESE to "中央",
+        ENGLISH to "Middle",
       ),
       left to mapOf(
-        Locale.TAIWAN to "左方"
+        TAIWAN to "左方",
+        JAPANESE to "左",
+        ENGLISH to "Left",
       ),
       right to mapOf(
-        Locale.TAIWAN to "右方"
+        TAIWAN to "右方",
+        JAPANESE to "右",
+        ENGLISH to "Right",
       ),
       top to mapOf(
-        Locale.TAIWAN to "上方"
+        TAIWAN to "上方",
+        JAPANESE to "上",
+        ENGLISH to "Top",
       ),
       bottom to mapOf(
-        Locale.TAIWAN to "下方"
+        TAIWAN to "下方",
+        JAPANESE to "下",
+        ENGLISH to "Bottom",
       )
     )
   }

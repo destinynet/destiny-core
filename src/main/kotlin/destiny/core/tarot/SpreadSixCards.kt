@@ -7,6 +7,7 @@ import destiny.tools.ILocaleString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
+import java.util.Locale.*
 
 @Serializable
 @SerialName("6cards")
@@ -20,22 +21,34 @@ data class SpreadSixCards(val lt: CardOrientation, val mt: CardOrientation, val 
   override fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>> {
     return listOf(
       lt to mapOf(
-        Locale.TAIWAN to "左上"
+        TAIWAN to "左上",
+        JAPANESE to "左上",
+        ENGLISH to "Upper left"
       ),
       mt to mapOf(
-        Locale.TAIWAN to "中上"
+        TAIWAN to "中上",
+        JAPANESE to "中上",
+        ENGLISH to "Middle top",
       ),
       rt to mapOf(
-        Locale.TAIWAN to "右上"
+        TAIWAN to "右上",
+        JAPANESE to "右上",
+        ENGLISH to "Top right",
       ),
       lb to mapOf(
-        Locale.TAIWAN to "左下"
+        TAIWAN to "左下",
+        JAPANESE to "左下",
+        ENGLISH to "Left bottom",
       ),
       mb to mapOf(
-        Locale.TAIWAN to "中下"
+        TAIWAN to "中下",
+        JAPANESE to "中下",
+        ENGLISH to "Middle bottom",
       ),
       rb to mapOf(
-        Locale.TAIWAN to "右下"
+        TAIWAN to "右下",
+        JAPANESE to "右下",
+        ENGLISH to "Right bottom",
       )
     )
   }

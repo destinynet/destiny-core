@@ -8,6 +8,7 @@ import destiny.tools.ILocaleString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
+import java.util.Locale.*
 
 
 @Serializable
@@ -25,31 +26,41 @@ data class SpreadSeason(
     return buildList {
       add(
         center to mapOf(
-          Locale.TAIWAN to "中間"
+          TAIWAN to "中央",
+          JAPANESE to "中央",
+          ENGLISH to "Middle",
         )
       )
 
       add(
         map[Element.FIRE]!! to mapOf(
-          Locale.TAIWAN to "左方"
+          TAIWAN to "左方",
+          JAPANESE to "左",
+          ENGLISH to "Left",
         )
       )
 
       add(
         map[Element.WATER]!! to mapOf(
-          Locale.TAIWAN to "下方"
+          TAIWAN to "下方",
+          JAPANESE to "下",
+          ENGLISH to "Bottom",
         )
       )
 
       add(
         map[Element.AIR]!! to mapOf(
-          Locale.TAIWAN to "右方"
+          TAIWAN to "右方",
+          JAPANESE to "右方",
+          ENGLISH to "Right",
         )
       )
 
       add(
         map[Element.EARTH]!! to mapOf(
-          Locale.TAIWAN to "上方"
+          TAIWAN to "上方",
+          JAPANESE to "上",
+          ENGLISH to "Top",
         )
       )
     }
