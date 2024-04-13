@@ -59,6 +59,10 @@ interface IProgressionModel : ITransitModel {
   val type : ProgressionType
   val convergentTime: GmtJulDay
   val progressedAspects: Set<IProgressedAspect>
+  val progressedAspectsByScore : List<IProgressedAspect>
+    get() {
+      return progressedAspects.asSequence().sortedByDescending { it.score }.toList()
+    }
 }
 
 data class ProgressionModel(override val type: ProgressionType,

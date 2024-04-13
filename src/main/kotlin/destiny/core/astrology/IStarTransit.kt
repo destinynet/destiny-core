@@ -6,8 +6,6 @@
 package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
-import destiny.core.calendar.JulDayResolver
-import java.time.chrono.ChronoLocalDateTime
 
 /**
  * 計算某星 Transit 的介面
@@ -22,19 +20,4 @@ interface IStarTransit {
    * 傳回 GMT Julian Day 時刻
    */
   fun getNextTransitGmt(star: Star, degree: ZodiacDegree, fromGmt: GmtJulDay, forward: Boolean = true, coordinate: Coordinate = Coordinate.ECLIPTIC): GmtJulDay
-
-
-  /**
-   * 傳回 GMT [ChronoLocalDateTime]
-   */
-  fun getNextTransitGmtDateTime(star: Star,
-                                degree: ZodiacDegree,
-                                coordinate: Coordinate,
-                                fromGmt: GmtJulDay,
-                                forward: Boolean = true,
-                                julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val gmtJulDay = getNextTransitGmt(star, degree, fromGmt, forward, coordinate)
-    return julDayResolver.getLocalDateTime(gmtJulDay)
-  }
-
 }
