@@ -38,12 +38,17 @@ interface IPersonHoroscopeConfig : IHoroscopeConfig {
     }
 }
 
-interface IHoroscopePresentConfig : IPersonHoroscopeConfig , IPresentConfig
+data class TransitConfig(val forward: Boolean = true)
+
+interface IHoroscopePresentConfig : IPersonHoroscopeConfig , IPresentConfig {
+  val transitConfig: TransitConfig?
+}
 
 // TODO : DSL
 data class HoroscopePresentConfig(
   val classicConfig: ClassicalConfig,
-  val horoscopePersonConfig : PersonHoroscopeConfig,
-  override var viewGmt: GmtJulDay = GmtJulDay.now()
+  val horoscopePersonConfig: PersonHoroscopeConfig,
+  override var viewGmt: GmtJulDay = GmtJulDay.now(),
+  override val transitConfig: TransitConfig?
 ) : IHoroscopePresentConfig, IClassicalConfig by classicConfig
     , IPersonHoroscopeConfig by horoscopePersonConfig
