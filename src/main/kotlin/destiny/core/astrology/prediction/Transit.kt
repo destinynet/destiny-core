@@ -6,7 +6,7 @@ package destiny.core.astrology.prediction
 import destiny.core.calendar.GmtJulDay
 
 
-class Transit(override val converse: Boolean = false) : AbstractProgression() {
+class Transit(override val forward: Boolean = true) : AbstractProgression() {
 
   override val type: ProgressionType = ProgressionType.TRANSIT
 
@@ -15,7 +15,7 @@ class Transit(override val converse: Boolean = false) : AbstractProgression() {
   override val denominator: Double = 1.0
 
   override fun getDivergentTime(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): GmtJulDay {
-    return if (!converse) {
+    return if (forward) {
       nowGmtJulDay
     } else {
       val diff = nowGmtJulDay - natalGmtJulDay
@@ -24,7 +24,7 @@ class Transit(override val converse: Boolean = false) : AbstractProgression() {
   }
 
   override fun getConvergentTime(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): GmtJulDay {
-    return if (!converse) {
+    return if (forward) {
       nowGmtJulDay
     } else {
       val diff = nowGmtJulDay - natalGmtJulDay

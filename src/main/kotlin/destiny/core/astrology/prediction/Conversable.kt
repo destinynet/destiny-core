@@ -12,8 +12,8 @@ package destiny.core.astrology.prediction
 interface Conversable {
 
   /**
-   * 是否「逆推」 , true : 逆推
+   * 是否「順推」 , true : 順推 , false : 逆推
    * 設定此推運是否要從出生時間「往前 (before) 推」
    */
-  val converse: Boolean
+  val forward: Boolean
 }

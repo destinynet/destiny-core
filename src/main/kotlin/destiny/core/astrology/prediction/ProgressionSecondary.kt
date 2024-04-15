@@ -28,7 +28,7 @@ import destiny.core.astrology.Constants
  * 在應用上除了查看次限星對本命星形成的相位之外，也有占星家認為應該加看次限星彼此形成的相位關係，
  * 以及流年星（Transits）對次限星所形成的相位關係。
  */
-class ProgressionSecondary(override val converse: Boolean = false) : AbstractProgression() {
+class ProgressionSecondary(override val forward: Boolean = true) : AbstractProgression() {
 
   override val type: ProgressionType = ProgressionType.SECONDARY
 

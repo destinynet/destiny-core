@@ -15,8 +15,8 @@ abstract class AbstractProgression : ILinear, Conversable, Serializable {
 
   abstract val type: ProgressionType
 
-  /** 是否逆推，內定是順推  */
-  override val converse = false
+  /** 是否順推，內定是順推  */
+  override val forward = true
 
   /** Numerator: 分子 , 假設以 [ProgressionSecondary] (一日一年)來說 , 分子是一年(有幾秒)  */
   protected abstract val numerator: Double
@@ -30,7 +30,7 @@ abstract class AbstractProgression : ILinear, Conversable, Serializable {
 
     val durDays = dur / numerator * denominator
 
-    return if (converse) {
+    return if (!forward) {
       natalGmtJulDay - durDays
     } else {
       natalGmtJulDay + durDays
@@ -46,7 +46,7 @@ abstract class AbstractProgression : ILinear, Conversable, Serializable {
 
     val diffDays = (nowGmtJulDay - natalGmtJulDay) / denominator * numerator
 
-    return if (converse) {
+    return if (!forward) {
       natalGmtJulDay - diffDays
     } else {
       natalGmtJulDay + diffDays

@@ -1,10 +1,6 @@
 package destiny.core.astrology.prediction
 
 import destiny.core.calendar.GmtJulDay
-import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import destiny.core.calendar.TimeTools
-import java.time.chrono.ChronoLocalDateTime
 
 /**
  * 推運，其實是 『可對應（收斂 , Converge）到某個日期』的推運法。
@@ -21,16 +17,4 @@ interface Mappable {
    * @return 「收斂」到的時間
    */
   fun getConvergentTime(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): GmtJulDay
-
-  /**
-   * 承上 [ChronoLocalDateTime] 版本
-   */
-  fun getConvergentTime(natalTime: ChronoLocalDateTime<*>, nowTime: ChronoLocalDateTime<*>,
-                        julDayResolver: JulDayResolver = JulDayResolver1582CutoverImpl()): ChronoLocalDateTime<*> {
-    val natalGmtJulDay = TimeTools.getGmtJulDay(natalTime)
-    val nowGmtJulDay = TimeTools.getGmtJulDay(nowTime)
-
-    return julDayResolver.getLocalDateTime(getConvergentTime(natalGmtJulDay, nowGmtJulDay))
-  }
-
 }

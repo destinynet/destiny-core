@@ -4,9 +4,10 @@
 package destiny.core.astrology.prediction
 
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.TimeTools.toGmtJulDay
+import destiny.core.calendar.absDuration
 import destiny.core.calendar.locationOf
 import mu.KotlinLogging
-import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.Test
@@ -22,48 +23,49 @@ internal class TransitTest {
 
   @Test
   fun testDirectTransit_convergent() {
-    val natal = LocalDateTime.of(1970, 1, 1, 0, 0)
-    val transit = Transit(false)
-    val nowTime = LocalDateTime.of(2022, 8, 6, 0, 0)
+    val natal = LocalDateTime.of(1970, 1, 1, 0, 0).toGmtJulDay(loc)
+    val transit = Transit(true)
+    val nowTime = LocalDateTime.of(2022, 8, 6, 0, 0).toGmtJulDay(loc)
     transit.getConvergentTime(natal, nowTime).also { result ->
-      assertTrue { result.isAfter(natal) }
+      assertTrue { result > natal }
       assertEquals(nowTime, result)
     }
   }
 
   @Test
   fun testConverseTransit_convergent() {
-    val natal = LocalDateTime.of(1970, 1, 1, 0, 0)
-    val transit = Transit(true)
-    val nowTime = LocalDateTime.of(2022, 8, 6, 0, 0)
+    val natal = LocalDateTime.of(1970, 1, 1, 0, 0).toGmtJulDay(loc)
+    val transit = Transit(false)
+    val nowTime = LocalDateTime.of(2022, 8, 6, 0, 0).toGmtJulDay(loc)
     transit.getConvergentTime(natal, nowTime).also { result ->
-      assertTrue { result.isBefore(natal) }
-      val dur1 = Duration.between(natal, nowTime)
-      val dur2 = Duration.between(result, natal)
+      assertTrue { result < natal }
+      val dur1 = natal.absDuration(nowTime)
+      val dur2 = result.absDuration(natal)
       assertEquals(dur1, dur2)
     }
   }
 
   @Test
   fun testDirectTransit_divergent() {
-    val natal = LocalDateTime.of(1970, 1, 1, 0, 0)
-    val transit = Transit(false)
-    val nowTime = LocalDateTime.of(2022, 8, 6, 0, 0)
+    val natal = LocalDateTime.of(1970, 1, 1, 0, 0).toGmtJulDay(loc)
+    val transit = Transit(true)
+    val nowTime = LocalDateTime.of(2022, 8, 6, 0, 0).toGmtJulDay(loc)
     transit.getDivergentTime(natal, nowTime).also { result ->
-      assertTrue { result.isAfter(natal) }
+      assertTrue { result > natal }
       assertEquals(nowTime, result)
     }
   }
 
   @Test
   fun testConverseTransit_divergent() {
-    val natal = LocalDateTime.of(1970, 1, 1, 0, 0)
-    val transit = Transit(true)
-    val nowTime = LocalDateTime.of(2022, 8, 6, 0, 0)
+    val natal = LocalDateTime.of(1970, 1, 1, 0, 0).toGmtJulDay(loc)
+    val transit = Transit(false)
+    val nowTime = LocalDateTime.of(2022, 8, 6, 0, 0).toGmtJulDay(loc)
     transit.getDivergentTime(natal, nowTime).also { result ->
-      assertTrue { result.isBefore(natal) }
-      val dur1 = Duration.between(natal, nowTime)
-      val dur2 = Duration.between(result, natal)
+
+      assertTrue { result < natal }
+      val dur1 = natal.absDuration(nowTime)
+      val dur2 = result.absDuration(natal)
       assertEquals(dur1, dur2)
     }
   }

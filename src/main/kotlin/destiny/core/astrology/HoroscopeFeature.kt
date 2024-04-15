@@ -63,9 +63,9 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
    */
   fun getSecondaryProgression(
     model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
-    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig, converse: Boolean = false
+    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig, forward: Boolean = true
   ): IProgressionModel {
-    val progression = ProgressionSecondary(converse)
+    val progression = ProgressionSecondary(forward)
 
     return getProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
   }
@@ -96,9 +96,9 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
 
   fun transit(
     model: IHoroscopeModel, transitTime: GmtJulDay, aspects: Set<Aspect>,
-    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig, converse: Boolean = false
+    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig, forward: Boolean = true
   ): IProgressionModel {
-    val progression = Transit(converse)
+    val progression = Transit(forward)
     return getProgression(progression, model, transitTime, aspects, aspectsCalculator, config)
   }
 

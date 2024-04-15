@@ -248,9 +248,9 @@ data class ZiweiConfig(
   /** 紫微星，在閏月時，該如何處理  */
   override var purpleStarBranch: PurpleStarBranch = PurpleStarBranch.Default,
   /**
-                        * 命宮、身宮、紫微等14顆主星 對於月份，如何計算 . 若 [mainBodyHouse] 為占星實作 [MainBodyHouse.Astro] , 此值會被忽略
-                        * 注意，此值可能為 null , 因為若是 '命宮、身宮 演算法' 是占星實作的話 , client 端會把此值填為 null
-                        * */
+   * 命宮、身宮、紫微等14顆主星 對於月份，如何計算 . 若 [mainBodyHouse] 為占星實作 [MainBodyHouse.Astro] , 此值會被忽略
+   * 注意，此值可能為 null , 因為若是 '命宮、身宮 演算法' 是占星實作的話 , client 端會把此值填為 null
+   * */
   override var mainStarsAlgo: MonthAlgo? = MonthAlgo.MONTH_FIXED_THIS,
   /** 月系星，如何計算月令  */
   override var monthStarsAlgo: MonthAlgo = MonthAlgo.MONTH_FIXED_THIS,

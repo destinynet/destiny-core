@@ -91,3 +91,7 @@ fun GmtJulDay.absDuration(lmt: LocalDateTime, zoneId: ZoneId): Duration {
 fun GmtJulDay.absDuration(lmt: kotlinx.datetime.LocalDateTime, zoneId: ZoneId): Duration {
   return absDuration(lmt.toJavaLocalDateTime(), zoneId)
 }
+
+fun GmtJulDay.absDuration(gmt: GmtJulDay): Duration {
+  return ((this - gmt).absoluteValue * SECONDS_OF_DAY).toDuration(DurationUnit.SECONDS)
+}
