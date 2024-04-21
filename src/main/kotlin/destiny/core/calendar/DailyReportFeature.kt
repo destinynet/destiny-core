@@ -189,7 +189,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
         // 日食 食甚 觀測資料
         val locPlace: LocationPlace? = eclipseImpl.getEclipseCenterInfo(eclipse.max)?.let { (obs, _) ->
           val maxLoc = Location(obs.lat, obs.lng)
-          reverseGeocodingService.getNearbyLocation(maxLoc, config.locale)?.let { place ->
+          reverseGeocodingService.reverseGeocoding(maxLoc, config.locale)?.let { place ->
             LocationPlace(maxLoc, place)
           }
         }

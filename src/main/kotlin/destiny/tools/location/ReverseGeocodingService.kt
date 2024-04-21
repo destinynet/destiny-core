@@ -9,10 +9,10 @@ import java.util.*
 
 interface ReverseGeocodingService {
 
-  fun getNearbyLocation(lat: Double, lng: Double, locale: Locale = Locale.getDefault()): String?
+  fun reverseGeocoding(lat: Double, lng: Double, locale: Locale = Locale.getDefault()): String?
 
-  fun getNearbyLocation(latLng : ILatLng, locale: Locale = Locale.getDefault()) : String? {
-    return getNearbyLocation(latLng.lat , latLng.lng, locale)
+  fun reverseGeocoding(latLng : ILatLng, locale: Locale = Locale.getDefault()) : String? {
+    return reverseGeocoding(latLng.lat, latLng.lng, locale)
   }
 
 }
