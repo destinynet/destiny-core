@@ -10,6 +10,10 @@ import destiny.tools.AlignTools
 import mu.KotlinLogging
 import java.time.ZoneId
 import java.util.*
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 object LocationTools {
 
@@ -212,5 +216,48 @@ object LocationTools {
 
   } // fromDebugString
 
+  /** in meters */
+  fun calculateDistance(lat1: Double, lng1: Double, lat2: Double, lng2: Double): Int {
+    // Earth radius in kilometers
+    val earthRadius = 6371
+
+    val dLat = Math.toRadians(lat2 - lat1)
+    val dLng = Math.toRadians(lng2 - lng1)
+
+    val a = sin(dLat / 2) * sin(dLat / 2) +
+      cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
+      sin(dLng / 2) * sin(dLng / 2)
+
+    val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    return (earthRadius * c * 1000).toInt()
+  }
+
+
+  fun calculateAzimuth(loc1 : ILatLng, loc2 : ILatLng): Double {
+    val (lat1, lng1) = loc1.lat to loc1.lng
+    val (lat2, lng2) = loc2.lat to loc2.lng
+
+    return calculateAzimuth(lat1, lng1, lat2, lng2)
+  }
+
+  fun calculateAzimuth(lat1: Double, lng1 : Double , lat2: Double , lng2: Double) : Double {
+    val lat1Radian = Math.toRadians(lat1)
+    val lat2Radian = Math.toRadians(lat2)
+    val deltaLng = Math.toRadians(lng2 - lng1)
+
+    val y = sin(deltaLng) * cos(lat2Radian)
+    val x = cos(lat1Radian) * sin(lat2Radian) - sin(lat1Radian) * cos(lat2Radian) * cos(deltaLng)
+
+    var azimuth = atan2(y, x)
+    azimuth = Math.toDegrees(azimuth)
+
+    // Normalize azimuth to be in the range [0, 360)
+    if (azimuth < 0) {
+      azimuth += 360
+    }
+
+    return azimuth
+  }
 
 }

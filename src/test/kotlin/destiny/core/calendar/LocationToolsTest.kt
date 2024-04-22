@@ -123,4 +123,11 @@ class LocationToolsTest {
     assertEquals("+1213012.44+25 312.44 -1000.0 Etc/GMT+1 120", LocationTools.encode2012(location))
   }
 
+  @Test
+  fun testAzimuth() {
+    assertEquals(0.0 , LocationTools.calculateAzimuth(25.0, 121.0, 26.0, 121.0), 1.0)
+    assertEquals(90.0 , LocationTools.calculateAzimuth(25.0, 121.0, 25.0, 122.0) , 1.0)
+    assertEquals(180.0, LocationTools.calculateAzimuth(25.0, 121.0, 24.0, 121.0) , 1.0)
+    assertEquals(270.0 , LocationTools.calculateAzimuth(25.0, 121.0, 25.0, 120.0), 1.0)
+  }
 }
