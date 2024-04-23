@@ -5,9 +5,10 @@ package destiny.tools.location
 
 import destiny.core.calendar.ILatLng
 import destiny.core.calendar.IPlace
+import java.io.Serializable
 import java.util.*
 
-interface IPoi : ILatLng, IPlace {
+interface IPoi : ILatLng, IPlace, Serializable {
   val name: String
   val placeId: String
   val userRatingsTotal: Int?
