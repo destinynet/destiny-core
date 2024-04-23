@@ -66,7 +66,7 @@ interface ILatLng {
     }.toString()
 }
 
-data class LatLng(override val lat: Double, override val lng: Double) : ILatLng
+data class LatLng(override val lat: Double, override val lng: Double) : ILatLng , Serializable
 
 interface ILocation : ILatLng {
 
