@@ -66,6 +66,8 @@ interface ILatLng {
     }.toString()
 }
 
+data class LatLng(override val lat: Double, override val lng: Double) : ILatLng
+
 interface ILocation : ILatLng {
 
   val tzid: String?
@@ -112,6 +114,9 @@ data class Location(override val lat: Double,
 
   constructor(lat: Double, lng: Double) :
     this(lat, lng, null)
+
+  constructor(latLng: ILatLng) :
+    this(latLng.lat, latLng.lng)
 
   /**
    * 最詳盡的 constructor

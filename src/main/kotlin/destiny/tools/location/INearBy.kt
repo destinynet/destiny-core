@@ -5,7 +5,6 @@ package destiny.tools.location
 
 import destiny.core.calendar.ILatLng
 import destiny.core.calendar.IPlace
-import destiny.core.calendar.LocationTools
 import java.util.*
 
 interface IPoi : ILatLng, IPlace {
@@ -28,17 +27,5 @@ interface INearBy {
 
   suspend fun getNearBy(lat: Double, lng: Double, type: String, radiusMeters: Int, locale: Locale = Locale.getDefault()): List<IPoi>
 
-  suspend fun getNearBys(lat: Double, lng: Double, types: List<String>, radiusMeters: Int, locale: Locale = Locale.getDefault()): List<INearByPoi> {
-
-
-    return types.flatMap { type ->
-      getNearBy(lat, lng, type, radiusMeters, locale)
-    }.distinctBy { it.placeId }
-      .map { poi ->
-        val meters = LocationTools.calculateDistance(lat, lng, poi.lat, poi.lng)
-        NearByPoi(poi , meters)
-      }
-      .sortedBy { it.meters }
-      .toList()
-  }
+  suspend fun getNearBys(lat: Double, lng: Double, types: List<String>, radiusMeters: Int, locale: Locale = Locale.getDefault()): List<INearByPoi>
 }
