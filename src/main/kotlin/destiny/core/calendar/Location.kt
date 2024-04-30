@@ -16,7 +16,7 @@ import java.util.*
 import kotlin.math.abs
 
 /** 純粹經緯度座標，沒有時區 [TimeZone] [ZoneId] 或是 時差 (minuteOffset) 等資訊 */
-interface ILatLng {
+interface ILatLng : Serializable {
 
   val lng: Double
   val lat: Double
@@ -66,7 +66,13 @@ interface ILatLng {
     }.toString()
 }
 
-data class LatLng(override val lat: Double, override val lng: Double) : ILatLng , Serializable
+data class LatLng(override val lat: Double, override val lng: Double) : ILatLng
+
+interface ILatLngRadius {
+  val radiusMeters: Int
+}
+
+data class LatLngRadius(val latLng: ILatLng, override val radiusMeters: Int) : ILatLngRadius
 
 interface ILocation : ILatLng {
 
@@ -104,7 +110,7 @@ data class Location(override val lat: Double,
                     override val lng: Double,
                     override val tzid: String?,
                     override val minuteOffset: Int?,
-                    override val altitudeMeter: Double?) : ILocation, Serializable {
+                    override val altitudeMeter: Double?) : ILocation {
 
   constructor(lat: Double, lng: Double, tzid: String?, minuteOffset: Int?) :
     this(lat, lng, tzid, minuteOffset, null)
