@@ -68,11 +68,11 @@ interface ILatLng : Serializable {
 
 data class LatLng(override val lat: Double, override val lng: Double) : ILatLng
 
-interface ILatLngRadius {
+interface ILatLngRadius : ILatLng {
   val radiusMeters: Int
 }
 
-data class LatLngRadius(val latLng: ILatLng, override val radiusMeters: Int) : ILatLngRadius
+data class LatLngRadius(val iLatLng: ILatLng, override val radiusMeters: Int) : ILatLngRadius, ILatLng by iLatLng
 
 interface ILocation : ILatLng {
 
