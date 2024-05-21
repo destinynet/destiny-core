@@ -3,18 +3,18 @@ package destiny.tools.ai
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 
-sealed class Reply {
+sealed class Reply(val provider: String) {
 
-  data class Normal(val content: String, val provider: String, val model: String) : Reply()
+  data class Normal(val content: String, val p: String, val model: String) : Reply(p)
 
-  sealed class Error : Reply() {
+  sealed class Error(p: String) : Reply(p) {
 
-    data class TooLong(val message: String) : Error()
+    data class TooLong(val message: String, val p: String) : Error(p)
 
-    sealed class Unrecoverable : Error() {
-      data object InvalidApiKey : Unrecoverable()
-      data object Busy : Unrecoverable()
-      data class Unknown(val message: String) : Unrecoverable()
+    sealed class Unrecoverable(p: String) : Error(p) {
+      data class InvalidApiKey(val p: String) : Unrecoverable(p)
+      data class Busy(val p: String) : Unrecoverable(p)
+      data class Unknown(val message: String, val p: String) : Unrecoverable(p)
     }
   }
 }
