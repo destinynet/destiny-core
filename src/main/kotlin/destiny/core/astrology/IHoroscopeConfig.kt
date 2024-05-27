@@ -23,7 +23,7 @@ interface IHoroscopeConfig : java.io.Serializable {
     get() = HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, place)
 }
 
-interface IClassicalConfig {
+interface IClassicalConfig : java.io.Serializable {
   var factories: List<IPlanetPatternFactory>
   val classicalConfig: ClassicalConfig
     get() = ClassicalConfig(factories)
