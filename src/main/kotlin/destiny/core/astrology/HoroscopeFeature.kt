@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseImpl
@@ -131,7 +132,9 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
         val progressedAspects = config.points.asSequence().flatMap { p1 -> config.points.asSequence().map { p2 -> p1 to p2 } }
           .mapNotNull { (p1, p2) ->
             aspectsCalculator.getAspectPatterns(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)?.let { p: IPointAspectPattern ->
-              ProgressedAspect(p1, p2, p.aspect, p.orb, p.type!!, p.score)
+              val p1House = model.getHouse(posMapOuter[p1]!!.lng.toZodiacDegree())
+              val p2House = model.getHouse(posMapInner[p2]!!.lng.toZodiacDegree())
+              ProgressedAspect(p1, p2, p1House, p2House, p.aspect, p.orb, p.type!!, p.score)
             }
           }.toSet()
 
