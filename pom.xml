@@ -13,19 +13,6 @@
   <name>destiny-core</name>
   <version>0.0.1</version>
 
-  <build>
-    <sourceDirectory>src/main/kotlin</sourceDirectory>
-
-    <plugins>
-      <plugin>
-        <artifactId>kotlin-maven-plugin</artifactId>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <version>${kotlin.version}</version>
-      </plugin>
-
-
-    </plugins>
-  </build>
 
   <dependencies>
 
