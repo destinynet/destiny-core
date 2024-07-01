@@ -1,9 +1,9 @@
 package destiny.core
 
-import java.time.LocalDate
 import java.util.*
 
-interface IDailyDigest<M, T> {
+interface IDailyDigest<out M : IDaily, T> : IDigest<@UnsafeVariance M, T> {
 
-  fun digest(model: M, date: LocalDate, locale: Locale = Locale.getDefault()): T?
+  override fun digest(model: @UnsafeVariance M, locale: Locale): T?
+
 }
