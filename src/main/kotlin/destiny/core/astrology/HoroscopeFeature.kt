@@ -113,8 +113,6 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
 
     return progression.getConvergentTime(model.gmtJulDay, progressionTime).let { convergentTime ->
 
-      logger.trace { "convergentTime = $convergentTime" }
-
       logger.info { "convergentGmt = ${JulDayResolver1582CutoverImpl().getLocalDateTime(convergentTime)}" }
 
       val convergentModel = getModel(convergentTime, model.location, config)
