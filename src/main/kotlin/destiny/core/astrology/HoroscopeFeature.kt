@@ -35,7 +35,8 @@ data class HoroscopeConfig(
   override var temperature: Double = 0.0,
   override var pressure: Double = 1013.25,
   override var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval,
-  override var place: String? = null
+  override var place: String? = null,
+  override val relocations: Map<@Serializable(with = AstroPointSerializer::class) AstroPoint , Double> = emptyMap()
 ) : IHoroscopeConfig
 
 
@@ -49,9 +50,10 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
   var pressure: Double = 1013.25
   var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval
   var place: String? = null
+  var relocations: Map<AstroPoint , Double> = emptyMap()
 
   override fun build(): HoroscopeConfig {
-    return HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, place)
+    return HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, place, relocations)
   }
 
   companion object {
@@ -144,7 +146,19 @@ class HoroscopeFeature(
 
     val positionMap: Map<AstroPoint, IPosWithAzimuth> = config.points.map { point ->
       point to pointPosFuncMap[point]?.getPosition(gmtJulDay, loc, config.centric, config.coordinate, config.temperature, config.pressure)
-    }.filter { (_, v) -> v != null }.associate { (point, pos) -> point to pos!! as IPosWithAzimuth }
+    }.filter { (_, v) -> v != null }
+      .associate { (point, pos) ->
+        point to (pos!! as IPosWithAzimuth).let {
+          if (config.relocations.containsKey(point)) {
+            val newLng = config.relocations[point]!!
+            val newPos = Pos(newLng, it.lat)
+            val az = Azimuth(it.azimuthDeg , it.trueAltitude, it.apparentAltitude)
+            PosWithAzimuth(newPos, az)
+          } else {
+            it
+          }
+        }
+      }
 
 
     // [1] 到 [12] 宮首黃道度數

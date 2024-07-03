@@ -7,7 +7,9 @@ import destiny.core.AbstractConfigTest
 import destiny.core.astrology.HoroscopeConfigBuilder.Companion.horoscope
 import destiny.core.astrology.classical.VoidCourseImpl
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlin.test.assertEquals
 
 internal class HoroscopeConfigTest : AbstractConfigTest<HoroscopeConfig>() {
   override val serializer: KSerializer<HoroscopeConfig> = HoroscopeConfig.serializer()
@@ -20,7 +22,11 @@ internal class HoroscopeConfigTest : AbstractConfigTest<HoroscopeConfig>() {
     temperature = 23.0,
     pressure = 1000.0,
     vocImpl = VoidCourseImpl.Hellenistic,
-    place = "台北市"
+    place = "台北市",
+    relocations = mapOf(
+      Planet.MOON to 60.0,
+      Asteroid.CERES to 120.0
+    )
   )
 
   override val configByFunction: HoroscopeConfig = horoscope {
@@ -32,20 +38,37 @@ internal class HoroscopeConfigTest : AbstractConfigTest<HoroscopeConfig>() {
     pressure = 1000.0
     vocImpl = VoidCourseImpl.Hellenistic
     place = "台北市"
+    relocations = mapOf(
+      Planet.MOON to 60.0,
+      Asteroid.CERES to 120.0
+    )
   }
 
   override val assertion: (String) -> Unit = { raw: String ->
-    assertTrue(raw.contains("Planet.MOON"))
-    assertTrue(raw.contains("Asteroid.CERES"))
-    assertTrue(raw.contains("Fixed.ALGOL"))
-    assertTrue(raw.contains("Hamburger.ADMETOS"))
+    logger.info { raw }
 
-    assertTrue(raw.contains(""""houseSystem":\s*"MERIDIAN"""".toRegex()))
-    assertTrue(raw.contains(""""coordinate":\s*"EQUATORIAL"""".toRegex()))
-    assertTrue(raw.contains(""""centric":\s*"TOPO"""".toRegex()))
-    assertTrue(raw.contains(""""temperature":\s*23.0""".toRegex()))
-    assertTrue(raw.contains(""""pressure":\s*1000.0""".toRegex()))
-    assertTrue(raw.contains(""""vocImpl":\s*"Hellenistic"""".toRegex()))
-    assertTrue(raw.contains(""""place":\s*"台北市"""".toRegex()))
+    val actual = Json.decodeFromString<JsonElement>(raw)
+    val expected = Json.decodeFromString<JsonElement>("""
+      {
+          "points": [
+              "Planet.MOON",
+              "Asteroid.CERES",
+              "Fixed.ALGOL",
+              "Hamburger.ADMETOS"
+          ],
+          "houseSystem": "MERIDIAN",
+          "coordinate": "EQUATORIAL",
+          "centric": "TOPO",
+          "temperature": 23.0,
+          "pressure": 1000.0,
+          "vocImpl": "Hellenistic",
+          "place": "台北市",
+          "relocations": {
+              "Planet.MOON": 60.0,
+              "Asteroid.CERES": 120.0
+          }
+      }
+    """.trimIndent())
+    assertEquals(expected, actual)
   }
 }
