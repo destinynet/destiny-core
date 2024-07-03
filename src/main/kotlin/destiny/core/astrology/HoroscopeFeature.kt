@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
@@ -11,7 +12,7 @@ import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.prediction.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.JulDayResolver
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
@@ -20,7 +21,10 @@ import destiny.tools.serializers.AstroPointSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
 import javax.cache.Cache
+
 
 @Serializable
 data class HoroscopeConfig(
@@ -104,48 +108,19 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   }
 
   fun getProgression(
-    progression: AbstractProgression, model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
-    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig
-  ): IProgressionModel {
+    progression: AbstractProgression,
+    model: IHoroscopeModel,
+    progressionTime: GmtJulDay,
+    aspects: Set<Aspect>,
+    aspectsCalculator: IAspectsCalculator,
+    config: IHoroscopeConfig
+  ): IProgressionModel
 
-    // inner : natal chart
-    val posMapInner = model.positionMap
-
-    return progression.getConvergentTime(model.gmtJulDay, progressionTime).let { convergentTime ->
-
-      logger.info { "convergentGmt = ${JulDayResolver1582CutoverImpl().getLocalDateTime(convergentTime)}" }
-
-      val convergentModel = getModel(convergentTime, model.location, config)
-
-      // outer : progression chart
-      val posMapOuter = convergentModel.positionMap
-
-      // 2.4 hours later
-      val later = progressionTime.plus(0.1)
-      progression.getConvergentTime(model.gmtJulDay, later).let { laterConvergentTime ->
-        val laterModel = getModel(laterConvergentTime, model.location, config)
-        val posMapLater = laterModel.positionMap
-
-
-        val progressedAspects = config.points.asSequence().flatMap { p1 -> config.points.asSequence().map { p2 -> p1 to p2 } }
-          .mapNotNull { (p1, p2) ->
-            aspectsCalculator.getAspectPatterns(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)?.let { p: IPointAspectPattern ->
-              val p1House = model.getHouse(posMapOuter[p1]!!.lng.toZodiacDegree())
-              val p2House = model.getHouse(posMapInner[p2]!!.lng.toZodiacDegree())
-              ProgressedAspect(p1, p2, p1House, p2House, p.aspect, p.orb, p.type!!, p.score)
-            }
-          }.toSet()
-
-        ProgressionModel(progression.type, model.gmtJulDay, progressionTime, convergentTime, progressedAspects)
-      }
-    }
-  }
-
-
-  companion object {
-    private val logger = KotlinLogging.logger { }
-  }
 }
+
+data class ProgressionCalcObj(
+  val convergentTime: GmtJulDay
+)
 
 @Named
 class HoroscopeFeature(
@@ -153,6 +128,7 @@ class HoroscopeFeature(
   private val houseCuspFeature: IHouseCuspFeature,
   private val voidCourseFeature: IVoidCourseFeature,
   private val planetHourFeature: Feature<PlanetaryHourConfig, PlanetaryHour?>,
+  private val julDayResolver: JulDayResolver,
   @Transient
   private val horoscopeFeatureCache: Cache<GmtCacheKey<*>, IHoroscopeModel>
 ) : AbstractCachedFeature<IHoroscopeConfig, IHoroscopeModel>(), IHoroscopeFeature {
@@ -184,7 +160,64 @@ class HoroscopeFeature(
     return HoroscopeModel(gmtJulDay, loc, config, positionMap, cuspDegreeMap, vocMap, planetaryHour)
   }
 
+  override fun getProgression(
+    progression: AbstractProgression,
+    model: IHoroscopeModel,
+    progressionTime: GmtJulDay,
+    aspects: Set<Aspect>,
+    aspectsCalculator: IAspectsCalculator,
+    config: IHoroscopeConfig
+  ): IProgressionModel {
+
+    val convergentTime = progression.getConvergentTime(model.gmtJulDay, progressionTime)
+    logger.info { "convergentGmt = ${julDayResolver.getLocalDateTime(convergentTime)}" }
+    val param = ProgressionCalcObj(progressionTime)
+
+    fun performOperation(param: ProgressionCalcObj): CompletableFuture<IProgressionModel> {
+      return progressionCache.get(param) {
+        logger.info { "cache missed , calculating... param.hashCode = ${param.hashCode()}" }
+
+        val convergentModel = getModel(param.convergentTime, model.location, config)
+
+        // inner : natal chart
+        val posMapInner = model.positionMap
+        // outer : progression chart
+        val posMapOuter = convergentModel.positionMap
+
+        // 2.4 hours later
+        val later = progressionTime.plus(0.1)
+
+        CompletableFuture.supplyAsync {
+          progression.getConvergentTime(model.gmtJulDay, later).let { laterConvergentTime ->
+            val laterModel = getModel(laterConvergentTime, model.location, config)
+            val posMapLater = laterModel.positionMap
+
+
+            val progressedAspects = config.points.asSequence().flatMap { p1 -> config.points.asSequence().map { p2 -> p1 to p2 } }
+              .mapNotNull { (p1, p2) ->
+                aspectsCalculator.getAspectPatterns(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)
+                  ?.let { p: IPointAspectPattern ->
+                    val p1House = model.getHouse(posMapOuter[p1]!!.lng.toZodiacDegree())
+                    val p2House = model.getHouse(posMapInner[p2]!!.lng.toZodiacDegree())
+                    ProgressedAspect(p1, p2, p1House, p2House, p.aspect, p.orb, p.type!!, p.score)
+                  }
+              }.toSet()
+
+            ProgressionModel(progression.type, model.gmtJulDay, progressionTime, param.convergentTime, progressedAspects)
+          }
+        }
+      }
+    }
+    return performOperation(param).get()
+  }
+
   companion object {
+    private val progressionCache: com.github.benmanes.caffeine.cache.Cache<ProgressionCalcObj, CompletableFuture<IProgressionModel>> = Caffeine.newBuilder()
+      .maximumSize(10000)
+      .expireAfterWrite(1, TimeUnit.DAYS)
+      .build()
+
     const val CACHE_HOROSCOPE_FEATURE = "horoscopeFeatureCache"
+    private val logger = KotlinLogging.logger { }
   }
 }
