@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.Gender
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -16,7 +17,7 @@ class DiceModelTest {
 
   @Test
   fun testSerialization() {
-    val model = DiceModel(DiceStar.JUPITER, ZodiacSign.TAURUS, 2)
+    val model = DiceModel(DiceStar.JUPITER, ZodiacSign.TAURUS, 2, Gender.女, "詢問事業")
     Json.encodeToString(model).also { raw ->
       val actual = Json.decodeFromString<JsonElement>(raw)
       val expected = Json.decodeFromString<JsonElement>(
@@ -24,7 +25,9 @@ class DiceModelTest {
         {
           "star": "JUPITER",
           "signal": "TAURUS",
-          "house": 2
+          "house": 2,
+          "gender": "女",
+          "question": "詢問事業"
         }
       """.trimIndent()
       )

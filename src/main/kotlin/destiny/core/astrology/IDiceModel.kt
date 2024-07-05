@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.Gender
 import java.io.Serializable
 
 
@@ -25,19 +26,23 @@ interface IDiceModel : Serializable {
   val star: DiceStar
   val signal: ZodiacSign
   val house: Int
+  val gender: Gender?
+  val question: String?
 }
 
 @kotlinx.serialization.Serializable
 data class DiceModel(override val star: DiceStar,
                      override val signal: ZodiacSign,
-                     override val house: Int) : IDiceModel {
+                     override val house: Int,
+                     override val gender: Gender?,
+                     override val question: String?) : IDiceModel {
   companion object {
     val random : IDiceModel
       get() {
         val star = DiceStar.entries.random()
         val signal = ZodiacSign.entries.random()
         val house = (1..12).random()
-        return DiceModel(star, signal, house)
+        return DiceModel(star, signal, house, null, null)
       }
   }
 }
