@@ -37,12 +37,11 @@ data class DiceModel(override val star: DiceStar,
                      override val gender: Gender?,
                      override val question: String?) : IDiceModel {
   companion object {
-    val random : IDiceModel
-      get() {
-        val star = DiceStar.entries.random()
-        val signal = ZodiacSign.entries.random()
-        val house = (1..12).random()
-        return DiceModel(star, signal, house, null, null)
-      }
+    fun random(gender: Gender?, question: String?): IDiceModel {
+      val star = DiceStar.entries.random()
+      val signal = ZodiacSign.entries.random()
+      val house = (1..12).random()
+      return DiceModel(star, signal, house, gender, question)
+    }
   }
 }
