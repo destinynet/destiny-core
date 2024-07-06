@@ -24,7 +24,7 @@ class DiceModelTest {
         """
         {
           "star": "JUPITER",
-          "signal": "TAURUS",
+          "sign": "TAURUS",
           "house": 2,
           "gender": "女",
           "question": "詢問事業"

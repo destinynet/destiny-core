@@ -24,7 +24,7 @@ enum class DiceStar(val star: Star, val unicode: Char = star.unicode!!) {
 
 interface IDiceModel : Serializable {
   val star: DiceStar
-  val signal: ZodiacSign
+  val sign: ZodiacSign
   val house: Int
   val gender: Gender?
   val question: String?
@@ -32,7 +32,7 @@ interface IDiceModel : Serializable {
 
 @kotlinx.serialization.Serializable
 data class DiceModel(override val star: DiceStar,
-                     override val signal: ZodiacSign,
+                     override val sign: ZodiacSign,
                      override val house: Int,
                      override val gender: Gender?,
                      override val question: String?) : IDiceModel {
