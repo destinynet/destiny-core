@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.Gender
+import destiny.core.ITimeLoc
 import java.io.Serializable
 
 
@@ -21,6 +22,7 @@ enum class DiceStar(val star: Star, val unicode: Char = star.unicode!!) {
   NORTH(LunarNode.NORTH_MEAN),
   SOUTH(LunarNode.SOUTH_MEAN),
 }
+
 
 interface IDiceModel : Serializable {
   val star: DiceStar
@@ -45,3 +47,9 @@ data class DiceModel(override val star: DiceStar,
     }
   }
 }
+
+interface IDiceModelAdvanced : IDiceModel, ITimeLoc
+
+data class DiceModelAdvanced(val diceModel: DiceModel,
+                             val timeLoc: ITimeLoc
+                             ) : IDiceModelAdvanced, IDiceModel by diceModel, ITimeLoc by timeLoc
