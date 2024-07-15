@@ -26,7 +26,7 @@ data class NearByPoi(val poi: IPoi, override val meters: Int) : INearByPoi, IPoi
 
 interface INearBy {
 
-  suspend fun getNearBy(lat: Double, lng: Double, type: String, radiusMeters: Int, locale: Locale = Locale.getDefault()): List<IPoi>
+  suspend fun getNearBy(lat: Double, lng: Double, type: String, keyword: String?, radiusMeters: Int, locale: Locale = Locale.getDefault()): List<IPoi>
 
   suspend fun getNearBys(lat: Double, lng: Double, types: List<String>, radiusMeters: Int, locale: Locale = Locale.getDefault()): List<INearByPoi>
 }
