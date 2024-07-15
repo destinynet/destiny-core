@@ -7,6 +7,6 @@ enum class ReplyDomain {
   EDUCATION,
   MEDICAL,
   NIMBY,
-  DIRECTION,
+  CULTURE,
   CONCLUSION,
 }
