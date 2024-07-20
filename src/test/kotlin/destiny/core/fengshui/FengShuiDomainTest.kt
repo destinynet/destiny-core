@@ -6,10 +6,10 @@ package destiny.core.fengshui
 import destiny.core.EnumTest
 import kotlin.test.Test
 
-class ReplyDomainTest : EnumTest() {
+class FengShuiDomainTest : EnumTest() {
 
   @Test
   fun testEnum() {
-    testEnums(ReplyDomain::class)
+    testEnums(FengShuiDomain::class)
   }
 }

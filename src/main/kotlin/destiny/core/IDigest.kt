@@ -3,7 +3,6 @@
  */
 package destiny.core
 
-import destiny.tools.ai.IChatCompletion
 import java.io.Serializable
 import java.util.*
 
@@ -13,11 +12,4 @@ import java.util.*
 interface IDigest<M, T> : Serializable {
 
   fun digest(model: M, locale: Locale = Locale.getDefault()): T?
-
-  /**
-   * after got reply from [IChatCompletion], what to do with the reply ? Validation , transformation or trimming ?
-   */
-  fun postProcess(model: T) : T? {
-    return model
-  }
 }

@@ -1,6 +1,6 @@
 package destiny.core.fengshui
 
-enum class ReplyDomain {
+enum class FengShuiDomain {
   ENVIRONMENT,
   FOOD,
   RECREATION,
