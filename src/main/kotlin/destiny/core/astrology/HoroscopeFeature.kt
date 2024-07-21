@@ -21,7 +21,6 @@ import destiny.tools.serializers.AstroPointSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 import javax.cache.Cache
 
@@ -121,7 +120,9 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
 }
 
 data class ProgressionCalcObj(
-  val convergentTime: GmtJulDay
+  val type: ProgressionType,
+  val convergentTime: GmtJulDay,
+  val forward: Boolean
 )
 
 @Named
@@ -184,12 +185,12 @@ class HoroscopeFeature(
   ): IProgressionModel {
 
     val convergentTime = progression.getConvergentTime(model.gmtJulDay, progressionTime)
-    logger.info { "convergentGmt = ${julDayResolver.getLocalDateTime(convergentTime)}" }
-    val param = ProgressionCalcObj(progressionTime)
+    logger.debug { "convergentGmt = ${julDayResolver.getLocalDateTime(convergentTime)}" }
+    val param = ProgressionCalcObj(progression.type, convergentTime, progression.forward)
 
-    fun performOperation(param: ProgressionCalcObj): CompletableFuture<IProgressionModel> {
+    fun performOperation(param: ProgressionCalcObj): IProgressionModel {
       return progressionCache.get(param) {
-        logger.info { "cache missed , calculating... param.hashCode = ${param.hashCode()}" }
+        logger.debug { "cache missed , calculating... param = $param" }
 
         val convergentModel = getModel(param.convergentTime, model.location, config)
 
@@ -201,32 +202,30 @@ class HoroscopeFeature(
         // 2.4 hours later
         val later = progressionTime.plus(0.1)
 
-        CompletableFuture.supplyAsync {
-          progression.getConvergentTime(model.gmtJulDay, later).let { laterConvergentTime ->
-            val laterModel = getModel(laterConvergentTime, model.location, config)
-            val posMapLater = laterModel.positionMap
+        progression.getConvergentTime(model.gmtJulDay, later).let { laterConvergentTime ->
+          logger.info { "laterConvergentTime = ${julDayResolver.getLocalDateTime(laterConvergentTime)}" }
+          val laterModel = getModel(laterConvergentTime, model.location, config)
+          val posMapLater = laterModel.positionMap
 
+          val progressedAspects = config.points.asSequence().flatMap { p1 -> config.points.asSequence().map { p2 -> p1 to p2 } }
+            .mapNotNull { (p1, p2) ->
+              aspectsCalculator.getAspectPatterns(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)
+                ?.let { p: IPointAspectPattern ->
+                  val p1House = model.getHouse(posMapOuter[p1]!!.lng.toZodiacDegree())
+                  val p2House = model.getHouse(posMapInner[p2]!!.lng.toZodiacDegree())
+                  ProgressedAspect(p1, p2, p1House, p2House, p.aspect, p.orb, p.type!!, p.score)
+                }
+            }.toSet()
 
-            val progressedAspects = config.points.asSequence().flatMap { p1 -> config.points.asSequence().map { p2 -> p1 to p2 } }
-              .mapNotNull { (p1, p2) ->
-                aspectsCalculator.getAspectPatterns(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)
-                  ?.let { p: IPointAspectPattern ->
-                    val p1House = model.getHouse(posMapOuter[p1]!!.lng.toZodiacDegree())
-                    val p2House = model.getHouse(posMapInner[p2]!!.lng.toZodiacDegree())
-                    ProgressedAspect(p1, p2, p1House, p2House, p.aspect, p.orb, p.type!!, p.score)
-                  }
-              }.toSet()
-
-            ProgressionModel(progression.type, model.gmtJulDay, progressionTime, param.convergentTime, progressedAspects)
-          }
+          ProgressionModel(progression.type, model.gmtJulDay, progressionTime, convergentTime, progressedAspects)
         }
       }
     }
-    return performOperation(param).get()
+    return performOperation(param)
   }
 
   companion object {
-    private val progressionCache: com.github.benmanes.caffeine.cache.Cache<ProgressionCalcObj, CompletableFuture<IProgressionModel>> = Caffeine.newBuilder()
+    private val progressionCache: com.github.benmanes.caffeine.cache.Cache<ProgressionCalcObj, IProgressionModel> = Caffeine.newBuilder()
       .maximumSize(10000)
       .expireAfterWrite(1, TimeUnit.DAYS)
       .build()
