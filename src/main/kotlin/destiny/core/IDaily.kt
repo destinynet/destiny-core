@@ -12,12 +12,12 @@ import java.time.LocalDate
 interface IDaily : Serializable {
   val bdnp: IBirthDataNamePlace
   val localDate: LocalDate
-  val location: ILocation
+  val location: ILocation?
 }
 
 data class Daily(override val bdnp: IBirthDataNamePlace,
                  override val localDate: LocalDate,
-                 override val location: ILocation) : IDaily
+                 override val location: ILocation?) : IDaily
 
 
 interface IDailyHoroscope : IDaily {
