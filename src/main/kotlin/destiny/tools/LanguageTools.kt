@@ -3,6 +3,8 @@
  */
 package destiny.tools
 
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -23,5 +25,17 @@ fun <E> Collection<E>.searchImpl(type: Type, containerClazz: Class<*>? = null): 
       }
     } ?: false
 
+  }
+}
+
+inline fun <reified T : Enum<T>> parseJsonToMap(json: String): Map<T, String> {
+  val keyToDomain = enumValues<T>().associateBy { it.name }
+
+  return try {
+    Json.decodeFromString<Map<String, String>>(json).entries
+      .mapNotNull { (key, value) -> keyToDomain[key]?.let { it to value } }
+      .toMap()
+  } catch (e: SerializationException) {
+    emptyMap()
   }
 }
