@@ -23,6 +23,8 @@ sealed class Reply(val provider: String) {
 
 interface IChatCompletion {
 
+  val provider: String
+
   suspend fun chatComplete(messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = Duration.of(60, ChronoUnit.SECONDS)) : Reply
 
   suspend fun chatComplete(messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = Duration.of(60, ChronoUnit.SECONDS)) : Reply {
