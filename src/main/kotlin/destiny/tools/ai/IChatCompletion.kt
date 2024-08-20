@@ -25,18 +25,18 @@ interface IChatCompletion {
 
   val provider: String
 
-  suspend fun chatComplete(messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = Duration.of(60, ChronoUnit.SECONDS)) : Reply
+  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = Duration.of(60, ChronoUnit.SECONDS)) : Reply
 
-  suspend fun chatComplete(messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = Duration.of(60, ChronoUnit.SECONDS)) : Reply {
-    return chatComplete(messages, user, setOf(funCall), timeout)
+  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = Duration.of(60, ChronoUnit.SECONDS)) : Reply {
+    return chatComplete(model, messages, user, setOf(funCall), timeout)
   }
 }
 
 abstract class AbstractChatCompletion : IChatCompletion {
 
-  abstract suspend fun doChatComplete(messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration): Reply
+  abstract suspend fun doChatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration): Reply
 
-  override suspend fun chatComplete(messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration): Reply {
+  override suspend fun chatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration): Reply {
     val filteredFunCalls = funCalls.filter { it.applied(messages) }.toSet()
 
     val finalMsgs = messages.fold(mutableListOf<Msg>()) { acc, msg ->
@@ -62,7 +62,7 @@ abstract class AbstractChatCompletion : IChatCompletion {
       acc
     }
 
-    return doChatComplete(finalMsgs, user, filteredFunCalls, timeout)
+    return doChatComplete(model, finalMsgs, user, filteredFunCalls, timeout)
   }
 
   companion object {
