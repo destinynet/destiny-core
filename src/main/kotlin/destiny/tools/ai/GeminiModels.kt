@@ -32,7 +32,7 @@ class Gemini {
   @Serializable
   data class Request(val contents: List<Content>,
                      val tools : List<Tool>? = null,
-                     @SerialName("generation_config")
+                     @SerialName("generationConfig")
                      val config: Config) {
     @Serializable
     data class Config(
@@ -48,7 +48,7 @@ class Gemini {
        * Default for gemini-pro-vision: 32
        * Default for gemini-pro: none
        */
-      val topK: Int = 32
+      val topK: Int? = null
     )
   }
 
