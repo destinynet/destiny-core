@@ -3,6 +3,7 @@
  */
 package destiny.tools.ai
 
+import destiny.tools.ai.Gemini.ResponseContainer.CandidateContainer.Candidate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -64,23 +65,31 @@ class Gemini {
     }
   }
 
-  sealed class Response {
+  sealed class ResponseContainer {
+
     @Serializable
-    data class CandidateContainer(val candidates: List<Candidate>) : Response() {
+    data class Response(val candidates: List<Candidate>) : ResponseContainer()
+
+    /**
+     * for streamGenerateContent
+     */
+    @Serializable
+    data class CandidateContainer(val candidates: List<Candidate>) : ResponseContainer() {
       @Serializable
       data class Candidate(val content: Content)
-
-      /** contents with functionCall */
-      val contentsWithFunctionCall: List<Content>
-        get() {
-          return candidates.mapNotNull { candidate -> candidate.content.takeIf { c -> c.parts?.any { p -> p.functionCall != null } ?: false } }
-        }
     }
 
     @Serializable
-    data class ErrorContainer(val error: Error?) : Response() {
+    data class ErrorContainer(val error: Error?) : ResponseContainer() {
       @Serializable
       data class Error(val code: Int, val message: String, val status: String)
+    }
+
+    companion object {
+      /** contents with functionCall */
+      fun List<Candidate>.contentsWithFunctionCall(): List<Content> {
+        return this.mapNotNull { candidate -> candidate.content.takeIf { c -> c.parts?.any { p -> p.functionCall != null } ?: false } }
+      }
     }
   }
 }

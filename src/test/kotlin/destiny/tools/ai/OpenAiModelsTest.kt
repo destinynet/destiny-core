@@ -85,7 +85,7 @@ class OpenAiFunTest {
       }
       ]
     """.trimIndent()
-      val content = json.decodeFromString<List<Gemini.Response.ErrorContainer>>(raw)
+      val content = json.decodeFromString<List<Gemini.ResponseContainer.ErrorContainer>>(raw)
       logger.info { "content = $content" }
       content[0].error.also { error ->
         assertNotNull(error)
