@@ -46,3 +46,20 @@ fun IFunctionDeclaration.toGemini(): Gemini.FunctionDeclaration {
     )
   )
 }
+
+fun IFunctionDeclaration.toClaude(): Claude.Function {
+  return Claude.Function(
+    this.name,
+    this.description,
+    Claude.Function.InputSchema(
+      "object",
+      this.parameters.associate { p ->
+        p.name to Claude.Function.InputSchema.Property(
+          p.type,
+          p.description
+        )
+      },
+      this.parameters.filter { it.required }.map { it.name }
+    )
+  )
+}
