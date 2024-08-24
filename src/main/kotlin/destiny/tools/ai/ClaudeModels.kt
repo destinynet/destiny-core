@@ -29,10 +29,7 @@ class Claude {
 
 
     @Serializable
-    data class ToolResult(
-      override val role: String,
-      val content: List<ToolResultContent>
-    ) : ClaudeMessage() {
+    data class ToolResult(override val role: String, val content: List<ToolResultContent>) : ClaudeMessage() {
       @Serializable
       data class ToolResultContent(@SerialName("tool_use_id") val toolUseId: String, val content: String) {
         val type: String = "tool_result"
@@ -50,6 +47,29 @@ class Claude {
     }
   }
 
+  @OptIn(ExperimentalSerializationApi::class)
+  @Serializable
+  @JsonClassDiscriminator("type")
+  sealed class Content {
+    abstract val type: String
+
+    @Serializable
+    @SerialName("text")
+    data class Text(override val type: String = "text", val text: String) : Content()
+
+    @Serializable
+    @SerialName("tool_use")
+    data class ToolUse(override val type: String = "tool_use", val id: String, val name: String, val input: Map<String, String>) : Content()
+
+    @Serializable
+    @SerialName("tool_result")
+    data class ToolResult(
+      @SerialName("tool_use_id")
+      val toolUseId: String, val content: String
+    ) : Content() {
+      override val type: String = "tool_result"
+    }
+  }
 
   @Serializable
   data class Response(val id : String?, val type : String, val role : String?, val model : String?,
@@ -68,22 +88,6 @@ class Claude {
       @SerialName("output_tokens")
       val outputTokens : Int
     )
-
-    @OptIn(ExperimentalSerializationApi::class)
-    @Serializable
-    @JsonClassDiscriminator("type")
-    sealed class Content {
-      abstract val type: String
-
-      @Serializable
-      @SerialName("text")
-      data class Text(override val type: String = "text", val text: String) : Content()
-
-      @Serializable
-      @SerialName("tool_use")
-      data class ToolUse(override val type: String = "tool_use", val id: String, val name: String, val input: Map<String, String>) : Content()
-
-    }
 
     @Serializable
     data class Error(val type: String = "error", val message: String)
