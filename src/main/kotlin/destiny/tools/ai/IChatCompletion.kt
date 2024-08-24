@@ -4,18 +4,20 @@ import mu.KotlinLogging
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 
-sealed class Reply(val provider: String) {
+sealed class Reply {
 
-  data class Normal(val content: String, val p: String, val model: String) : Reply(p)
+  abstract val provider: String
 
-  sealed class Error(p: String) : Reply(p) {
+  data class Normal(val content: String, override val provider: String, val model: String) : Reply()
 
-    data class TooLong(val message: String, val p: String) : Error(p)
+  sealed class Error : Reply() {
 
-    sealed class Unrecoverable(p: String) : Error(p) {
-      data class InvalidApiKey(val p: String) : Unrecoverable(p)
-      data class Busy(val p: String) : Unrecoverable(p)
-      data class Unknown(val message: String, val p: String) : Unrecoverable(p)
+    data class TooLong(val message: String, override val provider: String) : Error()
+
+    sealed class Unrecoverable : Error() {
+      data class InvalidApiKey(override val provider: String) : Unrecoverable()
+      data class Busy(override val provider: String) : Unrecoverable()
+      data class Unknown(val message: String, override val provider: String) : Unrecoverable()
     }
   }
 }

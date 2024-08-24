@@ -13,12 +13,13 @@ class Claude {
 
 
   @Serializable
-  data class Response(val id : String , val type : String , val role : String , val model : String ,
-                      val content : List<Content>,
+  data class Response(val id : String?, val type : String, val role : String?, val model : String?,
+                      @SerialName("content")
+                      val contents : List<Content>?,
                       @SerialName("stop_reason")
-                      val stopReason : String ,
+                      val stopReason : String?,
                       @SerialName("stop_sequence")
-                      val stopSequence: String?, val usage : Usage) {
+                      val stopSequence: String?, val usage : Usage?) {
 
     @Serializable
     data class Usage(
