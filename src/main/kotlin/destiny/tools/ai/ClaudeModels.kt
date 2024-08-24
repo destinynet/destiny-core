@@ -7,15 +7,55 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonClassDiscriminator
+import kotlinx.serialization.json.JsonContentPolymorphicSerializer
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
 
 
 class Claude {
+
+  @Serializable(with = ClaudeMessageSerializer::class)
+  sealed class ClaudeMessage {
+    abstract val role: String
+
+    abstract val stringContent: String
+
+    @Serializable
+    data class Text(override val role: String, val content: String) : ClaudeMessage() {
+
+      @kotlinx.serialization.Transient
+      override val stringContent = content
+    }
+
+
+    @Serializable
+    data class ToolResult(
+      override val role: String,
+      val content: List<ToolResultContent>
+    ) : ClaudeMessage() {
+      @Serializable
+      data class ToolResultContent(@SerialName("tool_use_id") val toolUseId: String, val content: String) {
+        val type: String = "tool_result"
+      }
+
+      @kotlinx.serialization.Transient
+      override val stringContent: String = content.joinToString("\n") { it.content }
+    }
+  }
+
+  object ClaudeMessageSerializer : JsonContentPolymorphicSerializer<ClaudeMessage>(ClaudeMessage::class) {
+    override fun selectDeserializer(element: JsonElement) = when {
+      element.jsonObject["tool_use_id"] != null -> ClaudeMessage.ToolResult.serializer()
+      else                                      -> ClaudeMessage.Text.serializer()
+    }
+  }
 
 
   @Serializable
   data class Response(val id : String?, val type : String, val role : String?, val model : String?,
                       @SerialName("content")
                       val contents : List<Content>?,
+                      val error : Error?,
                       @SerialName("stop_reason")
                       val stopReason : String?,
                       @SerialName("stop_sequence")
@@ -43,10 +83,10 @@ class Claude {
       @SerialName("tool_use")
       data class ToolUse(override val type: String = "tool_use", val id: String, val name: String, val input: Map<String, String>) : Content()
 
-      @Serializable
-      @SerialName("error")
-      data class Error(override val type: String = "error", val message: String) : Content()
     }
+
+    @Serializable
+    data class Error(val type: String = "error", val message: String)
 
   }
 
