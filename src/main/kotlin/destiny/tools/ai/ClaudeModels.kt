@@ -3,71 +3,70 @@
  */
 package destiny.tools.ai
 
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonClassDiscriminator
-import kotlinx.serialization.json.JsonContentPolymorphicSerializer
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.*
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.*
 
 
 class Claude {
-
-  @Serializable(with = ClaudeMessageSerializer::class)
-  sealed class ClaudeMessage {
-    abstract val role: String
-
-    abstract val stringContent: String
-
-    @Serializable
-    data class Text(override val role: String, val content: String) : ClaudeMessage() {
-
-      @kotlinx.serialization.Transient
-      override val stringContent = content
-    }
-
-
-    @Serializable
-    data class ToolResult(override val role: String, val content: List<ToolResultContent>) : ClaudeMessage() {
-      @Serializable
-      data class ToolResultContent(@SerialName("tool_use_id") val toolUseId: String, val content: String) {
-        val type: String = "tool_result"
-      }
-
-      @kotlinx.serialization.Transient
-      override val stringContent: String = content.joinToString("\n") { it.content }
-    }
-  }
-
-  object ClaudeMessageSerializer : JsonContentPolymorphicSerializer<ClaudeMessage>(ClaudeMessage::class) {
-    override fun selectDeserializer(element: JsonElement) = when {
-      element.jsonObject["tool_use_id"] != null -> ClaudeMessage.ToolResult.serializer()
-      else                                      -> ClaudeMessage.Text.serializer()
-    }
-  }
 
   @OptIn(ExperimentalSerializationApi::class)
   @Serializable
   @JsonClassDiscriminator("type")
   sealed class Content {
-    abstract val type: String
+    abstract val contentType: String
 
     @Serializable
     @SerialName("text")
-    data class Text(override val type: String = "text", val text: String) : Content()
+    data class Text(override val contentType: String = "text", val text: String) : Content()
 
     @Serializable
     @SerialName("tool_use")
-    data class ToolUse(override val type: String = "tool_use", val id: String, val name: String, val input: Map<String, String>) : Content()
+    data class ToolUse(override val contentType: String = "tool_use", val id: String, val name: String, val input: Map<String, String>) : Content()
 
     @Serializable
     @SerialName("tool_result")
-    data class ToolResult(
-      @SerialName("tool_use_id")
-      val toolUseId: String, val content: String
-    ) : Content() {
-      override val type: String = "tool_result"
+    data class ToolResult(@SerialName("tool_use_id") val toolUseId: String, val content: String) : Content() {
+      override val contentType: String = "tool_result"
+    }
+  }
+
+  @Serializable(with = ClaudeMessageSerializer::class)
+  sealed class ClaudeMessage {
+    abstract val role: String
+
+    @Serializable
+    data class TextContent(override val role: String, val content: String) : ClaudeMessage()
+
+    @Serializable
+    data class ArrayContent(override val role: String, val content: List<Content>) : ClaudeMessage()
+  }
+
+
+  object ClaudeMessageSerializer : KSerializer<ClaudeMessage> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ClaudeMessage") {
+      element<String>("role")
+      element<JsonElement>("content")
+    }
+
+    override fun serialize(encoder: Encoder, value: ClaudeMessage) {
+      val compositeOutput = encoder.beginStructure(descriptor)
+      compositeOutput.encodeStringElement(descriptor, 0, value.role)
+
+      when (value) {
+        is ClaudeMessage.TextContent  -> compositeOutput.encodeSerializableElement(descriptor, 1, serializer(), JsonPrimitive(value.content))
+        is ClaudeMessage.ArrayContent -> compositeOutput.encodeSerializableElement(descriptor, 1, serializer(), Json.encodeToJsonElement(value.content))
+      }
+
+      compositeOutput.endStructure(descriptor)
+    }
+
+    override fun deserialize(decoder: Decoder): ClaudeMessage {
+      throw UnsupportedOperationException("Deserialization is not supported")
     }
   }
 
