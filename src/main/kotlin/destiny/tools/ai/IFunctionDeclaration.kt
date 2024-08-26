@@ -3,8 +3,15 @@
  */
 package destiny.tools.ai
 
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class FunctionDeclaration(val name: String, val description: String)
 
-/** used by OpenAI and Gemini */
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Parameter(val description: String, val required: Boolean = true)
+
+/** used by OpenAI, Gemini and Claude */
 interface IFunctionDeclaration {
   data class Parameter(val name: String, val type: String, val description: String, val required: Boolean)
 
