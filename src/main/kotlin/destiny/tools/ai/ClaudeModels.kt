@@ -95,11 +95,6 @@ class Claude {
 
 
   @Serializable
-  data class Function(val name: String, val description: String, @SerialName("input_schema") val inputSchema: InputSchema) {
-    @Serializable
-    data class InputSchema(val type: String = "object", val properties: Map<String, Property>, val required: List<String>) {
-      @Serializable
-      data class Property(val type: String, val description: String)
-    }
-  }
+  data class Function(val name: String, val description: String, @SerialName("input_schema") val inputSchema: InputSchema)
+
 }
