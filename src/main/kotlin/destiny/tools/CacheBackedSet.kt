@@ -26,7 +26,7 @@ class CacheBackedSet<E>(private val cache: Cache<E, Boolean>) : MutableSet<E> {
 
       override fun hasNext() = iter.hasNext()
       override fun next(): E {
-        val entry = iter.next() as Map.Entry<E, *>
+        val entry = iter.next() as Cache.Entry<E, *>
         last = entry.key
         return entry.key
       }
