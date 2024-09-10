@@ -7,7 +7,7 @@ import destiny.core.Descriptive
 import destiny.core.IPattern
 import destiny.core.IPatternDescriptor
 import destiny.tools.AbstractPropertyBasedPatternDescriptor
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 
 /**
  * maybe merged with [destiny.core.astrology.classical.rules.AbstractPlanetPatternDescriptor]

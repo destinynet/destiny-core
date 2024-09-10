@@ -5,7 +5,7 @@ package destiny.core.chinese.eightwords.hazards
 
 import destiny.core.calendar.eightwords.EightWords
 import destiny.core.chinese.eightwords.hazards.ChildHazard.*
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

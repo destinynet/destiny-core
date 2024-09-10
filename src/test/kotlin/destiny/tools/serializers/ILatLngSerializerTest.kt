@@ -5,7 +5,7 @@ package destiny.tools.serializers
 
 import destiny.core.calendar.ILatLng
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

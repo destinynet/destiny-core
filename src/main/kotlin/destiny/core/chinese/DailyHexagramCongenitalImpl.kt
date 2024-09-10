@@ -11,7 +11,7 @@ import destiny.core.iching.Congenital.Circle.next
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
 import destiny.core.iching.Symbol
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 import java.util.*
 

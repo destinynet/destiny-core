@@ -7,7 +7,7 @@ import destiny.core.Gender
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

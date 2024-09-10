@@ -5,7 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.TimeTools
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 
 /**

@@ -11,7 +11,7 @@ import destiny.tools.ai.OpenAi.FunctionDeclaration.Function.Parameters.Argument
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 import kotlin.test.assertEquals

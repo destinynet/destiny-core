@@ -3,7 +3,7 @@
  */
 package destiny.core.calendar
 
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import org.threeten.extra.chrono.JulianChronology
 import java.io.Serializable
 import java.time.*

@@ -5,6 +5,5 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.IBirthDataNamePlace
 
-
 data class ZiweiDivine(override val divineBdnp: IBirthDataNamePlace,
                        override val question: String) : IBdnpDivine

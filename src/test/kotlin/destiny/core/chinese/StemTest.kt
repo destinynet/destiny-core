@@ -8,7 +8,7 @@ package destiny.core.chinese
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.Stem.Companion.combinedCount
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

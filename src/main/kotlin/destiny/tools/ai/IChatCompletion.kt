@@ -1,6 +1,6 @@
 package destiny.tools.ai
 
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 

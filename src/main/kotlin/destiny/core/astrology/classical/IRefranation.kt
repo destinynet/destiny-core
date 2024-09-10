@@ -4,7 +4,7 @@
 package destiny.core.astrology.classical
 
 import destiny.core.astrology.*
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 
 /**

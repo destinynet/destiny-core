@@ -10,7 +10,7 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 
 
 abstract class AbstractOctaDivideScore : IEwContextScore {

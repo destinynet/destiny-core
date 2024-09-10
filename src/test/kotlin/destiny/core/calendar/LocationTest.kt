@@ -6,7 +6,7 @@ package destiny.core.calendar
 
 import destiny.core.News.EastWest
 import destiny.core.News.NorthSouth
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

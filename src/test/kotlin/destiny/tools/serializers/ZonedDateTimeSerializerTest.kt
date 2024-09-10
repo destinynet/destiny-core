@@ -4,7 +4,7 @@
 package destiny.tools.serializers
 
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime

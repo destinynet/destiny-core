@@ -14,7 +14,7 @@ import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.astrology.classical.Dignity.*
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import kotlin.test.*
 
 class EssentialImplTest {

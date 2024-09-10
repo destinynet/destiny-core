@@ -18,7 +18,7 @@ import destiny.core.astrology.classical.rules.AccidentalDignity.Oriental
 import destiny.core.astrology.classical.rules.Debility.*
 import destiny.core.astrology.classical.rules.Debility.MutualDeception
 import destiny.core.chinese.YinYang
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.Gender
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.酉
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import kotlin.test.Test
 
 class ISmallRangeTest {

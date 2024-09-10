@@ -4,7 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.toString
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull

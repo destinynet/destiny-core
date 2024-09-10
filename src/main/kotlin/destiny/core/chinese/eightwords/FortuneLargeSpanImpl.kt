@@ -21,7 +21,7 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import jakarta.inject.Named
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs

@@ -4,7 +4,7 @@
 package destiny.core
 
 import destiny.core.astrology.AstroPoint
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.companionObject

@@ -7,7 +7,7 @@ import destiny.core.astrology.HoroscopeFunctions.getAxisScore
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import io.mockk.every
 import io.mockk.mockk
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test

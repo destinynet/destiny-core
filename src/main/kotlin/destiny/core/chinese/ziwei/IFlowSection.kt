@@ -8,7 +8,7 @@ import destiny.core.Gender
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.StemBranch
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 
 /** 起大限  */
 interface IFlowSection : Descriptive {

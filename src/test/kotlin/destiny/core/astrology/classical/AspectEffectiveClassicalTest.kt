@@ -7,7 +7,7 @@ package destiny.core.astrology.classical
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import kotlin.test.*
 
 class AspectEffectiveClassicalTest {

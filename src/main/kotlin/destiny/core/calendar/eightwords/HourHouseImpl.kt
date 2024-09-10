@@ -8,7 +8,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.Branch
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 

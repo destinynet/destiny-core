@@ -7,7 +7,7 @@ import destiny.core.astrology.ZodiacSign
 import destiny.core.calendar.*
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.format.DateTimeFormatter
 
 class TimeLine(val model: IEightWordsContextModel,

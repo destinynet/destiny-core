@@ -7,7 +7,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.elementNames
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.reflect.KClass

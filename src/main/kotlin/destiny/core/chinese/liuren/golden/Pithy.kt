@@ -12,7 +12,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 

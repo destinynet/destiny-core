@@ -3,7 +3,7 @@
  */
 package destiny.tools
 
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -7,7 +7,7 @@ package destiny.core.astrology.classical.rules
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
 import destiny.core.astrology.classical.*
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 
 /**

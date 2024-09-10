@@ -4,7 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 
 

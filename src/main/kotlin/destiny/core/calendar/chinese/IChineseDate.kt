@@ -9,7 +9,7 @@ import destiny.core.calendar.CalType
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.StemBranch
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import org.threeten.extra.chrono.JulianDate
 import java.time.LocalDate
 import java.time.chrono.ChronoLocalDate

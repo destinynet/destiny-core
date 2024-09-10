@@ -1,7 +1,7 @@
 /** 2009/10/20 下午10:53:51 by smallufo  */
 package destiny.tools
 
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.ZoneId
 import java.time.zone.ZoneRulesException
 import java.util.*

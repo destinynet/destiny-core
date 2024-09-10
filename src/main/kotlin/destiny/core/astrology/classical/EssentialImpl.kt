@@ -6,7 +6,7 @@ package destiny.core.astrology.classical
 
 import destiny.core.DayNight
 import destiny.core.astrology.*
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 
 /** Facade Class of Ptolemy's Table of Essential Dignities and Debilities  */

@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.StarMain.太陽
 import destiny.core.chinese.ziwei.T4Value.*
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNull

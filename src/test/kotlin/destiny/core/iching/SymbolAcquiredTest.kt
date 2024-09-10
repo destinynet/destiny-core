@@ -4,7 +4,7 @@
 package destiny.core.iching
 
 import destiny.core.iching.Symbol.*
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

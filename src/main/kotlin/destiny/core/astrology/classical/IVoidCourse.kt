@@ -11,7 +11,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 import java.util.*
 import kotlin.math.min

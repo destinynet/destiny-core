@@ -7,7 +7,7 @@ import com.google.common.collect.Sets
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.Score.Companion.toScore
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import org.apache.commons.math3.ml.clustering.Cluster
 import org.apache.commons.math3.ml.clustering.Clusterable
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer

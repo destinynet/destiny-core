@@ -24,7 +24,7 @@ import destiny.tools.PersonFeature
 import destiny.tools.getTitle
 import jakarta.inject.Inject
 import jakarta.inject.Named
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.text.MessageFormat
 import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate

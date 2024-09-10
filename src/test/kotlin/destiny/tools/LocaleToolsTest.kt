@@ -3,7 +3,7 @@
  */
 package destiny.tools
 
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.*
 

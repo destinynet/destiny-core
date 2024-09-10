@@ -12,7 +12,7 @@ import destiny.core.astrology.Planet.*
 import destiny.core.astrology.classical.*
 import destiny.core.chinese.YinYang
 import destiny.tools.getTitle
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 import java.util.*
 

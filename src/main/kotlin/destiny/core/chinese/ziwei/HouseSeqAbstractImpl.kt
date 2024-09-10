@@ -5,7 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.tools.ArrayTools
 import destiny.tools.getTitle
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 import java.util.*
 

@@ -8,7 +8,7 @@ import destiny.core.chinese.Stem.*
 import destiny.core.chinese.impls.TianyiZiweiBookImpl
 import destiny.core.getAbbreviation
 import destiny.core.toString
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -7,7 +7,7 @@ import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.TimeTools.yearToStemBranch
 import destiny.core.chinese.StemBranch
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource

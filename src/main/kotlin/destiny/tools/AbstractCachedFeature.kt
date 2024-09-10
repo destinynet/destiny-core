@@ -7,7 +7,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.fixError
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField

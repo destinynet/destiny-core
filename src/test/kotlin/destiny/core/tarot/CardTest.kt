@@ -4,7 +4,7 @@
 package destiny.core.tarot
 
 import destiny.core.EnumTest
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.awt.image.BufferedImage
 import java.util.*
 import javax.imageio.ImageIO

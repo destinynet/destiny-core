@@ -8,7 +8,7 @@ import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull

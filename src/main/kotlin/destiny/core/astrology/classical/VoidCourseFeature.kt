@@ -13,7 +13,7 @@ import destiny.tools.Feature
 import destiny.tools.serializers.AstroPointSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 
 interface IVoidCourseConfig : java.io.Serializable {
   var planet: Planet

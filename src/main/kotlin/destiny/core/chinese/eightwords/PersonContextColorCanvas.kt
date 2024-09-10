@@ -11,7 +11,7 @@ import destiny.core.calendar.eightwords.EightWordsColorCanvas
 import destiny.core.calendar.eightwords.TimeLine
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import org.apache.commons.lang3.StringUtils
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField

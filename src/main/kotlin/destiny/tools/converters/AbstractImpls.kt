@@ -7,7 +7,7 @@ import com.google.common.collect.HashBiMap
 import destiny.core.Descriptive
 import destiny.tools.Domain
 import destiny.tools.Impl
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 
 

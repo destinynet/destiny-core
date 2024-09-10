@@ -7,7 +7,7 @@ import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.tools.asDescriptive
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 
 /**

@@ -34,7 +34,7 @@ import destiny.core.chinese.ziwei.StarMinor.Companion.fun陰煞_月數
 import destiny.core.chinese.ziwei.StarMinor.Companion.fun鳳閣
 import destiny.core.getAbbreviation
 import destiny.core.toString
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

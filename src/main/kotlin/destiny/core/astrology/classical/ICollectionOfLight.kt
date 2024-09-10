@@ -5,7 +5,7 @@ package destiny.core.astrology.classical
 
 import destiny.core.astrology.*
 import destiny.core.astrology.IPointAspectPattern.Type.APPLYING
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 import kotlin.math.abs
 

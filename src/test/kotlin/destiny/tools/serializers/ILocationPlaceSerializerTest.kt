@@ -7,7 +7,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ILocationPlace
 import destiny.core.calendar.LocationPlace
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

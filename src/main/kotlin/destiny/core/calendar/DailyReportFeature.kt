@@ -24,7 +24,7 @@ import destiny.tools.location.ReverseGeocodingService
 import destiny.tools.serializers.LocaleSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit

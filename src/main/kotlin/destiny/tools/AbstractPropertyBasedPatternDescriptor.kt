@@ -9,7 +9,7 @@ import destiny.core.astrology.*
 import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.toString
 import destiny.core.toString
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 import java.text.MessageFormat
 import java.util.*

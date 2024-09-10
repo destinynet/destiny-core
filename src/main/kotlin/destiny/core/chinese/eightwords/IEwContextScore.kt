@@ -9,7 +9,7 @@ import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.tools.getTitle
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 
 

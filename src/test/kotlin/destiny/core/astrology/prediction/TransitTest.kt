@@ -7,7 +7,7 @@ import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.absDuration
 import destiny.core.calendar.locationOf
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.Test

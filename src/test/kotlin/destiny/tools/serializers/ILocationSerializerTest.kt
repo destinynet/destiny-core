@@ -6,7 +6,7 @@ package destiny.tools.serializers
 import destiny.core.calendar.ILocation
 import destiny.tools.serializers.Assertions.assertLocEquals
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import kotlin.test.Test
 
 class ILocationSerializerTest {

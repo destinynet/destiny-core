@@ -11,7 +11,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.IEvent
 import destiny.core.calendar.SolarTermsEvent
 import destiny.core.calendar.TimeDesc
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 
 object HoroscopeFunctions {
 

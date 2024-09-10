@@ -11,7 +11,7 @@ import destiny.core.iching.Congenital.Table.tableNext
 import destiny.core.iching.Congenital.Table.tablePrev
 import destiny.core.iching.Congenital.toHexagram
 import destiny.core.iching.Congenital.toInt
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame

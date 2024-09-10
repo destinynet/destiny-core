@@ -7,7 +7,7 @@ import destiny.core.News.EastWest
 import destiny.core.News.NorthSouth.NORTH
 import destiny.core.News.NorthSouth.SOUTH
 import destiny.tools.AlignTools
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.ZoneId
 import java.util.*
 import kotlin.math.atan2

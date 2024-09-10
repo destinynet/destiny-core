@@ -3,7 +3,7 @@
  */
 package destiny.core.calendar
 
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId

@@ -9,7 +9,7 @@ import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.Feature
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 import kotlin.math.absoluteValue
 

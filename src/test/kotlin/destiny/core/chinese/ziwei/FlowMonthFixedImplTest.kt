@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull

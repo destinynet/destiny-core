@@ -10,7 +10,7 @@ import destiny.core.TimeLoc
 import destiny.core.calendar.locationOf
 import destiny.tools.serializers.Assertions.assertBirthDataEquals
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.Test

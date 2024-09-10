@@ -26,7 +26,7 @@ import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 
 @Serializable

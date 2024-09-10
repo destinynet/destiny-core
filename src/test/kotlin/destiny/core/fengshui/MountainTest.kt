@@ -3,7 +3,7 @@
  */
 package destiny.core.fengshui
 
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import kotlin.test.Test
 
 class MountainTest {

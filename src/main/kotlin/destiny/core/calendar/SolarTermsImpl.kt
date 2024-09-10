@@ -11,7 +11,7 @@ import destiny.core.astrology.IStarPosition
 import destiny.core.astrology.IStarTransit
 import destiny.core.astrology.Planet.SUN
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.io.Serializable
 
 /**

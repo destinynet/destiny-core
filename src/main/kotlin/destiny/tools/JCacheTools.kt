@@ -1,6 +1,6 @@
 package destiny.tools
 
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import org.apache.commons.lang3.RandomStringUtils
 import javax.cache.Cache
 import javax.cache.CacheManager

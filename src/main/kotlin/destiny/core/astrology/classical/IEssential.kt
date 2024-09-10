@@ -9,7 +9,7 @@ import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.ZodiacDegree
 import destiny.core.astrology.ZodiacSign
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 
 /**
  * Facade Interface of Essential Dignities and Debilities <br></br>

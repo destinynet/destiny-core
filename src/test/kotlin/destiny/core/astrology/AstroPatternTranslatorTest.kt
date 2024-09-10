@@ -7,7 +7,7 @@ import destiny.core.astrology.AstroPattern.*
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacSign.*
 import destiny.tools.Score.Companion.toScore
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

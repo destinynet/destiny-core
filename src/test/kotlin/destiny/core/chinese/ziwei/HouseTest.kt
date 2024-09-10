@@ -5,7 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.EnumTest
 import destiny.tools.getTitle
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

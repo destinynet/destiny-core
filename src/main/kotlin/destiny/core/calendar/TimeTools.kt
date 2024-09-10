@@ -7,7 +7,7 @@ import destiny.core.News.EastWest.EAST
 import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.chinese.StemBranch
 import destiny.tools.StringTools.clean
-import mu.KotlinLogging
+import destiny.tools.KotlinLogging
 import java.time.*
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
