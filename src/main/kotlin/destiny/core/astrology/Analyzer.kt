@@ -101,7 +101,7 @@ object Analyzer {
       if (!node.visited) {
         val circular = Circular<Planet>()
         findCircles(node, graph, mutableListOf(), circular, horoscopeModel, rulerImpl)
-        if (circular.size > 0) {
+        if (circular.size > 1) {
           circles.add(circular)
         }
       }
