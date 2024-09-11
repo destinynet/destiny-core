@@ -10,12 +10,6 @@ object Analyzer {
 
   internal data class Node(val planet: Planet, var visited: Boolean = false, var inCircle: Boolean = false)
 
-  private fun buildGraph(): Map<Planet, Node> {
-    return Planet.classicalList.associateWith { planet ->
-      Node(planet)
-    }
-  }
-
   private fun findCircles(
     node: Node,
     graph: Map<Planet, Node>,
@@ -97,7 +91,7 @@ object Analyzer {
 
 
   fun analyzeHoroscope(horoscopeModel: IHoroscopeModel, rulerImpl: IRuler): GraphResult {
-    val graph = buildGraph()
+    val graph: Map<Planet, Node> = Planet.classicalList.associateWith { planet -> Node(planet) }
     val circles = mutableSetOf<Circular<Planet>>()
     val paths = mutableSetOf<List<Planet>>()
     val terminals = mutableSetOf<Planet>()
