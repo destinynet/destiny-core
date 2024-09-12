@@ -9,120 +9,124 @@ object Analyzer {
 
   internal data class Node(val planet: Planet, var visited: Boolean = false, var inCircle: Boolean = false)
 
-  private fun findCircles(
-    node: Node,
-    graph: Map<Planet, Node>,
-    currentPath: MutableList<Planet>,
-    circular: Circular<Planet>,
+  fun analyzeHoroscope(
     planetSignMap: Map<Planet, ZodiacSign>,
     rulerMap: Map<ZodiacSign, Planet>
-  ) {
-    node.visited = true
-    currentPath.add(node.planet)
+  ): GraphResult {
+    val graph = buildGraph(planetSignMap, rulerMap)
+    val circles = findCircles(graph)
+    val (paths, terminals) = findPaths(graph, circles, planetSignMap, rulerMap)
+    val isolated = findIsolated(planetSignMap, rulerMap , circles, paths)
 
-    val sign = planetSignMap[node.planet]
-    if (sign != null) {
-      val ruler = rulerMap[sign]!!
-      val rulerNode = graph[ruler]
-      if (rulerNode != null) {
-        val cycleStart = currentPath.indexOf(ruler)
-        if (cycleStart != -1) {
-          // 找到了一個循環
+    return GraphResult(circles, paths, isolated, terminals)
+  }
 
-          currentPath.subList(cycleStart, currentPath.size).forEach { circular.add(it) }
-        } else if (!rulerNode.visited) {
-          // 繼續尋找 circle
-          findCircles(rulerNode, graph, currentPath, circular, planetSignMap, rulerMap)
+  private fun buildGraph(
+    planetSignMap: Map<Planet, ZodiacSign>,
+    rulerMap: Map<ZodiacSign, Planet>
+  ): Map<Planet, Planet> {
+    return planetSignMap.mapValues { (_, sign) -> rulerMap[sign]!! }
+  }
+
+  private fun findCircles(graph: Map<Planet, Planet>): Set<Circular<Planet>> {
+    val circles = mutableSetOf<Circular<Planet>>()
+    val visited = mutableSetOf<Planet>()
+
+    fun dfs(start: Planet, current: Planet, path: MutableList<Planet>) {
+      if (current in path && path.size > path.indexOf(current) + 1) {
+        val circle = Circular<Planet>()
+        for (planet in path.subList(path.indexOf(current), path.size)) {
+          circle.add(planet)
         }
+        if (circle.size > 1) {  // 确保 circular 至少包含两颗星体
+          circles.add(circle)
+        }
+        return
+      }
+
+      if (current in visited) return
+
+      visited.add(current)
+      path.add(current)
+
+      val next = graph[current]
+      if (next != null && next != current) {  // 确保不包括自己统治自己的情况
+        dfs(start, next, path)
+      }
+
+      path.removeAt(path.size - 1)
+    }
+
+    for (planet in graph.keys) {
+      if (planet !in visited) {
+        dfs(planet, planet, mutableListOf())
       }
     }
 
-    currentPath.removeAt(currentPath.size - 1)
+    return circles
   }
-
 
   private fun findPaths(
-    node: Node,
-    graph: Map<Planet, Node>,
-    currentPath: MutableList<Planet>,
-    paths: MutableSet<List<Planet>>,
+    graph: Map<Planet, Planet>,
     circles: Set<Circular<Planet>>,
-    terminals: MutableSet<Planet>,
     planetSignMap: Map<Planet, ZodiacSign>,
     rulerMap: Map<ZodiacSign, Planet>
-  ) {
-    node.visited = true
-    currentPath.add(node.planet)
-
-    val sign = planetSignMap[node.planet]
-    if (sign != null) {
-      val ruler = rulerMap[sign]!!
-      val rulerNode = graph[ruler]
-      if (rulerNode != null) {
-        if (rulerNode.inCircle || circles.any { it.toList().contains(ruler) }) {
-          // 路徑連接到一個循環，結束路徑
-          currentPath.add(ruler)
-          paths.add(currentPath.toList())
-        } else if (!rulerNode.visited) {
-          // 繼續尋找路徑
-          findPaths(rulerNode, graph, currentPath, paths, circles, terminals, planetSignMap, rulerMap)
-        } else {
-          // 路徑結束於一個已訪問的行星
-          currentPath.add(ruler)
-          paths.add(currentPath.toList())
-          terminals.add(ruler)
-        }
-      }
-    }
-
-    currentPath.removeAt(currentPath.size - 1)
-    // 重置訪問狀態，允許這個節點成為其他路徑的一部分
-    node.visited = false
-  }
-
-
-  fun analyzeHoroscope(planetSignMap: Map<Planet, ZodiacSign>, rulerMap: Map<ZodiacSign, Planet>): GraphResult {
-    val graph: Map<Planet, Node> = planetSignMap.map { (p, _) ->  p to Node(p)}.toMap()
-
-    val circles = mutableSetOf<Circular<Planet>>()
+  ): Pair<Set<List<Planet>>, Set<Planet>> {
     val paths = mutableSetOf<List<Planet>>()
     val terminals = mutableSetOf<Planet>()
 
-    // 第一步：找出所有的循環
-    for (node in graph.values) {
-      if (!node.visited) {
-        val circular = Circular<Planet>()
-        findCircles(node, graph, mutableListOf(), circular, planetSignMap, rulerMap)
-        if (circular.size > 1) {
-          circles.add(circular)
+    fun dfs(start: Planet, current: Planet, path: MutableList<Planet>) {
+      path.add(current)
+
+      val next = graph[current]
+      if (next != null && next != current) {
+        if (circles.any { it.toList().contains(next) }) {
+          // Path ends at a circle
+          path.add(next)
+          paths.add(path.toList())
+        } else if (planetSignMap[next] == rulerMap.entries.find { it.value == next }?.key) {
+          // Next planet is in its ruling sign
+          path.add(next)
+          paths.add(path.toList())
+          terminals.add(next)
+        } else if (next !in path) {
+          // Continue the path
+          dfs(start, next, path)
         }
+      } else {
+        // End of path or self-ruling
+        paths.add(path.toList())
+        terminals.add(current)
+      }
+
+      path.removeAt(path.size - 1)
+    }
+
+    for (planet in graph.keys) {
+      if (circles.none { it.toList().contains(planet) }) {
+        dfs(planet, planet, mutableListOf())
       }
     }
 
-    // 標記所有在循環中的行星
-    circles.forEach { circle: Circular<Planet> ->
-      circle.toList().forEach { planet ->
-        graph[planet]?.inCircle = true
-      }
+    // 移除被其他路径完全包含的路径
+    val filteredPaths = paths.filter { path ->
+      paths.none { other -> other != path && other.containsAll(path) }
     }
 
-    // 重置訪問狀態
-    graph.values.forEach { it.visited = false }
+    return Pair(filteredPaths.filter { it.size > 1 }.toSet(), terminals)
+  }
 
-    // 第二步：找出所有的路徑
-    for (node in graph.values) {
-      if (!node.inCircle && !node.visited) {
-        findPaths(node, graph, mutableListOf(), paths, circles, terminals, planetSignMap, rulerMap)
-      }
-    }
-
-    // 找出孤立的行星
-    val isolated = graph.values.filter { !it.inCircle && !paths.any { path -> path.contains(it.planet) } }.map { it.planet }.toSet()
-
-    // 過濾掉在循環中的終端點
-    val finalTerminals = terminals.filter { !graph[it]!!.inCircle }.toSet()
-
-    return GraphResult(circles, paths, isolated, finalTerminals)
+  private fun findIsolated(
+    planetSignMap: Map<Planet, ZodiacSign>,
+    rulerMap: Map<ZodiacSign, Planet>,
+    circles: Set<Circular<Planet>>,
+    paths: Set<List<Planet>>
+  ): Set<Planet> {
+    val involvedPlanets = circles.flatMap { it.toList() }.toSet() + paths.flatMap { it }.toSet()
+    return planetSignMap.keys.filter { planet ->
+      planet !in involvedPlanets &&
+        planetSignMap.values.none { sign -> rulerMap[sign] == planet }
+    }.toSet()
   }
 
 
