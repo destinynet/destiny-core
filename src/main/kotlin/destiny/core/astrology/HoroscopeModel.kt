@@ -6,6 +6,7 @@ package destiny.core.astrology
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
 import destiny.core.ITimeLoc
+import destiny.core.astrology.classical.IRuler
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -133,6 +134,20 @@ interface IHoroscopeModel : ITimeLoc {
       .filter { it.key is Hamburger }
       .mapKeys { it.key as Hamburger }
       .toMap()
+
+  fun getGraphResult(ruler : IRuler) : GraphResult {
+    val rulerMap: Map<ZodiacSign, Planet> = ZodiacSign.entries.associateWith { sign ->
+      with(ruler) {
+        sign.getRulerPoint(null) as Planet
+      }
+    }
+
+    val planetSignMap: Map<Planet, ZodiacSign> by lazy {
+      points.filterIsInstance<Planet>().filter { it in Planet.classicalList }.associateWith { p -> getZodiacSign(p)!! }
+    }
+
+    return Analyzer.analyzeHoroscope(planetSignMap, rulerMap)
+  }
 
 
   /**
