@@ -189,6 +189,38 @@ class AnalyzerTest {
     }
   }
 
+  /**
+   * 星盤中呈現三條路徑，全部都集中到水星
+   */
+  @Test
+  fun all_paths_point_to_one_planet() {
+    val planetSignMap = mapOf(
+      // path1 1
+      SUN to CANCER,
+      MOON to GEMINI,
+      MERCURY to GEMINI,
+      // path 2
+      VENUS to ARIES,
+      MARS to GEMINI,
+      // path 3
+      JUPITER to CAPRICORN,
+      SATURN to GEMINI
+    )
+    verifyMap(planetSignMap) { graphResult ->
+      assertTrue { graphResult.circles.isEmpty() }
+      assertEquals(3, graphResult.paths.size)
+      assertEquals(
+        setOf(
+          listOf(SUN, MOON, MERCURY),
+          listOf(VENUS, MARS, MERCURY),
+          listOf(JUPITER, SATURN, MERCURY)
+        ), graphResult.paths
+      )
+      assertTrue { graphResult.isolated.isEmpty() }
+      assertEquals(setOf(MERCURY), graphResult.terminals)
+    }
+  }
+
   @Test
   fun one_circle() {
     val planetSignMap = mapOf(
