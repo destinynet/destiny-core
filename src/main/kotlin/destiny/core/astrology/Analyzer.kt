@@ -9,10 +9,7 @@ object Analyzer {
 
   internal data class Node(val planet: Planet, var visited: Boolean = false, var inCircle: Boolean = false)
 
-  fun analyzeHoroscope(
-    planetSignMap: Map<Planet, ZodiacSign>,
-    rulerMap: Map<ZodiacSign, Planet>
-  ): GraphResult {
+  fun analyzeHoroscope(planetSignMap: Map<Planet, ZodiacSign>, rulerMap: Map<ZodiacSign, Planet>): GraphResult {
     val graph = planetSignMap.mapValues { (_, sign) -> rulerMap[sign]!! }
     val circles = findCircles(graph)
     val (paths, terminals) = findPaths(graph, circles, planetSignMap, rulerMap)
@@ -28,12 +25,14 @@ object Analyzer {
 
     fun dfs(start: Planet, current: Planet, path: MutableList<Planet>) {
       if (current in path && path.size > path.indexOf(current) + 1) {
-        val circle = Circular<Planet>()
+        val planetsInCircular = mutableListOf<Planet>()
+
         for (planet in path.subList(path.indexOf(current), path.size)) {
-          circle.add(planet)
+          planetsInCircular.add(planet)
         }
-        if (circle.size > 1) {  // 確保 circular 至少包含兩顆星體
-          circles.add(circle)
+        if (planetsInCircular.size > 1) {
+          // 確保 circular 至少包含兩顆星體
+          circles.add(Circular(planetsInCircular))
         }
         return
       }
@@ -44,7 +43,8 @@ object Analyzer {
       path.add(current)
 
       val next = graph[current]
-      if (next != null && next != current) {  // 確保不包括自己统治自己的情况
+      if (next != null && next != current) {
+        // 確保不包括自己统治自己的情况
         dfs(start, next, path)
       }
 
@@ -74,7 +74,7 @@ object Analyzer {
 
       val next = graph[current]
       if (next != null && next != current) {
-        if (circles.any { it.toList().contains(next) }) {
+        if (circles.any { it.contains(next) }) {
           // Path ends at a circle
           path.add(next)
           paths.add(path.toList())
@@ -97,7 +97,7 @@ object Analyzer {
     }
 
     for (planet in graph.keys) {
-      if (circles.none { it.toList().contains(planet) }) {
+      if (circles.none { it.contains(planet) }) {
         dfs(planet, planet, mutableListOf())
       }
     }

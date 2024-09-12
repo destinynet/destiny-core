@@ -1,14 +1,9 @@
 package destiny.core
 
-class Circular<T>(private val elements: MutableList<T> = mutableListOf()) : Iterable<T> {
+class Circular<T>(private val elements: List<T>) : Iterable<T> {
   private var normalizedView: List<T>? = null
 
   val size: Int get() = elements.size
-
-  fun add(element: T) {
-    elements.add(element)
-    normalizedView = null
-  }
 
   fun get(index: Int): T = elements[index % elements.size]
 
@@ -19,17 +14,16 @@ class Circular<T>(private val elements: MutableList<T> = mutableListOf()) : Iter
   }
 
   fun toList(): List<T> = elements.toList()
+  fun contains(element: T): Boolean = elements.contains(element)
 
   fun rotateLeft(n: Int = 1): Circular<T> {
-    if (size <= 1) return Circular(elements.toMutableList())
+    if (size <= 1) return Circular(elements)
     val actualRotation = n % size
     val rotated = elements.subList(actualRotation, size) + elements.subList(0, actualRotation)
-    return Circular(rotated.toMutableList())
+    return Circular(rotated)
   }
 
   fun rotateRight(n: Int = 1): Circular<T> = rotateLeft(size - (n % size))
-
-  fun indexOf(element: T): Int = elements.indexOf(element)
 
   override fun toString(): String = "Circular${elements.toList()}"
 
@@ -59,6 +53,6 @@ class Circular<T>(private val elements: MutableList<T> = mutableListOf()) : Iter
   private fun isEmpty() = elements.isEmpty()
 
   companion object {
-    fun <T> of(vararg elements: T): Circular<T> = Circular(elements.toMutableList())
+    fun <T> of(vararg elements: T): Circular<T> = Circular(elements.toList())
   }
 }

@@ -14,7 +14,7 @@ class CircularTest {
   fun testCircularList() {
     val list1 = Circular.of(SATURN, VENUS, JUPITER, MARS)
     val list2 = list1.rotateLeft(1)
-    val list3 = list1.rotateRight(1)
+    val list3 = list1.rotateRight(2)
     val list4 = Circular.of(VENUS, JUPITER, MARS, SATURN)
     assertEquals(list1, list2)
     assertEquals(list2, list3)
