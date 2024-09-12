@@ -4,7 +4,6 @@
 package destiny.core.astrology
 
 import destiny.core.Circular
-import destiny.core.astrology.classical.IRuler
 
 object Analyzer {
 
@@ -16,26 +15,24 @@ object Analyzer {
     currentPath: MutableList<Planet>,
     circular: Circular<Planet>,
     planetSignMap: Map<Planet, ZodiacSign>,
-    rulerImpl: IRuler
+    rulerMap: Map<ZodiacSign, Planet>
   ) {
     node.visited = true
     currentPath.add(node.planet)
 
     val sign = planetSignMap[node.planet]
     if (sign != null) {
-      val ruler = with(rulerImpl) { sign.getRulerPoint(null) } as? Planet
-      if (ruler != null) {
-        val rulerNode = graph[ruler]
-        if (rulerNode != null) {
-          val cycleStart = currentPath.indexOf(ruler)
-          if (cycleStart != -1) {
-            // 找到了一個循環
+      val ruler = rulerMap[sign]!!
+      val rulerNode = graph[ruler]
+      if (rulerNode != null) {
+        val cycleStart = currentPath.indexOf(ruler)
+        if (cycleStart != -1) {
+          // 找到了一個循環
 
-            currentPath.subList(cycleStart, currentPath.size).forEach { circular.add(it) }
-          } else if (!rulerNode.visited) {
-            // 繼續尋找 circle
-            findCircles(rulerNode, graph, currentPath, circular, planetSignMap, rulerImpl)
-          }
+          currentPath.subList(cycleStart, currentPath.size).forEach { circular.add(it) }
+        } else if (!rulerNode.visited) {
+          // 繼續尋找 circle
+          findCircles(rulerNode, graph, currentPath, circular, planetSignMap, rulerMap)
         }
       }
     }
@@ -52,35 +49,29 @@ object Analyzer {
     circles: Set<Circular<Planet>>,
     terminals: MutableSet<Planet>,
     planetSignMap: Map<Planet, ZodiacSign>,
-    rulerImpl: IRuler
+    rulerMap: Map<ZodiacSign, Planet>
   ) {
     node.visited = true
     currentPath.add(node.planet)
 
     val sign = planetSignMap[node.planet]
     if (sign != null) {
-      val ruler = with(rulerImpl) { sign.getRulerPoint(null) } as? Planet
-      if (ruler != null) {
-        val rulerNode = graph[ruler]
-        if (rulerNode != null) {
-          if (rulerNode.inCircle || circles.any { it.toList().contains(ruler) }) {
-            // 路徑連接到一個循環，結束路徑
-            currentPath.add(ruler)
-            paths.add(currentPath.toList())
-          } else if (!rulerNode.visited) {
-            // 繼續尋找路徑
-            findPaths(rulerNode, graph, currentPath, paths, circles, terminals, planetSignMap, rulerImpl)
-          } else {
-            // 路徑結束於一個已訪問的行星
-            currentPath.add(ruler)
-            paths.add(currentPath.toList())
-            terminals.add(ruler)
-          }
+      val ruler = rulerMap[sign]!!
+      val rulerNode = graph[ruler]
+      if (rulerNode != null) {
+        if (rulerNode.inCircle || circles.any { it.toList().contains(ruler) }) {
+          // 路徑連接到一個循環，結束路徑
+          currentPath.add(ruler)
+          paths.add(currentPath.toList())
+        } else if (!rulerNode.visited) {
+          // 繼續尋找路徑
+          findPaths(rulerNode, graph, currentPath, paths, circles, terminals, planetSignMap, rulerMap)
+        } else {
+          // 路徑結束於一個已訪問的行星
+          currentPath.add(ruler)
+          paths.add(currentPath.toList())
+          terminals.add(ruler)
         }
-      } else {
-        // 行星統治自己的星座
-        paths.add(currentPath.toList())
-        terminals.add(node.planet)
       }
     }
 
@@ -90,7 +81,7 @@ object Analyzer {
   }
 
 
-  fun analyzeHoroscope(planetSignMap: Map<Planet, ZodiacSign>, rulerImpl: IRuler): GraphResult {
+  fun analyzeHoroscope(planetSignMap: Map<Planet, ZodiacSign>, rulerMap: Map<ZodiacSign, Planet>): GraphResult {
     val graph: Map<Planet, Node> = planetSignMap.map { (p, _) ->  p to Node(p)}.toMap()
 
     val circles = mutableSetOf<Circular<Planet>>()
@@ -101,7 +92,7 @@ object Analyzer {
     for (node in graph.values) {
       if (!node.visited) {
         val circular = Circular<Planet>()
-        findCircles(node, graph, mutableListOf(), circular, planetSignMap, rulerImpl)
+        findCircles(node, graph, mutableListOf(), circular, planetSignMap, rulerMap)
         if (circular.size > 1) {
           circles.add(circular)
         }
@@ -121,7 +112,7 @@ object Analyzer {
     // 第二步：找出所有的路徑
     for (node in graph.values) {
       if (!node.inCircle && !node.visited) {
-        findPaths(node, graph, mutableListOf(), paths, circles, terminals, planetSignMap, rulerImpl)
+        findPaths(node, graph, mutableListOf(), paths, circles, terminals, planetSignMap, rulerMap)
       }
     }
 
