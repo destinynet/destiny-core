@@ -13,20 +13,14 @@ object Analyzer {
     planetSignMap: Map<Planet, ZodiacSign>,
     rulerMap: Map<ZodiacSign, Planet>
   ): GraphResult {
-    val graph = buildGraph(planetSignMap, rulerMap)
+    val graph = planetSignMap.mapValues { (_, sign) -> rulerMap[sign]!! }
     val circles = findCircles(graph)
     val (paths, terminals) = findPaths(graph, circles, planetSignMap, rulerMap)
-    val isolated = findIsolated(planetSignMap, rulerMap , circles, paths)
+    val isolated = findIsolated(planetSignMap, circles, paths)
 
     return GraphResult(circles, paths, isolated, terminals)
   }
 
-  private fun buildGraph(
-    planetSignMap: Map<Planet, ZodiacSign>,
-    rulerMap: Map<ZodiacSign, Planet>
-  ): Map<Planet, Planet> {
-    return planetSignMap.mapValues { (_, sign) -> rulerMap[sign]!! }
-  }
 
   private fun findCircles(graph: Map<Planet, Planet>): Set<Circular<Planet>> {
     val circles = mutableSetOf<Circular<Planet>>()
@@ -38,7 +32,7 @@ object Analyzer {
         for (planet in path.subList(path.indexOf(current), path.size)) {
           circle.add(planet)
         }
-        if (circle.size > 1) {  // 确保 circular 至少包含两颗星体
+        if (circle.size > 1) {  // 確保 circular 至少包含兩顆星體
           circles.add(circle)
         }
         return
@@ -50,7 +44,7 @@ object Analyzer {
       path.add(current)
 
       val next = graph[current]
-      if (next != null && next != current) {  // 确保不包括自己统治自己的情况
+      if (next != null && next != current) {  // 確保不包括自己统治自己的情况
         dfs(start, next, path)
       }
 
@@ -93,8 +87,8 @@ object Analyzer {
           // Continue the path
           dfs(start, next, path)
         }
-      } else {
-        // End of path or self-ruling
+      } else if (path.size > 1) {
+        // End of path
         paths.add(path.toList())
         terminals.add(current)
       }
@@ -108,26 +102,22 @@ object Analyzer {
       }
     }
 
-    // 移除被其他路径完全包含的路径
+    // 移除被其他路徑完全包含的路徑
     val filteredPaths = paths.filter { path ->
       paths.none { other -> other != path && other.containsAll(path) }
     }
 
-    return Pair(filteredPaths.filter { it.size > 1 }.toSet(), terminals)
+    return Pair(filteredPaths.toSet(), terminals)
   }
+
 
   private fun findIsolated(
     planetSignMap: Map<Planet, ZodiacSign>,
-    rulerMap: Map<ZodiacSign, Planet>,
     circles: Set<Circular<Planet>>,
     paths: Set<List<Planet>>
   ): Set<Planet> {
-    val involvedPlanets = circles.flatMap { it.toList() }.toSet() + paths.flatMap { it }.toSet()
-    return planetSignMap.keys.filter { planet ->
-      planet !in involvedPlanets &&
-        planetSignMap.values.none { sign -> rulerMap[sign] == planet }
-    }.toSet()
+    val involvedPlanets = circles.flatMap { it.toList() }.toSet() + paths.flatten().toSet()
+    return planetSignMap.keys - involvedPlanets
   }
-
 
 }
