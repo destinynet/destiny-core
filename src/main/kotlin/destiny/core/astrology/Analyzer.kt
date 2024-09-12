@@ -15,13 +15,13 @@ object Analyzer {
     graph: Map<Planet, Node>,
     currentPath: MutableList<Planet>,
     circular: Circular<Planet>,
-    horoscopeModel: IHoroscopeModel,
+    planetSignMap: Map<Planet, ZodiacSign>,
     rulerImpl: IRuler
   ) {
     node.visited = true
     currentPath.add(node.planet)
 
-    val sign = horoscopeModel.getZodiacSign(node.planet)
+    val sign = planetSignMap[node.planet]
     if (sign != null) {
       val ruler = with(rulerImpl) { sign.getRulerPoint(null) } as? Planet
       if (ruler != null) {
@@ -34,7 +34,7 @@ object Analyzer {
             currentPath.subList(cycleStart, currentPath.size).forEach { circular.add(it) }
           } else if (!rulerNode.visited) {
             // 繼續尋找 circle
-            findCircles(rulerNode, graph, currentPath, circular, horoscopeModel, rulerImpl)
+            findCircles(rulerNode, graph, currentPath, circular, planetSignMap, rulerImpl)
           }
         }
       }
@@ -51,13 +51,13 @@ object Analyzer {
     paths: MutableSet<List<Planet>>,
     circles: Set<Circular<Planet>>,
     terminals: MutableSet<Planet>,
-    horoscopeModel: IHoroscopeModel,
+    planetSignMap: Map<Planet, ZodiacSign>,
     rulerImpl: IRuler
   ) {
     node.visited = true
     currentPath.add(node.planet)
 
-    val sign = horoscopeModel.getZodiacSign(node.planet)
+    val sign = planetSignMap[node.planet]
     if (sign != null) {
       val ruler = with(rulerImpl) { sign.getRulerPoint(null) } as? Planet
       if (ruler != null) {
@@ -69,7 +69,7 @@ object Analyzer {
             paths.add(currentPath.toList())
           } else if (!rulerNode.visited) {
             // 繼續尋找路徑
-            findPaths(rulerNode, graph, currentPath, paths, circles, terminals, horoscopeModel, rulerImpl)
+            findPaths(rulerNode, graph, currentPath, paths, circles, terminals, planetSignMap, rulerImpl)
           } else {
             // 路徑結束於一個已訪問的行星
             currentPath.add(ruler)
@@ -90,8 +90,9 @@ object Analyzer {
   }
 
 
-  fun analyzeHoroscope(horoscopeModel: IHoroscopeModel, rulerImpl: IRuler): GraphResult {
-    val graph: Map<Planet, Node> = Planet.classicalList.associateWith { planet -> Node(planet) }
+  fun analyzeHoroscope(planetSignMap: Map<Planet, ZodiacSign>, rulerImpl: IRuler): GraphResult {
+    val graph: Map<Planet, Node> = planetSignMap.map { (p, _) ->  p to Node(p)}.toMap()
+
     val circles = mutableSetOf<Circular<Planet>>()
     val paths = mutableSetOf<List<Planet>>()
     val terminals = mutableSetOf<Planet>()
@@ -100,7 +101,7 @@ object Analyzer {
     for (node in graph.values) {
       if (!node.visited) {
         val circular = Circular<Planet>()
-        findCircles(node, graph, mutableListOf(), circular, horoscopeModel, rulerImpl)
+        findCircles(node, graph, mutableListOf(), circular, planetSignMap, rulerImpl)
         if (circular.size > 1) {
           circles.add(circular)
         }
@@ -120,7 +121,7 @@ object Analyzer {
     // 第二步：找出所有的路徑
     for (node in graph.values) {
       if (!node.inCircle && !node.visited) {
-        findPaths(node, graph, mutableListOf(), paths, circles, terminals, horoscopeModel, rulerImpl)
+        findPaths(node, graph, mutableListOf(), paths, circles, terminals, planetSignMap, rulerImpl)
       }
     }
 
