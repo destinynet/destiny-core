@@ -37,12 +37,16 @@ class PatternTranslatorKtTest {
   private val IPlanetPattern.enDesc: String
     get() = PatternTranslator.getDescriptor(this).getDescription(Locale.ENGLISH)
 
+  private val IPlanetPattern.jaDesc: String
+    get() = PatternTranslator.getDescriptor(this).getDescription(Locale.JAPAN)
+
 
   @Test
   fun `essentialDignities test name and description`() {
     EssentialDignity.Ruler(SUN, LEO).also {
       assertEquals("廟 (Ruler)", it.title)
       assertEquals("太陽 位於 獅子，為其 Ruler", it.twDesc)
+      assertEquals("太陽は獅子にあり、その支配星（ルーラー）です。", it.jaDesc)
     }
 
     EssentialDignity.Exaltation(SUN, ARIES).also {
@@ -88,6 +92,7 @@ class PatternTranslatorKtTest {
     House_1_10(SUN, 1).also {
       assertEquals("位於第一或第十宮", it.title)
       assertEquals("太陽 位於第 1 宮", it.twDesc)
+      assertEquals("太陽は第1宮にあります。", it.jaDesc)
     }
 
     House_4_7_11(SUN, 11).also {
@@ -232,6 +237,7 @@ class PatternTranslatorKtTest {
     Detriment(SUN, AQUARIUS).also {
       assertEquals("陷 (Detriment)" , it.title)
       assertEquals("太陽 位於 水瓶，為其 Detriment" , it.twDesc)
+      assertEquals("太陽は水瓶にあり、そのデトリメント（不遇）の位置です。" , it.jaDesc)
     }
 
     Fall(SUN , LIBRA).also {
