@@ -20,44 +20,40 @@ object Analyzer {
 
 
   private fun findCircles(graph: Map<Planet, Planet>): Set<Circular<Planet>> {
-    val circles = mutableSetOf<Circular<Planet>>()
-    val visited = mutableSetOf<Planet>()
-
-    fun dfs(start: Planet, current: Planet, path: MutableList<Planet>) {
-      if (current in path && path.size > path.indexOf(current) + 1) {
-        val planetsInCircular = mutableListOf<Planet>()
-
-        for (planet in path.subList(path.indexOf(current), path.size)) {
-          planetsInCircular.add(planet)
+    fun dfs(start: Planet, current: Planet, path: List<Planet>, visited: Set<Planet>, circles: Set<Circular<Planet>>): Set<Circular<Planet>> {
+      return when {
+        current in path && path.size > path.indexOf(current) + 1 -> {
+          path.subList(path.indexOf(current), path.size)
+            .takeIf { it.size > 1 }
+            ?.let { planetsInCircular ->
+              buildSet {
+                addAll(circles)
+                add(Circular(planetsInCircular))
+              }
+            } ?: circles
         }
-        if (planetsInCircular.size > 1) {
-          // 確保 circular 至少包含兩顆星體
-          circles.add(Circular(planetsInCircular))
+
+        current in visited                                       -> circles
+        else                                                     -> {
+          val newVisited = visited + current
+          val newPath = path + current
+          val next = graph[current]!!
+          if (next != current) {
+            dfs(start, next, newPath, newVisited, circles)
+          } else {
+            circles
+          }
         }
-        return
-      }
-
-      if (current in visited) return
-
-      visited.add(current)
-      path.add(current)
-
-      val next = graph[current]
-      if (next != null && next != current) {
-        // 確保不包括自己统治自己的情况
-        dfs(start, next, path)
-      }
-
-      path.removeAt(path.size - 1)
-    }
-
-    for (planet in graph.keys) {
-      if (planet !in visited) {
-        dfs(planet, planet, mutableListOf())
       }
     }
 
-    return circles
+    return graph.keys.fold(emptySet()) { acc, planet ->
+      if (planet in acc.flatMap { it.toList() }) {
+        acc
+      } else {
+        acc + dfs(planet, planet, emptyList(), emptySet(), emptySet())
+      }
+    }
   }
 
   private fun findPaths(
