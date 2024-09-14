@@ -4,18 +4,17 @@
 package destiny.core.astrology
 
 import destiny.core.Circular
+import destiny.core.Graph
 
 object Analyzer {
 
-  internal data class Node(val planet: Planet, var visited: Boolean = false, var inCircle: Boolean = false)
-
-  fun analyzeHoroscope(planetSignMap: Map<Planet, ZodiacSign>, rulerMap: Map<ZodiacSign, Planet>): GraphResult {
+  fun analyzeHoroscope(planetSignMap: Map<Planet, ZodiacSign>, rulerMap: Map<ZodiacSign, Planet>): Graph<Planet> {
     val graph = planetSignMap.mapValues { (_, sign) -> rulerMap[sign]!! }
     val circles = findCircles(graph)
     val (paths, terminals) = findPaths(graph, circles, planetSignMap, rulerMap)
     val isolated = findIsolated(planetSignMap, circles, paths)
 
-    return GraphResult(circles, paths, isolated, terminals)
+    return Graph(circles, paths, isolated, terminals)
   }
 
 

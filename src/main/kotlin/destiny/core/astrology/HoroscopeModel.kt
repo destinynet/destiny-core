@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.Gender
+import destiny.core.Graph
 import destiny.core.IBirthDataNamePlace
 import destiny.core.ITimeLoc
 import destiny.core.astrology.classical.IRuler
@@ -135,7 +136,7 @@ interface IHoroscopeModel : ITimeLoc {
       .mapKeys { it.key as Hamburger }
       .toMap()
 
-  fun getGraphResult(ruler : IRuler) : GraphResult {
+  fun getGraphResult(ruler : IRuler) : Graph<Planet> {
     val rulerMap: Map<ZodiacSign, Planet> = ZodiacSign.entries.associateWith { sign ->
       with(ruler) {
         sign.getRulerPoint(null) as Planet

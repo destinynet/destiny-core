@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.Circular
+import destiny.core.Graph
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.astrology.classical.RulerPtolemyImpl
@@ -279,11 +280,11 @@ class AnalyzerTest {
     }!!
   }
 
-  private fun verifyMap(planetSignMap: Map<Planet, ZodiacSign>, assertions: (r: GraphResult) -> Unit) {
+  private fun verifyMap(planetSignMap: Map<Planet, ZodiacSign>, assertions: (r: Graph<Planet>) -> Unit) {
     planetSignMap.forEach { (planet, sign) -> logger.info { "$planet in $sign" } }
-    Analyzer.analyzeHoroscope(planetSignMap, rulerMap).also { graphResult: GraphResult ->
-      logger.info { "result = $graphResult" }
-      assertions.invoke(graphResult)
+    Analyzer.analyzeHoroscope(planetSignMap, rulerMap).also { graph: Graph<Planet> ->
+      logger.info { "result = $graph" }
+      assertions.invoke(graph)
     }
   }
 }
