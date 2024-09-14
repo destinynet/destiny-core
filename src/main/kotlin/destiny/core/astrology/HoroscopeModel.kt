@@ -136,7 +136,7 @@ interface IHoroscopeModel : ITimeLoc {
       .mapKeys { it.key as Hamburger }
       .toMap()
 
-  fun getGraphResult(ruler : IRuler) : Graph<Planet> {
+  fun getGraph(ruler : IRuler) : Graph<Planet> {
     val rulerMap: Map<ZodiacSign, Planet> = ZodiacSign.entries.associateWith { sign ->
       with(ruler) {
         sign.getRulerPoint(null) as Planet
