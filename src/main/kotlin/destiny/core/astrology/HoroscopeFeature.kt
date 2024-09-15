@@ -13,14 +13,10 @@ import destiny.core.astrology.prediction.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
-import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
-import destiny.tools.Feature
+import destiny.tools.*
 import destiny.tools.serializers.AstroPointSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import destiny.tools.KotlinLogging
 import java.util.concurrent.TimeUnit
 import javax.cache.Cache
 
@@ -209,7 +205,7 @@ class HoroscopeFeature(
 
           val progressedAspects = config.points.asSequence().flatMap { p1 -> config.points.asSequence().map { p2 -> p1 to p2 } }
             .mapNotNull { (p1, p2) ->
-              aspectsCalculator.getAspectPatterns(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)
+              aspectsCalculator.getAspectPattern(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)
                 ?.let { p: IPointAspectPattern ->
                   val p1House = model.getHouse(posMapOuter[p1]!!.lng.toZodiacDegree())
                   val p2House = model.getHouse(posMapInner[p2]!!.lng.toZodiacDegree())

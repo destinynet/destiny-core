@@ -13,9 +13,9 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
                             private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>) : IAspectsCalculator, Serializable {
 
 
-  override fun getAspectPatterns(p1: AstroPoint, p2: AstroPoint,
-                                 p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,
-                                 laterForP1: () -> IPos?, laterForP2: () -> IPos?, aspects: Set<Aspect>): IPointAspectPattern? {
+  override fun getAspectPattern(p1: AstroPoint, p2: AstroPoint,
+                                p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,
+                                laterForP1: () -> IPos?, laterForP2: () -> IPos?, aspects: Set<Aspect>): IPointAspectPattern? {
     return aspects
       .intersect(aspectEffectiveImpl.applicableAspects)
       .asSequence()
@@ -61,30 +61,19 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
         val laterForP1: () -> IPos? = { pointPosFuncMap[p1]?.getPosition(later, location) }
         val laterForP2: () -> IPos? = { pointPosFuncMap[p2]?.getPosition(later, location) }
 
-        getAspectPatterns(p1, p2, posMap, posMap, laterForP1, laterForP2, aspects)
+        getAspectPattern(p1, p2, posMap, posMap, laterForP1, laterForP2, aspects)
       }
 
   }
 
   /** 針對整體 */
-  override fun IHoroscopeModel.getAspectPatterns(points: Set<AstroPoint>, aspects: Set<Aspect>): Set<IPointAspectPattern> {
+  override fun getAspectPatterns(m: IHoroscopeModel, points: Set<AstroPoint>, aspects: Set<Aspect>): Set<IPointAspectPattern> {
     return Sets.combinations(points.toSet(), 2)
       .asSequence()
-      .mapNotNull { this.getAspectPattern(it, aspects) }
+      .mapNotNull { m.getAspectPattern(it, aspects) }
       .toSet()
   }
 
-  /** 針對單一 */
-  override fun getAspectPatterns(point: AstroPoint,
-                                 h: IHoroscopeModel,
-                                 points: Set<AstroPoint>,
-                                 aspects: Set<Aspect>): Set<IPointAspectPattern> {
-    return points
-      .asSequence()
-      .map { eachPoint -> setOf(point, eachPoint) }
-      .mapNotNull { twoPoints -> h.getAspectPattern(twoPoints, aspects) }
-      .toSet()
-  }
 
   override fun getPointAspectAndScore(point: AstroPoint,
                                       positionMap: Map<AstroPoint, IPos>,
