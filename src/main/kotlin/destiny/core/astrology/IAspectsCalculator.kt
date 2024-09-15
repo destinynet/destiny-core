@@ -58,7 +58,7 @@ interface IAspectsCalculator  {
 
 
   fun IHoroscopeModel.getPointAspect(point: AstroPoint,
-                     points: Set<AstroPoint>,
+                     points: Set<AstroPoint> = this.positionMap.keys,
                      aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()): Map<AstroPoint, Aspect> {
     return getPointAspect(point, this.positionMap, points, aspects)
   }
@@ -107,4 +107,6 @@ interface IAspectsCalculator  {
     return getAspectAndType(p1, p2, aspects)?.second
   }
 
+
+  fun IHoroscopeModel.getAspectPattern(twoPoints: Set<AstroPoint>, aspects: Set<Aspect>): IPointAspectPattern?
 }

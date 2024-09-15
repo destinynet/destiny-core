@@ -42,7 +42,7 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
   }
 
 
-  private fun IHoroscopeModel.getAspectData(twoPoints: Set<AstroPoint>, aspects: Set<Aspect>): IPointAspectPattern? {
+  override fun IHoroscopeModel.getAspectPattern(twoPoints: Set<AstroPoint>, aspects: Set<Aspect>): IPointAspectPattern? {
 
     val posMap: Map<AstroPoint, IPosWithAzimuth> = this.positionMap
 
@@ -70,7 +70,7 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
   override fun IHoroscopeModel.getAspectPatterns(points: Set<AstroPoint>, aspects: Set<Aspect>): Set<IPointAspectPattern> {
     return Sets.combinations(points.toSet(), 2)
       .asSequence()
-      .mapNotNull { this.getAspectData(it, aspects) }
+      .mapNotNull { this.getAspectPattern(it, aspects) }
       .toSet()
   }
 
@@ -82,7 +82,7 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
     return points
       .asSequence()
       .map { eachPoint -> setOf(point, eachPoint) }
-      .mapNotNull { twoPoints -> h.getAspectData(twoPoints, aspects) }
+      .mapNotNull { twoPoints -> h.getAspectPattern(twoPoints, aspects) }
       .toSet()
   }
 
