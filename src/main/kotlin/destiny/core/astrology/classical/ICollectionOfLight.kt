@@ -159,12 +159,14 @@ class CollectionOfLightImpl(private val besiegedImpl: IBesieged,
 
   override fun isCollecting(point: AstroPoint, h: IHoroscopeModel, p1: AstroPoint, p2: AstroPoint): Boolean {
 
-    return aspectsCalculator.getAspectPatterns(p1, h, setOf(p1, p2), Aspect.getAspects(Aspect.Importance.HIGH).toSet())
-      .takeIf { it.isEmpty() }
-      ?.takeIf { aspectsCalculator.getAspectPatterns(h, setOf(point, p1), aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()).firstOrNull()?.type === APPLYING }
-      ?.takeIf { aspectsCalculator.getAspectPatterns(h, setOf(point, p2), aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()).firstOrNull()?.type === APPLYING }
-      ?.let { true }
-      ?: false
+    return with(aspectsCalculator) {
+      h.getAspectPatterns(p1 , setOf(p1, p2), Aspect.getAspects(Aspect.Importance.HIGH).toSet())
+        .takeIf { it.isEmpty() }
+        ?.takeIf { h.getAspectPatterns(setOf(point, p1), aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()).firstOrNull()?.type === APPLYING }
+        ?.takeIf { h.getAspectPatterns(setOf(point, p2), aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()).firstOrNull()?.type === APPLYING }
+        ?.let { true }
+        ?: false
+    }
   }
 
   companion object {

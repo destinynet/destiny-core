@@ -34,7 +34,6 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
 
             val type = if (errorNext <= error) APPLYING else SEPARATING
             PointAspectPattern.of(p1, p2, aspect, type, error, score)
-            //AspectData.of(p1, p2, aspect, error, score, type)
           }
         }
 
@@ -63,14 +62,13 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
 
         getAspectPattern(p1, p2, posMap, posMap, laterForP1, laterForP2, aspects)
       }
-
   }
 
   /** 針對整體 */
-  override fun getAspectPatterns(m: IHoroscopeModel, points: Set<AstroPoint>, aspects: Set<Aspect>): Set<IPointAspectPattern> {
+  override fun IHoroscopeModel.getAspectPatterns(points: Set<AstroPoint>, aspects: Set<Aspect>): Set<IPointAspectPattern> {
     return Sets.combinations(points.toSet(), 2)
       .asSequence()
-      .mapNotNull { m.getAspectPattern(it, aspects) }
+      .mapNotNull { this.getAspectPattern(it, aspects) }
       .toSet()
   }
 
@@ -81,6 +79,7 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
                                       aspects: Set<Aspect>): Set<Triple<AstroPoint, Aspect, Double>> {
     return positionMap[point]?.lngDeg?.let { starDeg ->
       points
+        .asSequence()
         .filter { it !== point }
         .filter { positionMap.containsKey(it) }
         .filter { eachPoint -> !(point is Axis && eachPoint is Axis) }  // 過濾四角點互相形成的交角

@@ -10,7 +10,8 @@ import destiny.core.astrology.IPointAspectPattern.Type.APPLYING
 import destiny.core.astrology.IPointAspectPattern.Type.SEPARATING
 
 /**
- * 計算一張命盤 [IHoroscopeModel] 內部的交角列表
+ * 計算一張命盤 [IHoroscopeModel] 內部的交角列表 , [IHoroscopeModel] 的 extension function, 查詢出來的 [IPointAspectPattern] 具備 [IPointAspectPattern.type]
+ *
  * 或是兩張命盤，彼此的交角列表
  */
 interface IAspectsCalculator  {
@@ -21,22 +22,19 @@ interface IAspectsCalculator  {
                        aspects: Set<Aspect>): IPointAspectPattern?
 
   /** 取得此星盤中，所有的交角資料 */
-  fun getAspectPatterns(m : IHoroscopeModel,
-                        points: Set<AstroPoint> = m.positionMap.keys,
-                        aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
-  ): Set<IPointAspectPattern>
+  fun IHoroscopeModel.getAspectPatterns(points: Set<AstroPoint> = this.positionMap.keys,
+                                        aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()): Set<IPointAspectPattern>
 
   /**
-   * 取得於此 [AstroPoint] , 在此星盤 [h] 中 , 形成交角的資料
+   * 在此星盤中 , 取得於此 [AstroPoint] , 與其他星體形成交角的資料
    */
-  fun getAspectPatterns(point: AstroPoint,
-                        h: IHoroscopeModel,
-                        points : Set<AstroPoint> = h.positionMap.keys,
-                        aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()) : Set<IPointAspectPattern> {
+  fun IHoroscopeModel.getAspectPatterns(point: AstroPoint,
+                                        points: Set<AstroPoint> = this.positionMap.keys,
+                                        aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()): Set<IPointAspectPattern> {
     return points
       .asSequence()
       .map { eachPoint -> setOf(point, eachPoint) }
-      .mapNotNull { twoPoints -> h.getAspectPattern(twoPoints, aspects) }
+      .mapNotNull { twoPoints -> this.getAspectPattern(twoPoints, aspects) }
       .toSet()
   }
 
@@ -95,7 +93,7 @@ interface IAspectsCalculator  {
    * 如果不是形成 aspect 交角，會傳回 null
    * */
   fun IHoroscopeModel.getAspectType(p1: AstroPoint, p2: AstroPoint, aspect: Aspect): Type? {
-    return getAspectPatterns(this, setOf(p1, p2), setOf(aspect)).firstOrNull()?.type
+    return this.getAspectPatterns(setOf(p1, p2), setOf(aspect)).firstOrNull()?.type
   }
 
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */
