@@ -186,15 +186,11 @@ interface IHoroscopeModel : ITimeLoc {
       .map { it.key }
   }
 
-  /**
-   * 所有宮位內，的星體列表 , 並且按照黃道度數「由小到大」排序
-   */
-  val houseMap: Map<Int, List<AstroPoint>>
+  val houses : List<House>
     get() {
-      return (1..12).associateWith { houseIndex ->
-        positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lngDeg) == houseIndex }
-          .map { it.key }
-      }
+      return (1..12).map { houseIndex ->
+        getHouse(houseIndex)
+      }.toList()
     }
 
   /**
