@@ -6,8 +6,8 @@ package destiny.core.astrology
 import com.google.common.collect.Sets
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
-import destiny.tools.Score.Companion.toScore
 import destiny.tools.KotlinLogging
+import destiny.tools.Score.Companion.toScore
 import org.apache.commons.math3.ml.clustering.Cluster
 import org.apache.commons.math3.ml.clustering.Clusterable
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer
@@ -471,11 +471,13 @@ class PatternContext(val aspectEffective: IAspectEffective,
     }
   }
 
-  val patterns: Set<IPatternFactory> = setOf(
-    grandTrine, kite, tSquared, yod, boomerang,
-    goldenYod, grandCross, doubleT, hexagon, wedge,
-    mysticRectangle, pentagram, stelliumSign, stelliumHouse, confrontation
-  )
+  val patterns: Set<IPatternFactory> by lazy {
+    setOf(
+      grandTrine, kite, tSquared, yod, boomerang,
+      goldenYod, grandCross, doubleT, hexagon, wedge,
+      mysticRectangle, pentagram, stelliumSign, stelliumHouse, confrontation
+    )
+  }
 
   companion object {
     val logger = KotlinLogging.logger { }
