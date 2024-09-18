@@ -250,9 +250,15 @@ interface IHoroscopeModel : ITimeLoc {
     return positionMap[star]?.takeIf { it is IStarPositionWithAzimuth }?.let { it as IStarPositionWithAzimuth }
   }
 
+
+  /** 取得某星 位於什麼星座以及度數  */
+  fun getZodiacDegree(point: AstroPoint): ZodiacDegree? {
+    return getPosition(point)?.lngDeg
+  }
+
   /** 取得某星 位於什麼星座  */
   fun getZodiacSign(point: AstroPoint): ZodiacSign? {
-    return getPosition(point)?.lngDeg?.sign
+    return getZodiacDegree(point)?.sign
   }
 
   fun getHouse(index: Int): House {
