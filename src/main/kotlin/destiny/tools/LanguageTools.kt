@@ -43,7 +43,6 @@ inline fun <reified T : Enum<T>> parseJsonToMap(json: String): Map<T, String> {
       .mapNotNull { (key, value) -> keyToDomain[key]?.let { it to value } }
       .toMap()
   } catch (e: SerializationException) {
-    e.printStackTrace()
     emptyMap()
   }
 }
