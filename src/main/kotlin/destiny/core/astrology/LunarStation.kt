@@ -80,7 +80,7 @@ sealed class LunarStation(
     override val type: KClass<out Point> = LunarStation::class
 
     operator fun get(index: Int): LunarStation {
-      return ArrayTools[list.toTypedArray(), index]
+      return ArrayTools[values, index]
     }
 
     override val values by lazy {

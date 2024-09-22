@@ -67,15 +67,17 @@ class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
   companion object {
     const val VALUE = "Yuan"
 
-    val yuanSundayHourStartMap = mapOf(
-      1 to 虛,
-      2 to 鬼,
-      3 to 箕,
-      4 to 畢,
-      5 to 氐,
-      6 to 奎,
-      7 to 翼,
-    )
+    val yuanSundayHourStartMap by lazy {
+      mapOf(
+        1 to 虛,
+        2 to 鬼,
+        3 to 箕,
+        4 to 畢,
+        5 to 氐,
+        6 to 奎,
+        7 to 翼,
+      )
+    }
   }
 }
 

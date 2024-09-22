@@ -42,13 +42,15 @@ class HabitatAoHeadImpl : IHabitat, Serializable {
   }
 
   companion object {
-    private val map = mapOf(
-      天 to setOf(女, 危, 昴, 畢, 井),
-      // 原文似乎少了後方兩個 : 虛, 翼
-      地 to setOf(氐, 房, 心, 尾, 箕, 斗, 牛, 室, 奎, 婁, 胃, 觜, 參, 鬼, 柳, 星, 張, 虛, 翼),
-      山 to setOf(氐, 房, 心, 尾, 箕, 牛, 奎, 婁, 胃, 觜, 參, 柳, 星, 張),
-      水 to setOf(角, 亢, 斗, 壁, 軫),
-      家 to setOf(婁, 昴, 鬼, 室, 星),
-    )
+    private val map by lazy {
+      mapOf(
+        天 to setOf(女, 危, 昴, 畢, 井),
+        // 原文似乎少了後方兩個 : 虛, 翼
+        地 to setOf(氐, 房, 心, 尾, 箕, 斗, 牛, 室, 奎, 婁, 胃, 觜, 參, 鬼, 柳, 星, 張, 虛, 翼),
+        山 to setOf(氐, 房, 心, 尾, 箕, 牛, 奎, 婁, 胃, 觜, 參, 柳, 星, 張),
+        水 to setOf(角, 亢, 斗, 壁, 軫),
+        家 to setOf(婁, 昴, 鬼, 室, 星),
+      )
+    }
   }
 }
