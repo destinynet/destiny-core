@@ -14,7 +14,7 @@ interface IPoi : ILatLng, IPlace, Serializable {
   val userRatingsTotal: Int?
 }
 
-data class Poi(override val name: String, override val lat: Double, override val lng: Double, override val placeId: String, override val userRatingsTotal: Int?) : IPoi {
+data class GMapPoi(override val name: String, override val lat: Double, override val lng: Double, override val placeId: String, override val userRatingsTotal: Int?) : IPoi {
   override val place: String = name
 }
 
