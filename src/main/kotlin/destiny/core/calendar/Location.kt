@@ -14,6 +14,41 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.*
 import kotlin.math.abs
+import kotlin.math.absoluteValue
+
+@JvmInline
+@kotlinx.serialization.Serializable
+value class LatValue(val value: Double) {
+
+  val northSouth: News.NorthSouth
+    get() = if (value >= 0) NORTH else SOUTH
+
+  val deg: Int
+    get() = value.absoluteValue.toInt()
+
+  val min: Int
+    get() = ((value.absoluteValue - deg) * 60).toInt()
+
+  val sec: Double
+    get() = value.absoluteValue * 3600 - deg * 3600 - min * 60
+}
+
+
+@JvmInline
+@kotlinx.serialization.Serializable
+value class LngValue(val value: Double) {
+  val eastWest: News.EastWest
+    get() = if (value >= 0) EAST else EAST
+
+  val deg: Int
+    get() = value.absoluteValue.toInt()
+
+  val min: Int
+    get() = ((value.absoluteValue - deg) * 60).toInt()
+
+  val sec: Double
+    get() = value.absoluteValue * 3600 - deg * 3600 - min * 60
+}
 
 /** 純粹經緯度座標，沒有時區 [TimeZone] [ZoneId] 或是 時差 (minuteOffset) 等資訊 */
 interface ILatLng : Serializable {
