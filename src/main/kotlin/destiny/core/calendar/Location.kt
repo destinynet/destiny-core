@@ -19,6 +19,9 @@ import kotlin.math.absoluteValue
 @JvmInline
 @kotlinx.serialization.Serializable
 value class LatValue(val value: Double) {
+  init {
+    require(value.absoluteValue <= 90)
+  }
 
   val northSouth: News.NorthSouth
     get() = if (value >= 0) NORTH else SOUTH
@@ -31,12 +34,22 @@ value class LatValue(val value: Double) {
 
   val sec: Double
     get() = value.absoluteValue * 3600 - deg * 3600 - min * 60
+
+  companion object {
+    fun Double.toLat(): LatValue {
+      return LatValue(this)
+    }
+  }
 }
 
 
 @JvmInline
 @kotlinx.serialization.Serializable
 value class LngValue(val value: Double) {
+  init {
+    require(value.absoluteValue <= 180)
+  }
+
   val eastWest: News.EastWest
     get() = if (value >= 0) EAST else EAST
 
@@ -48,6 +61,12 @@ value class LngValue(val value: Double) {
 
   val sec: Double
     get() = value.absoluteValue * 3600 - deg * 3600 - min * 60
+
+  companion object {
+    fun Double.toLng(): LngValue {
+      return LngValue(this)
+    }
+  }
 }
 
 /** 純粹經緯度座標，沒有時區 [TimeZone] [ZoneId] 或是 時差 (minuteOffset) 等資訊 */
