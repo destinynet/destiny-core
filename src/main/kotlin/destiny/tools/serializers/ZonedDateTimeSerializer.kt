@@ -10,7 +10,6 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 
 object ZonedDateTimeSerializer : KSerializer<ZonedDateTime> {
@@ -18,12 +17,11 @@ object ZonedDateTimeSerializer : KSerializer<ZonedDateTime> {
   override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ZonedDateTime", PrimitiveKind.STRING)
 
   override fun serialize(encoder: Encoder, value: ZonedDateTime) {
-    val formatted = value.format(DateTimeFormatter.ISO_INSTANT)
-    encoder.encodeString(formatted)
+    encoder.encodeString(value.toString())
   }
 
   override fun deserialize(decoder: Decoder): ZonedDateTime {
     val string = decoder.decodeString()
-    return ZonedDateTime.parse(string, DateTimeFormatter.ISO_INSTANT)
+    return ZonedDateTime.parse(string)
   }
 }
