@@ -4,6 +4,7 @@
 package destiny.tools.ai
 
 import com.jayway.jsonpath.JsonPath
+import destiny.tools.KotlinLogging
 import destiny.tools.ai.OpenAi.FunctionDeclaration
 import destiny.tools.ai.OpenAi.FunctionDeclaration.Function
 import destiny.tools.ai.OpenAi.FunctionDeclaration.Function.Parameters
@@ -11,7 +12,6 @@ import destiny.tools.ai.OpenAi.FunctionDeclaration.Function.Parameters.Argument
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import destiny.tools.KotlinLogging
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 import kotlin.test.assertEquals
