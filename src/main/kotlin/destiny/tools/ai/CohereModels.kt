@@ -19,7 +19,7 @@ class Cohere {
   }
 
   @Serializable
-  data class Request(val model: String, val messages: List<Message>, val stream: Boolean = false)
+  data class Request(val model: String, val messages: List<Message>, val tools: List<ToolFunction>, val stream: Boolean = false)
 
   @Serializable
   data class Response(
@@ -28,4 +28,16 @@ class Cohere {
     val finishReason: String,
     val message: Message,
   )
+
+  @Serializable
+  data class ToolFunction(val type: String = "function", val function: Function) {
+
+    @Serializable
+    data class Function(val name: String, val description: String, val parameters: Map<String, Parameter>) {
+
+      @Serializable
+      data class Parameter(val description: String, val type: String, val required: Boolean)
+    }
+  }
+
 }
