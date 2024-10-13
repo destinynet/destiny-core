@@ -26,7 +26,7 @@ class Claude {
 
     @Serializable
     @SerialName("tool_use")
-    data class ToolUse(override val contentType: String = "tool_use", val id: String, val name: String, val input: Map<String, String>) : Content()
+    data class ToolUse(override val contentType: String = "tool_use", val id: String, val name: String, val input: JsonElement) : Content()
 
     @Serializable
     @SerialName("tool_result")
