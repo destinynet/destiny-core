@@ -52,7 +52,7 @@ abstract class AbstractChatCompletion : IChatCompletion {
             // Append the content
             acc[acc.size - 1] = lastMsg.copy(contents = buildList {
               addAll(lastMsg.contents)
-              msg.contents
+              addAll(msg.contents)
             })
           }
         } else {
@@ -62,6 +62,24 @@ abstract class AbstractChatCompletion : IChatCompletion {
         acc.add(msg)
       }
       acc
+    }
+
+    val funCallPrompts = (filteredFunCalls.joinToString(",") { it.name }).let {
+      if (it.isEmpty()) it
+      else buildString {
+        append("With function calls if applicable : ")
+        append(it)
+      }
+    }
+
+    if (filteredFunCalls.isNotEmpty() && finalMsgs.isNotEmpty()) {
+      val lastMsg = finalMsgs.last()
+      finalMsgs[finalMsgs.lastIndex] = lastMsg.copy(
+        contents = buildList {
+          addAll(lastMsg.contents)
+          add(Content.StringContent("\n$funCallPrompts"))
+        }
+      )
     }
 
     return doChatComplete(model, finalMsgs, user, filteredFunCalls, timeout)
