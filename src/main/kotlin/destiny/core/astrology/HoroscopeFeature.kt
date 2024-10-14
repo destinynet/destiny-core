@@ -113,6 +113,11 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     config: IHoroscopeConfig
   ): IProgressionModel
 
+
+
+  fun synastry(modelInner: IPersonHoroscopeModel, modelOuter : IPersonHoroscopeModel, mode : SynastryMode = SynastryMode.BOTH_FULL) {
+    TODO()
+  }
 }
 
 data class ProgressionCalcObj(
@@ -209,7 +214,7 @@ class HoroscopeFeature(
                 ?.let { p: IPointAspectPattern ->
                   val p1House = model.getHouse(posMapOuter[p1]!!.lng.toZodiacDegree())
                   val p2House = model.getHouse(posMapInner[p2]!!.lng.toZodiacDegree())
-                  ProgressedAspect(p1, p2, p1House, p2House, p.aspect, p.orb, p.type!!, p.score)
+                  SynastryAspect(p1, p2, p1House, p2House, p.aspect, p.orb, p.type!!, p.score)
                 }
             }.toSet()
 
