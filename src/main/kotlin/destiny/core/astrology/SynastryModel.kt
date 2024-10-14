@@ -3,7 +3,6 @@
  */
 package destiny.core.astrology
 
-import destiny.core.Gender
 import destiny.core.astrology.prediction.ISynastryAspect
 import java.io.Serializable
 
@@ -15,9 +14,9 @@ enum class SynastryMode {
 }
 
 class SynastryModel(
-  val model: SynastryMode,
-  val innerGender : Gender,
-  val outerGender : Gender,
+  val mode: SynastryMode,
+  val inner : IPersonHoroscopeModel,
+  val outer : IPersonHoroscopeModel,
   val progressedAspects: Set<ISynastryAspect>
 ): Serializable {
 

@@ -72,7 +72,7 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
           }
       }.toSet()
 
-    return SynastryModel(mode, modelInner.gender, modelOuter.gender, synastryAspects)
+    return SynastryModel(mode, modelInner, modelOuter, synastryAspects)
   }
 }
 
