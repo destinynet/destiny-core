@@ -31,12 +31,10 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
           laterForP2.invoke()?.lngDeg?.let { deg2Next ->
             val planetsAngleNext = deg1Next.getAngle(deg2Next)
             val errorNext = abs(planetsAngleNext - aspect.degree)
-
             val type = if (errorNext <= error) APPLYING else SEPARATING
             PointAspectPattern.of(p1, p2, aspect, type, error, score)
           }
-        }
-
+        } ?: PointAspectPattern.of(p1, p2, aspect, null, error, score)
       }
   }
 

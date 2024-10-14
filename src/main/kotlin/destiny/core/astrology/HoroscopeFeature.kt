@@ -112,12 +112,6 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     aspectsCalculator: IAspectsCalculator,
     config: IHoroscopeConfig
   ): IProgressionModel
-
-
-
-  fun synastry(modelInner: IPersonHoroscopeModel, modelOuter : IPersonHoroscopeModel, mode : SynastryMode = SynastryMode.BOTH_FULL) {
-    TODO()
-  }
 }
 
 data class ProgressionCalcObj(

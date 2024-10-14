@@ -21,7 +21,7 @@ data class SynastryAspect(
   override val innerPointHouse: Int?,
   override val aspect: Aspect,
   override val orb: Double,
-  override val type: IPointAspectPattern.Type,
+  override val type: IPointAspectPattern.Type?,
   override val score: Double?
 ) : ISynastryAspect {
 

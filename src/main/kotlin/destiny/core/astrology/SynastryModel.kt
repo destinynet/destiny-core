@@ -3,7 +3,9 @@
  */
 package destiny.core.astrology
 
+import destiny.core.Gender
 import destiny.core.astrology.prediction.ISynastryAspect
+import java.io.Serializable
 
 enum class SynastryMode {
   BOTH_FULL,    // Both parties have full date and time
@@ -13,11 +15,11 @@ enum class SynastryMode {
 }
 
 class SynastryModel(
-
   val model: SynastryMode,
-
+  val innerGender : Gender,
+  val outerGender : Gender,
   val progressedAspects: Set<ISynastryAspect>
-) {
+): Serializable {
 
   val progressedAspectsByScore: List<ISynastryAspect>
     get() {
