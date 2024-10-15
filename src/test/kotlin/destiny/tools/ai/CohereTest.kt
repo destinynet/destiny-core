@@ -61,7 +61,12 @@ class CohereTest {
            "messages":[
               {
                  "role":"user",
-                 "content":"What is the weather like today in New York and Taipei ?\n\nWith function calls if applicable : get_current_weather"
+                 "content" : [
+                   {
+                     "type": "text",
+                     "text" : "What is the weather like today in New York and Taipei ?\n\nWith function calls if applicable : get_current_weather"
+                   }
+                 ]
               }
            ]
         }

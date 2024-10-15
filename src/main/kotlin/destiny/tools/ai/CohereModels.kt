@@ -10,41 +10,37 @@ import kotlinx.serialization.Serializable
 class Cohere {
 
   @Serializable
-  data class ReqMessage(val role: String, val content: String)
+  data class ToolCall(val id: String,
+                      val type: String = "function",
+                      val function: Function) {
+    @Serializable
+    data class Function(val name: String, val arguments: String)
+  }
 
   @Serializable
-  data class Request(val model: String, val messages: List<ReqMessage>, val tools: List<ToolFunction>, val stream: Boolean = false)
+  data class Content(val type: String = "text", val text: String)
 
   @Serializable
-  data class Content(val type: String, val text: String)
-
-  @Serializable
-  data class ResMessage(
+  data class Message(
     val role: String,
     val content: List<Content>?,
+    @SerialName("tool_call_id")
+    val toolCallId: String? = null,
     @SerialName("tool_plan")
-    val toolPlan: String?,
+    val toolPlan: String? = null,
     @SerialName("tool_calls")
-    val toolCalls: List<ToolCall>?
-  ) {
+    val toolCalls: List<ToolCall>? = null
+  )
 
-    @Serializable
-    data class ToolCall(
-      val id: String,
-      val type: String = "function",
-      val function: Function
-    ) {
-      @Serializable
-      data class Function(val name: String, val arguments: String)
-    }
-  }
+  @Serializable
+  data class Request(val model: String, val messages: List<Message>, val tools: List<ToolFunction>, val stream: Boolean = false)
 
   @Serializable
   data class Response(
     val id: String,
     @SerialName("finish_reason")
     val finishReason: String,
-    val message: ResMessage,
+    val message: Message,
   )
 
   @Serializable
