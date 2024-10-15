@@ -13,6 +13,15 @@ enum class SynastryMode {
   BOTH_DATE     // Both parties only have date, no time
 }
 
+enum class SynastryDomain {
+  OVERVIEW,
+  EMOTIONAL,
+  FINANCIAL,
+  COMMUNICATION,
+  PHYSICAL,
+  GROWTH,
+}
+
 class SynastryModel(
   val mode: SynastryMode,
   val inner : IPersonHoroscopeModel,
