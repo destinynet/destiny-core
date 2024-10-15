@@ -143,18 +143,16 @@ fun IFunctionDeclaration.toCohere(): Cohere.ToolFunction {
     Function(
       this.name,
       this.description,
-      this.parameters.associate {
-        it.name to Function.Parameter(
-          it.description,
-
-          when (it.type) {
-            "string" -> "str"
-            else     -> it.type
-          },
-
-          it.required
-        )
-      }
+      InputSchema(
+        "object",
+        this.parameters.associate { p ->
+          p.name to InputSchema.Property(
+            p.type,
+            p.description
+          )
+        },
+        this.parameters.filter { it.required }.map { it.name }
+      )
     )
   )
 }
