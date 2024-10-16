@@ -1,6 +1,5 @@
 package destiny.tools.ai
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -44,7 +43,7 @@ class OpenAi {
   }
 
   @Serializable
-  data class Error(val message: String, val type: String, @Contextual val param: Any? = null, @Contextual val code: String? = null)
+  data class Error(val message: String, val type: String, val code: String? = null)
 
   @Serializable
   data class FunctionDeclaration(val type: String, val function: Function) {
