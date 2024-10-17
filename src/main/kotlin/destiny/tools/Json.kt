@@ -11,7 +11,7 @@ object Json {
   private val logger = KotlinLogging.logger {}
 
   fun JsonElement.toMap(): Map<String, Any> {
-    logger.info { "JsonElement.toMap : $this" }
+    logger.debug { "JsonElement.toMap : $this" }
     return when (this) {
       is JsonObject -> this.mapValues { (_, jsonElement: JsonElement) ->
         when (jsonElement) {
