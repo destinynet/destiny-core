@@ -51,7 +51,7 @@ value class LngValue(val value: Double) {
   }
 
   val eastWest: News.EastWest
-    get() = if (value >= 0) EAST else EAST
+    get() = if (value >= 0) EAST else WEST
 
   val deg: Int
     get() = value.absoluteValue.toInt()
