@@ -3,8 +3,9 @@
  */
 package destiny.core.astrology.eclipse
 
-import destiny.core.calendar.*
-import java.time.chrono.ChronoLocalDateTime
+import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.LatValue
+import destiny.core.calendar.LngValue
 
 
 interface IEclipseFactory {
@@ -74,18 +75,11 @@ interface IEclipseFactory {
   // ================================== 日食觀測 ==================================
 
   /** 從此之後 , 此地點下次發生日食的資訊為何 (tuple.v1) , 以及， 日食最大化的時間，該地的觀測資訊為何 (tuple.v2)  */
-  fun getNextSolarEclipseAtLoc(fromGmtJulDay: Double,
+  fun getNextSolarEclipseAtLoc(fromGmtJulDay: GmtJulDay,
                                lat: LatValue,
                                lng: LngValue,
                                alt: Double? = 0.0,
                                forward: Boolean): Pair<EclipseSpan, ISolarEclipseObservation>
-
-  /** 承上 [ILocation] 版本 */
-  fun getNextSolarEclipseAtLoc(fromGmtJulDay: Double,
-                               loc: ILocation,
-                               forward: Boolean): Pair<EclipseSpan, ISolarEclipseObservation> {
-    return getNextSolarEclipseAtLoc(fromGmtJulDay, loc.lat, loc.lng, loc.altitudeMeter, forward)
-  }
 
   /**
    * 若當下 gmtJulDay 有日食，傳出此地點觀測此日食的相關資料
@@ -94,15 +88,6 @@ interface IEclipseFactory {
                                       lat: LatValue,
                                       lng: LngValue,
                                       alt: Double): ISolarEclipseObservation?
-
-  /** 承上 , [ChronoLocalDateTime] 版本 */
-  fun getSolarEclipseObservationAtLoc(gmt: ChronoLocalDateTime<*>,
-                                      lat: LatValue,
-                                      lng: LngValue,
-                                      alt: Double): ISolarEclipseObservation? {
-    return getSolarEclipseObservationAtLoc(TimeTools.getGmtJulDay(gmt), lat, lng, alt)
-  }
-
 
   /** 此時此刻，哪裡有發生日食，其「中線」的地點為何 , 以及其相關日食觀測結果 . 此 method 專門計算「中線在哪裡 , 其太陽觀測為何」 (t.v1) , 是否出現中線了 (t.v2)  */
   fun getEclipseCenterInfo(gmtJulDay: GmtJulDay) : Pair<ISolarEclipseObservation, Boolean>?
@@ -115,7 +100,7 @@ interface IEclipseFactory {
                                       alt: Double): AbstractLunarEclipseObservation?
 
   /** 從此之後 , 此地點下次發生月食的資訊為何 (tuple.v1) , 以及， 該地能否見到 半影、偏食、全蝕、的起訖 (tuple.v2)  */
-  fun getNextLunarEclipseAtLoc(fromGmtJulDay: Double,
+  fun getNextLunarEclipseAtLoc(fromGmtJulDay: GmtJulDay,
                                lat: LatValue,
                                lng: LngValue,
                                alt: Double,

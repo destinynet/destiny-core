@@ -74,8 +74,8 @@ value class LngValue(val value: Double) {
 /** 純粹經緯度座標，沒有時區 [TimeZone] [ZoneId] 或是 時差 (minuteOffset) 等資訊 */
 interface ILatLng : Serializable {
 
-  val lng: LngValue
   val lat: LatValue
+  val lng: LngValue
 
   val latLng
     get() = lat to lng
@@ -116,8 +116,6 @@ interface ILatLng : Serializable {
 }
 
 data class LatLng(override val lat: LatValue, override val lng: LngValue) : ILatLng {
-  //constructor(lat: Double, lng: Double) : this(lat.toLat(), lng.toLng())
-
 }
 
 interface ILatLngRadius : ILatLng {
@@ -218,20 +216,8 @@ data class Location(override val lat: LatValue,
 
   companion object {
 
-    fun of(lat: Double, lng: Double, tzid: String?, minuteOffset: Int?, altitudeMeter: Double?) : Location {
+    fun of(lat: Double, lng: Double, tzid: String? = null, minuteOffset: Int? = null, altitudeMeter: Double? = null) : Location {
       return Location(lat.toLat(), lng.toLng(), tzid, minuteOffset, altitudeMeter)
-    }
-
-    fun of(lat: Double, lng: Double, tzid: String?, minuteOffset: Int?) : Location {
-      return of(lat, lng, tzid, minuteOffset, null)
-    }
-
-    fun of(lat: Double, lng: Double, tzid: String?): Location {
-      return of(lat, lng, tzid, null)
-    }
-
-    fun of(lat: Double, lng: Double) : Location {
-      return of(lat, lng, null)
     }
 
     fun getLng(ew: News.EastWest, lngDeg: Int, lngMin: Int, lngSec: Double): Double {
