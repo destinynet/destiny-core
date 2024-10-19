@@ -19,7 +19,7 @@ interface IFunctionDeclaration {
   val description: String
   val parameters: List<Parameter>
   fun applied(msgs: List<Msg>): Boolean
-  fun invoke(parameters: List<Pair<String, Any>>): String
+  fun invoke(parameters: Map<String, Any>): String
 }
 
 @Target(AnnotationTarget.CLASS)
@@ -79,10 +79,10 @@ abstract class AnnotatedFunctionDeclaration : IFunctionDeclaration {
       }
     }
 
-  override fun invoke(parameters: List<Pair<String, Any>>): String {
+  override fun invoke(parameters: Map<String, Any>): String {
     val method = this::class.memberFunctions.first { it.name == callbackName }
     val args = method.valueParameters.map { param ->
-      parameters.find { it.first == param.name }?.second
+      parameters[param.name]
     }.toTypedArray()
     return method.call(this, *args) as String
   }

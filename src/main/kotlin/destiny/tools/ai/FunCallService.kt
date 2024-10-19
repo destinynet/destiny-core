@@ -12,7 +12,13 @@ class FunCallService(
 ) {
 
   fun invoke(funCall: FunCall): String? {
-    return funCalls.firstOrNull { it.name == funCall.name }
-      ?.invoke(funCall.parameters.toList())
+    return Companion.invoke(funCall, funCalls)
+  }
+
+  companion object {
+    fun invoke(funCall: FunCall, funCalls: Set<IFunctionDeclaration>): String? {
+      return funCalls.firstOrNull { it.name == funCall.name }
+        ?.invoke(funCall.parameters)
+    }
   }
 }
