@@ -115,8 +115,7 @@ interface ILatLng : Serializable {
     }.toString()
 }
 
-data class LatLng(override val lat: LatValue, override val lng: LngValue) : ILatLng {
-}
+data class LatLng(override val lat: LatValue, override val lng: LngValue) : ILatLng
 
 interface ILatLngRadius : ILatLng {
   val radiusMeters: Int
