@@ -5,6 +5,8 @@ package destiny.core.astrology.eclipse
 
 import destiny.core.astrology.Azimuth
 import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.LatValue
+import destiny.core.calendar.LngValue
 import java.io.Serializable
 
 /**
@@ -14,9 +16,9 @@ interface IEclipseObservation {
   /** 當下的時間點為何  */
   val gmtJulDay: GmtJulDay
   /** 經度  */
-  val lng: Double
+  val lng: LngValue
   /** 緯度  */
-  val lat: Double
+  val lat: LatValue
   /** 高度 (米)  */
   val alt: Double
   /** 地平方位角  */
@@ -26,8 +28,8 @@ interface IEclipseObservation {
 /** 日食、月食 共有的觀測資料 */
 data class EclipseObservation(
   override val gmtJulDay: GmtJulDay,
-  override val lng: Double,
-  override val lat: Double,
+  override val lng: LngValue,
+  override val lat: LatValue,
   override val alt: Double,
   override val azimuth: Azimuth) : IEclipseObservation, Serializable
 
@@ -87,8 +89,8 @@ sealed class AbstractLunarEclipseObservation : ILunarEclipseObservation {
   /** 半影月食 的觀測資料 */
   data class LunarEclipsePenumbraObservation(
     override val gmtJulDay: GmtJulDay,
-    override val lng: Double,
-    override val lat: Double,
+    override val lng: LngValue,
+    override val lat: LatValue,
     override val alt: Double,
     override val azimuth: Azimuth,
 

@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import destiny.core.calendar.LatValue.Companion.toLat
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -12,8 +13,8 @@ class LatDecoratorEnglishTest {
 
   @Test
   fun getOutputString() {
-    assertEquals("01°00'00.000\"N" , decorator.getOutputString(1.0))
-    assertEquals("01°00'00.000\"S" , decorator.getOutputString(-1.0))
-    println(decorator.getOutputString(-12.3939889))
+    assertEquals("01°00'00.000\"N", decorator.getOutputString(1.0.toLat()))
+    assertEquals("01°00'00.000\"S", decorator.getOutputString((-1.0).toLat()))
+    assertEquals("12°23'38.360\"S", decorator.getOutputString((-12.3939889).toLat()))
   }
 }

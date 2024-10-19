@@ -7,53 +7,31 @@ import destiny.core.News
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
 import java.util.*
-import kotlin.math.absoluteValue
 
 object LngDecorator {
   private val implMap = mapOf(Locale.TAIWAN to LngDecoratorTaiwan(),
                               Locale.SIMPLIFIED_CHINESE to LngDecoratorChina(),
                               Locale.ENGLISH to LngDecoratorEnglish())
 
-  fun getOutputString(value: Double, locale: Locale): String {
+  fun getOutputString(value: LngValue, locale: Locale): String {
     return implMap.getOutputString(value, locale)
   }
 }
 
-data class Lng(val eastWest: News.EastWest, val deg: Int, val min: Int, val sec: Double) {
-  fun toDouble(): Double {
-    val sign = if (eastWest == News.EastWest.EAST) 1 else -1
-    return sign * (deg + min.toDouble() / 60 + sec / 3600)
-  }
-
-  companion object {
-    fun of(value: Double): Lng {
-      val eastWest = if (value >= 0) News.EastWest.EAST else News.EastWest.WEST
-
-      val deg = value.absoluteValue.toInt()
-      val min = ((value.absoluteValue - deg) * 60).toInt()
-      val sec = value.absoluteValue * 3600 - deg * 3600 - min * 60
-      return Lng(eastWest, deg, min, sec)
-    }
-  }
-}
-
-
-class LngDecoratorTaiwan : Decorator<Double> {
+class LngDecoratorTaiwan : Decorator<LngValue> {
   /**
    * 東經：121度30分00.00秒
    * 總共 22 char 寬度
    */
-  override fun getOutputString(value: Double): String {
-    val lng = Lng.of(value)
-
+  override fun getOutputString(value: LngValue): String {
     return with(StringBuilder()) {
-      append(if (lng.eastWest == News.EastWest.EAST) "東經" else "西經")
-      zh.invoke(this , lng)
+      append(if (value.eastWest == News.EastWest.EAST) "東經" else "西經")
+      zh.invoke(this , value)
     }.toString()
   }
 }
 
-private val zh = {sb : StringBuilder , lng : Lng ->
+private val zh = {sb : StringBuilder , lng : LngValue ->
   sb.append("：")
   sb.append("%03d".format(lng.deg)).append("度")
   sb.append("%02d".format(lng.min)).append("分")
@@ -68,22 +46,21 @@ private val zh = {sb : StringBuilder , lng : Lng ->
   sb
 }
 
-class LngDecoratorChina : Decorator<Double> {
+class LngDecoratorChina : Decorator<LngValue> {
   /**
    * 东经：121度30分00.00秒
    * 總共 22 char 寬度
    */
-  override fun getOutputString(value: Double): String {
-    val lng = Lng.of(value)
+  override fun getOutputString(value: LngValue): String {
 
     return with(StringBuilder()) {
-      append(if (lng.eastWest == News.EastWest.EAST) "东经" else "西经")
-      zh.invoke(this , lng)
+      append(if (value.eastWest == News.EastWest.EAST) "东经" else "西经")
+      zh.invoke(this , value)
     }.toString()
   }
 }
 
-class LngDecoratorEnglish : Decorator<Double> {
+class LngDecoratorEnglish : Decorator<LngValue> {
 
   /**
    * ISO 6709 國際標準
@@ -91,19 +68,18 @@ class LngDecoratorEnglish : Decorator<Double> {
    * 50°03′46.461″S
    * 注意，「分」這裡，有 left padding '0'
    */
-  override fun getOutputString(value: Double): String {
-    val lng = Lng.of(value)
+  override fun getOutputString(value: LngValue): String {
 
     return with(StringBuilder()) {
-      append(lng.deg).append("°")
-      append("%02d".format(lng.min)).append("'")
-      val secString = "%02.2f".format(lng.sec).let {
+      append(value.deg).append("°")
+      append("%02d".format(value.min)).append("'")
+      val secString = "%02.2f".format(value.sec).let {
         // 可能是 "0.00"
         if (it.length == 4) "0$it"
         else it
       }
       append(secString).append("\"")
-      append(if (lng.eastWest == News.EastWest.EAST) "E" else "W")
+      append(if (value.eastWest == News.EastWest.EAST) "E" else "W")
     }.toString()
   }
 

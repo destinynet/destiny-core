@@ -137,7 +137,7 @@ fun getMonth(
         //如果太陽在赤北緯
         resultMonthBranch = if (location.northSouth == News.NorthSouth.NORTH) {
           //地點在北半球
-          if (location.lat >= solarEquatorialDegree)
+          if (location.lat.value >= solarEquatorialDegree)
             monthBranch
           else
             Branch[monthIndex + 6] //所在地緯度低於 太陽赤緯，取對沖月份
@@ -149,7 +149,7 @@ fun getMonth(
         //太陽在赤南緯
         resultMonthBranch = if (location.northSouth == News.NorthSouth.SOUTH) {
           //地點在南半球
-          if (location.lat <= solarEquatorialDegree)
+          if (location.lat.value <= solarEquatorialDegree)
             Branch[monthIndex + 6] //所在地緯度高於 太陽赤南緯，真正的南半球
           else
             monthBranch //雖在南半球，但緯度低於太陽赤南緯，視為北半球

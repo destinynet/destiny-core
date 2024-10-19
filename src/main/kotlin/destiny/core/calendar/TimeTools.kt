@@ -6,8 +6,8 @@ package destiny.core.calendar
 import destiny.core.News.EastWest.EAST
 import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.chinese.StemBranch
-import destiny.tools.StringTools.clean
 import destiny.tools.KotlinLogging
+import destiny.tools.StringTools.clean
 import java.time.*
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
@@ -430,7 +430,7 @@ object TimeTools {
    * @return 經度時間
    */
   fun getLongitudeTime(lmt: ChronoLocalDateTime<*>, location: ILocation): ChronoLocalDateTime<*> {
-    val absLng = abs(location.lng)
+    val absLng = abs(location.lng.value)
     val secondsOffset = getOffset(lmt, location).inWholeSeconds
     val zoneSecondOffset = abs(secondsOffset)
     val longitudeSecondOffset = absLng * 4.0 * 60.0 // 經度與GMT的時差 (秒) , 一分鐘四度

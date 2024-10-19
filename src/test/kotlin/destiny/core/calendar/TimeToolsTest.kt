@@ -293,7 +293,7 @@ class TimeToolsTest {
    */
   @Test
   fun testGetLmtFromGmt() {
-    val loc = Location(25.03, 121.30, "Asia/Taipei")
+    val loc = Location.of(25.03, 121.30, "Asia/Taipei")
     var gmt: ChronoLocalDateTime<*>
     var lmt: ChronoLocalDateTime<*>
 

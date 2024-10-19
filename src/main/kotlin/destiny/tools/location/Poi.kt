@@ -28,7 +28,7 @@ data class Poi(val regex: Regex,
     val regexNamePatchResult = if (regex.pattern.equals(string.trim(), ignoreCase = true)) {
       val name = regex.pattern
       val (lat, lng) = getLatLng()
-      val loc = Location(lat, lng, tzid)
+      val loc = Location.of(lat, lng, tzid)
       LocationPlace(loc, prependAddress?.let { it + name } ?: name)
     } else {
       null
@@ -37,7 +37,7 @@ data class Poi(val regex: Regex,
     val thisResult: ILocationPlace? = regex.find(string)?.let { result ->
       val name = result.groupValues[0]
       val (lat, lng) = getLatLng()
-      val loc = Location(lat, lng, tzid)
+      val loc = Location.of(lat, lng, tzid)
       LocationPlace(loc, prependAddress?.let { it + name } ?: name)
     }
 

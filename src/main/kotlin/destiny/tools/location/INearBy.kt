@@ -5,6 +5,8 @@ package destiny.tools.location
 
 import destiny.core.calendar.ILatLng
 import destiny.core.calendar.IPlace
+import destiny.core.calendar.LatValue
+import destiny.core.calendar.LngValue
 import java.io.Serializable
 import java.util.*
 
@@ -14,7 +16,7 @@ interface IPoi : ILatLng, IPlace, Serializable {
   val userRatingsTotal: Int?
 }
 
-data class GMapPoi(override val name: String, override val lat: Double, override val lng: Double, override val placeId: String, override val userRatingsTotal: Int?) : IPoi {
+data class GMapPoi(override val name: String, override val lat: LatValue, override val lng: LngValue, override val placeId: String, override val userRatingsTotal: Int?) : IPoi {
   override val place: String = name
 }
 
@@ -26,7 +28,7 @@ data class NearByPoi(val poi: IPoi, override val meters: Int) : INearByPoi, IPoi
 
 interface INearBy {
 
-  suspend fun getNearBy(lat: Double, lng: Double, type: String, keyword: String?, radiusMeters: Int, locale: Locale = Locale.getDefault()): List<IPoi>
+  suspend fun getNearBy(lat: LatValue, lng: LngValue, type: String, keyword: String?, radiusMeters: Int, locale: Locale = Locale.getDefault()): List<IPoi>
 
-  suspend fun getNearBys(lat: Double, lng: Double, types: List<String>, radiusMeters: Int, locale: Locale = Locale.getDefault()): List<INearByPoi>
+  suspend fun getNearBys(lat: LatValue, lng: LngValue, types: List<String>, radiusMeters: Int, locale: Locale = Locale.getDefault()): List<INearByPoi>
 }

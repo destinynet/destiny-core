@@ -36,9 +36,9 @@ object LocationTools {
   fun encode2018(loc: ILocation): String {
     return StringBuilder().apply {
       loc.apply {
-        append(lat)
+        append(lat.value)
         append(',')
-        append(lng)
+        append(lng.value)
         tzid?.also { append(' ').append(it) }
         minuteOffset?.also { append(' ').append(it).append('m') } // 「分鐘」尾端加上 'm' , 保留未來可能出現 's' (秒數) 的可能性
         altitudeMeter?.takeIf { it != 0.0 }?.also { append(' ').append(it) }
@@ -104,7 +104,7 @@ object LocationTools {
         val altMeter: Double? =
           parts.firstOrNull { padding -> padding is LocationPadding.AltMeter }
             ?.let { pad -> pad as LocationPadding.AltMeter }?.value
-        Location(it.lat, it.lng, tzid, minuteOffset, altMeter)
+        Location.of(it.lat, it.lng, tzid, minuteOffset, altMeter)
       }
     } catch (e: Exception) {
       null
@@ -217,15 +217,15 @@ object LocationTools {
   } // fromDebugString
 
   /** in meters */
-  fun calculateDistance(lat1: Double, lng1: Double, lat2: Double, lng2: Double): Int {
+  fun calculateDistance(lat1: LatValue, lng1: LngValue, lat2: LatValue, lng2: LngValue): Int {
     // Earth radius in kilometers
     val earthRadius = 6371
 
-    val dLat = Math.toRadians(lat2 - lat1)
-    val dLng = Math.toRadians(lng2 - lng1)
+    val dLat = Math.toRadians(lat2.value - lat1.value)
+    val dLng = Math.toRadians(lng2.value - lng1.value)
 
     val a = sin(dLat / 2) * sin(dLat / 2) +
-      cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
+      cos(Math.toRadians(lat1.value)) * cos(Math.toRadians(lat2.value)) *
       sin(dLng / 2) * sin(dLng / 2)
 
     val c = 2 * atan2(sqrt(a), sqrt(1 - a))
@@ -238,7 +238,7 @@ object LocationTools {
     val (lat1, lng1) = loc1.lat to loc1.lng
     val (lat2, lng2) = loc2.lat to loc2.lng
 
-    return calculateAzimuth(lat1, lng1, lat2, lng2)
+    return calculateAzimuth(lat1.value, lng1.value, lat2.value, lng2.value)
   }
 
   fun calculateAzimuth(lat1: Double, lng1 : Double , lat2: Double , lng2: Double) : Double {

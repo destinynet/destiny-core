@@ -3,11 +3,11 @@
  */
 package destiny.tools.serializers
 
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.ILocationPlace
-import destiny.core.calendar.LocationPlace
-import kotlinx.serialization.json.Json
+import destiny.core.calendar.*
+import destiny.core.calendar.LatValue.Companion.toLat
+import destiny.core.calendar.LngValue.Companion.toLng
 import destiny.tools.KotlinLogging
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -19,8 +19,8 @@ class ILocationPlaceSerializerTest {
   @Test
   fun testSerializeDeserialize() {
     val location = object : ILocation {
-      override val lat: Double = 42.0
-      override val lng: Double = -123.45
+      override val lat: LatValue = 42.0.toLat()
+      override val lng: LngValue = (-123.45).toLng()
       override val tzid: String = "America/New_York"
       override val minuteOffset: Int = -300
       override val altitudeMeter: Double = 123.0

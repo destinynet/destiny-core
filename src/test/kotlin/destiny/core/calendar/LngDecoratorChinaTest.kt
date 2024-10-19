@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import destiny.core.calendar.LngValue.Companion.toLng
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -12,11 +13,11 @@ class LngDecoratorChinaTest {
 
   @Test
   fun getOutputString() {
-    assertEquals("东经：121度00分00.00秒" , decorator.getOutputString(121.0))
-    assertEquals("东经：121度30分00.00秒" , decorator.getOutputString(121.50))
-    assertEquals("东经：121度30分36.00秒" , decorator.getOutputString(121.51))
-    assertEquals("西经：121度30分36.00秒" , decorator.getOutputString(-121.51))
-    assertEquals("东经：001度00分00.00秒" , decorator.getOutputString(1.0))
-    assertEquals("西经：010度00分00.00秒" , decorator.getOutputString(-10.0))
+    assertEquals("东经：121度00分00.00秒" , decorator.getOutputString(121.0.toLng()))
+    assertEquals("东经：121度30分00.00秒" , decorator.getOutputString(121.50.toLng()))
+    assertEquals("东经：121度30分36.00秒" , decorator.getOutputString(121.51.toLng()))
+    assertEquals("西经：121度30分36.00秒" , decorator.getOutputString((-121.51).toLng()))
+    assertEquals("东经：001度00分00.00秒" , decorator.getOutputString(1.0.toLng()))
+    assertEquals("西经：010度00分00.00秒" , decorator.getOutputString((-10.0).toLng()))
   }
 }

@@ -3,42 +3,22 @@
  */
 package destiny.core.calendar
 
-import destiny.core.News
 import destiny.core.News.NorthSouth.NORTH
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
 import java.util.*
-import kotlin.math.absoluteValue
 
 object LatDecorator {
   private val implMap = mapOf(Locale.TAIWAN to LatDecoratorTaiwan(),
                               Locale.SIMPLIFIED_CHINESE to LatDecoratorChina(),
                               Locale.ENGLISH to LatDecoratorEnglish())
 
-  fun getOutputString(value: Double, locale: Locale): String {
+  fun getOutputString(value: LatValue, locale: Locale): String {
     return implMap.getOutputString(value, locale)
   }
 }
 
-data class Lat(val northSouth: News.NorthSouth, val deg: Int, val min: Int, val sec: Double) {
-  fun toDouble(): Double {
-    val sign = if (northSouth == NORTH) 1 else -1
-    return sign * (deg + min.toDouble() / 60 + sec / 3600)
-  }
-  companion object {
-    fun of(value: Double): Lat {
-      val northSouth = if (value >= 0) NORTH else News.NorthSouth.SOUTH
-
-      val deg = value.absoluteValue.toInt()
-      val min = ((value.absoluteValue - deg) * 60).toInt()
-      val sec = value.absoluteValue * 3600 - deg * 3600 - min * 60
-      return Lat(northSouth, deg, min, sec)
-    }
-  }
-}
-
-
-private val zh = {sb : StringBuilder , lat : Lat ->
+private val zh = {sb : StringBuilder , lat : LatValue ->
   sb.append("：")
   sb.append("%02d".format(lat.deg)).append("度")
   sb.append("%02d".format(lat.min)).append("分")
@@ -53,37 +33,35 @@ private val zh = {sb : StringBuilder , lat : Lat ->
   sb
 }
 
-class LatDecoratorTaiwan : Decorator<Double> {
+class LatDecoratorTaiwan : Decorator<LatValue> {
   /**
    * 北緯：01度00分00.00秒
    * 共 21 chars width
    */
-  override fun getOutputString(value: Double): String {
-    val lat = Lat.of(value)
+  override fun getOutputString(value: LatValue): String {
 
     return with(StringBuilder()) {
-      append(if (lat.northSouth == NORTH) "北緯" else "南緯")
-      zh.invoke(this , lat)
+      append(if (value.northSouth == NORTH) "北緯" else "南緯")
+      zh.invoke(this , value)
     }.toString()
   }
 }
 
-class LatDecoratorChina : Decorator<Double> {
+class LatDecoratorChina : Decorator<LatValue> {
   /**
    * 北纬：01度00分00.00秒
    * 共 21 chars width
    */
-  override fun getOutputString(value: Double): String {
-    val lat = Lat.of(value)
+  override fun getOutputString(value: LatValue): String {
 
     return with(StringBuilder()) {
-      append(if (lat.northSouth == NORTH) "北纬" else "南纬")
-      zh.invoke(this , lat)
+      append(if (value.northSouth == NORTH) "北纬" else "南纬")
+      zh.invoke(this , value)
     }.toString()
   }
 }
 
-class LatDecoratorEnglish : Decorator<Double> {
+class LatDecoratorEnglish : Decorator<LatValue> {
 
   /**
    * ISO 6709 國際標準
@@ -92,18 +70,17 @@ class LatDecoratorEnglish : Decorator<Double> {
    * 注意，「分」這裡，有 left padding '0'
    * 共 14 bytes
    */
-  override fun getOutputString(value: Double): String {
-    val lat = Lat.of(value)
+  override fun getOutputString(value: LatValue): String {
     return with(StringBuilder()) {
-      append("%02d".format(lat.deg)).append("°")
-      append("%02d".format(lat.min)).append("'")
-      val secString = "%02.3f".format(lat.sec).let {
+      append("%02d".format(value.deg)).append("°")
+      append("%02d".format(value.min)).append("'")
+      val secString = "%02.3f".format(value.sec).let {
         // 可能是 "0.000"
         if (it.length == 5) "0$it"
         else it
       }
       append(secString).append("\"")
-      append(if (lat.northSouth == NORTH) "N" else "S")
+      append(if (value.northSouth == NORTH) "N" else "S")
     }.toString()
   }
 

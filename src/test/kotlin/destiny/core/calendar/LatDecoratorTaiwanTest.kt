@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import destiny.core.calendar.LatValue.Companion.toLat
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -12,6 +13,6 @@ class LatDecoratorTaiwanTest {
 
   @Test
   fun getOutputString() {
-    assertEquals("北緯：01度00分00.00秒" , decorator.getOutputString(1.0))
+    assertEquals("北緯：01度00分00.00秒" , decorator.getOutputString((1.0).toLat()))
   }
 }

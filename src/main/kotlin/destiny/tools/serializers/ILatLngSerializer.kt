@@ -1,6 +1,10 @@
 package destiny.tools.serializers
 
 import destiny.core.calendar.ILatLng
+import destiny.core.calendar.LatValue
+import destiny.core.calendar.LatValue.Companion.toLat
+import destiny.core.calendar.LngValue
+import destiny.core.calendar.LngValue.Companion.toLng
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -22,8 +26,8 @@ object ILatLngSerializer : KSerializer<ILatLng> {
 
   override fun serialize(encoder: Encoder, value: ILatLng) {
     encoder.encodeStructure(descriptor) {
-      encodeDoubleElement(descriptor, 0, value.lat)
-      encodeDoubleElement(descriptor, 1, value.lng)
+      encodeDoubleElement(descriptor, 0, value.lat.value)
+      encodeDoubleElement(descriptor, 1, value.lng.value)
     }
   }
 
@@ -53,8 +57,8 @@ object ILatLngSerializer : KSerializer<ILatLng> {
       }
     }
     return object : ILatLng {
-      override val lat: Double = lat
-      override val lng: Double = lng
+      override val lat: LatValue = lat.toLat()
+      override val lng: LngValue = lng.toLng()
     }
   }
 

@@ -3,6 +3,8 @@
  */
 package destiny.core.astrology.eclipse
 
+import destiny.core.calendar.LatValue
+import destiny.core.calendar.LngValue
 import java.io.Serializable
 
 /**
@@ -10,9 +12,9 @@ import java.io.Serializable
  */
 data class EclipseSpan(
   /** 經度  */
-  val lng: Double,
+  val lng: LngValue,
   /** 緯度  */
-  val lat: Double,
+  val lat: LatValue,
   /** 高度 (米)  */
   val alt: Double,
   /** 哪一種食，其 起訖 資訊為何  */
