@@ -5,6 +5,7 @@ package destiny.tools
 
 import destiny.core.Descriptive
 import kotlinx.coroutines.delay
+import kotlinx.serialization.json.*
 import java.io.IOException
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -144,3 +145,28 @@ fun <T : Enum<T>> KClass<out Enum<T>>.getValues(): Array<out Enum<T>> {
 }
 
 inline fun <reified T : Enum<T>> iterator(): Iterator<T> = enumValues<T>().iterator()
+
+fun JsonElement.toMap(): Map<String, Any> {
+  logger.debug { "JsonElement.toMap : $this" }
+  return when (this) {
+    is JsonObject -> this.mapValues { (_, jsonElement: JsonElement) ->
+      when (jsonElement) {
+        is JsonPrimitive -> when {
+          jsonElement.isString              -> jsonElement.content
+          jsonElement.booleanOrNull != null -> jsonElement.boolean
+          jsonElement.intOrNull != null     -> jsonElement.int
+          jsonElement.doubleOrNull != null  -> jsonElement.double
+          jsonElement.floatOrNull != null   -> jsonElement.float
+          else                              -> null
+        }
+
+        is JsonObject    -> jsonElement.toMap()
+        is JsonArray     -> jsonElement.map { it.toMap() }
+        else             -> null
+      }
+    }.filter { (_, v) -> v != null }
+      .mapValues { (_, v) -> v!! }
+
+    else          -> emptyMap()
+  }
+}
