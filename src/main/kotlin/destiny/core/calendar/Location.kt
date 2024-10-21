@@ -243,7 +243,7 @@ data class Location(override val lat: LatValue,
   }
 
   override fun toString(): String {
-    return "Location($lat,$lng, tzid=$tzid, minuteOffset=$minuteOffset)"
+    return "Location(${lat.value},${lng.value}, tzid=$tzid, minuteOffset=$minuteOffset)"
   }
 
 } // Location
