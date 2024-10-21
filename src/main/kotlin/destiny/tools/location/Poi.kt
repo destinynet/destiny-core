@@ -3,18 +3,16 @@
  */
 package destiny.tools.location
 
-import destiny.core.calendar.ILocationPlace
-import destiny.core.calendar.Location
-import destiny.core.calendar.LocationPlace
+import destiny.core.calendar.*
 import destiny.tools.KotlinLogging
 import destiny.tools.firstNotNullResult
 
 data class Poi(val regex: Regex,
-               val lat: Double?,
-               val lng: Double?,
+               val lat: LatValue?,
+               val lng: LngValue?,
                val pois: List<Poi> = emptyList()) {
 
-  private fun getLatLng(): Pair<Double, Double> {
+  private fun getLatLng(): Pair<LatValue, LngValue> {
     return if (lat != null && lng != null) {
       lat to lng
     } else {
@@ -28,7 +26,7 @@ data class Poi(val regex: Regex,
     val regexNamePatchResult = if (regex.pattern.equals(string.trim(), ignoreCase = true)) {
       val name = regex.pattern
       val (lat, lng) = getLatLng()
-      val loc = Location.of(lat, lng, tzid)
+      val loc = Location(lat, lng, tzid)
       LocationPlace(loc, prependAddress?.let { it + name } ?: name)
     } else {
       null
@@ -37,7 +35,7 @@ data class Poi(val regex: Regex,
     val thisResult: ILocationPlace? = regex.find(string)?.let { result ->
       val name = result.groupValues[0]
       val (lat, lng) = getLatLng()
-      val loc = Location.of(lat, lng, tzid)
+      val loc = Location(lat, lng, tzid)
       LocationPlace(loc, prependAddress?.let { it + name } ?: name)
     }
 
