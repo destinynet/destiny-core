@@ -41,18 +41,27 @@ data class HouseData(
 
 
   /** 宮干自化 列表 , 0 <= 長度 <= 3 */
-  val selfTransFours: List<T4Value>
+  val selfTransFoursWithStar: List<Pair<T4Value,ZStar>>
     get() = transFourFlyMap
       .filter { (_, _, third) -> third == stemBranch.branch }
-      .map { it.first }
+      .map { it.first to it.second }
+      .toList()
+
+  /** 宮干自化 列表 , 0 <= 長度 <= 3 */
+  val selfTransFours: List<T4Value>
+    get() = selfTransFoursWithStar.map { it.first }
+
+
+  /** 宮干 化入對宮  */
+  val oppositeTransFoursWithStar: List<Pair<T4Value,ZStar>>
+    get() = transFourFlyMap
+      .filter { (_, _, third) -> third == stemBranch.branch.opposite }
+      .map { it.first to it.second}
       .toList()
 
   /** 宮干 化入對宮  */
   val oppositeTransFours: List<T4Value>
-    get() = transFourFlyMap
-      .filter { (_, _, third) -> third == stemBranch.branch.opposite }
-      .map { it.first }
-      .toList()
+    get() = oppositeTransFoursWithStar.map { it.first }
 
   /** 傳回各個流運的宮位名稱對照 , 不傳回本命  */
   val flowHouseMapWithoutBirth: Map<FlowType, House>
