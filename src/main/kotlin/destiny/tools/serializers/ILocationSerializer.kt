@@ -4,10 +4,7 @@
 package destiny.tools.serializers
 
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.LatValue
-import destiny.core.calendar.LatValue.Companion.toLat
-import destiny.core.calendar.LngValue
-import destiny.core.calendar.LngValue.Companion.toLng
+import destiny.core.calendar.Location
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
@@ -56,13 +53,7 @@ object ILocationSerializer : KSerializer<ILocation> {
       }
     }
 
-    return object : ILocation {
-      override val lat: LatValue = lat.toLat()
-      override val lng: LngValue = lng.toLng()
-      override val tzid: String? = tzid
-      override val minuteOffset: Int? = minuteOffset
-      override val altitudeMeter: Double? = altitudeMeter
-    }
+    return Location.of(lat, lng, tzid, minuteOffset, altitudeMeter)
   }
 
 }
