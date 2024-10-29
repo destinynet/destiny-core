@@ -5,9 +5,9 @@ package destiny.tools.serializers
 
 import destiny.core.*
 import destiny.core.calendar.locationOf
+import destiny.tools.KotlinLogging
 import destiny.tools.serializers.Assertions.assertBdnpEquals
 import kotlinx.serialization.json.Json
-import destiny.tools.KotlinLogging
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.Test
@@ -21,7 +21,7 @@ class IBirthDataNamePlaceSerializerTest {
   }
 
   @Test
-  fun testSerializeDeserialize() {
+  fun withFullData() {
     val timeLoc: ITimeLoc = TimeLoc(LocalDateTime.of(2023, 10, 24, 21, 40), locationOf(Locale.TAIWAN))
     val gender = Gender.女
     val birthData = BirthData(timeLoc, gender)
@@ -37,7 +37,7 @@ class IBirthDataNamePlaceSerializerTest {
   }
 
   @Test
-  fun testSerializeDeserializeWithNullFields() {
+  fun withNullFields() {
     val timeLoc: ITimeLoc = TimeLoc(LocalDateTime.of(2023, 10, 24, 21, 40), locationOf(Locale.TAIWAN))
     val gender = Gender.女
     val birthData = BirthData(timeLoc, gender)
