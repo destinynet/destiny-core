@@ -7,10 +7,10 @@ import destiny.core.astrology.prediction.ISynastryAspect
 import java.io.Serializable
 
 enum class SynastryMode {
-  BOTH_FULL,    // Both parties have full date and time
-  FULL_TO_DATE, // Inner chart has full data, outer chart only has date
-  DATE_TO_FULL, // Inner chart only has date, outer chart has full data
-  BOTH_DATE     // Both parties only have date, no time
+  BOTH_FULL,              // Both parties have full date and time
+  INNER_FULL_OUTER_DATE,  // Inner chart has full data, outer chart only has date
+  INNER_DATE_OUTER_FULL,  // Inner chart only has date, outer chart has full data
+  BOTH_DATE               // Both parties only have date, no time
 }
 
 enum class SynastryDomain {
@@ -24,10 +24,10 @@ enum class SynastryDomain {
 
 class SynastryModel(
   val mode: SynastryMode,
-  val inner : IPersonHoroscopeModel,
-  val outer : IPersonHoroscopeModel,
+  val inner: IPersonHoroscopeModel,
+  val outer: IPersonHoroscopeModel,
   val progressedAspects: Set<ISynastryAspect>
-): Serializable {
+) : Serializable {
 
   val progressedAspectsByScore: List<ISynastryAspect>
     get() {

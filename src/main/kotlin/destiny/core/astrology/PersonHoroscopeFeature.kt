@@ -47,15 +47,15 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
   ): SynastryModel {
     val innerPoints = modelInner.points.let { points ->
       when (mode) {
-        SynastryMode.BOTH_FULL, SynastryMode.FULL_TO_DATE -> points
-        else                                              -> points.filter { it != Planet.MOON }
+        SynastryMode.BOTH_FULL, SynastryMode.INNER_FULL_OUTER_DATE -> points
+        else                                                       -> points.filter { it != Planet.MOON }
       }
     }.toList()
 
     val outerPoints = modelOuter.points.let { points ->
       when (mode) {
-        SynastryMode.BOTH_FULL, SynastryMode.DATE_TO_FULL -> points
-        else                                              -> points.filter { it != Planet.MOON }
+        SynastryMode.BOTH_FULL, SynastryMode.INNER_DATE_OUTER_FULL -> points
+        else                                                       -> points.filter { it != Planet.MOON }
       }
     }.toList()
 

@@ -33,7 +33,7 @@ class SynastryRequestTest {
     val inner = BirthDataNamePlace(Gender.男, LocalDateTime.of(1990, 1, 1, 12, 0), loc, "小明", "台北市")
     val outer = BirthDataNamePlace(Gender.女, LocalDateTime.of(1994, 7, 1, 12, 0), loc, "小花", "台北市")
 
-    val request = SynastryRequest(inner, outer, SynastryMode.FULL_TO_DATE)
+    val request = SynastryRequest(inner, outer, SynastryMode.INNER_FULL_OUTER_DATE)
 
     json.encodeToString(SynastryRequest.serializer(), request).also { rawJson ->
       logger.info { "raw json = $rawJson" }
