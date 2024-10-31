@@ -8,6 +8,7 @@ import destiny.core.Gender
 import destiny.core.calendar.locationOf
 import destiny.tools.KotlinLogging
 import destiny.tools.serializers.IBirthDataNamePlaceSerializer
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
@@ -35,7 +36,7 @@ class SynastryRequestTest {
 
     val request = SynastryRequest(inner, outer, SynastryMode.INNER_FULL_OUTER_DATE)
 
-    json.encodeToString(SynastryRequest.serializer(), request).also { rawJson ->
+    json.encodeToString(request).also { rawJson ->
       logger.info { "raw json = $rawJson" }
       json.decodeFromString<SynastryRequest>(rawJson).also { deserialized ->
         assertEquals(request , deserialized)

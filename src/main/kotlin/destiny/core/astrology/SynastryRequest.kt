@@ -4,11 +4,17 @@ import destiny.core.IBirthDataNamePlace
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
+interface ISynastryRequest {
+  val inner: IBirthDataNamePlace
+  val outer: IBirthDataNamePlace
+  val mode: SynastryMode
+}
+
 @Serializable
 data class SynastryRequest(
   @Contextual
-  val inner : IBirthDataNamePlace,
+  override val inner : IBirthDataNamePlace,
   @Contextual
-  val outer : IBirthDataNamePlace,
-  val mode : SynastryMode,
-)
+  override val outer : IBirthDataNamePlace,
+  override val mode : SynastryMode,
+) : ISynastryRequest
