@@ -34,3 +34,5 @@ class SynastryModel(
       return progressedAspects.asSequence().sortedByDescending { it.score }.toList()
     }
 }
+
+data class HouseOverlayRow(val point: AstroPoint, val inner: Int, val innerToOuter: Int, val outer : Int, val outerToInner: Int)
