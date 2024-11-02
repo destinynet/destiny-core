@@ -186,6 +186,19 @@ interface IHoroscopeModel : ITimeLoc {
       .map { it.key }
   }
 
+  /**
+   * 在不同的 [HouseType] 當中有哪些星體
+   */
+  fun getHousePoints(houseType: HouseType): List<AstroPoint> {
+    val houses = when (houseType) {
+      HouseType.ANGULAR   -> listOf(1, 4, 7, 10)
+      HouseType.SUCCEDENT -> listOf(2, 5, 8, 11)
+      HouseType.CADENT    -> listOf(3, 6, 9, 12)
+    }
+
+    return positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lngDeg) in houses }.map { it.key }
+  }
+
   val houses : List<House>
     get() {
       return (1..12).map { houseIndex ->
