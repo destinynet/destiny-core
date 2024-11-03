@@ -31,11 +31,11 @@ value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree 
     get() = value
 
   fun getAngle(to: ZodiacDegree): Double {
-    return Companion.getAngle(this.value, to.value)
+    return getAngle(this.value, to.value)
   }
 
   fun getAngle(to: Double): Double {
-    return Companion.getAngle(this.value, to)
+    return getAngle(this.value, to)
   }
 
   /**

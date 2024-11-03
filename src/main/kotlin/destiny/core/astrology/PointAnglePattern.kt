@@ -42,7 +42,7 @@ data class PointAnglePattern internal constructor(
       val (p1, p2) = points.iterator().let { it.next() to it.next() }
 
       val pointList = if (p1 != p2) {
-        sortedSetOf(AstroPointComparator(), p1, p2).toList()
+        sortedSetOf(AstroPointComparator, p1, p2).toList()
       } else {
         listOf(p1, p2)
       }

@@ -40,9 +40,9 @@ interface IPointAspectPattern : IPointAnglePattern, Comparable<IPointAspectPatte
 
     return if (thisP0.javaClass.name == thatP0.javaClass.name && thisP0 == thatP0) {
       if (thisP1.javaClass.name == thatP1.javaClass.name) (thisP1 as Comparable<AstroPoint>).compareTo(thatP1)
-      else pointComp.compare(thisP1, thatP1)
+      else AstroPointComparator.compare(thisP1, thatP1)
     } else {
-      pointComp.compare(thisP0, thatP0)
+      AstroPointComparator.compare(thisP0, thatP0)
     }
   }
 
@@ -58,9 +58,6 @@ interface IPointAspectPattern : IPointAnglePattern, Comparable<IPointAspectPatte
       .toString()
   }
 
-  companion object {
-    private val pointComp = AstroPointComparator()
-  }
 }
 
 
@@ -88,11 +85,10 @@ data class PointAspectPattern internal constructor(override val points: List<Ast
   }
 
   companion object {
-    private val pointComp = AstroPointComparator()
 
     fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, type: IPointAspectPattern.Type?, orb: Double = 0.0, score: Double? = null): PointAspectPattern {
       val points = if (p1 != p2) {
-        sortedSetOf(pointComp, p1, p2).toList()
+        sortedSetOf(AstroPointComparator, p1, p2).toList()
       } else {
         listOf(p1, p2)
       }

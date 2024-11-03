@@ -66,11 +66,10 @@ data class AspectData internal constructor(
 
 
   companion object {
-    private val pointComp = AstroPointComparator()
 
     fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null, gmtJulDay: GmtJulDay): AspectData {
       val points = if (p1 != p2) {
-        sortedSetOf(pointComp, p1, p2)
+        sortedSetOf(AstroPointComparator, p1, p2)
       } else {
         listOf(p1, p2).toSet()
       }

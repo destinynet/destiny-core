@@ -9,7 +9,7 @@ import java.io.Serializable
 /**
  * 對不同的 Point 做排序的動作 , 優先權： 行星 , 交點 , 小行星 , 恆星 , 阿拉伯點 , 漢堡
  */
-class AstroPointComparator : Comparator<AstroPoint>, Serializable {
+object AstroPointComparator : Comparator<AstroPoint>, Serializable {
 
   private val starClasses = arrayOf(
     Planet::class.java,
