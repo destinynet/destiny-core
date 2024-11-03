@@ -147,12 +147,11 @@ value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree 
 
     object OrientalComparator : Comparator<ZodiacDegree> {
       override fun compare(o1: ZodiacDegree, o2: ZodiacDegree): Int {
-        return if (o1.value == o2.value) {
-          0
-        } else if (o1.isOriental(o2))
-          -1
-        else
-          1
+        return when {
+          o1.value == o2.value -> 0
+          o1.isOriental(o2)    -> -1
+          else                 -> 1
+        }
       }
 
     }
