@@ -117,6 +117,15 @@ value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree 
     return (value - other).toZodiacDegree()
   }
 
+  fun midPoint(other: ZodiacDegree): ZodiacDegree {
+    val halfAngle = getAngle(other)/2
+
+    return if (this.isOriental(other))
+      (value + halfAngle).toZodiacDegree()
+    else
+      (other.value + halfAngle).toZodiacDegree()
+  }
+
 
   companion object {
 

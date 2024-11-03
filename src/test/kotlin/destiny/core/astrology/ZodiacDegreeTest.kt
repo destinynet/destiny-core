@@ -7,6 +7,7 @@ import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 import kotlin.test.*
@@ -150,4 +151,44 @@ class ZodiacDegreeTest {
     assertEquals(54, 0.9.toZodiacDegree().intMin)
   }
 
+  @ParameterizedTest(name = "midpoint between {0}° and {1}° should be {2}°")
+  @CsvSource(
+    "0.0, 100.0, 50.0     ",
+    "0.0, 179.0, 89.5     ",
+    "0.0, 181.0, 270.5    ",
+    "350.0, 10.0, 0.0     ",
+    "300.0, 60.0, 0.0     ",
+    "-10.0, 10.0, 0.0     ",
+    "370.0, 10.0, 10.0    ",
+    "0.0, 0.0, 0.0        ",
+    "0.0, 360.0, 0.0      ",
+    "45.0, 135.0, 90.0    ",
+    "315.0, 45.0, 0.0     ",
+    "359.0, 1.0, 0.0      ",
+    "179.0, 181.0, 180.0  ",
+    "10.5, 20.5, 15.5     ",
+    "350.5, 10.5, 0.5     ",
+    "10.0, 350.0, 0.0     ",
+    "350.0, 10.0, 0.0     ",
+    "355.0, 5.0, 0.0      ",
+    "175.0, 185.0, 180.0  ",
+  )
+  fun testMidPoint(deg1: Double, deg2: Double, expected: Double) {
+    val point1 = deg1.toZodiacDegree()
+    val point2 = deg2.toZodiacDegree()
+
+    // 測試正向順序
+    assertEquals(
+      expected,
+      point1.midPoint(point2).value,
+      "Midpoint between $deg1° and $deg2° should be $expected°"
+    )
+
+    // 測試反向順序
+    assertEquals(
+      expected,
+      point2.midPoint(point1).value,
+      "Midpoint between $deg2° and $deg1° should be $expected°"
+    )
+  }
 }
