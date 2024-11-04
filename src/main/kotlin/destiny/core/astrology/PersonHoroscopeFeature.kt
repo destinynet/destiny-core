@@ -4,7 +4,9 @@
 package destiny.core.astrology
 
 import destiny.core.Gender
+import destiny.core.astrology.Axis.RISING
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
+import destiny.core.astrology.prediction.MidPointFocalAspect
 import destiny.core.astrology.prediction.SynastryAspect
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -72,7 +74,25 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
           }
       }.toSet()
 
-    return SynastryModel(mode, modelInner, modelOuter, synastryAspects)
+    // 中點
+    val midPointFocals = buildSet {
+      addAll(Planet.values)
+      add(RISING)
+      add(Axis.MERIDIAN)
+      add(LunarNode.NORTH_TRUE)
+    }
+    val midPointOrb = 2.0
+
+    val midpointFocalAspects = modelOuter.getMidPointsWithFocal(midPointFocals, midPointOrb).flatMap { outerFocal: IMidPointWithFocal ->
+      modelInner.getMidPointsWithFocal(midPointFocals, midPointOrb).map { innerFocal: IMidPointWithFocal ->
+        Triple(outerFocal, innerFocal, aspectsCalculator.getAspectPattern(outerFocal.focal, innerFocal.focal, posMapOuter, posMapInner, { null }, { null }, aspects))
+      }.filter { (_, _, p) -> p != null }
+        .map { (outerFocal, innerFocal , pattern) ->
+          MidPointFocalAspect(outerFocal, innerFocal, pattern!!.aspect, pattern.orb)
+        }
+      }.toSet()
+
+    return SynastryModel(mode, modelInner, modelOuter, synastryAspects, midpointFocalAspects)
   }
 }
 

@@ -2,6 +2,7 @@ package destiny.core.astrology.prediction
 
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.AstroPoint
+import destiny.core.astrology.IMidPointWithFocal
 import destiny.core.astrology.IPointAspectPattern
 
 interface ISynastryAspect : IPointAspectPattern {
@@ -49,4 +50,18 @@ data class SynastryAspect(
     result = 31 * result + type.hashCode()
     return result
   }
+}
+
+data class MidPointFocalAspect(val outer : IMidPointWithFocal, val inner : IMidPointWithFocal,
+                               override val aspect: Aspect,
+                               override val orb: Double) : ISynastryAspect {
+  override val points: List<AstroPoint> = listOf(outer.focal, inner.focal)
+  override val outerPoint: AstroPoint = outer.focal
+  override val innerPoint: AstroPoint = inner.focal
+
+  override val type: IPointAspectPattern.Type? = null
+  override val outerPointHouse: Int? = null
+  override val innerPointHouse: Int? = null
+  override val angle: Double = aspect.degree
+  override val score: Double? = null
 }
