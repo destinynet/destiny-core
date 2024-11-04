@@ -151,54 +151,6 @@ interface IHoroscopeModel : ITimeLoc {
   }
 
 
-  /**
-   * 黃道幾度，落於第幾宮 ( 1 <= house <= 12 )
-   */
-  fun getHouse(zodiacDegree: ZodiacDegree): Int {
-    return Companion.getHouse(zodiacDegree, cuspDegreeMap)
-  }
-
-  /**
-   * 黃道幾度，落於第幾宮 ( 1<= house <= 12) , 以及，距離宮首、宮尾各幾度
-   */
-  fun getHousePartition(zodiacDegree: ZodiacDegree): HousePartition {
-    val house = Companion.getHouse(zodiacDegree, cuspDegreeMap)
-    val toHead = zodiacDegree.getAngle(getCuspDegree(house))
-    val toTail = zodiacDegree.getAngle(getCuspDegree(house + 1))
-    return HousePartition(house, toHead, toTail)
-  }
-
-  fun getHousePartition(p : AstroPoint): HousePartition? {
-    return getPosition(p)?.lngDeg?.let {
-      getHousePartition(it)
-    }
-  }
-
-
-  /**
-   * 取得第幾宮內的星星列表 , 1 <= index <=12 , 並且按照黃道度數「由小到大」排序
-   */
-  fun getHousePoints(index: Int): List<AstroPoint> {
-    if (index < 1)
-      return getHousePoints(index + 12)
-    return if (index > 12) getHousePoints(index - 12)
-    else positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lngDeg) == index }
-      .map { it.key }
-  }
-
-  /**
-   * 在不同的 [HouseType] 當中有哪些星體
-   */
-  fun getHousePoints(houseType: HouseType): List<AstroPoint> {
-    val houses = when (houseType) {
-      HouseType.ANGULAR   -> listOf(1, 4, 7, 10)
-      HouseType.SUCCEDENT -> listOf(2, 5, 8, 11)
-      HouseType.CADENT    -> listOf(3, 6, 9, 12)
-    }
-
-    return positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lngDeg) in houses }.map { it.key }
-  }
-
   val houses : List<House>
     get() {
       return (1..12).map { houseIndex ->
@@ -247,12 +199,6 @@ interface IHoroscopeModel : ITimeLoc {
       .toMap()
   }
 
-  /**
-   * @param point 取得此星體在第幾宮
-   */
-  fun getHouse(point: AstroPoint): Int? {
-    return positionMap[point]?.let { pos -> getHouse(pos.lngDeg) }
-  }
 
   /** 取得星體的位置以及地平方位角  */
   fun getPosition(point: AstroPoint): IPosWithAzimuth? {
@@ -274,12 +220,69 @@ interface IHoroscopeModel : ITimeLoc {
     return getZodiacDegree(point)?.sign
   }
 
+  /**
+   * 黃道幾度，落於第幾宮 ( 1 <= house <= 12 )
+   */
+  fun getHouse(zodiacDegree: ZodiacDegree): Int {
+    return getHouse(zodiacDegree, cuspDegreeMap)
+  }
+
+  /**
+   * @param point 取得此星體在第幾宮
+   */
+  fun getHouse(point: AstroPoint): Int? {
+    return positionMap[point]?.let { pos -> getHouse(pos.lngDeg) }
+  }
+
+
   fun getHouse(index: Int): House {
+    require(index in 1..12)
     return House(index, getCuspDegree(index), positionMap.filter { (p, _) ->
       getHouse(p) == index
     }.toList()
       .sortedWith(compareBy(ZodiacDegree.Companion.OrientalComparator) { p -> p.second.lngDeg })
     )
+  }
+
+  /**
+   * 取得第幾宮內的星星列表 , 1 <= index <=12 , 並且按照黃道度數「由小到大」排序
+   */
+  fun getHousePoints(index: Int): List<AstroPoint> {
+    if (index < 1)
+      return getHousePoints(index + 12)
+    return if (index > 12) getHousePoints(index - 12)
+    else positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lngDeg) == index }
+      .map { it.key }
+  }
+
+
+  /**
+   * 在不同的 [HouseType] 當中有哪些星體
+   */
+  fun getHousePoints(houseType: HouseType): List<AstroPoint> {
+    val houses = when (houseType) {
+      HouseType.ANGULAR   -> listOf(1, 4, 7, 10)
+      HouseType.SUCCEDENT -> listOf(2, 5, 8, 11)
+      HouseType.CADENT    -> listOf(3, 6, 9, 12)
+    }
+
+    return positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lngDeg) in houses }.map { it.key }
+  }
+
+  /**
+   * 黃道幾度，落於第幾宮 ( 1<= house <= 12) , 以及，距離宮首、宮尾各幾度
+   */
+  fun getHousePartition(zodiacDegree: ZodiacDegree): HousePartition {
+    val house = getHouse(zodiacDegree, cuspDegreeMap)
+    val toHead = zodiacDegree.getAngle(getCuspDegree(house))
+    val toTail = zodiacDegree.getAngle(getCuspDegree(house + 1))
+    return HousePartition(house, toHead, toTail)
+  }
+
+  fun getHousePartition(p: AstroPoint): HousePartition? {
+    return getPosition(p)?.lngDeg?.let {
+      getHousePartition(it)
+    }
   }
 
   companion object {
