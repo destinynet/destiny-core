@@ -285,8 +285,7 @@ interface IHoroscopeModel : ITimeLoc {
     }
   }
 
-
-  fun getMidPoints(points: Set<AstroPoint> = this.points, comparator: Comparator<MidPoint> = MidPointAstroPointComparator): List<MidPoint> {
+  private fun getUnsortedMidPoints(points: Set<AstroPoint> = this.points): List<MidPoint> {
     return points.filter { this.points.contains(it) }
       .let { pointList ->
         pointList.flatMapIndexed { index, p1 ->
@@ -304,7 +303,26 @@ interface IHoroscopeModel : ITimeLoc {
 
         MidPoint(pts, midPointDeg, getHouse(midPointDeg))
       }
+  }
+
+  fun getMidPoints(points: Set<AstroPoint> = this.points, comparator: Comparator<IMidPoint> = MidPointAstroPointComparator): List<IMidPoint> {
+    return getUnsortedMidPoints(points)
       .sortedWith(comparator)
+  }
+
+  fun getMidPointsWithFocal(points: Set<AstroPoint> = this.points, orb: Double = 2.0, comparator: Comparator<in IMidPointWithFocal> = MidPointOrbIntenseComparator): List<IMidPointWithFocal> {
+    return getUnsortedMidPoints(points).flatMap { midpoint ->
+      points.filterNot { midpoint.points.contains(it) }  // Exclude points that are already part of the midpoint
+        .mapNotNull { focal ->
+          val focalDegree = positionMap.getValue(focal).lngDeg
+          val angle = midpoint.degree.getAngle(focalDegree)
+          if (angle <= orb) {
+            MidPointWithFocal(midpoint, focal, angle)
+          } else {
+            null
+          }
+        }
+    }.sortedWith(comparator)
   }
 
   companion object {

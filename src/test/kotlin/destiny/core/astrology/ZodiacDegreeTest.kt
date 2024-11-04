@@ -10,7 +10,10 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -111,6 +114,8 @@ class ZodiacDegreeTest {
     assertEquals(ZodiacDegree.getAngle(0.0, 180.0), 180.0)
     assertEquals(ZodiacDegree.getAngle(0.0, 181.0), 179.0)
     assertEquals(ZodiacDegree.getAngle(359.0, 0.0), 1.0)
+    assertEquals(ZodiacDegree.getAngle(359.0, 1.0), 2.0)
+    assertEquals(ZodiacDegree.getAngle(1.0, 359.0), 2.0)
     assertEquals(ZodiacDegree.getAngle(0.0, 1.0), 1.0)
     assertEquals(ZodiacDegree.getAngle(0.0, 179.0), 179.0)
     assertEquals(ZodiacDegree.getAngle(0.0, 180.0), 180.0)
