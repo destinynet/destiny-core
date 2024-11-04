@@ -285,6 +285,28 @@ interface IHoroscopeModel : ITimeLoc {
     }
   }
 
+
+  fun getMidPoints(points: Set<AstroPoint> = this.points, comparator: Comparator<MidPoint> = MidPointAstroPointComparator): List<MidPoint> {
+    return points.filter { this.points.contains(it) }
+      .let { pointList ->
+        pointList.flatMapIndexed { index, p1 ->
+          pointList.drop(index + 1).map { p2 ->
+            p1 to p2
+          }
+        }
+      }
+      .filterNot { (p1, p2) -> p1 is LunarNode && p2 is LunarNode }
+      .map { (p1, p2) ->
+        val pts = setOf(p1, p2)
+        val p1Deg = positionMap.getValue(p1).lngDeg
+        val p2Deg = positionMap.getValue(p2).lngDeg
+        val midPointDeg = p1Deg.midPoint(p2Deg)
+
+        MidPoint(pts, midPointDeg, getHouse(midPointDeg))
+      }
+      .sortedWith(comparator)
+  }
+
   companion object {
 
     fun getHouse(degree: ZodiacDegree, cuspDegreeMap: Map<Int, ZodiacDegree>): Int {

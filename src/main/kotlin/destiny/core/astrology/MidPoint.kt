@@ -4,7 +4,7 @@
 package destiny.core.astrology
 
 
-data class MidPoint(val points: Set<AstroPoint>, val degree: ZodiacDegree) {
+data class MidPoint(val points: Set<AstroPoint>, val degree: ZodiacDegree, val house: Int) {
   init {
     require(points.size == 2) {
       "needs 2 astro points"

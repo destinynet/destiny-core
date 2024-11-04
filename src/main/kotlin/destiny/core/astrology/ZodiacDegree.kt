@@ -5,7 +5,9 @@ package destiny.core.astrology
 
 import destiny.tools.CircleTools.aheadOf
 import destiny.tools.CircleTools.normalize
+import destiny.tools.getTitle
 import java.io.Serializable
+import java.util.*
 
 interface IZodiacDegree : Serializable {
   val zDeg: Double
@@ -25,7 +27,7 @@ interface IZodiacDegree : Serializable {
 
 /** 黃道帶度數 */
 @JvmInline
-value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree {
+value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree, Comparable<ZodiacDegree> {
 
   override val zDeg: Double
     get() = value
@@ -84,13 +86,8 @@ value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree 
     }
   }
 
-  operator fun compareTo(other: ZodiacDegree): Int {
-    val v = value - other.value
-    return when {
-      v == 0.0  -> 0
-      value < 0 -> -1
-      else      -> 1
-    }
+  override operator fun compareTo(other: ZodiacDegree): Int {
+    return value.compareTo(other.value)
   }
 
   operator fun plus(other: ZodiacDegree): ZodiacDegree {
@@ -126,11 +123,29 @@ value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree 
       (other.value + halfAngle).toZodiacDegree()
   }
 
+  override fun toString(): String {
+    return buildString {
+      append(value)
+      append(" (")
+      signDegree.also { (sign,signDeg) ->
+        append(sign.getTitle(Locale.ENGLISH))
+        append("/")
+        append(signDeg.toString().take(5))
+      }
+      append(")")
+    }
+  }
+
 
   companion object {
 
     fun Number.toZodiacDegree(): ZodiacDegree {
       return ZodiacDegree(this.toDouble().normalize())
+    }
+
+    fun of(sign: ZodiacSign, degree: Double): ZodiacDegree {
+      require(degree >= 0.0 && degree < 30)
+      return ZodiacDegree(sign.degree + degree)
     }
 
     /**
