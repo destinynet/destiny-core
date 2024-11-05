@@ -36,7 +36,7 @@ interface ITranslationOfLight {
  *
  * 最後，包夾此行星的兩顆星，是否要形成「出相位」，我認為「不一定」，因為意義不同，應該可以設為選項
  */
-class TranslationOfLightImpl(private val aspectsCalculator: IAspectsCalculator,
+class TranslationOfLightImpl(private val aspectCalculator: IAspectCalculator,
                              private val besiegedImpl: IBesieged) : ITranslationOfLight, Serializable {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Triple<Planet, Planet, IPointAspectPattern.Type?>? {
@@ -55,7 +55,7 @@ class TranslationOfLightImpl(private val aspectsCalculator: IAspectsCalculator,
         }?.let { _ ->
           //2008-11-05 新增規則： 第三顆星需與這兩顆星分別形成出相位以及入相位 , 從 出相位 傳遞光線 到 入相位
 
-          with(aspectsCalculator) {
+          with(aspectCalculator) {
             mapOf(
               p1 to h.getAspectType(planet, p1, Aspect.getAspects(Aspect.Importance.HIGH).toSet()),
               p2 to h.getAspectType(planet, p2, Aspect.getAspects(Aspect.Importance.HIGH).toSet())

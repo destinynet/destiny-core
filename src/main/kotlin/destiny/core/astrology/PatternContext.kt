@@ -14,7 +14,7 @@ import org.apache.commons.math3.ml.clustering.DBSCANClusterer
 import java.io.Serializable
 
 class PatternContext(val aspectEffective: IAspectEffective,
-                     val aspectsCalculator: IAspectsCalculator) : Serializable {
+                     val aspectCalculator: IAspectCalculator) : Serializable {
 
   private fun AstroPoint.signHouse(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): PointSignHouse {
     return posMap.getValue(this).let { iPos ->
@@ -26,7 +26,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   val grandTrine = object : IPatternFactory {
     override fun getPatterns(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
-      return aspectsCalculator.getAspectPatterns(posMap, aspects = setOf(TRINE))
+      return aspectCalculator.getAspectPatterns(posMap, aspects = setOf(TRINE))
         .takeIf { it.size >= 3 }
         ?.let { patterns ->
 
@@ -58,7 +58,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .flatMap { grandTrine ->
           // 大三角的 每個點 , 都當作風箏的尾巴，去找是否有對沖的點 (亦即：風箏頭)
           grandTrine.points.map { tail ->
-            tail to aspectsCalculator.getPointAspectAndScore(tail, posMap, aspects = setOf(OPPOSITION))
+            tail to aspectCalculator.getPointAspectAndScore(tail, posMap, aspects = setOf(OPPOSITION))
           }.filter { (_, oppoSet) ->
             oppoSet.isNotEmpty()
           }.flatMap { (tail, oppoSet: Set<Triple<AstroPoint, Aspect, Double>>) ->
@@ -90,7 +90,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
     override fun getPatterns(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
 
-      return aspectsCalculator.getAspectPatterns(posMap, aspects = twoAspects)
+      return aspectCalculator.getAspectPatterns(posMap, aspects = twoAspects)
         .takeIf { it.size >= 3 }
         ?.let { pairs ->
           Sets.combinations(pairs, 3).asSequence().filter { threeSet ->
@@ -113,7 +113,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   // 上帝之指
   val yod = object : IPatternFactory {
     override fun getPatterns(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
-      return aspectsCalculator.getAspectPatterns(posMap, aspects = setOf(QUINCUNX))
+      return aspectCalculator.getAspectPatterns(posMap, aspects = setOf(QUINCUNX))
         .takeIf { it.size >= 2 }
         ?.let { patterns ->
           // 任兩個 QUINCUNX ,
@@ -146,7 +146,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
       return yod.getPatterns(posMap, cuspDegreeMap)
         .map { it as AstroPattern.Yod }
         .flatMap { pattern ->
-          aspectsCalculator.getPointAspectAndScore(pattern.pointer.point, posMap, posMap.keys, setOf(OPPOSITION))
+          aspectCalculator.getPointAspectAndScore(pattern.pointer.point, posMap, posMap.keys, setOf(OPPOSITION))
             .map { (oppoPoint, _, oppoScore) ->
 
               // 對沖點，還必須與兩翼形成30度
@@ -172,7 +172,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   val goldenYod = object : IPatternFactory {
 
     override fun getPatterns(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
-      return aspectsCalculator.getAspectPatterns(posMap, aspects = setOf(BIQUINTILE, QUINTILE))  // 144 , 72
+      return aspectCalculator.getAspectPatterns(posMap, aspects = setOf(BIQUINTILE, QUINTILE))  // 144 , 72
         .takeIf { it.size >= 3 }
         ?.let { patterns ->
           Sets.combinations(patterns, 3).asSequence().filter { threePairs ->
@@ -209,11 +209,11 @@ class PatternContext(val aspectEffective: IAspectEffective,
            * */
           patterns.asSequence().map { it as AstroPattern.TSquared }
             .flatMap { tSquared ->
-              aspectsCalculator.getPointAspect(tSquared.squared.point, posMap, aspects = setOf(OPPOSITION)).keys.mapNotNull { oppo: AstroPoint ->
+              aspectCalculator.getPointAspect(tSquared.squared.point, posMap, aspects = setOf(OPPOSITION)).keys.mapNotNull { oppo: AstroPoint ->
 
                 // oppo Point 還必須與 三刑會沖 兩角尖 相刑 , 才能確保比較漂亮的 大十字
 
-                aspectsCalculator.getPointAspectAndScore(oppo, posMap, tSquared.oppoPoints, setOf(SQUARE))
+                aspectCalculator.getPointAspectAndScore(oppo, posMap, tSquared.oppoPoints, setOf(SQUARE))
                   .takeIf { it.size == 2 }
                   ?.let { twoSquared: Set<Triple<AstroPoint, Aspect, Double>> ->
                     // 一個 T-Squared 的分數
@@ -283,7 +283,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             // 兩組大三角中，每顆星都能在另一組中找到對沖的星
             val (g1, g2) = twoTrines.toList().let { it[0] to it[1] }
             g1.points.all { p ->
-              aspectsCalculator.getPointAspect(p, posMap, g2.points, aspects = setOf(OPPOSITION)).size == 1
+              aspectCalculator.getPointAspect(p, posMap, g2.points, aspects = setOf(OPPOSITION)).size == 1
             }
           }.map { twoTrines: Set<AstroPattern.GrandTrine> ->
             val score = twoTrines.takeIf { trines -> trines.all { it.score != null } }?.map { it.score!!.value }?.average()?.toScore()
@@ -301,7 +301,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
     override fun getPatterns(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
 
-      val patterns: Set<IPointAspectPattern> = aspectsCalculator.getAspectPatterns(posMap, aspects = threeAspects)
+      val patterns: Set<IPointAspectPattern> = aspectCalculator.getAspectPatterns(posMap, aspects = threeAspects)
 
       return patterns.takeIf { it.size >= 3 }
         ?.let {

@@ -39,7 +39,7 @@ interface IRefranation {
 
 
 
-class RefranationImpl(private val aspectsCalculator: IAspectsCalculator,
+class RefranationImpl(private val aspectCalculator: IAspectCalculator,
                       private val relativeTransitImpl: IRelativeTransit,
                       private val retrogradeImpl: IRetrograde) : IRefranation, Serializable {
 
@@ -51,7 +51,7 @@ class RefranationImpl(private val aspectsCalculator: IAspectsCalculator,
 
     return aspects.asSequence().map { aspect ->
       /** 此兩星正在 apply 哪個交角  */
-      aspect to with(aspectsCalculator) { horoscope.getAspectType(planet, otherPoint, aspect) }
+      aspect to with(aspectCalculator) { horoscope.getAspectType(planet, otherPoint, aspect) }
     }.firstOrNull { (_, type) -> type === IPointAspectPattern.Type.APPLYING }
       ?.let { (applyingAspect, _) -> applyingAspect }
       ?.let { applyingAspect ->

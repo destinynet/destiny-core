@@ -9,8 +9,8 @@ import destiny.core.astrology.IPointAspectPattern.Type.SEPARATING
 import java.io.Serializable
 import kotlin.math.abs
 
-class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
-                            private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>) : IAspectsCalculator, Serializable {
+class AspectCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
+                           private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>) : IAspectCalculator, Serializable {
 
 
   override fun getAspectPattern(p1: AstroPoint, p2: AstroPoint,

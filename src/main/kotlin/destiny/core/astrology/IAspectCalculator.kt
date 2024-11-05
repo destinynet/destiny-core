@@ -14,7 +14,7 @@ import destiny.core.astrology.IPointAspectPattern.Type.SEPARATING
  *
  * 或是兩張命盤，彼此的交角列表
  */
-interface IAspectsCalculator  {
+interface IAspectCalculator  {
 
   fun getAspectPattern(p1: AstroPoint, p2: AstroPoint,
                        p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,

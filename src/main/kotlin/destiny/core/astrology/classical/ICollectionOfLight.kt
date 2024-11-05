@@ -46,7 +46,7 @@ interface ICollectionOfLight {
 
 class CollectionOfLightImpl(private val besiegedImpl: IBesieged,
                             private val essentialImpl: IEssential,
-                            private val aspectsCalculator: IAspectsCalculator) : ICollectionOfLight, Serializable {
+                            private val aspectCalculator: IAspectCalculator) : ICollectionOfLight, Serializable {
 
   /**
    * 指定某種「光線蒐集模式」
@@ -159,7 +159,7 @@ class CollectionOfLightImpl(private val besiegedImpl: IBesieged,
 
   override fun isCollecting(point: AstroPoint, h: IHoroscopeModel, p1: AstroPoint, p2: AstroPoint): Boolean {
 
-    return with(aspectsCalculator) {
+    return with(aspectCalculator) {
       h.getAspectPatterns(p1 , setOf(p1, p2), Aspect.getAspects(Aspect.Importance.HIGH).toSet())
         .takeIf { it.isEmpty() }
         ?.takeIf { h.getAspectPatterns(setOf(point, p1), aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()).firstOrNull()?.type === APPLYING }

@@ -58,7 +58,7 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
                                private val starPositionImpl: IStarPosition<*>,
                                private val houseCuspImpl: IHouseCusp,
                                private val solarTermsImpl: ISolarTerms,
-                               private val aspectsCalculator: IAspectsCalculator,
+                               private val aspectCalculator: IAspectCalculator,
                                private val julDayResolver: JulDayResolver,
                                @Transient
                                private val ewContextFeatureCache : Cache<LmtCacheKey<*>, IEightWordsContextModel>) : AbstractCachedFeature<EightWordsContextConfig , IEightWordsContextModel>() {
@@ -124,7 +124,7 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
 
     val (prevSolarSign, nextSolarSign) = zodiacSignFeature.getModel(lmt, loc)
     val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(lmt.toGmtJulDay(loc))
-    val aspectDataSet = aspectsCalculator.getAspectPatterns(starPosMap)
+    val aspectDataSet = aspectCalculator.getAspectPatterns(starPosMap)
 
     return EightWordsContextModel(
       eightWords,

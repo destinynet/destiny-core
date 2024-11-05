@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.Gender
+import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Axis.RISING
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.prediction.MidPointFocalAspect
@@ -43,8 +44,9 @@ class PersonHoroscopeConfigBuilder : Builder<PersonHoroscopeConfig> {
 interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPersonHoroscopeModel> {
   fun synastry(
     modelInner: IPersonHoroscopeModel, modelOuter: IPersonHoroscopeModel,
-    aspectsCalculator: IAspectsCalculator,
-    aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet(),
+    aspectCalculator: IAspectCalculator,
+    midpointAspectCalculator: IAspectCalculator,
+    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
     mode: SynastryMode = SynastryMode.BOTH_FULL
   ): SynastryModel {
     val innerPoints = modelInner.points.let { points ->
@@ -66,7 +68,7 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
 
     val synastryAspects = outerPoints.asSequence().flatMap { pOuter -> innerPoints.asSequence().map { pInner -> pOuter to pInner } }
       .mapNotNull { (pOuter, pInner) ->
-        aspectsCalculator.getAspectPattern(pOuter, pInner, posMapOuter, posMapInner, { null }, { null }, aspects)
+        aspectCalculator.getAspectPattern(pOuter, pInner, posMapOuter, posMapInner, { null }, { null }, aspects)
           ?.let { p: IPointAspectPattern ->
             val pOuterHouse = posMapOuter[pOuter]?.lng?.toZodiacDegree()?.let { zDeg -> modelInner.getHouse(zDeg) }
             val pInnerHouse = posMapInner[pInner]?.lng?.toZodiacDegree()?.let { zDeg -> modelInner.getHouse(zDeg) }
@@ -83,9 +85,10 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
     }
     val midPointOrb = 2.0
 
+    val synastryMidpointAspects = setOf(CONJUNCTION, SEMISQUARE, SQUARE, SESQUIQUADRATE, OPPOSITION)
     val midpointFocalAspects = modelOuter.getMidPointsWithFocal(midPointFocals, midPointOrb).flatMap { outerFocal: IMidPointWithFocal ->
       modelInner.getMidPointsWithFocal(midPointFocals, midPointOrb).map { innerFocal: IMidPointWithFocal ->
-        Triple(outerFocal, innerFocal, aspectsCalculator.getAspectPattern(outerFocal.focal, innerFocal.focal, posMapOuter, posMapInner, { null }, { null }, aspects))
+        Triple(outerFocal, innerFocal, midpointAspectCalculator.getAspectPattern(outerFocal.focal, innerFocal.focal, posMapOuter, posMapInner, { null }, { null }, synastryMidpointAspects))
       }.filter { (_, _, p) -> p != null }
         .map { (outerFocal, innerFocal , pattern) ->
           MidPointFocalAspect(outerFocal, innerFocal, pattern!!.aspect, pattern.orb)

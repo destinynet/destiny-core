@@ -65,11 +65,11 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
    */
   fun getSecondaryProgression(
     model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
-    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig, forward: Boolean = true
+    aspectCalculator: IAspectCalculator, config: IHoroscopeConfig, forward: Boolean = true
   ): IProgressionModel {
     val progression = ProgressionSecondary(forward)
 
-    return getProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
+    return getProgression(progression, model, progressionTime, aspects, aspectCalculator, config)
   }
 
   /**
@@ -77,11 +77,11 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
    */
   fun getTertiaryProgression(
     model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
-    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig, converse: Boolean = false
+    aspectCalculator: IAspectCalculator, config: IHoroscopeConfig, converse: Boolean = false
   ): IProgressionModel {
     val progression = ProgressionTertiary(converse)
 
-    return getProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
+    return getProgression(progression, model, progressionTime, aspects, aspectCalculator, config)
   }
 
   /**
@@ -89,19 +89,19 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
    */
   fun getMinorProgression(
     model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
-    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig, converse: Boolean = false
+    aspectCalculator: IAspectCalculator, config: IHoroscopeConfig, converse: Boolean = false
   ): IProgressionModel {
     val progression = ProgressionMinor(converse)
 
-    return getProgression(progression, model, progressionTime, aspects, aspectsCalculator, config)
+    return getProgression(progression, model, progressionTime, aspects, aspectCalculator, config)
   }
 
   fun transit(
     model: IHoroscopeModel, transitTime: GmtJulDay, aspects: Set<Aspect>,
-    aspectsCalculator: IAspectsCalculator, config: IHoroscopeConfig, forward: Boolean = true
+    aspectCalculator: IAspectCalculator, config: IHoroscopeConfig, forward: Boolean = true
   ): IProgressionModel {
     val progression = Transit(forward)
-    return getProgression(progression, model, transitTime, aspects, aspectsCalculator, config)
+    return getProgression(progression, model, transitTime, aspects, aspectCalculator, config)
   }
 
   fun getProgression(
@@ -109,7 +109,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     model: IHoroscopeModel,
     progressionTime: GmtJulDay,
     aspects: Set<Aspect>,
-    aspectsCalculator: IAspectsCalculator,
+    aspectCalculator: IAspectCalculator,
     config: IHoroscopeConfig
   ): IProgressionModel
 }
@@ -175,7 +175,7 @@ class HoroscopeFeature(
     model: IHoroscopeModel,
     progressionTime: GmtJulDay,
     aspects: Set<Aspect>,
-    aspectsCalculator: IAspectsCalculator,
+    aspectCalculator: IAspectCalculator,
     config: IHoroscopeConfig
   ): IProgressionModel {
 
@@ -204,7 +204,7 @@ class HoroscopeFeature(
 
           val progressedAspects = config.points.asSequence().flatMap { p1 -> config.points.asSequence().map { p2 -> p1 to p2 } }
             .mapNotNull { (p1, p2) ->
-              aspectsCalculator.getAspectPattern(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)
+              aspectCalculator.getAspectPattern(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)
                 ?.let { p: IPointAspectPattern ->
                   val p1House = model.getHouse(posMapOuter[p1]!!.lng.toZodiacDegree())
                   val p2House = model.getHouse(posMapInner[p2]!!.lng.toZodiacDegree())
