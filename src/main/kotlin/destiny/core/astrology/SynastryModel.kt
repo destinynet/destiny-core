@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.astrology.prediction.ISynastryAspect
+import destiny.core.astrology.prediction.MidPointFocalAspect
 import java.io.Serializable
 
 enum class SynastryMode {
@@ -22,6 +23,8 @@ enum class SynastryDomain {
   GROWTH,
 }
 
+data class SynastryFocalAspect(val inner: AstroPoint, val outer: AstroPoint, val aspect: Aspect, val orb: Double, val involved: List<MidPointFocalAspect>)
+
 class SynastryModel(
   val mode: SynastryMode,
   val inner: IPersonHoroscopeModel,
@@ -33,6 +36,17 @@ class SynastryModel(
   val progressedAspectsByScore: List<ISynastryAspect>
     get() {
       return progressedAspects.asSequence().sortedByDescending { it.score }.toList()
+    }
+
+  val synastryFocalAspects: List<SynastryFocalAspect>
+    get() {
+      return midpointFocalAspects.asSequence().map { it as MidPointFocalAspect }.groupBy { Triple(it.inner.focal, it.outer.focal, it.aspect) }
+        .asSequence()
+        .map { (triple: Triple<AstroPoint, AstroPoint, Aspect>, aspects: List<MidPointFocalAspect>) ->
+          SynastryFocalAspect(triple.first, triple.second, triple.third, aspects.first().orb, aspects)
+        }
+        .sortedBy { it.orb }
+        .toList()
     }
 }
 
