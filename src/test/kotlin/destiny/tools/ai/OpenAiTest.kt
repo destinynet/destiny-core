@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Nested
 import kotlin.test.*
 
 class OpenAiTest {
-  @OptIn(ExperimentalSerializationApi::class)
   val json = Json {
     encodeDefaults = true
     prettyPrint = true

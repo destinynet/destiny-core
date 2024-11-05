@@ -85,7 +85,7 @@ internal class ChineseDateKtTest {
     }
   }
 
-  fun testDisplay_appendDayFalse() = Stream.of(
+  fun testDisplay_appendDayFalse(): Stream<Pair<ChineseDate, String>> = Stream.of(
     ChineseDate(null, StemBranch.庚子, 1, false, 1) to "庚子年正月初一",
     ChineseDate(null, StemBranch.庚子, 4, false, 1) to "庚子年四月初一",
     ChineseDate(null, StemBranch.庚子, 4, false, 10) to "庚子年四月初十",
@@ -114,7 +114,7 @@ internal class ChineseDateKtTest {
     assertEquals(row.second, row.first.display())
   }
 
-  fun testDisplay_appendDayTrue() = Stream.of(
+  fun testDisplay_appendDayTrue(): Stream<Pair<ChineseDate, String>> = Stream.of(
     ChineseDate(null, StemBranch.庚子, 1, false, 1) to "庚子年正月初一",
     ChineseDate(null, StemBranch.庚子, 4, false, 1) to "庚子年四月初一",
     ChineseDate(null, StemBranch.庚子, 4, false, 10) to "庚子年四月初十",

@@ -58,7 +58,7 @@ value class GmtJulDay(val value: Double) : Comparable<GmtJulDay>, Serializable {
 
 /** to kotlin [Instant] */
 fun GmtJulDay.toInstant(): Instant {
-  return ((value - Constants.UnixEpoch.JULIAN_DAY) * Constants.SECONDS_OF_DAY).let { secDouble ->
+  return ((value - Constants.UnixEpoch.JULIAN_DAY) * SECONDS_OF_DAY).let { secDouble ->
     val second = secDouble.toLong()
     val nano = ((secDouble - second) * 1_000_000_000).toInt()
     Instant.fromEpochSeconds(second, nano)
@@ -68,7 +68,7 @@ fun GmtJulDay.toInstant(): Instant {
 /** from kotlin [Instant] */
 fun Instant.toGmtJulDay(): GmtJulDay {
   val millis = this.toEpochMilliseconds()
-  return GmtJulDay((millis + Constants.UnixEpoch.JULIAN_MILLI_SECONDS) / (Constants.SECONDS_OF_DAY * 1000).toDouble())
+  return GmtJulDay((millis + Constants.UnixEpoch.JULIAN_MILLI_SECONDS) / (SECONDS_OF_DAY * 1000).toDouble())
 }
 
 fun GmtJulDay.toLmt(loc: ILocation, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {

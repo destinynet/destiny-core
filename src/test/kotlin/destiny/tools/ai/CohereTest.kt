@@ -13,7 +13,6 @@ import kotlin.test.assertNotNull
 
 class CohereTest {
 
-  @OptIn(ExperimentalSerializationApi::class)
   val json = Json {
     encodeDefaults = true
     prettyPrint = true

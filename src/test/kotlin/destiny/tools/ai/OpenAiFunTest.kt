@@ -21,7 +21,6 @@ class OpenAiFunTest {
 
   private val logger = KotlinLogging.logger { }
 
-  @OptIn(ExperimentalSerializationApi::class)
   val json = Json {
     encodeDefaults = true
     prettyPrint = true

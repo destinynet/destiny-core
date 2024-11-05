@@ -26,7 +26,7 @@ sealed class LunarApsis(nameKey: String, abbrKey: String,
    * <pre>
    * ApsisImpl.getPosition(Planet.MOON , Apsis.APHELION , gmt, Coordinate.ECLIPTIC , NodeType.MEAN);
    * StarPositionImpl.getPosition(LunarApsis.APOGEE_MEAN, gmt);
-  </pre> *
+   * </pre>
    */
   object APOGEE_MEAN : LunarApsis("LunarApsis.APOGEE", "LunarApsis.APOGEE_ABBR", APHELION, MeanOscu.MEAN)
 
@@ -35,7 +35,7 @@ sealed class LunarApsis(nameKey: String, abbrKey: String,
    * <pre>
    * ApsisImpl.getPosition(Planet.MOON , Apsis.APHELION , gmt, Coordinate.ECLIPTIC , NodeType.TRUE);
    * StarPositionImpl.getPosition(LunarApsis.APOGEE_OSCU, gmt);
-  </pre> *
+   * </pre>
    */
   object APOGEE_OSCU : LunarApsis("LunarApsis.APOGEE", "LunarApsis.APOGEE_ABBR", APHELION, MeanOscu.OSCU)
 
@@ -44,7 +44,7 @@ sealed class LunarApsis(nameKey: String, abbrKey: String,
    * <pre>
    * ApsisImpl.getPosition(Planet.MOON , Apsis.PERIHELION , gmt, Coordinate.ECLIPTIC , NodeType.MEAN);
    * StarPositionImpl.getPosition(LunarApsis.PERIGEE_MEAN , gmt);
-  </pre> *
+   * </pre>
    */
   object PERIGEE_MEAN : LunarApsis("LunarApsis.PERIGEE", "LunarApsis.PERIGEE_ABBR", PERIHELION, MeanOscu.MEAN)
 
@@ -53,7 +53,7 @@ sealed class LunarApsis(nameKey: String, abbrKey: String,
    * <pre>
    * ApsisImpl.getPosition(Planet.MOON , Apsis.PERIHELION , gmt, Coordinate.ECLIPTIC , NodeType.TRUE);
    * StarPositionImpl.getPosition(LunarApsis.PERIGEE_OSCU , gmt);
-  </pre> *
+   * </pre>
    */
   object PERIGEE_OSCU : LunarApsis("LunarApsis.PERIGEE", "LunarApsis.PERIGEE_ABBR", PERIHELION, MeanOscu.OSCU)
 

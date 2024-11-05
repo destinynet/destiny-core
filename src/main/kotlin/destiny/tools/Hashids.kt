@@ -32,7 +32,7 @@ class Hashids(var salt: String = "", var length: Int = 0, alphabet: String = "ab
 
     /**
      * seps should contain only characters present in alphabet;
-     * alphabet should not contains seps
+     * alphabet should not contain seps
      */
     val sepsLength = seps.length - 1
     for (index in 0..sepsLength) {

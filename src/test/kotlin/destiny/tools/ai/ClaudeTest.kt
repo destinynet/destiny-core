@@ -14,7 +14,6 @@ import kotlin.test.assertTrue
 
 class ClaudeTest {
 
-  @OptIn(ExperimentalSerializationApi::class)
   val json = Json {
     encodeDefaults = true
     prettyPrint = true

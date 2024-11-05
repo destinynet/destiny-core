@@ -23,6 +23,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertSame
+import kotlin.time.Duration
 import kotlin.time.DurationUnit.HOURS
 import kotlin.time.toDuration
 
@@ -332,7 +333,7 @@ class TimeToolsTest {
    * 台灣
    * https://blog.yorkxin.org/2014/07/11/dst-in-taiwan-study
    */
-  fun dstAndOffsetTaiwan() = Stream.of(
+  fun dstAndOffsetTaiwan(): Stream<Triple<Boolean, Duration, LocalDateTime>> = Stream.of(
     // 民國41年（西元1952年）	日光節約時間	3月1日至10月31日
     Triple(FALSE, 8.toDuration(HOURS), LocalDateTime.of(1952, 2, 28, 12, 0)),
     // 日光節約時間開始，當天中午 , 時區調快一小時
