@@ -3,7 +3,6 @@
  */
 package destiny.tools.ai
 
-import destiny.tools.ai.Cohere.ToolFunction.Function
 import kotlin.reflect.KType
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf
@@ -140,7 +139,26 @@ fun IFunctionDeclaration.toClaude(): Claude.Function {
 fun IFunctionDeclaration.toCohere(): Cohere.ToolFunction {
   return Cohere.ToolFunction(
     "function",
-    Function(
+    Cohere.ToolFunction.Function(
+      this.name,
+      this.description,
+      InputSchema(
+        "object",
+        this.parameters.associate { p ->
+          p.name to InputSchema.Property(
+            p.type,
+            p.description
+          )
+        },
+        this.parameters.filter { it.required }.map { it.name }
+      )
+    )
+  )
+}
+
+fun IFunctionDeclaration.toXai(): Xai.ToolFunction {
+  return Xai.ToolFunction(
+    Xai.Function(
       this.name,
       this.description,
       InputSchema(
