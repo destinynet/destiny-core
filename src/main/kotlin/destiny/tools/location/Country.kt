@@ -1,13 +1,42 @@
 /**
- * Created by smallufo on 2024-11-16.
+ * Created by smallufo on 2024-11-17.
  */
 package destiny.tools.location
 
 import destiny.core.calendar.ILatLng
-import destiny.core.calendar.LatValue
-import destiny.core.calendar.LngValue
 
 
-data class Country(val name: String, val code: String, val sections: List<Section>)
-data class Section(val name: String, val code: String, val cities : List<City>)
-data class City(val name: String, override val lat: LatValue, override val lng: LngValue, val unlocode: String, val regex: Regex? = null) : ILatLng
+interface ICountry {
+  val name: String
+  val code: String
+  val pois: List<Country.Poi>
+  val latLng: ILatLng?
+}
+
+data class Country(
+  override val name: String,
+  val levels: Int,
+  override val latLng: ILatLng? = null,
+  override val code: String,
+  override val pois: List<Poi> = emptyList(),
+) : ICountry {
+
+  init {
+    require(levels in 1..3) { "Levels must be between 1 and 3, found $levels for '$name'." }
+  }
+
+  data class Poi(
+    override val name: String,
+    val regex: Regex? = null,
+    override val latLng: ILatLng? = null,
+    override val code: String,
+    override val pois: List<Poi> = emptyList()) : ICountry {
+    init {
+      if (pois.isEmpty()) {
+        requireNotNull(latLng) {
+          "Poi '$name' with no children must have a valid latLng."
+        }
+      }
+    }
+  }
+}
