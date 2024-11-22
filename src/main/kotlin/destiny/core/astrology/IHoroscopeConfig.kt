@@ -39,7 +39,7 @@ interface IPersonHoroscopeConfig : IHoroscopeConfig {
     }
 }
 
-data class TransitConfig(val forward: Boolean = true)
+data class TransitConfig(val forward: Boolean = true) : java.io.Serializable
 
 interface IHoroscopePresentConfig : IPersonHoroscopeConfig , IPresentConfig {
   val transitConfig: TransitConfig?

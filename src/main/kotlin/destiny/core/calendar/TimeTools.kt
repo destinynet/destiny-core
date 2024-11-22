@@ -177,9 +177,9 @@ object TimeTools {
 
   fun getLmtFromGmt(gmt: ChronoLocalDateTime<*>, zoneId: ZoneId): ChronoLocalDateTime<*> {
     val gmtZoned = gmt.atZone(GMT)
-    logger.debug("gmtZoned = {}", gmtZoned)
+    logger.trace { "gmtZoneId = $gmtZoned" }
     val newZoned = gmtZoned.withZoneSameInstant(zoneId)
-    logger.debug("gmtZoned with {} = {}", zoneId, newZoned)
+    logger.trace { "gmtZoned with $zoneId = $newZoned" }
     return newZoned.toLocalDateTime()
   }
 
