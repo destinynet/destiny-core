@@ -33,12 +33,20 @@ import java.util.*
  *                   North/South   PERIGEE (近)/APOGEE (遠)
  *
  */
+interface SerializableObject : Serializable {
+  fun readResolve(): Any
+}
+
+class SerializableObjectImpl : SerializableObject {
+  override fun readResolve(): Any = this
+}
+
 abstract class Point(
   /** 名稱key , nameKey 相等，則此 Point 視為 equals!  */
   val nameKey: String,
   val resource: String,
   /** 縮寫key , 為了輸出美觀所用 , 限定兩個 bytes , 例如 : 日(SU) , 月(MO) , 冥(PL) , 升(No) , 強(So) , 穀 , 灶 ... */
-  val abbrKey: String? = null) : Serializable {
+  val abbrKey: String? = null) : Serializable , SerializableObject by SerializableObjectImpl() {
 
   /** 名稱  */
   private val name: String by lazy {
