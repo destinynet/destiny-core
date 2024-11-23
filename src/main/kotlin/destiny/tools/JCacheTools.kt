@@ -25,7 +25,7 @@ object JCacheTools {
 
     cacheManager.createCache(name, configuration)
     return cacheManager.getCache<K, V>(name).also {
-      logger.warn("Returning dynamic generated cache : {} . keyType = {} , valueType = {}", it, keyType, valueType)
+      logger.warn { "Returning dynamic generated cache : $it , keyType = $keyType, valueType = $valueType" }
     }
   }
 }
