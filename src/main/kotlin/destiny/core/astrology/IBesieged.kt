@@ -88,7 +88,7 @@ interface IBesieged {
       Triple(listOf(planet1, planet2), prior.aspect, after.aspect)
     }
 
-    logger.debug("包夾 {} 的是 {}({}) 以及 {}({})", planet, besiegingPlanets[0], aspectPrior, besiegingPlanets[1], aspectAfter)
+    logger.trace("包夾 {} 的是 {}({}) 以及 {}({})", planet, besiegingPlanets[0], aspectPrior, besiegingPlanets[1], aspectAfter)
     return if (besiegingPlanets.contains(p1) && besiegingPlanets.contains(p2)) {
       constrainingAspects.contains(aspectPrior) && constrainingAspects.contains(aspectAfter)
     } else false
