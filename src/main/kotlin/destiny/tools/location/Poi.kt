@@ -39,7 +39,7 @@ data class Poi(val regex: Regex,
       LocationPlace(loc, prependAddress?.let { it + name } ?: name)
     }
 
-    logger.debug("thisResult of {} = {}", regex, thisResult)
+    logger.trace { "thisResult of $regex = $thisResult" }
 
     val subResult: ILocationPlace? = thisResult?.let { r ->
       val thisName = r.place

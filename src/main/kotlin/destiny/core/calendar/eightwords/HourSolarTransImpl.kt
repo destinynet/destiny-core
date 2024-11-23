@@ -122,7 +122,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
         }
       }
     }
-    logger.debug("resultGmt = {}", resultGmt)
+    logger.trace { "resultGmt = $resultGmt" }
     return resultGmt
   }
 
@@ -139,7 +139,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
 
     val currentEb: Branch = getHour(gmtJulDay, loc, config) // 取得目前在哪個時辰之中
 
-    logger.debug("目前是 {}時 , 要計算「上一個{}時」", currentEb, eb)
+    logger.trace { "目前是 ${currentEb}時 , 要計算「上一個${eb}時」" }
 
     if (nextNadir > nextMeridian) {
       // 目前時刻 位於子正到午正（上半天）
