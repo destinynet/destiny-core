@@ -296,11 +296,11 @@ object Tst {
 
       val previousNadirGmt = riseTransFeature.getModel(thirteenHoursAgo, loc, RiseTransConfig(Planet.SUN , TransPoint.NADIR , transConfig))!!
 
-      logger.debug("gmtJulDay = {}", gmtJulDay)
+      logger.trace { "gmtJulDay = $gmtJulDay" }
 
       val diffDays = nextMeridian - previousNadirGmt // 從子正到午正，總共幾秒
       val oneUnitDays = diffDays / 12.0
-      logger.debug("diffDays = {} , oneUnitDays = {}", diffDays, oneUnitDays)
+      logger.trace { "diffDays = $diffDays , oneUnitDays = $oneUnitDays" }
       when {
         gmtJulDay < previousNadirGmt + oneUnitDays      -> 子
         gmtJulDay < previousNadirGmt + oneUnitDays * 3  -> 丑
@@ -341,11 +341,11 @@ object Tst {
       val thirteenHoursAgo = gmtJulDay - 13 / 24.0
       val previousNadirGmt = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
 
-      logger.debug("gmtJulDay = {}", gmtJulDay)
+      logger.trace { "gmtJulDay = $gmtJulDay" }
 
       val diffDays = nextMeridian - previousNadirGmt // 從子正到午正，總共幾秒
       val oneUnitDays = diffDays / 12.0
-      logger.debug("diffDays = {} , oneUnitDays = {}", diffDays, oneUnitDays)
+      logger.trace { "diffDays = $diffDays , oneUnitDays = $oneUnitDays" }
       when {
         gmtJulDay < previousNadirGmt + oneUnitDays      -> 子
         gmtJulDay < previousNadirGmt + oneUnitDays * 3  -> 丑
