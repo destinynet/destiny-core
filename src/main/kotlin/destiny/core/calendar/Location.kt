@@ -20,7 +20,7 @@ import kotlin.math.absoluteValue
 
 @JvmInline
 @kotlinx.serialization.Serializable
-value class LatValue(val value: Double) {
+value class LatValue(val value: Double) : Serializable {
   init {
     require(value.absoluteValue <= 90)
   }
@@ -47,7 +47,7 @@ value class LatValue(val value: Double) {
 
 @JvmInline
 @kotlinx.serialization.Serializable
-value class LngValue(val value: Double) {
+value class LngValue(val value: Double) : Serializable {
   init {
     require(value.absoluteValue <= 180)
   }
