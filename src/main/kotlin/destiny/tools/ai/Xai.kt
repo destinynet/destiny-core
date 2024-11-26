@@ -3,9 +3,12 @@
  */
 package destiny.tools.ai
 
-import destiny.tools.ai.Cohere.ToolCall
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonContentPolymorphicSerializer
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
 
 
 class Xai {
@@ -36,16 +39,36 @@ class Xai {
 
 
   @Serializable
-  data class Response(val id: String, val `object`: String, val created: Long, val choices: List<Choice>) {
+  sealed class Response {
 
     @Serializable
-    data class Choice(
-      val index: Int,
-      val message: Message,
-      @SerialName("finish_reason")
-      val finishReason: String
-    )
+    @SerialName("error")
+    data class Error(val code: String , val error: String) : Response()
+
+    @Serializable
+    @SerialName("normal")
+    data class NormalResponse(val id: String, val `object`: String, val created: Long, val choices: List<Choice>) : Response() {
+
+      @Serializable
+      data class Choice(
+        val index: Int,
+        val message: Message,
+        @SerialName("finish_reason")
+        val finishReason: String
+      )
+    }
   }
+
+  object ResponseSerializer : JsonContentPolymorphicSerializer<Response>(Response::class) {
+    override fun selectDeserializer(element: JsonElement): DeserializationStrategy<Response> {
+      return when {
+        element.jsonObject.containsKey("error") -> Response.Error.serializer()
+        else                                    -> Response.NormalResponse.serializer()
+      }
+    }
+  }
+
+
 
   @Serializable
   data class ToolFunction(val function: Function, val type: String = "function")
