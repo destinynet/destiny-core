@@ -8,8 +8,8 @@ import destiny.core.News.EastWest.EAST
 import destiny.core.News.EastWest.WEST
 import destiny.core.News.NorthSouth.NORTH
 import destiny.core.News.NorthSouth.SOUTH
-import destiny.core.calendar.LatValue.Companion.toLat
-import destiny.core.calendar.LngValue.Companion.toLng
+import destiny.core.calendar.Lat.Companion.toLat
+import destiny.core.calendar.Lng.Companion.toLng
 import destiny.tools.LocaleTools
 import java.io.Serializable
 import java.time.Instant
@@ -20,7 +20,7 @@ import kotlin.math.absoluteValue
 
 @JvmInline
 @kotlinx.serialization.Serializable
-value class LatValue(val value: Double) : Serializable {
+value class Lat(val value: Double) : Serializable {
   init {
     require(value.absoluteValue <= 90)
   }
@@ -38,8 +38,8 @@ value class LatValue(val value: Double) : Serializable {
     get() = value.absoluteValue * 3600 - deg * 3600 - min * 60
 
   companion object {
-    fun Double.toLat(): LatValue {
-      return LatValue(this)
+    fun Double.toLat(): Lat {
+      return Lat(this)
     }
   }
 }
@@ -47,7 +47,7 @@ value class LatValue(val value: Double) : Serializable {
 
 @JvmInline
 @kotlinx.serialization.Serializable
-value class LngValue(val value: Double) : Serializable {
+value class Lng(val value: Double) : Serializable {
   init {
     require(value.absoluteValue <= 180)
   }
@@ -65,8 +65,8 @@ value class LngValue(val value: Double) : Serializable {
     get() = value.absoluteValue * 3600 - deg * 3600 - min * 60
 
   companion object {
-    fun Double.toLng(): LngValue {
-      return LngValue(this)
+    fun Double.toLng(): Lng {
+      return Lng(this)
     }
   }
 }
@@ -74,8 +74,8 @@ value class LngValue(val value: Double) : Serializable {
 /** 純粹經緯度座標，沒有時區 [TimeZone] [ZoneId] 或是 時差 (minuteOffset) 等資訊 */
 interface ILatLng : Serializable {
 
-  val lat: LatValue
-  val lng: LngValue
+  val lat: Lat
+  val lng: Lng
 
   val latLng
     get() = lat to lng
@@ -115,7 +115,7 @@ interface ILatLng : Serializable {
     }.toString()
 }
 
-data class LatLng(override val lat: LatValue, override val lng: LngValue) : ILatLng
+data class LatLng(override val lat: Lat, override val lng: Lng) : ILatLng
 
 interface ILatLngRadius : ILatLng {
   val radiusMeters: Int
@@ -155,8 +155,8 @@ interface IPlace {
 }
 
 @kotlinx.serialization.Serializable
-data class Location(override val lat: LatValue,
-                    override val lng: LngValue,
+data class Location(override val lat: Lat,
+                    override val lng: Lng,
                     override val tzid: String? = null,
                     override val minuteOffset: Int? = null,
                     override val altitudeMeter: Double? = null) : ILocation {

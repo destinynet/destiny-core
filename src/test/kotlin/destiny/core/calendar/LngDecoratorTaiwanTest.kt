@@ -3,7 +3,7 @@
  */
 package destiny.core.calendar
 
-import destiny.core.calendar.LngValue.Companion.toLng
+import destiny.core.calendar.Lng.Companion.toLng
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

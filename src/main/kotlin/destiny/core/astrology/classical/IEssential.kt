@@ -5,10 +5,7 @@
 package destiny.core.astrology.classical
 
 import destiny.core.DayNight
-import destiny.core.astrology.AstroPoint
-import destiny.core.astrology.IHoroscopeModel
-import destiny.core.astrology.ZodiacDegree
-import destiny.core.astrology.ZodiacSign
+import destiny.core.astrology.*
 import destiny.tools.KotlinLogging
 
 /**
@@ -155,6 +152,9 @@ interface IEssential {
                                dignities: Set<Dignity>): Set<MutualData> {
     return map.keys.filter { it !== this }
       .flatMap { p2 ->
+        if (this == Planet.MERCURY && p2 == Planet.MERCURY) {
+          logger.warn { "AstroPoint = $this , p2 = $p2" }
+        }
         p2.getReceptions(map, dayNight, dignities)
           .filter { (_, p1) -> p1 === this }
           .map { (dig1, p1) -> p1 to dig1 }

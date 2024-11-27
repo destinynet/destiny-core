@@ -33,19 +33,23 @@ import java.util.*
  *                   North/South   PERIGEE (近)/APOGEE (遠)
  *
  */
-interface SerializableObject : Serializable {
-  fun readResolve(): Any
-}
 
+@Suppress("LeakingThis")
 abstract class Point(
   /** 名稱key , nameKey 相等，則此 Point 視為 equals!  */
   val nameKey: String,
   val resource: String,
   /** 縮寫key , 為了輸出美觀所用 , 限定兩個 bytes , 例如 : 日(SU) , 月(MO) , 冥(PL) , 升(No) , 強(So) , 穀 , 灶 ... */
-  val abbrKey: String? = null) : Serializable , SerializableObject// by SerializableObjectImpl()
+  val abbrKey: String? = null) : Serializable
 {
 
-  override fun readResolve(): Any = this
+  init {
+    register(this)
+  }
+
+  protected fun readResolve(): Any {
+    return getByNameKey(nameKey) ?: throw IllegalArgumentException("$nameKey does not exist")
+  }
 
   /** 名稱  */
   private val name: String by lazy {
@@ -66,6 +70,16 @@ abstract class Point(
 
   override fun hashCode(): Int {
     return nameKey.hashCode()
+  }
+
+  companion object {
+    private val instances = mutableMapOf<String, Point>()
+
+    fun register(point : Point) {
+      instances[point.nameKey] = point
+    }
+
+    fun getByNameKey(name : String) : Point? = instances[name]
   }
 }
 

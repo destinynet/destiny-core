@@ -217,7 +217,7 @@ object LocationTools {
   } // fromDebugString
 
   /** in meters */
-  fun calculateDistance(lat1: LatValue, lng1: LngValue, lat2: LatValue, lng2: LngValue): Int {
+  fun calculateDistance(lat1: Lat, lng1: Lng, lat2: Lat, lng2: Lng): Int {
     // Earth radius in kilometers
     val earthRadius = 6371
 

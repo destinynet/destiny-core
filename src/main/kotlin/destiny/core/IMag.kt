@@ -3,8 +3,8 @@
  */
 package destiny.core
 
-import destiny.core.calendar.LatValue
-import destiny.core.calendar.LngValue
+import destiny.core.calendar.Lat
+import destiny.core.calendar.Lng
 import java.time.LocalDate
 
 /**
@@ -19,5 +19,5 @@ data class Mag(val declination: Double,
 )
 
 interface IMag {
-  fun getMag(lat: LatValue, lng: LngValue, alt: Double = 0.0, date: LocalDate): Mag
+  fun getMag(lat: Lat, lng: Lng, alt: Double = 0.0, date: LocalDate): Mag
 }

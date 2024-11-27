@@ -8,11 +8,11 @@ import destiny.tools.KotlinLogging
 import destiny.tools.firstNotNullResult
 
 data class Poi(val regex: Regex,
-               val lat: LatValue?,
-               val lng: LngValue?,
+               val lat: Lat?,
+               val lng: Lng?,
                val pois: List<Poi> = emptyList()) {
 
-  private fun getLatLng(): Pair<LatValue, LngValue> {
+  private fun getLatLng(): Pair<Lat, Lng> {
     return if (lat != null && lng != null) {
       lat to lng
     } else {

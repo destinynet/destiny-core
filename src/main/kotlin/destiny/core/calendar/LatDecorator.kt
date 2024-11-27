@@ -13,12 +13,12 @@ object LatDecorator {
                               Locale.SIMPLIFIED_CHINESE to LatDecoratorChina(),
                               Locale.ENGLISH to LatDecoratorEnglish())
 
-  fun getOutputString(value: LatValue, locale: Locale): String {
+  fun getOutputString(value: Lat, locale: Locale): String {
     return implMap.getOutputString(value, locale)
   }
 }
 
-private val zh = {sb : StringBuilder , lat : LatValue ->
+private val zh = {sb : StringBuilder , lat : Lat ->
   sb.append("：")
   sb.append("%02d".format(lat.deg)).append("度")
   sb.append("%02d".format(lat.min)).append("分")
@@ -33,12 +33,12 @@ private val zh = {sb : StringBuilder , lat : LatValue ->
   sb
 }
 
-class LatDecoratorTaiwan : Decorator<LatValue> {
+class LatDecoratorTaiwan : Decorator<Lat> {
   /**
    * 北緯：01度00分00.00秒
    * 共 21 chars width
    */
-  override fun getOutputString(value: LatValue): String {
+  override fun getOutputString(value: Lat): String {
 
     return with(StringBuilder()) {
       append(if (value.northSouth == NORTH) "北緯" else "南緯")
@@ -47,12 +47,12 @@ class LatDecoratorTaiwan : Decorator<LatValue> {
   }
 }
 
-class LatDecoratorChina : Decorator<LatValue> {
+class LatDecoratorChina : Decorator<Lat> {
   /**
    * 北纬：01度00分00.00秒
    * 共 21 chars width
    */
-  override fun getOutputString(value: LatValue): String {
+  override fun getOutputString(value: Lat): String {
 
     return with(StringBuilder()) {
       append(if (value.northSouth == NORTH) "北纬" else "南纬")
@@ -61,7 +61,7 @@ class LatDecoratorChina : Decorator<LatValue> {
   }
 }
 
-class LatDecoratorEnglish : Decorator<LatValue> {
+class LatDecoratorEnglish : Decorator<Lat> {
 
   /**
    * ISO 6709 國際標準
@@ -70,7 +70,7 @@ class LatDecoratorEnglish : Decorator<LatValue> {
    * 注意，「分」這裡，有 left padding '0'
    * 共 14 bytes
    */
-  override fun getOutputString(value: LatValue): String {
+  override fun getOutputString(value: Lat): String {
     return with(StringBuilder()) {
       append("%02d".format(value.deg)).append("°")
       append("%02d".format(value.min)).append("'")

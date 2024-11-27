@@ -11,8 +11,8 @@ import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.classical.*
 import destiny.core.chinese.YinYang
-import destiny.tools.getTitle
 import destiny.tools.KotlinLogging
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
@@ -1007,7 +1007,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
             val sign1 = h.getZodiacSign(planet)!!
             val p2 = mutualData.getAnotherPoint(planet)
             val sign2 = h.getZodiacSign(p2)!!
-            logger.debug("mutualData = {}", mutualData)
+            logger.debug { "[mutualDeception] : $mutualData" }
             logger.debug("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 互陷害",
                          planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
                          planet, sign1)

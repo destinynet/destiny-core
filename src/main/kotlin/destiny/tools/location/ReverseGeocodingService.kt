@@ -5,13 +5,13 @@
 package destiny.tools.location
 
 import destiny.core.calendar.ILatLng
-import destiny.core.calendar.LatValue
-import destiny.core.calendar.LngValue
+import destiny.core.calendar.Lat
+import destiny.core.calendar.Lng
 import java.util.*
 
 interface ReverseGeocodingService {
 
-  fun reverseGeocoding(lat: LatValue, lng: LngValue, locale: Locale = Locale.getDefault()): String?
+  fun reverseGeocoding(lat: Lat, lng: Lng, locale: Locale = Locale.getDefault()): String?
 
   fun reverseGeocoding(latLng : ILatLng, locale: Locale = Locale.getDefault()) : String? {
     return reverseGeocoding(latLng.lat, latLng.lng, locale)

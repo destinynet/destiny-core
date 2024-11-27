@@ -13,17 +13,17 @@ object LngDecorator {
                               Locale.SIMPLIFIED_CHINESE to LngDecoratorChina(),
                               Locale.ENGLISH to LngDecoratorEnglish())
 
-  fun getOutputString(value: LngValue, locale: Locale): String {
+  fun getOutputString(value: Lng, locale: Locale): String {
     return implMap.getOutputString(value, locale)
   }
 }
 
-class LngDecoratorTaiwan : Decorator<LngValue> {
+class LngDecoratorTaiwan : Decorator<Lng> {
   /**
    * 東經：121度30分00.00秒
    * 總共 22 char 寬度
    */
-  override fun getOutputString(value: LngValue): String {
+  override fun getOutputString(value: Lng): String {
     return with(StringBuilder()) {
       append(if (value.eastWest == News.EastWest.EAST) "東經" else "西經")
       zh.invoke(this , value)
@@ -31,7 +31,7 @@ class LngDecoratorTaiwan : Decorator<LngValue> {
   }
 }
 
-private val zh = {sb : StringBuilder , lng : LngValue ->
+private val zh = {sb : StringBuilder , lng : Lng ->
   sb.append("：")
   sb.append("%03d".format(lng.deg)).append("度")
   sb.append("%02d".format(lng.min)).append("分")
@@ -46,12 +46,12 @@ private val zh = {sb : StringBuilder , lng : LngValue ->
   sb
 }
 
-class LngDecoratorChina : Decorator<LngValue> {
+class LngDecoratorChina : Decorator<Lng> {
   /**
    * 东经：121度30分00.00秒
    * 總共 22 char 寬度
    */
-  override fun getOutputString(value: LngValue): String {
+  override fun getOutputString(value: Lng): String {
 
     return with(StringBuilder()) {
       append(if (value.eastWest == News.EastWest.EAST) "东经" else "西经")
@@ -60,7 +60,7 @@ class LngDecoratorChina : Decorator<LngValue> {
   }
 }
 
-class LngDecoratorEnglish : Decorator<LngValue> {
+class LngDecoratorEnglish : Decorator<Lng> {
 
   /**
    * ISO 6709 國際標準
@@ -68,7 +68,7 @@ class LngDecoratorEnglish : Decorator<LngValue> {
    * 50°03′46.461″S
    * 注意，「分」這裡，有 left padding '0'
    */
-  override fun getOutputString(value: LngValue): String {
+  override fun getOutputString(value: Lng): String {
 
     return with(StringBuilder()) {
       append(value.deg).append("°")
