@@ -6,8 +6,8 @@ package destiny.core.chinese.ziwei
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.寅
-import destiny.tools.asDescriptive
 import destiny.tools.KotlinLogging
+import destiny.tools.asDescriptive
 import java.io.Serializable
 
 /**
@@ -44,10 +44,10 @@ class PurpleStarBranchDefaultImpl : IPurpleStarBranch,
    */
   private fun getPurpleSteps(set: Int, day: Int): Int {
     var multiple = day / set
-    logger.debug("{} / {} = {}", day, set, multiple)
+    logger.trace { "$day / $set = $multiple" }
     if (day % set > 0) {
       multiple++
-      logger.debug("multiple ++ , new multiple = {}", multiple)
+      logger.trace { "multiple ++ , new multiple = $multiple" }
     }
 
     // 差數
