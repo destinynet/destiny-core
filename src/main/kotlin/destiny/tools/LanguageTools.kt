@@ -17,7 +17,7 @@ fun <E> Collection<E>.searchImpl(type: Type, containerClazz: Class<*>? = null): 
     (each!!::class.java.genericInterfaces.firstOrNull {
       it is ParameterizedType
     } as? ParameterizedType)?.let {
-      it.rawType to it.actualTypeArguments?.get(0)
+      it.rawType to it.actualTypeArguments[0]
     }?.let { (containerType, argumentType) ->
       if (containerClazz != null) {
         containerType == containerClazz && argumentType == type
