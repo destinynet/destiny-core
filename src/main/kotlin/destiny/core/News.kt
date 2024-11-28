@@ -10,30 +10,41 @@ import java.util.*
 sealed class News : Serializable {
 
   sealed class NorthSouth : News() {
-    data object NORTH : NorthSouth()
-    data object SOUTH : NorthSouth()
+    data object NORTH : NorthSouth() {
+      private fun readResolve(): Any = NORTH
+    }
+
+    data object SOUTH : NorthSouth() {
+      private fun readResolve(): Any = SOUTH
+    }
+
     companion object {
       fun of(c: Char): NorthSouth? {
-        if (c == 'N' || c == 'n')
-          return NORTH
-        if (c == 'S' || c == 's')
-          return SOUTH
-        return null
+        return when (c.uppercaseChar()) {
+          'N'  -> NORTH
+          'S'  -> SOUTH
+          else -> null
+        }
       }
     }
   }
 
   sealed class EastWest : News() {
-    data object EAST : EastWest()
-    data object WEST : EastWest()
+    data object EAST : EastWest() {
+      private fun readResolve(): Any = EAST
+    }
+
+    data object WEST : EastWest() {
+      private fun readResolve(): Any = WEST
+    }
 
     companion object {
       fun of(c: Char): EastWest? {
-        if (c == 'E' || c == 'e')
-          return EAST
-        if (c == 'W' || c == 'w')
-          return WEST
-        return null
+        return when (c.uppercaseChar()) {
+          'E'  -> EAST
+          'W'  -> WEST
+          else -> null
+        }
       }
     }
   }

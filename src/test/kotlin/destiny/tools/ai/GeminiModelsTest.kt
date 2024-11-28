@@ -3,13 +3,12 @@
  */
 package destiny.tools.ai
 
+import destiny.tools.KotlinLogging
 import destiny.tools.ai.Gemini.Content.Part.FunctionCall
 import destiny.tools.ai.Gemini.FunctionDeclaration
 import destiny.tools.ai.Gemini.FunctionDeclaration.Parameters
 import destiny.tools.ai.Gemini.FunctionDeclaration.Parameters.Argument
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import destiny.tools.KotlinLogging
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 import kotlin.test.assertEquals

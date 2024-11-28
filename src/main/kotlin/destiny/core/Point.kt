@@ -34,7 +34,6 @@ import java.util.*
  *
  */
 
-@Suppress("LeakingThis")
 abstract class Point(
   /** 名稱key , nameKey 相等，則此 Point 視為 equals!  */
   val nameKey: String,
@@ -44,6 +43,7 @@ abstract class Point(
 {
 
   init {
+    @Suppress("LeakingThis")
     register(this)
   }
 

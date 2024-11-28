@@ -98,6 +98,7 @@ sealed class Debility : IPlanetPattern {
   data class Oriental(override val planet: Planet) : Debility()
   data object Moon_Decrease_Light : Debility() {
     override val planet: Planet = Planet.MOON
+    private fun readResolve(): Any = Moon_Decrease_Light
   }
 
   data class Combustion(override val planet: Planet) : Debility()

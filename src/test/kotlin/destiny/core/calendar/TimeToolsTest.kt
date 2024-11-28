@@ -472,7 +472,7 @@ class TimeToolsTest {
 
   @ParameterizedTest
   @MethodSource
-  fun dstAndOffsetTaiwan(row: Triple<Boolean, kotlin.time.Duration, ChronoLocalDateTime<*>>) {
+  fun dstAndOffsetTaiwan(row: Triple<Boolean, Duration, ChronoLocalDateTime<*>>) {
     val loc = locationOf(Locale.TAIWAN)
 
     val (dst, dur, lmt) = row

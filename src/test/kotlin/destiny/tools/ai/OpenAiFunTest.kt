@@ -9,7 +9,6 @@ import destiny.tools.ai.OpenAi.FunctionDeclaration
 import destiny.tools.ai.OpenAi.FunctionDeclaration.Function
 import destiny.tools.ai.OpenAi.FunctionDeclaration.Function.Parameters
 import destiny.tools.ai.OpenAi.FunctionDeclaration.Function.Parameters.Argument
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested

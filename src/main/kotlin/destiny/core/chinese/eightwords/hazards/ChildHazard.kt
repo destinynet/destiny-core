@@ -18,6 +18,16 @@ enum class Book {
 
 sealed class ChildHazard : EwPattern {
 
+  init {
+    @Suppress("LeakingThis")
+    register(this)
+  }
+
+  protected fun readResolve(): Any {
+    return getByName(this::class.simpleName!!)
+      ?: throw IllegalArgumentException("${this::class.simpleName} does not exist")
+  }
+
   data object 百日關 : ChildHazard()
 
   data object 千日關 : ChildHazard()
@@ -98,6 +108,17 @@ sealed class ChildHazard : EwPattern {
 
   /** 不實作 [getNotes] , 交由 [ChildHazardDescriptor.getDescription] 處理 (避免 depend on [ResourceBundle] ) */
 
+  companion object {
+    private val registry = mutableMapOf<String, ChildHazard>()
+
+    private fun register(hazard: ChildHazard) {
+      val name = hazard::class.simpleName ?: throw IllegalStateException("Unnamed ChildHazard")
+      registry[name] = hazard
+    }
+
+    fun getByName(name: String): ChildHazard? = registry[name]
+
+  }
 }
 
 
