@@ -5,6 +5,7 @@
 package destiny.tools
 
 import kotlinx.coroutines.runBlocking
+import java.time.Duration
 
 interface ImageHosting {
 
@@ -20,12 +21,12 @@ interface ImageHosting {
    * @param format , 圖檔格式 , "png" / "gif" / "jpg" ...
    */
   @Throws(HostingException::class)
-  suspend fun upload(data:ByteArray , format:String) : String
+  suspend fun upload(data:ByteArray , format:String, timeout: Duration? = null) : String
 
   @Throws(HostingException::class)
-  fun blockingUpload(data:ByteArray , format:String) : String {
+  fun blockingUpload(data:ByteArray , format:String, timeout: Duration? = null) : String {
     return runBlocking {
-      upload(data, format)
+      upload(data, format, timeout)
     }
   }
 
