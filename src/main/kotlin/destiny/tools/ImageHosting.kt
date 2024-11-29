@@ -20,10 +20,8 @@ interface ImageHosting {
    * @param data   byte array
    * @param format , 圖檔格式 , "png" / "gif" / "jpg" ...
    */
-  @Throws(HostingException::class)
   suspend fun upload(data:ByteArray , format:String, timeout: Duration? = null) : String
 
-  @Throws(HostingException::class)
   fun blockingUpload(data:ByteArray , format:String, timeout: Duration? = null) : String {
     return runBlocking {
       upload(data, format, timeout)
@@ -34,7 +32,6 @@ interface ImageHosting {
   /**
    * 把 link 包以 IMG tag
    */
-  @Throws(HostingException::class)
   fun uploadAndWrapImgCode(data: ByteArray, format: String): String {
     val link = blockingUpload(data , format)
     return "[IMG]$link[/IMG]"
