@@ -20,8 +20,8 @@ import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
-import jakarta.inject.Named
 import destiny.tools.KotlinLogging
+import jakarta.inject.Named
 import java.time.chrono.ChronoLocalDateTime
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
@@ -121,7 +121,7 @@ class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
     var targetGmtJulDay: GmtJulDay? = null
     if (hashMap.containsKey(index)) {
       targetGmtJulDay = hashMap[index]
-      logger.debug("from map , index = {} , targetGmtJulDay exists , value = {}", index, targetGmtJulDay)
+      logger.trace { "from map, index = $index, targetGmtJulDay exists , value = $targetGmtJulDay" }
     }
 
     if (targetGmtJulDay == null) {
@@ -133,7 +133,7 @@ class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
         while (i <= index) {
           // 推算到上一個/下一個「節」的秒數：陽男陰女順推，陰男陽女逆推
           if (hashMap[i] == null) {
-            logger.debug("順推 cache.get({}) miss", i)
+            logger.trace { "順推 cache.get($i) miss" }
             //沒有計算過
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(
               Planet.SUN, stepMajorSolarTerms.zodiacDegree.toZodiacDegree(), stepGmtJulDay, true, Coordinate.ECLIPTIC
@@ -145,7 +145,7 @@ class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
             cache.put(Pair(gmtJulDay, gender), hashMap)
           } else {
             //之前計算過
-            logger.debug("順推 cache.get({}) hit", i)
+            logger.trace { "順推 cache.get($i) hit" }
             targetGmtJulDay = hashMap[i]
             stepGmtJulDay = targetGmtJulDay!! + 1
           }
@@ -164,7 +164,7 @@ class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
           // 推算到上一個/下一個「節」的秒數：陽男陰女順推，陰男陽女逆推
 
           if (hashMap[i] == null) {
-            logger.debug("逆推 cache.get({}) miss", i)
+            logger.trace { "逆推 cache.get($i) miss" }
             //沒有計算過
 
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(
@@ -176,7 +176,7 @@ class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
             cache.put(Pair(gmtJulDay, gender), hashMap)
           } else {
             //之前計算過
-            logger.debug("逆推 cache.get({}) hit", i)
+            logger.trace { "逆推 cache.get($i) hit" }
             targetGmtJulDay = hashMap[i]
             stepGmtJulDay = targetGmtJulDay!! - 1 //LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
           }
@@ -192,7 +192,7 @@ class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
 
     // 同義於 Duration.between(gmt , targetGmtJulDay)
     val durDays = targetGmtJulDay!! - gmtJulDay
-    logger.trace("durDays = {} ", durDays)
+    logger.trace { "durDays = $durDays" }
     return durDays * SECONDS_OF_DAY
 
   } // getTargetMajorSolarTermsSeconds(int)
@@ -228,7 +228,7 @@ class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
     val diffSeconds = (targetGmtJulDay - gmtJulDay) * SECONDS_OF_DAY
 
     if (fortuneForward) {
-      logger.debug("大運順行")
+      logger.trace { "大運順行" }
       var index = 1
       while (getTargetMajorSolarTermsSeconds(gmtJulDay, gender, index) * fortuneMonthSpan < diffSeconds) {
         resultStemBranch =
@@ -237,7 +237,7 @@ class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
       }
       return resultStemBranch
     } else {
-      logger.debug("大運逆行")
+      logger.trace { "大運逆行" }
       var index = -1
       while (abs(getTargetMajorSolarTermsSeconds(gmtJulDay, gender, index) * fortuneMonthSpan) < diffSeconds) {
         //        resultStemBranch = resultStemBranch.previous
