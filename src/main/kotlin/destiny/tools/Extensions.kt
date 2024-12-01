@@ -149,7 +149,7 @@ inline fun <reified T : Enum<T>> iterator(): Iterator<T> = enumValues<T>().itera
 fun JsonElement.toMap(): Map<String, Any> {
   logger.debug { "JsonElement.toMap : $this" }
   return when (this) {
-    is JsonObject -> this.mapValues { (_, jsonElement: JsonElement) ->
+    is JsonObject -> this.mapValues { (key, jsonElement: JsonElement) ->
       when (jsonElement) {
         is JsonPrimitive -> when {
           jsonElement.isString              -> jsonElement.content
@@ -160,7 +160,15 @@ fun JsonElement.toMap(): Map<String, Any> {
           else                              -> null
         }
 
-        is JsonObject    -> jsonElement.toMap()
+        is JsonObject    -> {
+          // 特別處理 tzid 的情況
+          if ("tzid".equals(key, ignoreCase = true) && jsonElement.size == 1) {
+            val entry = jsonElement.entries.first()
+            "${entry.key}/${entry.value.jsonPrimitive.content}"
+          } else {
+            jsonElement.toMap()
+          }
+        }
         is JsonArray     -> jsonElement.map { it.toMap() }
         else             -> null
       }
