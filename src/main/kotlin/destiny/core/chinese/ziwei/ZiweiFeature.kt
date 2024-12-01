@@ -18,13 +18,9 @@ import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
 import destiny.core.toString
-import destiny.tools.AbstractCachedPersonFeature
-import destiny.tools.CacheGrain
-import destiny.tools.PersonFeature
-import destiny.tools.getTitle
+import destiny.tools.*
 import jakarta.inject.Inject
 import jakarta.inject.Named
-import destiny.tools.KotlinLogging
 import java.text.MessageFormat
 import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
@@ -469,8 +465,8 @@ class ZiweiFeature(
       .filter { (_, branch) -> branch != null }
       .associate { (star, branch) -> star to branch!! }
 
-    logger.debug("stars = {}", config.stars)
-    logger.debug("starBranchMap = {}", starBranchMap)
+    logger.trace { "stars = ${config.stars}" }
+    logger.trace { "starBranchMap = $starBranchMap" }
 
     // 本命四化 : 四化要依據 陰曆初一 還是 節氣立春 劃分
 
@@ -487,8 +483,8 @@ class ZiweiFeature(
           }
         }
       }
-    logger.debug { "transFour = ${config.transFour} , title = ${config.transFour.getTitle(Locale.TAIWAN)}" }
-    logger.debug { "trans4Map = $trans4Map" }
+    logger.trace { "transFour = ${config.transFour} , title = ${config.transFour.getTitle(Locale.TAIWAN)}" }
+    logger.trace { "trans4Map = $trans4Map" }
 
     val transFourMap: Map<ZStar, SortedMap<FlowType, T4Value>> = trans4Map.map { (k: Pair<ZStar, FlowType>,v: T4Value) ->
       k.first to sortedMapOf(k.second to v)
@@ -986,7 +982,7 @@ class ZiweiFeature(
       notesBuilders.add(Pair("main_body_astro", arrayOf()))
     }
 
-    logger.debug("命宮地支 = {} , 身宮地支 = {}", mainBranch, bodyBranch)
+    logger.trace { "命宮地支 = $mainBranch , 身宮地支 = $bodyBranch" }
 
     val (dst , duration) = TimeTools.getDstAndOffset(lmt, loc)
     val minuteOffset = duration.inWholeMinutes
