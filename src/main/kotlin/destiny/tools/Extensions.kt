@@ -164,7 +164,9 @@ fun JsonElement.toMap(): Map<String, Any> {
           // 特別處理 tzid 的情況
           if ("tzid".equals(key, ignoreCase = true) && jsonElement.size == 1) {
             val entry = jsonElement.entries.first()
-            "${entry.key}/${entry.value.jsonPrimitive.content}"
+            "${entry.key}/${entry.value.jsonPrimitive.content}".also {
+              logger.warn { "tzid transform from $jsonElement to $it" }
+            }
           } else {
             jsonElement.toMap()
           }
