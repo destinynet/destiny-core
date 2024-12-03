@@ -162,10 +162,22 @@ fun JsonElement.toMap(): Map<String, Any> {
 
         is JsonObject    -> {
           // 特別處理 tzid 的情況
-          if ("tzid".equals(key, ignoreCase = true) && jsonElement.size == 1) {
-            val entry = jsonElement.entries.first()
-            "${entry.key}/${entry.value.jsonPrimitive.content}".also {
-              logger.warn { "tzid transform from $jsonElement to $it" }
+          if ("tzid".equals(key, ignoreCase = true)) {
+            when {
+              // {"Asia": "Taipei"} format
+              jsonElement.size == 1 && !jsonElement.containsKey("value") -> {
+                val entry = jsonElement.entries.first()
+                "${entry.key}/${entry.value.jsonPrimitive.content}".also {
+                  logger.warn { "tzid from $jsonElement to $it" }
+                }
+              }
+              // {"value": "Asia/Taipei"} format
+              jsonElement.containsKey("value")                           -> {
+                jsonElement["value"]?.jsonPrimitive?.content?.also {
+                  logger.warn { "tzid from $jsonElement to $it" }
+                }
+              }
+              else                                                       -> jsonElement.toMap()
             }
           } else {
             jsonElement.toMap()
