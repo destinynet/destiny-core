@@ -252,7 +252,9 @@ interface IHoroscopeModel : ITimeLoc {
       return getHousePoints(index + 12)
     return if (index > 12) getHousePoints(index - 12)
     else positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lngDeg) == index }
-      .map { it.key }
+      .map { it.key to it.value}
+      .sortedBy { it.second.lng }
+      .map { it.first }
   }
 
 
