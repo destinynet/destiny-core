@@ -61,6 +61,7 @@ class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFe
   override val defaultConfig: LunarStationModernConfig = LunarStationModernConfig()
 
   override val gmtPersonCache: Cache<GmtCacheKey<LunarStationModernConfig>, IModernContextModel>
+    @Suppress("UNCHECKED_CAST")
     get() = lsModernCache as Cache<GmtCacheKey<LunarStationModernConfig>, IModernContextModel>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: LunarStationModernConfig): IModernContextModel {
