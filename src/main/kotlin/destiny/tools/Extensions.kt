@@ -163,17 +163,20 @@ fun JsonElement.toMap(): Map<String, Any> {
         is JsonObject    -> {
           // 特別處理 tzid 的情況
           if ("tzid".equals(key, ignoreCase = true)) {
+            // possible key containing tzid value
+            val possibleKeys = listOf("value", "name")
             when {
               // {"Asia": "Taipei"} format
-              jsonElement.size == 1 && !jsonElement.containsKey("value") -> {
+              jsonElement.size == 1 && possibleKeys.none { jsonElement.containsKey(it) } -> {
                 val entry = jsonElement.entries.first()
                 "${entry.key}/${entry.value.jsonPrimitive.content}".also {
                   logger.warn { "tzid from $jsonElement to $it" }
                 }
               }
-              // {"value": "Asia/Taipei"} format
-              jsonElement.containsKey("value")                           -> {
-                jsonElement["value"]?.jsonPrimitive?.content?.also {
+              possibleKeys.any { jsonElement.containsKey(it) } -> {
+                possibleKeys.firstNotNullOfOrNull { k ->
+                  jsonElement[k]?.jsonPrimitive?.content
+                }?.also {
                   logger.warn { "tzid from $jsonElement to $it" }
                 }
               }
