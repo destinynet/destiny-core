@@ -6,6 +6,7 @@ package destiny.tools.ai
 import destiny.tools.ai.Gemini.ResponseContainer.CandidateContainer.Candidate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 
 class Gemini {
@@ -18,10 +19,7 @@ class Gemini {
       @Serializable
       data class InlineData(val mimeType: String, val data: String)
       @Serializable
-      data class FunctionCall(val name: String, val args: Map<String, String>) {
-        val argsList : List<Pair<String,String>>
-          get() = args.map { (k, v) -> k to v }.toList()
-      }
+      data class FunctionCall(val name: String, val args: JsonElement)
       @Serializable
       data class FunctionResponse(val name : String , val response : Response) {
         @Serializable

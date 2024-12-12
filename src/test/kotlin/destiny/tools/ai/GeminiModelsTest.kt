@@ -9,6 +9,8 @@ import destiny.tools.ai.Gemini.FunctionDeclaration
 import destiny.tools.ai.Gemini.FunctionDeclaration.Parameters
 import destiny.tools.ai.Gemini.FunctionDeclaration.Parameters.Argument
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -185,10 +187,12 @@ class GeminiTest {
           content.parts?.get(0)?.also { part ->
             assertNull(part.text)
             val expected = FunctionCall(
-              "get_current_weather",
-              mapOf(
-                "format" to "fahrenheit",
-                "location" to "New York, NY"
+              name = "get_current_weather",
+              args = JsonObject(
+                mapOf(
+                  "format" to JsonPrimitive("fahrenheit"),
+                  "location" to JsonPrimitive("New York, NY")
+                )
               )
             )
             assertEquals(expected , part.functionCall)
