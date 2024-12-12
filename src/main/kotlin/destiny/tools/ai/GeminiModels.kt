@@ -14,7 +14,7 @@ class Gemini {
   @Serializable
   data class Content(val role: String, val parts: List<Part>?) {
     @Serializable
-    data class Part(val text: String?, @SerialName("inlineData") val inlineData: InlineData? = null,
+    data class Part(val text: String?, @SerialName("inline_data") val inlineData: InlineData? = null,
                     val functionCall: FunctionCall? = null, val functionResponse: FunctionResponse? = null) {
       @Serializable
       data class InlineData(val mimeType: String, val data: String)
