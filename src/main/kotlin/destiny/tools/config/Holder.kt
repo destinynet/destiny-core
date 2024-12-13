@@ -9,7 +9,7 @@ import kotlin.concurrent.read
 import kotlin.concurrent.write
 
 
-class Holder<T : Any>(private val initialConfig: T) {
+class Holder<T : Any>(initialConfig: T) {
 
   private val configLock = ReentrantReadWriteLock()
   private var currentConfig: T = initialConfig
