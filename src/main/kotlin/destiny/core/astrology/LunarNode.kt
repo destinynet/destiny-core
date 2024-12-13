@@ -27,28 +27,36 @@ sealed class LunarNode(nameKey: String,
    * ApsisImpl.getPosition(Planet.MOON , Apsis.ASCENDING , gmt, Coordinate.ECLIPTIC , NodeType.TRUE);
    * StarPositionImpl.getPosition(LunarNode.NORTH_TRUE, gmt);
    */
-  object NORTH_TRUE : LunarNode("LunarNode.NORTH", "LunarNode.NORTH_ABBR", NORTH, TRUE, '☊')
+  object NORTH_TRUE : LunarNode("LunarNode.NORTH", "LunarNode.NORTH_ABBR", NORTH, TRUE, '☊') {
+    override fun readResolve(): Any = NORTH_TRUE
+  }
 
   /**
    * 平均北交點，計算方法，以下兩者結果相同
    * ApsisImpl.getPosition(Planet.MOON , Apsis.ASCENDING , gmt, Coordinate.ECLIPTIC , NodeType.MEAN);
    * StarPositionImpl.getPosition(LunarNode.NORTH_MEAN, gmt);
    */
-  object NORTH_MEAN : LunarNode("LunarNode.NORTH", "LunarNode.NORTH_ABBR", NORTH, MEAN, '☊')
+  object NORTH_MEAN : LunarNode("LunarNode.NORTH", "LunarNode.NORTH_ABBR", NORTH, MEAN, '☊') {
+    override fun readResolve(): Any = NORTH_MEAN
+  }
 
   /**
    * 真實南交點，計算方法，以下兩者結果相同
    * ApsisImpl.getPosition(Planet.MOON , Apsis.DESCENDING , gmt, Coordinate.ECLIPTIC , NodeType.TRUE);
    * StarPositionImpl.getPosition(LunarNode.SOUTH_TRUE, gmt);
    */
-  object SOUTH_TRUE : LunarNode("LunarNode.SOUTH", "LunarNode.SOUTH_ABBR", SOUTH, TRUE, '☋')
+  object SOUTH_TRUE : LunarNode("LunarNode.SOUTH", "LunarNode.SOUTH_ABBR", SOUTH, TRUE, '☋') {
+    override fun readResolve(): Any = SOUTH_TRUE
+  }
 
   /**
    * 平均南交點，計算方法，以下兩者結果相同
    * ApsisImpl.getPosition(Planet.MOON , Apsis.DESCENDING , gmt, Coordinate.ECLIPTIC , NodeType.MEAN);
    * StarPositionImpl.getPosition(LunarNode.SOUTH_MEAN, gmt);
    */
-  object SOUTH_MEAN : LunarNode("LunarNode.SOUTH", "LunarNode.SOUTH_ABBR", SOUTH, MEAN, '☋')
+  object SOUTH_MEAN : LunarNode("LunarNode.SOUTH", "LunarNode.SOUTH_ABBR", SOUTH, MEAN, '☋') {
+    override fun readResolve(): Any = SOUTH_MEAN
+  }
 
 
 

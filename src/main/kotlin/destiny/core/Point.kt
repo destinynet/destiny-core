@@ -47,7 +47,7 @@ abstract class Point(
     register(this)
   }
 
-  protected fun readResolve(): Any {
+  open fun readResolve(): Any {
     return getByNameKey(nameKey) ?: throw IllegalArgumentException("$nameKey does not exist")
   }
 
