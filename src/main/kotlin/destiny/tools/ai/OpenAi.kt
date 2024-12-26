@@ -6,12 +6,10 @@ import kotlinx.serialization.Serializable
 class OpenAi {
 
   @Serializable
-  data class OpenAiMsg(val role: String,
-                       val content: String?,
-                       @SerialName("tool_call_id")
-                       val toolCallId: String? = null,
-                       @SerialName("tool_calls")
-                       val toolCalls: List<ToolCall>? = null) {
+  data class Message(val role: String,
+                     val content: String?,
+                     @SerialName("tool_call_id") val toolCallId: String? = null,
+                     @SerialName("tool_calls") val toolCalls: List<ToolCall>? = null) {
 
     @Serializable
     data class ToolCall(val id: String, val type: String, val function: ToolCallFunction) {
@@ -31,7 +29,7 @@ class OpenAi {
                     val choices: List<Choice>,
                     val usage: Usage) {
     @Serializable
-    data class Choice(val message: OpenAiMsg, val index: Int, val logprobs: Int? = null, @SerialName("finish_reason") val finishReason: String?)
+    data class Choice(val message: Message, val index: Int, val logprobs: Int? = null, @SerialName("finish_reason") val finishReason: String?)
 
     @Serializable
     data class Usage(
@@ -58,7 +56,7 @@ class OpenAi {
   }
 
   @Serializable
-  data class ChatModel(val messages: List<OpenAiMsg>, val user: String?, val model: String, val tools: List<FunctionDeclaration>? = null)
+  data class ChatModel(val messages: List<Message>, val user: String?, val model: String, val tools: List<FunctionDeclaration>? = null)
 }
 
 

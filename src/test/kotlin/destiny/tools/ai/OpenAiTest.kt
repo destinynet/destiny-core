@@ -79,7 +79,7 @@ class OpenAiTest {
           message.toolCalls.also {
             assertNotNull(it)
             assertEquals(2 , it.size)
-            it.forEach { toolCall: OpenAi.OpenAiMsg.ToolCall ->
+            it.forEach { toolCall: OpenAi.Message.ToolCall ->
               assertEquals("get_horoscope_forecast_year", toolCall.function.name)
               assertTrue { toolCall.function.arguments.isNotBlank() }
             }

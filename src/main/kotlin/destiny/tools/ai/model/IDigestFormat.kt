@@ -25,7 +25,7 @@ interface IDigestFormat<M, D : IDigestResponse> : IDigest<M, String> {
 abstract class AbstractDigestFormat<M, D : IDigestResponse>(
   private val serializer: KSerializer<D>
 ) : IDigestFormat<M, D> {
-  val prettyJson = Json {
+  private val prettyJson = Json {
     prettyPrint = true
     encodeDefaults = true
   }
