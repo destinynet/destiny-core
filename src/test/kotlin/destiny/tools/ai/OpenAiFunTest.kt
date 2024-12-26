@@ -121,7 +121,7 @@ class OpenAiFunTest {
         }
       """.trimIndent()
 
-      val result: OpenAi.Result = json.decodeFromString(raw)
+      val result: OpenAi.Response.NormalResponse = json.decodeFromString(raw)
       assertNotNull(result)
       assertEquals("chatcmpl-8bN5aJO2IWtlxMcHblpnKzwcIfPeL", result.id)
       assertEquals("chat.completion", result.`object`)

@@ -1,7 +1,11 @@
 package destiny.tools.ai
 
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonContentPolymorphicSerializer
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
 
 class OpenAi {
 
@@ -18,30 +22,42 @@ class OpenAi {
     }
   }
 
-
   @Serializable
-  data class Result(val id: String,
-                    /** always 'chat.completion' */
-                    val `object`: String,
-                    val created: Long,
-                    /** maybe 'gpt-3.5-turbo-0301' */
-                    val model: String,
-                    val choices: List<Choice>,
-                    val usage: Usage) {
-    @Serializable
-    data class Choice(val message: Message, val index: Int, val logprobs: Int? = null, @SerialName("finish_reason") val finishReason: String?)
+  sealed class Response {
 
     @Serializable
-    data class Usage(
-      @SerialName("prompt_tokens") val promptTokens: Int,
-      @SerialName("completion_tokens") val completionTokens: Int? = null,
-      @SerialName("total_tokens") val totalTokens: Int
-    )
+    @SerialName("error")
+    data class Error(val message: String, val type: String, val code: String? = null): Response()
 
+
+    @Serializable
+    data class NormalResponse(val id: String,
+                              /** always 'chat.completion' */
+                              val `object`: String,
+                              val created: Long,
+                              val model: String,
+                              val choices: List<Choice>,
+                              val usage: Usage): Response() {
+      @Serializable
+      data class Choice(val message: Message, val index: Int, val logprobs: Int? = null, @SerialName("finish_reason") val finishReason: String?)
+
+      @Serializable
+      data class Usage(
+        @SerialName("prompt_tokens") val promptTokens: Int,
+        @SerialName("completion_tokens") val completionTokens: Int? = null,
+        @SerialName("total_tokens") val totalTokens: Int
+      )
+    }
   }
 
-  @Serializable
-  data class Error(val message: String, val type: String, val code: String? = null)
+  object ResponseSerializer : JsonContentPolymorphicSerializer<Response>(Response::class) {
+    override fun selectDeserializer(element: JsonElement): DeserializationStrategy<Response> {
+      return when {
+        element.jsonObject.containsKey("error") -> Response.Error.serializer()
+        else                                    -> Response.NormalResponse.serializer()
+      }
+    }
+  }
 
   @Serializable
   data class FunctionDeclaration(val type: String, val function: Function) {

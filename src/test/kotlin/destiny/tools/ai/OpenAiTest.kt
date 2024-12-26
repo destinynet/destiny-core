@@ -3,6 +3,7 @@
  */
 package destiny.tools.ai
 
+import destiny.tools.ai.OpenAi.Response.NormalResponse
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested
 import kotlin.test.*
@@ -72,7 +73,7 @@ class OpenAiTest {
         }
       """.trimIndent()
 
-      json.decodeFromString<OpenAi.Result>(raw).also { result: OpenAi.Result ->
+      json.decodeFromString<NormalResponse>(raw).also { result: NormalResponse ->
         assertEquals(1 , result.choices.size)
         result.choices[0].message.also { message ->
           assertNull(message.content)
