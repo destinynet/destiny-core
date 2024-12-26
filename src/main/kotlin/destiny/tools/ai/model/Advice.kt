@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2024-12-25.
  */
-package destiny.core
+package destiny.tools.ai.model
 
 import java.io.Serializable
 
@@ -11,4 +11,4 @@ data class Advice(
   val pros: List<String> = emptyList(),
   val cons: List<String> = emptyList(),
   val actions: List<String> = emptyList()
-) : Serializable
+) : IDigestResponse, Serializable
