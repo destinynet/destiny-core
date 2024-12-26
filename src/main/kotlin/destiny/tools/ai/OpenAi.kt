@@ -27,8 +27,10 @@ class OpenAi {
 
     @Serializable
     @SerialName("error")
-    data class Error(val message: String, val type: String, val code: String? = null): Response()
-
+    data class ErrorResponse(val error: Error) : Response() {
+      @Serializable
+      data class Error(val message: String, val type: String, val code: String)
+    }
 
     @Serializable
     data class NormalResponse(val id: String,
@@ -53,7 +55,7 @@ class OpenAi {
   object ResponseSerializer : JsonContentPolymorphicSerializer<Response>(Response::class) {
     override fun selectDeserializer(element: JsonElement): DeserializationStrategy<Response> {
       return when {
-        element.jsonObject.containsKey("error") -> Response.Error.serializer()
+        element.jsonObject.containsKey("error") -> Response.ErrorResponse.serializer()
         else                                    -> Response.NormalResponse.serializer()
       }
     }
