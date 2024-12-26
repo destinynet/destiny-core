@@ -54,12 +54,12 @@ class OpenAiFunTest {
         )
       )
 
-      Json.encodeToString(currentWeather).also { raw ->
+      json.encodeToString(currentWeather).also { raw ->
         logger.info { raw }
         val ctx = JsonPath.parse(raw)
         assertEquals("function", ctx.read("$.type", String::class.java))
         assertEquals("get_current_weather", ctx.read("$.function.name", String::class.java))
-//        assertEquals("object", ctx.read("$.function.parameters.type", String::class.java))
+        assertEquals("object", ctx.read("$.function.parameters.type", String::class.java))
         assertEquals("string", ctx.read("$.function.parameters.properties.location.type", String::class.java))
         assertEquals(listOf("celsius", "fahrenheit"), ctx.read("$.function.parameters.properties.format.enum", List::class.java))
         assertEquals(listOf("location", "format"), ctx.read("$.function.parameters.required", List::class.java))
