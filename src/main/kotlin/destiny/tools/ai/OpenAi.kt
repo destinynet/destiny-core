@@ -62,13 +62,7 @@ class OpenAi {
   @Serializable
   data class FunctionDeclaration(val type: String, val function: Function) {
     @Serializable
-    data class Function(val name: String, val description: String, val parameters: Parameters) {
-      @Serializable
-      data class Parameters(val type: String, val properties: Map<String, Argument>, val required: List<String>) {
-        @Serializable
-        data class Argument(val type: String, val enum: List<String>? = null, val description: String)
-      }
-    }
+    data class Function(val name: String, val description: String, val parameters: InputSchema)
   }
 
   @Serializable

@@ -98,9 +98,23 @@ fun IFunctionDeclaration.toOpenAi(): OpenAi.FunctionDeclaration {
     "function",
     OpenAi.FunctionDeclaration.Function(
       this.name, this.description,
-      OpenAi.FunctionDeclaration.Function.Parameters(
+      InputSchema(
         "object",
-        this.parameters.associate { p -> p.name to OpenAi.FunctionDeclaration.Function.Parameters.Argument(p.type, null, p.description) },
+        this.parameters.associate { p -> p.name to InputSchema.Property(p.type, p.description, null) },
+        this.parameters.filter { it.required }.map { it.name }.toList()
+      )
+    )
+  )
+}
+
+fun IFunctionDeclaration.toDeepseek(): Deepseek.FunctionDeclaration {
+  return Deepseek.FunctionDeclaration(
+    "function",
+    Deepseek.FunctionDeclaration.Function(
+      this.name, this.description,
+      InputSchema(
+        "object",
+        this.parameters.associate { p -> p.name to InputSchema.Property(p.type, p.description, null) },
         this.parameters.filter { it.required }.map { it.name }.toList()
       )
     )

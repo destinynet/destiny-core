@@ -15,7 +15,15 @@ class Deepseek {
 
   @Serializable
   data class Message(val role: String,
-                     val content: String)
+                     val content: String,
+                     @SerialName("tool_call_id") val toolCallId: String? = null,
+                     @SerialName("tool_calls") val toolCalls: List<ToolCall>? = null) {
+    @Serializable
+    data class ToolCall(val id: String, val type: String, val function: ToolCallFunction) {
+      @Serializable
+      data class ToolCallFunction(val name: String, val arguments: String)
+    }
+  }
 
 
   @Serializable
@@ -23,7 +31,10 @@ class Deepseek {
 
     @Serializable
     @SerialName("error")
-    data class Error(val message: String, val type: String, val code: String): Response()
+    data class ErrorResponse(val error: Error) : Response() {
+      @Serializable
+      data class Error(val message: String, val type: String, val code: String)
+    }
 
     @Serializable
     @SerialName("normal")
@@ -53,12 +64,26 @@ class Deepseek {
   object ResponseSerializer : JsonContentPolymorphicSerializer<Response>(Response::class) {
     override fun selectDeserializer(element: JsonElement): DeserializationStrategy<Response> {
       return when {
-        element.jsonObject.containsKey("error") -> Response.Error.serializer()
+        element.jsonObject.containsKey("error") -> Response.ErrorResponse.serializer()
         else                                    -> Response.NormalResponse.serializer()
       }
     }
   }
 
   @Serializable
-  data class ChatModel(val messages: List<Message>, val model: String)
+  data class FunctionDeclaration(val type: String, val function: Function) {
+    @Serializable
+    data class Function(val name: String, val description: String, val parameters: InputSchema)
+  }
+
+  @Serializable
+  data class ChatModel(val messages: List<Message>,
+                       val model: String,
+                       val stream: Boolean? = false,
+                       /** 0 <= value <= 2.0 */
+                       val temperature: Double? = 1.0,
+                       @SerialName("top_p")
+                       val topP : Double? = 1.0,
+                       val tools: List<FunctionDeclaration>? = null
+  )
 }
