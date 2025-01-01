@@ -108,7 +108,7 @@ fun IFunctionDeclaration.toOpenAi(): OpenAi.FunctionDeclaration {
 }
 
 fun IFunctionDeclaration.toDeepseek(): OpenAi.FunctionDeclaration {
-  return toOpenAi()
+  return this.toOpenAi()
 }
 
 fun IFunctionDeclaration.toGemini(): Gemini.FunctionDeclaration {
@@ -177,4 +177,8 @@ fun IFunctionDeclaration.toXai(): Xai.ToolFunction {
       )
     )
   )
+}
+
+fun IFunctionDeclaration.toMistral() : OpenAi.FunctionDeclaration {
+  return this.toOpenAi()
 }
