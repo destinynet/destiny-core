@@ -69,6 +69,7 @@ class Reloader<T : Any>(
     return try {
       if (externalConfigFile.exists()) {
         val content = externalConfigFile.readText()
+        logger.info { "loaded external config file: ${externalConfigFile.absolutePath}" }
         parser.parse(content).takeIf { validator.validate(it) }
       } else {
         loadDefaultConfig()
@@ -85,6 +86,7 @@ class Reloader<T : Any>(
         .getResourceAsStream(defaultConfigPath)
         ?: throw IllegalStateException("Default config not found: $defaultConfigPath")
 
+      logger.info { "loaded default config file: $defaultConfigPath" }
       val content = defaultConfigStream.bufferedReader().use { it.readText() }
       parser.parse(content).takeIf { validator.validate(it) }
     } catch (e: Exception) {
