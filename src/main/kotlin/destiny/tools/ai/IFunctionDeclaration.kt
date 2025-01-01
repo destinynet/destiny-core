@@ -107,18 +107,8 @@ fun IFunctionDeclaration.toOpenAi(): OpenAi.FunctionDeclaration {
   )
 }
 
-fun IFunctionDeclaration.toDeepseek(): Deepseek.FunctionDeclaration {
-  return Deepseek.FunctionDeclaration(
-    "function",
-    Deepseek.FunctionDeclaration.Function(
-      this.name, this.description,
-      InputSchema(
-        "object",
-        this.parameters.associate { p -> p.name to InputSchema.Property(p.type, p.description, null) },
-        this.parameters.filter { it.required }.map { it.name }.toList()
-      )
-    )
-  )
+fun IFunctionDeclaration.toDeepseek(): OpenAi.FunctionDeclaration {
+  return toOpenAi()
 }
 
 fun IFunctionDeclaration.toGemini(): Gemini.FunctionDeclaration {

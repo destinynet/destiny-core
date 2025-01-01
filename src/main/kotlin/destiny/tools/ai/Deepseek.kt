@@ -14,19 +14,6 @@ import kotlinx.serialization.json.jsonObject
 class Deepseek {
 
   @Serializable
-  data class Message(val role: String,
-                     val content: String,
-                     @SerialName("tool_call_id") val toolCallId: String? = null,
-                     @SerialName("tool_calls") val toolCalls: List<ToolCall>? = null) {
-    @Serializable
-    data class ToolCall(val id: String, val type: String, val function: ToolCallFunction) {
-      @Serializable
-      data class ToolCallFunction(val name: String, val arguments: String)
-    }
-  }
-
-
-  @Serializable
   sealed class Response {
 
     @Serializable
@@ -48,7 +35,7 @@ class Deepseek {
     ): Response() {
 
       @Serializable
-      data class Choice(val message: Message, val index: Int, val logprobs: Int? = null, @SerialName("finish_reason") val finishReason: String?)
+      data class Choice(val message: OpenAi.Message, val index: Int, val logprobs: Int? = null, @SerialName("finish_reason") val finishReason: String?)
 
       @Serializable
       data class Usage(
@@ -70,20 +57,15 @@ class Deepseek {
     }
   }
 
-  @Serializable
-  data class FunctionDeclaration(val type: String, val function: Function) {
-    @Serializable
-    data class Function(val name: String, val description: String, val parameters: InputSchema)
-  }
 
   @Serializable
-  data class ChatModel(val messages: List<Message>,
+  data class ChatModel(val messages: List<OpenAi.Message>,
                        val model: String,
                        val stream: Boolean? = false,
                        /** 0 <= value <= 2.0 */
                        val temperature: Double? = 1.0,
                        @SerialName("top_p")
                        val topP : Double? = 1.0,
-                       val tools: List<FunctionDeclaration>? = null
+                       val tools: List<OpenAi.FunctionDeclaration>? = null
   )
 }
