@@ -36,8 +36,16 @@ abstract class AbstractDigestFormat<M, D : IDigestResponse>(
       append(digestWithoutFormat(model, locale))
       appendLine()
       appendLine(prettyJson.encodeToString(serializer, promptsForExpectingStructure(locale)))
+      appendLine(finalInstruction(locale))
     }
   }
 
   abstract fun digestWithoutFormat(model: M, locale: Locale): String?
+
+  fun finalInstruction(locale: Locale): String {
+    return buildString {
+      append("[FINAL_INSTRUCTION]\n")
+      append("Please ensure your entire response is in ${locale.getDisplayLanguage(Locale.ENGLISH)} ( locale = $locale)  (except for the JSON keys), including all astrological terms and interpretations.")
+    }
+  }
 }
