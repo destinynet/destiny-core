@@ -3,6 +3,7 @@
  */
 package destiny.tools.ai.model
 
+import destiny.tools.ai.Provider
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.encoding.Decoder
@@ -14,7 +15,9 @@ data class Advice(
   val summary: String,
   val pros: List<String> = emptyList(),
   val cons: List<String> = emptyList(),
-  val actions: List<String> = emptyList()
+  val actions: List<String> = emptyList(),
+  var provider: Provider? = null,
+  var model: String? = null
 ) : IDigestResponse, Serializable
 
 

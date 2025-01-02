@@ -28,6 +28,8 @@ abstract class AbstractDigestFormat<M, D : IDigestResponse>(
   private val prettyJson = Json {
     prettyPrint = true
     encodeDefaults = true
+    // do not encode null fields
+    explicitNulls = false
   }
 
 
