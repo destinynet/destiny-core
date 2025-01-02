@@ -47,7 +47,7 @@ abstract class AbstractDigestFormat<M, D : IDigestResponse>(
   fun finalInstruction(locale: Locale): String {
     return buildString {
       append("[FINAL_INSTRUCTION]\n")
-      append("Please ensure your entire response is in ${locale.getDisplayLanguage(Locale.ENGLISH)} ( locale = $locale)  (except for the JSON keys), including all astrological terms and interpretations.")
+      append("Please ensure your entire response is in ${locale.getDisplayLanguage(Locale.ENGLISH)} ( locale = $locale)  (except for the JSON keys), including all terms and interpretations.")
     }
   }
 }
