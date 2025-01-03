@@ -45,6 +45,35 @@ suspend fun <T> retryIO(
   return block() // last attempt
 }
 
+suspend fun <T> retryUntilNonNull(maxRetries: Int = 3,
+                                  initialDelay: Long = 100, // 0.1 second
+                                  maxDelay: Long = 10000,   // 10 second
+                                  factor: Double = 2.0,
+                                  block: suspend () -> T?, ): T? {
+  suspend fun attempt(retriesLeft: Int, currentDelay: Long): T? {
+    return if (retriesLeft <= 0) {
+      null
+    } else {
+      try {
+        block() ?: run {
+          delay(currentDelay)
+          attempt(
+            retriesLeft - 1,
+            (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+          )
+        }
+      } catch (e: Exception) {
+        delay(currentDelay)
+        attempt(
+          retriesLeft - 1,
+          (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+        )
+      }
+    }
+  }
+  return attempt(maxRetries, initialDelay)
+}
+
 
 /**
  * https://stackoverflow.com/a/46890009/298430
