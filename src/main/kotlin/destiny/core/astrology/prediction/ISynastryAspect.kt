@@ -4,6 +4,7 @@ import destiny.core.astrology.Aspect
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.IMidPointWithFocal
 import destiny.core.astrology.IPointAspectPattern
+import destiny.tools.Score
 
 interface ISynastryAspect : IPointAspectPattern {
   val outerPoint: AstroPoint
@@ -23,7 +24,7 @@ data class SynastryAspect(
   override val aspect: Aspect,
   override val orb: Double,
   override val type: IPointAspectPattern.Type?,
-  override val score: Double?
+  override val score: Score?
 ) : ISynastryAspect {
 
   override val angle: Double = aspect.degree
@@ -63,5 +64,5 @@ data class MidPointFocalAspect(val outer : IMidPointWithFocal, val inner : IMidP
   override val outerPointHouse: Int? = null
   override val innerPointHouse: Int? = null
   override val angle: Double = aspect.degree
-  override val score: Double? = null
+  override val score: Score? = null
 }

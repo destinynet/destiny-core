@@ -6,6 +6,7 @@ package destiny.core.astrology
 import com.google.common.collect.Sets
 import destiny.core.astrology.IPointAspectPattern.Type.APPLYING
 import destiny.core.astrology.IPointAspectPattern.Type.SEPARATING
+import destiny.tools.Score
 import java.io.Serializable
 import kotlin.math.abs
 
@@ -74,7 +75,7 @@ class AspectCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
   override fun getPointAspectAndScore(point: AstroPoint,
                                       positionMap: Map<AstroPoint, IPos>,
                                       points: Set<AstroPoint>,
-                                      aspects: Set<Aspect>): Set<Triple<AstroPoint, Aspect, Double>> {
+                                      aspects: Set<Aspect>): Set<Triple<AstroPoint, Aspect, Score>> {
     return positionMap[point]?.lngDeg?.let { starDeg ->
       points
         .asSequence()

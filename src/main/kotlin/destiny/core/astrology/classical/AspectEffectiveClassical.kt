@@ -11,6 +11,8 @@ import destiny.core.astrology.IAspectEffective
 import destiny.core.astrology.ZodiacDegree
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.DestinyMarker
+import destiny.tools.Score
+import destiny.tools.Score.Companion.toScore
 import java.io.Serializable
 import kotlin.math.abs
 
@@ -37,13 +39,13 @@ class AspectEffectiveClassical(
     return (planetOrbsImpl.getDiameter(p1) + planetOrbsImpl.getDiameter(p2)) / 2
   }
 
-  override fun getEffectiveErrorAndScore(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree, aspect: Aspect): Pair<Double, Double>? {
+  override fun getEffectiveErrorAndScore(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree, aspect: Aspect): Pair<Double, Score>? {
     val angleDiff = getAngleDiff(deg1, deg2, aspect.degree)
     val sumOfRadius = getSumOfRadius(p1, p2)
 
     return angleDiff
       .takeIf { it <= sumOfRadius }
-      ?.let { it to (defaultThreshold + (1 - defaultThreshold) * (sumOfRadius - angleDiff) / sumOfRadius) }
+      ?.let { it to (defaultThreshold + (1 - defaultThreshold) * (sumOfRadius - angleDiff) / sumOfRadius).toScore() }
   }
 
   /**

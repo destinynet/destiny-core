@@ -2,6 +2,7 @@ package destiny.core.astrology
 
 import destiny.core.toString
 import destiny.tools.AlignTools
+import destiny.tools.Score
 import java.util.*
 import kotlin.math.abs
 
@@ -20,7 +21,7 @@ interface IPointAspectPattern : IPointAnglePattern, Comparable<IPointAspectPatte
     get() = abs(aspect.degree - angle)
 
   /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
-  val score: Double?
+  val score: Score?
 
   enum class Type {
     APPLYING,
@@ -49,8 +50,8 @@ interface IPointAspectPattern : IPointAnglePattern, Comparable<IPointAspectPatte
   fun brief(): String {
     val typeString = type?.toString()?.take(1) ?: "?"
     return StringBuilder("[$typeString] [${points.joinToString(", ") { it.toString(Locale.TRADITIONAL_CHINESE) }}] $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度").apply {
-      score?.also { score: Double ->
-        val s = (score * 100).toString()
+      score?.also { score: Score ->
+        val s = (score.value * 100).toString()
           .take(5)
         append("，得分：$s")
       }
@@ -66,7 +67,7 @@ data class PointAspectPattern internal constructor(override val points: List<Ast
                                                    override val angle: Double,
                                                    override val type: IPointAspectPattern.Type?,
                                                    override val orb: Double,
-                                                   override val score: Double? = null) : IPointAspectPattern {
+                                                   override val score: Score? = null) : IPointAspectPattern {
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -86,7 +87,7 @@ data class PointAspectPattern internal constructor(override val points: List<Ast
 
   companion object {
 
-    fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, type: IPointAspectPattern.Type?, orb: Double = 0.0, score: Double? = null): PointAspectPattern {
+    fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, type: IPointAspectPattern.Type?, orb: Double = 0.0, score: Score? = null): PointAspectPattern {
       val points = if (p1 != p2) {
         sortedSetOf(AstroPointComparator, p1, p2).toList()
       } else {

@@ -8,6 +8,7 @@ import destiny.core.astrology.Aspect.Importance
 import destiny.core.astrology.IPointAspectPattern.Type
 import destiny.core.astrology.IPointAspectPattern.Type.APPLYING
 import destiny.core.astrology.IPointAspectPattern.Type.SEPARATING
+import destiny.tools.Score
 
 /**
  * 計算一張命盤 [IHoroscopeModel] 內部的交角列表 , [IHoroscopeModel] 的 extension function, 查詢出來的 [IPointAspectPattern] 具備 [IPointAspectPattern.type]
@@ -46,7 +47,7 @@ interface IAspectCalculator  {
                              positionMap: Map<AstroPoint, IPos>,
                              points: Set<AstroPoint> = positionMap.keys,
                              aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
-  ): Set<Triple<AstroPoint , Aspect , Double>>
+  ): Set<Triple<AstroPoint , Aspect , Score>>
 
   /**
    * 取得與 [AstroPoint] 形成交角的星體，以及其交角是哪種 ，如果沒形成任何交角，傳回 empty

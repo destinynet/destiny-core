@@ -48,7 +48,7 @@ class AspectEffectiveModernTest {
       /** 日月對沖，容許度 12度  , 記錄於 [AspectOrbsPlanetDefaultImpl] 的 map 中 */
       modern.getEffectiveErrorAndScore(SUN, 0.0, MOON, 192.0, OPPOSITION).also {
         assertNotNull(it)
-        assertEquals(0.6, it.second)
+        assertEquals(0.6, it.second.value)
       }
 
       /** 與東昇點，並不在 [AspectOrbsPlanetDefaultImpl] 的 map 中 , 容許度改為 [AspectOrbsDefaultImpl] 為 11度 */
@@ -58,7 +58,7 @@ class AspectEffectiveModernTest {
 
       modern.getEffectiveErrorAndScore(SUN, 0.0, Axis.RISING, 191.0, OPPOSITION).also {
         assertNotNull(it)
-        assertEquals(0.6, it.second)
+        assertEquals(0.6, it.second.value)
       }
     }
   }
@@ -86,12 +86,12 @@ class AspectEffectiveModernTest {
 
       modern.getEffectiveErrorAndScore(SUN, 0.0, MOON, 192.0, OPPOSITION).also {
         assertNotNull(it)
-        assertEquals(0.6, it.second)
+        assertEquals(0.6, it.second.value)
       }
 
       modern.getEffectiveErrorAndScore(SUN, 0.0, MOON, 180.0, OPPOSITION).also {
         assertNotNull(it)
-        assertEquals(1.0, it.second)
+        assertEquals(1.0, it.second.value)
       }
 
       modern.getEffectiveErrorAndScore(SUN, 0.0, MOON, 193.0, OPPOSITION).also {

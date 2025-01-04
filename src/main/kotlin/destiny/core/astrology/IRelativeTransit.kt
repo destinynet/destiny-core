@@ -7,6 +7,7 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.TimeTools
+import destiny.tools.Score.Companion.toScore
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -119,7 +120,7 @@ interface IRelativeTransit {
     return relativeStars.filter { it != transitStar }.mapNotNull { eachOther ->
       getNearestRelativeTransitGmtJulDay(transitStar, eachOther, fromGmtJulDay, aspects.map { it.degree }.toSet(), forward)
         ?.let { (gmt , deg) -> Triple(eachOther , gmt, deg) }
-    }.map { (other , gmt , deg) -> AspectData.of(transitStar, other , Aspect.getAspect(deg)!! , 0.0 , 0.0 , null , gmt) }
+    }.map { (other , gmt , deg) -> AspectData.of(transitStar, other , Aspect.getAspect(deg)!! , 0.0 , 0.0.toScore() , null , gmt) }
       .let { list ->
         if (forward)
           list.minByOrNull { it.gmtJulDay }

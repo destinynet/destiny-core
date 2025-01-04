@@ -36,11 +36,11 @@ class AspectEffectiveClassicalTest {
 
     impl.getEffectiveErrorAndScore(SUN, 0.toZodiacDegree(), MOON, 193.5.toZodiacDegree(), OPPOSITION).also {
       assertNotNull(it)
-      assertEquals(0.6, it.second)
+      assertEquals(0.6, it.second.value)
     }
     impl.getEffectiveErrorAndScore(SUN, 0.toZodiacDegree(), MOON, 180.toZodiacDegree(), OPPOSITION).also {
       assertNotNull(it)
-      assertEquals(1.0, it.second)
+      assertEquals(1.0, it.second.value)
     }
 
 

@@ -27,6 +27,10 @@ value class Score(val value: Double) : Comparable<Score>, Serializable {
     return (value + amount.toDouble()).toScore()
   }
 
+  operator fun plus(amount: Score): Double {
+    return value + amount.value
+  }
+
   operator fun minus(v: Score): Double {
     return value - v.value
   }
@@ -36,5 +40,11 @@ value class Score(val value: Double) : Comparable<Score>, Serializable {
     fun Number.toScore(): Score {
       return Score(this.toDouble())
     }
+
+    fun Iterable<Score>.average(): Score {
+      val total = this.fold(0.0) { sum, score -> sum + score.value }
+      return (total / this.count()).toScore()
+    }
   }
 }
+

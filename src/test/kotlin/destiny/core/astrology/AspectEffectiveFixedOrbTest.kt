@@ -55,7 +55,7 @@ internal class AspectEffectiveFixedOrbTest {
       } else {
         val (error, score) = pair
         assertEquals(data.error, error)
-        assertEquals(data.score, score)
+        assertEquals(data.score, score.value)
       }
     }
   }

@@ -5,6 +5,8 @@
 package destiny.core.astrology
 
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
+import destiny.tools.Score
+import destiny.tools.Score.Companion.toScore
 import jakarta.inject.Named
 import java.io.Serializable
 import kotlin.math.abs
@@ -46,17 +48,17 @@ class AspectEffectiveModern(
       ?: aspectOrbsImpl.getAspectOrbAndThreshold(aspect)
   }
 
-  override fun getEffectiveErrorAndScore(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree, aspect: Aspect): Pair<Double, Double>? {
+  override fun getEffectiveErrorAndScore(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree, aspect: Aspect): Pair<Double, Score>? {
     val (orb, threshold) = getOrbAndThresholdScore(p1, p2, aspect)
     val angle = deg1.getAngle(deg2)
     val angleDiff = abs(angle - aspect.degree)
 
     return angleDiff
       .takeIf { it <= orb }
-      ?.let { it to (threshold + (1 - threshold) * (orb - angleDiff) / orb) }
+      ?.let { it to (threshold + (1 - threshold) * (orb - angleDiff) / orb).toScore() }
   }
 
-  fun getEffectiveErrorAndScore(p1: AstroPoint, deg1: Double, p2: AstroPoint, deg2: Double, aspect: Aspect): Pair<Double, Double>? {
+  fun getEffectiveErrorAndScore(p1: AstroPoint, deg1: Double, p2: AstroPoint, deg2: Double, aspect: Aspect): Pair<Double, Score>? {
     return getEffectiveErrorAndScore(p1, deg1.toZodiacDegree(), p2, deg2.toZodiacDegree(), aspect)
   }
 

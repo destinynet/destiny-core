@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.astrology.IPointAspectPattern.Type
 import destiny.core.astrology.Planet.*
+import destiny.tools.Score.Companion.toScore
 import kotlin.test.*
 
 internal class PointAspectPatternTest {
@@ -74,8 +75,8 @@ internal class PointAspectPatternTest {
    */
   @Test
   fun testEquals4_Score() {
-    val p1 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, Type.APPLYING, 1.0 , 0.1)
-    val p2 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, Type.APPLYING, 1.0 , 0.2)
+    val p1 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, Type.APPLYING, 1.0 , 0.1.toScore())
+    val p2 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, Type.APPLYING, 1.0 , 0.2.toScore())
     assertEquals(p1, p2)
   }
 
