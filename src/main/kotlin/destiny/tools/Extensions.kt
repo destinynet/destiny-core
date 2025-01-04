@@ -50,23 +50,27 @@ suspend fun <T> retryUntilNonNull(maxRetries: Int = 3,
                                   maxDelay: Long = 10000,   // 10 second
                                   factor: Double = 2.0,
                                   block: suspend () -> T?, ): T? {
-  suspend fun attempt(retriesLeft: Int, currentDelay: Long): T? {
+  suspend fun attempt(retriesLeft: Int, currentDelay: Long, attemptCount: Int = 1): T? {
     return if (retriesLeft <= 0) {
       null
     } else {
       try {
         block() ?: run {
+          logger.info { "Retry attempt #$attemptCount..." }
           delay(currentDelay)
           attempt(
             retriesLeft - 1,
-            (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+            (currentDelay * factor).toLong().coerceAtMost(maxDelay),
+            attemptCount + 1
           )
         }
       } catch (e: Exception) {
+        logger.info { "Retry attempt #$attemptCount after exception: ${e.message}" }
         delay(currentDelay)
         attempt(
           retriesLeft - 1,
-          (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+          (currentDelay * factor).toLong().coerceAtMost(maxDelay),
+          attemptCount + 1
         )
       }
     }
