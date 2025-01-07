@@ -56,7 +56,15 @@ class Reloader<T : Any>(
 
   private fun startReloadScheduler() {
     executor.scheduleAtFixedRate(
-      { loadConfig()?.also { holder.updateConfig(it) } },
+      {
+        loadConfig()
+          ?.takeIf { it != holder.getConfig() }
+          ?.also {
+            val externalConfigFile = File(configDir, configFilename)
+            logger.info { "config modified and reloaded : ${externalConfigFile.absolutePath}" }
+            holder.updateConfig(it)
+          }
+      },
       reloadIntervalMs,
       reloadIntervalMs,
       TimeUnit.MILLISECONDS
@@ -69,7 +77,8 @@ class Reloader<T : Any>(
     return try {
       if (externalConfigFile.exists()) {
         val content = externalConfigFile.readText()
-        logger.info { "loaded external config file: ${externalConfigFile.absolutePath}" }
+        logger.debug { "loaded external config file: ${externalConfigFile.absolutePath}" }
+        holder.getConfig()
         parser.parse(content).takeIf { validator.validate(it) }
       } else {
         loadDefaultConfig()
