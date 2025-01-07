@@ -56,15 +56,7 @@ class Reloader<T : Any>(
 
   private fun startReloadScheduler() {
     executor.scheduleAtFixedRate(
-      {
-        loadConfig()
-          ?.takeIf { it != holder.getConfig() }
-          ?.also {
-            val externalConfigFile = File(configDir, configFilename)
-            logger.info { "config modified and reloaded : ${externalConfigFile.absolutePath}" }
-            holder.updateConfig(it)
-          }
-      },
+      { loadConfig()?.also { holder.updateConfig(it) } },
       reloadIntervalMs,
       reloadIntervalMs,
       TimeUnit.MILLISECONDS
