@@ -68,8 +68,10 @@ class OpenAi {
   }
 
   @Serializable
-  data class ChatModel(val messages: List<Message>, val user: String?, val model: String, val tools: List<FunctionDeclaration>? = null)
+  data class ChatModel(val messages: List<Message>,
+                       val user: String?,
+                       val model: String,
+                       /* 0 to 2 */
+                       val temperature: Double? = null,
+                       val tools: List<FunctionDeclaration>? = null)
 }
-
-
-

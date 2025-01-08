@@ -27,18 +27,18 @@ interface IChatCompletion {
 
   val provider: String
 
-  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = Duration.of(60, ChronoUnit.SECONDS)) : Reply
+  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = Duration.of(60, ChronoUnit.SECONDS), temperature: Double?) : Reply
 
-  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = Duration.of(60, ChronoUnit.SECONDS)) : Reply {
-    return chatComplete(model, messages, user, setOf(funCall), timeout)
+  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = Duration.of(60, ChronoUnit.SECONDS), temperature: Double?) : Reply {
+    return chatComplete(model, messages, user, setOf(funCall), timeout, temperature)
   }
 }
 
 abstract class AbstractChatCompletion : IChatCompletion {
 
-  abstract suspend fun doChatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration): Reply
+  abstract suspend fun doChatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, temperature: Double?): Reply
 
-  override suspend fun chatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration): Reply {
+  override suspend fun chatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, temperature: Double?): Reply {
     val filteredFunCalls = funCalls.filter { it.applied(messages) }.toSet()
 
     val finalMsgs = messages.fold(mutableListOf<Msg>()) { acc, msg ->
@@ -82,7 +82,7 @@ abstract class AbstractChatCompletion : IChatCompletion {
       )
     }
 
-    return doChatComplete(model, finalMsgs, user, filteredFunCalls, timeout)
+    return doChatComplete(model, finalMsgs, user, filteredFunCalls, timeout, temperature)
   }
 
   companion object {
