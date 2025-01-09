@@ -15,7 +15,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 @Serializable
-data class ProviderModel(val provider: Provider, val model: String)
+data class ProviderModel(val provider: Provider, val model: String, val temperature: Double? = null)
 
 data class DomainLanguage(val domain: Domain, val language: String?)
 
@@ -23,15 +23,25 @@ object ProviderModelListSerializer : KSerializer<List<ProviderModel>> {
   override val descriptor: SerialDescriptor = ListSerializer(String.serializer()).descriptor
 
   override fun serialize(encoder: Encoder, value: List<ProviderModel>) {
-    val stringList = value.map { "${it.provider} : ${it.model}" }
+    val stringList: List<String> = value.map {
+      val temp = it.temperature?.let { temp -> ", $temp" } ?: ""
+      "${it.provider} : ${it.model}$temp"
+    }
     ListSerializer(String.serializer()).serialize(encoder, stringList)
   }
 
   override fun deserialize(decoder: Decoder): List<ProviderModel> {
     val stringList = ListSerializer(String.serializer()).deserialize(decoder)
     return stringList.map { str ->
-      val (provider, model) = str.split(":", limit = 2)
-      ProviderModel(Provider.valueOf(provider.trim()), model.trim())
+      val parts = str.split(":", limit = 2)
+      val providerString = parts[0].trim()
+      val modelAndTemp = parts.getOrNull(1)?.split(",")?.map { it.trim() }
+
+      val provider = Provider.valueOf(providerString)
+      val model = modelAndTemp?.getOrNull(0) ?: ""
+      val temperature = modelAndTemp?.getOrNull(1)?.toDoubleOrNull()
+
+      ProviderModel(provider, model, temperature)
     }
   }
 }

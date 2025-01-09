@@ -4,6 +4,7 @@
 package destiny.tools.ai
 
 import destiny.tools.ai.model.Domain
+import destiny.tools.config.Holder
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,18 +18,18 @@ class DomainModelServiceTest {
   fun setup() {
     val map = mapOf(
       DomainLanguage(Domain.Bdnp.HOROSCOPE, "zh") to listOf(
-        ProviderModel(Provider.CLAUDE, "claude-3-haiku-20240307")
+        ProviderModel(Provider.CLAUDE, "claude-3-haiku-20240307", 0.9)
       ),
       DomainLanguage(Domain.Bdnp.EW, null) to listOf(
-        ProviderModel(Provider.OPENAI, "gpt-4"),
-        ProviderModel(Provider.GEMINI, "gemini-pro")
+        ProviderModel(Provider.OPENAI, "gpt-4", 0.8),
+        ProviderModel(Provider.GEMINI, "gemini-pro", 0.8)
       ),
       DomainLanguage(Domain.Bdnp.ZIWEI, "en") to listOf(
-        ProviderModel(Provider.OPENAI, "gpt-4"),
-        ProviderModel(Provider.CLAUDE, "claude-3-haiku-20240307")
+        ProviderModel(Provider.OPENAI, "gpt-4", 0.7),
+        ProviderModel(Provider.CLAUDE, "claude-3-haiku-20240307", 0.7)
       )
     )
-    val holder = destiny.tools.config.Holder(map)
+    val holder = Holder(map)
     service = DomainModelService(holder, emptySet())
   }
 
@@ -37,6 +38,7 @@ class DomainModelServiceTest {
     val result = service.getProviderModel(Domain.Bdnp.HOROSCOPE, "zh")
     assertEquals(Provider.CLAUDE, result.provider)
     assertEquals("claude-3-haiku-20240307", result.model)
+    assertEquals(0.9, result.temperature)
   }
 
   @Test
@@ -44,6 +46,7 @@ class DomainModelServiceTest {
     val result = service.getProviderModel(Domain.Bdnp.EW)
     assertTrue(result.provider in listOf(Provider.OPENAI, Provider.GEMINI))
     assertTrue(result.model in listOf("gpt-4", "gemini-pro"))
+    assertEquals(0.8, result.temperature)
   }
 
 
@@ -52,6 +55,7 @@ class DomainModelServiceTest {
     val result = service.getProviderModel(Domain.Bdnp.ZIWEI, "fr")
     assertTrue(result.provider in listOf(Provider.OPENAI, Provider.CLAUDE))
     assertTrue(result.model in listOf("gpt-4", "claude-3-haiku-20240307"))
+    assertEquals(0.7, result.temperature)
   }
 
   @Test
@@ -63,7 +67,7 @@ class DomainModelServiceTest {
 
   @Test
   fun `all unique models`() {
-    assertEquals(3, service.allProviderModels.size)
+    assertEquals(5, service.allProviderModels.size)
     assertTrue(service.allProviderModels.any { it.provider == Provider.CLAUDE })
     assertTrue(service.allProviderModels.any { it.provider == Provider.OPENAI })
     assertTrue(service.allProviderModels.any { it.provider == Provider.GEMINI })

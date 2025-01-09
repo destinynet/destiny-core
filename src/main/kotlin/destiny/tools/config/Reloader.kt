@@ -36,13 +36,16 @@ class Reloader<T : Any>(
     }
 
     val externalConfigFile = File(configDirectory, configFilename)
+    logger.info { "checking external config file : ${externalConfigFile.absolutePath}" }
     if (!externalConfigFile.exists()) {
-      // 从 classpath 复制默认配置
-      val defaultConfigStream = Thread.currentThread().contextClassLoader
-        .getResourceAsStream(defaultConfigPath)
+      val defaultConfigUrl = Thread.currentThread().contextClassLoader
+        .getResource(defaultConfigPath)
         ?: throw IllegalStateException("Default config not found: $defaultConfigPath")
 
-      defaultConfigStream.use { input ->
+      logger.info { "Default config absolute path: ${defaultConfigUrl.path}" }
+
+      // 從 classpath 複製默認配置
+      defaultConfigUrl.openStream().use { input ->
         externalConfigFile.outputStream().use { output ->
           input.copyTo(output)
           logger.info { "defaultConfig file copied to $externalConfigFile" }
