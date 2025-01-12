@@ -12,6 +12,9 @@ import java.util.*
  * expecting LLM to reply in D data structure
  */
 interface IDigestFormat<M, D> : IDigest<M, String> {
+
+  val domain: Domain
+
   fun promptsForExpectingStructure(locale: Locale = Locale.getDefault()): D
 }
 
