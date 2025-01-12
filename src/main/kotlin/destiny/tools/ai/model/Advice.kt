@@ -14,4 +14,4 @@ data class Advice(
   val actions: List<String> = emptyList(),
   var provider: Provider? = null,
   var model: String? = null
-) : IDigestResponse, Serializable
+) : Serializable

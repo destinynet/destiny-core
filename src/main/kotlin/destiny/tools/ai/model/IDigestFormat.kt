@@ -8,21 +8,14 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import java.util.*
 
-
-interface SerializableData
-
-@kotlinx.serialization.Serializable
-sealed interface IDigestResponse : SerializableData
-
-
 /**
  * expecting LLM to reply in D data structure
  */
-interface IDigestFormat<M, D : IDigestResponse> : IDigest<M, String> {
+interface IDigestFormat<M, D> : IDigest<M, String> {
   fun promptsForExpectingStructure(locale: Locale = Locale.getDefault()): D
 }
 
-abstract class AbstractDigestFormat<M, D : IDigestResponse>(
+abstract class AbstractDigestFormat<M, D>(
   private val serializer: KSerializer<D>
 ) : IDigestFormat<M, D> {
   private val prettyJson = Json {

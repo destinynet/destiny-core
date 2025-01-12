@@ -15,7 +15,7 @@ data class SynastryReply(
   val obstacles : List<Statement>,
   val followUps: List<FollowUp>,
   val score: Score
-  ) : IDigestResponse {
+  ) {
 
   @Serializable
   data class Statement(

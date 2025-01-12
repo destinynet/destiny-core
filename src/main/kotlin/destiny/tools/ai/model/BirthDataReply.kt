@@ -10,4 +10,4 @@ import kotlinx.serialization.Serializable
 data class BirthDataReply(
   val domains: Map<BirthDataDomain, String>,
   val followUps: List<FollowUp>
-): IDigestResponse
+)
