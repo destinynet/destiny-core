@@ -3,6 +3,16 @@
  */
 package destiny.core.oracles
 
-import destiny.core.IDigest
+import destiny.tools.ai.model.Domain
+import destiny.tools.ai.model.IDigestFormat
+import java.util.*
 
-interface IOracleDigest<M : IClause> : IDigest<M, String>
+interface IOracleDigest<M : IClause> : IDigestFormat<M, String> {
+
+  override val domain: Domain
+    get() = Domain.CHANCE
+
+  override fun promptsForExpectingStructure(locale: Locale): String {
+    return ""
+  }
+}
