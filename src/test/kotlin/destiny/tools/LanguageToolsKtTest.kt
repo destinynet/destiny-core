@@ -10,14 +10,17 @@ import kotlin.test.assertTrue
 
 class LanguageToolsKtTest {
 
-  open class Animal<T>
-  class Cat : Animal<String>()
-  class Dog : Animal<Int>()
-  class Bird // 沒有泛型父類別
-  class Fish : Animal<Fish>()
 
   @Nested
   inner class SearchByGenericSuperclassTest {
+
+
+    open inner class Animal<T>
+    inner class Cat : Animal<String>()
+    inner class Dog : Animal<Int>()
+    inner class Bird // 沒有泛型父類別
+    inner class Fish : Animal<Fish>()
+
     @Test
     fun 找到匹配的泛型類型() {
       // Arrange
