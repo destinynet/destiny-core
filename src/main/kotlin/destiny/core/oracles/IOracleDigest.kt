@@ -12,7 +12,7 @@ interface IOracleDigest<M : IClause> : IDigestFormat<M, String> {
   override val domain: Domain
     get() = Domain.CHANCE
 
-  override fun promptsForExpectingStructure(locale: Locale): String {
-    return ""
+  override fun promptsForExpectingStructure(locale: Locale): String? {
+    return null
   }
 }

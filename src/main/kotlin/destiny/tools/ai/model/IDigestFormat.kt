@@ -15,7 +15,7 @@ interface IDigestFormat<M, D> : IDigest<M, String> {
 
   val domain: Domain
 
-  fun promptsForExpectingStructure(locale: Locale = Locale.getDefault()): D
+  fun promptsForExpectingStructure(locale: Locale = Locale.getDefault()): D?
 }
 
 abstract class AbstractDigestFormat<M, D>(
@@ -33,7 +33,9 @@ abstract class AbstractDigestFormat<M, D>(
     return buildString {
       append(digestWithoutFormat(model, locale))
       appendLine()
-      appendLine(prettyJson.encodeToString(serializer, promptsForExpectingStructure(locale)))
+      promptsForExpectingStructure(locale)?.also { structurePrompting ->
+        appendLine(prettyJson.encodeToString(serializer, structurePrompting))
+      }
       appendLine(finalInstruction(locale))
     }
   }
@@ -43,7 +45,11 @@ abstract class AbstractDigestFormat<M, D>(
   fun finalInstruction(locale: Locale): String {
     return buildString {
       append("[FINAL_INSTRUCTION]\n")
-      append("Please ensure your entire response is in ${locale.getDisplayLanguage(Locale.ENGLISH)} ( locale = $locale)  (except for the JSON keys), including all terms and interpretations.")
+      append("Please ensure your entire response is in ${locale.getDisplayLanguage(Locale.ENGLISH)} ( locale = $locale )")
+      if (promptsForExpectingStructure(locale) != null) {
+        append("(except for the JSON keys)")
+      }
+      append(", including all terms and interpretations.")
     }
   }
 }
