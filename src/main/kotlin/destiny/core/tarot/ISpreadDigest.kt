@@ -3,7 +3,18 @@
  */
 package destiny.core.tarot
 
-import destiny.core.IDigest
+import destiny.tools.ai.model.Domain
+import destiny.tools.ai.model.IDigestFormat
+import java.util.*
 
 
-interface ISpreadDigest<T : ISpread> : IDigest<T , String>
+@Deprecated("AbstractTarotDigester")
+interface ISpreadDigest<T : ISpread> : IDigestFormat<T , String> {
+
+  override val domain: Domain
+    get() = Domain.TAROT
+
+  override fun promptsForExpectingStructure(locale: Locale): String? {
+    return null
+  }
+}
