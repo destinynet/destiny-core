@@ -1,17 +1,12 @@
-/**
- * Created by smallufo on 2025-01-13.
- */
-package destiny.core.tarot
+package destiny.core.oracles
 
 import destiny.tools.ai.model.AbstractDigestFormat
 import destiny.tools.ai.model.Domain
 import kotlinx.serialization.builtins.serializer
 import java.util.*
 
-
-abstract class AbstractTarotDigester<T : ISpread> : AbstractDigestFormat<T, String>(String.serializer()) {
-
-  final override val domain: Domain = Domain.TAROT
+abstract class AbstractOracleDigester<M : IClause> : AbstractDigestFormat<M, String>(String.serializer()) {
+  final override val domain: Domain = Domain.CHANCE
 
   override fun promptsForExpectingStructure(locale: Locale): String? {
     return null
