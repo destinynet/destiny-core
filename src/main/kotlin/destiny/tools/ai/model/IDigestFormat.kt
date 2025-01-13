@@ -19,7 +19,7 @@ interface IDigestFormat<M, D> : IDigest<M, String> {
 }
 
 abstract class AbstractDigestFormat<M, D>(
-  private val serializer: KSerializer<D>
+  val serializer: KSerializer<D>
 ) : IDigestFormat<M, D> {
   private val prettyJson = Json {
     prettyPrint = true

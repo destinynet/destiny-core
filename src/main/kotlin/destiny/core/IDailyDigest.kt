@@ -1,9 +1,10 @@
 package destiny.core
 
-import java.util.*
+import destiny.tools.ai.model.IDigestFormat
 
-interface IDailyDigest<out M : IDaily, T> : IDigest<@UnsafeVariance M, T> {
+@Deprecated("")
+interface IDailyDigest<out M : IDaily, T> : IDigestFormat<@UnsafeVariance M, T> {
 
-  override fun digest(model: @UnsafeVariance M, locale: Locale): T?
+  //override fun digest(model: @UnsafeVariance M, locale: Locale): T?
 
 }
