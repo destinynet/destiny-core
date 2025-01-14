@@ -23,6 +23,10 @@ inline fun <T, R : Any> Sequence<T>.firstNotNullResult(crossinline transform: (T
 
 private val logger = KotlinLogging.logger { }
 
+private fun calculateNextDelay(currentDelay: Long, factor: Double, maxDelay: Long): Long {
+  return (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+}
+
 /**
  * https://stackoverflow.com/a/46890009/298430
  */
@@ -40,7 +44,7 @@ suspend fun <T> retryIO(
       logger.warn("IO exception : {}", e.stackTraceString)
     }
     delay(currentDelay)
-    currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+    currentDelay = calculateNextDelay(currentDelay, factor, maxDelay)
   }
   return block() // last attempt
 }
@@ -69,7 +73,7 @@ suspend fun <T> retryUntilNonNull(maxRetries: Int = 3,
         delay(currentDelay)
         attempt(
           retriesLeft - 1,
-          (currentDelay * factor).toLong().coerceAtMost(maxDelay),
+          calculateNextDelay(currentDelay, factor, maxDelay),
           attemptCount + 1
         )
       }
@@ -78,6 +82,44 @@ suspend fun <T> retryUntilNonNull(maxRetries: Int = 3,
   return attempt(maxRetries, initialDelay)
 }
 
+
+sealed class RetryResult<out T> {
+  data class Success<T>(val value: T) : RetryResult<T>()
+  data class AllFailures(val exceptions: List<Exception>) : RetryResult<Nothing>()
+}
+
+suspend fun <T> retryWithExceptions(
+  maxRetries: Int = 3,
+  initialDelay: Long = 100, // 0.1 second
+  maxDelay: Long = 10000,   // 10 second
+  factor: Double = 2.0,
+  block: suspend () -> T
+): RetryResult<T> {
+  val exceptions = mutableListOf<Exception>()
+
+  suspend fun attempt(retriesLeft: Int, currentDelay: Long, attemptCount: Int = 1): RetryResult<T> {
+    if (retriesLeft <= 0) {
+      return RetryResult.AllFailures(exceptions)
+    }
+
+    return try {
+      val result = block()
+      RetryResult.Success(result)
+    } catch (e: Exception) {
+      logger.info { "Retry attempt #$attemptCount failed with exception: ${e.message}" }
+      exceptions.add(e)
+
+      delay(currentDelay)
+      attempt(
+        retriesLeft - 1,
+        calculateNextDelay(currentDelay, factor, maxDelay),
+        attemptCount + 1
+      )
+    }
+  }
+
+  return attempt(maxRetries, initialDelay)
+}
 
 /**
  * https://stackoverflow.com/a/46890009/298430
@@ -96,7 +138,7 @@ suspend fun <T> retry(
       KotlinLogging.logger { }.warn("throwable : {}", e.message)
     }
     delay(currentDelay)
-    currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+    currentDelay =  calculateNextDelay(currentDelay, factor, maxDelay)
   }
   return block() // last attempt
 }
