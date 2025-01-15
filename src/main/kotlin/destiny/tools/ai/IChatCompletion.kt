@@ -67,6 +67,7 @@ abstract class AbstractChatCompletion : IChatCompletion {
     val funCallPrompts = (filteredFunCalls.joinToString(",") { it.name }).let {
       if (it.isEmpty()) it
       else buildString {
+        // TODO : add meta data , to enhance LLM memory
         append("With function calls if applicable : ")
         append(it)
       }
