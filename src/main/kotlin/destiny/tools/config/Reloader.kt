@@ -20,7 +20,7 @@ class Reloader<T : Any>(
 ) : AutoCloseable {
 
   private val executor = Executors.newSingleThreadScheduledExecutor { r ->
-    Thread(r, "config-reloader").apply { isDaemon = true }
+    Thread(r, "config-reloader-$configFilename").apply { isDaemon = true }
   }
 
   init {

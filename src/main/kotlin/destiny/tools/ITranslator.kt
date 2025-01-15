@@ -6,7 +6,7 @@ package destiny.tools
 import java.util.*
 
 
-interface ITranslate {
+interface ITranslator {
 
   fun translate(raw: String, fromLocale: Locale, toLocale: Locale): String
 }
