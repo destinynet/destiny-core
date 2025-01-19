@@ -21,7 +21,7 @@ object JCacheTools {
       .setTypes(keyType, valueType)
       .setExpiryPolicyFactory(expiryPolicyFactory)
 
-    val name = cacheName ?: RandomStringUtils.randomAlphabetic(10)
+    val name = cacheName ?: RandomStringUtils.secure().nextAlphabetic(10)
 
     cacheManager.createCache(name, configuration)
     return cacheManager.getCache<K, V>(name).also {
