@@ -13,6 +13,7 @@ import destiny.core.chinese.IYinYang
 import destiny.tools.ArrayTools
 import destiny.tools.CircleTools.normalize
 import destiny.tools.getTitle
+import kotlinx.serialization.Serializable
 import java.util.*
 
 
@@ -23,6 +24,7 @@ fun ZodiacSign.getAbbreviation(locale: Locale): String {
 
 
 /** 黃道十二宮  */
+@Serializable
 enum class ZodiacSign(val abbrKey: String,
                       /** 四正 (火/土/風/水)  */
                       val element: Element,
