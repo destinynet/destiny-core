@@ -9,7 +9,7 @@ import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
-interface IZodiacDegree : Serializable {
+interface IZodiacDegree : Comparable<IZodiacDegree>, Serializable {
   val zDeg: Double
 
   val sign: ZodiacSign
@@ -23,11 +23,15 @@ interface IZodiacDegree : Serializable {
 
   val intMin: Int
     get() = ((zDeg - zDeg.toInt()) * 60).toInt()
+
+  override fun compareTo(other: IZodiacDegree): Int {
+    return zDeg.compareTo(other.zDeg)
+  }
 }
 
 /** 黃道帶度數 */
 @JvmInline
-value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree, Comparable<ZodiacDegree> {
+value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree {
 
   override val zDeg: Double
     get() = value
@@ -84,10 +88,6 @@ value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree,
       to.value == this.value ||
         from.isOccidental(this) && this.isOccidental(to)
     }
-  }
-
-  override operator fun compareTo(other: ZodiacDegree): Int {
-    return value.compareTo(other.value)
   }
 
   operator fun plus(other: ZodiacDegree): ZodiacDegree {

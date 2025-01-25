@@ -15,7 +15,7 @@ import kotlinx.serialization.encoding.*
 @OptIn(ExperimentalSerializationApi::class)
 object IPointAspectPatternSerializer : KSerializer<IPointAspectPattern> {
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("IPointAspectPattern") {
-    element<List<String>>("points")
+    element("points", ListSerializer(AstroPointSerializer).descriptor)
     element<Double>("angle")
     element<Aspect>("aspect")
     element<IPointAspectPattern.Type>("type", isOptional = true)

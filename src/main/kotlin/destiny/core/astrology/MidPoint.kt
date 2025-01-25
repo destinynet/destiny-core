@@ -5,7 +5,7 @@ package destiny.core.astrology
 
 interface IMidPoint {
   val points: Set<AstroPoint>
-  val degree: ZodiacDegree
+  val degree: IZodiacDegree
   val house: Int
   val p1: AstroPoint
     get() = points.sortedWith(AstroPointComparator).first()
