@@ -6,10 +6,12 @@ package destiny.core.astrology
 
 import destiny.core.astrology.Aspect.Importance.*
 import destiny.tools.getTitle
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.math.abs
 
 /** 交角 , Aspect  */
+@Serializable
 enum class Aspect(val nameKey: String,
                   /** 取得度數  */
                   val degree: Double,

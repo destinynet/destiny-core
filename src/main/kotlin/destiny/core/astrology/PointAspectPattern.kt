@@ -1,8 +1,10 @@
 package destiny.core.astrology
 
+import destiny.core.astrology.IPointAspectPattern.Type
 import destiny.core.toString
 import destiny.tools.AlignTools
 import destiny.tools.Score
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.math.abs
 
@@ -23,6 +25,7 @@ interface IPointAspectPattern : IPointAnglePattern, Comparable<IPointAspectPatte
   /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
   val score: Score?
 
+  @Serializable
   enum class Type {
     APPLYING,
     SEPARATING
@@ -49,25 +52,24 @@ interface IPointAspectPattern : IPointAnglePattern, Comparable<IPointAspectPatte
 
   fun brief(): String {
     val typeString = type?.toString()?.take(1) ?: "?"
-    return StringBuilder("[$typeString] [${points.joinToString(", ") { it.toString(Locale.TRADITIONAL_CHINESE) }}] $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度").apply {
-      score?.also { score: Score ->
-        val s = (score.value * 100).toString()
-          .take(5)
-        append("，得分：$s")
-      }
-    }
-      .toString()
+    val pointsString = points.joinToString(", ") { it.toString(Locale.TRADITIONAL_CHINESE) }
+    val orbString = AlignTools.leftPad(orb.toString(), 4)
+    val scoreString = score?.let { " ，得分：${(it.value * 100).toString().take(5)}" } ?: ""
+
+    return "[$typeString] [$pointsString] $aspect 誤差 ${orbString}度$scoreString"
   }
 
 }
 
 
 /** 兩顆（可能相同）星體的交角 */
-data class PointAspectPattern internal constructor(override val points: List<AstroPoint>,
-                                                   override val angle: Double,
-                                                   override val type: IPointAspectPattern.Type?,
-                                                   override val orb: Double,
-                                                   override val score: Score? = null) : IPointAspectPattern {
+data class PointAspectPattern internal constructor(
+  override val points: List<AstroPoint>,
+  override val angle: Double,
+  override val type: Type?,
+  override val orb: Double,
+  override val score: Score? = null
+) : IPointAspectPattern {
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -87,7 +89,7 @@ data class PointAspectPattern internal constructor(override val points: List<Ast
 
   companion object {
 
-    fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, type: IPointAspectPattern.Type?, orb: Double = 0.0, score: Score? = null): PointAspectPattern {
+    fun of(p1: AstroPoint, p2: AstroPoint, aspect: Aspect, type: Type?, orb: Double = 0.0, score: Score? = null): PointAspectPattern {
       val points = if (p1 != p2) {
         sortedSetOf(AstroPointComparator, p1, p2).toList()
       } else {
