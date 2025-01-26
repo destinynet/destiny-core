@@ -53,6 +53,9 @@ interface IHoroscopeModel : ITimeLoc {
   /** 行星時 , Planetary Hour */
   val planetaryHour : PlanetaryHour?
 
+  /** 星體逆行狀態 */
+  val retrogradePhaseMap: Map<Star, RetrogradePhase>
+
   // ==================================== 以下為 推導值 ====================================
 
   /**
@@ -149,7 +152,6 @@ interface IHoroscopeModel : ITimeLoc {
 
     return Analyzer.analyzeHoroscope(planetSignMap, rulerMap)
   }
-
 
   val houses : List<House>
     get() {
@@ -327,6 +329,10 @@ interface IHoroscopeModel : ITimeLoc {
     }.sortedWith(comparator)
   }
 
+  fun getRetrogradePhase(star: Star) : RetrogradePhase? {
+    return retrogradePhaseMap[star]
+  }
+
   companion object {
 
     fun getHouse(degree: ZodiacDegree, cuspDegreeMap: Map<Int, ZodiacDegree>): Int {
@@ -389,7 +395,10 @@ data class HoroscopeModel(
   override val vocMap: Map<Planet, Misc.VoidCourseSpan>,
 
   /** 行星時 , Planetary Hour */
-  override val planetaryHour: PlanetaryHour?
+  override val planetaryHour: PlanetaryHour?,
+
+  /** 星體逆行狀態 */
+  override val retrogradePhaseMap: Map<Star, RetrogradePhase>
 ) : IHoroscopeModel, Serializable {
 
   override val time: ChronoLocalDateTime<*>

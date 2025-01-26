@@ -295,4 +295,23 @@ interface IRetrograde {
       .toList()
   }
 
+  fun getRetrogradePhase(star: Star, gmtJulDay: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): RetrogradePhase? {
+    return if (star == Planet.SUN || star == Planet.MOON)
+      null
+    else {
+      val prev = getNextStationaryCycle(star, gmtJulDay, false, starPositionImpl, transit)
+      val next = getNextStationaryCycle(star, gmtJulDay, true, starPositionImpl, transit)
+
+      when (gmtJulDay) {
+        in prev.preparingGmt..prev.retrogradingGmt -> PREPARING
+        in next.preparingGmt..next.retrogradingGmt -> PREPARING
+        in prev.retrogradingGmt..prev.returningGmt -> RETROGRADING
+        in next.retrogradingGmt..next.returningGmt -> PREPARING
+        in prev.returningGmt..prev.leavingGmt      -> LEAVING
+        in next.returningGmt..next.leavingGmt      -> LEAVING
+        else                                       -> null
+      }
+    }
+  }
+
 }
