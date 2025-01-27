@@ -129,7 +129,7 @@ class HoroscopeFeature(
   private val julDayResolver: JulDayResolver,
   private val retrogradeImpl: IRetrograde,
   private val starPositionImpl: IStarPosition<*>,
-  private val StarTransitImpl : IStarTransit,
+  private val starTransitImpl : IStarTransit,
   @Transient
   private val horoscopeFeatureCache: Cache<GmtCacheKey<*>, IHoroscopeModel>
 ) : AbstractCachedFeature<IHoroscopeConfig, IHoroscopeModel>(), IHoroscopeFeature {
@@ -172,7 +172,7 @@ class HoroscopeFeature(
 
     // 星體逆行狀態
     val retrogradePhaseMap: Map<Star, RetrogradePhase> = config.points.asSequence().filter { it is Planet || it is LunarNode.NORTH_TRUE || it is LunarNode.SOUTH_TRUE }.map { it as Star }.map { star ->
-      star to retrogradeImpl.getRetrogradePhase(star, gmtJulDay, starPositionImpl, StarTransitImpl)
+      star to retrogradeImpl.getRetrogradePhase(star, gmtJulDay, starPositionImpl, starTransitImpl)
     }.filter { (_, v) -> v != null }.associate { (k, v) -> k to v!! }
 
     return HoroscopeModel(gmtJulDay, loc, config, positionMap, cuspDegreeMap, vocMap, planetaryHour, retrogradePhaseMap)

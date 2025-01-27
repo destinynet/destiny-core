@@ -333,6 +333,15 @@ interface IHoroscopeModel : ITimeLoc {
     return retrogradePhaseMap[star]
   }
 
+  fun getMotion(star: Star): Motion? {
+    return getStarPosition(star)?.speedLng?.let { value ->
+      if (value >= 0)
+        Motion.DIRECT
+      else
+        Motion.RETROGRADE
+    }
+  }
+
   companion object {
 
     fun getHouse(degree: ZodiacDegree, cuspDegreeMap: Map<Int, ZodiacDegree>): Int {
