@@ -15,7 +15,7 @@ import kotlinx.serialization.encoding.*
 @OptIn(ExperimentalSerializationApi::class)
 object IPointAspectPatternSerializer : KSerializer<IPointAspectPattern> {
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("IPointAspectPattern") {
-    element("points", ListSerializer(AstroPointSerializer).descriptor)
+    element("points", ListSerializer(AstroPoint.serializer()).descriptor)
     element<Double>("angle")
     element<Aspect>("aspect")
     element<IPointAspectPattern.Type>("type", isOptional = true)
@@ -26,7 +26,7 @@ object IPointAspectPatternSerializer : KSerializer<IPointAspectPattern> {
 
   override fun serialize(encoder: Encoder, value: IPointAspectPattern) {
     encoder.encodeStructure(descriptor) {
-      encodeSerializableElement(descriptor, 0, ListSerializer(AstroPointSerializer), value.points)
+      encodeSerializableElement(descriptor, 0, ListSerializer(AstroPoint.serializer()), value.points)
       encodeDoubleElement(descriptor, 1, value.angle)
       encodeSerializableElement(descriptor, 2, Aspect.serializer(), value.aspect)
       encodeNullableSerializableElement(descriptor, 3, IPointAspectPattern.Type.serializer(), value.type)
@@ -46,7 +46,7 @@ object IPointAspectPatternSerializer : KSerializer<IPointAspectPattern> {
     decoder.decodeStructure(descriptor) {
       while (true) {
         when (val index = decodeElementIndex(descriptor)) {
-          0                            -> points = decodeSerializableElement(descriptor, 0, ListSerializer(AstroPointSerializer))
+          0                            -> points = decodeSerializableElement(descriptor, 0, ListSerializer(AstroPoint.serializer()))
           1                            -> angle = decodeDoubleElement(descriptor, 1)
           2                            -> aspect = decodeSerializableElement(descriptor, 2, Aspect.serializer())
           3                            -> type = decodeNullableSerializableElement(descriptor, 3, IPointAspectPattern.Type.serializer())

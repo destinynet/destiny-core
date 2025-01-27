@@ -4,10 +4,13 @@
  */
 package destiny.core.astrology
 
+import kotlinx.serialization.Serializable
+
 
 /**
  * 四大元素 : 火 Fire , 土 Earth , 風 Air , 水 Water
  */
+@Serializable
 enum class Element {
   /** 火  */
   FIRE,

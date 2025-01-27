@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.tools.Score
+import destiny.tools.serializers.GrandTrineSerializer
 import java.io.Serializable
 import java.util.*
 
@@ -22,6 +23,7 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
   /**
    * [GrandTrine] : 大三角
    */
+  @kotlinx.serialization.Serializable(with = GrandTrineSerializer::class)
   data class GrandTrine(override val points: Set<AstroPoint>, val element: Element, override val score: Score? = null) : AstroPattern() {
 
     override fun equals(other: Any?): Boolean {
