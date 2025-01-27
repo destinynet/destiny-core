@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import destiny.tools.Score
 import destiny.tools.serializers.GrandTrineSerializer
+import destiny.tools.serializers.KiteSerializer
 import java.io.Serializable
 import java.util.*
 
@@ -13,6 +14,7 @@ import java.util.*
  *
  * http://goodvibeastrology.com/aspect-patterns/
  */
+@kotlinx.serialization.Serializable
 data class PointSignHouse(val point: AstroPoint,
                           val sign: ZodiacSign,
                           val house: Int)
@@ -44,6 +46,7 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
   /**
    * [Kite] : 風箏
    */
+  @kotlinx.serialization.Serializable(with = KiteSerializer::class)
   data class Kite(val head: PointSignHouse, val wings: Set<AstroPoint>, val tail: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     override val points: Set<AstroPoint>
       get() = wings.plus(head.point).plus(tail.point)
