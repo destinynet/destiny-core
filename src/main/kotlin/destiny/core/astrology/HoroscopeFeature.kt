@@ -5,9 +5,7 @@ package destiny.core.astrology
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
-import destiny.core.astrology.classical.IVoidCourseFeature
-import destiny.core.astrology.classical.VoidCourseConfig
-import destiny.core.astrology.classical.VoidCourseImpl
+import destiny.core.astrology.classical.*
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.prediction.*
 import destiny.core.calendar.GmtJulDay
@@ -175,7 +173,19 @@ class HoroscopeFeature(
       star to retrogradeImpl.getRetrogradePhase(star, gmtJulDay, starPositionImpl, starTransitImpl)
     }.filter { (_, v) -> v != null }.associate { (k, v) -> k to v!! }
 
-    return HoroscopeModel(gmtJulDay, loc, config, positionMap, cuspDegreeMap, vocMap, planetaryHour, retrogradePhaseMap)
+    val rulerPtolemyImpl: IRuler = RulerPtolemyImpl()
+    val rulingHouseMap: Map<Planet, Set<RulingHouse>> = with(rulerPtolemyImpl) {
+      cuspDegreeMap.map { (house , zodiacDeg: ZodiacDegree) ->
+        val ruler = zodiacDeg.sign.getRulerPoint(null) as Planet?
+        Triple(house, ruler, zodiacDeg)
+      }.filter { (_, ruler , _) -> ruler != null }
+        .map { (house, ruler, zodiacDeg) ->  Triple(house, ruler!!, zodiacDeg)}
+        .groupBy { triple -> triple.second }
+        .mapValues { (_: Planet,v: List<Triple<Int, Planet, ZodiacDegree>>) -> v.map { triple -> RulingHouse(triple.first, triple.third.sign) }.toSet() }
+        .toMap()
+    }
+
+    return HoroscopeModel(gmtJulDay, loc, config, positionMap, cuspDegreeMap, vocMap, planetaryHour, retrogradePhaseMap, rulingHouseMap)
   }
 
   override fun getProgression(
