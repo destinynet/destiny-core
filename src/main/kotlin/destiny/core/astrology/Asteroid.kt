@@ -7,9 +7,12 @@ package destiny.core.astrology
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.toString
+import destiny.tools.serializers.AsteroidSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
+@Serializable(with = AsteroidSerializer::class)
 sealed class Asteroid(nameKey: String,
                       abbrKey: String,
                       val index: Int ,

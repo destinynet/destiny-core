@@ -6,6 +6,8 @@ package destiny.core.astrology
 
 import destiny.core.IPoints
 import destiny.core.Point
+import destiny.tools.serializers.StarSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -34,6 +36,7 @@ import kotlin.reflect.KClass
  *
  *</pre>
  */
+@Serializable(with = StarSerializer::class)
 sealed class Star(nameKey: String, abbrKey: String?, resource: String, unicode: Char? = null) : AstroPoint(nameKey, resource, abbrKey, unicode) {
 
   constructor(nameKey: String, resource: String) : this(nameKey, null, resource, null)

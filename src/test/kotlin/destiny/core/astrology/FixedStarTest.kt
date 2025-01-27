@@ -7,11 +7,22 @@ package destiny.core.astrology
 import destiny.core.AbstractPointTest
 import destiny.core.getAbbreviation
 import destiny.core.toString
+import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 class FixedStarTest : AbstractPointTest(FixedStar::class) {
+
+  @Test
+  fun testSerialize() {
+    FixedStar.values.forEach { p ->
+      val rawJson = Json.encodeToString(p)
+      assertEquals("\"${p.nameKey}\"", rawJson)
+      assertSame(p, Json.decodeFromString(rawJson))
+    }
+  }
 
   @Test
   fun testToStringLocale() {

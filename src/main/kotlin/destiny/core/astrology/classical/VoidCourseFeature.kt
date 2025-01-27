@@ -10,10 +10,10 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.Feature
-import destiny.tools.serializers.AstroPointSerializer
+import destiny.tools.KotlinLogging
+import destiny.tools.serializers.PlanetSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import destiny.tools.KotlinLogging
 
 interface IVoidCourseConfig : java.io.Serializable {
   var planet: Planet
@@ -31,7 +31,7 @@ enum class VoidCourseImpl {
 }
 
 @Serializable
-data class VoidCourseConfig(@Serializable(with = AstroPointSerializer::class)
+data class VoidCourseConfig(@Serializable(with = PlanetSerializer::class)
                             override var planet: Planet = Planet.MOON,
                             override var centric: Centric = Centric.GEO,
                             override var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval): IVoidCourseConfig

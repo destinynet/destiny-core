@@ -6,9 +6,12 @@ package destiny.core.astrology
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.toString
+import destiny.tools.serializers.PlanetSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
+@Serializable(with = PlanetSerializer::class)
 sealed class Planet(nameKey: String,
                     abbrKey: String,
                     unicode: Char) : Star(nameKey, abbrKey, Star::class.qualifiedName!! , unicode) , Comparable<Planet> {

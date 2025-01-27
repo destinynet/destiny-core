@@ -5,11 +5,22 @@ package destiny.core.astrology
 
 import destiny.core.AbstractPointTest
 import destiny.core.toString
+import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 internal class AsteroidTest : AbstractPointTest(Asteroid::class) {
+
+  @Test
+  fun testSerialize() {
+    Asteroid.values.forEach { p ->
+      val rawJson = Json.encodeToString(p)
+      assertEquals("\"${p.nameKey}\"", rawJson)
+      assertSame(p, Json.decodeFromString(rawJson))
+    }
+  }
 
   @Test
   fun testName_cn() {

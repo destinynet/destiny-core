@@ -8,6 +8,8 @@ import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.astrology.Apsis.APHELION
 import destiny.core.astrology.Apsis.PERIHELION
+import destiny.tools.serializers.LunarApsisSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -17,6 +19,7 @@ enum class MeanOscu {
 }
 
 
+@Serializable(with = LunarApsisSerializer::class)
 sealed class LunarApsis(nameKey: String, abbrKey: String,
                         /** 只會用到 PERIHELION , APHELION  */
                         val apsis: Apsis, val meanOscu: MeanOscu) : LunarPoint(nameKey, abbrKey, Star::class.qualifiedName!!), Comparable<LunarApsis> {

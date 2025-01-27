@@ -7,67 +7,70 @@ package destiny.core.astrology
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.toString
+import destiny.tools.serializers.FixedStarSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
 /** 恆星  */
+@Serializable(with = FixedStarSerializer::class)
 sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey, Star::class.qualifiedName!!), Comparable<FixedStar> {
   /** Algol 大陵五  */
-  object ALGOL : FixedStar("Fixed.ALGOL", "Fixed.ALGOL_ABBR")
+  object ALGOL : FixedStar("FixedStar.ALGOL", "FixedStar.ALGOL_ABBR")
 
   /** Aldebaran 畢宿五  */
-  object ALDEBARAN : FixedStar("Fixed.ALDEBARAN", "Fixed.ALDEBARAN_ABBR")
+  object ALDEBARAN : FixedStar("FixedStar.ALDEBARAN", "FixedStar.ALDEBARAN_ABBR")
 
   /** Rigel 參宿七  */
-  object RIGEL : FixedStar("Fixed.RIGEL", "Fixed.RIGEL_ABBR")
+  object RIGEL : FixedStar("FixedStar.RIGEL", "FixedStar.RIGEL_ABBR")
 
   /** Capella 五車二  */
-  object CAPELLA : FixedStar("Fixed.CAPELLA", "Fixed.CAPELLA_ABBR")
+  object CAPELLA : FixedStar("FixedStar.CAPELLA", "FixedStar.CAPELLA_ABBR")
 
   /** Betelgeuse 參宿四  */
-  object BETELGEUSE : FixedStar("Fixed.BETELGEUSE", "Fixed.BETELGEUSE_ABBR")
+  object BETELGEUSE : FixedStar("FixedStar.BETELGEUSE", "FixedStar.BETELGEUSE_ABBR")
 
   /** Sirius 天狼星  */
-  object SIRIUS : FixedStar("Fixed.SIRIUS", "Fixed.SIRIUS_ABBR")
+  object SIRIUS : FixedStar("FixedStar.SIRIUS", "FixedStar.SIRIUS_ABBR")
 
   /** Canopus 老人星  */
-  object CANOPUS : FixedStar("Fixed.CANOPUS", "Fixed.CANOPUS_ABBR")
+  object CANOPUS : FixedStar("FixedStar.CANOPUS", "FixedStar.CANOPUS_ABBR")
 
   /** Pollux 北河三  */
-  object POLLUX : FixedStar("Fixed.POLLUX", "Fixed.POLLUX_ABBR")
+  object POLLUX : FixedStar("FixedStar.POLLUX", "FixedStar.POLLUX_ABBR")
 
   /** Procyon 南河三  */
-  object PROCYON : FixedStar("Fixed.PROCYON", "Fixed.PROCYON_ABBR")
+  object PROCYON : FixedStar("FixedStar.PROCYON", "FixedStar.PROCYON_ABBR")
 
   /** Praesepe 鬼宿  */
-  object PRAESEPE : FixedStar("Fixed.PRAESEPE", "Fixed.PRAESEPE_ABBR")
+  object PRAESEPE : FixedStar("FixedStar.PRAESEPE", "FixedStar.PRAESEPE_ABBR")
 
   /** Alphard 星宿一  */
-  object ALPHARD : FixedStar("Fixed.ALPHARD", "Fixed.ALPHARD_ABBR")
+  object ALPHARD : FixedStar("FixedStar.ALPHARD", "FixedStar.ALPHARD_ABBR")
 
   /** Regulus 軒轅十四  */
-  object REGULUS : FixedStar("Fixed.REGULUS", "Fixed.REGULUS_ABBR")
+  object REGULUS : FixedStar("FixedStar.REGULUS", "FixedStar.REGULUS_ABBR")
 
   /** Spica 角宿一  */
-  object SPICA : FixedStar("Fixed.SPICA", "Fixed.SPICA_ABBR")
+  object SPICA : FixedStar("FixedStar.SPICA", "FixedStar.SPICA_ABBR")
 
   /** Arcturus 大角  */
-  object ARCTURUS : FixedStar("Fixed.ARCTURUS", "Fixed.ARCTURUS_ABBR")
+  object ARCTURUS : FixedStar("FixedStar.ARCTURUS", "FixedStar.ARCTURUS_ABBR")
 
   /** Antares 心宿二  */
-  object ANTARES : FixedStar("Fixed.ANTARES", "Fixed.ANTARES_ABBR")
+  object ANTARES : FixedStar("FixedStar.ANTARES", "FixedStar.ANTARES_ABBR")
 
   /** Vega 織女星  */
-  object VEGA : FixedStar("Fixed.VEGA", "Fixed.VEGA_ABBR")
+  object VEGA : FixedStar("FixedStar.VEGA", "FixedStar.VEGA_ABBR")
 
   /** Altair 牛郎星  */
-  object ALTAIR : FixedStar("Fixed.ALTAIR", "Fixed.ALTAIR_ABBR")
+  object ALTAIR : FixedStar("FixedStar.ALTAIR", "FixedStar.ALTAIR_ABBR")
 
   /** Fomalhaut 北落師門  */
-  object FOMALHAUT : FixedStar("Fixed.FOMALHAUT", "Fixed.FOMALHAUT_ABBR")
+  object FOMALHAUT : FixedStar("FixedStar.FOMALHAUT", "FixedStar.FOMALHAUT_ABBR")
 
   /** Deneb 天津四  */
-  object DENEB : FixedStar("Fixed.DENEB", "Fixed.DENEB_ABBR")
+  object DENEB : FixedStar("FixedStar.DENEB", "FixedStar.DENEB_ABBR")
 
   override fun compareTo(other: FixedStar): Int {
     if (this == other)

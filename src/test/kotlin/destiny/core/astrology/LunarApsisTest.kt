@@ -5,16 +5,25 @@ package destiny.core.astrology
 
 import destiny.core.toString
 import destiny.tools.KotlinLogging
+import kotlinx.serialization.json.Json
 import java.util.*
-import kotlin.test.Test
-import kotlin.test.assertNotNull
-import kotlin.test.assertSame
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 // TODO : AbstractPointTest
 class LunarApsisTest {
 
   private val logger = KotlinLogging.logger { }
+
+  @Test
+  fun testSerialize() {
+    LunarApsis.values.forEach { p ->
+      val rawJson = Json.encodeToString(p)
+      logger.info { "$p = $rawJson" }
+      assertEquals("\"${p.nameKey}\"", rawJson)
+      assertSame(p, Json.decodeFromString(rawJson))
+    }
+  }
+
 
   @Test
   fun testCompare() {

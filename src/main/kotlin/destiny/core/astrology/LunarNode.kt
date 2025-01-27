@@ -12,9 +12,12 @@ import destiny.core.Point
 import destiny.core.astrology.NodeType.MEAN
 import destiny.core.astrology.NodeType.TRUE
 import destiny.core.toString
+import destiny.tools.serializers.LunarNodeSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
+@Serializable(with = LunarNodeSerializer::class)
 sealed class LunarNode(nameKey: String,
                        abbrKey: String,
                        val northSouth: News.NorthSouth,

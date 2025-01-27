@@ -9,10 +9,21 @@ import destiny.core.AbstractPointTest
 import destiny.core.astrology.Planet.Companion.aheadOf
 import destiny.core.getAbbreviation
 import destiny.core.toString
+import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.test.*
 
 class PlanetTest : AbstractPointTest(Planet::class) {
+
+  @Test
+  fun testSerialize() {
+    Planet.values.forEach { p ->
+      val rawJson = Json.encodeToString(p)
+      assertEquals("\"${p.nameKey}\"", rawJson)
+      assertSame(p, Json.decodeFromString(rawJson))
+    }
+  }
+
 
   /** 將 太陽 up-case 再 down-cast , 比對 equality 以及 same  */
   @Test

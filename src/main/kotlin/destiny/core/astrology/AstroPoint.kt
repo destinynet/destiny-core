@@ -6,7 +6,8 @@ package destiny.core.astrology
 
 import destiny.core.IPoints
 import destiny.core.Point
-import kotlinx.serialization.Polymorphic
+import destiny.tools.serializers.AstroPointSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -29,7 +30,7 @@ import kotlin.reflect.KClass
  *                           [TRUE/MEAN]       [MEAN/OSCU]
  *                           North/South   PERIGEE (近)/APOGEE (遠)
  */
-@Polymorphic
+@Serializable(with = AstroPointSerializer::class)
 abstract class AstroPoint(nameKey: String, resource: String, abbrKey: String?, val unicode: Char? = null) : Point(nameKey, resource, abbrKey) {
   companion object : IPoints<AstroPoint> {
 

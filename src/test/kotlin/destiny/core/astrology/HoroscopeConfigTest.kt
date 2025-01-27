@@ -53,7 +53,7 @@ internal class HoroscopeConfigTest : AbstractConfigTest<HoroscopeConfig>() {
           "points": [
               "Planet.MOON",
               "Asteroid.CERES",
-              "Fixed.ALGOL",
+              "FixedStar.ALGOL",
               "Hamburger.ADMETOS"
           ],
           "houseSystem": "MERIDIAN",

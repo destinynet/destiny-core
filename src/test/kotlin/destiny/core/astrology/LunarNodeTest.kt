@@ -6,6 +6,7 @@ package destiny.core.astrology
 import destiny.core.News
 import destiny.core.toString
 import destiny.tools.KotlinLogging
+import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.test.*
 
@@ -14,6 +15,16 @@ import kotlin.test.*
 class LunarNodeTest {
 
   private val logger = KotlinLogging.logger {  }
+
+  @Test
+  fun testSerialize() {
+    LunarNode.values.forEach { p ->
+      val rawJson = Json.encodeToString(p)
+      logger.info { "$p = $rawJson" }
+      assertEquals("\"${p.nameKey}\"", rawJson)
+      assertSame(p, Json.decodeFromString(rawJson))
+    }
+  }
 
   @Test
   fun testCompare() {

@@ -7,11 +7,14 @@ package destiny.core.astrology
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.toString
+import destiny.tools.serializers.HamburgerSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
 
 /** 漢堡學派 Uranian Astrology  */
+@Serializable(with = HamburgerSerializer::class)
 sealed class Hamburger(nameKey: String) : Star(nameKey, Star::class.qualifiedName!!), Comparable<Hamburger> {
 
   object CUPIDO : Hamburger("Hamburger.CUPIDO")

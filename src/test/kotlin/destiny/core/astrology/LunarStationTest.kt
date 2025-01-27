@@ -7,7 +7,6 @@ import destiny.core.AbstractPointTest
 import destiny.core.astrology.LunarStation.*
 import destiny.core.toString
 import destiny.tools.getTitle
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.test.*
@@ -16,12 +15,10 @@ internal class LunarStationTest : AbstractPointTest(LunarStation::class) {
 
   @Test
   fun testSerialize() {
-    LunarStation.list.forEach { ls ->
-      Json.encodeToString(ls).also { raw ->
-        logger.trace { "$ls = $raw" }
-        val decoded = Json.decodeFromString<LunarStation>(raw)
-        assertSame(ls, decoded)
-      }
+    Arabic.values.forEach { p ->
+      val rawJson = Json.encodeToString(p)
+      assertEquals("\"${p.nameKey}\"", rawJson)
+      assertSame(p, Json.decodeFromString(rawJson))
     }
   }
 

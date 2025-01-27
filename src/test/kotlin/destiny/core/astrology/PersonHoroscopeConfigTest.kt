@@ -51,7 +51,7 @@ internal class PersonHoroscopeConfigTest : AbstractConfigTest<PersonHoroscopeCon
   override val assertion: (String) -> Unit = { raw: String ->
     assertTrue(raw.contains("Planet.MOON"))
     assertTrue(raw.contains("Asteroid.CERES"))
-    assertTrue(raw.contains("Fixed.ALGOL"))
+    assertTrue(raw.contains("FixedStar.ALGOL"))
     assertTrue(raw.contains("Hamburger.ADMETOS"))
 
     assertTrue(raw.contains(""""houseSystem":\s*"MERIDIAN"""".toRegex()))
