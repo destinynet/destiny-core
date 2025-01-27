@@ -38,8 +38,8 @@ class IMidPointSerializerTest {
     Json.encodeToString(IMidPointSerializer, midPoint).also { rawJson ->
       logger.info { rawJson }
       val docCtx = JsonPath.parse(rawJson)
-      assertTrue { docCtx.read("$.points[0]", String::class.java).equals(Planet.VENUS.nameKey) || docCtx.read("$.points[0]", String::class.java).equals(Planet.VENUS.nameKey) }
-      assertTrue { docCtx.read("$.points[1]", String::class.java).equals(Planet.MERCURY.nameKey) || docCtx.read("$.points[1]", String::class.java).equals(Planet.MERCURY.nameKey) }
+      assertTrue { docCtx.read("$.points[0]", String::class.java).equals(Planet.VENUS.nameKey) || docCtx.read("$.points[1]", String::class.java).equals(Planet.VENUS.nameKey) }
+      assertTrue { docCtx.read("$.points[0]", String::class.java).equals(Planet.MERCURY.nameKey) || docCtx.read("$.points[1]", String::class.java).equals(Planet.MERCURY.nameKey) }
       assertEquals(ZodiacSign.ARIES.name, docCtx.read("$.zodiacDegree.sign"))
       assertEquals(10.0, docCtx.read("$.zodiacDegree.degree"))
       assertEquals(2, docCtx.read("$.house"))
