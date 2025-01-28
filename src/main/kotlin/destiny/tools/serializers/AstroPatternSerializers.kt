@@ -4,6 +4,7 @@
 package destiny.tools.serializers
 
 import destiny.core.astrology.*
+import destiny.core.astrology.AstroPattern.*
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -13,12 +14,14 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 
 
 @OptIn(ExperimentalSerializationApi::class)
 class AstroPatternSerializers {
 
-  object GrandTrineSerializer : KSerializer<AstroPattern.GrandTrine> {
+  object GrandTrineSerializer : KSerializer<GrandTrine> {
     override val descriptor = buildClassSerialDescriptor("GrandTrine") {
       element<Set<AstroPoint>>("points")
       element<Element>("element")
@@ -26,7 +29,7 @@ class AstroPatternSerializers {
     }
 
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.GrandTrine) {
+    override fun serialize(encoder: Encoder, value: GrandTrine) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeSerializableElement(descriptor, 1, Element.serializer(), value.element)
@@ -34,7 +37,7 @@ class AstroPatternSerializers {
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.GrandTrine {
+    override fun deserialize(decoder: Decoder): GrandTrine {
       var points = setOf<AstroPoint>()
       var element: Element? = null
       var score: Score? = null
@@ -49,11 +52,11 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.GrandTrine(points, element!!, score)
+      return GrandTrine(points, element!!, score)
     }
   }
 
-  object KiteSerializer : KSerializer<AstroPattern.Kite> {
+  object KiteSerializer : KSerializer<Kite> {
     override val descriptor = buildClassSerialDescriptor("Kite") {
       element<PointSignHouse>("head")
       element<Set<AstroPoint>>("wings")
@@ -61,7 +64,7 @@ class AstroPatternSerializers {
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.Kite) {
+    override fun serialize(encoder: Encoder, value: Kite) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, PointSignHouse.serializer(), value.head)
         encodeSerializableElement(descriptor, 1, SetSerializer(AstroPoint.serializer()), value.wings)
@@ -70,7 +73,7 @@ class AstroPatternSerializers {
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.Kite {
+    override fun deserialize(decoder: Decoder): Kite {
       var head: PointSignHouse? = null
       var wings = setOf<AstroPoint>()
       var tail: PointSignHouse? = null
@@ -87,18 +90,18 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.Kite(head!!, wings, tail!!, score)
+      return Kite(head!!, wings, tail!!, score)
     }
   }
 
-  object TSquaredSerializer : KSerializer<AstroPattern.TSquared> {
+  object TSquaredSerializer : KSerializer<TSquared> {
     override val descriptor = buildClassSerialDescriptor("TSquared") {
       element<Set<AstroPoint>>("oppoPoints")
       element<PointSignHouse>("squared")
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.TSquared) {
+    override fun serialize(encoder: Encoder, value: TSquared) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.oppoPoints)
         encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.squared)
@@ -106,7 +109,7 @@ class AstroPatternSerializers {
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.TSquared {
+    override fun deserialize(decoder: Decoder): TSquared {
       var oppoPoints = setOf<AstroPoint>()
       var squared: PointSignHouse? = null
       var score: Score? = null
@@ -121,18 +124,18 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.TSquared(oppoPoints, squared!!, score)
+      return TSquared(oppoPoints, squared!!, score)
     }
   }
 
-  object YodSerializer : KSerializer<AstroPattern.Yod> {
+  object YodSerializer : KSerializer<Yod> {
     override val descriptor = buildClassSerialDescriptor("Yod") {
       element<Set<AstroPoint>>("bottoms")
       element<PointSignHouse>("pointer")
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.Yod) {
+    override fun serialize(encoder: Encoder, value: Yod) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.bottoms)
         encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.pointer)
@@ -140,7 +143,7 @@ class AstroPatternSerializers {
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.Yod {
+    override fun deserialize(decoder: Decoder): Yod {
       var bottoms = setOf<AstroPoint>()
       var pointer: PointSignHouse? = null
       var score: Score? = null
@@ -155,18 +158,18 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.Yod(bottoms, pointer!!, score)
+      return Yod(bottoms, pointer!!, score)
     }
   }
 
-  object BoomerangSerializer : KSerializer<AstroPattern.Boomerang> {
+  object BoomerangSerializer : KSerializer<Boomerang> {
     override val descriptor = buildClassSerialDescriptor("Boomerang") {
       element("yod", AstroPattern.Yod.serializer().descriptor)
       element("oppoPoint", PointSignHouse.serializer().descriptor)
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.Boomerang) {
+    override fun serialize(encoder: Encoder, value: Boomerang) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, AstroPattern.Yod.serializer(), value.yod)
         encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.oppoPoint)
@@ -174,8 +177,8 @@ class AstroPatternSerializers {
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.Boomerang {
-      var yod: AstroPattern.Yod? = null
+    override fun deserialize(decoder: Decoder): Boomerang {
+      var yod: Yod? = null
       var oppoPoint: PointSignHouse? = null
       var score: Score? = null
       decoder.decodeStructure(descriptor) {
@@ -189,18 +192,18 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.Boomerang(yod!!, oppoPoint!!, score)
+      return Boomerang(yod!!, oppoPoint!!, score)
     }
   }
 
-  object GoldenYodSerializer : KSerializer<AstroPattern.GoldenYod> {
+  object GoldenYodSerializer : KSerializer<GoldenYod> {
     override val descriptor = buildClassSerialDescriptor("GoldenYod") {
       element<Set<AstroPoint>>("bottoms")
       element<PointSignHouse>("pointer")
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.GoldenYod) {
+    override fun serialize(encoder: Encoder, value: GoldenYod) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.bottoms)
         encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.pointer)
@@ -208,7 +211,7 @@ class AstroPatternSerializers {
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.GoldenYod {
+    override fun deserialize(decoder: Decoder): GoldenYod {
       var bottoms = setOf<AstroPoint>()
       var pointer: PointSignHouse? = null
       var score: Score? = null
@@ -223,18 +226,18 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.GoldenYod(bottoms, pointer!!, score)
+      return GoldenYod(bottoms, pointer!!, score)
     }
   }
 
-  object GrandCrossSerializer : KSerializer<AstroPattern.GrandCross> {
+  object GrandCrossSerializer : KSerializer<GrandCross> {
     override val descriptor = buildClassSerialDescriptor("GrandCross") {
       element<Set<AstroPoint>>("points")
       element<Quality>("quality")
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.GrandCross) {
+    override fun serialize(encoder: Encoder, value: GrandCross) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeSerializableElement(descriptor, 1, Quality.serializer(), value.quality)
@@ -242,7 +245,7 @@ class AstroPatternSerializers {
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.GrandCross {
+    override fun deserialize(decoder: Decoder): GrandCross {
       var points = setOf<AstroPoint>()
       var quality: Quality? = null
       var score: Score? = null
@@ -257,25 +260,25 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.GrandCross(points, quality!!, score)
+      return GrandCross(points, quality!!, score)
     }
   }
 
-  object DoubleTSerializer : KSerializer<AstroPattern.DoubleT> {
+  object DoubleTSerializer : KSerializer<DoubleT> {
     override val descriptor = buildClassSerialDescriptor("DoubleT") {
-      element<Set<AstroPattern.TSquared>>("tSquares")
+      element<Set<TSquared>>("tSquares")
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.DoubleT) {
+    override fun serialize(encoder: Encoder, value: DoubleT) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPattern.TSquared.serializer()), value.tSquares)
         encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.DoubleT {
-      var tSquares = setOf<AstroPattern.TSquared>()
+    override fun deserialize(decoder: Decoder): DoubleT {
+      var tSquares = setOf<TSquared>()
       var score: Score? = null
       decoder.decodeStructure(descriptor) {
         while (true) {
@@ -287,25 +290,25 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.DoubleT(tSquares, score)
+      return DoubleT(tSquares, score)
     }
   }
 
-  object HexagonSerializer : KSerializer<AstroPattern.Hexagon> {
+  object HexagonSerializer : KSerializer<Hexagon> {
     override val descriptor = buildClassSerialDescriptor("Hexagon") {
-      element<Set<AstroPattern.GrandTrine>>("grandTrines")
+      element<Set<GrandTrine>>("grandTrines")
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.Hexagon) {
+    override fun serialize(encoder: Encoder, value: Hexagon) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPattern.GrandTrine.serializer()), value.grandTrines)
         encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.Hexagon {
-      var grandTrines = setOf<AstroPattern.GrandTrine>()
+    override fun deserialize(decoder: Decoder): Hexagon {
+      var grandTrines = setOf<GrandTrine>()
       var score: Score? = null
       decoder.decodeStructure(descriptor) {
         while (true) {
@@ -317,18 +320,18 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.Hexagon(grandTrines, score)
+      return Hexagon(grandTrines, score)
     }
   }
 
-  object WedgeSerializer : KSerializer<AstroPattern.Wedge> {
+  object WedgeSerializer : KSerializer<Wedge> {
     override val descriptor = buildClassSerialDescriptor("Wedge") {
       element<Set<AstroPoint>>("oppoPoints")
       element("moderator", PointSignHouse.serializer().descriptor)
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.Wedge) {
+    override fun serialize(encoder: Encoder, value: Wedge) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.oppoPoints)
         encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.moderator)
@@ -336,7 +339,7 @@ class AstroPatternSerializers {
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.Wedge {
+    override fun deserialize(decoder: Decoder): Wedge {
       var oppoPoints = setOf<AstroPoint>()
       var moderator: PointSignHouse? = null
       var score: Score? = null
@@ -351,24 +354,24 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.Wedge(oppoPoints, moderator!!, score)
+      return Wedge(oppoPoints, moderator!!, score)
     }
   }
 
-  object MysticRectangleSerializer : KSerializer<AstroPattern.MysticRectangle> {
+  object MysticRectangleSerializer : KSerializer<MysticRectangle> {
     override val descriptor = buildClassSerialDescriptor("MysticRectangle") {
       element<Set<AstroPoint>>("points")
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.MysticRectangle) {
+    override fun serialize(encoder: Encoder, value: MysticRectangle) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.MysticRectangle {
+    override fun deserialize(decoder: Decoder): MysticRectangle {
       var points = setOf<AstroPoint>()
       var score: Score? = null
       decoder.decodeStructure(descriptor) {
@@ -381,24 +384,24 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.MysticRectangle(points, score)
+      return MysticRectangle(points, score)
     }
   }
 
-  object PentagramSerializer : KSerializer<AstroPattern.Pentagram> {
+  object PentagramSerializer : KSerializer<Pentagram> {
     override val descriptor = buildClassSerialDescriptor("Pentagram") {
       element<Set<AstroPoint>>("points")
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.Pentagram) {
+    override fun serialize(encoder: Encoder, value: Pentagram) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.Pentagram {
+    override fun deserialize(decoder: Decoder): Pentagram {
       var points = setOf<AstroPoint>()
       var score: Score? = null
       decoder.decodeStructure(descriptor) {
@@ -411,18 +414,18 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.Pentagram(points, score)
+      return Pentagram(points, score)
     }
   }
 
-  object StelliumSignSerializer : KSerializer<AstroPattern.StelliumSign> {
+  object StelliumSignSerializer : KSerializer<StelliumSign> {
     override val descriptor = buildClassSerialDescriptor("StelliumSign") {
       element<Set<AstroPoint>>("points")
       element("sign", ZodiacSign.serializer().descriptor)
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.StelliumSign) {
+    override fun serialize(encoder: Encoder, value: StelliumSign) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeSerializableElement(descriptor, 1, ZodiacSign.serializer(), value.sign)
@@ -430,7 +433,7 @@ class AstroPatternSerializers {
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.StelliumSign {
+    override fun deserialize(decoder: Decoder): StelliumSign {
       var points = setOf<AstroPoint>()
       var sign: ZodiacSign? = null
       var score: Score? = null
@@ -445,18 +448,18 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.StelliumSign(points, sign!!, score)
+      return StelliumSign(points, sign!!, score)
     }
   }
 
-  object StelliumHouseSerializer : KSerializer<AstroPattern.StelliumHouse> {
+  object StelliumHouseSerializer : KSerializer<StelliumHouse> {
     override val descriptor = buildClassSerialDescriptor("StelliumHouse") {
       element<Set<AstroPoint>>("points")
       element<Int>("house")
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.StelliumHouse) {
+    override fun serialize(encoder: Encoder, value: StelliumHouse) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeIntElement(descriptor, 1, value.house)
@@ -464,7 +467,7 @@ class AstroPatternSerializers {
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.StelliumHouse {
+    override fun deserialize(decoder: Decoder): StelliumHouse {
       var points = setOf<AstroPoint>()
       var house = 0
       var score: Score? = null
@@ -479,24 +482,24 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.StelliumHouse(points, house, score)
+      return StelliumHouse(points, house, score)
     }
   }
 
-  object ConfrontationSerializer : KSerializer<AstroPattern.Confrontation> {
+  object ConfrontationSerializer : KSerializer<Confrontation> {
     override val descriptor = buildClassSerialDescriptor("Confrontation") {
       element<Set<Set<AstroPoint>>>("clusters")
       element<Double>("score", isOptional = true)
     }
 
-    override fun serialize(encoder: Encoder, value: AstroPattern.Confrontation) {
+    override fun serialize(encoder: Encoder, value: Confrontation) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(SetSerializer(AstroPoint.serializer())), value.clusters)
         encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
       }
     }
 
-    override fun deserialize(decoder: Decoder): AstroPattern.Confrontation {
+    override fun deserialize(decoder: Decoder): Confrontation {
       var clusters = setOf<Set<AstroPoint>>()
       var score: Score? = null
       decoder.decodeStructure(descriptor) {
@@ -509,8 +512,139 @@ class AstroPatternSerializers {
           }
         }
       }
-      return AstroPattern.Confrontation(clusters, score)
+      return Confrontation(clusters, score)
     }
   }
 
+  object AstroPatternSerializer : KSerializer<AstroPattern> {
+    private const val DISCRIMINATOR = "type"
+    private const val CONTENT = "content"
+
+    override val descriptor = buildClassSerialDescriptor("AstroPattern") {
+      element<String>(DISCRIMINATOR)
+      element<JsonElement>(CONTENT)
+    }
+
+    override fun serialize(encoder: Encoder, value: AstroPattern) {
+      val compositeEncoder = encoder.beginStructure(descriptor)
+
+      when (value) {
+        is GrandTrine      -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, GrandTrine::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, GrandTrineSerializer, value)
+        }
+
+        is Kite            -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, Kite::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, KiteSerializer, value)
+        }
+
+        is TSquared        -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, TSquared::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, TSquaredSerializer, value)
+        }
+
+        is Yod             -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, Yod::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, YodSerializer, value)
+        }
+
+        is Boomerang       -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, Boomerang::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, BoomerangSerializer, value)
+        }
+
+        is GoldenYod       -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, GoldenYod::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, GoldenYodSerializer, value)
+        }
+
+        is GrandCross      -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, GrandCross::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, GrandCrossSerializer, value)
+        }
+
+        is DoubleT         -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, DoubleT::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, DoubleTSerializer, value)
+        }
+
+        is Hexagon         -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, Hexagon::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, HexagonSerializer, value)
+        }
+
+        is Wedge           -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, Wedge::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, WedgeSerializer, value)
+        }
+
+        is MysticRectangle -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, MysticRectangle::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, MysticRectangleSerializer, value)
+        }
+
+        is Pentagram       -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, Pentagram::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, PentagramSerializer, value)
+        }
+
+        is StelliumSign    -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, StelliumSign::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, StelliumSignSerializer, value)
+        }
+
+        is StelliumHouse   -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, StelliumHouse::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, StelliumHouseSerializer, value)
+        }
+
+        is Confrontation   -> {
+          compositeEncoder.encodeStringElement(descriptor, 0, Confrontation::class.java.simpleName)
+          compositeEncoder.encodeSerializableElement(descriptor, 1, ConfrontationSerializer, value)
+        }
+      }
+      compositeEncoder.endStructure(descriptor)
+    }
+
+    override fun deserialize(decoder: Decoder): AstroPattern {
+      val compositeDecoder = decoder.beginStructure(descriptor)
+      var type: String? = null
+      var content: JsonElement? = null
+
+      while (true) {
+        when (val index = compositeDecoder.decodeElementIndex(descriptor)) {
+          CompositeDecoder.DECODE_DONE -> break
+          0                            -> type = compositeDecoder.decodeStringElement(descriptor, 0)
+          1                            -> content = compositeDecoder.decodeSerializableElement(descriptor, 1, JsonElement.serializer())
+          else                         -> error("Unexpected index: $index")
+        }
+      }
+
+      requireNotNull(type) { "Type discriminator should not be null" }
+      requireNotNull(content) { "Content should not be null" }
+
+      val result = when (type) {
+        GrandTrine::class.java.simpleName      -> Json.decodeFromJsonElement(GrandTrineSerializer, content)
+        Kite::class.java.simpleName            -> Json.decodeFromJsonElement(KiteSerializer, content)
+        TSquared::class.java.simpleName        -> Json.decodeFromJsonElement(TSquaredSerializer, content)
+        Yod::class.java.simpleName             -> Json.decodeFromJsonElement(YodSerializer, content)
+        Boomerang::class.java.simpleName       -> Json.decodeFromJsonElement(BoomerangSerializer, content)
+        GoldenYod::class.java.simpleName       -> Json.decodeFromJsonElement(GoldenYodSerializer, content)
+        GrandCross::class.java.simpleName      -> Json.decodeFromJsonElement(GrandCrossSerializer, content)
+        DoubleT::class.java.simpleName         -> Json.decodeFromJsonElement(DoubleTSerializer, content)
+        Hexagon::class.java.simpleName         -> Json.decodeFromJsonElement(HexagonSerializer, content)
+        Wedge::class.java.simpleName           -> Json.decodeFromJsonElement(WedgeSerializer, content)
+        MysticRectangle::class.java.simpleName -> Json.decodeFromJsonElement(MysticRectangleSerializer, content)
+        Pentagram::class.java.simpleName       -> Json.decodeFromJsonElement(PentagramSerializer, content)
+        StelliumSign::class.java.simpleName    -> Json.decodeFromJsonElement(StelliumSignSerializer, content)
+        StelliumHouse::class.java.simpleName   -> Json.decodeFromJsonElement(StelliumHouseSerializer, content)
+        Confrontation::class.java.simpleName   -> Json.decodeFromJsonElement(ConfrontationSerializer, content)
+        else                                   -> error("Unknown type: $type")
+      }
+
+      compositeDecoder.endStructure(descriptor)
+      return result
+    }
+  }
 }

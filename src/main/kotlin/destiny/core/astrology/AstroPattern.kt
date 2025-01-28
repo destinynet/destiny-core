@@ -20,6 +20,7 @@ data class PointSignHouse(
   val house: Int
 )
 
+@kotlinx.serialization.Serializable(with = AstroPatternSerializer::class)
 sealed class AstroPattern(
   open val points: Set<AstroPoint> = emptySet(),
   open val score: Score? = null
