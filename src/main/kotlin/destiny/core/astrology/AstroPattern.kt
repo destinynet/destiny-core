@@ -118,7 +118,7 @@ sealed class AstroPattern(
    * 60 , 150 , 150
    * */
   @kotlinx.serialization.Serializable(with = YodSerializer::class)
-  data class Yod(val bottoms: Set<AstroPoint>, val pointer: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+  data class Yod(val bottoms: Set<AstroPoint>, val apex: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     init {
       require(bottoms.size == 2) {
         "Bottoms must have 2 bottoms"
@@ -126,19 +126,19 @@ sealed class AstroPattern(
     }
 
     override val points: Set<AstroPoint>
-      get() = bottoms.plus(pointer.point)
+      get() = bottoms.plus(apex.point)
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is Yod) return false
 
       if (bottoms != other.bottoms) return false
-      return pointer == other.pointer
+      return apex == other.apex
     }
 
     override fun hashCode(): Int {
       var result = bottoms.hashCode()
-      result = 31 * result + pointer.hashCode()
+      result = 31 * result + apex.hashCode()
       return result
     }
   }
@@ -287,7 +287,7 @@ sealed class AstroPattern(
    * 180 沖 , 逢 第三顆星 , 以 60/120 介入，緩和局勢
    */
   @kotlinx.serialization.Serializable(with = WedgeSerializer::class)
-  data class Wedge(val oppoPoints: Set<AstroPoint>, val moderator: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+  data class Wedge(val oppoPoints: Set<AstroPoint>, val mediator: PointSignHouse, override val score: Score? = null) : AstroPattern() {
 
     init {
       require(oppoPoints.size == 2) {
@@ -296,19 +296,19 @@ sealed class AstroPattern(
     }
 
     override val points: Set<AstroPoint>
-      get() = oppoPoints.plus(moderator.point)
+      get() = oppoPoints.plus(mediator.point)
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is Wedge) return false
 
       if (oppoPoints != other.oppoPoints) return false
-      return moderator == other.moderator
+      return mediator == other.mediator
     }
 
     override fun hashCode(): Int {
       var result = oppoPoints.hashCode()
-      result = 31 * result + moderator.hashCode()
+      result = 31 * result + mediator.hashCode()
       return result
     }
   }

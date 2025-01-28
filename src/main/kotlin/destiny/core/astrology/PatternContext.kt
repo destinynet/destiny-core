@@ -148,7 +148,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
       return yod.getPatterns(posMap, cuspDegreeMap)
         .map { it as AstroPattern.Yod }
         .flatMap { pattern ->
-          aspectCalculator.getPointAspectAndScore(pattern.pointer.point, posMap, posMap.keys, setOf(OPPOSITION))
+          aspectCalculator.getPointAspectAndScore(pattern.apex.point, posMap, posMap.keys, setOf(OPPOSITION))
             .map { (oppoPoint, _, oppoScore) ->
 
               // 對沖點，還必須與兩翼形成30度
@@ -342,7 +342,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             // 兩組 wedges 只能有四顆星
             twoWedges to if (unionPoints.size == 4) {
               // 兩組 wedge 的 moderator 又互相對沖
-              aspectEffective.getEffectiveErrorAndScore(wedge1.moderator.point, wedge2.moderator.point, posMap, OPPOSITION)?.second
+              aspectEffective.getEffectiveErrorAndScore(wedge1.mediator.point, wedge2.mediator.point, posMap, OPPOSITION)?.second
             } else {
               null
             }

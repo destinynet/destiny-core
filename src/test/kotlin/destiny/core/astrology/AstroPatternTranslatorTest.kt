@@ -6,8 +6,8 @@ package destiny.core.astrology
 import destiny.core.astrology.AstroPattern.*
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacSign.*
-import destiny.tools.Score.Companion.toScore
 import destiny.tools.KotlinLogging
+import destiny.tools.Score.Companion.toScore
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -63,7 +63,7 @@ class AstroPatternTranslatorTest {
 
     Yod(
       bottoms = setOf(SUN, VENUS),
-      pointer = PointSignHouse(JUPITER, AQUARIUS, 2)
+      apex = PointSignHouse(JUPITER, AQUARIUS, 2)
        ).also {
       assertEquals("上帝之指", it.title)
       assertEquals("上帝之指：木星為指尖（指向水瓶座，第2宮），太陽,金星兩星為底。", it.zhDesc)
@@ -76,7 +76,7 @@ class AstroPatternTranslatorTest {
     Boomerang(
       yod = Yod(
         bottoms = setOf(SUN, VENUS),
-        pointer = PointSignHouse(JUPITER, AQUARIUS, 2)
+        apex = PointSignHouse(JUPITER, AQUARIUS, 2)
                ),
       oppoPoint = PointSignHouse(SATURN, LEO, 8)
              ).also {
@@ -140,8 +140,8 @@ class AstroPatternTranslatorTest {
     }
 
     Wedge(
-      oppoPoints = setOf(MARS , SATURN) ,
-      moderator = PointSignHouse(JUPITER , SAGITTARIUS , 2)
+      oppoPoints = setOf(MARS , SATURN),
+      mediator = PointSignHouse(JUPITER, SAGITTARIUS, 2)
          ).also {
       assertEquals("楔子" , it.title)
       assertEquals("楔子：火星,土星 對沖，逢 木星（射手座，第2宮）介入而緩和局勢。" , it.zhDesc)

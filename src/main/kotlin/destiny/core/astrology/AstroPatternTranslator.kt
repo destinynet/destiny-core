@@ -72,32 +72,32 @@ object AstroPatternTranslator : IPatternDescriptor<AstroPattern> {
           AstroPatternDescriptor(
             pattern, "commentScore",
             listOf(
-              pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray(),
+              pattern.apex.point, pattern.apex.sign, pattern.apex.house, *pattern.bottoms.toTypedArray(),
               score
             )
           )
         } ?: AstroPatternDescriptor(
           pattern, "commentBasic",
-          listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray())
+          listOf(pattern.apex.point, pattern.apex.sign, pattern.apex.house, *pattern.bottoms.toTypedArray())
         )
       }
       is AstroPattern.Boomerang -> {
-        val yod = listOf(pattern.yod.pointer.point).plus(pattern.yod.bottoms).toTypedArray()
+        val yod = listOf(pattern.yod.apex.point).plus(pattern.yod.bottoms).toTypedArray()
 
         pattern.score?.let { score ->
           AstroPatternDescriptor(
             pattern, "commentScore",
             listOf(
-              *yod, pattern.yod.pointer.point, pattern.yod.pointer.sign,
-              pattern.yod.pointer.house, pattern.oppoPoint.point, pattern.oppoPoint.sign,
+              *yod, pattern.yod.apex.point, pattern.yod.apex.sign,
+              pattern.yod.apex.house, pattern.oppoPoint.point, pattern.oppoPoint.sign,
               pattern.oppoPoint.house, score
             )
           )
         } ?: AstroPatternDescriptor(
           pattern, "commentBasic",
           listOf(
-            *yod, pattern.yod.pointer.point, pattern.yod.pointer.sign,
-            pattern.yod.pointer.house, pattern.oppoPoint.point, pattern.oppoPoint.sign,
+            *yod, pattern.yod.apex.point, pattern.yod.apex.sign,
+            pattern.yod.apex.house, pattern.oppoPoint.point, pattern.oppoPoint.sign,
             pattern.oppoPoint.house
           )
         )
@@ -154,9 +154,9 @@ object AstroPatternTranslator : IPatternDescriptor<AstroPattern> {
             pattern, "commentScore",
             listOf(
               *pattern.oppoPoints.toTypedArray(),
-              pattern.moderator.point,
-              pattern.moderator.sign,
-              pattern.moderator.house,
+              pattern.mediator.point,
+              pattern.mediator.sign,
+              pattern.mediator.house,
               score
             )
           )
@@ -164,9 +164,9 @@ object AstroPatternTranslator : IPatternDescriptor<AstroPattern> {
           pattern, "commentBasic",
           listOf(
             *pattern.oppoPoints.toTypedArray(),
-            pattern.moderator.point,
-            pattern.moderator.sign,
-            pattern.moderator.house
+            pattern.mediator.point,
+            pattern.mediator.sign,
+            pattern.mediator.house
           )
         )
       }

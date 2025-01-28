@@ -16,6 +16,7 @@ import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
+import java.util.*
 
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -26,6 +27,7 @@ class AstroPatternSerializers {
       element<Set<AstroPoint>>("points")
       element<Element>("element")
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
 
@@ -34,6 +36,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeSerializableElement(descriptor, 1, Element.serializer(), value.element)
         encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -47,6 +50,7 @@ class AstroPatternSerializers {
             0                            -> points = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
             1                            -> element = decodeSerializableElement(descriptor, 1, Element.serializer())
             2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            3                            -> decodeStringElement(descriptor, 3)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -62,6 +66,7 @@ class AstroPatternSerializers {
       element<Set<AstroPoint>>("wings")
       element<PointSignHouse>("tail")
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: Kite) {
@@ -70,6 +75,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 1, SetSerializer(AstroPoint.serializer()), value.wings)
         encodeSerializableElement(descriptor, 2, PointSignHouse.serializer(), value.tail)
         encodeNullableSerializableElement(descriptor, 3, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 4, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -85,6 +91,7 @@ class AstroPatternSerializers {
             1                            -> wings = decodeSerializableElement(descriptor, 1, SetSerializer(AstroPoint.serializer()))
             2                            -> tail = decodeSerializableElement(descriptor, 2, PointSignHouse.serializer())
             3                            -> score = decodeNullableSerializableElement(descriptor, 3, Double.serializer())?.toScore()
+            4                            -> decodeStringElement(descriptor, 4)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -99,6 +106,7 @@ class AstroPatternSerializers {
       element<Set<AstroPoint>>("oppoPoints")
       element<PointSignHouse>("squared")
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: TSquared) {
@@ -106,6 +114,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.oppoPoints)
         encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.squared)
         encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -119,6 +128,7 @@ class AstroPatternSerializers {
             0                            -> oppoPoints = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
             1                            -> squared = decodeSerializableElement(descriptor, 1, PointSignHouse.serializer())
             2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            3                            -> decodeStringElement(descriptor, 3)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -131,15 +141,17 @@ class AstroPatternSerializers {
   object YodSerializer : KSerializer<Yod> {
     override val descriptor = buildClassSerialDescriptor("Yod") {
       element<Set<AstroPoint>>("bottoms")
-      element<PointSignHouse>("pointer")
+      element<PointSignHouse>("apex")
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: Yod) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.bottoms)
-        encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.pointer)
+        encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.apex)
         encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -153,6 +165,7 @@ class AstroPatternSerializers {
             0                            -> bottoms = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
             1                            -> pointer = decodeSerializableElement(descriptor, 1, PointSignHouse.serializer())
             2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            3                            -> decodeStringElement(descriptor, 3)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -164,16 +177,18 @@ class AstroPatternSerializers {
 
   object BoomerangSerializer : KSerializer<Boomerang> {
     override val descriptor = buildClassSerialDescriptor("Boomerang") {
-      element("yod", AstroPattern.Yod.serializer().descriptor)
+      element("yod", Yod.serializer().descriptor)
       element("oppoPoint", PointSignHouse.serializer().descriptor)
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: Boomerang) {
       encoder.encodeStructure(descriptor) {
-        encodeSerializableElement(descriptor, 0, AstroPattern.Yod.serializer(), value.yod)
+        encodeSerializableElement(descriptor, 0, Yod.serializer(), value.yod)
         encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.oppoPoint)
         encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -184,9 +199,10 @@ class AstroPatternSerializers {
       decoder.decodeStructure(descriptor) {
         while (true) {
           when (val index = decodeElementIndex(descriptor)) {
-            0                            -> yod = decodeSerializableElement(descriptor, 0, AstroPattern.Yod.serializer())
+            0                            -> yod = decodeSerializableElement(descriptor, 0, Yod.serializer())
             1                            -> oppoPoint = decodeSerializableElement(descriptor, 1, PointSignHouse.serializer())
             2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            3                            -> decodeStringElement(descriptor, 3)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -201,6 +217,7 @@ class AstroPatternSerializers {
       element<Set<AstroPoint>>("bottoms")
       element<PointSignHouse>("pointer")
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: GoldenYod) {
@@ -208,6 +225,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.bottoms)
         encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.pointer)
         encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -221,6 +239,7 @@ class AstroPatternSerializers {
             0                            -> bottoms = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
             1                            -> pointer = decodeSerializableElement(descriptor, 1, PointSignHouse.serializer())
             2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            3                            -> decodeStringElement(descriptor, 3)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -235,6 +254,7 @@ class AstroPatternSerializers {
       element<Set<AstroPoint>>("points")
       element<Quality>("quality")
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: GrandCross) {
@@ -242,6 +262,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeSerializableElement(descriptor, 1, Quality.serializer(), value.quality)
         encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -255,6 +276,7 @@ class AstroPatternSerializers {
             0                            -> points = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
             1                            -> quality = decodeSerializableElement(descriptor, 1, Quality.serializer())
             2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            3                            -> decodeStringElement(descriptor, 3)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -268,12 +290,14 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("DoubleT") {
       element<Set<TSquared>>("tSquares")
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: DoubleT) {
       encoder.encodeStructure(descriptor) {
-        encodeSerializableElement(descriptor, 0, SetSerializer(AstroPattern.TSquared.serializer()), value.tSquares)
+        encodeSerializableElement(descriptor, 0, SetSerializer(TSquared.serializer()), value.tSquares)
         encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -283,8 +307,9 @@ class AstroPatternSerializers {
       decoder.decodeStructure(descriptor) {
         while (true) {
           when (val index = decodeElementIndex(descriptor)) {
-            0                            -> tSquares = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPattern.TSquared.serializer()))
+            0                            -> tSquares = decodeSerializableElement(descriptor, 0, SetSerializer(TSquared.serializer()))
             1                            -> score = decodeNullableSerializableElement(descriptor, 1, Double.serializer())?.toScore()
+            2                            -> decodeStringElement(descriptor, 2)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -298,12 +323,14 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("Hexagon") {
       element<Set<GrandTrine>>("grandTrines")
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: Hexagon) {
       encoder.encodeStructure(descriptor) {
-        encodeSerializableElement(descriptor, 0, SetSerializer(AstroPattern.GrandTrine.serializer()), value.grandTrines)
+        encodeSerializableElement(descriptor, 0, SetSerializer(GrandTrine.serializer()), value.grandTrines)
         encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -313,8 +340,9 @@ class AstroPatternSerializers {
       decoder.decodeStructure(descriptor) {
         while (true) {
           when (val index = decodeElementIndex(descriptor)) {
-            0                            -> grandTrines = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPattern.GrandTrine.serializer()))
+            0                            -> grandTrines = decodeSerializableElement(descriptor, 0, SetSerializer(GrandTrine.serializer()))
             1                            -> score = decodeNullableSerializableElement(descriptor, 1, Double.serializer())?.toScore()
+            2                            -> decodeStringElement(descriptor, 2)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -327,15 +355,17 @@ class AstroPatternSerializers {
   object WedgeSerializer : KSerializer<Wedge> {
     override val descriptor = buildClassSerialDescriptor("Wedge") {
       element<Set<AstroPoint>>("oppoPoints")
-      element("moderator", PointSignHouse.serializer().descriptor)
+      element("mediator", PointSignHouse.serializer().descriptor)
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: Wedge) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.oppoPoints)
-        encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.moderator)
+        encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.mediator)
         encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -349,6 +379,7 @@ class AstroPatternSerializers {
             0                            -> oppoPoints = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
             1                            -> moderator = decodeSerializableElement(descriptor, 1, PointSignHouse.serializer())
             2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            3                            -> decodeStringElement(descriptor, 3)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -362,12 +393,14 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("MysticRectangle") {
       element<Set<AstroPoint>>("points")
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: MysticRectangle) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -379,6 +412,7 @@ class AstroPatternSerializers {
           when (val index = decodeElementIndex(descriptor)) {
             0                            -> points = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
             1                            -> score = decodeNullableSerializableElement(descriptor, 1, Double.serializer())?.toScore()
+            2                            -> decodeStringElement(descriptor, 2)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -392,12 +426,14 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("Pentagram") {
       element<Set<AstroPoint>>("points")
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: Pentagram) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -409,6 +445,7 @@ class AstroPatternSerializers {
           when (val index = decodeElementIndex(descriptor)) {
             0                            -> points = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
             1                            -> score = decodeNullableSerializableElement(descriptor, 1, Double.serializer())?.toScore()
+            2                            -> decodeStringElement(descriptor, 2)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -423,6 +460,7 @@ class AstroPatternSerializers {
       element<Set<AstroPoint>>("points")
       element("sign", ZodiacSign.serializer().descriptor)
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: StelliumSign) {
@@ -430,6 +468,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeSerializableElement(descriptor, 1, ZodiacSign.serializer(), value.sign)
         encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -443,6 +482,7 @@ class AstroPatternSerializers {
             0                            -> points = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
             1                            -> sign = decodeSerializableElement(descriptor, 1, ZodiacSign.serializer())
             2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            3                            -> decodeStringElement(descriptor, 3)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -457,6 +497,7 @@ class AstroPatternSerializers {
       element<Set<AstroPoint>>("points")
       element<Int>("house")
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: StelliumHouse) {
@@ -464,6 +505,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeIntElement(descriptor, 1, value.house)
         encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -477,6 +519,7 @@ class AstroPatternSerializers {
             0                            -> points = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
             1                            -> house = decodeIntElement(descriptor, 1)
             2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            3                            -> decodeStringElement(descriptor, 3)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
@@ -490,12 +533,14 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("Confrontation") {
       element<Set<Set<AstroPoint>>>("clusters")
       element<Double>("score", isOptional = true)
+      element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: Confrontation) {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(SetSerializer(AstroPoint.serializer())), value.clusters)
         encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
+        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
@@ -507,6 +552,7 @@ class AstroPatternSerializers {
           when (val index = decodeElementIndex(descriptor)) {
             0                            -> clusters = decodeSerializableElement(descriptor, 0, SetSerializer(SetSerializer(AstroPoint.serializer())))
             1                            -> score = decodeNullableSerializableElement(descriptor, 1, Double.serializer())?.toScore()
+            2                            -> decodeStringElement(descriptor, 2)
             CompositeDecoder.DECODE_DONE -> break
             else                         -> error("Unexpected index: $index")
           }
