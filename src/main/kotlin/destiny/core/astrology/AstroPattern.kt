@@ -319,13 +319,16 @@ sealed class AstroPattern(
    * @param points 總共4顆星
    */
   @kotlinx.serialization.Serializable(with = MysticRectangleSerializer::class)
-  data class MysticRectangle(override val points: Set<AstroPoint>, override val score: Score? = null) : AstroPattern() {
+  data class MysticRectangle(val oppoGroups: Set<Set<AstroPoint>>, override val score: Score? = null) : AstroPattern() {
 
     init {
-      require(points.size == 4) {
-        "points must have 4 elements."
+      require(oppoGroups.size == 2 && oppoGroups.all { it.size == 2 } && oppoGroups.flatten().toSet().size == 4) {
+        "oppoGroups must have exactly two sets, each containing exactly 2 unique points, and a total of 4 unique points."
       }
     }
+
+    override val points: Set<AstroPoint>
+      get() = oppoGroups.flatten().toSet()
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true

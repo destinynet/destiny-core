@@ -474,9 +474,9 @@ class AstroPatternSerializerTest {
           setOf(docCtx.read("$.oppoPoints[0]"), docCtx.read("$.oppoPoints[1]"))
         )
 
-        assertEquals(JUPITER.nameKey, docCtx.read("$.moderator.point"))
-        assertEquals(LEO.name, docCtx.read("$.moderator.sign"))
-        assertEquals(1, docCtx.read("$.moderator.house"))
+        assertEquals(JUPITER.nameKey, docCtx.read("$.mediator.point"))
+        assertEquals(LEO.name, docCtx.read("$.mediator.sign"))
+        assertEquals(1, docCtx.read("$.mediator.house"))
 
         assertEquals(0.95, docCtx.read("$.score"))
         Json.decodeFromString(Wedge.serializer(), rawJson).also { parsed ->
@@ -505,14 +505,18 @@ class AstroPatternSerializerTest {
 
     @Test
     fun withScore() {
-      val pattern = MysticRectangle(setOf(SUN, MERCURY, VENUS, MARS), 0.95.toScore())
+      val pattern = MysticRectangle(
+        setOf(
+          setOf(SUN, MERCURY),
+          setOf(VENUS, MARS)
+        ), 0.95.toScore())
       Json.encodeToString(MysticRectangle.serializer(), pattern).also { rawJson ->
         logger.info { rawJson }
         val docCtx = JsonPath.parse(rawJson)
 
         assertEquals(
           setOf(SUN.nameKey, MERCURY.nameKey, VENUS.nameKey, MARS.nameKey),
-          setOf(docCtx.read("$.points[0]"), docCtx.read("$.points[1]"), docCtx.read("$.points[2]"), docCtx.read("$.points[3]"))
+          setOf(docCtx.read("$.points[0][0]"), docCtx.read("$.points[0][1]"), docCtx.read("$.points[1][0]"), docCtx.read("$.points[1][1]"))
         )
 
         assertEquals(0.95, docCtx.read("$.score"))
@@ -524,7 +528,12 @@ class AstroPatternSerializerTest {
 
     @Test
     fun nullScore() {
-      val pattern = MysticRectangle(setOf(SUN, MERCURY, VENUS, MARS), null)
+      val pattern = MysticRectangle(
+        setOf(
+          setOf(SUN, MERCURY),
+          setOf(VENUS, MARS)
+        ), null
+      )
       Json.encodeToString(MysticRectangle.serializer(), pattern).also { rawJson ->
         logger.info { rawJson }
         val docCtx = JsonPath.parse(rawJson)

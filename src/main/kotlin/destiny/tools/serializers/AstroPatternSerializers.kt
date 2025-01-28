@@ -391,26 +391,26 @@ class AstroPatternSerializers {
 
   object MysticRectangleSerializer : KSerializer<MysticRectangle> {
     override val descriptor = buildClassSerialDescriptor("MysticRectangle") {
-      element<Set<AstroPoint>>("points")
+      element<Set<Set<AstroPoint>>>("points")
       element<Double>("score", isOptional = true)
       element<String>("description")
     }
 
     override fun serialize(encoder: Encoder, value: MysticRectangle) {
       encoder.encodeStructure(descriptor) {
-        encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
+        encodeSerializableElement(descriptor, 0, SetSerializer(SetSerializer(AstroPoint.serializer())), value.oppoGroups)
         encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
         encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
       }
     }
 
     override fun deserialize(decoder: Decoder): MysticRectangle {
-      var points = setOf<AstroPoint>()
+      var points: Set<Set<AstroPoint>> = setOf()
       var score: Score? = null
       decoder.decodeStructure(descriptor) {
         while (true) {
           when (val index = decodeElementIndex(descriptor)) {
-            0                            -> points = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
+            0                            -> points = decodeSerializableElement(descriptor, 0, SetSerializer(SetSerializer(AstroPoint.serializer())))
             1                            -> score = decodeNullableSerializableElement(descriptor, 1, Double.serializer())?.toScore()
             2                            -> decodeStringElement(descriptor, 2)
             CompositeDecoder.DECODE_DONE -> break

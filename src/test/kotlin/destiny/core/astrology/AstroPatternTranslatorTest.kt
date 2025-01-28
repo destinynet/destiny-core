@@ -145,13 +145,13 @@ class AstroPatternTranslatorTest {
          ).also {
       assertEquals("楔子" , it.title)
       assertEquals("楔子：火星,土星 對沖，逢 木星（射手座，第2宮）介入而緩和局勢。" , it.zhDesc)
-      assertEquals("Wedge : Mars and Saturn opposites with each other, with Jupiter（Sagittarius, House 2）alleviating the tension at 60°/120°." , it.enDesc)
+      assertEquals("Wedge : Mars and Saturn opposites with each other, with Jupiter（Sagittarius, House 2）mediating the tension at 60°/120°." , it.enDesc)
     }.copy(score = 0.8.toScore()).also {
       assertEquals("楔子：火星,土星 對沖，逢 木星（射手座，第2宮）介入而緩和局勢。分數 80%。" , it.zhDesc)
-      assertEquals("Wedge : Mars and Saturn opposites with each other, with Jupiter（Sagittarius, House 2）alleviating the tension at 60°/120°, with a tightness of 80%." , it.enDesc)
+      assertEquals("Wedge : Mars and Saturn opposites with each other, with Jupiter（Sagittarius, House 2）mediating the tension at 60°/120°, with a tightness of 80%." , it.enDesc)
     }
 
-    MysticRectangle(setOf(SUN , MOON , MARS , JUPITER)).also {
+    MysticRectangle(setOf(setOf(SUN, MOON), setOf(MARS, JUPITER))).also {
       assertEquals("神秘長方形" , it.title)
       assertEquals("神秘長方形：由 太陽,月亮,火星,木星 所組成。" , it.zhDesc)
       assertEquals("Mystic Rectangle : Composed of Sun, Moon, Mars, and Jupiter." , it.enDesc)
