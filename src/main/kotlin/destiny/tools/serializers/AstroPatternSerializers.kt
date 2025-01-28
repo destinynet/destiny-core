@@ -130,4 +130,38 @@ class AstroPatternSerializers {
     }
   }
 
+  @OptIn(ExperimentalSerializationApi::class)
+  object YodSerializer : KSerializer<AstroPattern.Yod> {
+    override val descriptor = buildClassSerialDescriptor("Yod") {
+      element<Set<AstroPoint>>("bottoms")
+      element<PointSignHouse>("pointer")
+      element<Double>("score", isOptional = true)
+    }
+
+    override fun serialize(encoder: Encoder, value: AstroPattern.Yod) {
+      encoder.encodeStructure(descriptor) {
+        encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.bottoms)
+        encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.pointer)
+        encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+      }
+    }
+
+    override fun deserialize(decoder: Decoder): AstroPattern.Yod {
+      var bottoms = setOf<AstroPoint>()
+      var pointer: PointSignHouse? = null
+      var score: Score? = null
+      decoder.decodeStructure(descriptor) {
+        while (true) {
+          when (val index = decodeElementIndex(descriptor)) {
+            0                            -> bottoms = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
+            1                            -> pointer = decodeSerializableElement(descriptor, 1, PointSignHouse.serializer())
+            2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            CompositeDecoder.DECODE_DONE -> break
+            else                         -> error("Unexpected index: $index")
+          }
+        }
+      }
+      return AstroPattern.Yod(bottoms, pointer!!, score)
+    }
+  }
 }

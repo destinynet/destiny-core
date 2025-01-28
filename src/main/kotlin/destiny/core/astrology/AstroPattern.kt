@@ -94,6 +94,7 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
    * [Yod] : 上帝之指 , Finger of God
    * 60 , 150 , 150
    * */
+  @kotlinx.serialization.Serializable(with = YodSerializer::class)
   data class Yod(val bottoms: Set<AstroPoint>, val pointer: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     override val points: Set<AstroPoint>
       get() = bottoms.plus(pointer.point)
