@@ -9,8 +9,7 @@ import destiny.core.astrology.Element
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.PointSignHouse
 import destiny.core.astrology.Quality
-import destiny.core.astrology.ZodiacSign.AQUARIUS
-import destiny.core.astrology.ZodiacSign.LEO
+import destiny.core.astrology.ZodiacSign.*
 import destiny.tools.KotlinLogging
 import destiny.tools.Score.Companion.toScore
 import kotlinx.serialization.json.Json
@@ -98,7 +97,7 @@ class AstroPatternSerializerTest {
         assertEquals(MARS.nameKey, docCtx.read("$.tail.point"))
         assertEquals(AQUARIUS.name, docCtx.read("$.tail.sign"))
         assertEquals(7, docCtx.read("$.tail.house"))
-        assertEquals(0.95 ,docCtx.read("$.score"))
+        assertEquals(0.95, docCtx.read("$.score"))
 
         Json.decodeFromString(AstroPattern.Kite.serializer(), rawJson).also { parsed ->
           assertEquals(pattern, parsed)
@@ -148,7 +147,7 @@ class AstroPatternSerializerTest {
         assertEquals(VENUS.nameKey, docCtx.read("$.squared.point"))
         assertEquals(LEO.name, docCtx.read("$.squared.sign"))
         assertEquals(1, docCtx.read("$.squared.house"))
-        assertEquals(0.95 , docCtx.read("$.score"))
+        assertEquals(0.95, docCtx.read("$.score"))
 
         Json.decodeFromString(AstroPattern.TSquared.serializer(), rawJson).also { parsed ->
           assertEquals(pattern, parsed)
@@ -190,13 +189,13 @@ class AstroPatternSerializerTest {
         logger.info { rawJson }
         val docCtx = JsonPath.parse(rawJson)
         assertEquals(
-          setOf(VENUS.nameKey , JUPITER.nameKey),
+          setOf(VENUS.nameKey, JUPITER.nameKey),
           setOf(docCtx.read("$.bottoms[0]"), docCtx.read("$.bottoms[1]"))
         )
-        assertEquals(MARS.nameKey , docCtx.read("$.pointer.point"))
+        assertEquals(MARS.nameKey, docCtx.read("$.pointer.point"))
         assertEquals(LEO.name, docCtx.read("$.pointer.sign"))
         assertEquals(1, docCtx.read("$.pointer.house"))
-        assertEquals(0.95 , docCtx.read("$.score"))
+        assertEquals(0.95, docCtx.read("$.score"))
 
         Json.decodeFromString(AstroPattern.Yod.serializer(), rawJson).also { parsed ->
           assertEquals(pattern, parsed)
@@ -288,12 +287,12 @@ class AstroPatternSerializerTest {
         val docCtx = JsonPath.parse(rawJson)
 
         assertEquals(
-          setOf(VENUS.nameKey , JUPITER.nameKey),
+          setOf(VENUS.nameKey, JUPITER.nameKey),
           setOf(docCtx.read("$.bottoms[0]"), docCtx.read("$.bottoms[1]"))
         )
-        assertEquals(MARS.nameKey , docCtx.read("$.pointer.point"))
-        assertEquals(LEO.name , docCtx.read("$.pointer.sign"))
-        assertEquals(1 , docCtx.read("$.pointer.house"))
+        assertEquals(MARS.nameKey, docCtx.read("$.pointer.point"))
+        assertEquals(LEO.name, docCtx.read("$.pointer.sign"))
+        assertEquals(1, docCtx.read("$.pointer.house"))
         assertEquals(0.95, docCtx.read("$.score"))
 
         Json.decodeFromString(AstroPattern.GoldenYod.serializer(), rawJson).also { parsed ->
@@ -332,11 +331,11 @@ class AstroPatternSerializerTest {
         logger.info { rawJson }
         val docCtx = JsonPath.parse(rawJson)
         assertEquals(
-          setOf(VENUS.nameKey , MARS.nameKey, JUPITER.nameKey, SATURN.nameKey),
+          setOf(VENUS.nameKey, MARS.nameKey, JUPITER.nameKey, SATURN.nameKey),
           setOf(docCtx.read("$.points[0]"), docCtx.read("$.points[1]"), docCtx.read("$.points[2]"), docCtx.read("$.points[3]"))
         )
         assertSame(Quality.FIXED, Quality.valueOf(docCtx.read("$.quality")))
-        assertEquals(0.95 , docCtx.read("$.score"))
+        assertEquals(0.95, docCtx.read("$.score"))
         Json.decodeFromString(AstroPattern.GrandCross.serializer(), rawJson).also { parsed ->
           assertEquals(pattern, parsed)
         }
@@ -351,6 +350,67 @@ class AstroPatternSerializerTest {
         val docCtx = JsonPath.parse(rawJson)
         assertNull(docCtx.read("$.score"))
         Json.decodeFromString(AstroPattern.GrandCross.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+  }
+
+  @Nested
+  inner class DoubleTSerializerTest {
+
+    @Test
+    fun withScore() {
+      val pattern = AstroPattern.DoubleT(
+        setOf(
+          AstroPattern.TSquared(
+            setOf(SUN, JUPITER),
+            PointSignHouse(VENUS, LEO, 1),
+            0.8.toScore()
+          ),
+          AstroPattern.TSquared(
+            setOf(MOON, MERCURY),
+            PointSignHouse(MARS, CAPRICORN, 6),
+            0.9.toScore()
+          )
+        ), 0.95.toScore()
+      )
+      Json.encodeToString(AstroPattern.DoubleT.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertEquals(2, docCtx.read("$.tSquares.length()"))
+        assertEquals(0.95, docCtx.read("$.score"))
+
+        Json.decodeFromString(AstroPattern.DoubleT.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+
+    @Test
+    fun nullScore() {
+      val pattern = AstroPattern.DoubleT(
+        setOf(
+          AstroPattern.TSquared(
+            setOf(SUN, JUPITER),
+            PointSignHouse(VENUS, LEO, 1),
+            0.8.toScore()
+          ),
+          AstroPattern.TSquared(
+            setOf(MOON, MERCURY),
+            PointSignHouse(MARS, CAPRICORN, 6),
+            0.9.toScore()
+          )
+        ), null
+      )
+      Json.encodeToString(AstroPattern.DoubleT.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertNull(docCtx.read("$.score"))
+
+        Json.decodeFromString(AstroPattern.DoubleT.serializer(), rawJson).also { parsed ->
           assertEquals(pattern, parsed)
         }
       }

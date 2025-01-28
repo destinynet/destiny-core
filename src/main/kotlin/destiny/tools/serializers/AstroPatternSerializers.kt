@@ -266,4 +266,36 @@ class AstroPatternSerializers {
       return AstroPattern.GrandCross(points, quality!!, score)
     }
   }
+
+  @OptIn(ExperimentalSerializationApi::class)
+  object DoubleTSerializer : KSerializer<AstroPattern.DoubleT> {
+    override val descriptor = buildClassSerialDescriptor("DoubleT") {
+      element<Set<AstroPattern.TSquared>>("tSquares")
+      element<Double>("score", isOptional = true)
+    }
+
+    override fun serialize(encoder: Encoder, value: AstroPattern.DoubleT) {
+      encoder.encodeStructure(descriptor) {
+        encodeSerializableElement(descriptor, 0, SetSerializer(AstroPattern.TSquared.serializer()), value.tSquares)
+        encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
+      }
+    }
+
+    override fun deserialize(decoder: Decoder): AstroPattern.DoubleT {
+      var tSquares = setOf<AstroPattern.TSquared>()
+      var score: Score? = null
+      decoder.decodeStructure(descriptor) {
+        while (true) {
+          when (val index = decodeElementIndex(descriptor)) {
+            0                            -> tSquares = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPattern.TSquared.serializer()))
+            1                            -> score = decodeNullableSerializableElement(descriptor, 1, Double.serializer())?.toScore()
+            CompositeDecoder.DECODE_DONE -> break
+            else                         -> error("Unexpected index: $index")
+          }
+        }
+      }
+      return AstroPattern.DoubleT(tSquares, score)
+    }
+  }
+
 }

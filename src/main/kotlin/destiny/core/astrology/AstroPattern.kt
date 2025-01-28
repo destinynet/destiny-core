@@ -224,7 +224,14 @@ sealed class AstroPattern(
   /**
    * [DoubleT] : 兩組 三刑會沖 (但未形成 [GrandCross]大十字 )
    */
+  @kotlinx.serialization.Serializable(with = DoubleTSerializer::class)
   data class DoubleT(val tSquares: Set<TSquared>, override val score: Score? = null) : AstroPattern() {
+    init {
+      require(tSquares.size == 2) {
+        "tSquares must have two elements."
+      }
+    }
+
     override val points: Set<AstroPoint>
       get() = tSquares.flatMap { it.points }.toSet()
 
