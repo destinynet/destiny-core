@@ -26,8 +26,8 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("GrandTrine") {
       element<Set<AstroPoint>>("points")
       element<Element>("element")
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
 
@@ -65,8 +65,8 @@ class AstroPatternSerializers {
       element<PointSignHouse>("head")
       element<Set<AstroPoint>>("wings")
       element<PointSignHouse>("tail")
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: Kite) {
@@ -105,8 +105,8 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("TSquared") {
       element<Set<AstroPoint>>("oppoPoints")
       element<PointSignHouse>("squared")
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: TSquared) {
@@ -142,8 +142,8 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("Yod") {
       element<Set<AstroPoint>>("bottoms")
       element<PointSignHouse>("apex")
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: Yod) {
@@ -179,8 +179,8 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("Boomerang") {
       element("yod", Yod.serializer().descriptor)
       element("oppoPoint", PointSignHouse.serializer().descriptor)
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: Boomerang) {
@@ -216,8 +216,8 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("GoldenYod") {
       element<Set<AstroPoint>>("bottoms")
       element<PointSignHouse>("pointer")
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: GoldenYod) {
@@ -253,8 +253,8 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("GrandCross") {
       element<Set<AstroPoint>>("points")
       element<Quality>("quality")
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: GrandCross) {
@@ -289,8 +289,8 @@ class AstroPatternSerializers {
   object DoubleTSerializer : KSerializer<DoubleT> {
     override val descriptor = buildClassSerialDescriptor("DoubleT") {
       element<Set<TSquared>>("tSquares")
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: DoubleT) {
@@ -322,8 +322,8 @@ class AstroPatternSerializers {
   object HexagonSerializer : KSerializer<Hexagon> {
     override val descriptor = buildClassSerialDescriptor("Hexagon") {
       element<Set<GrandTrine>>("grandTrines")
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: Hexagon) {
@@ -356,8 +356,8 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("Wedge") {
       element<Set<AstroPoint>>("oppoPoints")
       element("mediator", PointSignHouse.serializer().descriptor)
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: Wedge) {
@@ -392,8 +392,8 @@ class AstroPatternSerializers {
   object MysticRectangleSerializer : KSerializer<MysticRectangle> {
     override val descriptor = buildClassSerialDescriptor("MysticRectangle") {
       element<Set<Set<AstroPoint>>>("points")
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: MysticRectangle) {
@@ -425,8 +425,8 @@ class AstroPatternSerializers {
   object PentagramSerializer : KSerializer<Pentagram> {
     override val descriptor = buildClassSerialDescriptor("Pentagram") {
       element<Set<AstroPoint>>("points")
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: Pentagram) {
@@ -459,8 +459,8 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("StelliumSign") {
       element<Set<AstroPoint>>("points")
       element("sign", ZodiacSign.serializer().descriptor)
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: StelliumSign) {
@@ -496,8 +496,8 @@ class AstroPatternSerializers {
     override val descriptor = buildClassSerialDescriptor("StelliumHouse") {
       element<Set<AstroPoint>>("points")
       element<Int>("house")
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: StelliumHouse) {
@@ -532,8 +532,8 @@ class AstroPatternSerializers {
   object ConfrontationSerializer : KSerializer<Confrontation> {
     override val descriptor = buildClassSerialDescriptor("Confrontation") {
       element<Set<Set<AstroPoint>>>("clusters")
-      element<Double>("score", isOptional = true)
-      element<String>("description")
+      element<Double>(SCORE, isOptional = true)
+      element<String>(DESCRIPTION)
     }
 
     override fun serialize(encoder: Encoder, value: Confrontation) {
@@ -692,5 +692,10 @@ class AstroPatternSerializers {
       compositeDecoder.endStructure(descriptor)
       return result
     }
+  }
+  
+  companion object {
+    private const val SCORE = "score"
+    private const val DESCRIPTION = "description"
   }
 }
