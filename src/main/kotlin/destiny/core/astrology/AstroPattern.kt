@@ -250,7 +250,15 @@ sealed class AstroPattern(
   /**
    * [Hexagon] : 六芒星 (兩組 [GrandTrine]大三角 , 彼此交角60度 )
    */
+  @kotlinx.serialization.Serializable(with = HexagonSerializer::class)
   data class Hexagon(val grandTrines: Set<GrandTrine>, override val score: Score? = null) : AstroPattern() {
+
+    init {
+      require(grandTrines.size == 2) {
+        "grandTrines must have two elements."
+      }
+    }
+
     override fun getNotes(locale: Locale): String {
       val (g1, g2) = grandTrines.toList().let { it[0] to it[1] }
       return StringBuilder().apply {

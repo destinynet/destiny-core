@@ -298,4 +298,34 @@ class AstroPatternSerializers {
     }
   }
 
+  @OptIn(ExperimentalSerializationApi::class)
+  object HexagonSerializer : KSerializer<AstroPattern.Hexagon> {
+    override val descriptor = buildClassSerialDescriptor("Hexagon") {
+      element<Set<AstroPattern.GrandTrine>>("grandTrines")
+      element<Double>("score", isOptional = true)
+    }
+
+    override fun serialize(encoder: Encoder, value: AstroPattern.Hexagon) {
+      encoder.encodeStructure(descriptor) {
+        encodeSerializableElement(descriptor, 0, SetSerializer(AstroPattern.GrandTrine.serializer()), value.grandTrines)
+        encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
+      }
+    }
+
+    override fun deserialize(decoder: Decoder): AstroPattern.Hexagon {
+      var grandTrines = setOf<AstroPattern.GrandTrine>()
+      var score: Score? = null
+      decoder.decodeStructure(descriptor) {
+        while (true) {
+          when (val index = decodeElementIndex(descriptor)) {
+            0                            -> grandTrines = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPattern.GrandTrine.serializer()))
+            1                            -> score = decodeNullableSerializableElement(descriptor, 1, Double.serializer())?.toScore()
+            CompositeDecoder.DECODE_DONE -> break
+            else                         -> error("Unexpected index: $index")
+          }
+        }
+      }
+      return AstroPattern.Hexagon(grandTrines, score)
+    }
+  }
 }

@@ -416,4 +416,45 @@ class AstroPatternSerializerTest {
       }
     }
   }
+
+  @Nested
+  inner class HexagonSerializerTest {
+
+    @Test
+    fun withScore() {
+      val pattern = AstroPattern.Hexagon(
+        setOf(
+          AstroPattern.GrandTrine(setOf(SUN, JUPITER, VENUS), Element.WATER, 0.91.toScore()),
+          AstroPattern.GrandTrine(setOf(MERCURY, MARS, SATURN), Element.FIRE, 0.92.toScore()),
+        ), 0.95.toScore()
+      )
+      Json.encodeToString(AstroPattern.Hexagon.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+        assertEquals(2, docCtx.read("$.grandTrines.length()"))
+        assertEquals(0.95, docCtx.read("$.score"))
+        Json.decodeFromString(AstroPattern.Hexagon.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+
+    @Test
+    fun nullScore() {
+      val pattern = AstroPattern.Hexagon(
+        setOf(
+          AstroPattern.GrandTrine(setOf(SUN, JUPITER, VENUS), Element.WATER, 0.91.toScore()),
+          AstroPattern.GrandTrine(setOf(MERCURY, MARS, SATURN), Element.FIRE, 0.92.toScore()),
+        ), null
+      )
+      Json.encodeToString(AstroPattern.Hexagon.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+        assertNull(docCtx.read("$.score"))
+        Json.decodeFromString(AstroPattern.Hexagon.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+  }
 }
