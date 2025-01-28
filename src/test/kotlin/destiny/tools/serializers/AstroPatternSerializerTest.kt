@@ -16,6 +16,7 @@ import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 
@@ -218,6 +219,57 @@ class AstroPatternSerializerTest {
         assertNull(docCtx.read("$.score"))
 
         Json.decodeFromString(AstroPattern.Yod.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+  }
+
+  @Nested
+  inner class BoomerangSerializerTest {
+
+    @Test
+    fun withScore() {
+      val pattern = AstroPattern.Boomerang(
+        AstroPattern.Yod(
+          setOf(VENUS, JUPITER),
+          PointSignHouse(MARS, LEO, 1), 0.95.toScore()
+        ),
+        PointSignHouse(SATURN, AQUARIUS, 7), 0.85.toScore()
+      )
+      Json.encodeToString(AstroPattern.Boomerang.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertNotNull(docCtx.read("$.yod"))
+        assertEquals(SATURN.nameKey, docCtx.read("$.oppoPoint.point"))
+        assertEquals(AQUARIUS.name, docCtx.read("$.oppoPoint.sign"))
+        assertEquals(7, docCtx.read("$.oppoPoint.house"))
+
+        assertEquals(0.85, docCtx.read("$.score"))
+
+        Json.decodeFromString(AstroPattern.Boomerang.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+
+    @Test
+    fun nullScore() {
+      val pattern = AstroPattern.Boomerang(
+        AstroPattern.Yod(
+          setOf(VENUS, JUPITER),
+          PointSignHouse(MARS, LEO, 1), 0.95.toScore()
+        ),
+        PointSignHouse(SATURN, AQUARIUS, 7), null
+      )
+      Json.encodeToString(AstroPattern.Boomerang.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertNull(docCtx.read("$.score"))
+
+        Json.decodeFromString(AstroPattern.Boomerang.serializer(), rawJson).also { parsed ->
           assertEquals(pattern, parsed)
         }
       }

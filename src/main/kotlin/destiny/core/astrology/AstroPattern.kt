@@ -118,6 +118,7 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
    * [Boomerang] : 回力鏢
    * [Yod] + 對沖點 (與雙翼形成 30度)
    * */
+  @kotlinx.serialization.Serializable(with = BoomerangSerializer::class)
   data class Boomerang(val yod: Yod, val oppoPoint: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     override val points: Set<AstroPoint>
       get() = yod.points.plus(oppoPoint.point)
