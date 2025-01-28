@@ -457,4 +457,45 @@ class AstroPatternSerializerTest {
       }
     }
   }
+
+  @Nested
+  inner class WedgeSerializerTest {
+
+    @Test
+    fun withScore() {
+      val pattern = AstroPattern.Wedge(setOf(MARS , SATURN), PointSignHouse(JUPITER, LEO, 1), 0.95.toScore())
+      Json.encodeToString(AstroPattern.Wedge.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertEquals(
+          setOf(MARS.nameKey ,SATURN.nameKey),
+          setOf(docCtx.read("$.oppoPoints[0]"), docCtx.read("$.oppoPoints[1]"))
+        )
+
+        assertEquals(JUPITER.nameKey, docCtx.read("$.moderator.point"))
+        assertEquals(LEO.name, docCtx.read("$.moderator.sign"))
+        assertEquals(1, docCtx.read("$.moderator.house"))
+
+        assertEquals(0.95, docCtx.read("$.score"))
+        Json.decodeFromString(AstroPattern.Wedge.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+
+    @Test
+    fun nullScore() {
+      val pattern = AstroPattern.Wedge(setOf(MARS, SATURN), PointSignHouse(JUPITER, LEO, 1), null)
+      Json.encodeToString(AstroPattern.Wedge.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertNull(docCtx.read("$.score"))
+        Json.decodeFromString(AstroPattern.Wedge.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+  }
 }

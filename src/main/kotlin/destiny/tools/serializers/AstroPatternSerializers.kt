@@ -15,9 +15,9 @@ import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.*
 
 
+@OptIn(ExperimentalSerializationApi::class)
 class AstroPatternSerializers {
 
-  @OptIn(ExperimentalSerializationApi::class)
   object GrandTrineSerializer : KSerializer<AstroPattern.GrandTrine> {
     override val descriptor = buildClassSerialDescriptor("GrandTrine") {
       element<Set<AstroPoint>>("points")
@@ -53,7 +53,6 @@ class AstroPatternSerializers {
     }
   }
 
-  @OptIn(ExperimentalSerializationApi::class)
   object KiteSerializer : KSerializer<AstroPattern.Kite> {
     override val descriptor = buildClassSerialDescriptor("Kite") {
       element<PointSignHouse>("head")
@@ -92,7 +91,6 @@ class AstroPatternSerializers {
     }
   }
 
-  @OptIn(ExperimentalSerializationApi::class)
   object TSquaredSerializer : KSerializer<AstroPattern.TSquared> {
     override val descriptor = buildClassSerialDescriptor("TSquared") {
       element<Set<AstroPoint>>("oppoPoints")
@@ -127,7 +125,6 @@ class AstroPatternSerializers {
     }
   }
 
-  @OptIn(ExperimentalSerializationApi::class)
   object YodSerializer : KSerializer<AstroPattern.Yod> {
     override val descriptor = buildClassSerialDescriptor("Yod") {
       element<Set<AstroPoint>>("bottoms")
@@ -162,7 +159,6 @@ class AstroPatternSerializers {
     }
   }
 
-  @OptIn(ExperimentalSerializationApi::class)
   object BoomerangSerializer : KSerializer<AstroPattern.Boomerang> {
     override val descriptor = buildClassSerialDescriptor("Boomerang") {
       element("yod", AstroPattern.Yod.serializer().descriptor)
@@ -197,7 +193,6 @@ class AstroPatternSerializers {
     }
   }
 
-  @OptIn(ExperimentalSerializationApi::class)
   object GoldenYodSerializer : KSerializer<AstroPattern.GoldenYod> {
     override val descriptor = buildClassSerialDescriptor("GoldenYod") {
       element<Set<AstroPoint>>("bottoms")
@@ -232,7 +227,6 @@ class AstroPatternSerializers {
     }
   }
 
-  @OptIn(ExperimentalSerializationApi::class)
   object GrandCrossSerializer : KSerializer<AstroPattern.GrandCross> {
     override val descriptor = buildClassSerialDescriptor("GrandCross") {
       element<Set<AstroPoint>>("points")
@@ -267,7 +261,6 @@ class AstroPatternSerializers {
     }
   }
 
-  @OptIn(ExperimentalSerializationApi::class)
   object DoubleTSerializer : KSerializer<AstroPattern.DoubleT> {
     override val descriptor = buildClassSerialDescriptor("DoubleT") {
       element<Set<AstroPattern.TSquared>>("tSquares")
@@ -298,7 +291,6 @@ class AstroPatternSerializers {
     }
   }
 
-  @OptIn(ExperimentalSerializationApi::class)
   object HexagonSerializer : KSerializer<AstroPattern.Hexagon> {
     override val descriptor = buildClassSerialDescriptor("Hexagon") {
       element<Set<AstroPattern.GrandTrine>>("grandTrines")
@@ -326,6 +318,40 @@ class AstroPatternSerializers {
         }
       }
       return AstroPattern.Hexagon(grandTrines, score)
+    }
+  }
+
+  object WedgeSerializer : KSerializer<AstroPattern.Wedge> {
+    override val descriptor = buildClassSerialDescriptor("Wedge") {
+      element<Set<AstroPoint>>("oppoPoints")
+      element("moderator", PointSignHouse.serializer().descriptor)
+      element<Double>("score", isOptional = true)
+    }
+
+    override fun serialize(encoder: Encoder, value: AstroPattern.Wedge) {
+      encoder.encodeStructure(descriptor) {
+        encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.oppoPoints)
+        encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.moderator)
+        encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+      }
+    }
+
+    override fun deserialize(decoder: Decoder): AstroPattern.Wedge {
+      var oppoPoints = setOf<AstroPoint>()
+      var moderator: PointSignHouse? = null
+      var score: Score? = null
+      decoder.decodeStructure(descriptor) {
+        while (true) {
+          when (val index = decodeElementIndex(descriptor)) {
+            0                            -> oppoPoints = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
+            1                            -> moderator = decodeSerializableElement(descriptor, 1, PointSignHouse.serializer())
+            2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            CompositeDecoder.DECODE_DONE -> break
+            else                         -> error("Unexpected index: $index")
+          }
+        }
+      }
+      return AstroPattern.Wedge(oppoPoints, moderator!!, score)
     }
   }
 }

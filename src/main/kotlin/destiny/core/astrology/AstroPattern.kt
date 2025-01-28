@@ -285,7 +285,15 @@ sealed class AstroPattern(
    * [Wedge] : 楔子
    * 180 沖 , 逢 第三顆星 , 以 60/120 介入，緩和局勢
    */
+  @kotlinx.serialization.Serializable(with = WedgeSerializer::class)
   data class Wedge(val oppoPoints: Set<AstroPoint>, val moderator: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+
+    init {
+      require(oppoPoints.size == 2) {
+        "oppoPoints must have two elements."
+      }
+    }
+
     override val points: Set<AstroPoint>
       get() = oppoPoints.plus(moderator.point)
 
