@@ -415,4 +415,38 @@ class AstroPatternSerializers {
     }
   }
 
+  object StelliumSignSerializer : KSerializer<AstroPattern.StelliumSign> {
+    override val descriptor = buildClassSerialDescriptor("StelliumSign") {
+      element<Set<AstroPoint>>("points")
+      element("sign", ZodiacSign.serializer().descriptor)
+      element<Double>("score", isOptional = true)
+    }
+
+    override fun serialize(encoder: Encoder, value: AstroPattern.StelliumSign) {
+      encoder.encodeStructure(descriptor) {
+        encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
+        encodeSerializableElement(descriptor, 1, ZodiacSign.serializer(), value.sign)
+        encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+      }
+    }
+
+    override fun deserialize(decoder: Decoder): AstroPattern.StelliumSign {
+      var points = setOf<AstroPoint>()
+      var sign: ZodiacSign? = null
+      var score: Score? = null
+      decoder.decodeStructure(descriptor) {
+        while (true) {
+          when (val index = decodeElementIndex(descriptor)) {
+            0                            -> points = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
+            1                            -> sign = decodeSerializableElement(descriptor, 1, ZodiacSign.serializer())
+            2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            CompositeDecoder.DECODE_DONE -> break
+            else                         -> error("Unexpected index: $index")
+          }
+        }
+      }
+      return AstroPattern.StelliumSign(points, sign!!, score)
+    }
+  }
+
 }

@@ -366,6 +366,7 @@ sealed class AstroPattern(
   /**
    * [StelliumSign] : 聚集星座 (至少四顆星)
    */
+  @kotlinx.serialization.Serializable(with = StelliumSignSerializer::class)
   data class StelliumSign(override val points: Set<AstroPoint>, val sign: ZodiacSign, override val score: Score? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
