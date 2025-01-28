@@ -275,4 +275,52 @@ class AstroPatternSerializerTest {
       }
     }
   }
+
+  @Nested
+  inner class GoldenYodSerializerTest {
+
+    @Test
+    fun withScore() {
+      val pattern = AstroPattern.GoldenYod(
+        setOf(VENUS, JUPITER),
+        PointSignHouse(MARS, LEO, 1), 0.95.toScore()
+      )
+      Json.encodeToString(AstroPattern.GoldenYod.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertEquals(
+          setOf(VENUS.nameKey , JUPITER.nameKey),
+          setOf(docCtx.read("$.bottoms[0]"), docCtx.read("$.bottoms[1]"))
+        )
+        assertEquals(MARS.nameKey , docCtx.read("$.pointer.point"))
+        assertEquals(LEO.name , docCtx.read("$.pointer.sign"))
+        assertEquals(1 , docCtx.read("$.pointer.house"))
+        assertEquals(0.95, docCtx.read("$.score"))
+
+        Json.decodeFromString(AstroPattern.GoldenYod.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+
+    @Test
+    fun nullScore() {
+      val pattern = AstroPattern.GoldenYod(
+        setOf(VENUS, JUPITER),
+        PointSignHouse(MARS, LEO, 1), null
+      )
+      Json.encodeToString(AstroPattern.GoldenYod.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertNull(docCtx.read("$.score"))
+
+        Json.decodeFromString(AstroPattern.GoldenYod.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+
+  }
 }
