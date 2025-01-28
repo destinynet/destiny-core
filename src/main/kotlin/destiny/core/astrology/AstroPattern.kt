@@ -317,7 +317,15 @@ sealed class AstroPattern(
    * 兩組 [Wedge] 對沖，兩個60度，兩個120度，這也會形成壓力，但是彼此間又可以釋放壓力，非常詭異
    * @param points 總共4顆星
    */
+  @kotlinx.serialization.Serializable(with = MysticRectangleSerializer::class)
   data class MysticRectangle(override val points: Set<AstroPoint>, override val score: Score? = null) : AstroPattern() {
+
+    init {
+      require(points.size == 4) {
+        "points must have 4 elements."
+      }
+    }
+
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is MysticRectangle) return false
