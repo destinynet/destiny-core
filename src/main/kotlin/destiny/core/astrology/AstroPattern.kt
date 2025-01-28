@@ -14,18 +14,27 @@ import java.util.*
  * http://goodvibeastrology.com/aspect-patterns/
  */
 @kotlinx.serialization.Serializable
-data class PointSignHouse(val point: AstroPoint,
-                          val sign: ZodiacSign,
-                          val house: Int)
+data class PointSignHouse(
+  val point: AstroPoint,
+  val sign: ZodiacSign,
+  val house: Int
+)
 
-sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
-                          open val score: Score? = null) : IAstroPattern {
+sealed class AstroPattern(
+  open val points: Set<AstroPoint> = emptySet(),
+  open val score: Score? = null
+) : IAstroPattern {
 
   /**
    * [GrandTrine] : 大三角
    */
   @kotlinx.serialization.Serializable(with = GrandTrineSerializer::class)
   data class GrandTrine(override val points: Set<AstroPoint>, val element: Element, override val score: Score? = null) : AstroPattern() {
+    init {
+      require(points.size == 3) {
+        "points must have three elements."
+      }
+    }
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
@@ -47,6 +56,12 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
    */
   @kotlinx.serialization.Serializable(with = KiteSerializer::class)
   data class Kite(val head: PointSignHouse, val wings: Set<AstroPoint>, val tail: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+    init {
+      require(wings.size == 2) {
+        "wings must have two elements."
+      }
+    }
+
     override val points: Set<AstroPoint>
       get() = wings.plus(head.point).plus(tail.point)
 
@@ -72,6 +87,13 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
    */
   @kotlinx.serialization.Serializable(with = TSquaredSerializer::class)
   data class TSquared(val oppoPoints: Set<AstroPoint>, val squared: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+
+    init {
+      require(oppoPoints.size == 2) {
+        "oppoPoints must have two elements."
+      }
+    }
+
     override val points: Set<AstroPoint>
       get() = oppoPoints.plus(squared.point)
 
@@ -96,6 +118,12 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
    * */
   @kotlinx.serialization.Serializable(with = YodSerializer::class)
   data class Yod(val bottoms: Set<AstroPoint>, val pointer: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+    init {
+      require(bottoms.size == 2) {
+        "Bottoms must have 2 bottoms"
+      }
+    }
+
     override val points: Set<AstroPoint>
       get() = bottoms.plus(pointer.point)
 
@@ -143,6 +171,12 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
    * */
   @kotlinx.serialization.Serializable(with = GoldenYodSerializer::class)
   data class GoldenYod(val bottoms: Set<AstroPoint>, val pointer: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+    init {
+      require(bottoms.size == 2) {
+        "bottoms must have two elements."
+      }
+    }
+
     override val points: Set<AstroPoint>
       get() = bottoms.plus(pointer.point)
 
@@ -165,7 +199,13 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
   /**
    * [GrandCross] : 大十字
    */
+  @kotlinx.serialization.Serializable(with = GrandCrossSerializer::class)
   data class GrandCross(override val points: Set<AstroPoint>, val quality: Quality, override val score: Score? = null) : AstroPattern() {
+    init {
+      require(points.size == 4) {
+        "points must have 4 elements."
+      }
+    }
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is GrandCross) return false
@@ -205,14 +245,14 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
    */
   data class Hexagon(val grandTrines: Set<GrandTrine>, override val score: Score? = null) : AstroPattern() {
     override fun getNotes(locale: Locale): String {
-        val (g1, g2) = grandTrines.toList().let { it[0] to it[1] }
-        return StringBuilder().apply {
-          append(g1.points)
-          append("與")
-          append(g2.points)
-          append("形成六芒星")
-        }.toString()
-      }
+      val (g1, g2) = grandTrines.toList().let { it[0] to it[1] }
+      return StringBuilder().apply {
+        append(g1.points)
+        append("與")
+        append(g2.points)
+        append("形成六芒星")
+      }.toString()
+    }
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true

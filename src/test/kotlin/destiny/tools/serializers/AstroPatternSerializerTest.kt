@@ -8,16 +8,14 @@ import destiny.core.astrology.AstroPattern
 import destiny.core.astrology.Element
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.PointSignHouse
+import destiny.core.astrology.Quality
 import destiny.core.astrology.ZodiacSign.AQUARIUS
 import destiny.core.astrology.ZodiacSign.LEO
 import destiny.tools.KotlinLogging
 import destiny.tools.Score.Companion.toScore
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
+import kotlin.test.*
 
 
 class AstroPatternSerializerTest {
@@ -322,5 +320,40 @@ class AstroPatternSerializerTest {
       }
     }
 
+  }
+
+  @Nested
+  inner class GrandCrossSerializerTest {
+
+    @Test
+    fun withScore() {
+      val pattern = AstroPattern.GrandCross(setOf(VENUS, JUPITER, SATURN, MARS), Quality.FIXED, 0.95.toScore())
+      Json.encodeToString(AstroPattern.GrandCross.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+        assertEquals(
+          setOf(VENUS.nameKey , MARS.nameKey, JUPITER.nameKey, SATURN.nameKey),
+          setOf(docCtx.read("$.points[0]"), docCtx.read("$.points[1]"), docCtx.read("$.points[2]"), docCtx.read("$.points[3]"))
+        )
+        assertSame(Quality.FIXED, Quality.valueOf(docCtx.read("$.quality")))
+        assertEquals(0.95 , docCtx.read("$.score"))
+        Json.decodeFromString(AstroPattern.GrandCross.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+
+    @Test
+    fun nullScore() {
+      val pattern = AstroPattern.GrandCross(setOf(VENUS, JUPITER, SATURN, MARS), Quality.FIXED, null)
+      Json.encodeToString(AstroPattern.GrandCross.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+        assertNull(docCtx.read("$.score"))
+        Json.decodeFromString(AstroPattern.GrandCross.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
   }
 }

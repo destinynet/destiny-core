@@ -3,10 +3,7 @@
  */
 package destiny.tools.serializers
 
-import destiny.core.astrology.AstroPattern
-import destiny.core.astrology.AstroPoint
-import destiny.core.astrology.Element
-import destiny.core.astrology.PointSignHouse
+import destiny.core.astrology.*
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -232,6 +229,41 @@ class AstroPatternSerializers {
         }
       }
       return AstroPattern.GoldenYod(bottoms, pointer!!, score)
+    }
+  }
+
+  @OptIn(ExperimentalSerializationApi::class)
+  object GrandCrossSerializer : KSerializer<AstroPattern.GrandCross> {
+    override val descriptor = buildClassSerialDescriptor("GrandCross") {
+      element<Set<AstroPoint>>("points")
+      element<Quality>("quality")
+      element<Double>("score", isOptional = true)
+    }
+
+    override fun serialize(encoder: Encoder, value: AstroPattern.GrandCross) {
+      encoder.encodeStructure(descriptor) {
+        encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
+        encodeSerializableElement(descriptor, 1, Quality.serializer(), value.quality)
+        encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+      }
+    }
+
+    override fun deserialize(decoder: Decoder): AstroPattern.GrandCross {
+      var points = setOf<AstroPoint>()
+      var quality: Quality? = null
+      var score: Score? = null
+      decoder.decodeStructure(descriptor) {
+        while (true) {
+          when (val index = decodeElementIndex(descriptor)) {
+            0                            -> points = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
+            1                            -> quality = decodeSerializableElement(descriptor, 1, Quality.serializer())
+            2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            CompositeDecoder.DECODE_DONE -> break
+            else                         -> error("Unexpected index: $index")
+          }
+        }
+      }
+      return AstroPattern.GrandCross(points, quality!!, score)
     }
   }
 }

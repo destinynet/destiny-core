@@ -4,9 +4,12 @@
  */
 package destiny.core.astrology
 
+import kotlinx.serialization.Serializable
+
 /**
  * 基本 Cardinal , 固定 Fixed , 變動 Mutable
  */
+@Serializable
 enum class Quality {
 
   /** 基本 : 辰戌丑未 */
