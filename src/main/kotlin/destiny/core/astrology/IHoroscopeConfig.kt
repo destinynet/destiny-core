@@ -6,11 +6,9 @@ import destiny.core.astrology.classical.ClassicalConfig
 import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.astrology.classical.rules.IPlanetPatternFactory
 import destiny.core.calendar.GmtJulDay
-import destiny.tools.serializers.AstroPointSerializer
-import kotlinx.serialization.Serializable
 
 interface IHoroscopeConfig : java.io.Serializable {
-  var points: Set<@Serializable(with = AstroPointSerializer::class) AstroPoint>
+  var points: Set<AstroPoint>
   var houseSystem: HouseSystem
   var coordinate: Coordinate
   var centric: Centric

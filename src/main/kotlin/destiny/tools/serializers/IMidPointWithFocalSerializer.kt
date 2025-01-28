@@ -15,14 +15,14 @@ import kotlinx.serialization.encoding.*
 object IMidPointWithFocalSerializer : KSerializer<IMidPointWithFocal> {
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("IMidPointWithFocal") {
     element("midPoint" , IMidPointSerializer.descriptor)
-    element("focal", AstroPointSerializer.descriptor)
+    element<AstroPoint>("focal")
     element<Double>("orb")
   }
 
   override fun serialize(encoder: Encoder, value: IMidPointWithFocal) {
     encoder.encodeStructure(descriptor) {
       encodeSerializableElement(descriptor, 0, IMidPointSerializer, value)
-      encodeSerializableElement(descriptor, 1, AstroPointSerializer, value.focal)
+      encodeSerializableElement(descriptor, 1, AstroPoint.serializer(), value.focal)
       encodeDoubleElement(descriptor, 2, value.orb)
     }
   }
@@ -35,7 +35,7 @@ object IMidPointWithFocalSerializer : KSerializer<IMidPointWithFocal> {
       while(true) {
         when (val index = decodeElementIndex(descriptor)) {
           0 -> midPoint = decodeSerializableElement(descriptor, 0, IMidPointSerializer)
-          1 -> focal = decodeSerializableElement(descriptor, 1, AstroPointSerializer)
+          1 -> focal = decodeSerializableElement(descriptor, 1, AstroPoint.serializer())
           2                            -> orb = decodeDoubleElement(descriptor, 2)
           CompositeDecoder.DECODE_DONE -> break
           else                         -> throw SerializationException("Unknown index $index")

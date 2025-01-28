@@ -16,7 +16,7 @@ import kotlinx.serialization.encoding.*
 object IMidPointSerializer : KSerializer<IMidPoint> {
 
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("IMidPoint") {
-    element("points", SetSerializer(AstroPointSerializer).descriptor)
+    element<Set<AstroPoint>>("points")
     element<IZodiacDegree>("zodiacDegree")
     element<Int>("house")
   }
@@ -24,24 +24,24 @@ object IMidPointSerializer : KSerializer<IMidPoint> {
 
   override fun serialize(encoder: Encoder, value: IMidPoint) {
     encoder.encodeStructure(descriptor) {
-      encodeSerializableElement(descriptor, 0, SetSerializer(AstroPointSerializer), value.points)
-      encodeSerializableElement(descriptor, 1 , IZodiacDegreeSerializer, value.degree)
+      encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
+      encodeSerializableElement(descriptor, 1, IZodiacDegreeSerializer, value.degree)
       encodeIntElement(descriptor, 2, value.house)
     }
   }
 
   override fun deserialize(decoder: Decoder): IMidPoint {
     var points = setOf<AstroPoint>()
-    var zodiacDegree : IZodiacDegree = 0.toZodiacDegree()
+    var zodiacDegree: IZodiacDegree = 0.toZodiacDegree()
     var house = 0
     decoder.decodeStructure(descriptor) {
-      while (true)  {
+      while (true) {
         when (val index = decodeElementIndex(descriptor)) {
-          0 -> points = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPointSerializer))
-          1 -> zodiacDegree = decodeSerializableElement(descriptor, 1 , IZodiacDegreeSerializer)
+          0                            -> points = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
+          1                            -> zodiacDegree = decodeSerializableElement(descriptor, 1, IZodiacDegreeSerializer)
           2                            -> house = decodeIntElement(descriptor, 2)
           CompositeDecoder.DECODE_DONE -> break
-          else -> error("Unexpected index: $index")
+          else                         -> error("Unexpected index: $index")
         }
       }
     }

@@ -4,8 +4,7 @@
 package destiny.core.astrology
 
 import destiny.tools.Score
-import destiny.tools.serializers.GrandTrineSerializer
-import destiny.tools.serializers.KiteSerializer
+import destiny.tools.serializers.AstroPatternSerializers.*
 import java.io.Serializable
 import java.util.*
 
@@ -71,6 +70,7 @@ sealed class AstroPattern(open val points: Set<AstroPoint> = emptySet(),
   /**
    * [TSquared] : 三刑會沖
    */
+  @kotlinx.serialization.Serializable(with = TSquaredSerializer::class)
   data class TSquared(val oppoPoints: Set<AstroPoint>, val squared: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     override val points: Set<AstroPoint>
       get() = oppoPoints.plus(squared.point)

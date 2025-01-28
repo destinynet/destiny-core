@@ -12,7 +12,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.tools.*
-import destiny.tools.serializers.AstroPointSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.util.concurrent.TimeUnit
@@ -21,7 +20,7 @@ import javax.cache.Cache
 
 @Serializable
 data class HoroscopeConfig(
-  override var points: Set<@Serializable(with = AstroPointSerializer::class) AstroPoint> = setOf(*Planet.values, *LunarNode.values, Axis.RISING, Axis.MERIDIAN),
+  override var points: Set<AstroPoint> = setOf(*Planet.values, *LunarNode.values, Axis.RISING, Axis.MERIDIAN),
   override var houseSystem: HouseSystem = HouseSystem.PLACIDUS,
   override var coordinate: Coordinate = Coordinate.ECLIPTIC,
   override var centric: Centric = Centric.GEO,
@@ -29,7 +28,7 @@ data class HoroscopeConfig(
   override var pressure: Double = 1013.25,
   override var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval,
   override var place: String? = null,
-  override val relocations: Map<@Serializable(with = AstroPointSerializer::class) AstroPoint , Double> = emptyMap()
+  override val relocations: Map<AstroPoint , Double> = emptyMap()
 ) : IHoroscopeConfig
 
 

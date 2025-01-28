@@ -4,7 +4,6 @@
 package destiny.core.astrology
 
 import destiny.tools.KotlinLogging
-import destiny.tools.serializers.AstroPointSerializer
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,7 +16,7 @@ class AstroPointTest {
   @Test
   fun testSerialize() {
     AstroPoint.values.forEach { p ->
-      val rawJson = Json.encodeToString(AstroPointSerializer, p)
+      val rawJson = Json.encodeToString(AstroPoint.serializer(), p)
       logger.info { "$p = $rawJson" }
       assertEquals("\"${p.nameKey}\"", rawJson)
       assertSame(p, Json.decodeFromString(rawJson))
