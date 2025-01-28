@@ -449,4 +449,38 @@ class AstroPatternSerializers {
     }
   }
 
+  object StelliumHouseSerializer : KSerializer<AstroPattern.StelliumHouse> {
+    override val descriptor = buildClassSerialDescriptor("StelliumHouse") {
+      element<Set<AstroPoint>>("points")
+      element<Int>("house")
+      element<Double>("score", isOptional = true)
+    }
+
+    override fun serialize(encoder: Encoder, value: AstroPattern.StelliumHouse) {
+      encoder.encodeStructure(descriptor) {
+        encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
+        encodeIntElement(descriptor, 1, value.house)
+        encodeNullableSerializableElement(descriptor, 2, Double.serializer(), value.score?.value)
+      }
+    }
+
+    override fun deserialize(decoder: Decoder): AstroPattern.StelliumHouse {
+      var points = setOf<AstroPoint>()
+      var house = 0
+      var score: Score? = null
+      decoder.decodeStructure(descriptor) {
+        while (true) {
+          when (val index = decodeElementIndex(descriptor)) {
+            0                            -> points = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
+            1                            -> house = decodeIntElement(descriptor, 1)
+            2                            -> score = decodeNullableSerializableElement(descriptor, 2, Double.serializer())?.toScore()
+            CompositeDecoder.DECODE_DONE -> break
+            else                         -> error("Unexpected index: $index")
+          }
+        }
+      }
+      return AstroPattern.StelliumHouse(points, house, score)
+    }
+  }
+
 }

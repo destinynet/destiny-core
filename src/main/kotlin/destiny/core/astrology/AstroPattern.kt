@@ -386,6 +386,7 @@ sealed class AstroPattern(
   /**
    * [StelliumHouse] : 聚集宮位 (至少四顆星)
    */
+  @kotlinx.serialization.Serializable(with = StelliumHouseSerializer::class)
   data class StelliumHouse(override val points: Set<AstroPoint>, val house: Int, override val score: Score? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true

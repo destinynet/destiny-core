@@ -609,4 +609,45 @@ class AstroPatternSerializerTest {
       }
     }
   }
+
+  @Nested
+  inner class StelliumHouseSerializerTest {
+
+    @Test
+    fun withScore() {
+      val pattern = AstroPattern.StelliumHouse(setOf(SUN, MERCURY, VENUS, MARS, MOON), 1, 0.95.toScore())
+      Json.encodeToString(AstroPattern.StelliumHouse.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertEquals(
+          setOf(SUN.nameKey, MERCURY.nameKey, VENUS.nameKey, MARS.nameKey, MOON.nameKey),
+          setOf(docCtx.read("$.points[0]"), docCtx.read("$.points[1]"), docCtx.read("$.points[2]"), docCtx.read("$.points[3]"), docCtx.read("$.points[4]"))
+        )
+        assertEquals(1, docCtx.read("$.house"))
+        assertEquals(0.95, docCtx.read("$.score"))
+        Json.decodeFromString(AstroPattern.StelliumHouse.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+
+    @Test
+    fun nullScore() {
+      val pattern = AstroPattern.StelliumHouse(setOf(SUN, MERCURY, VENUS, MARS, MOON), 1, null)
+      Json.encodeToString(AstroPattern.StelliumHouse.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertEquals(
+          setOf(SUN.nameKey, MERCURY.nameKey, VENUS.nameKey, MARS.nameKey, MOON.nameKey),
+          setOf(docCtx.read("$.points[0]"), docCtx.read("$.points[1]"), docCtx.read("$.points[2]"), docCtx.read("$.points[3]"), docCtx.read("$.points[4]"))
+        )
+        assertNull(docCtx.read("$.score"))
+        Json.decodeFromString(AstroPattern.StelliumHouse.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+  }
 }
