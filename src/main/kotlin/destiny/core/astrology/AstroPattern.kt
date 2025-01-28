@@ -342,7 +342,15 @@ sealed class AstroPattern(
    * [Pentagram] : 五芒星 五個 [GoldenYod]
    * @param points 總共5顆星
    * */
+  @kotlinx.serialization.Serializable(with = PentagramSerializer::class)
   data class Pentagram(override val points: Set<AstroPoint>, override val score: Score? = null) : AstroPattern() {
+
+    init {
+      require(points.size == 5) {
+        "points must have 5 elements."
+      }
+    }
+
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is Pentagram) return false

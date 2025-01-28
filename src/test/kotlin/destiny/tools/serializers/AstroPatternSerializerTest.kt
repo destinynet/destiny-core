@@ -535,4 +535,41 @@ class AstroPatternSerializerTest {
       }
     }
   }
+
+  @Nested
+  inner class PentagramSerializerTest {
+
+    @Test
+    fun withScore() {
+      val pattern = AstroPattern.Pentagram(setOf(SUN, MERCURY, VENUS, MARS, MOON), 0.95.toScore())
+      Json.encodeToString(AstroPattern.Pentagram.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertEquals(
+          setOf(SUN.nameKey, MERCURY.nameKey, VENUS.nameKey, MARS.nameKey, MOON.nameKey),
+          setOf(docCtx.read("$.points[0]"), docCtx.read("$.points[1]"), docCtx.read("$.points[2]"), docCtx.read("$.points[3]"), docCtx.read("$.points[4]"))
+        )
+
+        assertEquals(0.95, docCtx.read("$.score"))
+        Json.decodeFromString(AstroPattern.Pentagram.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+
+    @Test
+    fun nullScore() {
+      val pattern = AstroPattern.Pentagram(setOf(SUN, MERCURY, VENUS, MARS, MOON), null)
+      Json.encodeToString(AstroPattern.Pentagram.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertNull(docCtx.read("$.score"))
+        Json.decodeFromString(AstroPattern.Pentagram.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+  }
 }

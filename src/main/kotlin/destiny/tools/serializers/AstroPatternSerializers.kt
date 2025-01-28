@@ -384,4 +384,35 @@ class AstroPatternSerializers {
       return AstroPattern.MysticRectangle(points, score)
     }
   }
+
+  object PentagramSerializer : KSerializer<AstroPattern.Pentagram> {
+    override val descriptor = buildClassSerialDescriptor("Pentagram") {
+      element<Set<AstroPoint>>("points")
+      element<Double>("score", isOptional = true)
+    }
+
+    override fun serialize(encoder: Encoder, value: AstroPattern.Pentagram) {
+      encoder.encodeStructure(descriptor) {
+        encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
+        encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
+      }
+    }
+
+    override fun deserialize(decoder: Decoder): AstroPattern.Pentagram {
+      var points = setOf<AstroPoint>()
+      var score: Score? = null
+      decoder.decodeStructure(descriptor) {
+        while (true) {
+          when (val index = decodeElementIndex(descriptor)) {
+            0                            -> points = decodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()))
+            1                            -> score = decodeNullableSerializableElement(descriptor, 1, Double.serializer())?.toScore()
+            CompositeDecoder.DECODE_DONE -> break
+            else                         -> error("Unexpected index: $index")
+          }
+        }
+      }
+      return AstroPattern.Pentagram(points, score)
+    }
+  }
+
 }
