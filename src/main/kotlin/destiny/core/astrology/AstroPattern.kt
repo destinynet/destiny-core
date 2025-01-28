@@ -407,6 +407,7 @@ sealed class AstroPattern(
    * [Confrontation] 對峙
    * 兩組 三顆星以上的合相星群 彼此對沖
    */
+  @kotlinx.serialization.Serializable(with = ConfrontationSerializer::class)
   data class Confrontation(val clusters: Set<Set<AstroPoint>>, override val score: Score? = null) : AstroPattern() {
     override val points: Set<AstroPoint>
       get() = clusters.flatten().toSet()

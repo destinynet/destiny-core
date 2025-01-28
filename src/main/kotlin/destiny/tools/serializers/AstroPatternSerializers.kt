@@ -483,4 +483,34 @@ class AstroPatternSerializers {
     }
   }
 
+  object ConfrontationSerializer : KSerializer<AstroPattern.Confrontation> {
+    override val descriptor = buildClassSerialDescriptor("Confrontation") {
+      element<Set<Set<AstroPoint>>>("clusters")
+      element<Double>("score", isOptional = true)
+    }
+
+    override fun serialize(encoder: Encoder, value: AstroPattern.Confrontation) {
+      encoder.encodeStructure(descriptor) {
+        encodeSerializableElement(descriptor, 0, SetSerializer(SetSerializer(AstroPoint.serializer())), value.clusters)
+        encodeNullableSerializableElement(descriptor, 1, Double.serializer(), value.score?.value)
+      }
+    }
+
+    override fun deserialize(decoder: Decoder): AstroPattern.Confrontation {
+      var clusters = setOf<Set<AstroPoint>>()
+      var score: Score? = null
+      decoder.decodeStructure(descriptor) {
+        while (true) {
+          when (val index = decodeElementIndex(descriptor)) {
+            0                            -> clusters = decodeSerializableElement(descriptor, 0, SetSerializer(SetSerializer(AstroPoint.serializer())))
+            1                            -> score = decodeNullableSerializableElement(descriptor, 1, Double.serializer())?.toScore()
+            CompositeDecoder.DECODE_DONE -> break
+            else                         -> error("Unexpected index: $index")
+          }
+        }
+      }
+      return AstroPattern.Confrontation(clusters, score)
+    }
+  }
+
 }

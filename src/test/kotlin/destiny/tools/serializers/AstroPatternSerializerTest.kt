@@ -463,13 +463,13 @@ class AstroPatternSerializerTest {
 
     @Test
     fun withScore() {
-      val pattern = AstroPattern.Wedge(setOf(MARS , SATURN), PointSignHouse(JUPITER, LEO, 1), 0.95.toScore())
+      val pattern = AstroPattern.Wedge(setOf(MARS, SATURN), PointSignHouse(JUPITER, LEO, 1), 0.95.toScore())
       Json.encodeToString(AstroPattern.Wedge.serializer(), pattern).also { rawJson ->
         logger.info { rawJson }
         val docCtx = JsonPath.parse(rawJson)
 
         assertEquals(
-          setOf(MARS.nameKey ,SATURN.nameKey),
+          setOf(MARS.nameKey, SATURN.nameKey),
           setOf(docCtx.read("$.oppoPoints[0]"), docCtx.read("$.oppoPoints[1]"))
         )
 
@@ -578,7 +578,7 @@ class AstroPatternSerializerTest {
 
     @Test
     fun withScore() {
-      val pattern = AstroPattern.StelliumSign(setOf(SUN, MERCURY, VENUS, MARS, MOON), LEO , 0.95.toScore())
+      val pattern = AstroPattern.StelliumSign(setOf(SUN, MERCURY, VENUS, MARS, MOON), LEO, 0.95.toScore())
       Json.encodeToString(AstroPattern.StelliumSign.serializer(), pattern).also { rawJson ->
         logger.info { rawJson }
         val docCtx = JsonPath.parse(rawJson)
@@ -587,7 +587,7 @@ class AstroPatternSerializerTest {
           setOf(SUN.nameKey, MERCURY.nameKey, VENUS.nameKey, MARS.nameKey, MOON.nameKey),
           setOf(docCtx.read("$.points[0]"), docCtx.read("$.points[1]"), docCtx.read("$.points[2]"), docCtx.read("$.points[3]"), docCtx.read("$.points[4]"))
         )
-        assertEquals(LEO.name , docCtx.read("$.sign"))
+        assertEquals(LEO.name, docCtx.read("$.sign"))
         assertEquals(0.95, docCtx.read("$.score"))
         Json.decodeFromString(AstroPattern.StelliumSign.serializer(), rawJson).also { parsed ->
           assertEquals(pattern, parsed)
@@ -645,6 +645,74 @@ class AstroPatternSerializerTest {
         )
         assertNull(docCtx.read("$.score"))
         Json.decodeFromString(AstroPattern.StelliumHouse.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+  }
+
+  @Nested
+  inner class ConfrontationSerializerTest {
+
+    @Test
+    fun withScore() {
+      val pattern = AstroPattern.Confrontation(
+        setOf(
+          setOf(SUN, MOON, MERCURY, VENUS, MARS),
+          setOf(JUPITER, SATURN, URANUS, NEPTUNE, PLUTO)
+        ), 0.95.toScore()
+      )
+      Json.encodeToString(AstroPattern.Confrontation.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertEquals(2, docCtx.read("$.clusters.length()"))
+        assertEquals(0.95 , docCtx.read("$.score"))
+
+        Json.decodeFromString(AstroPattern.Confrontation.serializer(), rawJson).also { parsed ->
+          assertEquals(pattern, parsed)
+        }
+      }
+    }
+
+    @Test
+    fun nullScore() {
+      val pattern = AstroPattern.Confrontation(
+        setOf(
+          setOf(SUN, MOON, MERCURY, VENUS, MARS),
+          setOf(JUPITER, SATURN, URANUS, NEPTUNE, PLUTO)
+        )
+      )
+      Json.encodeToString(AstroPattern.Confrontation.serializer(), pattern).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+
+        assertEquals(
+          setOf(
+            setOf(SUN.nameKey ,MOON.nameKey , MERCURY.nameKey, VENUS.nameKey, MARS.nameKey),
+            setOf(JUPITER.nameKey , SATURN.nameKey,URANUS.nameKey, NEPTUNE.nameKey , PLUTO.nameKey)
+          ),
+          setOf(
+            setOf(
+              docCtx.read("$.clusters[0][0]"),
+              docCtx.read("$.clusters[0][1]"),
+              docCtx.read("$.clusters[0][2]"),
+              docCtx.read("$.clusters[0][3]"),
+              docCtx.read("$.clusters[0][4]"),
+            ),
+            setOf(
+              docCtx.read("$.clusters[1][0]"),
+              docCtx.read("$.clusters[1][1]"),
+              docCtx.read("$.clusters[1][2]"),
+              docCtx.read("$.clusters[1][3]"),
+              docCtx.read("$.clusters[1][4]"),
+            )
+          )
+        )
+
+        assertNull(docCtx.read("$.score"))
+
+        Json.decodeFromString(AstroPattern.Confrontation.serializer(), rawJson).also { parsed ->
           assertEquals(pattern, parsed)
         }
       }
