@@ -27,9 +27,9 @@ interface IChatCompletion {
 
   val provider: String
 
-  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = Duration.of(60, ChronoUnit.SECONDS), temperature: Double?) : Reply
+  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = Duration.of(90, ChronoUnit.SECONDS), temperature: Double?) : Reply
 
-  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = Duration.of(60, ChronoUnit.SECONDS), temperature: Double?) : Reply {
+  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = Duration.of(90, ChronoUnit.SECONDS), temperature: Double?) : Reply {
     return chatComplete(model, messages, user, setOf(funCall), timeout, temperature)
   }
 }
