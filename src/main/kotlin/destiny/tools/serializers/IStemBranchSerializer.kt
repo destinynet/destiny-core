@@ -1,4 +1,4 @@
-package destiny.tools.serializers.astrology
+package destiny.tools.serializers
 
 import destiny.core.chinese.*
 import kotlinx.serialization.KSerializer

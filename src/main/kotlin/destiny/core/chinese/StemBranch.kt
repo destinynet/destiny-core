@@ -6,7 +6,7 @@ import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch.甲子
 import destiny.core.chinese.StemBranch.癸亥
 import destiny.tools.ArrayTools
-import destiny.tools.serializers.astrology.IStemBranchSerializer
+import destiny.tools.serializers.IStemBranchSerializer
 import kotlinx.serialization.Serializable
 
 /**
