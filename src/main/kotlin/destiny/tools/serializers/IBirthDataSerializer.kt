@@ -27,7 +27,7 @@ object IBirthDataSerializer : KSerializer<IBirthData> {
   override fun serialize(encoder: Encoder, value: IBirthData) {
     encoder.encodeStructure(descriptor) {
       encodeSerializableElement(descriptor, 0, ITimeLocSerializer, value)
-      encodeBooleanElement(descriptor, 1, value.gender.male)
+      encodeSerializableElement(descriptor, 1, GenderSerializer, value.gender)
     }
   }
 
@@ -39,7 +39,7 @@ object IBirthDataSerializer : KSerializer<IBirthData> {
       loop@ while (true) {
         when (decodeElementIndex(descriptor)) {
           0    -> timeLoc = decodeSerializableElement(descriptor, 0, ITimeLocSerializer)
-          1    -> gender = if (decodeBooleanElement(descriptor, 1)) Gender.男 else Gender.女
+          1    -> gender = decodeSerializableElement(descriptor, 1, GenderSerializer)
           else -> break@loop
         }
       }
