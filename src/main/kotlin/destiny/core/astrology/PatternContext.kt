@@ -349,7 +349,11 @@ class PatternContext(val aspectEffective: IAspectEffective,
           }.filter { (_ , maybeScore) -> maybeScore != null }
             .map { (twoWedges , maybeScore) -> twoWedges to maybeScore!! }
             .map { (twoWedges , oppoScore) ->
-              val oppoGroups: Set<Set<AstroPoint>> = twoWedges.map { it.oppoPoints }.toSet()
+              val (wedge1 , wedge2) = twoWedges.iterator().let { it.next() to it.next()}
+              val oppoGroups = buildSet {
+                addAll(twoWedges.map { it.oppoPoints }.toSet())
+                add(setOf(wedge1.mediator.point , wedge2.mediator.point))
+              }
               // 分數 : 以兩組 wedge 個別分數 , 加上 moderator 對沖分數 , 三者平均
               val score: Score? = twoWedges.takeIf { pattern -> pattern.all { it.score != null } }?.map { it.score!! }?.plus(oppoScore)?.average()
               AstroPattern.MysticRectangle(oppoGroups, score)

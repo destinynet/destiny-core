@@ -34,7 +34,8 @@ object StarSerializer : KSerializer<Star> {
       value.startsWith("LunarNode.") || value.startsWith("LunarApsis.") -> Json.decodeFromString(LunarPointSerializer, wrappedValue)
       value.startsWith(Hamburger::class.simpleName!!)                   -> Json.decodeFromString(HamburgerSerializer, wrappedValue)
       value.startsWith(Arabic::class.simpleName!!)                      -> Json.decodeFromString(ArabicSerializer, wrappedValue)
-      else                                                              -> Json.decodeFromString(LunarStationSerializer, wrappedValue)
+      value.startsWith(LunarStation::class.simpleName!!)                -> Json.decodeFromString(LunarStationSerializer, wrappedValue)
+      else                                                              -> throw IllegalArgumentException("Unexpected value: $value")
     }
   }
 }
