@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2025-01-28.
  */
-package destiny.tools.serializers
+package destiny.tools.serializers.astrology
 
 import destiny.core.astrology.*
 import destiny.core.astrology.AstroPattern.*

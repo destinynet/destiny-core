@@ -12,7 +12,7 @@ import destiny.core.Point
 import destiny.core.astrology.NodeType.MEAN
 import destiny.core.astrology.NodeType.TRUE
 import destiny.core.toString
-import destiny.tools.serializers.LunarNodeSerializer
+import destiny.tools.serializers.astrology.LunarNodeSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass

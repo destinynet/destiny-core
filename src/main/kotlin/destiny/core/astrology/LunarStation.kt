@@ -12,7 +12,7 @@ import destiny.core.astrology.Planet.*
 import destiny.core.chinese.Animal
 import destiny.tools.ArrayTools
 import destiny.tools.getTitle
-import destiny.tools.serializers.LunarStationSerializer
+import destiny.tools.serializers.astrology.LunarStationSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass

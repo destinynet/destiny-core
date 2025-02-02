@@ -7,7 +7,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
-import destiny.tools.serializers.StarSerializer
+import destiny.tools.serializers.astrology.StarSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 

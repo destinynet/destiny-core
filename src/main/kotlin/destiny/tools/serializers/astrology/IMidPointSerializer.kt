@@ -1,10 +1,11 @@
 /**
  * Created by smallufo on 2025-01-25.
  */
-package destiny.tools.serializers
+package destiny.tools.serializers.astrology
 
 import destiny.core.astrology.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
+import destiny.tools.serializers.IZodiacDegreeSerializer
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.SetSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor

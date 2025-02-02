@@ -6,7 +6,7 @@ package destiny.core.astrology
 
 import destiny.core.IPoints
 import destiny.core.Point
-import destiny.tools.serializers.AstroPointSerializer
+import destiny.tools.serializers.astrology.AstroPointSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass

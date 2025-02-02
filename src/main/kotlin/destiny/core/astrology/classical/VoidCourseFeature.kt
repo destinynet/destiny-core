@@ -11,7 +11,7 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.Feature
 import destiny.tools.KotlinLogging
-import destiny.tools.serializers.PlanetSerializer
+import destiny.tools.serializers.astrology.PlanetSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 

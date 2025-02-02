@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2021-08-14.
  */
-package destiny.tools.serializers
+package destiny.tools.serializers.astrology
 
 import destiny.core.astrology.*
 import kotlinx.serialization.KSerializer

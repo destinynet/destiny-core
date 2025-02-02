@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2025-01-26.
  */
-package destiny.tools.serializers
+package destiny.tools.serializers.astrology
 
 import com.jayway.jsonpath.JsonPath
 import destiny.core.astrology.MidPoint

@@ -8,7 +8,7 @@ import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.astrology.Apsis.APHELION
 import destiny.core.astrology.Apsis.PERIHELION
-import destiny.tools.serializers.LunarApsisSerializer
+import destiny.tools.serializers.astrology.LunarApsisSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass

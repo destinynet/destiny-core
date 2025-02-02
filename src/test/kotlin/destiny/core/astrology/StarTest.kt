@@ -4,7 +4,7 @@
 package destiny.core.astrology
 
 import destiny.tools.KotlinLogging
-import destiny.tools.serializers.StarSerializer
+import destiny.tools.serializers.astrology.StarSerializer
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,7 +20,7 @@ class StarTest {
       val rawJson = Json.encodeToString(p)
       logger.info { "$p = $rawJson" }
       assertEquals("\"${p.nameKey}\"", rawJson)
-      assertSame(p, Json.decodeFromString(StarSerializer , rawJson))
+      assertSame(p, Json.decodeFromString(StarSerializer, rawJson))
     }
   }
 }

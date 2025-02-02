@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2025-01-27.
  */
-package destiny.tools.serializers
+package destiny.tools.serializers.astrology
 
 import destiny.core.IPoints
 import destiny.core.Point

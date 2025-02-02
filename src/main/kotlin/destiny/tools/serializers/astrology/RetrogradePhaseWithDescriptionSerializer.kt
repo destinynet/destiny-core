@@ -3,7 +3,7 @@
  */
 @file:OptIn(ExperimentalSerializationApi::class)
 
-package destiny.tools.serializers
+package destiny.tools.serializers.astrology
 
 import destiny.core.astrology.RetrogradePhase
 import kotlinx.serialization.ExperimentalSerializationApi

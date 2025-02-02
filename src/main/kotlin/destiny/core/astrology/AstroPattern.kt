@@ -4,7 +4,7 @@
 package destiny.core.astrology
 
 import destiny.tools.Score
-import destiny.tools.serializers.AstroPatternSerializers.*
+import destiny.tools.serializers.astrology.AstroPatternSerializers.*
 import java.io.Serializable
 import java.util.*
 
