@@ -2,8 +2,11 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch
 import destiny.tools.KotlinLogging
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.Json.Default.decodeFromString
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
+import kotlin.test.assertSame
 
 /**
  * Created by smallufo on 2017-12-07.
@@ -11,6 +14,15 @@ import kotlin.test.assertNotEquals
 class ZStarTest {
 
   private val logger = KotlinLogging.logger {  }
+
+  @Test
+  fun testSerialize() {
+    ZStar.values.forEach { s ->
+      val rawJson = Json.encodeToString(s)
+      logger.info { "$s = $rawJson" }
+      assertSame(s, decodeFromString(rawJson))
+    }
+  }
 
 
   @Test

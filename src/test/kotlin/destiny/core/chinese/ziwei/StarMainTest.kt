@@ -7,11 +7,23 @@ import destiny.core.AbstractPointTest
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.getAbbreviation
 import destiny.core.toString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.Json.Default.decodeFromString
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 class StarMainTest : AbstractPointTest(StarMain::class) {
+
+  @Test
+  fun testSerialize() {
+    StarMain.values.forEach { s ->
+      val rawJson = Json.encodeToString(s)
+      logger.info { "$s = $rawJson" }
+      assertSame(s, decodeFromString(rawJson))
+    }
+  }
 
   @Test
   fun testCompare() {

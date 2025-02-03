@@ -11,10 +11,13 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.IYinYang
+import destiny.tools.serializers.StarLongevitySerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
 /** 長生 12 神煞  */
+@Serializable(with = StarLongevitySerializer::class)
 sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", Type.長生) {
 
   object 長生 : StarLongevity("長生")

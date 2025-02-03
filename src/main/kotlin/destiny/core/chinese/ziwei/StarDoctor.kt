@@ -8,6 +8,8 @@ import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
+import destiny.tools.serializers.StarDoctorSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -21,6 +23,7 @@ import kotlin.reflect.KClass
  * 每次 function 都要 call [StarLucky.fun祿存]
  *
  */
+@Serializable(with = StarDoctorSerializer::class)
 sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, Type.博士) {
   object 博士 : StarDoctor("博士")
   object 力士 : StarDoctor("力士")

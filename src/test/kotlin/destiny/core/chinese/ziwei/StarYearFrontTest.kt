@@ -7,12 +7,23 @@ import destiny.core.AbstractPointTest
 import destiny.core.chinese.Branch.*
 import destiny.core.getAbbreviation
 import destiny.core.toString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.Json.Default.decodeFromString
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 class StarYearFrontTest : AbstractPointTest(StarYearFront::class) {
+
+  @Test
+  fun testSerialize() {
+    StarYearFront.values.forEach { s ->
+      val rawJson = Json.encodeToString(s)
+      logger.info { "$s = $rawJson" }
+      assertSame(s, decodeFromString(rawJson))
+    }
+  }
 
   @Test
   fun testToString() {

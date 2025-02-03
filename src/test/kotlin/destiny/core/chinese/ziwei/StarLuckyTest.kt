@@ -9,6 +9,8 @@ import destiny.core.chinese.impls.TianyiZiweiBookImpl
 import destiny.core.getAbbreviation
 import destiny.core.toString
 import destiny.tools.KotlinLogging
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.Json.Default.decodeFromString
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -19,6 +21,15 @@ import kotlin.test.assertSame
 class StarLuckyTest {
 
   private val logger = KotlinLogging.logger { }
+
+  @Test
+  fun testSerialize() {
+    StarLucky.values.forEach { s ->
+      val rawJson = Json.encodeToString(s)
+      logger.info { "$s = $rawJson" }
+      assertSame(s, decodeFromString(rawJson))
+    }
+  }
 
   @Test
   fun testToString() {

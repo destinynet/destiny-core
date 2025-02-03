@@ -19,12 +19,15 @@ import destiny.core.chinese.ziwei.StarLucky.Companion.fun左輔_月數
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun文昌
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun文曲
 import destiny.core.chinese.ziwei.ZStar.Type.*
+import destiny.tools.serializers.StarMinorSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
 /**
  * 乙級星有總共有34顆
  */
+@Serializable(with = StarMinorSerializer::class)
 sealed class StarMinor(nameKey: String, type: Type) : ZStar(nameKey, ZStar::class.java.name, type) {
 
   object 天官 : StarMinor("天官", 年干) // 吉

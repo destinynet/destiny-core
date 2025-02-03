@@ -6,12 +6,15 @@ package destiny.core.chinese.ziwei
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.chinese.Branch
+import destiny.tools.serializers.StarYearFrontSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
 /**
  * 歲前 12 星
  */
+@Serializable(with = StarYearFrontSerializer::class)
 sealed class StarYearFront(nameKey: String) : ZStar(nameKey, StarYearFront::class.java.name, Type.歲前) {
 
   object 歲建 : StarYearFront("歲建")

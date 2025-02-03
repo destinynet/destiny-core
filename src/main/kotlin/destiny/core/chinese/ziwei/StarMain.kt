@@ -7,6 +7,8 @@ import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
+import destiny.tools.serializers.StarMainSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -14,6 +16,7 @@ import kotlin.reflect.KClass
  * 14 顆主星
  * resource key 存放於 [ZStar] 的 ZStar.properties 當中
  */
+@Serializable(with = StarMainSerializer::class)
 sealed class StarMain(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", Type.主星) {
 
   object 紫微 : StarMain("紫微")

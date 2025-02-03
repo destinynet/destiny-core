@@ -3,9 +3,13 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.toString
+import destiny.tools.serializers.ZStarSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
+import kotlin.reflect.KClass
 
 /**
  * 紫微斗數的諸星
@@ -27,7 +31,8 @@ import java.util.*
  * 二、四化 ： 見 [ITransFour]
  *
  */
-sealed class ZStar : Point, Comparable<ZStar>  {
+@Serializable(with = ZStarSerializer::class)
+sealed class ZStar : Point, Comparable<ZStar> {
 
   val type: Type
 
@@ -44,6 +49,7 @@ sealed class ZStar : Point, Comparable<ZStar>  {
     日時, // 恩光、天貴
     年月時, // 天才、天壽
     宮位, // 宮位決定 : 天使、天傷
+
     // 以下雜星
     博士, // 博士12神
     長生, // 長生12神煞
@@ -84,5 +90,34 @@ sealed class ZStar : Point, Comparable<ZStar>  {
     return result
   }
 
+  companion object : IPoints<ZStar> {
+    override val type: KClass<out Point> = ZStar::class
+
+    override val values: Array<ZStar> by lazy {
+      arrayOf(
+        *StarMain.values,
+        *StarLucky.values,
+        *StarUnlucky.values,
+        *StarMinor.values,
+        *StarDoctor.values,
+        *StarGeneralFront.values,
+        *StarLongevity.values,
+        *StarYearFront.values,
+      )
+    }
+
+
+    override fun fromString(value: String, locale: Locale): ZStar? {
+      return StarMain.fromString(value, locale)
+        ?: StarLucky.fromString(value, locale)
+        ?: StarUnlucky.fromString(value, locale)
+        ?: StarMinor.fromString(value, locale)
+        ?: StarDoctor.fromString(value, locale)
+        ?: StarGeneralFront.fromString(value, locale)
+        ?: StarLongevity.fromString(value, locale)
+        ?: StarYearFront.fromString(value, locale)
+    }
+
+  }
 
 }

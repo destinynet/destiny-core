@@ -17,6 +17,8 @@ import destiny.core.chinese.ziwei.StarLongevity.Companion.fun長生
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun養
 import destiny.core.getAbbreviation
 import destiny.core.toString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.Json.Default.decodeFromString
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -24,6 +26,14 @@ import kotlin.test.assertSame
 
 class StarLongevityTest : AbstractPointTest(StarLongevity::class) {
 
+  @Test
+  fun testSerialize() {
+    StarLongevity.values.forEach { s ->
+      val rawJson = Json.encodeToString(s)
+      logger.info { "$s = $rawJson" }
+      assertSame(s, decodeFromString(rawJson))
+    }
+  }
 
   @Test
   fun testToString() {

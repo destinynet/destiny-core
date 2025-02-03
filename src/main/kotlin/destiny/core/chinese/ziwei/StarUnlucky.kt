@@ -12,12 +12,15 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.trilogy
 import destiny.core.chinese.ziwei.ZStar.Type.*
+import destiny.tools.serializers.StarUnluckySerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
 /**
  * 六兇星
  */
+@Serializable(with = StarUnluckySerializer::class)
 sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", type) {
 
   object 擎羊 : StarUnlucky("擎羊", 年干) // 甲

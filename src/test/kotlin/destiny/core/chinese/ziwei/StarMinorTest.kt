@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.AbstractPointTest
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.丁
 import destiny.core.chinese.StemBranch.己酉
@@ -34,17 +35,24 @@ import destiny.core.chinese.ziwei.StarMinor.Companion.fun陰煞_月數
 import destiny.core.chinese.ziwei.StarMinor.Companion.fun鳳閣
 import destiny.core.getAbbreviation
 import destiny.core.toString
-import destiny.tools.KotlinLogging
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.Json.Default.decodeFromString
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 
-// TODO : AbstractPointTest : 旬空(nameKey = '陽空') 無法反查字串
-class StarMinorTest {
+class StarMinorTest : AbstractPointTest(StarMain::class) {
 
-  private val logger = KotlinLogging.logger { }
+  @Test
+  fun testSerialize() {
+    StarMinor.values.forEach { s ->
+      val rawJson = Json.encodeToString(s)
+      logger.info { "$s = $rawJson" }
+      assertSame(s, decodeFromString(rawJson))
+    }
+  }
 
   @Test
   fun testToString() {
