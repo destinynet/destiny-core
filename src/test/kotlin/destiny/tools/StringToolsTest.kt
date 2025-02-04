@@ -10,6 +10,12 @@ import kotlin.test.assertEquals
 class StringToolsTest {
 
   @Test
+  fun testDiff() {
+    assertEquals("對面的女孩", StringTools.markDifferences("對面的女孩", "對面的女孩"))
+    assertEquals("對[面]的女孩", StringTools.markDifferences("對麵的女孩", "對面的女孩"))
+  }
+
+  @Test
   fun testTakeAndEllipsis() {
     "1234567890".also {
       assertEquals(it, it.takeAndEllipsis(10))
