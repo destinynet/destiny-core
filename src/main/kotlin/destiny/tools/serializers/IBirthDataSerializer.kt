@@ -5,6 +5,7 @@ package destiny.tools.serializers
 
 import destiny.core.*
 import destiny.core.calendar.locationOf
+import destiny.tools.KotlinLogging
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
@@ -15,6 +16,9 @@ import java.util.*
 
 
 object IBirthDataSerializer : KSerializer<IBirthData> {
+
+  private val logger = KotlinLogging.logger { }
+
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("IBirthData") {
     element<ITimeLoc>("timeLoc")
     element<Gender>("gender")
@@ -39,8 +43,8 @@ object IBirthDataSerializer : KSerializer<IBirthData> {
           1                            -> gender = try {
             decodeSerializableElement(descriptor, 1, GenderSerializer)
           } catch (e: Exception) {
-            // TODO : legacy style , to be removed in the future (maybe at end of 2025)
-            if (decodeBooleanElement(descriptor, 1)) Gender.男 else Gender.女
+            logger.warn { "GENDER_NOT_FOUND , default to MALE" }
+            Gender.男
           }
 
           CompositeDecoder.DECODE_DONE -> break
