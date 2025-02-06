@@ -18,7 +18,7 @@ class Holder<T : Any>(initialConfig: T) {
 
   fun updateConfig(newConfig: T) = configLock.write {
     if (currentConfig != newConfig) {
-      logger.info { "updating config..." }
+      logger.info { "updating config... ${currentConfig::class.simpleName}" }
       currentConfig = newConfig
     } else {
       logger.trace { "config unchanged, skip updating" }
