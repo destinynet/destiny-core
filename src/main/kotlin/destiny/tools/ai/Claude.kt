@@ -71,6 +71,26 @@ class Claude {
   }
 
   @Serializable
+  data class MetaData(@SerialName("user_id") val userId: String)
+
+
+  @Serializable
+  data class ChatModel(
+    val messages: List<ClaudeMessage>,
+    // "claude-2.1" , "claude-3-opus-20240229" , "claude-3-5-sonnet-20240620"
+    val model: String,
+
+    @SerialName("max_tokens")
+    val maxTokens: Int = 4096,
+
+    @SerialName("metadata")
+    val metadata: MetaData? = null,
+
+    val temperature: Double? = 1.0,
+    val tools: List<Claude.Function>? = null
+  )
+
+  @Serializable
   data class Response(val id : String?, val type : String, val role : String?, val model : String?,
                       @SerialName("content")
                       val contents : List<Content>?,
@@ -85,7 +105,11 @@ class Claude {
       @SerialName("input_tokens")
       val inputTokens : Int ,
       @SerialName("output_tokens")
-      val outputTokens : Int
+      val outputTokens : Int,
+      @SerialName("cache_creation_input_tokens")
+      val cacheCreationInputTokens : Int,
+      @SerialName("cache_read_input_tokens")
+      val cacheReadInputTokens : Int,
     )
 
     @Serializable

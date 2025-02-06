@@ -41,7 +41,24 @@ class Cohere {
     @SerialName("finish_reason")
     val finishReason: String,
     val message: Message,
-  )
+    val usage: Usage,
+  ) {
+    @Serializable
+    data class InputOutputTokens(
+      @SerialName("input_tokens")
+      val input : Int ,
+      @SerialName("output_tokens")
+      val output: Int
+    )
+
+    @Serializable
+    data class Usage(
+      @SerialName("billed_units")
+      val billedUnits : InputOutputTokens,
+      @SerialName("tokens")
+      val tokens: InputOutputTokens,
+    )
+  }
 
   @Serializable
   data class ToolFunction(val type: String = "function", val function: Function) {

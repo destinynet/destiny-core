@@ -8,7 +8,14 @@ sealed class Reply {
 
   abstract val provider: String
 
-  data class Normal(val content: String, override val provider: String, val model: String, val invokedFunCalls: List<FunCall> = emptyList()) : Reply()
+  data class Normal(val content: String,
+                    override val provider: String,
+                    val model: String,
+                    val invokedFunCalls: List<FunCall> = emptyList(),
+                    val inputTokens: Int? = null,
+                    val outputTokens: Int? = null,
+                    val duration: Duration? = null,
+  ) : Reply()
 
   sealed class Error : Reply() {
 

@@ -16,7 +16,7 @@ class OpenAi {
                      @SerialName("tool_calls") val toolCalls: List<ToolCall>? = null) {
 
     @Serializable
-    data class ToolCall(val id: String, val type: String, val function: ToolCallFunction) {
+    data class ToolCall(val id: String, val type: String = "function", val function: ToolCallFunction) {
       @Serializable
       data class ToolCallFunction(val name: String, val arguments: String)
     }
