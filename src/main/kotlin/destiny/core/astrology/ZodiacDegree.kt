@@ -32,6 +32,9 @@ interface IZodiacDegree : Comparable<IZodiacDegree>, Serializable {
 /** 黃道帶度數 */
 @JvmInline
 value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree {
+  init {
+    require(value >= 0 && value < 360)
+  }
 
   override val zDeg: Double
     get() = value
