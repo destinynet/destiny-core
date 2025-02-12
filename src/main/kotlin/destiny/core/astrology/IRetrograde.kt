@@ -10,6 +10,7 @@ import destiny.core.astrology.StationaryType.DIRECT_TO_RETROGRADE
 import destiny.core.astrology.StationaryType.RETROGRADE_TO_DIRECT
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.IEvent
+import destiny.tools.KotlinLogging
 
 enum class RetrogradePhase {
   PREPARING,
@@ -83,24 +84,48 @@ interface IRetrograde {
   }
 
   private fun getNextStationaryPosType(star: Star, fromGmt: GmtJulDay, forward: Boolean, starPositionImpl: IStarPosition<*>): Triple<GmtJulDay, IPos, StationaryType>? {
+    val logger = KotlinLogging.logger { }
     return if(star is Planet.SUN || star is Planet.MOON || star is LunarPoint) {
       null
     } else {
       val (nextStationary, nextPos) = getNextStationaryPos(star, fromGmt, forward, starPositionImpl)
 
-      val prior = nextStationary - 1 / 1440.0
-      val after = nextStationary + 1 / 1440.0
-      val pos1 = starPositionImpl.getPosition(star, prior, GEO, ECLIPTIC)
-      val pos2 = starPositionImpl.getPosition(star, after, GEO, ECLIPTIC)
+      val intervals = listOf(
+        1.0 / 1440.0,      // 1 分鐘
+        60.0 / 1440.0,     // 60 分鐘
+        1.0                // 1 天
+      )
 
-      val type: StationaryType = if (pos1.speedLng > 0 && pos2.speedLng < 0)
-        DIRECT_TO_RETROGRADE
-      else if (pos1.speedLng < 0 && pos2.speedLng > 0)
-        RETROGRADE_TO_DIRECT
-      else
-        throw RuntimeException("Error , star = " + star + " 滯留前 speed = " + pos1.speedLng + " , 滯留後 speed = " + pos2.speedLng)
+      intervals
+        .asSequence()
+        .mapNotNull { interval ->
+          val prior = nextStationary - interval
+          val after = nextStationary + interval
 
-      Triple(nextStationary, nextPos, type)
+          val pos1 = starPositionImpl.getPosition(star, prior, GEO, ECLIPTIC)
+          val pos2 = starPositionImpl.getPosition(star, after, GEO, ECLIPTIC)
+
+          if (pos1.speedLng == pos2.speedLng) {
+            null
+          } else {
+            when {
+              pos1.speedLng > 0 && pos2.speedLng < 0 -> DIRECT_TO_RETROGRADE
+              pos1.speedLng < 0 && pos2.speedLng > 0 -> RETROGRADE_TO_DIRECT
+              else                                   -> null  // 速度變化不符合預期模式
+            }
+          }
+        }.firstOrNull()
+        .also { result ->
+          // 如果所有間隔都無法得到明確結果，記錄錯誤
+          if (result == null) {
+            logger.error {
+              "[getStationaryType] Failed to determine stationary type for star $star after trying all intervals"
+            }
+          }
+        }
+        ?.let { type ->
+          Triple(nextStationary, nextPos, type)
+        }
     }
   }
 
@@ -320,5 +345,4 @@ interface IRetrograde {
       }
     }
   }
-
 }
