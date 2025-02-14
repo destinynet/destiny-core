@@ -14,4 +14,5 @@ enum class Provider {
   GROQ,
   XAI,
   DEEPSEEK,
+  TOGETHER,
 }
