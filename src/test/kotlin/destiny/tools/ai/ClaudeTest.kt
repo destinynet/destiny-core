@@ -54,7 +54,9 @@ class ClaudeTest {
           "stop_sequence": null,
           "usage": {
             "input_tokens": 390,
-            "output_tokens": 92
+            "output_tokens": 92,
+            "cache_creation_input_tokens":0,
+            "cache_read_input_tokens":0
           }
         }
       """.trimIndent()
@@ -107,7 +109,9 @@ class ClaudeTest {
         "stop_sequence": null,
         "usage": {
           "input_tokens": 4804,
-          "output_tokens": 271
+          "output_tokens": 271,
+          "cache_creation_input_tokens":0,
+          "cache_read_input_tokens":0
         }
       }
     """.trimIndent()
