@@ -237,6 +237,27 @@ interface IPlate : Serializable {
     }.firstOrNull()?.key
   }
 
+  /** 哪些宮位自化 */
+  fun getSelfTransFourHousesOf(t4Value: T4Value, flowType: FlowType = FlowType.MAIN): Set<House> {
+    return House.entries.mapNotNull { house ->
+      getHouseDataOf(house, flowType)
+    }.filter { houseData ->
+      houseData.selfTransFours.any { it == t4Value }
+    }.map { houseData -> houseData.house }
+      .toSet()
+  }
+
+  /** 哪些宮位化出到對宮 */
+  fun getOppoTransFourHouseOf(t4Value: T4Value, type: FlowType = FlowType.MAIN): Set<House> {
+    return House.entries.mapNotNull { house ->
+      getHouseDataOf(house, type)
+    }.filter { houseData ->
+      houseData.oppositeTransFours.any { it == t4Value }
+    }.map { houseData -> houseData.house }
+      .toSet()
+  }
+
+
   /** 取得在此地支宮位的主星 */
   fun getMainStarsIn(branch: Branch): List<ZStar> {
     return houseDataSet.filter { it.stemBranch.branch == branch }
