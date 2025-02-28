@@ -92,13 +92,13 @@ class JulianDateTime private constructor(private val date: JulianDate, private v
     return if (unit is ChronoUnit) {
       when (unit) {
         ChronoUnit.NANOS     -> plusNanos(amountToAdd)
-        ChronoUnit.MICROS    -> plusDays(amountToAdd / MICROS_PER_DAY).plusNanos(amountToAdd % MICROS_PER_DAY * 1000)
-        ChronoUnit.MILLIS    -> plusDays(amountToAdd / MILLIS_PER_DAY).plusNanos(amountToAdd % MILLIS_PER_DAY * 1000000)
+        ChronoUnit.MICROS    -> plusDays(amountToAdd / MICROS_PER_DAY).plusNanos((amountToAdd % MICROS_PER_DAY) * 1000)
+        ChronoUnit.MILLIS    -> plusDays(amountToAdd / MILLIS_PER_DAY).plusNanos((amountToAdd % MILLIS_PER_DAY) * 1000000)
         ChronoUnit.SECONDS   -> plusSeconds(amountToAdd)
         ChronoUnit.MINUTES   -> plusMinutes(amountToAdd)
         ChronoUnit.HOURS     -> plusHours(amountToAdd)
         // no overflow (256 is multiple of 2)
-        ChronoUnit.HALF_DAYS -> plusDays(amountToAdd / 256).plusHours(amountToAdd % 256 * 12)
+        ChronoUnit.HALF_DAYS -> plusDays(amountToAdd / 256).plusHours((amountToAdd % 256) * 12)
         else                 -> with(date.plus(amountToAdd, unit), time)
       }
     } else
@@ -148,27 +148,31 @@ class JulianDateTime private constructor(private val date: JulianDate, private v
     if (hours or minutes or seconds or nanos == 0L) {
       return with(newDate, time)
     }
-    var totDays = nanos / NANOS_PER_DAY +             //   max/24*60*60*1B
 
-      seconds / SECONDS_PER_DAY +                     //   max/24*60*60
+    val signedLong = sign.toLong()
 
-      minutes / MINUTES_PER_DAY +                     //   max/24*60
+    val totalDays = signedLong * (
+      nanos / NANOS_PER_DAY +
+        seconds / SECONDS_PER_DAY +
+        minutes / MINUTES_PER_DAY +
+        hours / HOURS_PER_DAY
+      )
 
-      hours / HOURS_PER_DAY                           //   max/24
-    totDays *= sign.toLong()                          // total max*0.4237...
-    var totNanos = nanos % NANOS_PER_DAY +            //   max  86400000000000
 
-      seconds % SECONDS_PER_DAY * NANOS_PER_SECOND +  //   max  86400000000000
+    val totalNanos = signedLong * (
+      nanos % NANOS_PER_DAY +
+        (seconds % SECONDS_PER_DAY) * NANOS_PER_SECOND +
+        (minutes % MINUTES_PER_DAY) * NANOS_PER_MINUTE +
+        (hours % HOURS_PER_DAY) * NANOS_PER_HOUR
+      ) + time.toNanoOfDay()
 
-      minutes % MINUTES_PER_DAY * NANOS_PER_MINUTE +  //   max  86400000000000
+    val additionalDays = Math.floorDiv(totalNanos, NANOS_PER_DAY)
+    val newNanoOfDay = Math.floorMod(totalNanos, NANOS_PER_DAY)
 
-      hours % HOURS_PER_DAY * NANOS_PER_HOUR          //   max  86400000000000
-    val curNoD = time.toNanoOfDay()                   //   max  86400000000000
-    totNanos = totNanos * sign + curNoD               // total 432000000000000
-    totDays += Math.floorDiv(totNanos, NANOS_PER_DAY)
-    val newNoD = Math.floorMod(totNanos, NANOS_PER_DAY)
-    val newTime = if (newNoD == curNoD) time else LocalTime.ofNanoOfDay(newNoD)
-    return with(newDate.plus(totDays, ChronoUnit.DAYS), newTime)
+    val adjustedDate = newDate.plus(totalDays + additionalDays, ChronoUnit.DAYS)
+    val adjustedTime = if (newNanoOfDay == time.toNanoOfDay()) time else LocalTime.ofNanoOfDay(newNanoOfDay)
+
+    return with(adjustedDate, adjustedTime)
   }
 
 
