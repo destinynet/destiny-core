@@ -28,6 +28,21 @@ object LocaleTools {
     }
   }
 
+  fun parseAcceptLanguageHeader(acceptLanguage: String): Locale? {
+    return try {
+      // 提取第一個權重最高的語言標籤
+      val primaryLang = acceptLanguage.split(',')
+        .firstOrNull()
+        ?.split(';')
+        ?.firstOrNull()
+        ?.trim()
+
+      primaryLang?.let { Locale.forLanguageTag(it) }
+    } catch (e: Exception) {
+      null
+    }
+  }
+
   /**
    * <pre>
    * 在 localeStringMap 中，給予特定的 locale，找出其值(String)
