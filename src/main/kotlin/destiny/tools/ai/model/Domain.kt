@@ -47,6 +47,9 @@ sealed class Domain(val bdnpGenerated: Boolean) {
   /** 紫微占卜 */
   data object ZIWEI_DIVINE : Domain(false)
 
+  /** 卜卦占星 */
+  data object HORARY : Domain(false)
+
   sealed class Daily : Domain(true) {
     /** 占星每日運勢 */
     data object DAILY_HOROSCOPE : Daily()
