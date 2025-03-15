@@ -263,7 +263,7 @@ class EightWordsColorCanvas(
 
     if ("日" != pillarName) {
       // 干對日主
-      val stemAgainstDay: String = reactionUtil.getReaction(stemBranch.stem, dayStem).toString()
+      val stemAgainstDay: String = ReactionUtil.getReaction(stemBranch.stem, dayStem).toString()
       pillar.setText(stemAgainstDay.substring(0, 1), 4, 3, "gray")
       pillar.setText(stemAgainstDay.substring(1, 2), 5, 3, "gray")
     }
@@ -285,9 +285,9 @@ class EightWordsColorCanvas(
 
   /** 地支藏干 */
   fun getHiddenStemsCanvas(地支: Branch, 天干: Stem): ColorCanvas {
-    val reactionsUtil = ReactionUtil(this.hiddenStemsImpl)
+    val reactionUtil = ReactionUtil(this.hiddenStemsImpl)
     val resultCanvas = ColorCanvas(3, 6, ChineseStringTools.NULL_CHAR)
-    val reactions = reactionsUtil.getReactions(地支, 天干)
+    val reactions = reactionUtil.getReactions(地支, 天干)
     for (i in reactions.indices) {
       val eachReaction = reactions[i]
       resultCanvas.setText(ReactionUtil.getStem(天干, eachReaction).toString(), 1, 5 - 2 * i, "gray") // 天干

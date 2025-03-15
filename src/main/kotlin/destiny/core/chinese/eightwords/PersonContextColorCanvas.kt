@@ -10,8 +10,8 @@ import destiny.core.calendar.eightwords.Direction
 import destiny.core.calendar.eightwords.EightWordsColorCanvas
 import destiny.core.calendar.eightwords.TimeLine
 import destiny.tools.ChineseStringTools
-import destiny.tools.canvas.ColorCanvas
 import destiny.tools.KotlinLogging
+import destiny.tools.canvas.ColorCanvas
 import org.apache.commons.lang3.StringUtils
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField
@@ -46,7 +46,7 @@ class PersonContextColorCanvas(private val config: PersonPresentConfig,
 
     val eightWords = model.eightWords
 
-    val reactionsUtil = ReactionUtil(this.hiddenStemsImpl)
+    val reactionUtil = ReactionUtil(this.hiddenStemsImpl)
 
     add(ewContextColorCanvas.eightWordsColorCanvas, 11, 9) // 純粹八字盤
 
@@ -134,7 +134,7 @@ class PersonContextColorCanvas(private val config: PersonPresentConfig,
           }
         }
 
-        val reaction = reactionsUtil.getReaction(stemBranch.stem, eightWords.day.stem)
+        val reaction = ReactionUtil.getReaction(stemBranch.stem, eightWords.day.stem)
         triColumn.setText(reaction.toString().substring(0, 1), 3, 3, "gray")
         triColumn.setText(reaction.toString().substring(1, 2), 4, 3, "gray")
         triColumn.setText(stemBranch.stem.toString(), 5, 3, "red")
@@ -173,12 +173,12 @@ class PersonContextColorCanvas(private val config: PersonPresentConfig,
           val title = StringUtils.center(startFortuneWestYear, 6, ' ')
           triColumnShort.setText(title, 1, 1, foreColor = "green", backColor = null, title = "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
 
-          val reaction = reactionsUtil.getReaction(stemBranch.stem, eightWords.day.stem)
+          val reaction = ReactionUtil.getReaction(stemBranch.stem, eightWords.day.stem)
           triColumnShort.setText(reaction.getAbbreviation(Locale.TAIWAN) , 2 , 3 , "gray")
           triColumnShort.setText(stemBranch.stem.toString() , 3 , 3 , "red")
           triColumnShort.setText(stemBranch.branch.toString() , 4 , 3 , "red")
           // 地支藏干
-          val reactions = reactionsUtil.getReactions(stemBranch.branch, eightWords.day.stem)
+          val reactions = reactionUtil.getReactions(stemBranch.branch, eightWords.day.stem)
           for (k in reactions.indices) {
             val eachReaction = reactions[k]
             triColumnShort.setText(ReactionUtil.getStem(eightWords.day.stem, eachReaction).toString(), 5, 5 - 2 * k, "gray") // 天干

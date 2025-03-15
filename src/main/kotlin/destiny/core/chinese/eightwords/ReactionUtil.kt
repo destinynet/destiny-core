@@ -16,67 +16,69 @@ class ReactionUtil(
   private val hiddenStemsImpl: IHiddenStems) {
 
   /**
-   * 取得天干的相互關係
-   * actor == 乙 , actee == 甲 , 傳回劫財 (乙是甲的劫財)
-   * actor == 丙 , actee == 甲 , 傳回食神 (丙是甲的食神)
-   * @param actor 作用者（天干）
-   * @param actee 被作用者（日干）
-   * @return 天干十神
-   */
-  fun getReaction(actor: Stem, actee: Stem): Reaction {
-    if (actor.fiveElement.isProducingTo(actee.fiveElement)) {
-      return if (actor.booleanValue == actee.booleanValue)
-        Reaction.偏印
-      else
-        Reaction.正印
-    }
-
-    if (actor.fiveElement.isDominatorOf(actee.fiveElement)) {
-      return if (actor.booleanValue == actee.booleanValue)
-        Reaction.七殺
-      else
-        Reaction.正官
-    }
-
-    if (actor.fiveElement.isDominatedBy(actee.fiveElement)) {
-      return if (actor.booleanValue == actee.booleanValue)
-        Reaction.偏財
-      else
-        Reaction.正財
-    }
-
-    if (actor.fiveElement.isSame(actee.fiveElement)) {
-      return if (actor.booleanValue == actee.booleanValue)
-        Reaction.比肩
-      else
-        Reaction.劫財
-    }
-
-    if (actor.fiveElement.isProducedBy(actee.fiveElement)) {
-      return if (actor.booleanValue == actee.booleanValue)
-        Reaction.食神
-      else
-        Reaction.傷官
-    }
-
-    throw RuntimeException("Error occurred when Reactions.getReaction($actor , $actee)!")
-  }
-
-  /**
    * 地支藏干對天干的關係
    * @param actor 作用者（地支）
    * @param actee 被作用者（日干）
    * @return 地支十神 List <Reactions>
-  </Reactions> */
+   */
   fun getReactions(actor: Branch, actee: Stem): List<Reaction> {
+    return getHiddenStemReactions(actor, actee).map { it.second }
+  }
 
+  fun getHiddenStemReactions(actor: Branch, actee: Stem): List<Pair<Stem ,Reaction>> {
     return this.hiddenStemsImpl.getHiddenStems(actor)
-      .map { each -> this.getReaction(each, actee) }
+      .map { hiddenStem -> hiddenStem to getReaction(hiddenStem, actee) }
       .toList()
-
   }
 
   companion object {
+
+    /**
+     * 取得天干的相互關係
+     * actor == 乙 , actee == 甲 , 傳回劫財 (乙是甲的劫財)
+     * actor == 丙 , actee == 甲 , 傳回食神 (丙是甲的食神)
+     * @param actor 作用者（天干）
+     * @param actee 被作用者（日干）
+     * @return 天干十神
+     */
+    fun getReaction(actor: Stem, actee: Stem): Reaction {
+      if (actor.fiveElement.isProducingTo(actee.fiveElement)) {
+        return if (actor.booleanValue == actee.booleanValue)
+          Reaction.偏印
+        else
+          Reaction.正印
+      }
+
+      if (actor.fiveElement.isDominatorOf(actee.fiveElement)) {
+        return if (actor.booleanValue == actee.booleanValue)
+          Reaction.七殺
+        else
+          Reaction.正官
+      }
+
+      if (actor.fiveElement.isDominatedBy(actee.fiveElement)) {
+        return if (actor.booleanValue == actee.booleanValue)
+          Reaction.偏財
+        else
+          Reaction.正財
+      }
+
+      if (actor.fiveElement.isSame(actee.fiveElement)) {
+        return if (actor.booleanValue == actee.booleanValue)
+          Reaction.比肩
+        else
+          Reaction.劫財
+      }
+
+      if (actor.fiveElement.isProducedBy(actee.fiveElement)) {
+        return if (actor.booleanValue == actee.booleanValue)
+          Reaction.食神
+        else
+          Reaction.傷官
+      }
+
+      throw RuntimeException("Error occurred when Reactions.getReaction($actor , $actee)!")
+    }
 
     /**
      * 從天干以及其關係，取得其目標天干，例如：甲的劫財，傳回乙
