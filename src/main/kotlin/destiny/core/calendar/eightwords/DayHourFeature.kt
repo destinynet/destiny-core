@@ -102,8 +102,7 @@ class DayHourFeature(
     val nextZiStart = hourBranchFeature.getLmtNextStartOf(lmt, loc, 子, config.hourBranchConfig)
 
     // 下個子正時刻
-    val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config.dayConfig), loc, julDayResolver)
-      .let { dstSwitchCheck.invoke(it, nextZiStart) }
+    val nextMidnightLmt = dstSwitchCheck(TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config.dayConfig), loc, julDayResolver), nextZiStart)
 
     val day: StemBranch = this.getDay(lmt, loc, nextZiStart, nextMidnightLmt, config)
 
@@ -115,16 +114,15 @@ class DayHourFeature(
     return day to hour
   }
 
-
-  private val dstSwitchCheck = { nextMn: ChronoLocalDateTime<*>, nextZiStart: ChronoLocalDateTime<*> ->
+  private fun dstSwitchCheck(nextMn: ChronoLocalDateTime<*>, nextZiStart: ChronoLocalDateTime<*>): ChronoLocalDateTime<*> {
     val dur = Duration.between(nextZiStart, nextMn).abs()
-    if (dur.toMinutes() <= 1) {
-      logger.warn("子初子正 幾乎重疊！ 可能是 DST 切換. 下個子初 = {} , 下個子正 = {} . 相隔秒 = {}", nextZiStart, nextMn, dur.seconds) // DST 結束前一天，可能會出錯
+    return if (dur.toMinutes() <= 1) {
       nextMn.plus(1, ChronoUnit.HOURS)
     } else {
       nextMn
     }
   }
+
 
   private fun getHourStem(lmt: ChronoLocalDateTime<*>, loc: ILocation, day: StemBranch, hourBranch: Branch, config: IDayHourConfig): Stem {
 
@@ -161,8 +159,7 @@ class DayHourFeature(
     val nextZiStart = hourBranchFeature.getLmtNextStartOf(lmt, loc, 子, config.hourBranchConfig)
 
     // 下個子正時刻
-    val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config.dayConfig), loc, julDayResolver)
-      .let { dstSwitchCheck.invoke(it, nextZiStart) }
+    val nextMidnightLmt = dstSwitchCheck(TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config.dayConfig), loc, julDayResolver), nextZiStart)
 
     return getDay(lmt, loc, nextZiStart, nextMidnightLmt, config)
   }
