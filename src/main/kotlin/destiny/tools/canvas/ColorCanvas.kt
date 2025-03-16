@@ -62,15 +62,12 @@ open class ColorCanvas : Serializable {
               childY = child.canvasCanvas.width
             }
             //檢查 '子' content 是否有背景色，如果背景色是 null , 則 '父'content 必須保留其背景色
-            if (childContent[j].backColor != null
-            ) {
-
-              this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1] = childContent[j]
+            val index = (child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1
+            if (childContent[j].backColor != null) {
+              this.content[index] = childContent[j]
             } else {
-              val tempBgColor =
-                this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1].backColor
-              this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1] = childContent[j]
-              this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1].backColor = tempBgColor
+              val tempBgColor = this.content[index].backColor
+              this.content[index] = childContent[j].copy(backColor = tempBgColor)
             }
 
           }

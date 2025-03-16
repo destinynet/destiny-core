@@ -12,12 +12,12 @@ import java.io.Serializable
 import java.util.*
 
 
-internal class ColorByte(val byte: Byte,
-                         val foreColor: String? = null,
-                         var backColor: String? = null,
-                         val font: Font?,
-                         val url: String?,
-                         val title: String?) : Serializable {
+internal data class ColorByte(val byte: Byte,
+                              val foreColor: String? = null,
+                              val backColor: String? = null,
+                              val font: Font?,
+                              val url: String?,
+                              val title: String?) : Serializable {
 
   /**
    * 檢查這個 ColorByte 是否與另一個 ColorByte 除了 byte 不同外，其他都相同
