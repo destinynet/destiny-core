@@ -62,15 +62,15 @@ open class ColorCanvas : Serializable {
               childY = child.canvasCanvas.width
             }
             //檢查 '子' content 是否有背景色，如果背景色是 null , 則 '父'content 必須保留其背景色
-            if (childContent[j].getBackColor() != null
+            if (childContent[j].backColor != null
             ) {
 
               this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1] = childContent[j]
             } else {
               val tempBgColor =
-                this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1].getBackColor()
+                this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1].backColor
               this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1] = childContent[j]
-              this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1].setBackColor(tempBgColor)
+              this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1].backColor = tempBgColor
             }
 
           }
@@ -159,7 +159,7 @@ open class ColorCanvas : Serializable {
   constructor(height: Int, width: Int) {
     this.height = height
     this.width = width
-    content = Array(width * height) { ColorByte(' ') }
+    content = Array(width * height) { ColorByte.ofBgChar(' ') }
   }
 
 
@@ -174,7 +174,7 @@ open class ColorCanvas : Serializable {
     this.height = height
     this.width = width
 
-    content = Array(width * height) { ColorByte(bgChar) }
+    content = Array(width * height) { ColorByte.ofBgChar(bgChar) }
   } //constructor
 
 
@@ -203,7 +203,7 @@ open class ColorCanvas : Serializable {
 
     return Array(width * height) {
       val w = it % width
-      ColorByte(bytes[w % bytes.size], foreColor, backColor, null, null, null)
+      ColorByte.of(bytes[w % bytes.size], foreColor, backColor, null, null, null)
     }
   }
 
@@ -292,14 +292,14 @@ open class ColorCanvas : Serializable {
         //先求出，目前 index 到行尾，要塞入幾個空白鍵（中文字為 1 個）
         val spaces = width - index % this.width
         for (j in index until index + spaces) {
-          content[j] = ColorByte(' '.code.toByte(), fore, back, font, url, title)
+          content[j] = ColorByte.of(' '.code.toByte(), fore, back, font, url, title)
         } //填空白
         index += spaces
       }
       for (j in index until index + bytes.size) {
         //如果新加入的背景色為空，檢查原字元的背景色
         if (back == null) {
-          back = content[j].getBackColor()
+          back = content[j].backColor
         }
         //如果新加入的前景色為空，檢查原字元的前景色
         if (fore == null) {
@@ -314,7 +314,7 @@ open class ColorCanvas : Serializable {
           url = content[j].url
         }
 
-        content[j] = ColorByte(bytes[j - index], fore, back, font, url, title)
+        content[j] = ColorByte.of(bytes[j - index], fore, back, font, url, title)
       }
       index += bytes.size
       if (index >= content.size) {
@@ -479,7 +479,7 @@ open class ColorCanvas : Serializable {
 
     val hasUrl = cb.url != null
 
-    val hasFont: Boolean = cb.font != null || cb.foreColor != null || cb.getBackColor() != null || cb.title != null
+    val hasFont: Boolean = cb.font != null || cb.foreColor != null || cb.backColor != null || cb.title != null
 
     if (hasUrl && !hasFont) {
       //只有網址
@@ -506,8 +506,8 @@ open class ColorCanvas : Serializable {
     if (cb.foreColor != null) {
       sb.append("color:${cb.foreColor}; ").append(cb.foreColor).append("; ")
     }
-    if (cb.getBackColor() != null) {
-      sb.append("background-color:${cb.getBackColor()}; ")
+    if (cb.backColor != null) {
+      sb.append("background-color:${cb.backColor}; ")
     }
     if (cb.font != null) {
       sb.append("font-family:${cb.font.family}; ")
