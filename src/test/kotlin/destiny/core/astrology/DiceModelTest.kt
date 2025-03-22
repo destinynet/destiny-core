@@ -4,10 +4,9 @@
 package destiny.core.astrology
 
 import destiny.core.Gender
-import kotlinx.serialization.encodeToString
+import destiny.tools.KotlinLogging
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
-import destiny.tools.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -8,7 +8,6 @@ import destiny.core.Gender
 import destiny.core.calendar.locationOf
 import destiny.tools.KotlinLogging
 import destiny.tools.serializers.IBirthDataNamePlaceSerializer
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual

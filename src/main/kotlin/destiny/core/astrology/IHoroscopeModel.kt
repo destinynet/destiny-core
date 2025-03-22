@@ -316,7 +316,7 @@ interface IHoroscopeModel : ITimeLoc {
       points.filterNot { midpoint.points.contains(it) }  // Exclude points that are already part of the midpoint
         .mapNotNull { focal ->
           val focalDegree = positionMap.getValue(focal).lngDeg
-          val angle = (midpoint.degree as ZodiacDegree).getAngle(focalDegree)
+          val angle = midpoint.degree.getAngle(focalDegree)
           if (angle <= orb) {
             MidPointWithFocal(midpoint, focal, angle)
           } else {

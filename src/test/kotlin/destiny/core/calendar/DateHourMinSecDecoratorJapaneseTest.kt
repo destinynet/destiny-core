@@ -14,7 +14,7 @@ class DateHourMinSecDecoratorJapaneseTest {
 
   @Test
   fun testGetOutputString() {
-    val decorator = DateHourMinSecDecoratorJapanese()
+    val decorator = DateHourMinSecDecoratorJapanese
 
     decorator.getOutputString(LocalDateTime.of(2000, 1, 1, 0, 0, 0)).also {
       assertEquals("西暦　2000年01月01日　00時00分 00.00秒", it)

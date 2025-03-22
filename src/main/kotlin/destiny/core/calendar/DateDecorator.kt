@@ -33,6 +33,7 @@ object DateDecorator {
  * 西元前2000年12月31日
  */
 object DateDecoratorChinese : Decorator<ChronoLocalDate>, Serializable {
+  private fun readResolve(): Any = DateDecoratorChinese
   override fun getOutputString(value: ChronoLocalDate): String {
 
     return buildString {
@@ -50,6 +51,7 @@ object DateDecoratorChinese : Decorator<ChronoLocalDate>, Serializable {
 }
 
 object DateDecoratorEnglish : Decorator<ChronoLocalDate>, Serializable {
+  private fun readResolve(): Any = DateDecoratorEnglish
   override fun getOutputString(value: ChronoLocalDate): String {
     return buildString {
       append(value.get(YEAR_OF_ERA))
@@ -67,6 +69,7 @@ object DateDecoratorEnglish : Decorator<ChronoLocalDate>, Serializable {
 }
 
 object DateDecoratorJapan : Decorator<ChronoLocalDate>, Serializable {
+  private fun readResolve(): Any = DateDecoratorJapan
   override fun getOutputString(value: ChronoLocalDate): String {
     return buildString {
       append("西暦")

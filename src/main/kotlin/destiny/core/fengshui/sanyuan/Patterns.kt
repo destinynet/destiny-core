@@ -28,10 +28,16 @@ sealed class ChartPattern : IPattern, Serializable {
 
   data class 反吟(val mntDir: MntDir) : ChartPattern()
 
-  object 父母三般卦 : ChartPattern() // 每宮內的都是 147 , 258 or 369
+  // 每宮內的都是 147 , 258 or 369
+  object 父母三般卦 : ChartPattern() {
+    private fun readResolve(): Any = 父母三般卦
+  }
 
   // 亦稱「全盤連茹格」
-  object 連珠三般卦 : ChartPattern() // 每宮內的數字 都是差一 , 例如 123 , 789 , 891 , 912
+  //  每宮內的數字 都是差一 , 例如 123 , 789 , 891 , 912
+  object 連珠三般卦 : ChartPattern() {
+    private fun readResolve(): Any = 連珠三般卦
+  }
 
   /** 七星打劫 , 必定是 [MntDirSpec.雙星到向] 的情形 */
   data class 七星打劫(
@@ -39,7 +45,10 @@ sealed class ChartPattern : IPattern, Serializable {
     val map: Map<Symbol, Period>   // 乾->1 , 震->4 , 離->7 這樣的 mapping
   ) : ChartPattern()
 
-  object 八純卦 : ChartPattern() //大凶格局
+  //大凶格局
+  object 八純卦 : ChartPattern() {
+    private fun readResolve(): Any = 八純卦
+  }
 }
 
 /** 單宮 特徵 */

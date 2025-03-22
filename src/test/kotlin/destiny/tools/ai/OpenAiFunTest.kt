@@ -8,7 +8,6 @@ import destiny.tools.KotlinLogging
 import destiny.tools.ai.InputSchema.Property
 import destiny.tools.ai.OpenAi.FunctionDeclaration
 import destiny.tools.ai.OpenAi.FunctionDeclaration.Function
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test

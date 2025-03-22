@@ -2599,35 +2599,89 @@ sealed class ClassicalPattern(
   }
 
 
-  object 極向離明 : ClassicalPattern(GOOD)
-  object 紫府同宮 : ClassicalPattern(GOOD)
+  object 極向離明 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 極向離明
+  }
+
+  object 紫府同宮 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 紫府同宮
+  }
+
   data class 紫府朝垣(val house: House, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
   data class 天府朝垣(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
   data class 府相朝垣(val house: House, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
   data class 巨機同宮(val branch: Branch, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + branch.toString() + "]" + goods.joinToString(","))
   data class 善蔭朝綱(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
-  object 機月同梁 : ClassicalPattern(GOOD)
+  object 機月同梁 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 機月同梁
+  }
+
   data class 日月照壁(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
   data class 日麗中天(val dayNight: DayNight, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + dayNight.toString() + "]" + goods.joinToString(","))
   data class 君臣慶會(val house: House, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
-  object 日月同宮 : ClassicalPattern(GOOD)
-  object 日月並明 : ClassicalPattern(GOOD)
-  object 日照雷門 : ClassicalPattern(GOOD)
+  object 日月同宮 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 日月同宮
+  }
+
+  object 日月並明 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 日月並明
+  }
+
+  object 日照雷門 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 日照雷門
+  }
+
   data class 陽梁昌祿(val house: House) : ClassicalPattern(GOOD, "[$house]")
-  object 明珠出海 : ClassicalPattern(GOOD)
-  object 巨日同宮 : ClassicalPattern(GOOD)
-  object 貪武同行 : ClassicalPattern(GOOD)
-  object 將星得地 : ClassicalPattern(GOOD)
+  object 明珠出海 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 明珠出海
+  }
+
+  object 巨日同宮 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 巨日同宮
+  }
+
+  object 貪武同行 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 貪武同行
+  }
+
+  object 將星得地 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 將星得地
+  }
+
   data class 七殺朝斗(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
-  object 雄宿朝垣 : ClassicalPattern(GOOD)
-  object 對面朝天 : ClassicalPattern(GOOD)
-  object 科名會祿 : ClassicalPattern(GOOD)
-  object 甲第登科 : ClassicalPattern(GOOD)
-  object 科權逢迎 : ClassicalPattern(GOOD)
-  object 祿合鴛鴦 : ClassicalPattern(GOOD)
+  object 雄宿朝垣 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 雄宿朝垣
+  }
+
+  object 對面朝天 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 對面朝天
+  }
+
+  object 科名會祿 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 科名會祿
+  }
+
+  object 甲第登科 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 甲第登科
+  }
+
+  object 科權逢迎 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 科權逢迎
+  }
+
+  object 祿合鴛鴦 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 祿合鴛鴦
+  }
+
   data class 雙祿朝垣(val house: House) : ClassicalPattern(GOOD, "[$house]")
-  object 三奇嘉會 : ClassicalPattern(GOOD)
-  object 祿馬交馳 : ClassicalPattern(GOOD)
+  object 三奇嘉會 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 三奇嘉會
+  }
+
+  object 祿馬交馳 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 祿馬交馳
+  }
+
   data class 月朗天門(val dayNight: DayNight) : ClassicalPattern(GOOD, dayNight.toString())
   data class 月生滄海(val dayNight: DayNight) : ClassicalPattern(GOOD, dayNight.toString())
   data class 石中隱玉(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
@@ -2639,88 +2693,245 @@ sealed class ClassicalPattern(
   data class 文梁振紀(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
   data class 魁鉞拱命(val route: Route) : ClassicalPattern(GOOD, route.toString())
   data class 左右同宮(val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, goods.joinToString(","))
-  object 丹墀桂墀 : ClassicalPattern(GOOD)
-  object 甲第登庸 : ClassicalPattern(GOOD)
-  object 化星返貴 : ClassicalPattern(GOOD)
-  object 天乙拱命 : ClassicalPattern(GOOD)
-  object 坐貴向貴 : ClassicalPattern(GOOD)
-  object 廉貞文武 : ClassicalPattern(GOOD)
+  object 丹墀桂墀 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 丹墀桂墀
+  }
+
+  object 甲第登庸 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 甲第登庸
+  }
+
+  object 化星返貴 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 化星返貴
+  }
+
+  object 天乙拱命 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 天乙拱命
+  }
+
+  object 坐貴向貴 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 坐貴向貴
+  }
+
+  object 廉貞文武 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 廉貞文武
+  }
+
   data class 星臨正位(val stars: Set<ZStar>) : ClassicalPattern(GOOD, stars.joinToString(","))
   data class 輔拱文星(val house: House) : ClassicalPattern(GOOD, "[$house]")
   data class 三合火貪(val house: House) : ClassicalPattern(GOOD, "[$house]")
   data class 三合鈴貪(val house: House) : ClassicalPattern(GOOD, "[$house]")
   data class 權祿巡逢(val house: House, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
 
-  object 科權祿夾 : ClassicalPattern(GOOD)
-  object 文星拱命 : ClassicalPattern(GOOD)
+  object 科權祿夾 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 科權祿夾
+  }
+
+  object 文星拱命 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 文星拱命
+  }
+
   data class 財祿夾馬(val house: House, val goods: Set<GoodCombo>) : ClassicalPattern(GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
 
   data class 財蔭夾印(val house: House) : ClassicalPattern(GOOD, "[$house]")
   data class 擎羊入廟(val house: House) : ClassicalPattern(GOOD, "[$house]")
   data class 祿馬配印(val house: House) : ClassicalPattern(GOOD, "[$house]")
-  object 紫府夾命 : ClassicalPattern(GOOD)
-  object 日月夾命 : ClassicalPattern(GOOD)
-  object 昌曲夾命 : ClassicalPattern(GOOD)
-  object 左右夾命 : ClassicalPattern(GOOD)
-  object 雙祿夾命 : ClassicalPattern(GOOD)
-  object 權煞化祿 : ClassicalPattern(GOOD)
-  object 祿文拱命 : ClassicalPattern(GOOD)
-  object 明祿暗祿 : ClassicalPattern(GOOD)
-  object 水木清華 : ClassicalPattern(GOOD)
+  object 紫府夾命 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 紫府夾命
+  }
+
+  object 日月夾命 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 日月夾命
+  }
+
+  object 昌曲夾命 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 昌曲夾命
+  }
+
+  object 左右夾命 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 左右夾命
+  }
+
+  object 雙祿夾命 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 雙祿夾命
+  }
+
+  object 權煞化祿 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 權煞化祿
+  }
+
+  object 祿文拱命 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 祿文拱命
+  }
+
+  object 明祿暗祿 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 明祿暗祿
+  }
+
+  object 水木清華 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 水木清華
+  }
+
   data class 金鑾扶駕(val house: House) : ClassicalPattern(GOOD, "[$house]")
-  object 玉袖添香 : ClassicalPattern(GOOD)
-  object 殺破狼格 : ClassicalPattern(GOOD)
-  object 廟星變景 : ClassicalPattern(GOOD)
-  object 辛勞開創 : ClassicalPattern(GOOD)
-  object 財印天祿 : ClassicalPattern(GOOD)
-  object 蟾宮折桂 : ClassicalPattern(GOOD)
+  object 玉袖添香 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 玉袖添香
+  }
+
+  object 殺破狼格 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 殺破狼格
+  }
+
+  object 廟星變景 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 廟星變景
+  }
+
+  object 辛勞開創 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 辛勞開創
+  }
+
+  object 財印天祿 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 財印天祿
+  }
+
+  object 蟾宮折桂 : ClassicalPattern(GOOD) {
+    private fun readResolve(): Any = 蟾宮折桂
+  }
 
   // =========================== 以下 , 惡格 ===========================
 
   data class 馬頭帶劍(val evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
   data class 極居卯酉(val evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
-  object 命無正曜 : ClassicalPattern(EVIL)
-  object 風流綵杖 : ClassicalPattern(EVIL)
-  object 巨機化酉 : ClassicalPattern(EVIL)
-  object 日月反背 : ClassicalPattern(EVIL)
-  object 日月疾厄 : ClassicalPattern(EVIL)
-  object 梁馬飄蕩 : ClassicalPattern(EVIL)
-  object 貞殺同宮 : ClassicalPattern(EVIL)
-  object 殺拱廉貞 : ClassicalPattern(EVIL)
+  object 命無正曜 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 命無正曜
+  }
+
+  object 風流綵杖 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 風流綵杖
+  }
+
+  object 巨機化酉 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 巨機化酉
+  }
+
+  object 日月反背 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 日月反背
+  }
+
+  object 日月疾厄 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 日月疾厄
+  }
+
+  object 梁馬飄蕩 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 梁馬飄蕩
+  }
+
+  object 貞殺同宮 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 貞殺同宮
+  }
+
+  object 殺拱廉貞 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 殺拱廉貞
+  }
+
   data class 巨逢四煞(val house: House) : ClassicalPattern(EVIL, "[$house]")
-  object 命裡逢空 : ClassicalPattern(EVIL)
+  object 命裡逢空 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 命裡逢空
+  }
+
   data class 文星遇夾(val evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
-  object 馬落空亡 : ClassicalPattern(EVIL)
-  object 兩重華蓋 : ClassicalPattern(EVIL)
-  object 祿逢衝破 : ClassicalPattern(EVIL)
-  object 泛水桃花 : ClassicalPattern(EVIL)
-  object 天梁拱月 : ClassicalPattern(EVIL)
-  object 財與囚仇 : ClassicalPattern(EVIL)
-  object 火入泉鄉 : ClassicalPattern(EVIL)
-  object 祿逢兩煞 : ClassicalPattern(EVIL)
+  object 馬落空亡 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 馬落空亡
+  }
+
+  object 兩重華蓋 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 兩重華蓋
+  }
+
+  object 祿逢衝破 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 祿逢衝破
+  }
+
+  object 泛水桃花 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 泛水桃花
+  }
+
+  object 天梁拱月 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 天梁拱月
+  }
+
+  object 財與囚仇 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 財與囚仇
+  }
+
+  object 火入泉鄉 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 火入泉鄉
+  }
+
+  object 祿逢兩煞 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 祿逢兩煞
+  }
+
   data class 君子在野(val evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
   data class 羊陀夾忌(val house: House) : ClassicalPattern(EVIL, house.toString())
   data class 火鈴夾忌(val house: House) : ClassicalPattern(EVIL, house.toString())
-  object 羊陀夾命 : ClassicalPattern(EVIL)
-  object 火鈴夾命 : ClassicalPattern(EVIL)
-  object 空劫夾命 : ClassicalPattern(EVIL)
+  object 羊陀夾命 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 羊陀夾命
+  }
+
+  object 火鈴夾命 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 火鈴夾命
+  }
+
+  object 空劫夾命 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 空劫夾命
+  }
+
   data class 刑囚夾印(val house: House) : ClassicalPattern(EVIL, "[$house]")
   data class 刑忌夾印(val house: House) : ClassicalPattern(EVIL, "[$house]")
   data class 祿衰馬困(val house: House) : ClassicalPattern(EVIL, "[$house]")
-  object 名不利達 : ClassicalPattern(EVIL)
-  object 三方並凶 : ClassicalPattern(EVIL)
+  object 名不利達 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 名不利達
+  }
+
+  object 三方並凶 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 三方並凶
+  }
+
   data class 三奇沖剋(val house: House) : ClassicalPattern(EVIL, "[$house]")
-  object 天機巳亥 : ClassicalPattern(EVIL)
-  object 月同遇煞 : ClassicalPattern(EVIL)
-  object 桃花滾浪 : ClassicalPattern(EVIL)
-  object 梁同巳亥 : ClassicalPattern(EVIL)
+  object 天機巳亥 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 天機巳亥
+  }
+
+  object 月同遇煞 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 月同遇煞
+  }
+
+  object 桃花滾浪 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 桃花滾浪
+  }
+
+  object 梁同巳亥 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 梁同巳亥
+  }
+
   data class 科星逢破(val house: House) : ClassicalPattern(EVIL, "[$house]")
   data class 刑囚會鈴(val house: House) : ClassicalPattern(EVIL, "[$house]")
-  object 鈴昌陀武 : ClassicalPattern(EVIL)
-  object 廉殺羊鈴 : ClassicalPattern(EVIL)
-  object 一生孤貧 : ClassicalPattern(EVIL)
+  object 鈴昌陀武 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 鈴昌陀武
+  }
+
+  object 廉殺羊鈴 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 廉殺羊鈴
+  }
+
+  object 一生孤貧 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 一生孤貧
+  }
+
   data class 魁鉞凶冲(val evils: Set<EvilCombo>) : ClassicalPattern(EVIL, evils.joinToString(","))
-  object 眾水朝東 : ClassicalPattern(EVIL)
+  object 眾水朝東 : ClassicalPattern(EVIL) {
+    private fun readResolve(): Any = 眾水朝東
+  }
   // TODO : 在野孤君 , 無道之君
 
   companion object {

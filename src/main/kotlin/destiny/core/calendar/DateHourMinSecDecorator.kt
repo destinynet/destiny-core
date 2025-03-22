@@ -14,7 +14,7 @@ object DateHourMinSecDecorator {
   private val implMap = mapOf<Locale, Decorator<ChronoLocalDateTime<*>>>(
     Locale.TAIWAN to DateHourMinSecDecoratorTradChinese,
     Locale.ENGLISH to DateHourMinSecDecoratorEnglish,
-    Locale.JAPAN to DateHourMinSecDecoratorJapanese()
+    Locale.JAPAN to DateHourMinSecDecoratorJapanese
   )
 
   fun getOutputString(time: ChronoLocalDateTime<*>, locale: Locale): String {
@@ -32,6 +32,7 @@ object DateHourMinSecDecorator {
 </pre> *
  */
 object DateHourMinSecDecoratorTradChinese : Decorator<ChronoLocalDateTime<*>>, Serializable {
+  private fun readResolve(): Any = DateHourMinSecDecoratorTradChinese
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
 
@@ -44,7 +45,8 @@ object DateHourMinSecDecoratorTradChinese : Decorator<ChronoLocalDateTime<*>>, S
 }
 
 
-class DateHourMinSecDecoratorJapanese : Decorator<ChronoLocalDateTime<*>>, Serializable {
+object DateHourMinSecDecoratorJapanese : Decorator<ChronoLocalDateTime<*>>, Serializable {
+  private fun readResolve(): Any = DateHourMinSecDecoratorJapanese
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
 
@@ -59,6 +61,7 @@ class DateHourMinSecDecoratorJapanese : Decorator<ChronoLocalDateTime<*>>, Seria
 
 
 object DateHourMinSecDecoratorEnglish : Decorator<ChronoLocalDateTime<*>>, Serializable {
+  private fun readResolve(): Any = DateHourMinSecDecoratorEnglish
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
     return buildString {

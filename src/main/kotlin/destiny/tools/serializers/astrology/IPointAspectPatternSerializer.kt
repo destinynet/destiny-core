@@ -40,7 +40,7 @@ object IPointAspectPatternSerializer : KSerializer<IPointAspectPattern> {
     var angle = 0.0
     var aspect: Aspect? = null
     var type: IPointAspectPattern.Type? = null
-    var orb: Double = 0.0
+    var orb = 0.0
     var score: Score? = null
 
     decoder.decodeStructure(descriptor) {

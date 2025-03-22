@@ -8,8 +8,7 @@ import java.io.Serializable
 import java.time.*
 import java.time.chrono.ChronoZonedDateTime
 import java.time.temporal.*
-import java.time.temporal.ChronoField.INSTANT_SECONDS
-import java.time.temporal.ChronoField.NANO_OF_SECOND
+import java.time.temporal.ChronoField.*
 
 /**
  * see [java.time.ZonedDateTime]
@@ -76,7 +75,7 @@ class ZonedJulianDateTime private constructor(
   /**
    * see [ZonedDateTime.withEarlierOffsetAtOverlap]
    */
-  override fun withEarlierOffsetAtOverlap(): ZonedJulianDateTime? {
+  override fun withEarlierOffsetAtOverlap(): ZonedJulianDateTime {
     // 獲取所有可能的偏移量
     val localDateTime = LocalDateTime.from(dateTime)
     val offsets = zone.rules.getValidOffsets(localDateTime)
@@ -91,7 +90,7 @@ class ZonedJulianDateTime private constructor(
     return if (earlierOffset == offset) this else ZonedJulianDateTime(dateTime, earlierOffset, zone)
   }
 
-  override fun withLaterOffsetAtOverlap(): ZonedJulianDateTime? {
+  override fun withLaterOffsetAtOverlap(): ZonedJulianDateTime {
     // 獲取所有可能的偏移量
     val localDateTime = LocalDateTime.from(dateTime)
     val offsets = zone.rules.getValidOffsets(localDateTime)
@@ -133,12 +132,12 @@ class ZonedJulianDateTime private constructor(
     }
   }
 
-  override fun with(field: TemporalField, newValue: Long): ZonedJulianDateTime? {
+  override fun with(field: TemporalField, newValue: Long): ZonedJulianDateTime {
     if (field is ChronoField) {
       when (field) {
         // 處理時區相關字段特殊情況
-        ChronoField.INSTANT_SECONDS -> return create(newValue, nano, zone)
-        ChronoField.OFFSET_SECONDS  -> {
+        INSTANT_SECONDS -> return create(newValue, nano, zone)
+        OFFSET_SECONDS  -> {
           val newOffset = ZoneOffset.ofTotalSeconds(newValue.toInt())
           return ZonedJulianDateTime(dateTime, newOffset, zone)
         }
@@ -155,7 +154,7 @@ class ZonedJulianDateTime private constructor(
     return field.adjustInto(this, newValue) as ZonedJulianDateTime
   }
 
-  override fun plus(amountToAdd: Long, unit: TemporalUnit): ZonedJulianDateTime? {
+  override fun plus(amountToAdd: Long, unit: TemporalUnit): ZonedJulianDateTime {
     if (unit is ChronoUnit) {
       return when (unit) {
         // 這些單位可能改變偏移量，需要解析重疊或缺口

@@ -3,11 +3,10 @@
  */
 package destiny.tools.serializers
 
-import kotlinx.serialization.encodeToString
+import destiny.tools.KotlinLogging
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
-import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

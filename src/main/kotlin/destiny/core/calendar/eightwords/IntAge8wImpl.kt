@@ -67,7 +67,7 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializa
       return getRangesInner(result, toAge - fromAge)
     }
 
-    return cache.get(key) {innerGetList()}!!
+    return cache.get(key) {innerGetList()}
 
   }
 

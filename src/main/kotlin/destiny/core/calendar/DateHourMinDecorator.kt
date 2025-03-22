@@ -37,6 +37,7 @@ object DateHourMinDecorator {
 </pre> *
  */
 object DateHourMinDecoratorTradChinese : Decorator<ChronoLocalDateTime<*>>, Serializable {
+  private fun readResolve(): Any = DateHourMinDecoratorTradChinese
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
     return buildString {
@@ -49,6 +50,7 @@ object DateHourMinDecoratorTradChinese : Decorator<ChronoLocalDateTime<*>>, Seri
 
 
 object DateHourMinDecoratorSimpChinese : Decorator<ChronoLocalDateTime<*>>, Serializable {
+  private fun readResolve(): Any = DateHourMinDecoratorSimpChinese
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
     return buildString {
@@ -61,6 +63,7 @@ object DateHourMinDecoratorSimpChinese : Decorator<ChronoLocalDateTime<*>>, Seri
 
 
 object DateHourMinDecoratorEnglish : Decorator<ChronoLocalDateTime<*>>, Serializable {
+  private fun readResolve(): Any = DateHourMinDecoratorEnglish
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
     return buildString {
@@ -73,6 +76,7 @@ object DateHourMinDecoratorEnglish : Decorator<ChronoLocalDateTime<*>>, Serializ
 
 
 object DateHourMinDecoratorJapanese : Decorator<ChronoLocalDateTime<*>>, Serializable {
+  private fun readResolve(): Any = DateHourMinDecoratorJapanese
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
     return buildString {

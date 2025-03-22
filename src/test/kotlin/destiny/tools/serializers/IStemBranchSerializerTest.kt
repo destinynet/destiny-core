@@ -5,7 +5,6 @@ package destiny.tools.serializers
 
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUnconstrained
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals

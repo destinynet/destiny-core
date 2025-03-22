@@ -21,6 +21,7 @@ object HourMinDecorator {
 }
 
 object HourMinDecoratorTradChinese : Decorator<Pair<Int, Int>>, java.io.Serializable {
+  private fun readResolve(): Any = HourMinDecoratorTradChinese
   override fun getOutputString(value: Pair<Int, Int>): String {
     return buildString {
       append(if (value.first < 10) "0" else "").append(value.first).append("時")
@@ -30,6 +31,7 @@ object HourMinDecoratorTradChinese : Decorator<Pair<Int, Int>>, java.io.Serializ
 }
 
 object HourMinDecoratorSimplifiedChinese : Decorator<Pair<Int, Int>>, java.io.Serializable {
+  private fun readResolve(): Any = HourMinDecoratorSimplifiedChinese
   override fun getOutputString(value: Pair<Int, Int>): String {
     return buildString {
       append(if (value.first < 10) "0" else "").append(value.first).append("时")
@@ -39,6 +41,7 @@ object HourMinDecoratorSimplifiedChinese : Decorator<Pair<Int, Int>>, java.io.Se
 }
 
 object HourMinDecoratorEnglish : Decorator<Pair<Int, Int>>, java.io.Serializable {
+  private fun readResolve(): Any = HourMinDecoratorEnglish
   override fun getOutputString(value: Pair<Int, Int>): String {
     return buildString {
       append(if (value.first < 10) "0" else "").append(value.first)

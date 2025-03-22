@@ -87,7 +87,7 @@ class Claude {
     val metadata: MetaData? = null,
 
     val temperature: Double? = 1.0,
-    val tools: List<Claude.Function>? = null
+    val tools: List<Function>? = null
   )
 
   @Serializable

@@ -1,13 +1,12 @@
 package destiny.core
 
+import destiny.tools.KotlinLogging
 import destiny.tools.getDescription
 import destiny.tools.getTitle
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.elementNames
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
-import destiny.tools.KotlinLogging
 import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.reflect.KClass
@@ -68,7 +67,6 @@ fun KType.enumValueOf(name: String, serializer: KSerializer<Any?> = serializer(t
   return Json.decodeFromString(serializer, "\"$name\"") as Enum<*>
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 fun KType.enumValuesName(serializer: KSerializer<Any?> = serializer(this)): List<String> {
 //  if (serializer.descriptor.kind != SerialKind.ENUM) {
 //    throw error("enumValuesName must be used on enum")

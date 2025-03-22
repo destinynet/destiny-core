@@ -62,6 +62,7 @@ sealed class AccidentalDignity : IPlanetPattern {
   data class Oriental(override val planet: Planet) : AccidentalDignity()
   data class Occidental(override val planet: Planet) : AccidentalDignity()
   data object Moon_Increase_Light : AccidentalDignity() {
+    private fun readResolve(): Any = Moon_Increase_Light
     override val planet: Planet = Planet.MOON
   }
 
