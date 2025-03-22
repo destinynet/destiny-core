@@ -94,10 +94,10 @@ interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
 }
 
 @kotlinx.serialization.Serializable
-data class EightWordsNullable private constructor(override val year: IStemBranchOptional,
-                                                  override val month: IStemBranchOptional,
-                                                  override val day: IStemBranchOptional,
-                                                  override val hour: IStemBranchOptional) : IEightWordsNullable, IEightWordsNullableFactory, Serializable {
+data class EightWordsNullable(override val year: IStemBranchOptional,
+                              override val month: IStemBranchOptional,
+                              override val day: IStemBranchOptional,
+                              override val hour: IStemBranchOptional) : IEightWordsNullable, IEightWordsNullableFactory, Serializable {
 
 
   override val eightWordsNullable: EightWordsNullable

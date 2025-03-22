@@ -16,7 +16,7 @@ interface IAspectData : IPointAspectPattern, IGmtJulDay
 /**
  * 存放兩顆「不同」星體交角的資料結構
  * */
-data class AspectData internal constructor(
+data class AspectData(
   val pointAspectPattern: PointAspectPattern,
   /** 交會型態 : 接近 or 分離 */
   override val type: Type? = null,

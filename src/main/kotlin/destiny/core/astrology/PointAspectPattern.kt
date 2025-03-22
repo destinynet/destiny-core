@@ -63,7 +63,7 @@ interface IPointAspectPattern : IPointAnglePattern, Comparable<IPointAspectPatte
 
 
 /** 兩顆（可能相同）星體的交角 */
-data class PointAspectPattern internal constructor(
+data class PointAspectPattern(
   override val points: List<AstroPoint>,
   override val angle: Double,
   override val type: Type?,

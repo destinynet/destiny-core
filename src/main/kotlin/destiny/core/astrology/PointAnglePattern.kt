@@ -20,7 +20,7 @@ interface IPointAnglePattern : IAstroPattern {
   }
 }
 
-data class PointAnglePattern internal constructor(
+data class PointAnglePattern(
   override val points: List<AstroPoint>,
   override val angle: Double
 ) : IPointAnglePattern, Serializable {
