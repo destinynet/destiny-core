@@ -237,6 +237,8 @@ fun JsonElement.toMap(): Map<String, Any> {
 
         is JsonObject    -> {
           // 特別處理 tzid 的情況
+          //  2025-03-23 note : 應該可以移除此 check. 以前因為 tzid : String? , spec 被寫為 `object` , 2025-03-23 之後， tzid 固定為 String , 就沒出現這些情形了
+          //  TODO : check logs of 'tzid from' , 觀察一兩個月
           if ("tzid".equals(key, ignoreCase = true)) {
             // possible key containing tzid value
             val possibleKeys = listOf("value", "name")
