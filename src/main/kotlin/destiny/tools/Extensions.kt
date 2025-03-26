@@ -241,7 +241,7 @@ fun JsonElement.toMap(): Map<String, Any> {
           //  TODO : check logs of 'tzid from' , 觀察一兩個月
           if ("tzid".equals(key, ignoreCase = true)) {
             // possible key containing tzid value
-            val possibleKeys = listOf("value", "name")
+            val possibleKeys = listOf("value", "name", "timeZoneId")
             when {
               // {"Asia": "Taipei"} format
               jsonElement.size == 1 && possibleKeys.none { jsonElement.containsKey(it) } -> {
