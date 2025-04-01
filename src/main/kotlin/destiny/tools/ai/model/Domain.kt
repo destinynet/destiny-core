@@ -54,6 +54,9 @@ sealed class Domain(val bdnpGenerated: Boolean) {
     /** 占星每日運勢 */
     data object DAILY_HOROSCOPE : Daily()
   }
+
+  /** 合盤 */
+  data object SYNASTRY : Domain(true)
 }
 
 fun Domain.getTitle(locale: Locale): String {
