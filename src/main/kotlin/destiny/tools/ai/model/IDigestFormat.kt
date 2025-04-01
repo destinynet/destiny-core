@@ -13,6 +13,8 @@ interface IDigestFormat<M, D> : IDigest<M, String> {
 
   val domain: Domain
 
-  fun promptsForExpectingStructure(locale: Locale = Locale.getDefault()): D?
+  fun promptsForExpectingStructure(model: M, locale: Locale = Locale.getDefault()): D? {
+    return null
+  }
 }
 

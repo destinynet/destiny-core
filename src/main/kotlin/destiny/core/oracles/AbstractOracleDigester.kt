@@ -8,7 +8,7 @@ import java.util.*
 abstract class AbstractOracleDigester<M : IClause> : AbstractDigestFormat<M, String>(String.serializer()) {
   final override val domain: Domain = Domain.CHANCE
 
-  override fun promptsForExpectingStructure(locale: Locale): String? {
+  override fun digestWithoutFormat(model: M, locale: Locale): String? {
     return null
   }
 }

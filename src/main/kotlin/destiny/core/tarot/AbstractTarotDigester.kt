@@ -13,7 +13,7 @@ abstract class AbstractTarotDigester<T : ISpread> : AbstractDigestFormat<T, Stri
 
   final override val domain: Domain = Domain.TAROT
 
-  override fun promptsForExpectingStructure(locale: Locale): String? {
+  override fun digestWithoutFormat(model: T, locale: Locale): String? {
     return null
   }
 }

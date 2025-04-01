@@ -19,20 +19,20 @@ abstract class AbstractDigestFormat<M, D>(
     return buildString {
       append(digestWithoutFormat(model, locale))
       appendLine()
-      promptsForExpectingStructure(locale)?.also { structurePrompting ->
+      promptsForExpectingStructure(model, locale)?.also { structurePrompting ->
         appendLine(prettyJson.encodeToString(serializer, structurePrompting))
       }
-      appendLine(finalInstruction(locale))
+      appendLine(finalInstruction(model , locale))
     }
   }
 
   abstract fun digestWithoutFormat(model: M, locale: Locale): String?
 
-  fun finalInstruction(locale: Locale): String {
+  fun finalInstruction(model : M , locale: Locale): String {
     return buildString {
       append("[FINAL_INSTRUCTION]\n")
       append("Please ensure your entire response is in ${locale.getDisplayLanguage(Locale.ENGLISH)} ( locale = $locale )")
-      if (promptsForExpectingStructure(locale) != null) {
+      if (promptsForExpectingStructure(model, locale) != null) {
         append("(except for the JSON keys)")
       }
       append(", including all terms and interpretations.")

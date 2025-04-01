@@ -21,6 +21,14 @@ enum class SynastryDomain {
   COMMUNICATION,
   PHYSICAL,
   GROWTH,
+  SUPPORT,
+  LONGEVITY,
+  CHALLENGE,
+  COLLABORATION,
+  INNOVATION,
+  REGARD,
+  TRIGGERS,
+  AUTHORITY,
 }
 
 data class SynastryFocalAspect(val inner: AstroPoint, val outer: AstroPoint, val aspect: Aspect, val orb: Double, val involved: List<MidPointFocalAspect>)
