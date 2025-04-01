@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.Gender
+import destiny.core.SynastryGrain
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Axis.RISING
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
@@ -47,19 +48,19 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
     aspectCalculator: IAspectCalculator,
     midpointAspectCalculator: IAspectCalculator,
     aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
-    mode: SynastryMode = SynastryMode.BOTH_FULL
-  ): SynastryModel {
+    mode: SynastryGrain = SynastryGrain.BOTH_FULL
+  ): SynastryHoroscope {
     val innerPoints = modelInner.points.let { points ->
       when (mode) {
-        SynastryMode.BOTH_FULL, SynastryMode.INNER_FULL_OUTER_DATE -> points
-        else                                                       -> points.filter { it != Planet.MOON }
+        SynastryGrain.BOTH_FULL, SynastryGrain.INNER_FULL_OUTER_DATE -> points
+        else                                                         -> points.filter { it != Planet.MOON }
       }
     }.toList()
 
     val outerPoints = modelOuter.points.let { points ->
       when (mode) {
-        SynastryMode.BOTH_FULL, SynastryMode.INNER_DATE_OUTER_FULL -> points
-        else                                                       -> points.filter { it != Planet.MOON }
+        SynastryGrain.BOTH_FULL, SynastryGrain.INNER_DATE_OUTER_FULL -> points
+        else                                                         -> points.filter { it != Planet.MOON }
       }
     }.toList()
 
@@ -95,7 +96,7 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
         }
       }.toSet()
 
-    return SynastryModel(mode, modelInner, modelOuter, synastryAspects, midpointFocalAspects)
+    return SynastryHoroscope(mode, modelInner, modelOuter, synastryAspects, midpointFocalAspects)
   }
 }
 

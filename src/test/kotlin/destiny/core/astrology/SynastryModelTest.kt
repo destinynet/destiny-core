@@ -3,10 +3,10 @@
  */
 package destiny.core.astrology
 
-import destiny.core.BirthDataNamePlace
-import destiny.core.Gender
+import destiny.core.*
 import destiny.core.calendar.locationOf
 import destiny.tools.KotlinLogging
+import destiny.tools.ai.model.Domain
 import destiny.tools.serializers.IBirthDataNamePlaceSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
@@ -16,7 +16,7 @@ import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SynastryRequestTest {
+class SynastryModelTest {
 
   private val logger = KotlinLogging.logger { }
 
@@ -33,11 +33,11 @@ class SynastryRequestTest {
     val inner = BirthDataNamePlace(Gender.男, LocalDateTime.of(1990, 1, 1, 12, 0), loc, "小明", "台北市")
     val outer = BirthDataNamePlace(Gender.女, LocalDateTime.of(1994, 7, 1, 12, 0), loc, "小花", "台北市")
 
-    val request = SynastryRequest(inner, outer, SynastryMode.INNER_FULL_OUTER_DATE)
+    val request = SynastryModel(inner, outer, SynastryGrain.INNER_FULL_OUTER_DATE, Domain.Bdnp.HOROSCOPE, SynastryAspect.LOVE)
 
     json.encodeToString(request).also { rawJson ->
       logger.info { "raw json = $rawJson" }
-      json.decodeFromString<SynastryRequest>(rawJson).also { deserialized ->
+      json.decodeFromString<SynastryModel>(rawJson).also { deserialized ->
         assertEquals(request , deserialized)
       }
     }

@@ -3,38 +3,15 @@
  */
 package destiny.core.astrology
 
+import destiny.core.SynastryGrain
 import destiny.core.astrology.prediction.ISynastryAspect
 import destiny.core.astrology.prediction.MidPointFocalAspect
 import java.io.Serializable
 
-enum class SynastryMode {
-  BOTH_FULL,              // Both parties have full date and time
-  INNER_FULL_OUTER_DATE,  // Inner chart has full data, outer chart only has date
-  INNER_DATE_OUTER_FULL,  // Inner chart only has date, outer chart has full data
-  BOTH_DATE               // Both parties only have date, no time
-}
-
-enum class SynastryDomain {
-  OVERVIEW,
-  EMOTIONAL,
-  FINANCIAL,
-  COMMUNICATION,
-  PHYSICAL,
-  GROWTH,
-  SUPPORT,
-  LONGEVITY,
-  CHALLENGE,
-  COLLABORATION,
-  INNOVATION,
-  REGARD,
-  TRIGGERS,
-  AUTHORITY,
-}
-
 data class SynastryFocalAspect(val inner: AstroPoint, val outer: AstroPoint, val aspect: Aspect, val orb: Double, val involved: List<MidPointFocalAspect>)
 
-class SynastryModel(
-  val mode: SynastryMode,
+class SynastryHoroscope(
+  val mode: SynastryGrain,
   val inner: IPersonHoroscopeModel,
   val outer: IPersonHoroscopeModel,
   val progressedAspects: Set<ISynastryAspect>,

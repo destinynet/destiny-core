@@ -3,7 +3,7 @@
  */
 package destiny.tools.ai.model
 
-import destiny.core.astrology.SynastryDomain
+import destiny.core.SynastryDomain
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
