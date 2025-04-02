@@ -18,6 +18,7 @@ enum class SynastryAspect {
   PARTNERSHIP,
   RIVAL,
   MENTORSHIP,
+  PARENT_CHILD,
 }
 
 interface ISynastryModel : Serializable {
