@@ -17,7 +17,6 @@ enum class SynastryAspect {
   FRIENDSHIP,
   PARTNERSHIP,
   RIVAL,
-  MENTORSHIP,
   PARENT_CHILD,
 }
 
@@ -44,6 +43,7 @@ data class SynastryModel(
 enum class SynastryDomain {
   OVERVIEW,
   EMOTIONAL,
+  COMMON,
   FINANCIAL,
   COMMUNICATION,
   PHYSICAL,
