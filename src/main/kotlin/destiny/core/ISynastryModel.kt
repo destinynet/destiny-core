@@ -54,7 +54,7 @@ enum class SynastryDomain {
   COLLABORATION,
   INNOVATION,
   REGARD,
-  TRIGGERS,
+  CONFLICTS,
   AUTHORITY,
 }
 
