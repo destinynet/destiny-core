@@ -13,9 +13,9 @@ data class SynastryReply(
   val domains: Map<SynastryDomain, String>,
   val benefits: List<Statement>,
   val obstacles : List<Statement>,
-  val followUps: List<FollowUp>,
+  override val followUps: List<FollowUp>,
   val score: Score
-  ) {
+  ): IFollowUps {
 
   @Serializable
   data class Statement(

@@ -9,5 +9,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class BirthDataReply(
   val domains: Map<BirthDataDomain, String>,
-  val followUps: List<FollowUp>
-)
+  override val followUps: List<FollowUp>
+): IFollowUps
