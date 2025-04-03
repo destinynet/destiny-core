@@ -46,7 +46,7 @@ enum class SynastryDomain {
   COMMON,
   FINANCIAL,
   COMMUNICATION,
-  PHYSICAL,
+  INTIMACY,
   GROWTH,
   SUPPORT,
   STABILITY,
