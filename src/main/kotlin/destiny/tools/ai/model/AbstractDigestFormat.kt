@@ -16,7 +16,7 @@ abstract class AbstractDigestFormat<M, D>(
   }
 
 
-  override fun digest(model: M, locale: Locale): Pair<String, JsonSchemaSpec?>? {
+  override fun digest(model: M, locale: Locale): Pair<String, JsonSchemaSpec?> {
     val (structurePromptingJson: String?, schema: JsonSchemaSpec?) = promptsForExpectingStructure(model, locale)?.let { (structurePrompting, schema) ->
       prettyJson.encodeToString(serializer, structurePrompting) to schema
     } ?: (null to null)
