@@ -21,6 +21,28 @@ class Groq {
   }
 
   @Serializable
-  data class ChatModel(val model: String, val messages: List<Message>, val user: String?, val temperature: Double = 1.0)
+  sealed class ResponseFormat {
+    @Serializable
+    @SerialName("text")
+    data object Text : ResponseFormat()
+
+    @Serializable
+    @SerialName("json_object")
+    data object JsonObject : ResponseFormat()
+  }
+
+  @Serializable
+  data class ChatModel(val model: String, val messages: List<Message>, val user: String?, val temperature: Double = 1.0,
+                       @kotlinx.serialization.Transient
+                       val jsonSchemaSpec: JsonSchemaSpec? = null) {
+
+    @SerialName("response_format")
+    val responseFormat: ResponseFormat = if (jsonSchemaSpec == null) {
+      ResponseFormat.Text
+    } else {
+      ResponseFormat.JsonObject
+    }
+  }
+
 
 }
