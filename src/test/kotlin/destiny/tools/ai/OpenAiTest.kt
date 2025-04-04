@@ -3,12 +3,18 @@
  */
 package destiny.tools.ai
 
+import com.jayway.jsonpath.JsonPath
+import destiny.tools.KotlinLogging
 import destiny.tools.ai.OpenAi.Response.NormalResponse
+import destiny.tools.ai.model.SynastryReply
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested
 import kotlin.test.*
 
 class OpenAiTest {
+
+  private val logger = KotlinLogging.logger {  }
+
   val json = Json {
     encodeDefaults = true
     prettyPrint = true
@@ -17,6 +23,35 @@ class OpenAiTest {
     // to ignore unknown keys
     ignoreUnknownKeys = true
   }
+
+  @Nested
+  inner class ResponseFormatTest {
+
+    @Test
+    fun text() {
+      val chatModel = OpenAi.ChatModel(
+        listOf(OpenAi.Message("user", "test message", null, emptyList())),
+        null, "gpt-4o", 0.9, emptyList(), null
+      )
+      json.encodeToString(chatModel).also { raw ->
+        logger.info { raw }
+        assertEquals("text", JsonPath.read(raw, "$.response_format.type"))
+      }
+    }
+
+    @Test
+    fun jsonSchema() {
+      val chatModel = OpenAi.ChatModel(
+        listOf(OpenAi.Message("user", "test message", null, emptyList())),
+        null, "gpt-4o", 0.9, emptyList(), SynastryReply::class.toJsonSchema("SynastryReply", "reply of a synastry chart")
+      )
+      json.encodeToString(chatModel).also { raw ->
+        logger.info { raw }
+        assertEquals("json_schema", JsonPath.read(raw, "$.response_format.type"))
+      }
+    }
+  }
+
 
   @Nested
   inner class FunCallDeserializeTest {

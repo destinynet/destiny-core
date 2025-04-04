@@ -57,6 +57,15 @@ class Deepseek {
     }
   }
 
+  @Serializable
+  sealed class ResponseFormat {
+    @Serializable
+    @SerialName("text")
+    data object Text : ResponseFormat()
+    @Serializable
+    @SerialName("json_object")
+    data object JsonObject : ResponseFormat()
+  }
 
   @Serializable
   data class ChatModel(val messages: List<OpenAi.Message>,
@@ -66,6 +75,17 @@ class Deepseek {
                        val temperature: Double? = 1.0,
                        @SerialName("top_p")
                        val topP : Double? = 1.0,
-                       val tools: List<OpenAi.FunctionDeclaration>? = null
-  )
+                       val tools: List<OpenAi.FunctionDeclaration>? = null,
+                       @kotlinx.serialization.Transient
+                       val jsonSchemaSpec: JsonSchemaSpec? = null
+  ) {
+
+    @SerialName("response_format")
+    val responseFormat: ResponseFormat = if (jsonSchemaSpec == null) {
+      ResponseFormat.Text
+    } else {
+      ResponseFormat.JsonObject
+    }
+  }
+
 }

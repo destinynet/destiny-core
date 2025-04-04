@@ -34,7 +34,7 @@ interface IChatCompletion {
 
   val provider: String
 
-  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = 90.seconds, temperature: Double?) : Reply
+  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = 90.seconds, temperature: Double?, jsonSchema: JsonSchemaSpec? = null) : Reply
 
   suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = 90.seconds, temperature: Double?) : Reply {
     return chatComplete(model, messages, user, setOf(funCall), timeout, temperature)
@@ -43,9 +43,9 @@ interface IChatCompletion {
 
 abstract class AbstractChatCompletion : IChatCompletion {
 
-  abstract suspend fun doChatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, temperature: Double?): Reply
+  abstract suspend fun doChatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, temperature: Double?, jsonSchema: JsonSchemaSpec? = null): Reply
 
-  override suspend fun chatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, temperature: Double?): Reply {
+  override suspend fun chatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, temperature: Double?, jsonSchema: JsonSchemaSpec?): Reply {
     val filteredFunCalls = funCalls.filter { it.applied(messages) }.toSet()
 
     val finalMsgs = messages.fold(mutableListOf<Msg>()) { acc, msg ->
@@ -90,7 +90,7 @@ abstract class AbstractChatCompletion : IChatCompletion {
       )
     }
 
-    return doChatComplete(model, finalMsgs, user, filteredFunCalls, timeout, temperature)
+    return doChatComplete(model, finalMsgs, user, filteredFunCalls, timeout, temperature, jsonSchema)
   }
 
   companion object {

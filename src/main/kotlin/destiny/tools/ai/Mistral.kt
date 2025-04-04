@@ -4,6 +4,7 @@
 package destiny.tools.ai
 
 import destiny.tools.ai.OpenAi.FunctionDeclaration
+import destiny.tools.ai.model.ResponseFormat
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -20,12 +21,22 @@ class Mistral {
     val model: String,
     val messages: List<OpenAi.Message>,
     val temperature: Double = 0.7,
+    @kotlinx.serialization.Transient
+    val jsonSchemaSpec: JsonSchemaSpec? = null,
     @SerialName("top_p")
     val topP: Double = 1.0,
     @SerialName("max_tokens")
     val maxTokens: Int = 4096,
-    val tools: List<FunctionDeclaration>? = null
-  )
+    val tools: List<FunctionDeclaration>? = null,
+  ) {
+    @SerialName("response_format")
+    @Serializable
+    val responseFormat: ResponseFormat = if (jsonSchemaSpec == null) {
+      ResponseFormat.TextResponse
+    } else {
+      ResponseFormat.JsonSchemaResponse(jsonSchemaSpec)
+    }
+  }
 
   @Serializable
   sealed class Response {

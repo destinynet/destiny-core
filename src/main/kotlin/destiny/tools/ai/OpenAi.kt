@@ -1,5 +1,6 @@
 package destiny.tools.ai
 
+import destiny.tools.ai.model.ResponseFormat
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -29,7 +30,7 @@ class OpenAi {
     @SerialName("error")
     data class ErrorResponse(val error: Error) : Response() {
       @Serializable
-      data class Error(val message: String, val type: String, val code: String)
+      data class Error(val message: String, val type: String, val code: String?)
     }
 
     @Serializable
@@ -68,10 +69,22 @@ class OpenAi {
   }
 
   @Serializable
-  data class ChatModel(val messages: List<Message>,
-                       val user: String?,
-                       val model: String,
-                       /* 0 to 2 */
-                       val temperature: Double? = null,
-                       val tools: List<FunctionDeclaration>? = null)
+  data class ChatModel(
+    val messages: List<Message>,
+    val user: String?,
+    val model: String,
+    /* 0 to 2 */
+    val temperature: Double? = null,
+    val tools: List<FunctionDeclaration>? = null,
+    @kotlinx.serialization.Transient
+    val jsonSchemaSpec: JsonSchemaSpec? = null
+  ) {
+    @SerialName("response_format")
+    @Serializable
+    val responseFormat: ResponseFormat = if (jsonSchemaSpec == null) {
+      ResponseFormat.TextResponse
+    } else {
+      ResponseFormat.JsonSchemaResponse(jsonSchemaSpec)
+    }
+  }
 }

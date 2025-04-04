@@ -1,5 +1,6 @@
 package destiny.tools.ai.model
 
+import destiny.tools.ai.JsonSchemaSpec
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import java.util.*
@@ -15,15 +16,21 @@ abstract class AbstractDigestFormat<M, D>(
   }
 
 
-  final override fun digest(model: M, locale: Locale): String {
-    return buildString {
+  override fun digest(model: M, locale: Locale): Pair<String, JsonSchemaSpec?>? {
+    val (structurePromptingJson: String?, schema: JsonSchemaSpec?) = promptsForExpectingStructure(model, locale)?.let { (structurePrompting, schema) ->
+      prettyJson.encodeToString(serializer, structurePrompting) to schema
+    } ?: (null to null)
+
+    val string = buildString {
       append(digestWithoutFormat(model, locale))
       appendLine()
-      promptsForExpectingStructure(model, locale)?.also { structurePrompting ->
-        appendLine(prettyJson.encodeToString(serializer, structurePrompting))
+
+      structurePromptingJson?.also {
+        appendLine(it)
       }
-      appendLine(finalInstruction(model , locale))
+      appendLine(finalInstruction(model, locale))
     }
+    return string to schema
   }
 
   abstract fun digestWithoutFormat(model: M, locale: Locale): String?
