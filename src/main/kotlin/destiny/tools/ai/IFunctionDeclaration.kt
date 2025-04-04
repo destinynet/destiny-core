@@ -3,12 +3,9 @@
  */
 package destiny.tools.ai
 
-import kotlin.reflect.KType
 import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.full.valueParameters
-import kotlin.reflect.typeOf
 
 /** used by OpenAI, Gemini and Claude */
 interface IFunctionDeclaration {
@@ -35,25 +32,6 @@ annotation class Parameter(
   val maximum: Int = Int.MAX_VALUE
 )
 
-fun KType.toJsonSchemaType(): String {
-  return when {
-    this.isSubtypeOf(typeOf<String>())                                          -> "string"
-    this.isSubtypeOf(typeOf<Int>()) || this.isSubtypeOf(typeOf<Long>())         -> "integer"
-    this.isSubtypeOf(typeOf<Float>()) || this.isSubtypeOf(typeOf<Double>())     -> "number"
-    this.isSubtypeOf(typeOf<Boolean>())                                         -> "boolean"
-    this.isSubtypeOf(typeOf<List<*>>()) || this.isSubtypeOf(typeOf<Array<*>>()) -> "array"
-    this.isSubtypeOf(typeOf<Map<*, *>>())                                       -> "object"
-    this.isSubtypeOf(typeOf<java.util.Date>()) ||
-      this.isSubtypeOf(typeOf<java.time.LocalDate>()) ||
-      this.isSubtypeOf(typeOf<java.time.LocalDateTime>())                       -> "string"
-
-    this.isSubtypeOf(typeOf<java.math.BigInteger>()) ||
-      this.isSubtypeOf(typeOf<java.math.BigDecimal>())                          -> "string"
-
-    this.isSubtypeOf(typeOf<Enum<*>>())                                         -> "string"
-    else                                                                        -> "object"
-  }
-}
 
 abstract class AnnotatedFunctionDeclaration : IFunctionDeclaration {
   override val name: String
