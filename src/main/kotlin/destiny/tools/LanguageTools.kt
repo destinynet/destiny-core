@@ -8,6 +8,9 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+import kotlin.reflect.KType
+import kotlin.reflect.KTypeProjection
+import kotlin.reflect.full.createType
 
 /**
  * Set<Container<IAnimal>> to find which container contains [type] == Cat
@@ -71,5 +74,27 @@ inline fun <reified T : Enum<T>> parseJsonToMap(json: String): Map<T, String> {
       .toMap()
   } catch (e: SerializationException) {
     emptyMap()
+  }
+}
+
+// 將 Java Type 轉換成 Kotlin KType
+fun Type.toKType(): KType {
+  return when (this) {
+    is ParameterizedType -> {
+      val rawClass = this.rawType as Class<*>
+      val kClass = rawClass.kotlin
+      val args = this.actualTypeArguments.map {
+        val argKType = when (it) {
+          is ParameterizedType -> it.toKType()
+          is Class<*>          -> it.kotlin.createType()
+          else                 -> throw IllegalArgumentException("Unsupported type argument: $it")
+        }
+        KTypeProjection.invariant(argKType)
+      }
+      kClass.createType(args)
+    }
+
+    is Class<*>          -> this.kotlin.createType()
+    else                 -> throw IllegalArgumentException("Unsupported type: $this")
   }
 }
