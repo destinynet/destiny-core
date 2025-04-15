@@ -28,21 +28,28 @@ abstract class AbstractDigestFormat<M, D>(
       structurePromptingJson?.also {
         appendLine(it)
       }
-      appendLine(finalInstruction(model, locale))
+      appendLine(finalInstruction(model, locale, schema))
     }
     return string to schema
   }
 
   abstract fun digestWithoutFormat(model: M, locale: Locale): String?
 
-  fun finalInstruction(model : M , locale: Locale): String {
+  fun finalInstruction(model: M, locale: Locale, schema: JsonSchemaSpec?): String {
     return buildString {
-      append("[FINAL_INSTRUCTION]\n")
+      appendLine("[FINAL_INSTRUCTION]")
       append("Please ensure your entire response is in ${locale.getDisplayLanguage(Locale.ENGLISH)} ( locale = $locale )")
       if (promptsForExpectingStructure(model, locale) != null) {
         append("(except for the JSON keys)")
       }
-      append(", including all terms and interpretations.")
+      appendLine(", including all terms and interpretations.")
+      if (schema != null) {
+        appendLine("""
+          Your response should be in JSON format.
+          Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation.
+          Remove the ```json markdown surrounding the output including the trailing "```".
+        """.trimIndent())
+      }
     }
   }
 }
