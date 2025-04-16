@@ -4,6 +4,7 @@
 package destiny.tools.ai.model
 
 import destiny.core.SynastryDomain
+import destiny.tools.ai.toJsonSchema
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -30,4 +31,11 @@ data class SynastryReply(
     @SerialName("inner_to_outer")
     val innerToOuter : Int
   )
+
+  companion object {
+    val schema = SynastryReply::class.toJsonSchema(
+      "synastry_response",
+      "Response format for synastry analysis"
+    )
+  }
 }

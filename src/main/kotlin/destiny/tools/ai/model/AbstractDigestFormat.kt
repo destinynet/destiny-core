@@ -49,6 +49,10 @@ abstract class AbstractDigestFormat<M, D>(
           Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation.
           Remove the ```json markdown surrounding the output including the trailing "```".
         """.trimIndent())
+      } else {
+        appendLine("""
+          Your response should be in TEXT format. DO NOT include any JSON or XML tag.
+        """.trimIndent())
       }
     }
   }
