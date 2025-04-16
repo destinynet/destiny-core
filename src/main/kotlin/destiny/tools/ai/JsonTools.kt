@@ -47,6 +47,35 @@ fun <T : Any> KClass<T>.toJsonSchema(name: String, description: String? = null):
   return JsonSchemaSpec(name, description, schema)
 }
 
+inline fun <reified K : Enum<K>, reified V> toEnumMapJsonSchema(
+  name: String,
+  description: String? = null
+): JsonSchemaSpec {
+  val keyClass = K::class
+  val valueType = typeOf<V>()
+
+  val schema = buildJsonObject {
+    put("type", "object")
+    put("description", description ?: "Map with keys from enum ${keyClass.simpleName}")
+
+    putJsonObject("properties") {
+      keyClass.java.enumConstants.forEach { enumVal ->
+        putJsonObject(enumVal.name) {
+          put("type", valueType.toJsonSchemaType())
+        }
+      }
+    }
+
+    putJsonArray("required") {
+      keyClass.java.enumConstants.forEach { add(JsonPrimitive(it.name)) }
+    }
+
+    put("additionalProperties", JsonPrimitive(false))
+  }
+
+  return JsonSchemaSpec(name, description, schema)
+}
+
 // Extension function to process class properties recursively
 private fun JsonObjectBuilder.processClassProperties(kClass: KClass<*>) {
 
