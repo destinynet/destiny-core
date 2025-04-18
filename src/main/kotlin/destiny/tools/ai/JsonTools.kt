@@ -140,36 +140,31 @@ private fun JsonObjectBuilder.handleMapType(mapType: KType) {
     putJsonObject("properties") {
       enumValues.forEach { enumValue ->
         putJsonObject(enumValue.toString()) {
-          if (valueType != null) {
-            when {
-              valueType.isSubtypeOf(typeOf<List<*>>()) || valueType.isSubtypeOf(typeOf<Array<*>>()) ->
-                handleCollectionType(valueType)
-              valueType.toJsonSchemaType() == "object" && valueType.classifier is KClass<*> ->
-                handleObjectType(valueType.classifier as KClass<*>)
-              else ->
-                put("type", valueType.toJsonSchemaType())
-            }
-          } else {
-            put("type", "string")
-          }
+          addValueTypeSchema(valueType)
         }
       }
     }
   } else {
     putJsonObject("additionalProperties") {
-      if (valueType != null) {
-        when {
-          valueType.isSubtypeOf(typeOf<List<*>>()) || valueType.isSubtypeOf(typeOf<Array<*>>()) ->
-            handleCollectionType(valueType)
-          valueType.toJsonSchemaType() == "object" && valueType.classifier is KClass<*> ->
-            handleObjectType(valueType.classifier as KClass<*>)
-          else ->
-            put("type", valueType.toJsonSchemaType())
-        }
-      } else {
-        put("type", "string")
-      }
+      addValueTypeSchema(valueType)
     }
+  }
+}
+
+private fun JsonObjectBuilder.addValueTypeSchema(valueType: KType?) {
+  if (valueType != null) {
+    when {
+      valueType.isSubtypeOf(typeOf<List<*>>()) || valueType.isSubtypeOf(typeOf<Array<*>>()) ->
+        handleCollectionType(valueType)
+
+      valueType.toJsonSchemaType() == "object" && valueType.classifier is KClass<*>         ->
+        handleObjectType(valueType.classifier as KClass<*>)
+
+      else                                                                                  ->
+        put("type", valueType.toJsonSchemaType())
+    }
+  } else {
+    put("type", "string")
   }
 }
 
