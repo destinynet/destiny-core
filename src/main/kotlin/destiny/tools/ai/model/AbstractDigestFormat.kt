@@ -43,7 +43,7 @@ abstract class AbstractDigestFormat<M, D : Any>(
   fun finalInstruction(model: M, locale: Locale): String {
     return buildString {
       appendLine("[FINAL_INSTRUCTION]")
-      append("Please ensure your entire response is in ${locale.getDisplayLanguage(Locale.ENGLISH)} ( locale = $locale )")
+      append("Please ensure your entire response is in ${locale.getDisplayLanguage(Locale.ENGLISH)} (locale = $locale)")
       if (promptsForExpectingStructure(model, locale) != null) {
         append("(except for the JSON keys)")
       }
