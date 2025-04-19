@@ -11,28 +11,32 @@ import kotlinx.serialization.serializerOrNull
 import kotlin.reflect.typeOf
 
 
-data class FormatSpec<T : Any>(
-  val serializer: KSerializer<T>,
+interface FormatSpec<T : Any> {
+  val serializer: KSerializer<T>
   val jsonSchema: JsonSchemaSpec
-) {
 
   companion object {
     inline fun <reified T : Any> of(
       title: String,
       description: String
     ): FormatSpec<T> {
-
-      require(T::class != Unit::class) { "Unit type is not supported" }
-
+      require(T::class != Unit::class) { "Unit type is not allowed" }
 
       val ser = EmptySerializersModule().serializerOrNull(typeOf<T>())
         ?: error("❌ ${T::class.simpleName} is not @Serializable or no contextual serializer registered")
+
       val schema = T::class.toJsonSchema(title, description)
 
       @Suppress("UNCHECKED_CAST")
-      val typedSer = ser as KSerializer<T>
+      return Impl(ser as KSerializer<T>, schema)
+    }
 
-      return FormatSpec(typedSer, schema)
+    @PublishedApi
+    internal class Impl<T : Any>(
+      override val serializer: KSerializer<T>,
+      override val jsonSchema: JsonSchemaSpec
+    ) : FormatSpec<T> {
+      override fun toString() = "FormatSpec(serializer=$serializer, jsonSchema=$jsonSchema)"
     }
   }
 }
