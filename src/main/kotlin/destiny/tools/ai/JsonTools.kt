@@ -3,6 +3,7 @@
  */
 package destiny.tools.ai
 
+import destiny.tools.KotlinLogging
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.json.*
 import kotlin.reflect.KClass
@@ -10,6 +11,7 @@ import kotlin.reflect.KType
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.typeOf
 
 fun KType.toJsonSchemaType(): String {
@@ -32,20 +34,67 @@ fun KType.toJsonSchemaType(): String {
   }
 }
 
+private val logger = KotlinLogging.logger { }
+
 fun <T : Any> KClass<T>.toJsonSchema(name: String, description: String? = null): JsonSchemaSpec {
+  val kType = this.starProjectedType
+
+  // 如果是 @JvmInline 的 value class，就取出裡面的唯一 property 的型別
+  val effectiveType = if (this.isValue) {
+    unwrapValueType(this)
+  } else {
+    kType
+  }
+
+  val primitiveType = effectiveType.toJsonSchemaType()
+
+  // 若是 primitive 型別（非 object），直接回傳 primitive schema
+  if (primitiveType != "object") {
+    val schema = buildJsonObject {
+      put("type", primitiveType)
+      description?.let { put("description", it) }
+    }
+    return JsonSchemaSpec(name, description, schema)
+  }
+
+
+  // 否則當作複合型別（如 data class）處理
   val schema = buildJsonObject {
     put("type", "object")
     putJsonObject("properties") {
-      // Process all properties of the class
       processClassProperties(this@toJsonSchema)
     }
-
-    // Add required fields for the top-level class
     addRequiredFields(this@toJsonSchema)
+    description?.let { put("description", it) }
   }
 
   return JsonSchemaSpec(name, description, schema)
 }
+
+fun unwrapValueType(kClass: KClass<*>): KType {
+  val visited = mutableSetOf<KClass<*>>()
+  var currentClass = kClass
+
+  while (currentClass.isValue) {
+    if (!visited.add(currentClass)) {
+      logger.warn { "Detected value class cycle at ${currentClass.qualifiedName}, fallback to string" }
+      return typeOf<String>()
+    }
+
+    val innerProp = currentClass.memberProperties.firstOrNull()
+      ?: error("Value class ${currentClass.simpleName} has no properties")
+
+    val nextType = innerProp.returnType
+    val nextClassifier = nextType.classifier
+    if (nextClassifier is KClass<*>) {
+      currentClass = nextClassifier
+    } else {
+      return nextType
+    }
+  }
+  return currentClass.starProjectedType
+}
+
 
 inline fun <reified K : Enum<K>, reified V> toEnumMapJsonSchema(
   name: String,

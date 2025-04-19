@@ -23,9 +23,58 @@ class JsonToolsTest {
     B
   }
 
+  @JvmInline
+  value class UserId(val value: String)
+
   data class MapEnumHolder(val mapEnum: Map<MyEnum, String>)
 
+  @JvmInline
+  value class Email(val value: String)
+
+  @JvmInline
+  value class UserEmail(val email: Email)
+
   private val logger = KotlinLogging.logger { }
+
+  @Test
+  fun string() {
+    val spec = String::class.toJsonSchema("String", "A simple string")
+    val schema = spec.schema
+    logger.info { "schema: $schema" }
+    assertEquals("string", schema["type"]!!.jsonPrimitive.content)
+    assertEquals("A simple string", schema["description"]!!.jsonPrimitive.content)
+  }
+
+  @Test
+  fun int() {
+    val spec = Integer::class.toJsonSchema("Int", "A simple integer")
+    val schema = spec.schema
+    logger.info { "schema: $schema" }
+    assertEquals("integer", schema["type"]!!.jsonPrimitive.content)
+    assertEquals("A simple integer", schema["description"]!!.jsonPrimitive.content)
+  }
+
+  @Test
+  fun `value class support`() {
+    val spec = UserId::class.toJsonSchema("UserId", "User identifier")
+    val schema = spec.schema
+    logger.info { "schema: $schema" }
+
+    assertEquals("string", schema["type"]!!.jsonPrimitive.content)
+    assertEquals("User identifier", schema["description"]!!.jsonPrimitive.content)
+  }
+
+  @Test
+  fun `nested value class unwrap`() {
+    val spec = UserEmail::class.toJsonSchema("UserEmail", "Nested email wrapper")
+    val schema = spec.schema
+    logger.info { "schema: $schema" }
+
+    assertEquals("string", schema["type"]!!.jsonPrimitive.content)
+    assertEquals("Nested email wrapper", schema["description"]!!.jsonPrimitive.content)
+  }
+
+
 
   @Test
   fun `simple data class`() {
