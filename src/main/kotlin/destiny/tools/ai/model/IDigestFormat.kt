@@ -14,7 +14,9 @@ interface IDigestFormat<M, D> : IDigest<M, Pair<String, JsonSchemaSpec?>> {
 
   val domain: Domain
 
-  fun promptsForExpectingStructure(model: M, locale: Locale = Locale.getDefault()): Pair<D, JsonSchemaSpec?>? {
+  val schema : JsonSchemaSpec?
+
+  fun promptsForExpectingStructure(model: M, locale: Locale = Locale.getDefault()): D? {
     return null
   }
 }

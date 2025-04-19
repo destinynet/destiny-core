@@ -5,9 +5,14 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import java.util.*
 
-abstract class AbstractDigestFormat<M, D>(
-  val serializer: KSerializer<D>
+abstract class AbstractDigestFormat<M, D : Any>(
+  private val formatSpec: FormatSpec<D>
 ) : IDigestFormat<M, D> {
+
+  val serializer: KSerializer<D> = formatSpec.serializer
+
+  override val schema: JsonSchemaSpec? = formatSpec.jsonSchema
+
   private val prettyJson = Json {
     prettyPrint = true
     encodeDefaults = true
@@ -17,9 +22,9 @@ abstract class AbstractDigestFormat<M, D>(
 
 
   override fun digest(model: M, locale: Locale): Pair<String, JsonSchemaSpec?> {
-    val (structurePromptingJson: String?, schema: JsonSchemaSpec?) = promptsForExpectingStructure(model, locale)?.let { (structurePrompting, schema) ->
-      prettyJson.encodeToString(serializer, structurePrompting) to schema
-    } ?: (null to null)
+    val structurePromptingJson: String? = promptsForExpectingStructure(model, locale)?.let { structurePrompting ->
+      prettyJson.encodeToString(formatSpec.serializer, structurePrompting)
+    }
 
     val string = buildString {
       append(digestWithoutFormat(model, locale))
@@ -28,14 +33,14 @@ abstract class AbstractDigestFormat<M, D>(
       structurePromptingJson?.also {
         appendLine(it)
       }
-      appendLine(finalInstruction(model, locale, schema))
+      appendLine(finalInstruction(model, locale))
     }
     return string to schema
   }
 
   abstract fun digestWithoutFormat(model: M, locale: Locale): String?
 
-  fun finalInstruction(model: M, locale: Locale, schema: JsonSchemaSpec?): String {
+  fun finalInstruction(model: M, locale: Locale): String {
     return buildString {
       appendLine("[FINAL_INSTRUCTION]")
       append("Please ensure your entire response is in ${locale.getDisplayLanguage(Locale.ENGLISH)} ( locale = $locale )")
@@ -43,7 +48,8 @@ abstract class AbstractDigestFormat<M, D>(
         append("(except for the JSON keys)")
       }
       appendLine(", including all terms and interpretations.")
-      if (schema != null) {
+
+      if (schema != null && formatSpec.kClass != String::class) {
         appendLine("""
           Your response should be in JSON format.
           Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation.
