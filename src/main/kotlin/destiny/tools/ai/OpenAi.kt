@@ -75,6 +75,8 @@ class OpenAi {
     val model: String,
     /* 0 to 2 */
     val temperature: Double? = null,
+    @SerialName("max_tokens")
+    val maxTokens : Int? = null,
     val tools: List<FunctionDeclaration>? = null,
     @kotlinx.serialization.Transient
     val jsonSchemaSpec: JsonSchemaSpec? = null

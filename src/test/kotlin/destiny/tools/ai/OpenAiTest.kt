@@ -31,7 +31,7 @@ class OpenAiTest {
     fun text() {
       val chatModel = OpenAi.ChatModel(
         listOf(OpenAi.Message("user", "test message", null, emptyList())),
-        null, "gpt-4o", 0.9, emptyList(), null
+        null, "gpt-4o", 0.9, null, emptyList(), null
       )
       json.encodeToString(chatModel).also { raw ->
         logger.info { raw }
@@ -43,7 +43,7 @@ class OpenAiTest {
     fun jsonSchema() {
       val chatModel = OpenAi.ChatModel(
         listOf(OpenAi.Message("user", "test message", null, emptyList())),
-        null, "gpt-4o", 0.9, emptyList(), SynastryReply::class.toJsonSchema("SynastryReply", "reply of a synastry chart")
+        null, "gpt-4o", 0.9, null, emptyList(), SynastryReply::class.toJsonSchema("SynastryReply", "reply of a synastry chart")
       )
       json.encodeToString(chatModel).also { raw ->
         logger.info { raw }
