@@ -66,7 +66,16 @@ class Gemini {
   sealed class ResponseContainer {
 
     @Serializable
-    data class Response(val candidates: List<Candidate>) : ResponseContainer()
+    data class Response(val candidates: List<Candidate> , val usageMetadata: UsageMetadata) : ResponseContainer() {
+
+      @Serializable
+      data class UsageMetadata(
+        val promptTokenCount : Int,
+        val candidatesTokenCount : Int,
+        val totalTokenCount : Int,
+        val thoughtsTokenCount: Int?
+      )
+    }
 
     /**
      * for streamGenerateContent
