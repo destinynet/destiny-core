@@ -213,7 +213,24 @@ class JsonToolsTest {
   // List of primitives and Array<String>
   @Test
   fun `list and array of primitives`() {
-    data class ListPrimsHolder(val ints: List<Int>, val strs: Array<String>)
+    data class ListPrimsHolder(val ints: List<Int>, val strings: Array<String>) {
+      override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ListPrimsHolder) return false
+
+        if (ints != other.ints) return false
+        if (!strings.contentEquals(other.strings)) return false
+
+        return true
+      }
+
+      override fun hashCode(): Int {
+        var result = ints.hashCode()
+        result = 31 * result + strings.contentHashCode()
+        return result
+      }
+    }
+
     val spec = ListPrimsHolder::class.toJsonSchema("ListPrimsHolder", null)
     val props = spec.schema["properties"]!!.jsonObject
     val ints = props["ints"]!!.jsonObject
