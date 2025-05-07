@@ -236,7 +236,7 @@ class JsonToolsTest {
     val ints = props["ints"]!!.jsonObject
     assertEquals("array", ints["type"]!!.jsonPrimitive.content)
     assertEquals("integer", ints["items"]!!.jsonObject["type"]!!.jsonPrimitive.content)
-    val strs = props["strs"]!!.jsonObject
+    val strs = props["strings"]!!.jsonObject
     assertEquals("array", strs["type"]!!.jsonPrimitive.content)
     assertEquals("string", strs["items"]!!.jsonObject["type"]!!.jsonPrimitive.content)
   }
