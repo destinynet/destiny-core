@@ -3,8 +3,10 @@
  */
 package destiny.tools.ai
 
+import destiny.tools.KotlinLogging
 import jakarta.inject.Named
 import kotlinx.coroutines.*
+import kotlinx.coroutines.selects.select
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import java.util.*
@@ -33,16 +35,16 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
   ): ResultDto<T>? = coroutineScope {
     val allModels = setOf(providerGroup.preferred) + providerGroup.fallbacks
 
-    val deferredMap: Map<ProviderModel, Deferred<ResultDto<T>?>> = allModels.associateWith { model ->
+    val deferredMap: Map<ProviderModel, Deferred<ResultDto<T>?>> = allModels.associateWith { providerModel: ProviderModel ->
       async(Dispatchers.IO) {
-        val impl = domainModelService.findImpl(model.provider)
+        val impl = domainModelService.findImpl(providerModel.provider)
         val r = impl.chatComplete(
-          model = model.model,
+          model = providerModel.model,
           messages = messages,
           user = user,
           funCalls = funCalls,
           timeout = providerGroup.modelTimeout,
-          temperature = model.temperature,
+          temperature = providerModel.temperature,
           jsonSchema = jsonSchema
         )
         r.takeIf { it is Reply.Normal }
@@ -59,21 +61,29 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
           }
       }
     }
-    val preferredDeferred = deferredMap[providerGroup.preferred]!!
 
     val result: ResultDto<T>? = withTimeoutOrNull(providerGroup.preferredWait) {
-      preferredDeferred.await()
+      deferredMap[providerGroup.preferred]!!.await()
     }
 
     if (result != null) {
       // preferred 在 delay 內完成	-> 回傳 preferred，並取消其他
-      (deferredMap - providerGroup.preferred).values.forEach { it.cancel() }
+      deferredMap.filterKeys { it != providerGroup.preferred }.values.forEach { it.cancel() }
       result
     } else {
       // preferred 超時但 fallback 有完成	-> 回傳第一個成功 fallback
-      (deferredMap - providerGroup.preferred).values.firstNotNullOfOrNull { deferred ->
-        runCatching { deferred.await() }.getOrNull()
-      }
+      select {
+        deferredMap.forEach { (model, deferred) ->
+          deferred.onAwait { res -> res?.let { model to it } }
+        }
+      }?.also { (winnerModel: ProviderModel, _) ->
+        logger.info { "Using fallback result from $winnerModel" }
+        deferredMap.filterKeys { it != winnerModel }.values.forEach { it.cancel() }
+      }?.second
     }
+  }
+
+  companion object {
+    val logger = KotlinLogging.logger {}
   }
 }
