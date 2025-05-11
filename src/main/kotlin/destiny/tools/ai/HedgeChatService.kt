@@ -8,6 +8,7 @@ import jakarta.inject.Named
 import kotlinx.coroutines.*
 import kotlinx.coroutines.selects.select
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.util.*
 
@@ -23,7 +24,7 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
     isLenient = true
   }
 
-  data class ResultDto<T>(val result: T , val inputTokens: Int? , val outputTokens: Int?)
+  data class ResultDto<T>(val result: T, val provider: Provider, val model: String, val inputTokens: Int?, val outputTokens: Int?)
 
   suspend inline fun <reified T> hedgedChatComplete(
     providerGroup: ProviderGroup,
@@ -57,7 +58,11 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
 
             Triple(processed, it.inputTokens, it.outputTokens)
           }?.let { (string, inputTokens, outputTokens) ->
-            ResultDto(json.decodeFromString<T>(string) , inputTokens, outputTokens)
+            try {
+              ResultDto(json.decodeFromString<T>(string), providerModel.provider, providerModel.model, inputTokens, outputTokens)
+            } catch (e : SerializationException) {
+              null
+            }
           }
       }
     }
