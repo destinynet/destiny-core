@@ -16,7 +16,27 @@ class Reka {
   )
 
   @Serializable
-  data class ChatModel(val model: String, val messages: List<Message>, val temperature: Double? = null, val stream: Boolean = false)
+  data class ChatModel(
+    val model: String,
+    val messages: List<Message>,
+    val temperature: Double? = null,
+    val tools: List<OpenAi.FunctionDeclaration.Function>? = null,
+    @SerialName("use_search_engine")
+    val useSearchEngine: Boolean? = false,
+    val stream: Boolean = false
+  ) {
+
+    @SerialName("tool_choice")
+    val toolChoice: ToolChoice? = if (!tools.isNullOrEmpty()) {
+      ToolChoice.auto
+    } else {
+      null
+    }
+
+    enum class ToolChoice {
+      auto , tool , none
+    }
+  }
 
   @Serializable
   data class V1Response(
