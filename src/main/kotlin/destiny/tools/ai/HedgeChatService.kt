@@ -8,7 +8,6 @@ import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import java.util.*
-import kotlin.time.Duration.Companion.seconds
 
 
 @Named
@@ -22,18 +21,19 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
     isLenient = true
   }
 
+  data class ResultDto<T>(val result: T , val inputTokens: Int? , val outputTokens: Int?)
+
   suspend inline fun <reified T> hedgedChatComplete(
     providerGroup: ProviderGroup,
     messages: List<Msg>,
     user: String? = null,
     funCalls: Set<IFunctionDeclaration> = emptySet(),
-    temperature: Temperature? = null,
     jsonSchema: JsonSchemaSpec? = null,
     locale: Locale
-  ): T? = coroutineScope {
+  ): ResultDto<T>? = coroutineScope {
     val allModels = setOf(providerGroup.preferred) + providerGroup.fallbacks
 
-    val deferredMap: Map<ProviderModel, Deferred<T?>> = allModels.associateWith { model ->
+    val deferredMap: Map<ProviderModel, Deferred<ResultDto<T>?>> = allModels.associateWith { model ->
       async(Dispatchers.IO) {
         val impl = domainModelService.findImpl(model.provider)
         val r = impl.chatComplete(
@@ -41,33 +41,39 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
           messages = messages,
           user = user,
           funCalls = funCalls,
-          timeout = providerGroup.fallbackDelay + 10.seconds,
-          temperature = model.temperature ?: temperature,
+          timeout = providerGroup.fallbackDelay,
+          temperature = model.temperature,
           jsonSchema = jsonSchema
         )
         r.takeIf { it is Reply.Normal }
           ?.let { it as Reply.Normal }
           ?.let {
-            providerGroup.postProcessors.fold(it.content) { acc, postProcessor ->
+            val processed = providerGroup.postProcessors.fold(it.content) { acc, postProcessor ->
               val (processed, _) = postProcessor.process(acc, locale)
               processed
             }
-          }?.let { string ->
-            json.decodeFromString<T>(string)
+
+            Triple(processed, it.inputTokens, it.outputTokens)
+          }?.let { (string, inputTokens, outputTokens) ->
+            ResultDto(json.decodeFromString<T>(string) , inputTokens, outputTokens)
           }
       }
     }
-    val preferredDeferred: Deferred<T?> = deferredMap[providerGroup.preferred]!!
+    val preferredDeferred = deferredMap[providerGroup.preferred]!!
 
-    val result: T? = withTimeoutOrNull(providerGroup.fallbackDelay) {
+    val result: ResultDto<T>? = withTimeoutOrNull(providerGroup.fallbackDelay) {
       preferredDeferred.await()
     }
 
     if (result != null) {
+      // preferred 在 delay 內完成	-> 回傳 preferred，並取消其他
       (deferredMap - providerGroup.preferred).values.forEach { it.cancel() }
       result
     } else {
-      null
+      // preferred 超時但 fallback 有完成	-> 回傳第一個成功 fallback
+      (deferredMap - providerGroup.preferred).values.firstNotNullOfOrNull { deferred ->
+        runCatching { deferred.await() }.getOrNull()
+      }
     }
   }
 }
