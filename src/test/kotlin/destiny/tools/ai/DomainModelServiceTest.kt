@@ -18,15 +18,15 @@ class DomainModelServiceTest {
   fun setup() {
     val map = mapOf(
       DomainLanguage(Domain.Bdnp.HOROSCOPE, "zh") to listOf(
-        ProviderModel(Provider.CLAUDE, "claude-3-haiku-20240307", 0.9)
+        ProviderModel(Provider.CLAUDE, "claude-3-haiku-20240307", Temperature(0.9))
       ),
       DomainLanguage(Domain.Bdnp.EW, null) to listOf(
-        ProviderModel(Provider.OPENAI, "gpt-4", 0.8),
-        ProviderModel(Provider.GEMINI, "gemini-pro", 0.8)
+        ProviderModel(Provider.OPENAI, "gpt-4", Temperature(0.8)),
+        ProviderModel(Provider.GEMINI, "gemini-pro", Temperature(0.8))
       ),
       DomainLanguage(Domain.Bdnp.ZIWEI, "en") to listOf(
-        ProviderModel(Provider.OPENAI, "gpt-4", 0.7),
-        ProviderModel(Provider.CLAUDE, "claude-3-haiku-20240307", 0.7)
+        ProviderModel(Provider.OPENAI, "gpt-4", Temperature(0.7)),
+        ProviderModel(Provider.CLAUDE, "claude-3-haiku-20240307", Temperature(0.7))
       )
     )
     val holder = Holder(map)
@@ -38,7 +38,7 @@ class DomainModelServiceTest {
     val result = service.getProviderModel(Domain.Bdnp.HOROSCOPE, "zh")
     assertEquals(Provider.CLAUDE, result.provider)
     assertEquals("claude-3-haiku-20240307", result.model)
-    assertEquals(0.9, result.temperature)
+    assertEquals(Temperature(0.9), result.temperature)
   }
 
   @Test
@@ -46,7 +46,7 @@ class DomainModelServiceTest {
     val result = service.getProviderModel(Domain.Bdnp.EW)
     assertTrue(result.provider in listOf(Provider.OPENAI, Provider.GEMINI))
     assertTrue(result.model in listOf("gpt-4", "gemini-pro"))
-    assertEquals(0.8, result.temperature)
+    assertEquals(Temperature(0.8), result.temperature)
   }
 
 
@@ -55,7 +55,7 @@ class DomainModelServiceTest {
     val result = service.getProviderModel(Domain.Bdnp.ZIWEI, "fr")
     assertTrue(result.provider in listOf(Provider.OPENAI, Provider.CLAUDE))
     assertTrue(result.model in listOf("gpt-4", "claude-3-haiku-20240307"))
-    assertEquals(0.7, result.temperature)
+    assertEquals(Temperature(0.7), result.temperature)
   }
 
   @Test

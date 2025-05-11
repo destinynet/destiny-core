@@ -10,40 +10,35 @@ import kotlinx.serialization.Serializable
 class Reka {
 
   @Serializable
-  data class ChatMessage(
-    /** 'human' or 'model' */
-    val type: String,
-    val text: String
-  )
-
-
-  @Serializable
-  data class ChatModel(
-    @SerialName("conversation_history")
-    val history: List<ChatMessage>,
-
-    @SerialName("model_name")
-    val modelName: String,
-    val temperature: Double = 0.9,
-    @SerialName("request_output_len")
-    val requestOutputLen: Int = 4096
+  data class Message(
+    val role: String,
+    val content: String
   )
 
   @Serializable
-  data class Response(
-    val type: String, val text: String,
-    @SerialName("finish_reason")
-    val finishReason: String,
-    @SerialName("metadata")
-    val metaData: MetaData
+  data class ChatModel(val model: String, val messages: List<Message>, val temperature: Double? = null, val stream: Boolean = false)
+
+  @Serializable
+  data class V1Response(
+    val id: String,
+    val model: String,
+    val responses: List<Response>,
+    val usage: Usage,
   ) {
 
     @Serializable
-    data class MetaData(
+    data class Response(
+      @SerialName("finish_reason")
+      val finishReason: String,
+      val message: Message
+    )
+
+    @Serializable
+    data class Usage(
       @SerialName("input_tokens")
       val inputTokens: Int,
-      @SerialName("generated_tokens")
-      val generatedTokens: Int
+      @SerialName("output_tokens")
+      val outputTokens: Int
     )
   }
 

@@ -6,6 +6,7 @@ package destiny.tools.ai
 import destiny.tools.ai.model.Domain
 import destiny.tools.config.Holder
 import jakarta.inject.Named
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
@@ -15,7 +16,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 @Serializable
-data class ProviderModel(val provider: Provider, val model: String, val temperature: Double? = null)
+data class ProviderModel(val provider: Provider, val model: String, @Contextual val temperature: Temperature? = null)
 
 data class DomainLanguage(val domain: Domain, val language: String?)
 
@@ -39,7 +40,7 @@ object ProviderModelListSerializer : KSerializer<List<ProviderModel>> {
 
       val provider = Provider.valueOf(providerString)
       val model = modelAndTemp?.getOrNull(0) ?: ""
-      val temperature = modelAndTemp?.getOrNull(1)?.toDoubleOrNull()
+      val temperature = modelAndTemp?.getOrNull(1)?.toDoubleOrNull()?.let { Temperature(it) }
 
       ProviderModel(provider, model, temperature)
     }
