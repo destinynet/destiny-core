@@ -41,7 +41,7 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
           messages = messages,
           user = user,
           funCalls = funCalls,
-          timeout = providerGroup.fallbackDelay,
+          timeout = providerGroup.modelTimeout,
           temperature = model.temperature,
           jsonSchema = jsonSchema
         )
@@ -61,7 +61,7 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
     }
     val preferredDeferred = deferredMap[providerGroup.preferred]!!
 
-    val result: ResultDto<T>? = withTimeoutOrNull(providerGroup.fallbackDelay) {
+    val result: ResultDto<T>? = withTimeoutOrNull(providerGroup.preferredWait) {
       preferredDeferred.await()
     }
 
