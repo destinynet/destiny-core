@@ -41,8 +41,11 @@ class Gemini {
        * gemini-pro-vision : 2048
        */
       val maxOutputTokens: Int = 2048,
+      /**
+       * 0 to 2.0
+       */
       val temperature: Double = 0.9,
-      val topP: Double = 0.75,
+      val topP: Double? = 0.75,
       /**
        * Default for gemini-pro-vision: 32
        * Default for gemini-pro: none

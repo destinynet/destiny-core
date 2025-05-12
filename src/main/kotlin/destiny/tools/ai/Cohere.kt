@@ -33,7 +33,16 @@ class Cohere {
   )
 
   @Serializable
-  data class Request(val model: String, val messages: List<Message>, val tools: List<ToolFunction>, val stream: Boolean = false, val temperature: Double? = 0.3)
+  data class Request(val model: String,
+                     val messages: List<Message>,
+                     val tools: List<ToolFunction>,
+                     val stream: Boolean = false,
+                     val temperature: Double? = 0.3,
+                     /** max value of 500 */
+                     val k : Int? = null,
+                     /** Defaults to 0.75. min value of 0.01, max value of 0.99. */
+                     val p : Double? = 0.75,
+                     )
 
   @Serializable
   data class Response(

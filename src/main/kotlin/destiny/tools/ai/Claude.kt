@@ -86,7 +86,16 @@ class Claude {
     @SerialName("metadata")
     val metadata: MetaData? = null,
 
+    /**
+     * 0 < x < 1
+     */
     val temperature: Double? = 1.0,
+
+    @SerialName("top_k")
+    val topK: Int? = null,
+
+    @SerialName("top_p")
+    val topP: Double? = null,
     val tools: List<Function>? = null
   )
 

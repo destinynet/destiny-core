@@ -8,6 +8,7 @@ import destiny.tools.ai.model.ResponseFormat
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
@@ -20,13 +21,13 @@ class Mistral {
   data class ChatModel(
     val model: String,
     val messages: List<OpenAi.Message>,
-    val temperature: Double = 0.7,
-    @kotlinx.serialization.Transient
-    val jsonSchemaSpec: JsonSchemaSpec? = null,
+    val temperature: Double? = null,
     @SerialName("top_p")
-    val topP: Double = 1.0,
+    val topP: Double? = null,
     @SerialName("max_tokens")
     val maxTokens: Int = 4096,
+    @Transient
+    val jsonSchemaSpec: JsonSchemaSpec? = null,
     val tools: List<FunctionDeclaration>? = null,
   ) {
     @SerialName("response_format")

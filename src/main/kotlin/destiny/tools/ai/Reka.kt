@@ -19,11 +19,18 @@ class Reka {
   data class ChatModel(
     val model: String,
     val messages: List<Message>,
+    /**  Defaults to 0.4. */
     val temperature: Double? = null,
+    /** Defaults to 1024. */
+    @SerialName("top_k")
+    val topK: Int? = null,
+    /** Defaults to 0.95. */
+    @SerialName("top_p")
+    val topP: Double? = null,
     val tools: List<OpenAi.FunctionDeclaration.Function>? = null,
     @SerialName("use_search_engine")
     val useSearchEngine: Boolean? = false,
-    val stream: Boolean = false
+    val stream: Boolean = false,
   ) {
 
     @SerialName("tool_choice")

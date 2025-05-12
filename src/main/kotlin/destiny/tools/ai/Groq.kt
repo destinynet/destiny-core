@@ -49,15 +49,26 @@ class Groq {
   }
 
   @Serializable
-  data class ChatModel(val model: String,
-                       val messages: List<Message>,
-                       val user: String?,
-                       val temperature: Double = 1.0,
-                       val tools: List<FunctionDeclaration>? = null,
-                       @SerialName("max_completion_tokens")
-                       val maxCompletionTokens: Int? = null,
-                       @kotlinx.serialization.Transient
-                       val jsonSchemaSpec: JsonSchemaSpec? = null) {
+  data class ChatModel(
+    val model: String,
+    val messages: List<Message>,
+    val user: String?,
+    /**
+     * 0 to 2 , default 1
+     */
+    val temperature: Double = 1.0,
+    /**
+     * 0 to 1 , default 1
+     */
+    @SerialName("top_p")
+    val topP: Double? = null,
+    val tools: List<FunctionDeclaration>? = null,
+    @SerialName("max_completion_tokens")
+    val maxCompletionTokens: Int? = null,
+
+    @kotlinx.serialization.Transient
+    val jsonSchemaSpec: JsonSchemaSpec? = null
+  ) {
 
     @SerialName("response_format")
     val responseFormat: ResponseFormat = if (jsonSchemaSpec == null) {
