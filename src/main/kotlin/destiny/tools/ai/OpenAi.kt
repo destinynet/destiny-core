@@ -83,9 +83,6 @@ class OpenAi {
      */
     @SerialName("max_completion_tokens")
     val maxCompletionTokens: Int? = null,
-    @Deprecated("")
-    @SerialName("max_tokens")
-    val maxTokens: Int? = null,
     val tools: List<FunctionDeclaration>? = null,
     @Transient
     val jsonSchemaSpec: JsonSchemaSpec? = null
