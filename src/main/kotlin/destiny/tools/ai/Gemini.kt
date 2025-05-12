@@ -81,7 +81,7 @@ class Gemini {
        * gemini-pro : 8192 ,
        * gemini-pro-vision : 2048
        */
-      val maxOutputTokens: Int = 2048,
+      val maxOutputTokens: Int? = 2048,
       /**
        * 0 to 2.0
        */
