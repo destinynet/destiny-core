@@ -34,18 +34,18 @@ interface IChatCompletion {
 
   val provider: String
 
-  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = 90.seconds, temperature: Temperature?, jsonSchema: JsonSchemaSpec? = null) : Reply
+  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = 90.seconds, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec? = null) : Reply
 
-  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = 90.seconds, temperature: Temperature?) : Reply {
-    return chatComplete(model, messages, user, setOf(funCall), timeout, temperature)
+  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = 90.seconds, chatOptions: ChatOptions) : Reply {
+    return chatComplete(model, messages, user, setOf(funCall), timeout, chatOptions)
   }
 }
 
 abstract class AbstractChatCompletion : IChatCompletion {
 
-  abstract suspend fun doChatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, temperature: Temperature?, jsonSchema: JsonSchemaSpec? = null): Reply
+  abstract suspend fun doChatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec? = null): Reply
 
-  override suspend fun chatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, temperature: Temperature?, jsonSchema: JsonSchemaSpec?): Reply {
+  override suspend fun chatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec?): Reply {
     val filteredFunCalls = funCalls.filter { it.applied(messages) }.toSet()
 
     val finalMsgs = messages.fold(mutableListOf<Msg>()) { acc, msg ->
@@ -90,7 +90,7 @@ abstract class AbstractChatCompletion : IChatCompletion {
       )
     }
 
-    return doChatComplete(model, finalMsgs, user, filteredFunCalls, timeout, temperature, jsonSchema)
+    return doChatComplete(model, finalMsgs, user, filteredFunCalls, timeout, chatOptions, jsonSchema)
   }
 
   companion object {

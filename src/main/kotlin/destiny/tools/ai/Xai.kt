@@ -47,7 +47,7 @@ class Xai {
 
     @Serializable
     @SerialName("normal")
-    data class NormalResponse(val id: String, val `object`: String, val created: Long, val choices: List<Choice>) : Response() {
+    data class NormalResponse(val id: String, val `object`: String, val created: Long, val model: String, val choices: List<Choice>, val usage: Usage) : Response() {
 
       @Serializable
       data class Choice(
@@ -55,6 +55,14 @@ class Xai {
         val message: Message,
         @SerialName("finish_reason")
         val finishReason: String
+      )
+
+      @Serializable
+      data class Usage(
+        @SerialName("prompt_tokens")
+        val promptTokens : Int,
+        @SerialName("completion_tokens")
+        val completionTokens: Int
       )
     }
   }

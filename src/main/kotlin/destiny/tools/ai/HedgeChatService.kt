@@ -45,7 +45,7 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
           user = user,
           funCalls = funCalls,
           timeout = providerGroup.modelTimeout,
-          temperature = providerModel.temperature,
+          chatOptions = ChatOptions(providerModel.temperature),
           jsonSchema = jsonSchema
         )
         r.takeIf { it is Reply.Normal }
