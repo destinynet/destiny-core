@@ -3,7 +3,6 @@
  */
 package destiny.tools.ai
 
-import destiny.tools.ai.Gemini.ResponseContainer.CandidateContainer.Candidate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
@@ -14,27 +13,69 @@ class Gemini {
   @Serializable
   data class Content(val role: String, val parts: List<Part>?) {
     @Serializable
-    data class Part(val text: String?, @SerialName("inline_data") val inlineData: InlineData? = null,
-                    val functionCall: FunctionCall? = null, val functionResponse: FunctionResponse? = null) {
+    data class Part(
+      val text: String?,
+      @SerialName("inline_data") val inlineData: InlineData? = null,
+      val functionCall: FunctionCall? = null,
+      val functionResponse: FunctionResponse? = null
+    ) {
       @Serializable
       data class InlineData(val mimeType: String, val data: String)
+
       @Serializable
       data class FunctionCall(val name: String, val args: JsonElement)
+
       @Serializable
-      data class FunctionResponse(val name : String , val response : Response) {
+      data class FunctionResponse(val name: String, val response: Response) {
         @Serializable
-        data class Response(val name: String, val content: String)
+        data class Response(
+          val name: String,
+          val content: String
+        )
       }
     }
   }
 
   @Serializable
-  data class Request(val contents: List<Content>,
-                     val tools : List<Tool>? = null,
-                     @SerialName("generationConfig")
-                     val config: Config) {
+  data class Candidate(
+    val content: Content,
+    val finishReason: String? = null,
+    val safetyRatings: List<SafetyRating>? = null,
+    val citationMetadata: CitationMetadata? = null,
+    val index: Int? = null
+    // val tokenCount: Int? = null // If API provides it
+  )
+
+  @Serializable
+  data class SafetyRating(
+    val category: String,
+    val probability: String, // e.g., "NEGLIGIBLE", "LOW", "MEDIUM", "HIGH"
+    val blocked: Boolean? = null
+  )
+
+  @Serializable
+  data class CitationMetadata(
+    val citationSources: List<CitationSource>? = null
+  ) {
     @Serializable
-    data class Config(
+    data class CitationSource(
+      val startIndex: Int? = null,
+      val endIndex: Int? = null,
+      val uri: String? = null,
+      val license: String? = null
+    )
+  }
+
+  @Serializable
+  data class Request(
+    val contents: List<Content>,
+    val tools: List<Tool>? = null,
+    @SerialName("generationConfig")
+    val config: GenerationConfig,
+    val safetySettings: List<SafetySetting>? = null // Often used
+  ) {
+    @Serializable
+    data class GenerationConfig(
       /**
        * max
        * gemini-pro : 8192 ,
@@ -52,7 +93,15 @@ class Gemini {
        */
       val topK: Int? = null
     )
+
+
   }
+
+  @Serializable
+  data class SafetySetting(
+    val category: String, // e.g., "HARM_CATEGORY_SEXUALLY_EXPLICIT"
+    val threshold: String // e.g., "BLOCK_MEDIUM_AND_ABOVE"
+  )
 
   @Serializable
   data class Tool(@SerialName("function_declarations") val functionDeclarations: List<FunctionDeclaration>)
@@ -60,7 +109,7 @@ class Gemini {
   @Serializable
   data class FunctionDeclaration(val name: String, val description: String, val parameters: Parameters) {
     @Serializable
-    data class Parameters(val type : String, val properties : Map<String , Argument>, val required: List<String>) {
+    data class Parameters(val type: String, val properties: Map<String, Argument>, val required: List<String>) {
       @Serializable
       data class Argument(val type: String, val description: String)
     }
@@ -69,14 +118,25 @@ class Gemini {
   sealed class ResponseContainer {
 
     @Serializable
-    data class Response(val candidates: List<Candidate> , val usageMetadata: UsageMetadata) : ResponseContainer() {
+    data class SuccessResponse(
+      val candidates: List<Candidate>,
+      val usageMetadata: UsageMetadata,
+      val modelVersion: String,
+      val responseId: String
+      ) : ResponseContainer() {
 
       @Serializable
       data class UsageMetadata(
-        val promptTokenCount : Int,
-        val candidatesTokenCount : Int,
-        val totalTokenCount : Int,
+        val promptTokenCount: Int,
+        val candidatesTokenCount: Int,
+        val totalTokenCount: Int,
         val thoughtsTokenCount: Int?
+      )
+
+      @Serializable
+      data class PromptFeedback(
+        val blockReason: String? = null,
+        val safetyRatings: List<SafetyRating>? = null
       )
     }
 
@@ -84,15 +144,12 @@ class Gemini {
      * for streamGenerateContent
      */
     @Serializable
-    data class CandidateContainer(val candidates: List<Candidate>) : ResponseContainer() {
-      @Serializable
-      data class Candidate(val content: Content)
-    }
+    data class StreamCandidateContainer(val candidates: List<Candidate>) : ResponseContainer()
 
     @Serializable
-    data class ErrorContainer(val error: Error?) : ResponseContainer() {
+    data class ErrorContainer(val error: ErrorDetails?) : ResponseContainer() {
       @Serializable
-      data class Error(val code: Int, val message: String, val status: String)
+      data class ErrorDetails(val code: Int, val message: String, val status: String)
     }
 
     companion object {

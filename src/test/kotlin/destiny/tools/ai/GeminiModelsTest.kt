@@ -175,10 +175,10 @@ class GeminiTest {
           }
         ]
       """.trimIndent()
-      json.decodeFromString<List<Gemini.ResponseContainer.CandidateContainer>>(raw).also { containers ->
+      json.decodeFromString<List<Gemini.ResponseContainer.StreamCandidateContainer>>(raw).also { containers ->
         logger.info { containers }
         assertEquals(1 , containers.size)
-        val container: Gemini.ResponseContainer.CandidateContainer = containers[0]
+        val container: Gemini.ResponseContainer.StreamCandidateContainer = containers[0]
         assertEquals(1 , container.candidates.size)
         val candidate = container.candidates[0]
         candidate.content.also { content ->
