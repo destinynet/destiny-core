@@ -6,6 +6,7 @@ package destiny.tools.ai
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
@@ -29,13 +30,40 @@ class Xai {
     val toolCalls: List<ToolCall>? = null
   )
 
+  data class XaiOptions(
+    /** 0 to 2 , default 1 */
+    val temperature: Double? = null,
+    val topP: Double? = null,
+    /** -2 to 2 */
+    val frequencyPenalty: Double? = null,
+  ) {
+    companion object {
+      fun ChatOptions.toXai() : XaiOptions {
+        return XaiOptions(
+          this.temperature?.value?.let { it * 2 },
+          this.topP?.value,
+          this.frequencyPenalty?.value?.let { it * 2 },
+        )
+      }
+    }
+  }
+
   @Serializable
   data class Request(val messages: List<Message>,
                      val model: String,
-                     val temperature: Double = 0.8,
+                     @Transient
+                     val options: XaiOptions? = null,
                      val stream: Boolean = false,
                      val tools : List<ToolFunction> = emptyList()
-  )
+  ) {
+    val temperature: Double? = options?.temperature
+
+    @SerialName("top_p")
+    val topP: Double? = options?.topP
+
+    @SerialName("frequency_penalty")
+    val frequencyPenalty: Double? = options?.frequencyPenalty
+  }
 
 
   @Serializable

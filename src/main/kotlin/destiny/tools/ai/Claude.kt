@@ -74,6 +74,22 @@ class Claude {
   data class MetaData(@SerialName("user_id") val userId: String)
 
 
+  data class ClaudeOptions(
+    val temperature: Double? = null,  // 0 < x < 1
+    val topK: Int? = null,            // > 0
+    val topP: Double? = null,         // 0 < x < 1
+  ) {
+    companion object {
+      fun ChatOptions.toClaude() : ClaudeOptions {
+        return ClaudeOptions(
+          this.temperature?.value,
+          this.topK?.value,
+          this.topP?.value,
+        )
+      }
+    }
+  }
+
   @Serializable
   data class ChatModel(
     val messages: List<ClaudeMessage>,
@@ -86,18 +102,20 @@ class Claude {
     @SerialName("metadata")
     val metadata: MetaData? = null,
 
-    /**
-     * 0 < x < 1
-     */
-    val temperature: Double? = 1.0,
+    @Transient
+    val options: ClaudeOptions? = null,
+
+    val tools: List<Function>? = null
+  ) {
+
+    val temperature: Double? = options?.temperature
 
     @SerialName("top_k")
-    val topK: Int? = null,
+    val topK: Int? = options?.topK
 
     @SerialName("top_p")
-    val topP: Double? = null,
-    val tools: List<Function>? = null
-  )
+    val topP: Double? = options?.topP
+  }
 
   @Serializable
   data class Response(val id : String?, val type : String, val role : String?, val model : String?,

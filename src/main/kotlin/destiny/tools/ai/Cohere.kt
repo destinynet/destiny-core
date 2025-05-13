@@ -5,6 +5,7 @@ package destiny.tools.ai
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 
 class Cohere {
@@ -32,17 +33,41 @@ class Cohere {
     val toolCalls: List<ToolCall>? = null
   )
 
+  data class CohereOptions(
+    val temperature: Double? = 0.3,
+    /** max value of 500 */
+    val k: Int? = null,
+    /** Defaults to 0.75. min value of 0.01, max value of 0.99. */
+    val p: Double? = 0.75,
+    /** 0 t0 1 , default 0 */
+    val frequencyPenalty: Double? = null,
+  ) {
+    companion object {
+      fun ChatOptions.toCohere() : CohereOptions {
+        return CohereOptions(
+          this.temperature?.value,
+          this.topK?.value,
+          this.topP?.value,
+          this.frequencyPenalty?.value?.let { (it + 1) / 2.0 }
+        )
+      }
+    }
+  }
+
   @Serializable
   data class Request(val model: String,
                      val messages: List<Message>,
                      val tools: List<ToolFunction>,
                      val stream: Boolean = false,
-                     val temperature: Double? = 0.3,
-                     /** max value of 500 */
-                     val k : Int? = null,
-                     /** Defaults to 0.75. min value of 0.01, max value of 0.99. */
-                     val p : Double? = 0.75,
-                     )
+                     @Transient
+                     val options: CohereOptions? = null,
+                     ) {
+    val temperature: Double? = options?.temperature
+    val k: Int? = options?.k
+    val p: Double? = options?.p
+    @SerialName("frequency_penalty")
+    val frequencyPenalty: Double? = options?.frequencyPenalty
+  }
 
   @Serializable
   data class Response(

@@ -25,6 +25,13 @@ value class TopK(val value: Int) {
   }
 }
 
+@JvmInline
+value class FrequencyPenalty(val value: Double) {
+  init {
+    require(value in -1.0..1.0) { "FrequencyPenalty must be in -1.0..1.0" }
+  }
+}
+
 data class ChatOptions(
   val temperature: Temperature? = null,
   /**
@@ -37,4 +44,6 @@ data class ChatOptions(
    * 更發散 : topK = 100+
    */
   val topK: TopK? = null,
+
+  val frequencyPenalty: FrequencyPenalty? = null,
 )

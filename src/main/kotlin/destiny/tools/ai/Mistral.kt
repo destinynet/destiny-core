@@ -17,19 +17,46 @@ import kotlinx.serialization.json.jsonPrimitive
 
 class Mistral {
 
+  data class MistralOptions(
+    /** 0 .. 1 */
+    val temperature: Double? = null,
+    /** 0 .. 1 */
+    val topP: Double? = null,
+    /** -2 .. 2 , default 0 */
+    val frequencyPenalty: Double? = null,
+  ) {
+    companion object {
+      fun ChatOptions.toMistral() : MistralOptions {
+        return MistralOptions(
+          this.temperature?.value,
+          this.topP?.value,
+          this.frequencyPenalty?.value,
+        )
+      }
+    }
+  }
+
   @Serializable
   data class ChatModel(
     val model: String,
     val messages: List<OpenAi.Message>,
-    val temperature: Double? = null,
-    @SerialName("top_p")
-    val topP: Double? = null,
+    @Transient
+    val options: MistralOptions? = null,
     @SerialName("max_tokens")
     val maxTokens: Int = 4096,
     @Transient
     val jsonSchemaSpec: JsonSchemaSpec? = null,
     val tools: List<FunctionDeclaration>? = null,
   ) {
+
+    val temperature: Double? = options?.temperature
+
+    @SerialName("top_p")
+    val topP: Double? = options?.topP
+
+    @SerialName("frequency_penalty")
+    val frequencyPenalty: Double? = options?.frequencyPenalty
+
     @SerialName("response_format")
     @Serializable
     val responseFormat: ResponseFormat = if (jsonSchemaSpec == null) {

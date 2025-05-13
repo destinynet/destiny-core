@@ -6,6 +6,7 @@ package destiny.tools.ai
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
@@ -68,18 +69,42 @@ class Deepseek {
     data object JsonObject : ResponseFormat()
   }
 
+  data class DeepseekOptions(
+    /** 0 <= value <= 2.0 */
+    val temperature: Double? = 1.0,
+    val topP: Double? = 1.0,
+    /** -2 .. 2 */
+    val frequencyPenalty: Double? = 0.0,
+  ) {
+    companion object {
+      fun ChatOptions.toDeepseek() : DeepseekOptions{
+        return DeepseekOptions(
+          this.temperature?.value?.let { it * 2 },
+          this.topP?.value,
+          this.frequencyPenalty?.value,
+        )
+      }
+    }
+  }
+
   @Serializable
   data class ChatModel(val messages: List<OpenAi.Message>,
                        val model: String,
                        val stream: Boolean? = false,
-                       /** 0 <= value <= 2.0 */
-                       val temperature: Double? = 1.0,
-                       @SerialName("top_p")
-                       val topP : Double? = 1.0,
+                       @Transient
+                       val options : DeepseekOptions? = null,
                        val tools: List<OpenAi.FunctionDeclaration>? = null,
-                       @kotlinx.serialization.Transient
+                       @Transient
                        val jsonSchemaSpec: JsonSchemaSpec? = null
   ) {
+
+    val temperature: Double? = options?.temperature
+
+    @SerialName("top_p")
+    val topP: Double? = options?.topP
+
+    @SerialName("frequency_penalty")
+    val frequencyPenalty: Double? = options?.frequencyPenalty
 
     @SerialName("response_format")
     val responseFormat: ResponseFormat = if (jsonSchemaSpec == null) {
