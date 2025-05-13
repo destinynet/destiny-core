@@ -27,7 +27,7 @@ interface IChatOrchestrator {
 
 interface IChatOrchestratorFactory {
   fun hedged(config: HedgeChatService.HedgeConfig): IChatOrchestrator
-  fun resilient(config: ResilientChatService.ResilientChatConfig): IChatOrchestrator
+  fun resilient(config: ResilientChatService.ResilientConfig): IChatOrchestrator
 }
 
 @Named
@@ -39,7 +39,7 @@ class ChatOrchestratorFactory(
     return HedgeChatService(domainModelService, config)
   }
 
-  override fun resilient(config: ResilientChatService.ResilientChatConfig): IChatOrchestrator {
+  override fun resilient(config: ResilientChatService.ResilientConfig): IChatOrchestrator {
     return ResilientChatService(domainModelService, config)
   }
 }

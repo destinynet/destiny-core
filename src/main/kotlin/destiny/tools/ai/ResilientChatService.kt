@@ -4,7 +4,7 @@
 package destiny.tools.ai
 
 import destiny.tools.KotlinLogging
-import destiny.tools.ai.ResilientChatService.ResilientChatConfig
+import destiny.tools.ai.ResilientChatService.ResilientConfig
 import destiny.tools.suspendFirstNotNullResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -27,7 +27,7 @@ import kotlin.time.Duration.Companion.seconds
  * 成功將結果反序列化為目標類型 [T]。
  *
  * 如果一輪循環中的所有模型都失敗了，服務將在延遲一段時間後開始新一輪的嘗試，
- * 直到達到配置的最大嘗試次數 ([ResilientChatConfig.maxTotalAttempts])。
+ * 直到達到配置的最大嘗試次數 ([ResilientConfig.maxTotalAttempts])。
  *
  * 與 [HedgeChatService] 不同（後者通過並行請求優先考慮低延遲），
  * 此服務優先考慮**最終的成功率**，即使可能需要更長的處理時間。
@@ -37,7 +37,7 @@ import kotlin.time.Duration.Companion.seconds
  */
 class ResilientChatService(
   private val domainModelService: IDomainModelService,
-  val config: ResilientChatConfig
+  val config: ResilientConfig
 ) : IChatOrchestrator {
 
   @OptIn(ExperimentalSerializationApi::class)
@@ -49,7 +49,7 @@ class ResilientChatService(
   }
 
   // 可以定義一個配置類
-  data class ResilientChatConfig(
+  data class ResilientConfig(
     val providerModels: Set<ProviderModel>,
     val delayBetweenModelLoops: Duration = 2.seconds, // 在完整輪詢所有模型都失敗後，再次開始新一輪輪詢前的延遲
     val maxTotalAttempts: Int = 3 // 最多進行多少輪完整的模型輪詢
