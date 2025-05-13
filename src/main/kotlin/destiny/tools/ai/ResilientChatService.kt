@@ -52,17 +52,17 @@ class ResilientChatService(
   data class ResilientConfig(
     val providerModels: Set<ProviderModel>,
     val delayBetweenModelLoops: Duration = 2.seconds, // 在完整輪詢所有模型都失敗後，再次開始新一輪輪詢前的延遲
-    val maxTotalAttempts: Int = 3 // 最多進行多少輪完整的模型輪詢
-  )
+    val maxTotalAttempts: Int = 3, // 最多進行多少輪完整的模型輪詢
+    override val user: String?,
+    override val modelTimeout: Duration
+  ) : IChatConfig
 
   override suspend fun <T> chatComplete(
     serializer: KSerializer<T>,
     messages: List<Msg>,
-    user: String?,
     funCalls: Set<IFunctionDeclaration>,
     jsonSchema: JsonSchemaSpec?,
     chatOptionsTemplate: ChatOptions,
-    modelTimeout: Duration,
     postProcessors: List<IPostProcessor>,
     locale: Locale
   ): ResultDto<T>? {
@@ -80,7 +80,7 @@ class ResilientChatService(
     while (attemptsLeft > 0) {
 
       logger.info { "Starting a new attempt loop (attempts left: $attemptsLeft). Shuffled models: ${shuffledModels.map { it.model }}" }
-      val successfulResultDto = process(serializer, shuffledModels, messages, user, funCalls, jsonSchema, chatOptionsTemplate, modelTimeout, postProcessors, locale)
+      val successfulResultDto = process(serializer, shuffledModels, messages, config.user, funCalls, jsonSchema, chatOptionsTemplate, config.modelTimeout, postProcessors, locale)
 
       if (successfulResultDto != null) {
         logger.info { "Successfully obtained result from ${successfulResultDto.provider}/${successfulResultDto.model} within the loop." }

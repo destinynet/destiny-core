@@ -16,7 +16,7 @@ import kotlin.time.Duration
 
 class HedgeChatService(
   private val domainModelService: IDomainModelService,
-  private val hedgeConfig: HedgeConfig,
+  private val config: HedgeConfig,
 ) : IChatOrchestrator {
 
   @OptIn(ExperimentalSerializationApi::class)
@@ -29,27 +29,28 @@ class HedgeChatService(
 
   data class HedgeConfig(
     val preferred: ProviderModel,
+    val preferredWait: Duration,  // preferred model 若能在此段時間內有結果，則優先回傳
     val fallbacks: Set<ProviderModel>,
-    val preferredWait: Duration,     // 專指等待 preferred 的時間
-  ) {
+    override val modelTimeout: Duration,
+    override val user: String?
+  ) : IChatConfig {
     init {
       require(!fallbacks.contains(preferred))
+      require(modelTimeout > preferredWait)
     }
   }
 
   override suspend fun <T> chatComplete(
     serializer: KSerializer<T>,
     messages: List<Msg>,
-    user: String?,
     funCalls: Set<IFunctionDeclaration>,
     jsonSchema: JsonSchemaSpec?,
     chatOptionsTemplate: ChatOptions,
-    modelTimeout: Duration,
     postProcessors: List<IPostProcessor>,
     locale: Locale
   ): ResultDto<T>? = coroutineScope {
 
-    val allModels = setOf(hedgeConfig.preferred) + hedgeConfig.fallbacks
+    val allModels = setOf(config.preferred) + config.fallbacks
 
     val deferredMap: Map<ProviderModel, Deferred<ResultDto<T>?>> = allModels.associateWith { providerModel: ProviderModel ->
 
@@ -62,9 +63,9 @@ class HedgeChatService(
         val r = impl.chatComplete(
           model = providerModel.model,
           messages = messages,
-          user = user,
+          user = config.user,
           funCalls = funCalls,
-          timeout = modelTimeout,
+          timeout = config.modelTimeout,
           chatOptions = currentChatOptions,
           jsonSchema = jsonSchema
         )
@@ -88,13 +89,13 @@ class HedgeChatService(
       }
     }
 
-    val result: ResultDto<T>? = withTimeoutOrNull(hedgeConfig.preferredWait) {
-      deferredMap[hedgeConfig.preferred]?.await()
+    val result: ResultDto<T>? = withTimeoutOrNull(config.preferredWait) {
+      deferredMap[config.preferred]?.await()
     }
 
     if (result != null) {
       // preferred 在 delay 內完成	-> 回傳 preferred，並取消其他
-      deferredMap.filterKeys { it != hedgeConfig.preferred }.values.forEach { it.cancel() }
+      deferredMap.filterKeys { it != config.preferred }.values.forEach { it.cancel() }
       result
     } else {
       // preferred 超時但 fallback 有完成	-> 回傳第一個成功 fallback
