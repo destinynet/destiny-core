@@ -66,7 +66,7 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
     }
 
     val result: ResultDto<T>? = withTimeoutOrNull(providerGroup.preferredWait) {
-      deferredMap[providerGroup.preferred]!!.await()
+      deferredMap[providerGroup.preferred]?.await()
     }
 
     if (result != null) {
