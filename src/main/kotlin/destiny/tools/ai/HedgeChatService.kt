@@ -4,17 +4,20 @@
 package destiny.tools.ai
 
 import destiny.tools.KotlinLogging
-import jakarta.inject.Named
 import kotlinx.coroutines.*
 import kotlinx.coroutines.selects.select
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.util.*
+import kotlin.time.Duration
 
 
-@Named
-class HedgeChatService(val domainModelService: IDomainModelService) {
+class HedgeChatService(
+  private val domainModelService: IDomainModelService,
+  private val hedgeConfig: HedgeConfig,
+) : IChatOrchestrator {
 
   @OptIn(ExperimentalSerializationApi::class)
   val json: Json = Json {
@@ -24,17 +27,36 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
     isLenient = true
   }
 
-  suspend inline fun <reified T> hedgedChatComplete(
-    providerGroup: ProviderGroup,
+  data class HedgeConfig(
+    val preferred: ProviderModel,
+    val fallbacks: Set<ProviderModel>,
+    val preferredWait: Duration,     // 專指等待 preferred 的時間
+  ) {
+    init {
+      require(!fallbacks.contains(preferred))
+    }
+  }
+
+  override suspend fun <T> chatComplete(
+    serializer: KSerializer<T>,
     messages: List<Msg>,
-    user: String? = null,
-    funCalls: Set<IFunctionDeclaration> = emptySet(),
-    jsonSchema: JsonSchemaSpec? = null,
+    user: String?,
+    funCalls: Set<IFunctionDeclaration>,
+    jsonSchema: JsonSchemaSpec?,
+    chatOptionsTemplate: ChatOptions,
+    modelTimeout: Duration,
+    postProcessors: List<IPostProcessor>,
     locale: Locale
   ): ResultDto<T>? = coroutineScope {
-    val allModels = setOf(providerGroup.preferred) + providerGroup.fallbacks
+
+    val allModels = setOf(hedgeConfig.preferred) + hedgeConfig.fallbacks
 
     val deferredMap: Map<ProviderModel, Deferred<ResultDto<T>?>> = allModels.associateWith { providerModel: ProviderModel ->
+
+      val currentChatOptions = chatOptionsTemplate.copy(
+        temperature = providerModel.temperature ?: chatOptionsTemplate.temperature
+      )
+
       async(Dispatchers.IO) {
         val impl = domainModelService.findImpl(providerModel.provider)
         val r = impl.chatComplete(
@@ -42,14 +64,14 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
           messages = messages,
           user = user,
           funCalls = funCalls,
-          timeout = providerGroup.modelTimeout,
-          chatOptions = ChatOptions(providerModel.temperature),
+          timeout = modelTimeout,
+          chatOptions = currentChatOptions,
           jsonSchema = jsonSchema
         )
         r.takeIf { it is Reply.Normal }
           ?.let { it as Reply.Normal }
           ?.let {
-            val processed = providerGroup.postProcessors.fold(it.content) { acc, postProcessor ->
+            val processed = postProcessors.fold(it.content) { acc, postProcessor ->
               val (processed, _) = postProcessor.process(acc, locale)
               processed
             }
@@ -57,7 +79,8 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
             Triple(processed, it.inputTokens, it.outputTokens)
           }?.let { (string, inputTokens, outputTokens) ->
             try {
-              ResultDto(json.decodeFromString<T>(string), providerModel.provider, providerModel.model, inputTokens, outputTokens)
+              val model: T = json.decodeFromString(serializer, string)
+              ResultDto(model, providerModel.provider, providerModel.model, inputTokens, outputTokens)
             } catch (e : SerializationException) {
               null
             }
@@ -65,13 +88,13 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
       }
     }
 
-    val result: ResultDto<T>? = withTimeoutOrNull(providerGroup.preferredWait) {
-      deferredMap[providerGroup.preferred]?.await()
+    val result: ResultDto<T>? = withTimeoutOrNull(hedgeConfig.preferredWait) {
+      deferredMap[hedgeConfig.preferred]?.await()
     }
 
     if (result != null) {
       // preferred 在 delay 內完成	-> 回傳 preferred，並取消其他
-      deferredMap.filterKeys { it != providerGroup.preferred }.values.forEach { it.cancel() }
+      deferredMap.filterKeys { it != hedgeConfig.preferred }.values.forEach { it.cancel() }
       result
     } else {
       // preferred 超時但 fallback 有完成	-> 回傳第一個成功 fallback

@@ -6,11 +6,11 @@ package destiny.tools.ai
 import destiny.tools.KotlinLogging
 import destiny.tools.ai.ResilientChatService.ResilientChatConfig
 import destiny.tools.suspendFirstNotNullResult
-import jakarta.inject.Named
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.util.*
@@ -33,14 +33,12 @@ import kotlin.time.Duration.Companion.seconds
  * 此服務優先考慮**最終的成功率**，即使可能需要更長的處理時間。
  *
  * @property domainModelService 用於根據提供者查找具體聊天完成實現的服務。
- * @property resilientChatConfig 控制重試行為（例如，總嘗試次數、循環間延遲）的配置。
+ * @property config 控制重試行為（例如，總嘗試次數、循環間延遲）的配置。
  */
-@Named
 class ResilientChatService(
-  val domainModelService: IDomainModelService,
-  // 可以考慮注入一個配置類來控制重試次數、延遲等
-  val resilientChatConfig: ResilientChatConfig = ResilientChatConfig()
-) {
+  private val domainModelService: IDomainModelService,
+  val config: ResilientChatConfig
+) : IChatOrchestrator {
 
   @OptIn(ExperimentalSerializationApi::class)
   val json: Json = Json {
@@ -52,33 +50,37 @@ class ResilientChatService(
 
   // 可以定義一個配置類
   data class ResilientChatConfig(
+    val providerModels: Set<ProviderModel>,
     val delayBetweenModelLoops: Duration = 2.seconds, // 在完整輪詢所有模型都失敗後，再次開始新一輪輪詢前的延遲
     val maxTotalAttempts: Int = 3 // 最多進行多少輪完整的模型輪詢
   )
 
-  suspend inline fun <reified T> resilientChatComplete(
-    providerModels: Set<ProviderModel>,
+  override suspend fun <T> chatComplete(
+    serializer: KSerializer<T>,
     messages: List<Msg>,
-    user: String? = null,
-    funCalls: Set<IFunctionDeclaration> = emptySet(),
-    jsonSchema: JsonSchemaSpec? = null,
-    chatOptionsTemplate: ChatOptions, // 提供一個聊天選項模板
+    user: String?,
+    funCalls: Set<IFunctionDeclaration>,
+    jsonSchema: JsonSchemaSpec?,
+    chatOptionsTemplate: ChatOptions,
     modelTimeout: Duration,
     postProcessors: List<IPostProcessor>,
     locale: Locale
   ): ResultDto<T>? {
+    val providerModels = config.providerModels
+
     if (providerModels.isEmpty()) {
       logger.warn { "No provider models specified for resilient chat completion." }
       return null
     }
 
     val shuffledModels: List<ProviderModel> = providerModels.shuffled()
-    val successfulResultDto = process<T>(shuffledModels, messages, user, funCalls, jsonSchema, chatOptionsTemplate, modelTimeout, postProcessors, locale)
 
-    var attemptsLeft = resilientChatConfig.maxTotalAttempts
+
+    var attemptsLeft = config.maxTotalAttempts
     while (attemptsLeft > 0) {
 
       logger.info { "Starting a new attempt loop (attempts left: $attemptsLeft). Shuffled models: ${shuffledModels.map { it.model }}" }
+      val successfulResultDto = process(serializer, shuffledModels, messages, user, funCalls, jsonSchema, chatOptionsTemplate, modelTimeout, postProcessors, locale)
 
       if (successfulResultDto != null) {
         logger.info { "Successfully obtained result from ${successfulResultDto.provider}/${successfulResultDto.model} within the loop." }
@@ -88,12 +90,12 @@ class ResilientChatService(
       // 如果一輪循環後都沒有成功
       attemptsLeft--
       if (attemptsLeft > 0) {
-        logger.info { "All models in the current loop failed. Retrying after ${resilientChatConfig.delayBetweenModelLoops} delay. Attempts left: $attemptsLeft" }
-        delay(resilientChatConfig.delayBetweenModelLoops)
+        logger.info { "All models in the current loop failed. Retrying after ${config.delayBetweenModelLoops} delay. Attempts left: $attemptsLeft" }
+        delay(config.delayBetweenModelLoops)
       }
     } // end of while loop (attemptsLeft)
 
-    logger.error { "All attempts to get a resilient chat completion failed after ${resilientChatConfig.maxTotalAttempts} loops." }
+    logger.error { "All attempts to get a resilient chat completion failed after ${config.maxTotalAttempts} loops." }
     return null
   }
 
@@ -102,7 +104,8 @@ class ResilientChatService(
    * 它使用 suspendFirstNotNullResult 依次嘗試每個模型，直到找到第一個成功的結果。
    * （假設此函數是 private inline fun <reified T>）
    */
-  suspend inline fun <reified T> process(
+  suspend fun <T> process(
+    serializer: KSerializer<T>,
     shuffledModels: List<ProviderModel>,
     messages: List<Msg>,
     user: String? = null,
@@ -143,15 +146,11 @@ class ResilientChatService(
             }
             logger.debug { "Final post-processed content for ${providerModel.model}: $processedContent" }
 
-            val result: T = if (T::class == String::class) {
-              processedContent as T
-            } else {
-              try {
-                json.decodeFromString<T>(processedContent)
-              } catch (e: SerializationException) {
-                logger.warn(e) { "Failed to deserialize content from ${providerModel.model} to ${T::class.simpleName}. Content: $processedContent" }
-                return@suspendFirstNotNullResult null // 此模型嘗試失敗，通知 firstNotNullResult 繼續
-              }
+            val result: T = try {
+              json.decodeFromString(serializer, processedContent)
+            } catch (e: SerializationException) {
+              logger.warn(e) { "Failed to deserialize content from ${providerModel.model}. Content: $processedContent" }
+              return@suspendFirstNotNullResult null
             }
 
             // 成功，返回 ResultDto 給 firstNotNullResult
