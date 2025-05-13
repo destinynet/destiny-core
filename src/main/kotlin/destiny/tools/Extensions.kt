@@ -21,6 +21,37 @@ inline fun <T, R : Any> Sequence<T>.firstNotNullResult(crossinline transform: (T
   return this.mapNotNull { transform(it) }.firstOrNull()
 }
 
+/**
+ * Iterates through the Iterable, applies the given suspendable [transform] function to each element,
+ * and returns the first non-null result.
+ * If no non-null result is found, returns null.
+ *
+ * @param T The type of elements in the Iterable.
+ * @param R The type of the result of the transform function (must be non-nullable Any).
+ * @param transform A suspendable function that takes an element of type T and returns a result of type R? (nullable).
+ * @return The first non-null result of applying the transform function, or null if all results are null.
+ */
+suspend inline fun <T, R : Any> Iterable<T>.suspendFirstNotNullResult(crossinline transform: suspend (T) -> R?): R? {
+  for (element in this) {
+    val result = transform(element)
+    if (result != null) {
+      return result
+    }
+  }
+  return null
+}
+
+ suspend inline fun <T, R : Any> Sequence<T>.suspendFirstNotNullResult(
+   crossinline transform: suspend (T) -> R?): R? {
+     for (element in this) {
+         val result = transform(element)
+         if (result != null) {
+             return result
+         }
+     }
+     return null
+ }
+
 private val logger = KotlinLogging.logger { }
 
 private fun calculateNextDelay(currentDelay: Long, factor: Double, maxDelay: Long): Long {

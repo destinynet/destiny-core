@@ -24,8 +24,6 @@ class HedgeChatService(val domainModelService: IDomainModelService) {
     isLenient = true
   }
 
-  data class ResultDto<T>(val result: T, val provider: Provider, val model: String, val inputTokens: Int?, val outputTokens: Int?)
-
   suspend inline fun <reified T> hedgedChatComplete(
     providerGroup: ProviderGroup,
     messages: List<Msg>,
