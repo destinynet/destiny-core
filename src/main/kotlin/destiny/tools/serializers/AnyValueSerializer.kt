@@ -32,9 +32,7 @@ object AnyValueSerializer : KSerializer<Any> {
 
   override fun deserialize(decoder: Decoder): Any {
     val jsonDecoder = decoder as? JsonDecoder ?: throw SerializationException("This serializer can be used only with Json")
-    val jsonElement = jsonDecoder.decodeJsonElement()
-
-    return when (jsonElement) {
+    return when (val jsonElement = jsonDecoder.decodeJsonElement()) {
       is JsonNull      -> throw SerializationException("Null value not supported for Any by this serializer") // 或者返回一個特定的 null 標記對象
       is JsonPrimitive -> {
         if (jsonElement.isString) {
