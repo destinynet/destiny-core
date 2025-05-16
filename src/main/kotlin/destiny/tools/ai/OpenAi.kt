@@ -14,6 +14,8 @@ class OpenAi {
   @Serializable
   data class Message(val role: String,
                      val content: String?,
+                     @SerialName("reasoning_content")
+                     val reasoning: String? = null,
                      @SerialName("tool_call_id") val toolCallId: String? = null,
                      @SerialName("tool_calls") val toolCalls: List<ToolCall>? = null) {
 

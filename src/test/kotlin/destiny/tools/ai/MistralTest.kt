@@ -32,7 +32,7 @@ class MistralTest {
     fun text() {
       val chatModel = Mistral.ChatModel(
         "mistral-small-latest",
-        listOf(OpenAi.Message("user", "test message", null, emptyList()))
+        listOf(OpenAi.Message("user", "test message", null, null, emptyList()))
       )
       json.encodeToString(chatModel).also { raw ->
         logger.info { raw }
@@ -43,7 +43,7 @@ class MistralTest {
     @Test
     fun jsonSchema() {
       val chatModel = Mistral.ChatModel(
-        "mistral-small-latest", listOf(OpenAi.Message("user", "test message", null, emptyList())),
+        "mistral-small-latest", listOf(OpenAi.Message("user", "test message", null, null, emptyList())),
         jsonSchemaSpec = BirthDataReply::class.toJsonSchema("BirthDataReply", "reply of a horoscope chart")
       )
       json.encodeToString(chatModel).also { raw ->

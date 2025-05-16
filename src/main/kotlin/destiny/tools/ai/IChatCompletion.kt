@@ -9,6 +9,7 @@ sealed class Reply {
   abstract val provider: String
 
   data class Normal(val content: String,
+                    val think: String?,
                     override val provider: String,
                     val model: String,
                     val invokedFunCalls: List<FunCall> = emptyList(),
