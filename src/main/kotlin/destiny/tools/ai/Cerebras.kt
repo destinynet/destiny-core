@@ -3,22 +3,41 @@
  */
 package destiny.tools.ai
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
+import destiny.tools.ai.OpenAi.FunctionDeclaration
+import kotlinx.serialization.*
+import kotlinx.serialization.json.JsonContentPolymorphicSerializer
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
 
 
 class Cerebras {
 
-  @Serializable
-  data class Response(
-    val id: String,
-    val choices: List<OpenAi.Response.NormalResponse.Choice>,
-    val created: Long,
-    val model: String,
-    val `object`: String,
-    val usage : OpenAi.Response.NormalResponse.Usage
-  )
+  @Serializable(with = ResponseSerializer::class)
+  sealed class Response {
+    @Serializable
+    data class NormalResponse(
+      val id: String,
+      val choices: List<OpenAi.Response.NormalResponse.Choice>,
+      val created: Long,
+      val model: String,
+      val `object`: String,
+      val usage: OpenAi.Response.NormalResponse.Usage
+    ) : Response()
+
+    @Serializable
+    data class ErrorResponse(val message: String, val type: String, val param: String, val code: String) : Response()
+  }
+
+  object ResponseSerializer : JsonContentPolymorphicSerializer<Response>(Response::class) {
+    override fun selectDeserializer(element: JsonElement): DeserializationStrategy<Response> {
+      val obj = element.jsonObject
+      return when {
+        "choices" in obj && "id" in obj   -> Response.NormalResponse.serializer()
+        "message" in obj && "code" in obj -> Response.ErrorResponse.serializer()
+        else                              -> throw SerializationException("Unknown response format: $element")
+      }
+    }
+  }
 
 
   data class CerebrasOptions(
@@ -30,7 +49,7 @@ class Cerebras {
     val seed: Int? = null,
   ) {
     companion object {
-      fun ChatOptions.toCerebras() : CerebrasOptions {
+      fun ChatOptions.toCerebras(): CerebrasOptions {
         return CerebrasOptions(
           this.temperature?.value?.let { it * 1.5 },
           this.topP?.value
@@ -41,10 +60,12 @@ class Cerebras {
 
   @Serializable
   data class ChatModel(
-    val model: String,
     val messages: List<OpenAi.Message>,
+    val user: String?,
+    val model: String,
     @Transient
-    val options: CerebrasOptions? = null
+    val options: CerebrasOptions? = null,
+    val tools: List<FunctionDeclaration>? = null,
   ) {
     val temperature: Double? = options?.temperature
 
