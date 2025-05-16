@@ -15,4 +15,5 @@ enum class Provider {
   XAI,
   DEEPSEEK,
   TOGETHER,
+  CEREBRAS,
 }
