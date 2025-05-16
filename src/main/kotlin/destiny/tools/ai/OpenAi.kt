@@ -43,7 +43,12 @@ class OpenAi {
                               val choices: List<Choice>,
                               val usage: Usage): Response() {
       @Serializable
-      data class Choice(val message: Message, val index: Int, val logprobs: Int? = null, @SerialName("finish_reason") val finishReason: String?)
+      data class Choice(
+        val message: Message,
+        val index: Int,
+        val logprobs: Int? = null,
+        @SerialName("finish_reason") val finishReason: String?
+      )
 
       @Serializable
       data class Usage(

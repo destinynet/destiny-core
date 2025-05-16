@@ -11,14 +11,6 @@ import kotlinx.serialization.Transient
 class Cohere {
 
   @Serializable
-  data class ToolCall(val id: String,
-                      val type: String = "function",
-                      val function: Function) {
-    @Serializable
-    data class Function(val name: String, val arguments: String)
-  }
-
-  @Serializable
   data class Content(val type: String = "text", val text: String)
 
   @Serializable
@@ -30,7 +22,7 @@ class Cohere {
     @SerialName("tool_plan")
     val toolPlan: String? = null,
     @SerialName("tool_calls")
-    val toolCalls: List<ToolCall>? = null
+    val toolCalls: List<OpenAi.Message.ToolCall>? = null
   )
 
   data class CohereOptions(

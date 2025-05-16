@@ -73,24 +73,9 @@ class Mistral {
     data class ErrorResponse(val message: String, val type: String, val code: String) : Response()
 
     @Serializable
-    data class NormalResponse(val id: String, val created: Long, val model: String, val choices: List<Choice>, val usage: Usage) : Response() {
-      @Serializable
-      data class Choice(
-        val index: Int, val message: OpenAi.Message,
-        @SerialName("finish_reason")
-        val finishReason: String
-      )
-
-      @Serializable
-      data class Usage(
-        @SerialName("prompt_tokens")
-        val promptTokens: Int,
-        @SerialName("total_tokens")
-        val totalTokens: Int,
-        @SerialName("completion_tokens")
-        val completionTokens: Int,
-      )
-    }
+    data class NormalResponse(val id: String, val created: Long, val model: String,
+                              val choices: List<OpenAi.Response.NormalResponse.Choice>,
+                              val usage: OpenAi.Response.NormalResponse.Usage) : Response()
   }
 
   object ResponseSerializer : JsonContentPolymorphicSerializer<Response>(Response::class) {

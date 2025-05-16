@@ -24,9 +24,9 @@ class Groq {
   @Serializable
   data class Response(val id: String, val model: String, val choices: List<Choice>, val usage: Usage) {
     @Serializable
-    data class Choice(
-      val index: Int, val message: Message, @SerialName("finish_reason") val finishReason: String
-    )
+    data class Choice(val index: Int,
+                      val message: Message,
+                      @SerialName("finish_reason") val finishReason: String)
 
     @Serializable
     data class Usage(
