@@ -6,27 +6,22 @@ package destiny.tools
 import java.util.*
 
 object LocaleTools {
-  /** 將 string 以 _ 切開，傳回 Locale 物件  */
-  fun getLocale(string: String?): Locale? {
-    return string?.let { s ->
-      StringTokenizer(s, "_-")
-        .takeIf { it.countTokens() > 0 }
-        ?.let { st ->
-          val lang = st.nextToken().substringBefore('#')
 
-          val country = if (st.hasMoreTokens())
-            st.nextToken().substringBefore('#')
-          else
-            ""
+  private val localeDelimiter = Regex("[_-]")
 
-          val variant = if (st.hasMoreTokens())
-            st.nextToken().substringBefore('#')
-          else
-            ""
-          Locale(lang, country, variant)
-        }
+  fun getLocale(input: String?): Locale? {
+    if (input.isNullOrBlank()) return null
+
+    val parts = input.split(localeDelimiter)
+      .map { it.substringBefore('#') }
+
+    return when (parts.size) {
+      1    -> Locale(parts[0])
+      2    -> Locale(parts[0], parts[1])
+      else -> Locale(parts[0], parts[1], parts[2])
     }
   }
+
 
   fun parseAcceptLanguageHeader(acceptLanguage: String): Locale? {
     return try {
