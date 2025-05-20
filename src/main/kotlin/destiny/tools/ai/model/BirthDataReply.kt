@@ -3,7 +3,6 @@
  */
 package destiny.tools.ai.model
 
-import destiny.tools.ai.toJsonSchema
 import kotlinx.serialization.Serializable
 
 
@@ -14,6 +13,6 @@ data class BirthDataReply(
 ): IFollowUps {
 
   companion object {
-    val schema = BirthDataReply::class.toJsonSchema("birth_data_reply", "Response format for birth data analysis")
+    val formatSpec = FormatSpec.of<BirthDataReply>("birth_data_reply", "Response format for birth data analysis")
   }
 }
