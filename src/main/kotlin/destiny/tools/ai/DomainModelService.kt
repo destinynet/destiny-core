@@ -48,9 +48,10 @@ object ProviderModelListSerializer : KSerializer<List<ProviderModel>> {
 }
 
 @Serializable
-data class DomainMapping(val domain: Domain, val language: String?,
-                         @Serializable(with = ProviderModelListSerializer::class)
-                         var models: List<ProviderModel>
+data class DomainMapping(
+  val domain: Domain, val language: String?,
+  @Serializable(with = ProviderModelListSerializer::class)
+  var models: List<ProviderModel>
 )
 
 @Serializable
@@ -58,14 +59,15 @@ data class DomainModelConfig(val mappings: List<DomainMapping>)
 
 interface IDomainModelService {
   fun findImpl(provider: Provider): IChatCompletion
+  fun getProviderModels(domain: Domain, language: String? = null): List<ProviderModel>
   fun getProviderModel(domain: Domain, language: String? = null): ProviderModel
 }
 
 @Named
 class DomainModelService(
   private val holder: Holder<Map<DomainLanguage, List<ProviderModel>>>,
-  private val chatCompletions : Set<IChatCompletion>
-): IDomainModelService {
+  private val chatCompletions: Set<IChatCompletion>
+) : IDomainModelService {
 
   val allProviderModels: List<ProviderModel>
     get() = holder.getConfig().values.flatten().toSet().toList()
@@ -74,30 +76,32 @@ class DomainModelService(
     return chatCompletions.first { it.provider == provider.name }
   }
 
-  private fun byDomain(domain: Domain): ProviderModel {
+  private fun byDomainMultiple(domain: Domain): List<ProviderModel> {
     return holder.getConfig().entries
       .filter { it.key.domain == domain }
-      .flatMap { it.value }
-      .randomOrNull() ?: allProviderModels.random()
+      .flatMap { it.value }.takeIf { it.isNotEmpty() } ?: allProviderModels
   }
 
-  override fun getProviderModel(domain: Domain, language: String?): ProviderModel {
+  override fun getProviderModels(domain: Domain, language: String?): List<ProviderModel> {
     return if (language == null) {
-      byDomain(domain)
+      byDomainMultiple(domain)
     } else {
-
       // 先搜尋 domain / language 完全符合
       holder.getConfig().entries
         .filter { it.key.domain == domain && it.key.language == language }
         .flatMap { it.value }
-        .randomOrNull()
+        .takeIf { it.isNotEmpty() }
         ?: run {
           // 再搜尋 domain 符合， language null
-          holder.getConfig().entries.filter { it.key.domain == domain && it.key.language == null }.flatMap { it.value }.randomOrNull()
-        } ?: run {
-          // 最後再去此 domain 的 provider 整合去找
-          byDomain(domain)
+          holder.getConfig().entries.filter { it.key.domain == domain && it.key.language == null }.flatMap { it.value }.takeIf { it.isNotEmpty() } ?: run {
+            // 最後再去此 domain 的 provider 整合去找
+            byDomainMultiple(domain)
+          }
         }
     }
+  }
+
+  override fun getProviderModel(domain: Domain, language: String?): ProviderModel {
+    return getProviderModels(domain, language).random()
   }
 }

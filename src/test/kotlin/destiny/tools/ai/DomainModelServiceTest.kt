@@ -5,6 +5,7 @@ package destiny.tools.ai
 
 import destiny.tools.ai.model.Domain
 import destiny.tools.config.Holder
+import org.junit.jupiter.api.Nested
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,36 +34,81 @@ class DomainModelServiceTest {
     service = DomainModelService(holder, emptySet())
   }
 
-  @Test
-  fun `matching domain and language`() {
-    val result = service.getProviderModel(Domain.Bdnp.HOROSCOPE, "zh")
-    assertEquals(Provider.CLAUDE, result.provider)
-    assertEquals("claude-3-haiku-20240307", result.model)
-    assertEquals(Temperature(0.9), result.temperature)
+  @Nested
+  inner class Multiple {
+
+    @Test
+    fun `matching domain and language`() {
+      service.getProviderModels(Domain.Bdnp.ZIWEI, "en").also { pms ->
+        assertTrue { pms.map { pm -> pm.provider }.toSet() == setOf(Provider.OPENAI, Provider.CLAUDE) }
+        assertTrue { pms.map { pm -> pm.model }.toSet() == setOf("gpt-4", "claude-3-haiku-20240307") }
+      }
+    }
+
+    @Test
+    fun `matching domain but no language`() {
+      service.getProviderModels(Domain.Bdnp.ZIWEI, null).also { pms ->
+        assertTrue { pms.map { pm -> pm.provider }.toSet() == setOf(Provider.OPENAI, Provider.CLAUDE) }
+        assertTrue { pms.map { pm -> pm.model }.toSet() == setOf("gpt-4", "claude-3-haiku-20240307") }
+      }
+
+      service.getProviderModels(Domain.Bdnp.EW, null).also { pms ->
+        assertTrue { pms.map { pm -> pm.provider }.toSet() == setOf(Provider.OPENAI, Provider.GEMINI) }
+        assertTrue { pms.map { pm -> pm.model }.toSet() == setOf("gpt-4", "gemini-pro") }
+      }
+    }
+
+    @Test
+    fun `matching domain but different language`() {
+      service.getProviderModels(Domain.Bdnp.ZIWEI, "fr").also { pms ->
+        assertTrue { pms.map { pm -> pm.provider }.toSet() == setOf(Provider.OPENAI, Provider.CLAUDE) }
+        assertTrue { pms.map { pm -> pm.model }.toSet() == setOf("gpt-4", "claude-3-haiku-20240307") }
+      }
+    }
+
+    @Test
+    fun otherDomain() {
+      service.getProviderModels(Domain.TAROT).also { pms ->
+        assertTrue { pms.map { pm -> pm.provider }.toSet() == setOf(Provider.OPENAI, Provider.CLAUDE, Provider.GEMINI) }
+        assertTrue { pms.map { pm -> pm.model }.toSet() == setOf("gpt-4", "claude-3-haiku-20240307", "gemini-pro") }
+      }
+    }
   }
 
-  @Test
-  fun `matching domain but no language`() {
-    val result = service.getProviderModel(Domain.Bdnp.EW)
-    assertTrue(result.provider in listOf(Provider.OPENAI, Provider.GEMINI))
-    assertTrue(result.model in listOf("gpt-4", "gemini-pro"))
-    assertEquals(Temperature(0.8), result.temperature)
-  }
 
+  @Nested
+  inner class Single {
+    @Test
+    fun `matching domain and language`() {
+      val result = service.getProviderModel(Domain.Bdnp.HOROSCOPE, "zh")
+      assertEquals(Provider.CLAUDE, result.provider)
+      assertEquals("claude-3-haiku-20240307", result.model)
+      assertEquals(Temperature(0.9), result.temperature)
+    }
 
-  @Test
-  fun `matching domain but different language`() {
-    val result = service.getProviderModel(Domain.Bdnp.ZIWEI, "fr")
-    assertTrue(result.provider in listOf(Provider.OPENAI, Provider.CLAUDE))
-    assertTrue(result.model in listOf("gpt-4", "claude-3-haiku-20240307"))
-    assertEquals(Temperature(0.7), result.temperature)
-  }
+    @Test
+    fun `matching domain but no language`() {
+      val result = service.getProviderModel(Domain.Bdnp.EW)
+      assertTrue(result.provider in listOf(Provider.OPENAI, Provider.GEMINI))
+      assertTrue(result.model in listOf("gpt-4", "gemini-pro"))
+      assertEquals(Temperature(0.8), result.temperature)
+    }
 
-  @Test
-  fun otherDomain() {
-    val result = service.getProviderModel(Domain.TAROT)
-    assertTrue(result.provider in listOf(Provider.OPENAI, Provider.CLAUDE, Provider.GEMINI))
-    assertTrue(result.model in listOf("claude-3-haiku-20240307", "gpt-4", "gemini-pro"))
+    @Test
+    fun `matching domain but different language`() {
+      val result = service.getProviderModel(Domain.Bdnp.ZIWEI, "fr")
+      assertTrue(result.provider in listOf(Provider.OPENAI, Provider.CLAUDE))
+      assertTrue(result.model in listOf("gpt-4", "claude-3-haiku-20240307"))
+      assertEquals(Temperature(0.7), result.temperature)
+    }
+
+    @Test
+    fun otherDomain() {
+      val result = service.getProviderModel(Domain.TAROT)
+      assertTrue(result.provider in listOf(Provider.OPENAI, Provider.CLAUDE, Provider.GEMINI))
+      assertTrue(result.model in listOf("claude-3-haiku-20240307", "gpt-4", "gemini-pro"))
+    }
+
   }
 
   @Test
