@@ -154,13 +154,7 @@ class ResilientChatService(
             }
 
             // 成功，返回 ResultDto 給 firstNotNullResult
-            ResultDto(
-              result = result,
-              provider = providerModel.provider,
-              model = providerModel.model,
-              inputTokens = reply.inputTokens,
-              outputTokens = reply.outputTokens
-            )
+            ResultDto(result, reply.think, reply.provider, reply.model, reply.invokedFunCalls, reply.inputTokens, reply.outputTokens, reply.duration)
           }
 
           is Reply.Error  -> {

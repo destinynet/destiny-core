@@ -6,11 +6,11 @@ import kotlin.time.Duration.Companion.seconds
 
 sealed class Reply {
 
-  abstract val provider: String
+  abstract val provider: Provider
 
   data class Normal(val content: String,
                     val think: String?,
-                    override val provider: String,
+                    override val provider: Provider,
                     val model: String,
                     val invokedFunCalls: List<FunCall> = emptyList(),
                     val inputTokens: Int? = null,
@@ -20,12 +20,12 @@ sealed class Reply {
 
   sealed class Error : Reply() {
 
-    data class TooLong(val message: String, override val provider: String) : Error()
+    data class TooLong(val message: String, override val provider: Provider) : Error()
 
     sealed class Unrecoverable : Error() {
-      data class InvalidApiKey(override val provider: String) : Unrecoverable()
-      data class Busy(override val provider: String) : Unrecoverable()
-      data class Unknown(val message: String, override val provider: String) : Unrecoverable()
+      data class InvalidApiKey(override val provider: Provider) : Unrecoverable()
+      data class Busy(override val provider: Provider) : Unrecoverable()
+      data class Unknown(val message: String, override val provider: Provider) : Unrecoverable()
     }
   }
 }
@@ -33,7 +33,7 @@ sealed class Reply {
 
 interface IChatCompletion {
 
-  val provider: String
+  val provider: Provider
 
   suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = 90.seconds, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec? = null) : Reply
 

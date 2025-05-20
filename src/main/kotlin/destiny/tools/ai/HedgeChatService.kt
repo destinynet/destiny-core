@@ -77,12 +77,10 @@ class HedgeChatService(
               processed
             }
 
-            Triple(processed, it.inputTokens, it.outputTokens)
-          }?.let { (string, inputTokens, outputTokens) ->
             try {
-              val model: T = json.decodeFromString(serializer, string)
-              ResultDto(model, providerModel.provider, providerModel.model, inputTokens, outputTokens)
-            } catch (e : SerializationException) {
+              val model: T = json.decodeFromString(serializer, processed)
+              ResultDto(model, it.think, it.provider, it.model, it.invokedFunCalls, it.inputTokens, it.outputTokens, it.duration)
+            } catch (e: SerializationException) {
               null
             }
           }

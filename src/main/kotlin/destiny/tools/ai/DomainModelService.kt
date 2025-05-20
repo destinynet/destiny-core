@@ -73,7 +73,7 @@ class DomainModelService(
     get() = holder.getConfig().values.flatten().toSet().toList()
 
   override fun findImpl(provider: Provider): IChatCompletion {
-    return chatCompletions.first { it.provider == provider.name }
+    return chatCompletions.first { it.provider == provider }
   }
 
   private fun byDomainMultiple(domain: Domain): List<ProviderModel> {
