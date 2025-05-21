@@ -12,6 +12,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.time.Duration
@@ -140,17 +142,23 @@ class ResilientChatService(
           is Reply.Normal -> {
             logger.debug { "Model ${providerModel.model} returned Normal reply. Content length: ${reply.content.length}" }
 
-            val processedContent = postProcessors.fold(reply.content) { currentContent, postProcessor ->
+            val processedString = postProcessors.fold(reply.content) { currentContent, postProcessor ->
               val (nextContent, _) = postProcessor.process(currentContent, locale)
               nextContent
             }
-            logger.debug { "Final post-processed content for ${providerModel.model}: $processedContent" }
+            logger.debug { "Final post-processed content for ${providerModel.model}: $processedString" }
 
-            val result: T = try {
-              json.decodeFromString(serializer, processedContent)
-            } catch (e: SerializationException) {
-              logger.warn(e) { "Failed to deserialize content from ${providerModel.model}. Content: $processedContent" }
-              return@suspendFirstNotNullResult null
+            val result: T = if (serializer.descriptor.kind == PrimitiveKind.STRING && serializer == String.serializer()) {
+              logger.debug { "Serializer is String.serializer(), bypassing JSON deserialization." }
+              @Suppress("UNCHECKED_CAST")
+              processedString as T
+            } else {
+              try {
+                json.decodeFromString(serializer, processedString)
+              } catch (e: SerializationException) {
+                logger.warn(e) { "Failed to deserialize content from ${providerModel.model} (serializer: ${serializer.descriptor.serialName}). Content: $processedString" }
+                return@suspendFirstNotNullResult null
+              }
             }
 
             // 成功，返回 ResultDto 給 firstNotNullResult

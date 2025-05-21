@@ -9,6 +9,8 @@ import kotlinx.coroutines.selects.select
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.time.Duration
@@ -58,31 +60,31 @@ class HedgeChatService(
         temperature = providerModel.temperature ?: chatOptionsTemplate.temperature
       )
 
-      async(Dispatchers.IO) {
+      async(Dispatchers.IO + CoroutineName("ChatCompletion-${providerModel.provider}/${providerModel.model}")) {
         val impl = domainModelService.findImpl(providerModel.provider)
-        val r = impl.chatComplete(
-          model = providerModel.model,
-          messages = messages,
-          user = config.user,
-          funCalls = funCalls,
-          timeout = config.modelTimeout,
-          chatOptions = currentChatOptions,
-          jsonSchema = jsonSchema
-        )
+        val r = impl.chatComplete(providerModel.model, messages,config.user, funCalls, config.modelTimeout, currentChatOptions, jsonSchema)
         r.takeIf { it is Reply.Normal }
           ?.let { it as Reply.Normal }
           ?.let {
-            val processed = postProcessors.fold(it.content) { acc, postProcessor ->
+            val processedString = postProcessors.fold(it.content) { acc, postProcessor ->
               val (processed, _) = postProcessor.process(acc, locale)
               processed
             }
 
-            try {
-              val model: T = json.decodeFromString(serializer, processed)
-              ResultDto(model, it.think, it.provider, it.model, it.invokedFunCalls, it.inputTokens, it.outputTokens, it.duration)
-            } catch (e: SerializationException) {
-              null
+            val resultData: T = if (serializer.descriptor.kind == PrimitiveKind.STRING && serializer == String.serializer()) {
+              logger.debug { "Serializer for ${providerModel.model} is String.serializer(), bypassing JSON deserialization." }
+              @Suppress("UNCHECKED_CAST") // Safe due to the serializer check
+              processedString as T
+            } else {
+              try {
+                json.decodeFromString(serializer, processedString)
+              } catch (e: SerializationException) {
+                logger.warn(e) { "Failed to deserialize content from ${providerModel.model} (serializer: ${serializer.descriptor.serialName}). Content: $processedString" }
+                return@async null // This attempt failed for this model
+              }
             }
+
+            ResultDto(resultData, it.think, it.provider, it.model, it.invokedFunCalls, it.inputTokens, it.outputTokens, it.duration)
           }
       }
     }
