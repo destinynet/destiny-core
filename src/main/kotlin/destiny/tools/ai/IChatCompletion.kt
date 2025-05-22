@@ -28,18 +28,15 @@ sealed class Reply<out T> {
 
     data class TooLong(val message: String, override val provider: Provider) : Error()
 
-    data class DeserializationFailure(
-      val errorMessage: String,
-      val originalContent: String,
-      override val provider: Provider,
-      val model: String
-    ) : Error()
+    data class DeserializationFailure(val errorMessage: String,
+                                      val originalContent: String,
+                                      override val provider: Provider,
+                                      val model: String) : Error()
 
-    sealed class Unrecoverable : Error() {
-      data class InvalidApiKey(override val provider: Provider) : Unrecoverable()
-      data class Busy(override val provider: Provider) : Unrecoverable()
-      data class Unknown(val message: String, override val provider: Provider) : Unrecoverable()
-    }
+    data class InvalidApiKey(override val provider: Provider) : Error()
+    data class Busy(override val provider: Provider) : Error()
+    data class Unknown(val message: String, override val provider: Provider) : Error()
+
   }
 }
 
