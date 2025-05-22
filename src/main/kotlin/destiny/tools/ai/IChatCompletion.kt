@@ -10,11 +10,11 @@ import java.util.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-sealed class Reply {
+sealed class Reply<out T> {
 
   abstract val provider: Provider
 
-  data class Normal(val content: String,
+  data class Normal<T>(val content: T,
                     val think: String?,
                     override val provider: Provider,
                     val model: String,
@@ -22,11 +22,18 @@ sealed class Reply {
                     val inputTokens: Int? = null,
                     val outputTokens: Int? = null,
                     val duration: Duration? = null,
-  ) : Reply()
+  ) : Reply<T>()
 
-  sealed class Error : Reply() {
+  sealed class Error : Reply<Nothing>() {
 
     data class TooLong(val message: String, override val provider: Provider) : Error()
+
+    data class DeserializationFailure(
+      val errorMessage: String,
+      val originalContent: String,
+      override val provider: Provider,
+      val model: String
+    ) : Error()
 
     sealed class Unrecoverable : Error() {
       data class InvalidApiKey(override val provider: Provider) : Unrecoverable()
@@ -41,20 +48,20 @@ interface IChatCompletion {
 
   val provider: Provider
 
-  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = 90.seconds, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec? = null) : Reply
+  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = 90.seconds, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec? = null) : Reply<String>
 
-  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = 90.seconds, chatOptions: ChatOptions) : Reply {
+  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = 90.seconds, chatOptions: ChatOptions) : Reply<String> {
     return chatComplete(model, messages, user, setOf(funCall), timeout, chatOptions)
   }
 
-  suspend fun <T : Any> typedChatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = 90.seconds, chatOptions: ChatOptions, postProcessors : List<IPostProcessor>, formatSpec: FormatSpec<T>, locale: Locale, json: Json) : ResultDto<T>?
+  suspend fun <T : Any> typedChatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = 90.seconds, chatOptions: ChatOptions, postProcessors : List<IPostProcessor>, formatSpec: FormatSpec<T>, locale: Locale, json: Json) : Reply<T>?
 }
 
 abstract class AbstractChatCompletion : IChatCompletion {
 
-  abstract suspend fun doChatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec? = null): Reply
+  abstract suspend fun doChatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec? = null): Reply<String>
 
-  override suspend fun chatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec?): Reply {
+  override suspend fun chatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec?): Reply<String> {
     val filteredFunCalls = funCalls.filter { it.applied(messages) }.toSet()
 
     val finalMsgs = messages.fold(mutableListOf<Msg>()) { acc, msg ->
@@ -102,6 +109,7 @@ abstract class AbstractChatCompletion : IChatCompletion {
     return doChatComplete(model, finalMsgs, user, filteredFunCalls, timeout, chatOptions, jsonSchema)
   }
 
+  @Suppress("UNCHECKED_CAST")
   override suspend fun <T : Any> typedChatComplete(
     model: String,
     messages: List<Msg>,
@@ -113,32 +121,82 @@ abstract class AbstractChatCompletion : IChatCompletion {
     formatSpec: FormatSpec<T>,
     locale: Locale,
     json: Json
-  ): ResultDto<T>? {
-    return when (val reply = chatComplete(model, messages, user, funCalls, timeout, chatOptions, formatSpec.jsonSchema)) {
-      is Reply.Normal -> {
+  ): Reply<T>? {
 
-        val processedString = postProcessors.fold(reply.content) { currentContent, postProcessor ->
+    return when (val rawReply: Reply<String> = chatComplete(model, messages, user, funCalls, timeout, chatOptions, formatSpec.jsonSchema)) {
+      is Reply.Normal<String> -> {
+        val processedString = postProcessors.fold(rawReply.content) { currentContent, postProcessor ->
           val (nextContent, _) = postProcessor.process(currentContent, locale)
           nextContent
         }
         val serializer = formatSpec.serializer
 
-        if (serializer.descriptor.kind == PrimitiveKind.STRING && serializer == String.serializer()) {
-          @Suppress("UNCHECKED_CAST")
-          processedString as T
-        } else {
-          try {
-            json.decodeFromString(serializer, processedString)
-          } catch (e: SerializationException) {
-            logger.warn(e) { "Failed to deserialize content from $model (serializer: ${serializer.descriptor.serialName}). Content: $processedString" }
-            null
+        val typedResult: T = try {
+          if (serializer.descriptor.kind == PrimitiveKind.STRING && serializer.descriptor == String.serializer().descriptor) {
+
+            processedString as T
+          } else {
+            json.decodeFromString(serializer, processedString) // 使用類成員或傳入的 json
           }
-        }?.let { t ->
-          ResultDto(t, reply.think, reply.provider, reply.model, reply.invokedFunCalls, reply.inputTokens, reply.outputTokens, reply.duration)
+        } catch (e: SerializationException) {
+          logger.warn(e) { "Failed to deserialize content from $model (serializer: ${serializer.descriptor.serialName}). Content: $processedString" }
+          // 反序列化失敗，返回一個特定的錯誤類型
+          return Reply.Error.DeserializationFailure(
+            errorMessage = e.localizedMessage ?: "Serialization failed",
+            originalContent = processedString,
+            provider = rawReply.provider,
+            model = rawReply.model
+          )
+        } catch (e: ClassCastException) { // 處理 String as T 可能的錯誤
+          logger.warn(e) { "Failed to cast processed string to T for $model. Expected String but T is not String. Content: $processedString" }
+          return Reply.Error.DeserializationFailure(
+            errorMessage = "Type cast failed: Expected String, but T is ${serializer.descriptor.serialName}",
+            originalContent = processedString,
+            provider = rawReply.provider,
+            model = rawReply.model
+          )
         }
+
+        Reply.Normal(
+          content = typedResult,
+          think = rawReply.think,
+          provider = rawReply.provider,
+          model = rawReply.model,
+          invokedFunCalls = rawReply.invokedFunCalls,
+          inputTokens = rawReply.inputTokens,
+          outputTokens = rawReply.outputTokens,
+          duration = rawReply.duration
+        )
       }
-      else -> null
+
+      is Reply.Error -> rawReply
     }
+
+//    return when (val reply = chatComplete(model, messages, user, funCalls, timeout, chatOptions, formatSpec.jsonSchema)) {
+//      is Reply.Normal -> {
+//
+//        val processedString = postProcessors.fold(reply.content) { currentContent, postProcessor ->
+//          val (nextContent, _) = postProcessor.process(currentContent, locale)
+//          nextContent
+//        }
+//        val serializer = formatSpec.serializer
+//
+//        if (serializer.descriptor.kind == PrimitiveKind.STRING && serializer == String.serializer()) {
+//          @Suppress("UNCHECKED_CAST")
+//          processedString as T
+//        } else {
+//          try {
+//            json.decodeFromString(serializer, processedString)
+//          } catch (e: SerializationException) {
+//            logger.warn(e) { "Failed to deserialize content from $model (serializer: ${serializer.descriptor.serialName}). Content: $processedString" }
+//            null
+//          }
+//        }?.let { t ->
+//          ResultDto(t, reply.think, reply.provider, reply.model, reply.invokedFunCalls, reply.inputTokens, reply.outputTokens, reply.duration)
+//        }
+//      }
+//      else -> null
+//    }
   }
 
   companion object {

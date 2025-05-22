@@ -11,7 +11,7 @@ import kotlin.time.Duration
 
 interface IChatOrchestrator {
 
-  suspend fun <T> chatComplete(
+  suspend fun <T: Any> chatComplete(
     serializer: KSerializer<T>,
     messages: List<Msg>,
     funCalls: Set<IFunctionDeclaration> = emptySet(),
@@ -19,7 +19,7 @@ interface IChatOrchestrator {
     chatOptionsTemplate: ChatOptions, // 提供一個聊天選項模板
     postProcessors: List<IPostProcessor>,
     locale: Locale
-  ): ResultDto<T>?
+  ): Reply.Normal<T>?
 
 }
 

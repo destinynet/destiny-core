@@ -8,6 +8,7 @@ import destiny.tools.ai.OpenAi.Message.ToolCall
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.json.JsonPrimitive
 
 
 class Groq {
@@ -91,10 +92,10 @@ class Groq {
     val frequencyPenalty: Double? = this.options?.frequencyPenalty
 
     @SerialName("response_format")
-    val responseFormat: ResponseFormat = if (jsonSchemaSpec == null) {
-      ResponseFormat.Text
-    } else {
+    val responseFormat: ResponseFormat = if (jsonSchemaSpec != null && jsonSchemaSpec.schema["type"] != JsonPrimitive("string")) {
       ResponseFormat.JsonObject
+    } else {
+      ResponseFormat.Text
     }
   }
 

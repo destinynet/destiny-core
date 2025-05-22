@@ -9,10 +9,7 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import kotlinx.serialization.json.JsonContentPolymorphicSerializer
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.*
 
 
 class Mistral {
@@ -59,10 +56,10 @@ class Mistral {
 
     @SerialName("response_format")
     @Serializable
-    val responseFormat: ResponseFormat = if (jsonSchemaSpec == null) {
-      ResponseFormat.TextResponse
-    } else {
+    val responseFormat: ResponseFormat = if (jsonSchemaSpec != null && jsonSchemaSpec.schema["type"] != JsonPrimitive("string")) {
       ResponseFormat.JsonSchemaResponse(jsonSchemaSpec)
+    } else {
+      ResponseFormat.TextResponse
     }
   }
 

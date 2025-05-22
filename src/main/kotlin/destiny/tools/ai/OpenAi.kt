@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
 
 class OpenAi {
@@ -121,10 +122,10 @@ class OpenAi {
 
     @SerialName("response_format")
     @Serializable
-    val responseFormat: ResponseFormat = if (jsonSchemaSpec == null) {
-      ResponseFormat.TextResponse
-    } else {
+    val responseFormat: ResponseFormat = if (jsonSchemaSpec != null && jsonSchemaSpec.schema["type"] != JsonPrimitive("string")) {
       ResponseFormat.JsonSchemaResponse(jsonSchemaSpec)
+    } else {
+      ResponseFormat.TextResponse
     }
   }
 }

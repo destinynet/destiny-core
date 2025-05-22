@@ -42,7 +42,7 @@ class HedgeChatService(
     }
   }
 
-  override suspend fun <T> chatComplete(
+  override suspend fun <T: Any> chatComplete(
     serializer: KSerializer<T>,
     messages: List<Msg>,
     funCalls: Set<IFunctionDeclaration>,
@@ -50,11 +50,11 @@ class HedgeChatService(
     chatOptionsTemplate: ChatOptions,
     postProcessors: List<IPostProcessor>,
     locale: Locale
-  ): ResultDto<T>? = coroutineScope {
+  ): Reply.Normal<T>? = coroutineScope {
 
     val allModels = setOf(config.preferred) + config.fallbacks
 
-    val deferredMap: Map<ProviderModel, Deferred<ResultDto<T>?>> = allModels.associateWith { providerModel: ProviderModel ->
+    val deferredMap: Map<ProviderModel, Deferred<Reply.Normal<T>?>> = allModels.associateWith { providerModel: ProviderModel ->
 
       val currentChatOptions = chatOptionsTemplate.copy(
         temperature = providerModel.temperature ?: chatOptionsTemplate.temperature
@@ -84,12 +84,12 @@ class HedgeChatService(
               }
             }
 
-            ResultDto(resultData, it.think, it.provider, it.model, it.invokedFunCalls, it.inputTokens, it.outputTokens, it.duration)
+            Reply.Normal(resultData, it.think, it.provider, it.model, it.invokedFunCalls, it.inputTokens, it.outputTokens, it.duration)
           }
       }
     }
 
-    val result: ResultDto<T>? = withTimeoutOrNull(config.preferredWait) {
+    val result: Reply.Normal<T>? = withTimeoutOrNull(config.preferredWait) {
       deferredMap[config.preferred]?.await()
     }
 

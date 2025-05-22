@@ -59,7 +59,7 @@ class ResilientChatService(
     override val modelTimeout: Duration
   ) : IChatConfig
 
-  override suspend fun <T> chatComplete(
+  override suspend fun <T : Any> chatComplete(
     serializer: KSerializer<T>,
     messages: List<Msg>,
     funCalls: Set<IFunctionDeclaration>,
@@ -67,7 +67,7 @@ class ResilientChatService(
     chatOptionsTemplate: ChatOptions,
     postProcessors: List<IPostProcessor>,
     locale: Locale
-  ): ResultDto<T>? {
+  ): Reply.Normal<T>? {
     val providerModels = config.providerModels
 
     if (providerModels.isEmpty()) {
@@ -117,7 +117,7 @@ class ResilientChatService(
     modelTimeout: Duration,
     postProcessors: List<IPostProcessor>,
     locale: Locale
-  ): ResultDto<T>? {
+  ): Reply.Normal<T>? {
     return shuffledModels.suspendFirstNotNullResult { providerModel ->
       logger.debug { "Attempting model (suspend loop): ${providerModel.provider}/${providerModel.model}" }
       try {
@@ -162,7 +162,7 @@ class ResilientChatService(
             }
 
             // 成功，返回 ResultDto 給 firstNotNullResult
-            ResultDto(result, reply.think, reply.provider, reply.model, reply.invokedFunCalls, reply.inputTokens, reply.outputTokens, reply.duration)
+            Reply.Normal(result, reply.think, reply.provider, reply.model, reply.invokedFunCalls, reply.inputTokens, reply.outputTokens, reply.duration)
           }
 
           is Reply.Error  -> {
