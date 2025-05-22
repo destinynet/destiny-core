@@ -3,8 +3,8 @@
  */
 package destiny.tools.ai
 
+import destiny.tools.ai.model.FormatSpec
 import jakarta.inject.Named
-import kotlinx.serialization.KSerializer
 import java.util.*
 import kotlin.time.Duration
 
@@ -12,14 +12,13 @@ import kotlin.time.Duration
 interface IChatOrchestrator {
 
   suspend fun <T: Any> chatComplete(
-    serializer: KSerializer<T>,
+    formatSpec: FormatSpec<out T>,
     messages: List<Msg>,
     funCalls: Set<IFunctionDeclaration> = emptySet(),
-    jsonSchema: JsonSchemaSpec? = null,
     chatOptionsTemplate: ChatOptions, // 提供一個聊天選項模板
     postProcessors: List<IPostProcessor>,
     locale: Locale
-  ): Reply.Normal<T>?
+  ): Reply.Normal<out T>?
 
 }
 

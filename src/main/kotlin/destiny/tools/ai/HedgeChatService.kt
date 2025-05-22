@@ -4,13 +4,10 @@
 package destiny.tools.ai
 
 import destiny.tools.KotlinLogging
+import destiny.tools.ai.model.FormatSpec
 import kotlinx.coroutines.*
 import kotlinx.coroutines.selects.select
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.time.Duration
@@ -42,15 +39,14 @@ class HedgeChatService(
     }
   }
 
-  override suspend fun <T: Any> chatComplete(
-    serializer: KSerializer<T>,
+  override suspend fun <T : Any> chatComplete(
+    formatSpec: FormatSpec<out T>,
     messages: List<Msg>,
     funCalls: Set<IFunctionDeclaration>,
-    jsonSchema: JsonSchemaSpec?,
     chatOptionsTemplate: ChatOptions,
     postProcessors: List<IPostProcessor>,
     locale: Locale
-  ): Reply.Normal<T>? = coroutineScope {
+  ): Reply.Normal<out T>? = coroutineScope {
 
     val allModels = setOf(config.preferred) + config.fallbacks
 
@@ -62,30 +58,12 @@ class HedgeChatService(
 
       async(Dispatchers.IO + CoroutineName("ChatCompletion-${providerModel.provider}/${providerModel.model}")) {
         val impl = domainModelService.findImpl(providerModel.provider)
-        val r = impl.chatComplete(providerModel.model, messages,config.user, funCalls, config.modelTimeout, currentChatOptions, jsonSchema)
-        r.takeIf { it is Reply.Normal }
-          ?.let { it as Reply.Normal }
-          ?.let {
-            val processedString = postProcessors.fold(it.content) { acc, postProcessor ->
-              val (processed, _) = postProcessor.process(acc, locale)
-              processed
-            }
-
-            val resultData: T = if (serializer.descriptor.kind == PrimitiveKind.STRING && serializer == String.serializer()) {
-              logger.debug { "Serializer for ${providerModel.model} is String.serializer(), bypassing JSON deserialization." }
-              @Suppress("UNCHECKED_CAST") // Safe due to the serializer check
-              processedString as T
-            } else {
-              try {
-                json.decodeFromString(serializer, processedString)
-              } catch (e: SerializationException) {
-                logger.warn(e) { "Failed to deserialize content from ${providerModel.model} (serializer: ${serializer.descriptor.serialName}). Content: $processedString" }
-                return@async null // This attempt failed for this model
-              }
-            }
-
-            Reply.Normal(resultData, it.think, it.provider, it.model, it.invokedFunCalls, it.inputTokens, it.outputTokens, it.duration)
+        impl.typedChatComplete(providerModel.model, messages, config.user, funCalls, config.modelTimeout, currentChatOptions, postProcessors, formatSpec, locale, json)?.let { r ->
+          when(r) {
+            is Reply.Normal<*> -> r as Reply.Normal<T>
+            else -> null
           }
+        }
       }
     }
 

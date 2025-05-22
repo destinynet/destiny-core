@@ -5,15 +5,10 @@ package destiny.tools.ai
 
 import destiny.tools.KotlinLogging
 import destiny.tools.ai.ResilientChatService.ResilientConfig
+import destiny.tools.ai.model.FormatSpec
 import destiny.tools.suspendFirstNotNullResult
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.time.Duration
@@ -59,11 +54,11 @@ class ResilientChatService(
     override val modelTimeout: Duration
   ) : IChatConfig
 
+  @Suppress("UNCHECKED_CAST")
   override suspend fun <T : Any> chatComplete(
-    serializer: KSerializer<T>,
+    formatSpec: FormatSpec<out T>,
     messages: List<Msg>,
     funCalls: Set<IFunctionDeclaration>,
-    jsonSchema: JsonSchemaSpec?,
     chatOptionsTemplate: ChatOptions,
     postProcessors: List<IPostProcessor>,
     locale: Locale
@@ -82,11 +77,12 @@ class ResilientChatService(
     while (attemptsLeft > 0) {
 
       logger.info { "Starting a new attempt loop (attempts left: $attemptsLeft). Shuffled models: ${shuffledModels.map { it.model }}" }
-      val successfulResultDto = process(serializer, shuffledModels, messages, config.user, funCalls, jsonSchema, chatOptionsTemplate, config.modelTimeout, postProcessors, locale)
+      val successfulResultDto: Reply.Normal<out T>? = process(formatSpec, shuffledModels, messages, config.user, funCalls, chatOptionsTemplate, config.modelTimeout, postProcessors, locale)
 
       if (successfulResultDto != null) {
         logger.info { "Successfully obtained result from ${successfulResultDto.provider}/${successfulResultDto.model} within the loop." }
-        return successfulResultDto // 找到結果，整個 resilientChatComplete 函數返回
+        return successfulResultDto as Reply.Normal<T>
+
       }
 
       // 如果一輪循環後都沒有成功
@@ -106,17 +102,16 @@ class ResilientChatService(
    * 它使用 suspendFirstNotNullResult 依次嘗試每個模型，直到找到第一個成功的結果。
    * （假設此函數是 private inline fun <reified T>）
    */
-  suspend fun <T> process(
-    serializer: KSerializer<T>,
+  suspend fun <T: Any> process(
+    formatSpec: FormatSpec<T>,
     shuffledModels: List<ProviderModel>,
     messages: List<Msg>,
     user: String? = null,
     funCalls: Set<IFunctionDeclaration> = emptySet(),
-    jsonSchema: JsonSchemaSpec? = null,
     chatOptionsTemplate: ChatOptions, // 提供一個聊天選項模板
     modelTimeout: Duration,
     postProcessors: List<IPostProcessor>,
-    locale: Locale
+    locale: Locale,
   ): Reply.Normal<T>? {
     return shuffledModels.suspendFirstNotNullResult { providerModel ->
       logger.debug { "Attempting model (suspend loop): ${providerModel.provider}/${providerModel.model}" }
@@ -126,48 +121,10 @@ class ResilientChatService(
           temperature = providerModel.temperature ?: chatOptionsTemplate.temperature
         )
 
-        val reply = withContext(Dispatchers.IO) {
-          impl.chatComplete(
-            model = providerModel.model,
-            messages = messages,
-            user = user,
-            funCalls = funCalls,
-            timeout = modelTimeout,
-            chatOptions = currentChatOptions,
-            jsonSchema = jsonSchema
-          )
-        }
-
-        when (reply) {
-          is Reply.Normal -> {
-            logger.debug { "Model ${providerModel.model} returned Normal reply. Content length: ${reply.content.length}" }
-
-            val processedString = postProcessors.fold(reply.content) { currentContent, postProcessor ->
-              val (nextContent, _) = postProcessor.process(currentContent, locale)
-              nextContent
-            }
-            logger.debug { "Final post-processed content for ${providerModel.model}: $processedString" }
-
-            val result: T = if (serializer.descriptor.kind == PrimitiveKind.STRING && serializer == String.serializer()) {
-              logger.debug { "Serializer is String.serializer(), bypassing JSON deserialization." }
-              @Suppress("UNCHECKED_CAST")
-              processedString as T
-            } else {
-              try {
-                json.decodeFromString(serializer, processedString)
-              } catch (e: SerializationException) {
-                logger.warn(e) { "Failed to deserialize content from ${providerModel.model} (serializer: ${serializer.descriptor.serialName}). Content: $processedString" }
-                return@suspendFirstNotNullResult null
-              }
-            }
-
-            // 成功，返回 ResultDto 給 firstNotNullResult
-            Reply.Normal(result, reply.think, reply.provider, reply.model, reply.invokedFunCalls, reply.inputTokens, reply.outputTokens, reply.duration)
-          }
-
-          is Reply.Error  -> {
-            logger.warn { "Model ${providerModel.model} returned error: $reply" }
-            null // 此模型嘗試失敗
+        impl.typedChatComplete(providerModel.model, messages, user, funCalls, modelTimeout, currentChatOptions, postProcessors, formatSpec, locale, json)?.let { r ->
+          when (r) {
+            is Reply.Normal<*> -> r as Reply.Normal<T>
+            else               -> null
           }
         }
       } catch (e: Exception) {
