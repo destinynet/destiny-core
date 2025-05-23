@@ -34,7 +34,7 @@ import kotlin.time.Duration.Companion.seconds
  */
 class ResilientChatService(
   private val domainModelService: IDomainModelService,
-  val config: ResilientConfig
+  private val config: ResilientConfig
 ) : IChatOrchestrator {
 
   @OptIn(ExperimentalSerializationApi::class)
@@ -72,11 +72,10 @@ class ResilientChatService(
 
     val shuffledModels: List<ProviderModel> = providerModels.shuffled()
 
-
     var attemptsLeft = config.maxTotalAttempts
     while (attemptsLeft > 0) {
 
-      logger.info { "Starting a new attempt loop (attempts left: $attemptsLeft). Shuffled models: ${shuffledModels.map { it.model }}" }
+      logger.info { "Starting a new attempt loop (attempts left: $attemptsLeft), shuffled models: ${shuffledModels.map { it.model }}" }
       val successfulResultDto: Reply.Normal<out T>? = process(formatSpec, shuffledModels, messages, config.user, funCalls, chatOptionsTemplate, config.modelTimeout, postProcessors, locale)
 
       if (successfulResultDto != null) {
@@ -104,7 +103,7 @@ class ResilientChatService(
    */
   suspend fun <T: Any> process(
     formatSpec: FormatSpec<T>,
-    shuffledModels: List<ProviderModel>,
+    providerModels: List<ProviderModel>,
     messages: List<Msg>,
     user: String? = null,
     funCalls: Set<IFunctionDeclaration> = emptySet(),
@@ -113,7 +112,7 @@ class ResilientChatService(
     postProcessors: List<IPostProcessor>,
     locale: Locale,
   ): Reply.Normal<T>? {
-    return shuffledModels.suspendFirstNotNullResult { providerModel ->
+    return providerModels.suspendFirstNotNullResult { providerModel ->
       logger.debug { "Attempting model (suspend loop): ${providerModel.provider}/${providerModel.model}" }
       try {
         val impl: IChatCompletion = domainModelService.findImpl(providerModel.provider)
