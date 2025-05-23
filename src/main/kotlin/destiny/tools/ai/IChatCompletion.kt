@@ -15,14 +15,13 @@ sealed class Reply<out T> {
   abstract val provider: Provider
 
   data class Normal<T>(val content: T,
-                    val think: String?,
-                    override val provider: Provider,
-                    val model: String,
-                    val invokedFunCalls: List<FunCall> = emptyList(),
-                    val inputTokens: Int? = null,
-                    val outputTokens: Int? = null,
-                    val duration: Duration? = null,
-  ) : Reply<T>()
+                       val think: String?,
+                       override val provider: Provider,
+                       val model: String,
+                       val invokedFunCalls: List<FunCall> = emptyList(),
+                       val inputTokens: Int? = null,
+                       val outputTokens: Int? = null,
+                       val duration: Duration? = null) : Reply<T>()
 
   sealed class Error : Reply<Nothing>() {
 
@@ -168,32 +167,6 @@ abstract class AbstractChatCompletion : IChatCompletion {
 
       is Reply.Error -> rawReply
     }
-
-//    return when (val reply = chatComplete(model, messages, user, funCalls, timeout, chatOptions, formatSpec.jsonSchema)) {
-//      is Reply.Normal -> {
-//
-//        val processedString = postProcessors.fold(reply.content) { currentContent, postProcessor ->
-//          val (nextContent, _) = postProcessor.process(currentContent, locale)
-//          nextContent
-//        }
-//        val serializer = formatSpec.serializer
-//
-//        if (serializer.descriptor.kind == PrimitiveKind.STRING && serializer == String.serializer()) {
-//          @Suppress("UNCHECKED_CAST")
-//          processedString as T
-//        } else {
-//          try {
-//            json.decodeFromString(serializer, processedString)
-//          } catch (e: SerializationException) {
-//            logger.warn(e) { "Failed to deserialize content from $model (serializer: ${serializer.descriptor.serialName}). Content: $processedString" }
-//            null
-//          }
-//        }?.let { t ->
-//          ResultDto(t, reply.think, reply.provider, reply.model, reply.invokedFunCalls, reply.inputTokens, reply.outputTokens, reply.duration)
-//        }
-//      }
-//      else -> null
-//    }
   }
 
   companion object {

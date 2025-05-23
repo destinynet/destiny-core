@@ -1,12 +1,17 @@
 package destiny.tools.ai.model
 
+import destiny.core.IBirthDataNamePlace
 import destiny.tools.ai.JsonSchemaSpec
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import java.util.*
 
+/**
+ * [M] : 輸入的 Model object , 例如 [IBirthDataNamePlace]
+ * [D] : 預期輸出的 Model , 例如 [BirthDataReply]
+ */
 abstract class AbstractDigestFormat<M, D : Any>(
-  private val formatSpec: FormatSpec<D>
+  val formatSpec: FormatSpec<D>
 ) : IDigestFormat<M, D> {
 
   val serializer: KSerializer<D> = formatSpec.serializer
@@ -21,7 +26,7 @@ abstract class AbstractDigestFormat<M, D : Any>(
   }
 
 
-  override fun digest(model: M, locale: Locale): Pair<String, JsonSchemaSpec?> {
+  override fun digest(model: M, locale: Locale): Pair<String, FormatSpec<D>?> {
     val structurePromptingJson: String? = promptsForExpectingStructure(model, locale)?.let { structurePrompting ->
       prettyJson.encodeToString(formatSpec.serializer, structurePrompting)
     }
@@ -35,7 +40,7 @@ abstract class AbstractDigestFormat<M, D : Any>(
       }
       appendLine(finalInstruction(model, locale))
     }
-    return string to schema
+    return string to formatSpec
   }
 
   abstract fun digestWithoutFormat(model: M, locale: Locale): String?

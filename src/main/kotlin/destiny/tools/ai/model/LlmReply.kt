@@ -6,6 +6,7 @@ package destiny.tools.ai.model
 import destiny.tools.ai.Provider
 
 
+@Deprecated("")
 data class LlmReply<D>(
   val digest: String,
   val reply : D,

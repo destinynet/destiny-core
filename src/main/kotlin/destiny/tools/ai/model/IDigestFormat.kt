@@ -10,7 +10,7 @@ import java.util.*
 /**
  * expecting LLM to reply in D data structure
  */
-interface IDigestFormat<M, D> : IDigest<M, Pair<String, JsonSchemaSpec?>> {
+interface IDigestFormat<M, D : Any> : IDigest<M, Pair<String, FormatSpec<D>?>> {
 
   val domain: Domain
 
