@@ -67,14 +67,15 @@ class HedgeChatService(
       }
     }
 
-    val result: Reply.Normal<T>? = withTimeoutOrNull(config.preferredWait) {
+    val preferredResult: Reply.Normal<T>? = withTimeoutOrNull(config.preferredWait) {
       deferredMap[config.preferred]?.await()
     }
 
-    if (result != null) {
+    if (preferredResult != null) {
       // preferred 在 delay 內完成	-> 回傳 preferred，並取消其他
+      logger.info { "preferredResult != null" }
       deferredMap.filterKeys { it != config.preferred }.values.forEach { it.cancel() }
-      result
+      preferredResult
     } else {
       // preferred 超時但 fallback 有完成	-> 回傳第一個成功 fallback
       select {
