@@ -16,8 +16,13 @@ import destiny.core.calendar.GmtJulDay
  */
 interface IStarTransit {
 
+  fun getNextTransitGmt(star: Star, degrees: Set<ZodiacDegree>, fromGmt: GmtJulDay, forward: Boolean = true, coordinate: Coordinate = Coordinate.ECLIPTIC): Pair<ZodiacDegree, GmtJulDay>
+
   /**
    * 傳回 GMT Julian Day 時刻
    */
-  fun getNextTransitGmt(star: Star, degree: ZodiacDegree, fromGmt: GmtJulDay, forward: Boolean = true, coordinate: Coordinate = Coordinate.ECLIPTIC): GmtJulDay
+  fun getNextTransitGmt(star: Star, degree: ZodiacDegree, fromGmt: GmtJulDay, forward: Boolean = true, coordinate: Coordinate = Coordinate.ECLIPTIC): GmtJulDay {
+    return getNextTransitGmt(star, setOf(degree), fromGmt, forward, coordinate).second
+  }
+
 }
