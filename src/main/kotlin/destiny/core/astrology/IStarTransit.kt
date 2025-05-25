@@ -25,4 +25,15 @@ interface IStarTransit {
     return getNextTransitGmt(star, setOf(degree), fromGmt, forward, coordinate).second
   }
 
+  /**
+   * 某段時間之內， 此 [star] 與 行經這些 黃道度數 [degrees] 的時刻
+   */
+  fun getRangeTransitGmt(star: Star, degrees: Set<ZodiacDegree>, fromGmt: GmtJulDay, toGmtJulDay: GmtJulDay, forward: Boolean = true, coordinate: Coordinate = Coordinate.ECLIPTIC): List<Pair<ZodiacDegree, GmtJulDay>> {
+    return generateSequence(getNextTransitGmt(star, degrees, fromGmt, forward, coordinate)) { (_ , gmt) ->
+      getNextTransitGmt(star, degrees, gmt+ 0.001, forward, coordinate)
+    }.takeWhile { (_,gmt) -> gmt < toGmtJulDay }
+      .toList()
+
+  }
+
 }
