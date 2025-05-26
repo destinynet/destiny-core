@@ -23,30 +23,28 @@ import destiny.core.chinese.FiveElement.Companion.sameCount
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.trilogy
 
-
+/**
+ * 流年、流月
+ */
 interface IFlowMonthPatternFactory {
   fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<FlowPattern>
 }
 
 object FlowMonthPatterns {
+
   val bothAffecting = object : IFlowMonthPatternFactory {
     override fun IEightWords.getPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<BothAffecting> {
-      return getScaleMap().entries.asSequence().map { (scale: Scale, v) -> scale to v.stem }.map { (scale, stem) ->
+      return getScaleMap().entries.asSequence().map { (scale: Scale, v) -> scale to v.stem }.mapNotNull { (scale, stem) ->
         val flowScales = setOf(FlowScale.YEAR, FlowScale.MONTH)
-        if (stem.fiveElement.sameCount(flowYear.stem, flowMonth.stem) == 2) {
-          BothAffecting(scale, stem, SAME, flowScales)
-        } else if (stem.fiveElement.producingCount(flowYear.stem, flowMonth.stem) == 2) {
-          BothAffecting(scale, stem, PRODUCING, flowScales)
-        } else if (stem.fiveElement.producedCount(flowYear.stem, flowMonth.stem) == 2) {
-          BothAffecting(scale, stem, PRODUCED, flowScales)
-        } else if (stem.fiveElement.dominatorCount(flowYear.stem, flowMonth.stem) == 2) {
-          BothAffecting(scale, stem, DOMINATING, flowScales)
-        } else if (stem.fiveElement.beatenCount(flowYear.stem, flowMonth.stem) == 2) {
-          BothAffecting(scale, stem, BEATEN, flowScales)
-        } else {
-          null
+        when {
+          stem.fiveElement.sameCount(flowYear.stem, flowMonth.stem) == 2      -> BothAffecting(scale, stem, SAME, flowScales)
+          stem.fiveElement.producingCount(flowYear.stem, flowMonth.stem) == 2 -> BothAffecting(scale, stem, PRODUCING, flowScales)
+          stem.fiveElement.producedCount(flowYear.stem, flowMonth.stem) == 2  -> BothAffecting(scale, stem, PRODUCED, flowScales)
+          stem.fiveElement.dominatorCount(flowYear.stem, flowMonth.stem) == 2 -> BothAffecting(scale, stem, DOMINATING, flowScales)
+          stem.fiveElement.beatenCount(flowYear.stem, flowMonth.stem) == 2    -> BothAffecting(scale, stem, BEATEN, flowScales)
+          else                                                                -> null
         }
-      }.filterNotNull().toSet()
+      }.toSet()
     }
   }
 

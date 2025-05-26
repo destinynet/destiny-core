@@ -38,8 +38,15 @@ class EightWordsConfigBuilder : Builder<EightWordsConfig> {
 
 interface IEightWordsFeature : Feature<IEightWordsConfig , IEightWords> {
 
-  fun next(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): IEightWords
-  fun prev(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): IEightWords
+  /**
+   * 傳回下一個八字 以及該八字的開始時刻
+   */
+  fun next(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): Pair<IEightWords, GmtJulDay>
+
+  /**
+   * 傳回上一個八字 以及該八字的開始時刻
+   */
+  fun prev(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): Pair<IEightWords, GmtJulDay>
 }
 
 @Named
@@ -77,18 +84,21 @@ class EightWordsFeature(
     return EightWords(year, month, day, hour)
   }
 
-  override fun next(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): IEightWords {
+  override fun next(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): Pair<IEightWords, GmtJulDay> {
     val currentEw = getModel(gmtJulDay, loc, config)
     val nextHourBranch = currentEw.hour.next.branch
     val nextHourStartGmt = hourBranchFeature.getGmtNextStartOf(gmtJulDay, loc, nextHourBranch, julDayResolver, config.hourBranchConfig)
-    return getModel(nextHourStartGmt + 0.001, loc, config)
+
+    val delta = 0.01
+    return (getModel(nextHourStartGmt + delta, loc, config) to nextHourStartGmt)
   }
 
-  override fun prev(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): IEightWords {
+  override fun prev(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): Pair<IEightWords, GmtJulDay> {
     val currentEw = getModel(gmtJulDay, loc, config)
     val prevHourBranch = currentEw.hour.prev.branch
     val prevHourStartGmt = hourBranchFeature.getGmtPrevStartOf(gmtJulDay, loc, prevHourBranch, julDayResolver, config.hourBranchConfig)
-    return getModel(prevHourStartGmt + 0.001, loc, config)
+    val delta = 0.01
+    return getModel(prevHourStartGmt + delta, loc, config) to prevHourStartGmt
   }
 
   companion object {
