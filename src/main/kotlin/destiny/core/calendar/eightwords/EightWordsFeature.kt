@@ -3,16 +3,10 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.calendar.GmtJulDay
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.*
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
-import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.CacheGrain
-import destiny.tools.DestinyMarker
+import destiny.tools.*
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -41,15 +35,23 @@ class EightWordsConfigBuilder : Builder<EightWordsConfig> {
   }
 }
 
+
+interface IEightWordsFeature : Feature<IEightWordsConfig , IEightWords> {
+
+  fun next(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): IEightWords
+  fun prev(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): IEightWords
+}
+
 @Named
 class EightWordsFeature(
   private val yearFeature: YearFeature,
   private val yearMonthFeature: YearMonthFeature,
   private val dayHourFeature: IDayHourFeature,
+  private val hourBranchFeature: IHourBranchFeature,
   private val julDayResolver: JulDayResolver,
   @Transient
   private val ewFeatureLmtCache: Cache<LmtCacheKey<*>, IEightWords>
-) : AbstractCachedFeature<IEightWordsConfig, IEightWords>() {
+) : AbstractCachedFeature<IEightWordsConfig, IEightWords>(), IEightWordsFeature {
 
   override val key: String = "eightWords"
 
@@ -73,6 +75,20 @@ class EightWordsFeature(
     val (day, hour) = dayHourFeature.getModel(lmt, loc, config.dayHourConfig)
 
     return EightWords(year, month, day, hour)
+  }
+
+  override fun next(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): IEightWords {
+    val currentEw = getModel(gmtJulDay, loc, config)
+    val nextHourBranch = currentEw.hour.next.branch
+    val nextHourStartGmt = hourBranchFeature.getGmtNextStartOf(gmtJulDay, loc, nextHourBranch, julDayResolver, config.hourBranchConfig)
+    return getModel(nextHourStartGmt + 0.001, loc, config)
+  }
+
+  override fun prev(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): IEightWords {
+    val currentEw = getModel(gmtJulDay, loc, config)
+    val prevHourBranch = currentEw.hour.prev.branch
+    val prevHourStartGmt = hourBranchFeature.getGmtPrevStartOf(gmtJulDay, loc, prevHourBranch, julDayResolver, config.hourBranchConfig)
+    return getModel(prevHourStartGmt + 0.001, loc, config)
   }
 
   companion object {

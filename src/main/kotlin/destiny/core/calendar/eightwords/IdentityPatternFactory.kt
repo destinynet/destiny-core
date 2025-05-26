@@ -23,6 +23,7 @@ interface IdentityPatternFactory {
 
 object IdentityPatterns {
 
+  /** 天干五合 */
   val stemCombined = object : IdentityPatternFactory {
     override fun IEightWords.getPatterns(): Set<StemCombined> {
       return Sets.combinations(getScaleMap().map { (scale, v) -> scale to v.stem }.toSet(), 2)
@@ -36,6 +37,7 @@ object IdentityPatterns {
     }
   }
 
+  /** 地支六合 */
   val branchCombined = object : IdentityPatternFactory {
     override fun IEightWords.getPatterns(): Set<BranchCombined> {
       return Sets.combinations(getScaleMap().entries.map { (scale: Scale, sb: IStemBranch) -> scale to sb.branch }.toSet(), 2).filter { pairs: Set<Pair<Scale, Branch>> ->
@@ -49,6 +51,7 @@ object IdentityPatterns {
     }
   }
 
+  /** 地支三合 */
   val trilogy = object : IdentityPatternFactory {
     override fun IEightWords.getPatterns(): Set<Trilogy> {
       return Sets.combinations(getScaleMap().entries.map { (scale: Scale, sb: IStemBranch) -> scale to sb.branch }.toSet(), 3).filter { triples: Set<Pair<Scale, Branch>> ->
@@ -63,6 +66,7 @@ object IdentityPatterns {
     }
   }
 
+  /** 地支對沖 */
   val branchOpposition = object : IdentityPatternFactory {
     override fun IEightWords.getPatterns(): Set<BranchOpposition> {
       return Sets.combinations(getScaleMap().entries.map { (scale: Scale, sb: IStemBranch) -> scale to sb.branch }.toSet(), 2).filter { pairs: Set<Pair<Scale, Branch>> ->
