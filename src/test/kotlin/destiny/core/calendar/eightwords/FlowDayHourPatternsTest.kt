@@ -5,12 +5,12 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.FlowScale
 import destiny.core.Scale.*
-import destiny.core.calendar.eightwords.FlowHourPatterns.bothAffecting
-import destiny.core.calendar.eightwords.FlowHourPatterns.branchCombined
-import destiny.core.calendar.eightwords.FlowHourPatterns.branchOpposition
-import destiny.core.calendar.eightwords.FlowHourPatterns.stemCombined
-import destiny.core.calendar.eightwords.FlowHourPatterns.toFlowTrilogy
-import destiny.core.calendar.eightwords.FlowHourPatterns.trilogyToFlow
+import destiny.core.calendar.eightwords.FlowDayHourPatterns.bothAffecting
+import destiny.core.calendar.eightwords.FlowDayHourPatterns.branchCombined
+import destiny.core.calendar.eightwords.FlowDayHourPatterns.branchOpposition
+import destiny.core.calendar.eightwords.FlowDayHourPatterns.stemCombined
+import destiny.core.calendar.eightwords.FlowDayHourPatterns.toFlowTrilogy
+import destiny.core.calendar.eightwords.FlowDayHourPatterns.trilogyToFlow
 import destiny.core.calendar.eightwords.FlowPattern.*
 import destiny.core.calendar.eightwords.Reacting.*
 import destiny.core.chinese.Branch.*
@@ -22,7 +22,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 
-class FlowHourPatternsTest {
+class FlowDayHourPatternsTest {
 
   @Test
   fun testBothAffecting() {
