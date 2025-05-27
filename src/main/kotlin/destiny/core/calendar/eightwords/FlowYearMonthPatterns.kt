@@ -60,12 +60,12 @@ object FlowYearMonthPatterns {
 }
 
 
-fun IEightWords.getFlowMonthPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<FlowPattern> {
+fun IEightWords.getFlowYearMonthPatterns(flowYear: IStemBranch, flowMonth: IStemBranch): Set<FlowPattern> {
   return setOf(
     bothAffecting, stemCombined, branchCombined, trilogyToFlow, toFlowTrilogy, branchOpposition
   ).flatMap { factory: IFlowYearMonthPatternFactory ->
     with(factory) {
-      this@getFlowMonthPatterns.getPatterns(flowYear, flowMonth)
+      this@getFlowYearMonthPatterns.getPatterns(flowYear, flowMonth)
     }
   }.toSet()
 }

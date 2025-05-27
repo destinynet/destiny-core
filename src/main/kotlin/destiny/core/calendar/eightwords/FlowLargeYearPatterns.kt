@@ -59,12 +59,12 @@ object FlowLargeYearPatterns {
   }
 }
 
-fun IEightWords.getFlowYearPatterns(flowLarge: IStemBranch, flowYear: IStemBranch): Set<FlowPattern> {
+fun IEightWords.getFlowLargeYearPatterns(flowLarge: IStemBranch, flowYear: IStemBranch): Set<FlowPattern> {
   return setOf(
     bothAffecting, stemCombined, branchCombined, trilogyToFlow, toFlowTrilogy, branchOpposition
   ).flatMap { factory: IFlowLargeYearPatternFactory ->
     with(factory) {
-      this@getFlowYearPatterns.getPatterns(flowLarge, flowYear)
+      this@getFlowLargeYearPatterns.getPatterns(flowLarge, flowYear)
     }
   }.toSet()
 }

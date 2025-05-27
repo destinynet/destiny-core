@@ -60,8 +60,8 @@ object FlowDayHourPatterns {
 }
 
 
-fun IEightWords.getFlowHourPatterns(flowDay: IStemBranch, flowHour: IStemBranch): Set<FlowPattern> {
+fun IEightWords.getFlowDayHourPatterns(flowDay: IStemBranch, flowHour: IStemBranch): Set<FlowPattern> {
   return setOf(bothAffecting, stemCombined, branchCombined, trilogyToFlow, toFlowTrilogy, branchOpposition).flatMap { factory ->
-    with(factory) { this@getFlowHourPatterns.getPatterns(flowDay, flowHour) }
+    with(factory) { this@getFlowDayHourPatterns.getPatterns(flowDay, flowHour) }
   }.toSet()
 }
