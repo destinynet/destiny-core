@@ -6,7 +6,7 @@ package destiny.core.calendar.eightwords
 import destiny.core.FlowScale
 import destiny.core.Scale.*
 import destiny.core.calendar.eightwords.FlowPattern.*
-import destiny.core.calendar.eightwords.FlowYearMonthPatterns.bothAffecting
+import destiny.core.calendar.eightwords.FlowYearMonthPatterns.affecting
 import destiny.core.calendar.eightwords.FlowYearMonthPatterns.branchCombined
 import destiny.core.calendar.eightwords.FlowYearMonthPatterns.branchOpposition
 import destiny.core.calendar.eightwords.FlowYearMonthPatterns.stemCombined
@@ -24,20 +24,20 @@ import kotlin.test.assertTrue
 class FlowYearMonthPatternsTest {
 
   @Test
-  fun testBothAffecting() {
+  fun testAffecting() {
     val ew = EightWords(丙子, 乙未, 丙寅, 壬辰)
-    with(bothAffecting) {
+    with(affecting) {
       ew.getPatterns(甲辰, 甲戌).also { patterns ->
         assertEquals(
           setOf(
             // 本命 年干 丙火 , 同時被 流年、流月的「甲」所生
-            BothAffecting(YEAR, 丙, PRODUCED, setOf(FlowScale.YEAR, FlowScale.MONTH)),
+            Affecting(YEAR, 丙, PRODUCED, setOf(FlowScale.YEAR, FlowScale.MONTH)),
             // 本命 月干 乙木 , 同時與 流年、流月的「甲」相同五行
-            BothAffecting(MONTH, 乙, SAME, setOf(FlowScale.YEAR, FlowScale.MONTH)),
+            Affecting(MONTH, 乙, SAME, setOf(FlowScale.YEAR, FlowScale.MONTH)),
             // 本命 日干 丙火 , 同時被 流年、流月的「甲」所生
-            BothAffecting(DAY, 丙, PRODUCED, setOf(FlowScale.YEAR, FlowScale.MONTH)),
+            Affecting(DAY, 丙, PRODUCED, setOf(FlowScale.YEAR, FlowScale.MONTH)),
             // 本命 時干 壬水 , 同時洩氣給 流年、流月的「甲」木
-            BothAffecting(HOUR, 壬, PRODUCING, setOf(FlowScale.YEAR, FlowScale.MONTH)),
+            Affecting(HOUR, 壬, PRODUCING, setOf(FlowScale.YEAR, FlowScale.MONTH)),
           ), patterns
         )
       }

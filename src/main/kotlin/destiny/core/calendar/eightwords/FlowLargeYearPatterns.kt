@@ -4,7 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.FlowScale
-import destiny.core.calendar.eightwords.FlowLargeYearPatterns.bothAffecting
+import destiny.core.calendar.eightwords.FlowLargeYearPatterns.affecting
 import destiny.core.calendar.eightwords.FlowLargeYearPatterns.branchCombined
 import destiny.core.calendar.eightwords.FlowLargeYearPatterns.branchOpposition
 import destiny.core.calendar.eightwords.FlowLargeYearPatterns.stemCombined
@@ -22,9 +22,9 @@ interface IFlowLargeYearPatternFactory {
 
 object FlowLargeYearPatterns {
 
-  val bothAffecting = object : IFlowLargeYearPatternFactory {
-    override fun IEightWords.getPatterns(flowLarge: IStemBranch, flowYear: IStemBranch): Set<BothAffecting> {
-      return detectBothAffectingGeneric(flowLarge, FlowScale.LARGE, flowYear, FlowScale.YEAR)
+  val affecting = object : IFlowLargeYearPatternFactory {
+    override fun IEightWords.getPatterns(flowLarge: IStemBranch, flowYear: IStemBranch): Set<Affecting> {
+      return detectAffectingGeneric(flowLarge, FlowScale.LARGE, flowYear, FlowScale.YEAR)
     }
   }
 
@@ -61,7 +61,7 @@ object FlowLargeYearPatterns {
 
 fun IEightWords.getFlowLargeYearPatterns(flowLarge: IStemBranch, flowYear: IStemBranch): Set<FlowPattern> {
   return setOf(
-    bothAffecting, stemCombined, branchCombined, trilogyToFlow, toFlowTrilogy, branchOpposition
+    affecting, stemCombined, branchCombined, trilogyToFlow, toFlowTrilogy, branchOpposition
   ).flatMap { factory: IFlowLargeYearPatternFactory ->
     with(factory) {
       this@getFlowLargeYearPatterns.getPatterns(flowLarge, flowYear)

@@ -16,17 +16,18 @@ import destiny.core.chinese.FiveElement.Companion.sameCount
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.trilogy
 
-internal fun IEightWords.detectBothAffectingGeneric(flow1: IStemBranch, flow1Scale: FlowScale, flow2: IStemBranch, flow2Scale: FlowScale): Set<BothAffecting> {
+/** 五行生剋 */
+internal fun IEightWords.detectAffectingGeneric(flow1: IStemBranch, flow1Scale: FlowScale, flow2: IStemBranch, flow2Scale: FlowScale): Set<Affecting> {
   return getScaleMap().entries.asSequence()
     .map { (scale, v) -> scale to v.stem }
     .mapNotNull { (scale, stem) ->
       val actualFlowScales = setOf(flow1Scale, flow2Scale)
       when {
-        stem.fiveElement.sameCount(flow1.stem, flow2.stem) == 2      -> BothAffecting(scale, stem, Reacting.SAME, actualFlowScales)
-        stem.fiveElement.producingCount(flow1.stem, flow2.stem) == 2 -> BothAffecting(scale, stem, Reacting.PRODUCING, actualFlowScales)
-        stem.fiveElement.producedCount(flow1.stem, flow2.stem) == 2  -> BothAffecting(scale, stem, Reacting.PRODUCED, actualFlowScales)
-        stem.fiveElement.dominatorCount(flow1.stem, flow2.stem) == 2 -> BothAffecting(scale, stem, Reacting.DOMINATING, actualFlowScales)
-        stem.fiveElement.beatenCount(flow1.stem, flow2.stem) == 2    -> BothAffecting(scale, stem, Reacting.BEATEN, actualFlowScales)
+        stem.fiveElement.sameCount(flow1.stem, flow2.stem) == 2      -> Affecting(scale, stem, Reacting.SAME, actualFlowScales)
+        stem.fiveElement.producingCount(flow1.stem, flow2.stem) == 2 -> Affecting(scale, stem, Reacting.PRODUCING, actualFlowScales)
+        stem.fiveElement.producedCount(flow1.stem, flow2.stem) == 2  -> Affecting(scale, stem, Reacting.PRODUCED, actualFlowScales)
+        stem.fiveElement.dominatorCount(flow1.stem, flow2.stem) == 2 -> Affecting(scale, stem, Reacting.DOMINATING, actualFlowScales)
+        stem.fiveElement.beatenCount(flow1.stem, flow2.stem) == 2    -> Affecting(scale, stem, Reacting.BEATEN, actualFlowScales)
         else                                                         -> null
       }
     }.toSet()

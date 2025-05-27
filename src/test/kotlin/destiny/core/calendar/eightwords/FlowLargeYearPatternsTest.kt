@@ -5,7 +5,7 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.FlowScale
 import destiny.core.Scale.*
-import destiny.core.calendar.eightwords.FlowLargeYearPatterns.bothAffecting
+import destiny.core.calendar.eightwords.FlowLargeYearPatterns.affecting
 import destiny.core.calendar.eightwords.FlowLargeYearPatterns.branchCombined
 import destiny.core.calendar.eightwords.FlowLargeYearPatterns.branchOpposition
 import destiny.core.calendar.eightwords.FlowLargeYearPatterns.stemCombined
@@ -24,16 +24,16 @@ import kotlin.test.assertTrue
 class FlowLargeYearPatternsTest {
 
   @Test
-  fun testBothAffecting() {
+  fun testAffecting() {
     val ew = EightWords(丙子, 乙未, 丙寅, 壬辰)
-    with(bothAffecting) {
+    with(affecting) {
       ew.getPatterns(甲辰, 甲戌).also { patterns ->
         assertEquals(
           setOf(
-            BothAffecting(YEAR, 丙, PRODUCED, setOf(FlowScale.LARGE, FlowScale.YEAR)),
-            BothAffecting(DAY, 丙, PRODUCED, setOf(FlowScale.LARGE, FlowScale.YEAR)),
-            BothAffecting(MONTH, 乙, SAME, setOf(FlowScale.LARGE, FlowScale.YEAR)),
-            BothAffecting(HOUR, 壬, PRODUCING, setOf(FlowScale.LARGE, FlowScale.YEAR)),
+            Affecting(YEAR, 丙, PRODUCED, setOf(FlowScale.LARGE, FlowScale.YEAR)),
+            Affecting(DAY, 丙, PRODUCED, setOf(FlowScale.LARGE, FlowScale.YEAR)),
+            Affecting(MONTH, 乙, SAME, setOf(FlowScale.LARGE, FlowScale.YEAR)),
+            Affecting(HOUR, 壬, PRODUCING, setOf(FlowScale.LARGE, FlowScale.YEAR)),
           ), patterns
         )
       }

@@ -29,11 +29,17 @@ sealed class IdentityPattern : IEightWordsPattern {
 }
 
 sealed class FlowPattern : IEightWordsPattern {
-  data class BothAffecting(val scale: Scale, val stem: Stem, val reacting: Reacting, val flowScales: Set<FlowScale>) : FlowPattern()
+  /** 五行生剋 */
+  data class Affecting(val scale: Scale, val stem: Stem, val reacting: Reacting, val flowScales: Set<FlowScale>) : FlowPattern()
+  /** 天干相合 */
   data class StemCombined(val scale: Scale, val stem: Stem, val flowScale: FlowScale) : FlowPattern()
+  /** 地支相合 */
   data class BranchCombined(val scale: Scale, val branch: Branch, val flowScale: FlowScale) : FlowPattern()
-  data class TrilogyToFlow(val pairs: Set<Pair<Scale, Branch>>, val flows: Pair<FlowScale, Branch>) : FlowPattern()
+  /** 本命兩柱 與流運某干支 形成三合 */
+  data class TrilogyToFlow(val pairs: Set<Pair<Scale, Branch>>, val flow: Pair<FlowScale, Branch>) : FlowPattern()
+  /** 本命某柱 與流運兩柱 形成三合 */
   data class ToFlowTrilogy(val scale: Scale, val branch: Branch, val flows: Set<Pair<FlowScale, Branch>>) : FlowPattern()
+  /** 地支相沖 */
   data class BranchOpposition(val scale: Scale, val branch: Branch, val flowScale: FlowScale) : FlowPattern()
 }
 
