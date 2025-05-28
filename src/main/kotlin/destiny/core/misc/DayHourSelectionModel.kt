@@ -17,8 +17,6 @@ interface IDayHourSelectionModel {
   val fromDate: LocalDate
   val toDate: LocalDate
   val loc: ILocation
-  val filterOutHour: Boolean
-  val workingHour: Pair<LocalTime, LocalTime>?
 }
 
 @Serializable
@@ -29,18 +27,22 @@ data class DayHourSelectionModel(
   @Serializable(with = LocalDateSerializer::class)
   override val toDate: LocalDate,
   override val loc: ILocation,
-  override val filterOutHour: Boolean,
-  override val workingHour: Pair<@Serializable(with = LocalTimeSerializer::class) LocalTime, @Serializable(with = LocalTimeSerializer::class) LocalTime>? = null,
 ) : IDayHourSelectionModel
 
 interface IDayHourSelectionRequest : IDayHourSelectionModel {
+  val topN: Int
   val purpose: ElectionalPurpose
+  val filterOutHour: Boolean
+  val workingHour: Pair<LocalTime, LocalTime>?
   val notes : String?
 }
 
 @Serializable
 data class DayHourSelectionRequest(
-  private val dayHourSelectionModel: DayHourSelectionModel,
+  private val dayHourSelectionModel: IDayHourSelectionModel,
+  override val topN: Int,
   override val purpose: ElectionalPurpose,
-  override val notes : String?,
+  override val filterOutHour: Boolean,
+  override val notes: String?,
+  override val workingHour: Pair<@Serializable(with = LocalTimeSerializer::class) LocalTime, @Serializable(with = LocalTimeSerializer::class) LocalTime>? = null,
 ) : IDayHourSelectionRequest, IDayHourSelectionModel by dayHourSelectionModel
