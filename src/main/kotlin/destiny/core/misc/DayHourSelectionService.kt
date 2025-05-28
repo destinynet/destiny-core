@@ -31,13 +31,13 @@ class DayHourSelectionService(
   private val starTransitImpl: IStarTransit
 ) {
 
-  fun search(model: Electional.ITraversalModel, ewConfig: IPersonPresentConfig = PersonPresentConfig()): Sequence<DayHourEvent> {
+  fun traverse(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, ewConfig: IPersonPresentConfig = PersonPresentConfig()): Sequence<DayHourEvent> {
     require(model.toDate.isAfter(model.fromDate)) { "toDate must be after the fromDate" }
 
     val fromGmtJulDay = model.fromDate.atTime(0, 0).toGmtJulDay(model.loc)
     val toGmtJulDay = model.toDate.plusDays(1).atTime(0, 0).toGmtJulDay(model.loc)
 
-    return (searchAstrologyEvents(model.bdnp, fromGmtJulDay, toGmtJulDay) + searchEw(model.bdnp, fromGmtJulDay, toGmtJulDay, model.loc, ewConfig))
+    return (searchAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay) + searchEw(bdnp, fromGmtJulDay, toGmtJulDay, model.loc, ewConfig))
   }
 
   private fun searchAstrologyEvents(bdnp: IBirthDataNamePlace, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay): Sequence<DayHourEvent.AstroEvent> {
