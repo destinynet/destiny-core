@@ -46,7 +46,7 @@ class Electional {
     override val topN: Int,
     override val purpose: ElectionalPurpose,
     override val filterOutHour: Boolean,
-    override val notes: String?,
     override val workingHour: Pair<@Serializable(with = LocalTimeSerializer::class) LocalTime, @Serializable(with = LocalTimeSerializer::class) LocalTime>? = null,
+    override val notes: String? = null,
   ) : IRequestModel, ITraversalModel by traversal
 }
