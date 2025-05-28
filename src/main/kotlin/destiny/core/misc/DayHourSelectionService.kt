@@ -21,7 +21,6 @@ import destiny.core.calendar.eightwords.FlowDayHourPatterns.trilogyToFlow
 import destiny.core.chinese.eightwords.PersonPresentConfig
 import destiny.core.chinese.eightwords.PersonPresentFeature
 import jakarta.inject.Named
-import java.time.LocalDate
 
 
 @Named
@@ -32,14 +31,13 @@ class DayHourSelectionService(
   private val starTransitImpl: IStarTransit
 ) {
 
-  fun search(bdnp: IBirthDataNamePlace, fromDate: LocalDate, toDate: LocalDate, loc: ILocation = bdnp.location, ewConfig: IPersonPresentConfig = PersonPresentConfig()): Sequence<DayHourEvent> {
+  fun search(model: Electional.ITraversalModel, ewConfig: IPersonPresentConfig = PersonPresentConfig()): Sequence<DayHourEvent> {
+    require(model.toDate.isAfter(model.fromDate)) { "toDate must be after the fromDate" }
 
-    require(toDate.isAfter(fromDate)) { "toDate must be after the fromDate" }
+    val fromGmtJulDay = model.fromDate.atTime(0, 0).toGmtJulDay(model.loc)
+    val toGmtJulDay = model.toDate.plusDays(1).atTime(0, 0).toGmtJulDay(model.loc)
 
-    val fromGmtJulDay = fromDate.atTime(0, 0).toGmtJulDay(loc)
-    val toGmtJulDay = toDate.plusDays(1).atTime(0, 0).toGmtJulDay(loc)
-
-    return  (searchAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay) + searchEw(bdnp, fromGmtJulDay, toGmtJulDay, loc, ewConfig))
+    return (searchAstrologyEvents(model.bdnp, fromGmtJulDay, toGmtJulDay) + searchEw(model.bdnp, fromGmtJulDay, toGmtJulDay, model.loc, ewConfig))
   }
 
   private fun searchAstrologyEvents(bdnp: IBirthDataNamePlace, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay): Sequence<DayHourEvent.AstroEvent> {
@@ -128,7 +126,7 @@ class DayHourSelectionService(
   ): Sequence<DayHourEvent.EwEvent> {
 
     val personEw = ewPersonPresentFeature.getPersonModel(bdnp, config).eightWords
-    logger.info { "本命八字 : $personEw" }
+    logger.debug { "本命八字 : $personEw" }
     val fromEw: IEightWords = ewFeature.getModel(fromGmtJulDay, loc, config)
 
     return generateSequence(fromEw to fromGmtJulDay) { (outerEw, gmtJulDay) ->
