@@ -218,6 +218,49 @@ fun <T> Sequence<T>.chunked(predicate: (T, T) -> Boolean): Sequence<List<T>> {
   }
 }
 
+/**
+ * Chunks a sequence into lists of elements based on a proximity predicate.
+ *
+ * Elements are grouped together as long as each subsequent element is considered "proximate"
+ * to the *first element* of the current chunk.
+ *
+ * @param T The type of elements in the sequence.
+ * @param isProximate A predicate that takes the first element of the current chunk and
+ *                    the current element being considered. It should return `true` if
+ *                    the current element should be included in the same chunk as the first,
+ *                    `false` otherwise.
+ * @return A sequence of lists, where each list is a chunk of proximate elements.
+ */
+fun <T> Sequence<T>.chunkedByProximity(isProximate: (firstInChunk: T, current: T) -> Boolean): Sequence<List<T>> {
+  val iterator = this.iterator()
+  if (!iterator.hasNext()) {
+    return emptySequence()
+  }
+
+  return sequence {
+    val currentChunk = mutableListOf<T>()
+    currentChunk.add(iterator.next()) // Add the first element to start the first chunk
+
+    while (iterator.hasNext()) {
+      val nextElement = iterator.next()
+      // Compare with the *first* element of the current chunk
+      if (isProximate(currentChunk.first(), nextElement)) {
+        currentChunk.add(nextElement)
+      } else {
+        // Not proximate, so yield the current chunk and start a new one
+        yield(currentChunk.toList()) // Yield a copy
+        currentChunk.clear()
+        currentChunk.add(nextElement) // Start new chunk with the current element
+      }
+    }
+
+    // Yield the last chunk if it's not empty
+    if (currentChunk.isNotEmpty()) {
+      yield(currentChunk.toList())
+    }
+  }
+}
+
 inline fun <reified T : Enum<T>> Enum<T>.asDescriptive() : Descriptive {
   return object : Descriptive {
     override fun getTitle(locale: Locale): String {
