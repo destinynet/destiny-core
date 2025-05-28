@@ -12,8 +12,6 @@ import java.util.*
  */
 interface IDigestFormat<M, D : Any> : IDigest<M, Pair<String, FormatSpec<D>?>> {
 
-  val domain: Domain
-
   val schema : JsonSchemaSpec?
 
   fun promptsForExpectingStructure(model: M, locale: Locale = Locale.getDefault()): D? {
