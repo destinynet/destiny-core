@@ -53,10 +53,8 @@ class DayHourSelectionService(
       starPositionImpl.getPosition(planet, bdnp.gmtJulDay, bdnp.location).lngDeg
     }
 
-    fun searchEvents(outerStars: Set<Planet>, angles: Set<Double>): Sequence<AspectData> {
-
-
-      val personalEvents = outerStars.asSequence().flatMap { outer ->
+    fun searchPersonalEvents(outerStars: Set<Planet>, angles: Set<Double>): Sequence<AspectData> {
+      return outerStars.asSequence().flatMap { outer ->
         innerStars.flatMap { inner ->
           innerStarPosMap[inner]?.let { innerDeg ->
             val degrees = angles.map { it.toZodiacDegree() }.map { it + innerDeg }.toSet()
@@ -68,12 +66,24 @@ class DayHourSelectionService(
           }?: emptyList()
         }
       }
-      return personalEvents
+    }
+
+    val globalEvents = relativeTransitImpl.mutualAspectingEvents(
+      innerStars, setOf(harmonyAngles, tensionAngles).flatten().toSet(),
+      fromGmtJulDay, toGmtJulDay
+    ).map { aspectData ->
+      val type = when (aspectData.aspect) {
+        Aspect.CONJUNCTION, Aspect.SEXTILE, Aspect.TRINE -> Type.GOOD
+        Aspect.SQUARE, Aspect.OPPOSITION                 -> Type.BAD
+        else                                             -> throw RuntimeException("Unknown aspect ${aspectData.aspect}")
+      }
+      AstroEvent(type, aspectData, Impact.GLOBAL)
     }
 
     return sequenceOf(
-      searchEvents(innerStars, harmonyAngles).map { aspectData -> AstroEvent(Type.GOOD, aspectData, Impact.PERSONAL) },
-      searchEvents(innerStars, tensionAngles).map { aspectData -> AstroEvent(Type.BAD, aspectData, Impact.PERSONAL) }
+      globalEvents,
+      searchPersonalEvents(innerStars, harmonyAngles).map { aspectData -> AstroEvent(Type.GOOD, aspectData, Impact.PERSONAL) },
+      searchPersonalEvents(innerStars, tensionAngles).map { aspectData -> AstroEvent(Type.BAD, aspectData, Impact.PERSONAL) }
     ).flatten()
   }
 
