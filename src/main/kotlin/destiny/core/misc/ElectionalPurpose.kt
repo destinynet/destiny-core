@@ -1,5 +1,8 @@
 package destiny.core.misc
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class ElectionalPurpose {
   // Personal
   MARRIAGE_REGISTRATION,  // 婚姻登記
