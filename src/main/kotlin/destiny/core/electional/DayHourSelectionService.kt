@@ -5,6 +5,7 @@ package destiny.core.electional
 
 import destiny.core.FlowScale
 import destiny.core.IBirthDataNamePlace
+import destiny.core.Scale
 import destiny.core.astrology.*
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
@@ -72,32 +73,65 @@ class DayHourSelectionService(
     ).flatten()
   }
 
-  private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords): Sequence<EwPersonalEvent> {
-    val affecting = with(affecting) {
+  private val supportedScales = setOf(Scale.DAY, Scale.HOUR)
+
+  private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords): Sequence<EwEvent> {
+
+    val globalStemCombined: Sequence<EwEvent.EwGlobalEvent.StemCombined> = with(IdentityPatterns.stemCombined) {
+      outer.getPatterns().asSequence().filterIsInstance<IdentityPattern.StemCombined>()
+        .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
+        .map { p -> EwEvent.EwGlobalEvent.StemCombined(gmtJulDay, p, outer) }
+    }
+
+    val globalBranchCombined = with(IdentityPatterns.branchCombined) {
+      outer.getPatterns().asSequence().filterIsInstance<IdentityPattern.BranchCombined>()
+        .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
+        .map { p -> EwEvent.EwGlobalEvent.BranchCombined(gmtJulDay, p, outer) }
+    }
+
+    val globalTrilogy = with(IdentityPatterns.trilogy) {
+      outer.getPatterns().asSequence().filterIsInstance<IdentityPattern.Trilogy>()
+      .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
+      .map { p -> EwEvent.EwGlobalEvent.Trilogy(gmtJulDay, p, outer) }
+    }
+
+    val globalBranchOpposition = with(IdentityPatterns.branchOpposition) {
+      outer.getPatterns().asSequence().filterIsInstance<IdentityPattern.BranchOpposition>()
+        .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
+        .map { p -> EwEvent.EwGlobalEvent.BranchOpposition(gmtJulDay, p, outer)}
+    }
+
+    val globalStemRooted = with(IdentityPatterns.stemRooted) {
+      outer.getPatterns().asSequence().filterIsInstance<IdentityPattern.StemRooted>()
+        .filter { p -> p.scale in supportedScales }
+        .map { p -> EwEvent.EwGlobalEvent.StemRooted(gmtJulDay, p, outer) }
+    }
+
+    val personalAffecting: Sequence<EwEvent.EwPersonalEvent.StemAffecting> = with(affecting) {
       inner.getPatterns(outer.day, outer.hour).asSequence().map { pattern ->
         pattern as FlowPattern.Affecting
-      }.map { pattern -> EwPersonalEvent.StemAffecting(gmtJulDay, pattern, outer) }
+      }.map { pattern -> EwEvent.EwPersonalEvent.StemAffecting(gmtJulDay, pattern, outer) }
     }
 
-    val stemCombined = with(stemCombined) {
+    val personalStemCombined = with(stemCombined) {
       inner.getPatterns(outer.day, outer.hour).asSequence().map { pattern: FlowPattern ->
         pattern as FlowPattern.StemCombined
-      }.map { pattern -> EwPersonalEvent.StemCombined(gmtJulDay, pattern, outer) }
+      }.map { pattern -> EwEvent.EwPersonalEvent.StemCombined(gmtJulDay, pattern, outer) }
     }
 
-    val branchCombined = with(branchCombined) {
+    val personalBranchCombined = with(branchCombined) {
       inner.getPatterns(outer.day, outer.hour).asSequence().map { pattern: FlowPattern ->
         pattern as FlowPattern.BranchCombined
-      }.map { pattern -> EwPersonalEvent.BranchCombined(gmtJulDay, pattern, outer) }
+      }.map { pattern -> EwEvent.EwPersonalEvent.BranchCombined(gmtJulDay, pattern, outer) }
     }
 
-    val trilogyToFlow = with(trilogyToFlow) {
+    val personalTrilogyToFlow = with(trilogyToFlow) {
       inner.getPatterns(outer.day, outer.hour).asSequence().map { pattern: FlowPattern ->
         pattern as FlowPattern.TrilogyToFlow
-      }.map { pattern -> EwPersonalEvent.TrilogyToFlow(gmtJulDay, pattern, outer) }
+      }.map { pattern -> EwEvent.EwPersonalEvent.TrilogyToFlow(gmtJulDay, pattern, outer) }
     }
 
-    val toFlowTrilogy = with(toFlowTrilogy) {
+    val personalToFlowTrilogy = with(toFlowTrilogy) {
       inner.getPatterns(outer.day, outer.hour).asSequence().map { pattern: FlowPattern ->
         pattern as FlowPattern.ToFlowTrilogy
       }.filter { pattern ->
@@ -107,16 +141,18 @@ class DayHourSelectionService(
          */
         val flowScales = pattern.flows.map { it.first }
         flowScales.any { it == FlowScale.DAY || it == FlowScale.HOUR }
-      }.map { pattern -> EwPersonalEvent.ToFlowTrilogy(gmtJulDay, pattern, outer) }
+      }.map { pattern -> EwEvent.EwPersonalEvent.ToFlowTrilogy(gmtJulDay, pattern, outer) }
     }
 
-    val branchOpposition = with(branchOpposition) {
+    val personalBranchOpposition = with(branchOpposition) {
       inner.getPatterns(outer.day, outer.hour).asSequence().map { pattern: FlowPattern ->
         pattern as FlowPattern.BranchOpposition
-      }.map { pattern -> EwPersonalEvent.BranchOpposition(gmtJulDay, pattern, outer) }
+      }.map { pattern -> EwEvent.EwPersonalEvent.BranchOpposition(gmtJulDay, pattern, outer) }
     }
 
-    return sequenceOf(affecting, stemCombined, branchCombined, trilogyToFlow, toFlowTrilogy, branchOpposition).flatten()
+    return sequenceOf(
+      globalStemCombined, globalBranchCombined, globalTrilogy, globalBranchOpposition, globalStemRooted,
+      personalAffecting, personalStemCombined, personalBranchCombined, personalTrilogyToFlow, personalToFlowTrilogy, personalBranchOpposition).flatten()
   }
 
   private fun searchEw(
@@ -125,14 +161,13 @@ class DayHourSelectionService(
     toGmtJulDay: GmtJulDay,
     loc: ILocation = bdnp.location,
     config: IPersonPresentConfig = PersonPresentConfig()
-  ): Sequence<EwPersonalEvent> {
+  ): Sequence<EwEvent> {
 
     val personEw = ewPersonPresentFeature.getPersonModel(bdnp, config).eightWords
     logger.debug { "本命八字 : $personEw" }
     val fromEw: IEightWords = ewFeature.getModel(fromGmtJulDay, loc, config)
 
     return generateSequence(fromEw to fromGmtJulDay) { (outerEw, gmtJulDay) ->
-
 
       ewFeature.next(gmtJulDay + 0.01, loc, config)
     }.takeWhile { (outerEw, gmtJulDay) -> gmtJulDay < toGmtJulDay }
