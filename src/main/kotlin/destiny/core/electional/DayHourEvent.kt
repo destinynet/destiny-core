@@ -51,7 +51,7 @@ sealed class DayHourEvent {
         get() = when (outerScale) {
           Scale.DAY  -> Span.DAY
           Scale.HOUR -> Span.HOUR
-          else       -> throw IllegalArgumentException("impossible")
+          else       -> throw IllegalArgumentException("impossible span")
         }
 
       /** 本命某天干, 同時受到 流日、流時 的影響 */
@@ -73,7 +73,7 @@ sealed class DayHourEvent {
           get() = when (pattern.flowScale) {
             FlowScale.DAY  -> Scale.DAY
             FlowScale.HOUR -> Scale.HOUR
-            else           -> throw IllegalArgumentException("impossible")
+            else           -> throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
           }
       }
 
@@ -85,7 +85,7 @@ sealed class DayHourEvent {
           get() = when (pattern.flowScale) {
             FlowScale.DAY  -> Scale.DAY
             FlowScale.HOUR -> Scale.HOUR
-            else           -> throw IllegalArgumentException("impossible")
+            else           -> throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
           }
       }
 
@@ -97,7 +97,7 @@ sealed class DayHourEvent {
           get() = when (pattern.flow.first) {
             FlowScale.DAY  -> Scale.DAY
             FlowScale.HOUR -> Scale.HOUR
-            else           -> throw IllegalArgumentException("impossible")
+            else           -> throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
           }
 
       }
@@ -114,7 +114,7 @@ sealed class DayHourEvent {
             } else if (flowScales.contains(FlowScale.DAY)) {
               Scale.DAY
             } else {
-              throw IllegalArgumentException("impossible")
+              throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
             }
           }
       }
@@ -127,59 +127,63 @@ sealed class DayHourEvent {
           get() = when (pattern.flowScale) {
             FlowScale.DAY  -> Scale.DAY
             FlowScale.HOUR -> Scale.HOUR
-            else           -> throw IllegalArgumentException("impossible")
+            else           -> throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
           }
+      }
+
+      companion object {
+        private const val IMPOSSIBLE_FLOW_SCALE = "impossible flowScale"
       }
     }
 
-    sealed class EwGlobalEvent(val identityPattern: IdentityPattern) : EwEvent() {
+    sealed class EwGlobalEvent : EwEvent() {
       override val impact: Impact = Impact.GLOBAL
 
-      data class StemCombined(override val gmtJulDay: GmtJulDay, override val pattern: IdentityPattern.StemCombined, override val outer: IEightWords) : EwGlobalEvent(pattern) {
+      data class StemCombined(override val gmtJulDay: GmtJulDay, override val pattern: IdentityPattern.StemCombined, override val outer: IEightWords) : EwGlobalEvent() {
         override val type: Type = Type.GOOD
         override val span: Span = pattern.pillars.map { it.first }.max().let {
           when (it) {
             Scale.DAY               -> Span.DAY
             Scale.HOUR              -> Span.HOUR
-            Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException("not supported")
+            Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException(NOT_SUPPORTED)
           }
         }
       }
 
-      data class BranchCombined(override val gmtJulDay: GmtJulDay, override val pattern: IdentityPattern.BranchCombined, override val outer: IEightWords) : EwGlobalEvent(pattern) {
+      data class BranchCombined(override val gmtJulDay: GmtJulDay, override val pattern: IdentityPattern.BranchCombined, override val outer: IEightWords) : EwGlobalEvent() {
         override val type: Type = Type.GOOD
         override val span: Span = pattern.pillars.map { it.first }.max().let {
           when (it) {
             Scale.DAY               -> Span.DAY
             Scale.HOUR              -> Span.HOUR
-            Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException("not supported")
+            Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException(NOT_SUPPORTED)
           }
         }
       }
 
-      data class Trilogy(override val gmtJulDay: GmtJulDay, override val pattern: IdentityPattern.Trilogy, override val outer: IEightWords) : EwGlobalEvent(pattern) {
+      data class Trilogy(override val gmtJulDay: GmtJulDay, override val pattern: IdentityPattern.Trilogy, override val outer: IEightWords) : EwGlobalEvent() {
         override val type: Type = Type.GOOD
         override val span: Span = pattern.pillars.map { it.first }.max().let {
           when (it) {
             Scale.DAY               -> Span.DAY
             Scale.HOUR              -> Span.HOUR
-            Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException("not supported")
+            Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException(NOT_SUPPORTED)
           }
         }
       }
 
-      data class BranchOpposition(override val gmtJulDay: GmtJulDay, override val pattern: IdentityPattern.BranchOpposition, override val outer: IEightWords) : EwGlobalEvent(pattern) {
+      data class BranchOpposition(override val gmtJulDay: GmtJulDay, override val pattern: IdentityPattern.BranchOpposition, override val outer: IEightWords) : EwGlobalEvent() {
         override val type: Type = Type.BAD
         override val span: Span = pattern.pillars.map { it.first }.max().let {
           when (it) {
             Scale.DAY               -> Span.DAY
             Scale.HOUR              -> Span.HOUR
-            Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException("not supported")
+            Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException(NOT_SUPPORTED)
           }
         }
       }
 
-      data class StemRooted(override val gmtJulDay: GmtJulDay, override val pattern: IdentityPattern.StemRooted, override val outer: IEightWords) : EwGlobalEvent(pattern) {
+      data class StemRooted(override val gmtJulDay: GmtJulDay, override val pattern: IdentityPattern.StemRooted, override val outer: IEightWords) : EwGlobalEvent() {
         override val type: Type = Type.GOOD
         override val span: Span
           get() = when (
@@ -190,15 +194,15 @@ sealed class DayHourEvent {
           ) {
             Scale.DAY               -> Span.DAY
             Scale.HOUR              -> Span.HOUR
-            Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException("not supported")
+            Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException(NOT_SUPPORTED)
           }
       }
 
-
+      companion object {
+        private const val NOT_SUPPORTED = "not supported"
+      }
     }
   }
-
-
 
   /** 占星事件 */
   data class AstroEvent(override val type: Type, val aspectData: AspectData, override val impact: Impact) : DayHourEvent() {
