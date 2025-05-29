@@ -23,8 +23,10 @@ enum class Reacting {
 sealed class IdentityPattern : IEightWordsPattern {
   data class StemCombined(val pillars: Set<Pair<Scale, Stem>>) : IdentityPattern()
   data class BranchCombined(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
+  /** 地支三合 */
   data class Trilogy(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
   data class BranchOpposition(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
+  /** 天干通根 */
   data class StemRooted(val scale: Scale, val stem: Stem, val roots: Set<Pair<Scale, Branch>>) : IdentityPattern()
 }
 

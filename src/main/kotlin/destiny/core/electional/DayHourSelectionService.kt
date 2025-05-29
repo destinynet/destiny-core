@@ -20,6 +20,7 @@ import destiny.core.calendar.eightwords.FlowDayHourPatterns.toFlowTrilogy
 import destiny.core.calendar.eightwords.FlowDayHourPatterns.trilogyToFlow
 import destiny.core.chinese.eightwords.PersonPresentConfig
 import destiny.core.chinese.eightwords.PersonPresentFeature
+import destiny.core.electional.DayHourEvent.*
 import jakarta.inject.Named
 
 
@@ -40,7 +41,7 @@ class DayHourSelectionService(
     return (searchAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay) + searchEw(bdnp, fromGmtJulDay, toGmtJulDay, model.loc, ewConfig))
   }
 
-  private fun searchAstrologyEvents(bdnp: IBirthDataNamePlace, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay): Sequence<DayHourEvent.AstroEvent> {
+  private fun searchAstrologyEvents(bdnp: IBirthDataNamePlace, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay): Sequence<AstroEvent> {
     val innerStars = setOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
 
     val harmonyAngles = setOf(0.0, 60.0, 120.0, 240.0, 300.0)
@@ -66,34 +67,34 @@ class DayHourSelectionService(
     }
 
     return sequenceOf(
-      searchEvents(innerStars, harmonyAngles).map { aspectData -> DayHourEvent.AstroEvent(DayHourEvent.Type.GOOD, aspectData) },
-      searchEvents(innerStars, tensionAngles).map { aspectData -> DayHourEvent.AstroEvent(DayHourEvent.Type.BAD, aspectData) }
+      searchEvents(innerStars, harmonyAngles).map { aspectData -> AstroEvent(Type.GOOD, aspectData, Impact.PERSONAL) },
+      searchEvents(innerStars, tensionAngles).map { aspectData -> AstroEvent(Type.BAD, aspectData, Impact.PERSONAL) }
     ).flatten()
   }
 
-  private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords): Sequence<DayHourEvent.EwEvent> {
+  private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords): Sequence<EwPersonalEvent> {
     val affecting = with(affecting) {
       inner.getPatterns(outer.day, outer.hour).asSequence().map { pattern ->
         pattern as FlowPattern.Affecting
-      }.map { pattern -> DayHourEvent.EwEvent.StemAffecting(gmtJulDay, pattern, outer) }
+      }.map { pattern -> EwPersonalEvent.StemAffecting(gmtJulDay, pattern, outer) }
     }
 
     val stemCombined = with(stemCombined) {
       inner.getPatterns(outer.day, outer.hour).asSequence().map { pattern: FlowPattern ->
         pattern as FlowPattern.StemCombined
-      }.map { pattern -> DayHourEvent.EwEvent.StemCombined(gmtJulDay, pattern, outer) }
+      }.map { pattern -> EwPersonalEvent.StemCombined(gmtJulDay, pattern, outer) }
     }
 
     val branchCombined = with(branchCombined) {
       inner.getPatterns(outer.day, outer.hour).asSequence().map { pattern: FlowPattern ->
         pattern as FlowPattern.BranchCombined
-      }.map { pattern -> DayHourEvent.EwEvent.BranchCombined(gmtJulDay, pattern, outer) }
+      }.map { pattern -> EwPersonalEvent.BranchCombined(gmtJulDay, pattern, outer) }
     }
 
     val trilogyToFlow = with(trilogyToFlow) {
       inner.getPatterns(outer.day, outer.hour).asSequence().map { pattern: FlowPattern ->
         pattern as FlowPattern.TrilogyToFlow
-      }.map { pattern -> DayHourEvent.EwEvent.TrilogyToFlow(gmtJulDay, pattern, outer) }
+      }.map { pattern -> EwPersonalEvent.TrilogyToFlow(gmtJulDay, pattern, outer) }
     }
 
     val toFlowTrilogy = with(toFlowTrilogy) {
@@ -106,13 +107,13 @@ class DayHourSelectionService(
          */
         val flowScales = pattern.flows.map { it.first }
         flowScales.any { it == FlowScale.DAY || it == FlowScale.HOUR }
-      }.map { pattern -> DayHourEvent.EwEvent.ToFlowTrilogy(gmtJulDay, pattern, outer) }
+      }.map { pattern -> EwPersonalEvent.ToFlowTrilogy(gmtJulDay, pattern, outer) }
     }
 
     val branchOpposition = with(branchOpposition) {
       inner.getPatterns(outer.day, outer.hour).asSequence().map { pattern: FlowPattern ->
         pattern as FlowPattern.BranchOpposition
-      }.map { pattern -> DayHourEvent.EwEvent.BranchOpposition(gmtJulDay, pattern, outer) }
+      }.map { pattern -> EwPersonalEvent.BranchOpposition(gmtJulDay, pattern, outer) }
     }
 
     return sequenceOf(affecting, stemCombined, branchCombined, trilogyToFlow, toFlowTrilogy, branchOpposition).flatten()
@@ -124,7 +125,7 @@ class DayHourSelectionService(
     toGmtJulDay: GmtJulDay,
     loc: ILocation = bdnp.location,
     config: IPersonPresentConfig = PersonPresentConfig()
-  ): Sequence<DayHourEvent.EwEvent> {
+  ): Sequence<EwPersonalEvent> {
 
     val personEw = ewPersonPresentFeature.getPersonModel(bdnp, config).eightWords
     logger.debug { "本命八字 : $personEw" }
