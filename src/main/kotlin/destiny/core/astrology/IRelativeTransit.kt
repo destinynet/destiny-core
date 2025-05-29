@@ -6,9 +6,7 @@
 package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
-import destiny.core.calendar.TimeTools
 import destiny.tools.Score.Companion.toScore
-import java.time.chrono.ChronoLocalDateTime
 
 /**
  * <pre>
@@ -19,12 +17,10 @@ import java.time.chrono.ChronoLocalDateTime
 interface IRelativeTransit {
 
   /**
-   * <pre>
    * 計算兩星下一個/上一個交角。
    * 注意！angle 有方向性，如果算相刑的角度，別忘了另外算 270度
    * TODO : 目前 RelativeTransitImpl 僅支援 Planet 以及 Asteroid
    * 傳回的 Time 是 GMT julDay
-  </pre> *
    */
   fun getRelativeTransit(transitStar: Star,
                          relativeStar: Star,
@@ -98,19 +94,6 @@ interface IRelativeTransit {
 
   }
 
-
-  /**
-   * 承上 , Date Time 版本
-   * @return 傳回的 Pair , 前者為 GMT 時間，後者為角度
-   */
-  fun getNearestRelativeTransitGmtJulDay(transitStar: Star,
-                                         relativeStar: Star,
-                                         fromGmt: ChronoLocalDateTime<*>,
-                                         angles: Set<Double>,
-                                         isForward: Boolean): Pair<GmtJulDay, Double>? {
-    val gmtJulDay = TimeTools.getGmtJulDay(fromGmt)
-    return getNearestRelativeTransitGmtJulDay(transitStar, relativeStar, gmtJulDay, angles, isForward)
-  }
 
   /**
    * 找尋下一個與 [transitStar] 形成交角的資料

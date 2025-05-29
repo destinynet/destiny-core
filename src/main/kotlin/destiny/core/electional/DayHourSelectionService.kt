@@ -30,7 +30,8 @@ class DayHourSelectionService(
   private val ewPersonPresentFeature: PersonPresentFeature,
   private val ewFeature: EightWordsFeature,
   private val starPositionImpl: IStarPosition<*>,
-  private val starTransitImpl: IStarTransit
+  private val starTransitImpl: IStarTransit,
+  private val relativeTransitImpl: IRelativeTransit
 ) {
 
   fun traverse(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, ewConfig: IPersonPresentConfig = PersonPresentConfig()): Sequence<DayHourEvent> {
@@ -53,7 +54,9 @@ class DayHourSelectionService(
     }
 
     fun searchEvents(outerStars: Set<Planet>, angles: Set<Double>): Sequence<AspectData> {
-      return outerStars.asSequence().flatMap { outer ->
+
+
+      val personalEvents = outerStars.asSequence().flatMap { outer ->
         innerStars.flatMap { inner ->
           innerStarPosMap[inner]?.let { innerDeg ->
             val degrees = angles.map { it.toZodiacDegree() }.map { it + innerDeg }.toSet()
@@ -65,6 +68,7 @@ class DayHourSelectionService(
           }?: emptyList()
         }
       }
+      return personalEvents
     }
 
     return sequenceOf(
