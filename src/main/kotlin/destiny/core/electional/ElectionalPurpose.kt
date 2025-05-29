@@ -1,4 +1,4 @@
-package destiny.core.misc
+package destiny.core.electional
 
 import kotlinx.serialization.Serializable
 

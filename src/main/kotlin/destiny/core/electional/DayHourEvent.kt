@@ -1,4 +1,4 @@
-package destiny.core.misc
+package destiny.core.electional
 
 import destiny.core.FlowScale
 import destiny.core.Scale

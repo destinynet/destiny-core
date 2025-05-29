@@ -1,8 +1,9 @@
 /**
  * Created by smallufo on 2025-05-28.
  */
-package destiny.core.misc
+package destiny.core.electional
 
+import destiny.core.TimeRange
 import destiny.core.calendar.ILocation
 import destiny.tools.serializers.LocalDateSerializer
 import kotlinx.serialization.Serializable

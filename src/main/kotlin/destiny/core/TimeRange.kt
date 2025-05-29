@@ -1,4 +1,4 @@
-package destiny.core.misc
+package destiny.core
 
 import destiny.tools.serializers.LocalTimeSerializer
 import kotlinx.serialization.Serializable

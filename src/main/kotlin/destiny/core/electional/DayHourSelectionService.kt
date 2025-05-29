@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2025-05-28.
  */
-package destiny.core.misc
+package destiny.core.electional
 
 import destiny.core.FlowScale
 import destiny.core.IBirthDataNamePlace
@@ -53,13 +53,14 @@ class DayHourSelectionService(
     fun searchEvents(outerStars: Set<Planet>, angles: Set<Double>): Sequence<AspectData> {
       return outerStars.asSequence().flatMap { outer ->
         innerStars.flatMap { inner ->
-          val innerDeg: ZodiacDegree = innerStarPosMap[inner]!!
-          val degrees = angles.map { it.toZodiacDegree() }.map { it + innerDeg }.toSet()
-          starTransitImpl.getRangeTransitGmt(outer, degrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
-            val angle: Double = zDeg.getAngle(innerDeg)
-            val pattern = PointAspectPattern(listOf(outer, inner), angle, null, 0.0)
-            AspectData(pattern, null, 0.0, null, gmt)
-          }
+          innerStarPosMap[inner]?.let { innerDeg ->
+            val degrees = angles.map { it.toZodiacDegree() }.map { it + innerDeg }.toSet()
+            starTransitImpl.getRangeTransitGmt(outer, degrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
+              val angle: Double = zDeg.getAngle(innerDeg)
+              val pattern = PointAspectPattern(listOf(outer, inner), angle, null, 0.0)
+              AspectData(pattern, null, 0.0, null, gmt)
+            }
+          }?: emptyList()
         }
       }
     }
