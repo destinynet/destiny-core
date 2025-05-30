@@ -5,6 +5,7 @@ package destiny.core.electional
 
 import destiny.core.TimeRange
 import destiny.core.calendar.ILocation
+import destiny.tools.serializers.ILocationSerializer
 import destiny.tools.serializers.LocalDateSerializer
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
@@ -12,10 +13,12 @@ import java.time.LocalDate
 
 class Electional {
 
-  interface ITraversalModel {
+
+  @Serializable
+  sealed interface ITraversalModel {
     val fromDate: LocalDate
     val toDate: LocalDate
-    val loc: ILocation
+    val loc: ILocation?
   }
 
   @Serializable
@@ -24,11 +27,15 @@ class Electional {
     override val fromDate: LocalDate,
     @Serializable(with = LocalDateSerializer::class)
     override val toDate: LocalDate,
-    override val loc: ILocation
+    @Serializable(with = ILocationSerializer::class)
+    override val loc: ILocation?
   ) : ITraversalModel
 
 
-  interface IRequestModel : ITraversalModel {
+  /**
+   * focus on 日、時 的擇日
+   */
+  interface IDayHourModel : ITraversalModel {
     val topN: Int
     val purpose: ElectionalPurpose
     val filterOutHour: Boolean
@@ -36,13 +43,16 @@ class Electional {
     val notes: String?
   }
 
+  /**
+   * focus on 日、時 的擇日
+   */
   @Serializable
-  data class RequestModel(
-    private val traversal: ITraversalModel,
+  data class DayHourModel(
+    private val traversal: TraversalModel,
     override val topN: Int,
     override val purpose: ElectionalPurpose,
     override val filterOutHour: Boolean,
     override val timeRange: TimeRange? = null,
     override val notes: String? = null,
-  ) : IRequestModel, ITraversalModel by traversal
+  ) : IDayHourModel, ITraversalModel by traversal
 }

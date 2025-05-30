@@ -1,9 +1,8 @@
 /**
  * Created by smallufo on 2024-10-30.
  */
-package destiny.core.astrology
+package destiny.core
 
-import destiny.core.*
 import destiny.core.calendar.locationOf
 import destiny.tools.KotlinLogging
 import destiny.tools.ai.model.Domain
@@ -22,6 +21,7 @@ class SynastryModelTest {
 
   private val json = Json {
     encodeDefaults = false
+    prettyPrint = true
     serializersModule = SerializersModule {
       contextual(IBirthDataNamePlaceSerializer)
     }

@@ -57,6 +57,12 @@ sealed class Domain(val bdnpGenerated: Boolean) {
 
   /** 合盤 */
   data object SYNASTRY : Domain(true)
+
+  /** 擇日 */
+  sealed class Electional : Domain(false) {
+    data object ELECTIONAL_YEAR_MONTH : Electional()
+    data object ELECTIONAL_DAY_HOUR : Electional()
+  }
 }
 
 fun Domain.getTitle(locale: Locale): String {
