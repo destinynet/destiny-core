@@ -18,4 +18,4 @@ data class ElectionalDayHourRequest(
   override val inner: IBirthDataNamePlace,
   @Contextual
   private val dayHourModel: Electional.IDayHourModel,
-) : IElectionalDayHourRequest, Electional.IDayHourModel by dayHourModel {}
+) : IElectionalDayHourRequest, Electional.IDayHourModel by dayHourModel
