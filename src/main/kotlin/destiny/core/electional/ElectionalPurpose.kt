@@ -15,6 +15,7 @@ enum class ElectionalPurpose {
   IMPORTANT_MEETING,      // 重要會面
   DATING,                 // 約會
   LOVE_CONFESSION,        // 告白
+  CAR_DELIVERY,           // 交車
 
   // Business
   BUSINESS_OPENING,       // 開業開市
