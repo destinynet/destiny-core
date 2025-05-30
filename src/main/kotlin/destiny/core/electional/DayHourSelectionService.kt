@@ -40,7 +40,7 @@ class DayHourSelectionService(
     val fromGmtJulDay = model.fromDate.atTime(0, 0).toGmtJulDay(model.loc)
     val toGmtJulDay = model.toDate.plusDays(1).atTime(0, 0).toGmtJulDay(model.loc)
 
-    return (searchAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay) + searchEw(bdnp, fromGmtJulDay, toGmtJulDay, model.loc, ewConfig))
+    return (searchAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay) + searchEwEvents(bdnp, fromGmtJulDay, toGmtJulDay, model.loc, ewConfig))
   }
 
   private fun searchAstrologyEvents(bdnp: IBirthDataNamePlace, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay): Sequence<AstroEvent> {
@@ -169,7 +169,7 @@ class DayHourSelectionService(
       personalAffecting, personalStemCombined, personalBranchCombined, personalTrilogyToFlow, personalToFlowTrilogy, personalBranchOpposition).flatten()
   }
 
-  private fun searchEw(
+  private fun searchEwEvents(
     bdnp: IBirthDataNamePlace,
     fromGmtJulDay: GmtJulDay,
     toGmtJulDay: GmtJulDay,
