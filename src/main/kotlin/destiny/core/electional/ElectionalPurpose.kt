@@ -22,6 +22,7 @@ enum class ElectionalPurpose {
 
   // Spiritual
   RELIGIOUS_CEREMONY,     // 宗教儀式/祭祀
+  FENGSHUI_ADJUSTMENT,    // 風水調整
 
   // General / Other
   GENERAL_GOOD_DAY,       // 平日通用吉日
