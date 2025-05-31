@@ -7,7 +7,7 @@ enum class ElectionalPurpose {
   // Personal
   MARRIAGE_REGISTRATION,  // 婚姻登記
   WEDDING_CEREMONY,       // 婚禮儀式
-  MOVING_HOUSE,           // 搬家入宅
+  MOVING_IN,              // 搬家入宅
   START_CONSTRUCTION,     // 動土裝修
   TRAVEL_START,           // 出行啟程
   MEDICAL_APPOINTMENT,    // 重要求醫/手術
