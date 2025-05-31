@@ -43,9 +43,9 @@ class ElectionalDayHourModelTest {
     val fromDate = LocalDate.of(2025, 6, 1)
     val toDate = LocalDate.of(2025, 6, 5)
     val traversalModel = Electional.TraversalModel(fromDate, toDate, loc)
-    val electionalModel = Electional.DayHourModel(traversalModel, 3, ElectionalPurpose.DATING, false)
+    val dayHourModel = Electional.DayHourModel(traversalModel, 3, ElectionalPurpose.DATING, false)
 
-    val model = ElectionalDayHourRequest(inner, electionalModel)
+    val model = ElectionalDayHourRequest(inner, dayHourModel)
 
     json.encodeToString(model).also { rawJson ->
       logger.info { "raw json = $rawJson" }
