@@ -159,6 +159,6 @@ sealed class Misc : IPlanetPattern {
         }
       }
     }
-                            }
+  }
 
 }

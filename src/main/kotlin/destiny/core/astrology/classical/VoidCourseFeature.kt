@@ -10,7 +10,6 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.Feature
-import destiny.tools.KotlinLogging
 import destiny.tools.serializers.astrology.PlanetSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -83,16 +82,11 @@ class VoidCourseFeature(private val vocMap: Map<VoidCourseImpl, IVoidCourse>,
   override val defaultConfig: VoidCourseConfig = VoidCourseConfig()
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: VoidCourseConfig): VoidCourseSpan? {
-
-    return vocMap[config.vocImpl]!!.getVoidCourse(gmtJulDay, loc, pointPosFuncMap, config.planet, config.centric)
+    return vocMap[config.vocImpl]?.getVoidCourse(gmtJulDay, loc, pointPosFuncMap, config.planet, config.centric)
   }
 
   override fun getVoidCourses(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, relativeTransitImpl: IRelativeTransit, config: VoidCourseConfig): List<VoidCourseSpan> {
-    return vocMap[config.vocImpl]!!.getVoidCourses(fromGmt, toGmt, loc, pointPosFuncMap, relativeTransitImpl, planet = config.planet)
-  }
-
-  companion object {
-    private val logger = KotlinLogging.logger { }
+    return vocMap[config.vocImpl]?.getVoidCourses(fromGmt, toGmt, loc, pointPosFuncMap, relativeTransitImpl, planet = config.planet)?: emptyList()
   }
 
 }

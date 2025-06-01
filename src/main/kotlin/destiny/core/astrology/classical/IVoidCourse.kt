@@ -94,8 +94,6 @@ sealed interface IVoidCourse : Descriptive {
 
 /**
  * The Moon does not complete an exact Ptolemaic aspect with any planet within the next 30 degrees.
- *
- * may be replaced with [VoidCourseConfig.vocImpl.Hellenistic]
  */
 class VoidCourseHellenistic(
   private val besiegedImpl: IBesieged,
@@ -154,7 +152,6 @@ class VoidCourseHellenistic(
  * 月亮先離開與 p1交角+6分之後 , VOC 開始
  * 直到碰到 p2 - (月半徑/2 + p2半徑/2) 點，就會進入 p2 交角勢力範圍 , VOC 結束
  *
- * may be replaced with [VoidCourseConfig.vocImpl.WilliamLilly]
  */
 class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
                              private val starPositionImpl: IStarPosition<*>,
@@ -222,7 +219,7 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
  *
  * 月亮(或其他)剛離開與其他星體的「準確」交角，直到進入下一個星座時，都還沒與其他星體形成準確交角
  *
- * may be replaced with [VoidCourseConfig.vocImpl.Medieval]
+ * (最常出現)
  */
 class VoidCourseMedieval(private val besiegedImpl: IBesieged,
                          private val starPositionImpl: IStarPosition<*>,
