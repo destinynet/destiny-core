@@ -25,6 +25,7 @@ class DomainTest {
     assertEquals("占星骰子", AstroDice.ASTRO_DICE_SIMPLE.getTitle(Locale.TAIWAN))
     assertEquals("占星骰子", AstroDice.ASTRO_DICE_ADVANCED.getTitle(Locale.TAIWAN))
     assertEquals("每日運勢", DAILY_HOROSCOPE.getTitle(Locale.TAIWAN))
+    assertEquals("擇日" , Electional.ELECTIONAL_DAY_HOUR.getTitle(Locale.TAIWAN))
 
 
     assertEquals("Four Pillars", EW.getTitle(Locale.ENGLISH))
@@ -36,6 +37,7 @@ class DomainTest {
     assertEquals("Feng Shui", FENGSHUI_AERIAL.getTitle(Locale.ENGLISH))
     assertEquals("塔羅占卜", TAROT.getTitle(Locale.GERMAN))
     assertEquals("Daily Horoscope", DAILY_HOROSCOPE.getTitle(Locale.ENGLISH))
+    assertEquals("Electional", Electional.ELECTIONAL_DAY_HOUR.getTitle(Locale.ENGLISH))
   }
 
 }
