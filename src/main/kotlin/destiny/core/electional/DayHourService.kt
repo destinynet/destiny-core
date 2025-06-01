@@ -36,6 +36,7 @@ class DayHourService(
   private val starTransitImpl: IStarTransit,
   private val relativeTransitImpl: IRelativeTransit,
   private val voidCourseFeature: IVoidCourseFeature,
+  private val retrogradeImpl : IRetrograde,
 ) {
 
   fun traverse(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, ewConfig: IPersonPresentConfig = PersonPresentConfig()): Sequence<DayHourEvent> {
@@ -89,11 +90,25 @@ class DayHourService(
     val vocConfig = VoidCourseConfig(MOON , vocImpl = VoidCourseImpl.Medieval)
     val moonVocSeq: Sequence<AstroEvent.MoonVoc> = voidCourseFeature.getVoidCourses(fromGmtJulDay, toGmtJulDay, loc, relativeTransitImpl, vocConfig).map { AstroEvent.MoonVoc(it) }
 
+    // 滯留
+    val planetStationaries = sequenceOf(MERCURY, VENUS, MARS, JUPITER, SATURN).flatMap { planet ->
+      retrogradeImpl.getRangeStationaries(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl).map { s ->
+        AstroEvent.PlanetStationary(s)
+      }
+    }
+
+
     return sequenceOf(
+      // 全球星體交角
       globalEvents,
+      // 全球 to 個人 , 和諧交角
       searchPersonalEvents(innerStars, harmonyAngles).map { aspectData -> AstroEvent.AspectEvent(Type.GOOD, aspectData, Impact.PERSONAL) },
+      // 全球 to 個人 , 緊張交角
       searchPersonalEvents(innerStars, tensionAngles).map { aspectData -> AstroEvent.AspectEvent(Type.BAD, aspectData, Impact.PERSONAL) },
-      moonVocSeq
+      // 月亮空亡
+      moonVocSeq,
+      // 內行星滯留
+      planetStationaries,
     ).flatten()
   }
 

@@ -152,6 +152,14 @@ interface IRetrograde {
     return Stationary(nextStationary, star, type, pos)
   }
 
+  fun getRangeStationaries(star: Star, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>): Sequence<Stationary> {
+    require(fromGmt < toGmt)
+    return generateSequence(getNextStationary(star, fromGmt, true, starPositionImpl)) { stationary: Stationary ->
+      val t = stationary.gmtJulDay + 1
+      getNextStationary(star, t, true, starPositionImpl)
+    }.takeWhile { it.gmtJulDay < toGmt }
+  }
+
   /**
    * 取得星體逆行三態 , 支援順推以及逆推
    */
@@ -326,7 +334,6 @@ interface IRetrograde {
           || span.begin < fromGmt && toGmt < span.end
       }
       .map { pair -> pair.second }
-      .toList()
   }
 
   fun getRetrogradePhase(star: Star, gmtJulDay: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): RetrogradePhase? {

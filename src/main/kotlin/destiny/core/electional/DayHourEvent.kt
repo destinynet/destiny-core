@@ -3,9 +3,11 @@ package destiny.core.electional
 import destiny.core.FlowScale
 import destiny.core.Scale
 import destiny.core.astrology.AspectData
+import destiny.core.astrology.Stationary
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.IEvent
+import destiny.core.calendar.IEventSpan
 import destiny.core.calendar.eightwords.*
 
 /**
@@ -22,7 +24,7 @@ sealed class DayHourEvent : IEvent {
 
   enum class Span {
     DAY,
-    HOUR, // 八字時辰 , unit = 2Hour
+    HOURS, // 數小時
     INSTANT
   }
 
@@ -50,7 +52,7 @@ sealed class DayHourEvent : IEvent {
       override val span: Span
         get() = when (outerScale) {
           Scale.DAY  -> Span.DAY
-          Scale.HOUR -> Span.HOUR
+          Scale.HOUR -> Span.HOURS
           else       -> throw IllegalArgumentException("impossible span")
         }
 
@@ -144,7 +146,7 @@ sealed class DayHourEvent : IEvent {
         override val span: Span = pattern.pillars.map { it.first }.max().let {
           when (it) {
             Scale.DAY               -> Span.DAY
-            Scale.HOUR              -> Span.HOUR
+            Scale.HOUR              -> Span.HOURS
             Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException(NOT_SUPPORTED)
           }
         }
@@ -155,7 +157,7 @@ sealed class DayHourEvent : IEvent {
         override val span: Span = pattern.pillars.map { it.first }.max().let {
           when (it) {
             Scale.DAY               -> Span.DAY
-            Scale.HOUR              -> Span.HOUR
+            Scale.HOUR              -> Span.HOURS
             Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException(NOT_SUPPORTED)
           }
         }
@@ -166,7 +168,7 @@ sealed class DayHourEvent : IEvent {
         override val span: Span = pattern.pillars.map { it.first }.max().let {
           when (it) {
             Scale.DAY               -> Span.DAY
-            Scale.HOUR              -> Span.HOUR
+            Scale.HOUR              -> Span.HOURS
             Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException(NOT_SUPPORTED)
           }
         }
@@ -177,7 +179,7 @@ sealed class DayHourEvent : IEvent {
         override val span: Span = pattern.pillars.map { it.first }.max().let {
           when (it) {
             Scale.DAY               -> Span.DAY
-            Scale.HOUR              -> Span.HOUR
+            Scale.HOUR              -> Span.HOURS
             Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException(NOT_SUPPORTED)
           }
         }
@@ -193,7 +195,7 @@ sealed class DayHourEvent : IEvent {
             ).max()
           ) {
             Scale.DAY               -> Span.DAY
-            Scale.HOUR              -> Span.HOUR
+            Scale.HOUR              -> Span.HOURS
             Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException(NOT_SUPPORTED)
           }
       }
@@ -206,16 +208,27 @@ sealed class DayHourEvent : IEvent {
 
   /** 占星事件 */
   sealed class AstroEvent : DayHourEvent() {
+
     /** 交角 */
     data class AspectEvent(override val type: Type, val aspectData: AspectData, override val impact: Impact) : AstroEvent() {
       override val span: Span = Span.INSTANT
       override val begin: GmtJulDay = aspectData.gmtJulDay
     }
+
     /** 月亮空亡 */
-    data class MoonVoc(val voidCourseSpan : Misc.VoidCourseSpan) : AstroEvent() {
+    data class MoonVoc(val voidCourseSpan : Misc.VoidCourseSpan) : AstroEvent() , IEventSpan {
       override val begin: GmtJulDay = voidCourseSpan.begin
+      override val end: GmtJulDay = voidCourseSpan.end
       override val type: Type = Type.BAD
-      override val span: Span = Span.HOUR
+      override val span: Span = Span.HOURS
+      override val impact: Impact = Impact.GLOBAL
+    }
+
+    /** 星體滯留 */
+    data class PlanetStationary(val stationary: Stationary ) : AstroEvent() {
+      override val begin: GmtJulDay = stationary.begin
+      override val type: Type = Type.BAD
+      override val span: Span = Span.INSTANT
       override val impact: Impact = Impact.GLOBAL
     }
   }
