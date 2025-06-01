@@ -3,6 +3,7 @@ package destiny.core.electional
 import destiny.core.FlowScale
 import destiny.core.Scale
 import destiny.core.astrology.AspectData
+import destiny.core.astrology.classical.rules.Misc
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.IEvent
 import destiny.core.calendar.eightwords.*
@@ -204,8 +205,19 @@ sealed class DayHourEvent : IEvent {
   }
 
   /** 占星事件 */
-  data class AstroEvent(override val type: Type, val aspectData: AspectData, override val impact: Impact) : DayHourEvent() {
-    override val span: Span = Span.INSTANT
-    override val begin: GmtJulDay = aspectData.gmtJulDay
+  sealed class AstroEvent : DayHourEvent() {
+    /** 交角 */
+    data class AspectEvent(override val type: Type, val aspectData: AspectData, override val impact: Impact) : AstroEvent() {
+      override val span: Span = Span.INSTANT
+      override val begin: GmtJulDay = aspectData.gmtJulDay
+    }
+    /** 月亮空亡 */
+    data class MoonVoc(val voidCourseSpan : Misc.VoidCourseSpan) : AstroEvent() {
+      override val begin: GmtJulDay = voidCourseSpan.begin
+      override val type: Type = Type.BAD
+      override val span: Span = Span.HOUR
+      override val impact: Impact = Impact.GLOBAL
+    }
   }
+
 }

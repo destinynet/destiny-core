@@ -9,6 +9,9 @@ import destiny.core.Scale
 import destiny.core.astrology.*
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
+import destiny.core.astrology.classical.IVoidCourseFeature
+import destiny.core.astrology.classical.VoidCourseConfig
+import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools.toGmtJulDay
@@ -26,12 +29,13 @@ import jakarta.inject.Named
 
 
 @Named
-class DayHourSelectionService(
+class DayHourService(
   private val ewPersonPresentFeature: PersonPresentFeature,
   private val ewFeature: EightWordsFeature,
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
-  private val relativeTransitImpl: IRelativeTransit
+  private val relativeTransitImpl: IRelativeTransit,
+  private val voidCourseFeature: IVoidCourseFeature,
 ) {
 
   fun traverse(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, ewConfig: IPersonPresentConfig = PersonPresentConfig()): Sequence<DayHourEvent> {
@@ -42,10 +46,10 @@ class DayHourSelectionService(
     val fromGmtJulDay = model.fromDate.atTime(0, 0).toGmtJulDay(loc)
     val toGmtJulDay = model.toDate.plusDays(1).atTime(0, 0).toGmtJulDay(loc)
 
-    return (searchAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay) + searchEwEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, ewConfig))
+    return (searchAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc) + searchEwEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, ewConfig))
   }
 
-  private fun searchAstrologyEvents(bdnp: IBirthDataNamePlace, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay): Sequence<AstroEvent> {
+  private fun searchAstrologyEvents(bdnp: IBirthDataNamePlace, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay, loc: ILocation): Sequence<AstroEvent> {
     val innerStars = setOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
 
     val harmonyAngles = setOf(0.0, 60.0, 120.0, 240.0, 300.0)
@@ -79,13 +83,17 @@ class DayHourSelectionService(
         Aspect.SQUARE, Aspect.OPPOSITION                 -> Type.BAD
         else                                             -> throw RuntimeException("Unknown aspect ${aspectData.aspect}")
       }
-      AstroEvent(type, aspectData, Impact.GLOBAL)
+      AstroEvent.AspectEvent(type, aspectData, Impact.GLOBAL)
     }
+
+    val vocConfig = VoidCourseConfig(MOON , vocImpl = VoidCourseImpl.Medieval)
+    val moonVocSeq: Sequence<AstroEvent.MoonVoc> = voidCourseFeature.getVoidCourses(fromGmtJulDay, toGmtJulDay, loc, relativeTransitImpl, vocConfig).map { AstroEvent.MoonVoc(it) }
 
     return sequenceOf(
       globalEvents,
-      searchPersonalEvents(innerStars, harmonyAngles).map { aspectData -> AstroEvent(Type.GOOD, aspectData, Impact.PERSONAL) },
-      searchPersonalEvents(innerStars, tensionAngles).map { aspectData -> AstroEvent(Type.BAD, aspectData, Impact.PERSONAL) }
+      searchPersonalEvents(innerStars, harmonyAngles).map { aspectData -> AstroEvent.AspectEvent(Type.GOOD, aspectData, Impact.PERSONAL) },
+      searchPersonalEvents(innerStars, tensionAngles).map { aspectData -> AstroEvent.AspectEvent(Type.BAD, aspectData, Impact.PERSONAL) },
+      moonVocSeq
     ).flatten()
   }
 

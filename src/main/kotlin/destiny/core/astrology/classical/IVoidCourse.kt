@@ -27,7 +27,7 @@ sealed interface IVoidCourse : Descriptive {
   fun getVoidCourses(
     fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>,
     relativeTransitImpl: IRelativeTransit, centric: Centric = Centric.GEO, planet: Planet = Planet.MOON
-  ): List<Misc.VoidCourseSpan> {
+  ): Sequence<Misc.VoidCourseSpan> {
 
     val planets = Planet.classicalSet
     val aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()
@@ -67,7 +67,7 @@ sealed interface IVoidCourse : Descriptive {
         getVoc(newGmt)?.takeIf { voc -> voc.begin in fromGmt..toGmt || voc.end in fromGmt..toGmt }
       } else
         null
-    }.toList()
+    }
   }
 
   fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, points: Set<AstroPoint>): Map<Planet, Misc.VoidCourseSpan> {

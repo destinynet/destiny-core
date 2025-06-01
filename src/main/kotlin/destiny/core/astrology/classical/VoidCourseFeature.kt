@@ -67,7 +67,7 @@ interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourseSpan?> {
       .associate { (planet, voc) -> planet to voc!! }
   }
 
-  fun getVoidCourses(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, relativeTransitImpl: IRelativeTransit, config: VoidCourseConfig): List<VoidCourseSpan>
+  fun getVoidCourses(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, relativeTransitImpl: IRelativeTransit, config: VoidCourseConfig): Sequence<VoidCourseSpan>
 }
 
 /**
@@ -85,8 +85,8 @@ class VoidCourseFeature(private val vocMap: Map<VoidCourseImpl, IVoidCourse>,
     return vocMap[config.vocImpl]?.getVoidCourse(gmtJulDay, loc, pointPosFuncMap, config.planet, config.centric)
   }
 
-  override fun getVoidCourses(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, relativeTransitImpl: IRelativeTransit, config: VoidCourseConfig): List<VoidCourseSpan> {
-    return vocMap[config.vocImpl]?.getVoidCourses(fromGmt, toGmt, loc, pointPosFuncMap, relativeTransitImpl, planet = config.planet)?: emptyList()
+  override fun getVoidCourses(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, relativeTransitImpl: IRelativeTransit, config: VoidCourseConfig): Sequence<VoidCourseSpan> {
+    return vocMap[config.vocImpl]?.getVoidCourses(fromGmt, toGmt, loc, pointPosFuncMap, relativeTransitImpl, planet = config.planet)?: emptySequence()
   }
 
 }
