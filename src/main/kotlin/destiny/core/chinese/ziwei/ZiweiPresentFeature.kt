@@ -14,7 +14,7 @@ import jakarta.inject.Named
 class ZiweiPresentFeature(private val ziweiFeature: IZiweiFeature) : AbstractCachedPersonFeature<IZiweiPresentConfig, Map<FlowType, IPlate>>() {
 
   override val defaultConfig: IZiweiPresentConfig
-    get() = ZiweiPresentConfig(ziweiFeature.defaultConfig as ZiweiConfig, GmtJulDay.nowCeiling())
+    get() = ZiweiPresentConfig(ziweiFeature.defaultConfig as ZiweiConfig, GmtJulDay.nowCeilingToNoon())
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: IZiweiPresentConfig): Map<FlowType, IPlate> {
     val plate: IPlate = ziweiFeature.getPersonModel(gmtJulDay, loc, gender, name, place, config)

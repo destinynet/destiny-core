@@ -425,4 +425,4 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
 interface IZiweiPresentConfig : IZiweiConfig , IPresentConfig
 
 data class ZiweiPresentConfig(override val ziweiConfig : ZiweiConfig = ZiweiConfig(),
-                              override var viewGmt: GmtJulDay = GmtJulDay.nowCeiling()) : IZiweiPresentConfig , IZiweiConfig by ziweiConfig
+                              override var viewGmt: GmtJulDay = GmtJulDay.nowCeilingToNoon()) : IZiweiPresentConfig, IZiweiConfig by ziweiConfig

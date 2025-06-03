@@ -22,7 +22,7 @@ import javax.cache.Cache
 
 
 @Serializable
-data class HoloFullConfig(val viewGmtJulDay: GmtJulDay = GmtJulDay.nowCeiling(),
+data class HoloFullConfig(val viewGmtJulDay: GmtJulDay = GmtJulDay.nowCeilingToNoon(),
                           val holoConfig: HoloConfig = HoloConfig()): java.io.Serializable
 
 interface IHoloFullFeature : PersonFeature<HoloFullConfig, Pair<IPoemHolo, List<HoloFullHexagram>>> {

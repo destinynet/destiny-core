@@ -152,18 +152,59 @@ interface IRetrograde {
     return Stationary(nextStationary, star, type, pos)
   }
 
+  /**
+   * 列出一段時間內，某星體的順逆過程
+   */
   fun getRangeStationaries(star: Star, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>): Sequence<Stationary> {
     require(fromGmt < toGmt)
     return generateSequence(getNextStationary(star, fromGmt, true, starPositionImpl)) { stationary: Stationary ->
-      val t = stationary.gmtJulDay + 1
+      val t = stationary.gmtJulDay + (1 / 1440.0)
       getNextStationary(star, t, true, starPositionImpl)
     }.takeWhile { it.gmtJulDay < toGmt }
   }
 
   /**
+   * 找出某日期範圍內，此星體的逆行日期 (全部 cap to GMT 零時)
+   */
+  fun getDailyRetrogrades(star: Star, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): Sequence<GmtJulDay> {
+    require(fromGmt < toGmt) { "toGmt ($toGmt) should be after fromGmt ($fromGmt)" }
+
+    val retrogradeSpans = getPeriodRetrogrades(setOf(star), fromGmt, toGmt, setOf(RETROGRADING), starPositionImpl, transit)
+    return retrogradeSpans.asSequence().flatMap { span ->
+
+      val actualStartOfRetroInQuery: GmtJulDay = if (span.begin > fromGmt) span.begin else fromGmt
+      val actualEndOfRetroInQuery = if (span.end < toGmt) span.end else toGmt
+
+      if (actualStartOfRetroInQuery.value >= actualEndOfRetroInQuery.value) {
+        return@flatMap emptySequence<GmtJulDay>()
+      }
+
+      val firstDayGmt = actualStartOfRetroInQuery.startOfDay()
+      val lastDayGmt = actualEndOfRetroInQuery.startOfDay()
+
+
+      // Generate sequence of days
+      generateSequence(firstDayGmt) { currentDayGmt ->
+        val nextDay = GmtJulDay(currentDayGmt.value + 1.0) // Next day at 00:00 UT
+
+        if (nextDay.value <= lastDayGmt.value) { // Iterate as long as nextDayStart is on or before the last day of retrograde
+          nextDay
+        } else {
+          null // End sequence
+        }
+      }.takeWhile { day ->
+        day.value < actualEndOfRetroInQuery.value // If not truncating, this ensures we stop when the *time* passes.
+        true // The generateSequence condition is sufficient
+      }
+
+    }.distinct()
+
+  }
+
+  /**
    * 取得星體逆行三態 , 支援順推以及逆推
    */
-  fun getNextStationaryCycle(star: Star, fromGmt: GmtJulDay, forward: Boolean = true, starPositionImpl: IStarPosition<*>, transit: IStarTransit): RetrogradeCycle? {
+  fun getNextStationaryCycle(star: Star, fromGmt: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit, forward: Boolean = true): RetrogradeCycle? {
     val value = getNextStationaryPosType(star, fromGmt, forward, starPositionImpl)
     return if (value == null)
       null
@@ -258,31 +299,12 @@ interface IRetrograde {
    * 取得某範圍內，此星體的順逆三態
    */
   fun getNextStationaryCycles(star: Star, fromGmt: GmtJulDay, toGmtJulDay: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): List<RetrogradeCycle> {
-    return generateSequence(getNextStationaryCycle(star, fromGmt, true, starPositionImpl, transit)) {
+    return generateSequence(getNextStationaryCycle(star, fromGmt, starPositionImpl, transit, true)) {
       val next = it.leavingGmt + 1
-      getNextStationaryCycle(star, next, true, starPositionImpl, transit)
+      getNextStationaryCycle(star, next, starPositionImpl, transit, true)
     }.takeWhile { it.preparingGmt < toGmtJulDay }
       .toList()
   }
-
-
-
-
-
-  /**
-   * 列出一段時間內，某星體的順逆過程
-   */
-  fun getPeriodStationary(star: Star, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>): List<Stationary> {
-    require(fromGmt < toGmt) {
-      "toGmt ($toGmt) should >= fromGmt($fromGmt)"
-    }
-
-    return generateSequence(getNextStationary(star, fromGmt, true, starPositionImpl)) {
-      getNextStationary(star, it.gmtJulDay + (1 / 1440.0), true, starPositionImpl)
-    }.takeWhile { it.gmtJulDay <= toGmt }
-      .toList()
-  }
-
 
   /**
    * 取得一段時間內，這些星體的順逆過程，按照時間排序
@@ -307,8 +329,8 @@ interface IRetrograde {
     }
 
     return stars.filter { it != Planet.MOON }.flatMap { star ->
-      generateSequence(getNextStationaryCycle(star, fromGmt, true, starPositionImpl, transit)) {
-        getNextStationaryCycle(star, it.leavingGmt + 1, true, starPositionImpl, transit)
+      generateSequence(getNextStationaryCycle(star, fromGmt, starPositionImpl, transit, true)) {
+        getNextStationaryCycle(star, it.leavingGmt + 1, starPositionImpl, transit, true)
       }.takeWhile {
         it.preparingGmt in fromGmt..toGmt || it.leavingGmt in fromGmt..toGmt
           || it.preparingGmt < fromGmt && toGmt < it.leavingGmt
@@ -338,13 +360,13 @@ interface IRetrograde {
 
   fun getRetrogradePhase(star: Star, gmtJulDay: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): RetrogradePhase? {
 
-    return getNextStationaryCycle(star, gmtJulDay, false, starPositionImpl, transit)?.let { prev ->
-      getNextStationaryCycle(star, gmtJulDay, true, starPositionImpl, transit)?.let { next ->
+    return getNextStationaryCycle(star, gmtJulDay, starPositionImpl, transit, false)?.let { prev ->
+      getNextStationaryCycle(star, gmtJulDay, starPositionImpl, transit, true)?.let { next ->
         when (gmtJulDay) {
           in prev.preparingGmt..prev.retrogradingGmt -> PREPARING
           in next.preparingGmt..next.retrogradingGmt -> PREPARING
           in prev.retrogradingGmt..prev.returningGmt -> RETROGRADING
-          in next.retrogradingGmt..next.returningGmt -> PREPARING
+          in next.retrogradingGmt..next.returningGmt -> RETROGRADING
           in prev.returningGmt..prev.leavingGmt      -> LEAVING
           in next.returningGmt..next.leavingGmt      -> LEAVING
           else                                       -> null
