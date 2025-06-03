@@ -176,27 +176,26 @@ interface IRetrograde {
       val actualEndOfRetroInQuery = if (span.end < toGmt) span.end else toGmt
 
       if (actualStartOfRetroInQuery.value >= actualEndOfRetroInQuery.value) {
-        return@flatMap emptySequence<GmtJulDay>()
-      }
+        emptySequence()
+      } else {
+        val firstDayGmt = actualStartOfRetroInQuery.startOfDay()
+        val lastDayGmt = actualEndOfRetroInQuery.startOfDay()
 
-      val firstDayGmt = actualStartOfRetroInQuery.startOfDay()
-      val lastDayGmt = actualEndOfRetroInQuery.startOfDay()
 
+        // Generate sequence of days
+        generateSequence(firstDayGmt) { currentDayGmt ->
+          val nextDay = GmtJulDay(currentDayGmt.value + 1.0) // Next day at 00:00 UT
 
-      // Generate sequence of days
-      generateSequence(firstDayGmt) { currentDayGmt ->
-        val nextDay = GmtJulDay(currentDayGmt.value + 1.0) // Next day at 00:00 UT
-
-        if (nextDay.value <= lastDayGmt.value) { // Iterate as long as nextDayStart is on or before the last day of retrograde
-          nextDay
-        } else {
-          null // End sequence
+          if (nextDay.value <= lastDayGmt.value) { // Iterate as long as nextDayStart is on or before the last day of retrograde
+            nextDay
+          } else {
+            null // End sequence
+          }
+        }.takeWhile { day ->
+          day.value < actualEndOfRetroInQuery.value // If not truncating, this ensures we stop when the *time* passes.
+          true // The generateSequence condition is sufficient
         }
-      }.takeWhile { day ->
-        day.value < actualEndOfRetroInQuery.value // If not truncating, this ensures we stop when the *time* passes.
-        true // The generateSequence condition is sufficient
       }
-
     }.distinct()
 
   }
