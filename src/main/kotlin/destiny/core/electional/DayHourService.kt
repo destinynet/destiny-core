@@ -97,6 +97,14 @@ class DayHourService(
       }
     }
 
+    // 星體當日逆行
+    val planetRetrogrades = sequenceOf(MERCURY, VENUS, MARS, JUPITER, SATURN).flatMap { planet ->
+      retrogradeImpl.getDailyRetrogrades(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl, starTransitImpl).map { (gmtJulDay,progress) ->
+        AstroEvent.PlanetRetrograde(planet, gmtJulDay, progress)
+      }
+    }
+
+
 
     return sequenceOf(
       // 全球星體交角
@@ -109,6 +117,8 @@ class DayHourService(
       moonVocSeq,
       // 內行星滯留
       planetStationaries,
+      // 星體當日逆行
+      planetRetrogrades,
     ).flatten()
   }
 

@@ -3,6 +3,7 @@ package destiny.core.electional
 import destiny.core.FlowScale
 import destiny.core.Scale
 import destiny.core.astrology.AspectData
+import destiny.core.astrology.Planet
 import destiny.core.astrology.Stationary
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.calendar.GmtJulDay
@@ -63,8 +64,9 @@ sealed class DayHourEvent : IEvent {
         override val hourRelated: Boolean = pattern.scale == Scale.HOUR
         override val type: Type
           get() = when (pattern.reacting) {
-            Reacting.SAME, Reacting.PRODUCED                         -> Type.GOOD
-            Reacting.BEATEN, Reacting.PRODUCING, Reacting.DOMINATING -> Type.BAD
+            Reacting.SAME, Reacting.PRODUCED        -> Type.GOOD
+            Reacting.BEATEN                         -> Type.BAD
+            Reacting.PRODUCING, Reacting.DOMINATING -> Type.CAUTION
           }
       }
 
@@ -230,6 +232,15 @@ sealed class DayHourEvent : IEvent {
       override val begin: GmtJulDay = stationary.begin
       override val type: Type = Type.CAUTION
       override val span: Span = Span.INSTANT
+      override val impact: Impact = Impact.GLOBAL
+    }
+
+    /**
+     * 當日星體逆行
+     */
+    data class PlanetRetrograde(val planet: Planet, override val begin: GmtJulDay, val progress: Double) : AstroEvent() {
+      override val type: Type = Type.BAD
+      override val span: Span = Span.DAY
       override val impact: Impact = Impact.GLOBAL
     }
   }

@@ -164,14 +164,13 @@ interface IRetrograde {
   }
 
   /**
-   * 找出某日期範圍內，此星體的逆行日期 (全部 cap to GMT 零時)
+   * 找出某日期範圍內，此星體的逆行日期 (全部 cap to GMT 零時) , 以及進度 (0 to 1)
    */
-  fun getDailyRetrogrades(star: Star, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): Sequence<GmtJulDay> {
+  fun getDailyRetrogrades(star: Star, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): Sequence<Pair<GmtJulDay, Double>> {
     require(fromGmt < toGmt) { "toGmt ($toGmt) should be after fromGmt ($fromGmt)" }
 
     val retrogradeSpans = getPeriodRetrogrades(setOf(star), fromGmt, toGmt, setOf(RETROGRADING), starPositionImpl, transit)
     return retrogradeSpans.asSequence().flatMap { span ->
-
       val actualStartOfRetroInQuery: GmtJulDay = if (span.begin > fromGmt) span.begin else fromGmt
       val actualEndOfRetroInQuery = if (span.end < toGmt) span.end else toGmt
 
@@ -181,23 +180,34 @@ interface IRetrograde {
         val firstDayGmt = actualStartOfRetroInQuery.startOfDay()
         val lastDayGmt = actualEndOfRetroInQuery.startOfDay()
 
+        val totalSpanDuration = span.end.value - span.begin.value
 
-        // Generate sequence of days
-        generateSequence(firstDayGmt) { currentDayGmt ->
-          val nextDay = GmtJulDay(currentDayGmt.value + 1.0) // Next day at 00:00 UT
-
-          if (nextDay.value <= lastDayGmt.value) { // Iterate as long as nextDayStart is on or before the last day of retrograde
-            nextDay
+        generateSequence(firstDayGmt) { currentDay -> // currentDay is the start of the day (00:00 UT)
+          val nextCandidateDay = GmtJulDay(currentDay.value + 1.0)
+          if (nextCandidateDay.value <= lastDayGmt.value) {
+            nextCandidateDay
           } else {
-            null // End sequence
+            null
           }
-        }.takeWhile { day ->
-          day.value < actualEndOfRetroInQuery.value // If not truncating, this ensures we stop when the *time* passes.
-          true // The generateSequence condition is sufficient
         }
+          .map { dayGmt ->
+            val endOfCurrentDayGmtValue = dayGmt.value + 1.0
+
+            val progressCalculationPointValue = minOf(endOfCurrentDayGmtValue, span.end.value)
+
+            // Elapsed duration from the true start of the span to our calculation point.
+            val elapsedDuration = progressCalculationPointValue - span.begin.value
+
+            // Calculate progress percentage
+            val progress = if (elapsedDuration <= 0) { // Handles cases where dayGmt is before or exactly at span.begin
+              0.0
+            } else {
+              (elapsedDuration / totalSpanDuration).coerceIn(0.0, 1.0)
+            }
+            Pair(dayGmt, progress)
+          }
       }
     }.distinct()
-
   }
 
   /**
