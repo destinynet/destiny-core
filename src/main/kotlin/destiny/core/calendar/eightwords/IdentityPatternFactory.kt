@@ -106,11 +106,12 @@ object IdentityPatterns {
    */
   val auspiciousDay = object : IdentityPatternFactory {
     override fun IEightWords.getPatterns(): Set<AuspiciousDay> {
+      val monthBranch = this@getPatterns.month.branch
       return buildSet {
 
         // 天赦日
         run {
-          val applied = when (this@getPatterns.month.branch) {
+          val applied = when (monthBranch) {
             in listOf(寅, 卯, 辰) -> this@getPatterns.day == StemBranch.戊寅
             in listOf(巳, 午, 未) -> this@getPatterns.day == StemBranch.甲午
             in listOf(申, 酉, 戌) -> this@getPatterns.day == StemBranch.戊申
@@ -118,7 +119,7 @@ object IdentityPatterns {
             else                  -> false
           }
           if (applied) {
-            add(AuspiciousDay("天赦日"))
+            add(AuspiciousDay(Auspicious.天赦日))
           }
         }
 
@@ -128,7 +129,7 @@ object IdentityPatterns {
           // 青龍、明堂、天刑、朱雀、金匱、天德、白虎、玉堂、天牢、玄武、司命、勾陳
           val YU_TANG_OFFSET = 7 // 玉堂在青龍之後的偏移量 (8 - 1)
           // 確定青龍起始日地支
-          val qingLongStartBranch = when (this@getPatterns.month.branch) {
+          val qingLongStartBranch = when (monthBranch) {
             寅, 申 -> 子
             卯, 酉 -> 寅
             辰, 戌 -> 辰
@@ -139,7 +140,42 @@ object IdentityPatterns {
           // 2. 計算玉堂日的地支
           val expectedYuTangBranch = qingLongStartBranch.next(YU_TANG_OFFSET)
           if (this@getPatterns.day.branch == expectedYuTangBranch) {
-            add (AuspiciousDay("玉堂日"))
+            add (AuspiciousDay(Auspicious.玉堂日))
+          }
+        }
+
+        // 月德貴人
+        // 口訣：寅午戌月在丙，申子辰月在壬，亥卯未月在甲，巳酉丑月在庚。
+        run {
+          val expectedDayStem = when(monthBranch) {
+            寅, 午, 戌 -> Stem.丙
+            申, 子, 辰 -> Stem.壬
+            亥, 卯, 未 -> Stem.甲
+            巳, 酉, 丑 -> Stem.庚
+          }
+          if (expectedDayStem == this@getPatterns.day.stem) {
+            add(AuspiciousDay(Auspicious.月德貴人))
+          }
+        }
+
+        // 天德合
+        run {
+          val tianDeStemForMonth: Stem? = when (monthBranch) {
+            寅   -> Stem.丁
+            辰   -> Stem.壬
+            巳   -> Stem.辛
+            未   -> Stem.甲
+            申   -> Stem.癸
+            戌   -> Stem.丙
+            亥   -> Stem.乙
+            丑   -> Stem.庚
+            else -> null
+          }
+
+          tianDeStemForMonth?.combined?.first?.also {
+            if (it == this@getPatterns.day.stem) {
+              add(AuspiciousDay(Auspicious.天德合))
+            }
           }
         }
       }

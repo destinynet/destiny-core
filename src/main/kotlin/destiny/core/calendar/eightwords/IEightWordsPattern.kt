@@ -20,6 +20,16 @@ enum class Reacting {
   BEATEN
 }
 
+enum class Auspicious {
+  天赦日 , 玉堂日,
+  月德貴人,
+  天德合,
+}
+
+enum class Inauspicious {
+
+}
+
 sealed class IdentityPattern : IEightWordsPattern {
   data class StemCombined(val pillars: Set<Pair<Scale, Stem>>) : IdentityPattern()
   data class BranchCombined(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
@@ -29,8 +39,11 @@ sealed class IdentityPattern : IEightWordsPattern {
   /** 天干通根 */
   data class StemRooted(val scale: Scale, val stem: Stem, val roots: Set<Pair<Scale, Branch>>) : IdentityPattern()
 
-  /** 吉祥日 (天赦日, 玉堂日) */
-  data class AuspiciousDay(val name: String) : IdentityPattern()
+  /** 吉祥日 [Auspicious] */
+  data class AuspiciousDay(val value : Auspicious) : IdentityPattern()
+
+  /** 凶日 */
+  data class InauspiciousDay(val value : Inauspicious) : IdentityPattern()
 
 }
 
