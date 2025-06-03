@@ -203,6 +203,12 @@ sealed class DayHourEvent : IEvent {
           }
       }
 
+      /** 吉祥日 : 天赦日 , 玉堂日 ... */
+      data class AuspiciousDay(override val begin: GmtJulDay, override val pattern : IdentityPattern.AuspiciousDay, override val outer: IEightWords) : EwGlobalEvent() {
+        override val type: Type = Type.GOOD
+        override val span: Span = Span.DAY
+      }
+
       companion object {
         private const val NOT_SUPPORTED = "not supported"
       }

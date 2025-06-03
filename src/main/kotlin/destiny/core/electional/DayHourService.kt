@@ -156,6 +156,11 @@ class DayHourService(
         .map { p -> EwEvent.EwGlobalEvent.StemRooted(gmtJulDay, p, outer) }
     }
 
+    val auspiciousDays = with(IdentityPatterns.auspiciousDay) {
+      outer.getPatterns().asSequence().filterIsInstance<IdentityPattern.AuspiciousDay>()
+        .map { p -> EwEvent.EwGlobalEvent.AuspiciousDay(gmtJulDay, p, outer) }
+    }
+
     val personalAffecting: Sequence<EwEvent.EwPersonalEvent.StemAffecting> = with(affecting) {
       inner.getPatterns(outer.day, outer.hour).asSequence().map { pattern ->
         pattern as FlowPattern.Affecting
@@ -200,7 +205,7 @@ class DayHourService(
     }
 
     return sequenceOf(
-      globalStemCombined, globalBranchCombined, globalTrilogy, globalBranchOpposition, globalStemRooted,
+      globalStemCombined, globalBranchCombined, globalTrilogy, globalBranchOpposition, globalStemRooted, auspiciousDays,
       personalAffecting, personalStemCombined, personalBranchCombined, personalTrilogyToFlow, personalToFlowTrilogy, personalBranchOpposition).flatten()
   }
 

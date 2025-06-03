@@ -28,6 +28,10 @@ sealed class IdentityPattern : IEightWordsPattern {
   data class BranchOpposition(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
   /** 天干通根 */
   data class StemRooted(val scale: Scale, val stem: Stem, val roots: Set<Pair<Scale, Branch>>) : IdentityPattern()
+
+  /** 吉祥日 (天赦日, 玉堂日) */
+  data class AuspiciousDay(val name: String) : IdentityPattern()
+
 }
 
 sealed class FlowPattern : IEightWordsPattern {

@@ -10,12 +10,10 @@ import destiny.core.calendar.eightwords.IdentityPatterns.branchCombined
 import destiny.core.calendar.eightwords.IdentityPatterns.branchOpposition
 import destiny.core.calendar.eightwords.IdentityPatterns.stemCombined
 import destiny.core.calendar.eightwords.IdentityPatterns.stemRooted
-import destiny.core.chinese.Branch
-import destiny.core.chinese.IStemBranch
-import destiny.core.chinese.Stem
+import destiny.core.chinese.*
+import destiny.core.chinese.Branch.*
 import destiny.core.chinese.eightwords.HiddenStemsStandardImpl
 import destiny.core.chinese.eightwords.IHiddenStems
-import destiny.core.chinese.trilogy
 
 interface IdentityPatternFactory {
   fun IEightWords.getPatterns(): Set<IdentityPattern>
@@ -102,6 +100,52 @@ object IdentityPatterns {
         .toSet()
     }
   }
+
+  /**
+   * 吉祥日 (天赦日、玉堂日 ...）
+   */
+  val auspiciousDay = object : IdentityPatternFactory {
+    override fun IEightWords.getPatterns(): Set<AuspiciousDay> {
+      return buildSet {
+
+        // 天赦日
+        run {
+          val applied = when (this@getPatterns.month.branch) {
+            in listOf(寅, 卯, 辰) -> this@getPatterns.day == StemBranch.戊寅
+            in listOf(巳, 午, 未) -> this@getPatterns.day == StemBranch.甲午
+            in listOf(申, 酉, 戌) -> this@getPatterns.day == StemBranch.戊申
+            in listOf(亥, 子, 丑) -> this@getPatterns.day == StemBranch.甲子
+            else                  -> false
+          }
+          if (applied) {
+            add(AuspiciousDay("天赦日"))
+          }
+        }
+
+        // 玉堂日
+        run {
+          // 黃道十二神煞順序 (玉堂是第8個，索引為7)
+          // 青龍、明堂、天刑、朱雀、金匱、天德、白虎、玉堂、天牢、玄武、司命、勾陳
+          val YU_TANG_OFFSET = 7 // 玉堂在青龍之後的偏移量 (8 - 1)
+          // 確定青龍起始日地支
+          val qingLongStartBranch = when (this@getPatterns.month.branch) {
+            寅, 申 -> 子
+            卯, 酉 -> 寅
+            辰, 戌 -> 辰
+            巳, 亥 -> 午
+            子, 午 -> 申
+            丑, 未 -> 戌
+          }
+          // 2. 計算玉堂日的地支
+          val expectedYuTangBranch = qingLongStartBranch.next(YU_TANG_OFFSET)
+          if (this@getPatterns.day.branch == expectedYuTangBranch) {
+            add (AuspiciousDay("玉堂日"))
+          }
+        }
+      }
+    }
+  }
+
 
 }
 
