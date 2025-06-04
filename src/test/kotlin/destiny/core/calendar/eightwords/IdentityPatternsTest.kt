@@ -259,6 +259,47 @@ class IdentityPatternsTest {
         }
       }
     }
+
+    @Nested
+    inner class 天乙貴人Test{
+
+      @Test
+      fun 日柱() {
+        val ew = EightWords(甲子, 己丑, 丁酉, 戊寅) // 丁酉 自坐天乙貴人
+        with(auspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.AuspiciousPattern(Auspicious.天乙貴人, setOf(DAY)))
+            }
+          }
+        }
+      }
+
+      @Test
+      fun 月柱() {
+        val ew = EightWords(甲子, 己丑, 甲申, 戊寅) // 甲日，月柱有丑
+        // 應該包含天乙貴人在月柱
+        with(auspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.AuspiciousPattern(Auspicious.天乙貴人, setOf(MONTH)))
+            }
+          }
+        }
+      }
+
+      @Test
+      fun 年柱_時柱() {
+        val ew = EightWords(乙亥, 己卯, 丙申, 辛酉) // 丙日，年柱有亥，時柱有酉
+        with(auspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.AuspiciousPattern(Auspicious.天乙貴人, setOf(YEAR, HOUR)))
+            }
+          }
+        }
+      }
+    }
   }
 
 

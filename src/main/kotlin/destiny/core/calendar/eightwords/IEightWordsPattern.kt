@@ -26,6 +26,7 @@ enum class Auspicious(val scales : Set<Scale> = emptySet()) {
   天德貴人(Scale.entries.toSet()),
   月德貴人(setOf(Scale.DAY , Scale.HOUR)),
   天德合(Scale.entries.toSet()),
+  天乙貴人(Scale.entries.toSet()),
 }
 
 enum class Inauspicious(val scales: Set<Scale> = emptySet()) {

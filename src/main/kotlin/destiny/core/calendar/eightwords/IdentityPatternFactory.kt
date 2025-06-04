@@ -19,6 +19,7 @@ import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch.*
 import destiny.core.chinese.eightwords.HiddenStemsStandardImpl
 import destiny.core.chinese.eightwords.IHiddenStems
+import destiny.core.chinese.impls.TianyiAuthorizedImpl
 import destiny.core.chinese.impls.YangBladeRobCashImpl
 import destiny.core.chinese.trilogy
 
@@ -91,27 +92,27 @@ object IdentityPatterns {
     @Suppress("UNCHECKED_CAST")
     override fun IEightWords.getPatterns(): Set<StemRooted> {
       return Sets.cartesianProduct(
-        getScaleMap().map { (scale, sb) -> scale to sb.stem  }.toSet(),
-        getScaleMap ().map { (scale, sb) -> scale to sb.branch  }.toSet()
-      ).asSequence().filter { (stemPair , branchPair: Pair<Scale, Enum<*>>) ->
-        val stem  = stemPair.second as Stem
+        getScaleMap().map { (scale, sb) -> scale to sb.stem }.toSet(),
+        getScaleMap().map { (scale, sb) -> scale to sb.branch }.toSet()
+      ).asSequence().filter { (stemPair, branchPair: Pair<Scale, Enum<*>>) ->
+        val stem = stemPair.second as Stem
         val branch = branchPair.second as Branch
         hidImpl.getHiddenStems(branch).contains(stem)
       }.map { (stemPair, branchPair: Pair<Scale, Enum<*>>) -> (stemPair as Pair<Scale, Stem>) to (branchPair as Pair<Scale, Branch>) }
-        .groupBy ({ (stemPair, _) -> stemPair } , {(_ , branchPair) -> branchPair})
+        .groupBy({ (stemPair, _) -> stemPair }, { (_, branchPair) -> branchPair })
         .map { (stemPair: Pair<Scale, Stem>, branchPairs: List<Pair<Scale, Branch>>) ->
           val scale = stemPair.first
           val stem = stemPair.second
-          StemRooted(scale , stem , branchPairs.toSet())
+          StemRooted(scale, stem, branchPairs.toSet())
         }
         .toSet()
     }
   }
 
   /**
-   * 吉祥日 (天赦日、玉堂日 ...）
+   * 吉祥 (天赦日、玉堂日 ...）
    */
-    val auspiciousPattern = object : IdentityPatternFactory {
+  val auspiciousPattern = object : IdentityPatternFactory {
     override fun IEightWords.getPatterns(): Set<AuspiciousPattern> {
       val monthBranch = this@getPatterns.month.branch
       val day = this@getPatterns.day
@@ -119,20 +120,20 @@ object IdentityPatterns {
       val dayBranch = this@getPatterns.day.branch
 
       // 正月生者見丁，二月生者見申，三月生者見壬，四月生者見辛，五月生者見亥，六月生者見甲， 七月生者見癸，八月生者見寅， 九月生者見丙，十月生者見乙，十一隻主者見已，十二月生者見庚
-      fun Branch.天德() : Either<Stem , Branch> {
+      fun Branch.天德(): Either<Stem, Branch> {
         return when (this) {
-          寅   -> Either.Left(丁)
-          卯   -> Either.Right(申)
-          辰   -> Either.Left(壬)
-          巳   -> Either.Left(辛)
-          午   -> Either.Right(亥)
-          未   -> Either.Left(甲)
-          申   -> Either.Left(癸)
-          酉   -> Either.Right(寅)
-          戌   -> Either.Left(丙)
-          亥   -> Either.Left(乙)
-          丑   -> Either.Left(庚)
-          子   -> Either.Right(子)
+          寅 -> Either.Left(丁)
+          卯 -> Either.Right(申)
+          辰 -> Either.Left(壬)
+          巳 -> Either.Left(辛)
+          午 -> Either.Right(亥)
+          未 -> Either.Left(甲)
+          申 -> Either.Left(癸)
+          酉 -> Either.Right(寅)
+          戌 -> Either.Left(丙)
+          亥 -> Either.Left(乙)
+          丑 -> Either.Left(庚)
+          子 -> Either.Right(子)
         }
       }
 
@@ -170,18 +171,19 @@ object IdentityPatterns {
           // 2. 計算玉堂日的地支
           val expectedYuTangBranch = qingLongStartBranch.next(YU_TANG_OFFSET)
           if (dayBranch == expectedYuTangBranch) {
-            add (AuspiciousPattern(Auspicious.玉堂日, setOf(Scale.DAY)))
+            add(AuspiciousPattern(Auspicious.玉堂日, setOf(Scale.DAY)))
           }
         }
 
         // 天德貴人
         run {
           when (val tianDe = monthBranch.天德()) {
-            is Either.Left -> {
+            is Either.Left  -> {
               this@getPatterns.getScaleMap().filter { (_, stemBranch) ->
                 tianDe.value == stemBranch.stem
               }.map { (scale, _) -> scale }
             }
+
             is Either.Right -> {
               this@getPatterns.getScaleMap().filter { (_, stemBranch) ->
                 tianDe.value == stemBranch.branch
@@ -195,30 +197,31 @@ object IdentityPatterns {
         // 月德貴人
         run {
           // 口訣：寅午戌月在丙，申子辰月在壬，亥卯未月在甲，巳酉丑月在庚。
-          val expectedDayStem = when(monthBranch) {
+          val expectedDayStem = when (monthBranch) {
             寅, 午, 戌 -> 丙
             申, 子, 辰 -> 壬
             亥, 卯, 未 -> 甲
             巳, 酉, 丑 -> 庚
           }
 
-          this@getPatterns.getScaleMap().filter { (scale , stemBranch)  ->
-            scale in setOf(Scale.DAY , Scale.HOUR) && stemBranch.stem == expectedDayStem
+          this@getPatterns.getScaleMap().filter { (scale, stemBranch) ->
+            scale in setOf(Scale.DAY, Scale.HOUR) && stemBranch.stem == expectedDayStem
           }.map { (scale, _) -> scale }
             .toSet()
             .takeIf { it.isNotEmpty() }
-            ?.also { add(AuspiciousPattern(Auspicious.月德貴人 , it)) }
+            ?.also { add(AuspiciousPattern(Auspicious.月德貴人, it)) }
         }
 
         // 天德合
         run {
-          when(val tianDe = monthBranch.天德()) {
-            is Either.Left -> {
+          when (val tianDe = monthBranch.天德()) {
+            is Either.Left  -> {
               val tianDeCombined = tianDe.value.combined.first
-              this@getPatterns.getScaleMap().filter { (_ , stemBranch) ->
+              this@getPatterns.getScaleMap().filter { (_, stemBranch) ->
                 stemBranch.stem == tianDeCombined
               }.map { (scale, _) -> scale }
             }
+
             is Either.Right -> {
               emptySet()
             }
@@ -226,12 +229,30 @@ object IdentityPatterns {
             .takeIf { it.isNotEmpty() }
             ?.also { add(AuspiciousPattern(Auspicious.天德合, it)) }
         }
+
+        // 天乙貴人
+        run {
+          // 以 Authorized 為主
+          val tianyiImpl = TianyiAuthorizedImpl()
+          val tianyiBranches = tianyiImpl.getTianyis(this@getPatterns.day.stem)
+
+          this@getPatterns.getScaleMap()
+            .filter { (_, stemBranch) ->
+              stemBranch.branch in tianyiBranches
+            }
+            .map { (scale, _) -> scale }
+            .toSet()
+            .takeIf { it.isNotEmpty() }
+            ?.also {
+              add(AuspiciousPattern(Auspicious.天乙貴人, it))
+            }
+        }
       }
     }
   }
 
   /**
-   * 不祥日
+   * 不祥
    */
   val inauspiciousPattern = object : IdentityPatternFactory {
     override fun IEightWords.getPatterns(): Set<InauspiciousPattern> {
