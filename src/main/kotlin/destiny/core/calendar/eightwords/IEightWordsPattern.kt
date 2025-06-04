@@ -28,9 +28,10 @@ enum class Auspicious(val scales : Set<Scale> = emptySet()) {
   天德合(Scale.entries.toSet()),
 }
 
-enum class Inauspicious {
-  受死日,
-  陰差陽錯,
+enum class Inauspicious(val scales: Set<Scale> = emptySet()) {
+  受死日(setOf(Scale.DAY)),
+  // 月 to 日為主 , 月、時次之 , 年再次之
+  陰差陽錯(Scale.entries.toSet()),
 }
 
 sealed class IdentityPattern : IEightWordsPattern {
@@ -42,7 +43,7 @@ sealed class IdentityPattern : IEightWordsPattern {
   /** 天干通根 */
   data class StemRooted(val scale: Scale, val stem: Stem, val roots: Set<Pair<Scale, Branch>>) : IdentityPattern()
 
-  /** 吉祥日 [Auspicious] */
+  /** 吉祥 [Auspicious] */
   data class AuspiciousPattern(val value : Auspicious, val scales: Set<Scale> = emptySet()) : IdentityPattern() {
     init {
       require(value.scales.containsAll(scales)) {
@@ -51,8 +52,14 @@ sealed class IdentityPattern : IEightWordsPattern {
     }
   }
 
-  /** 不祥日 [Inauspicious] */
-  data class InauspiciousDay(val value : Inauspicious) : IdentityPattern()
+  /** 不祥 [Inauspicious] */
+  data class InauspiciousPattern(val value : Inauspicious, val scales: Set<Scale> = emptySet()) : IdentityPattern() {
+    init {
+      require(value.scales.containsAll(scales)) {
+        "Invalid scales $scales for ${value.name}, only allowed: ${value.scales}"
+      }
+    }
+  }
 
 }
 

@@ -169,7 +169,7 @@ object IdentityPatterns {
           // 2. 計算玉堂日的地支
           val expectedYuTangBranch = qingLongStartBranch.next(YU_TANG_OFFSET)
           if (dayBranch == expectedYuTangBranch) {
-            add (AuspiciousPattern(Auspicious.玉堂日))
+            add (AuspiciousPattern(Auspicious.玉堂日, setOf(Scale.DAY)))
           }
         }
 
@@ -232,8 +232,8 @@ object IdentityPatterns {
   /**
    * 不祥日
    */
-  val inauspiciousDay = object : IdentityPatternFactory {
-    override fun IEightWords.getPatterns(): Set<InauspiciousDay> {
+  val inauspiciousPattern = object : IdentityPatternFactory {
+    override fun IEightWords.getPatterns(): Set<InauspiciousPattern> {
       val monthBranch = this@getPatterns.month.branch
       val day = this@getPatterns.day
       val dayStem = this@getPatterns.day.stem
@@ -297,15 +297,22 @@ object IdentityPatterns {
             丑 -> 酉
           }
           if (dayBranch == expectedBranch) {
-            add(InauspiciousDay(Inauspicious.受死日))
+            add(InauspiciousPattern(Inauspicious.受死日, setOf(Scale.DAY)))
           }
         }
 
         // 陰差陽錯日
         run {
-          if (setOf(丙子, 丙午, 丁丑, 丁未, 戊寅, 戊申, 辛卯, 辛酉, 壬辰, 壬戌, 癸巳, 癸亥).contains(day)) {
-            add(InauspiciousDay(Inauspicious.陰差陽錯))
-          }
+          this@getPatterns.getScaleMap().filter { (_, stemBranch: IStemBranch) ->
+            setOf(丙子, 丙午, 丁丑, 丁未, 戊寅, 戊申, 辛卯, 辛酉, 壬辰, 壬戌, 癸巳, 癸亥).any {
+              it.stem == stemBranch.stem && it.branch == stemBranch.branch
+            }
+          }.map { (scale, _) -> scale }
+            .toSet()
+            .takeIf { it.isNotEmpty() }
+            ?.also {
+              add(InauspiciousPattern(Inauspicious.陰差陽錯, it))
+            }
         }
       }
     }

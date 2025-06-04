@@ -165,8 +165,11 @@ class DayHourService(
         .map { p -> EwEvent.EwGlobalEvent.AuspiciousDay(gmtJulDay, p, outer) }
     }
 
-    val inauspiciousDays = with(IdentityPatterns.inauspiciousDay) {
-      outer.getPatterns().asSequence().filterIsInstance<IdentityPattern.InauspiciousDay>()
+    val inauspiciousDays = with(IdentityPatterns.inauspiciousPattern) {
+      outer.getPatterns().asSequence().filterIsInstance<IdentityPattern.InauspiciousPattern>()
+        .filter { p ->
+          p.scales.contains(Scale.DAY) && !p.scales.contains(Scale.HOUR) // 找日柱、過濾掉時柱
+        }
         .map { p -> EwEvent.EwGlobalEvent.InauspiciousDay(gmtJulDay, p, outer) }
     }
 

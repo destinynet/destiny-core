@@ -210,7 +210,7 @@ sealed class DayHourEvent : IEvent {
       }
 
       /** 不祥日 */
-      data class InauspiciousDay(override val begin: GmtJulDay, override val pattern: IdentityPattern.InauspiciousDay, override val outer: IEightWords) : EwGlobalEvent() {
+      data class InauspiciousDay(override val begin: GmtJulDay, override val pattern: IdentityPattern.InauspiciousPattern, override val outer: IEightWords) : EwGlobalEvent() {
         override val type: Type = Type.BAD
         override val span: Span = Span.DAY
       }
