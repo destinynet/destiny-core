@@ -32,6 +32,9 @@ enum class Inauspicious(val scales: Set<Scale> = emptySet()) {
   受死日(setOf(Scale.DAY)),
   // 月 to 日為主 , 月、時次之 , 年再次之
   陰差陽錯(Scale.entries.toSet()),
+  十惡大敗(Scale.entries.toSet()),
+  四廢日(setOf(Scale.DAY)),
+  羊刃(Scale.entries.toSet()),
 }
 
 sealed class IdentityPattern : IEightWordsPattern {

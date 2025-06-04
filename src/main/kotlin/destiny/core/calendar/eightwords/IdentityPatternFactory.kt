@@ -19,6 +19,7 @@ import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch.*
 import destiny.core.chinese.eightwords.HiddenStemsStandardImpl
 import destiny.core.chinese.eightwords.IHiddenStems
+import destiny.core.chinese.impls.YangBladeRobCashImpl
 import destiny.core.chinese.trilogy
 
 interface IdentityPatternFactory {
@@ -312,6 +313,61 @@ object IdentityPatterns {
             .takeIf { it.isNotEmpty() }
             ?.also {
               add(InauspiciousPattern(Inauspicious.陰差陽錯, it))
+            }
+        }
+
+        // 十惡大敗
+        run {
+          val tenEvilsStemBranches = setOf(
+            甲辰, 乙巳, 丙申, 丁亥, 戊戌,
+            己丑, 庚辰, 辛巳, 壬申, 癸亥
+          )
+
+          this@getPatterns.getScaleMap()
+            .filter { (_, stemBranch: IStemBranch) ->
+              tenEvilsStemBranches.any { evilSB ->
+                evilSB.stem == stemBranch.stem && evilSB.branch == stemBranch.branch
+              }
+            }
+            .map { (scale, _) -> scale }
+            .toSet()
+            .takeIf { it.isNotEmpty() }
+            ?.also {
+              add(InauspiciousPattern(Inauspicious.十惡大敗, it))
+            }
+        }
+
+        // 四廢日
+        run {
+          val isFourWasteDay = when (monthBranch) {
+            // 春季（寅卯辰月）：庚申、辛酉日
+            寅, 卯, 辰 -> day in setOf(庚申, 辛酉)
+            // 夏季（巳午未月）：壬子、癸亥日
+            巳, 午, 未 -> day in setOf(壬子, 癸亥)
+            // 秋季（申酉戌月）：甲寅、乙卯日
+            申, 酉, 戌 -> day in setOf(甲寅, 乙卯)
+            // 冬季（亥子丑月）：丙午、丁巳日
+            亥, 子, 丑 -> day in setOf(丙午, 丁巳)
+          }
+
+          if (isFourWasteDay) {
+            add(InauspiciousPattern(Inauspicious.四廢日, setOf(Scale.DAY)))
+          }
+        }
+
+        // 羊刃
+        run {
+          // 羊刃的規則：以日干為主，查其他柱的地支
+          val yangRenBranch = YangBladeRobCashImpl.getYangBlade(this@getPatterns.day.stem)
+          this@getPatterns.getScaleMap()
+            .filter { (scale, stemBranch) ->
+              scale != Scale.DAY && stemBranch.branch == yangRenBranch
+            }
+            .map { (scale, _) -> scale }
+            .toSet()
+            .takeIf { it.isNotEmpty() }
+            ?.also {
+              add(InauspiciousPattern(Inauspicious.羊刃, it))
             }
         }
       }

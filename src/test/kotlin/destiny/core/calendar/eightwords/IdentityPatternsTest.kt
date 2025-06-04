@@ -17,6 +17,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -263,31 +264,143 @@ class IdentityPatternsTest {
 
   @Nested
   inner class InauspiciousTest {
-    /**
-     * 2025-04-08 , TUESDAY , (乙巳年 庚辰月 丁未日)
-     */
-    @Test
-    fun 日柱() {
-      val ew = EightWords(乙巳, 庚辰, 丁未, 庚子)
-      with(inauspiciousPattern) {
-        ew.getPatterns().also { patterns ->
-          assertTrue {
-            patterns.contains(IdentityPattern.InauspiciousPattern(Inauspicious.陰差陽錯, setOf(DAY)))
+
+    @Nested
+    inner class 陰差陽錯Test {
+      /**
+       * 2025-04-08 , TUESDAY , (乙巳年 庚辰月 丁未日)
+       */
+      @Test
+      fun 日柱() {
+        val ew = EightWords(乙巳, 庚辰, 丁未, 庚子)
+        with(inauspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.InauspiciousPattern(Inauspicious.陰差陽錯, setOf(DAY)))
+            }
+          }
+        }
+      }
+
+      /**
+       * 2027-07-27 , 丁未年 丁未月 丁未日 丁未時
+       */
+      @Test
+      fun 年柱_月柱_日柱_時柱() {
+        val ew = EightWords(丁未, 丁未, 丁未, 丁未)
+        with(inauspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.InauspiciousPattern(Inauspicious.陰差陽錯, setOf(YEAR, MONTH, DAY, HOUR)))
+            }
           }
         }
       }
     }
 
-    /**
-     * 2027-07-27 , 丁未年 丁未月 丁未日 丁未時
-     */
-    @Test
-    fun 年柱_月柱_日柱_時柱() {
-      val ew = EightWords(丁未, 丁未, 丁未, 丁未)
-      with(inauspiciousPattern) {
-        ew.getPatterns().also { patterns ->
-          assertTrue {
-            patterns.contains(IdentityPattern.InauspiciousPattern(Inauspicious.陰差陽錯, setOf(YEAR, MONTH, DAY, HOUR)))
+    @Nested
+    inner class 十惡大敗Test {
+
+      @Test
+      fun 年柱() {
+        val ew = EightWords(甲辰, 乙卯, 丙寅, 丁丑) // 年柱甲辰
+        with(inauspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.InauspiciousPattern(Inauspicious.十惡大敗, setOf(YEAR)))
+            }
+          }
+        }
+      }
+
+      @Test
+      fun 年柱_月柱_日柱_時柱() {
+        val ew = EightWords(甲辰, 乙巳, 丙申, 丁亥) // 四柱都是十惡大敗
+        with(inauspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.InauspiciousPattern(Inauspicious.十惡大敗, setOf(YEAR, MONTH, DAY, HOUR)))
+            }
+          }
+        }
+      }
+    }
+
+    @Nested
+    inner class 四廢日Test {
+      @Test
+      fun 四廢日_春季() {
+        val ew = EightWords(甲寅, 丁卯, 庚申, 戊寅) // 卯月庚申日
+        with(inauspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.InauspiciousPattern(Inauspicious.四廢日, setOf(DAY)))
+            }
+          }
+        }
+      }
+
+      @Test
+      fun 四廢日_夏季() {
+        val ew = EightWords(甲寅, 己巳, 壬子, 戊寅) // 巳月壬子日
+        with(inauspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.InauspiciousPattern(Inauspicious.四廢日, setOf(DAY)))
+            }
+          }
+        }
+      }
+
+      @Test
+      fun 非四廢日() {
+        val ew = EightWords(甲寅, 丁卯, 甲寅, 戊寅) // 卯月甲寅日
+        with(inauspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertFalse {
+              patterns.contains(IdentityPattern.InauspiciousPattern(Inauspicious.四廢日, setOf(DAY)))
+            }
+          }
+        }
+      }
+    }
+
+    @Nested
+    inner class 羊刃Test {
+      @Test
+      fun 甲日見卯月() {
+        val ew = EightWords(甲寅, 己卯, 甲申, 戊寅) // 甲日，月柱有卯
+        // 應該包含羊刃在月柱
+        with(inauspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.InauspiciousPattern(Inauspicious.羊刃, setOf(MONTH)))
+            }
+          }
+        }
+      }
+
+      @Test
+      fun 多柱() {
+        val ew = EightWords(乙卯, 己卯, 甲申, 乙卯) // 甲日，年月時都有卯
+        with(inauspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.InauspiciousPattern(Inauspicious.羊刃, setOf(YEAR, MONTH, HOUR)))
+            }
+          }
+        }
+      }
+
+      @Test
+      fun 丙戊見午年() {
+        val ew = EightWords(甲午, 己卯, 丙申, 戊寅) // 丙日，年柱有午
+        // 應該包含羊刃在年柱
+        with(inauspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.InauspiciousPattern(Inauspicious.羊刃, setOf(YEAR)))
+            }
           }
         }
       }
