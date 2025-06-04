@@ -21,7 +21,9 @@ enum class Reacting {
 }
 
 enum class Auspicious {
-  天赦日 , 玉堂日,
+  天赦日 ,
+  玉堂日,
+  天德貴人,
   月德貴人,
   天德合,
 }
