@@ -156,8 +156,12 @@ class DayHourService(
         .map { p -> EwEvent.EwGlobalEvent.StemRooted(gmtJulDay, p, outer) }
     }
 
-    val auspiciousDays = with(IdentityPatterns.auspiciousDay) {
-      outer.getPatterns().asSequence().filterIsInstance<IdentityPattern.AuspiciousDay>()
+    val auspiciousDays = with(IdentityPatterns.auspiciousPattern) {
+      outer.getPatterns().asSequence().filterIsInstance<IdentityPattern.AuspiciousPattern>()
+        .filter { p ->
+          //p.scales == setOf(Scale.DAY) // 只找日柱
+          p.scales.contains(Scale.DAY) && !p.scales.contains(Scale.HOUR) // 找日柱、過濾掉時柱
+        }
         .map { p -> EwEvent.EwGlobalEvent.AuspiciousDay(gmtJulDay, p, outer) }
     }
 

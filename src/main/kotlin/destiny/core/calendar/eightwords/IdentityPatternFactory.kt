@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import arrow.core.Either
 import com.google.common.collect.Sets
 import destiny.core.Scale
 import destiny.core.calendar.eightwords.IdentityPattern.*
@@ -109,26 +110,31 @@ object IdentityPatterns {
   /**
    * 吉祥日 (天赦日、玉堂日 ...）
    */
-  val auspiciousDay = object : IdentityPatternFactory {
-    override fun IEightWords.getPatterns(): Set<AuspiciousDay> {
+    val auspiciousPattern = object : IdentityPatternFactory {
+    override fun IEightWords.getPatterns(): Set<AuspiciousPattern> {
       val monthBranch = this@getPatterns.month.branch
       val day = this@getPatterns.day
       val dayStem = this@getPatterns.day.stem
       val dayBranch = this@getPatterns.day.branch
 
-      fun Branch.天德() : Stem? {
-        return when(this) {
-          寅   -> 丁
-          辰   -> 壬
-          巳   -> 辛
-          未   -> 甲
-          申   -> 癸
-          戌   -> 丙
-          亥   -> 乙
-          丑   -> 庚
-          else -> null // 卯(申), 午(亥), 酉(寅), 子(巳) 通常指該日支為天德，較少指日干
+      // 正月生者見丁，二月生者見申，三月生者見壬，四月生者見辛，五月生者見亥，六月生者見甲， 七月生者見癸，八月生者見寅， 九月生者見丙，十月生者見乙，十一隻主者見已，十二月生者見庚
+      fun Branch.天德() : Either<Stem , Branch> {
+        return when (this) {
+          寅   -> Either.Left(丁)
+          卯   -> Either.Right(申)
+          辰   -> Either.Left(壬)
+          巳   -> Either.Left(辛)
+          午   -> Either.Right(亥)
+          未   -> Either.Left(甲)
+          申   -> Either.Left(癸)
+          酉   -> Either.Right(寅)
+          戌   -> Either.Left(丙)
+          亥   -> Either.Left(乙)
+          丑   -> Either.Left(庚)
+          子   -> Either.Right(子)
         }
       }
+
 
       return buildSet {
 
@@ -142,7 +148,7 @@ object IdentityPatterns {
             else                  -> false
           }
           if (applied) {
-            add(AuspiciousDay(Auspicious.天赦日))
+            add(AuspiciousPattern(Auspicious.天赦日))
           }
         }
 
@@ -163,15 +169,26 @@ object IdentityPatterns {
           // 2. 計算玉堂日的地支
           val expectedYuTangBranch = qingLongStartBranch.next(YU_TANG_OFFSET)
           if (dayBranch == expectedYuTangBranch) {
-            add (AuspiciousDay(Auspicious.玉堂日))
+            add (AuspiciousPattern(Auspicious.玉堂日))
           }
         }
 
         // 天德貴人
         run {
-          if (monthBranch.天德() == dayStem) {
-            add(AuspiciousDay(Auspicious.天德貴人))
-          }
+          when (val tianDe = monthBranch.天德()) {
+            is Either.Left -> {
+              this@getPatterns.getScaleMap().filter { (_, stemBranch) ->
+                tianDe.value == stemBranch.stem
+              }.map { (scale, _) -> scale }
+            }
+            is Either.Right -> {
+              this@getPatterns.getScaleMap().filter { (_, stemBranch) ->
+                tianDe.value == stemBranch.branch
+              }.map { (scale, _) -> scale }
+            }
+          }.toSet()
+            .takeIf { it.isNotEmpty() }
+            ?.also { add(AuspiciousPattern(Auspicious.天德貴人, it)) }
         }
 
         // 月德貴人
@@ -183,18 +200,30 @@ object IdentityPatterns {
             亥, 卯, 未 -> 甲
             巳, 酉, 丑 -> 庚
           }
-          if (expectedDayStem == dayStem) {
-            add(AuspiciousDay(Auspicious.月德貴人))
-          }
+
+          this@getPatterns.getScaleMap().filter { (scale , stemBranch)  ->
+            scale in setOf(Scale.DAY , Scale.HOUR) && stemBranch.stem == expectedDayStem
+          }.map { (scale, _) -> scale }
+            .toSet()
+            .takeIf { it.isNotEmpty() }
+            ?.also { add(AuspiciousPattern(Auspicious.月德貴人 , it)) }
         }
 
         // 天德合
         run {
-          monthBranch.天德()?.combined?.first?.also {
-            if (it == dayStem) {
-              add(AuspiciousDay(Auspicious.天德合))
+          when(val tianDe = monthBranch.天德()) {
+            is Either.Left -> {
+              val tianDeCombined = tianDe.value.combined.first
+              this@getPatterns.getScaleMap().filter { (_ , stemBranch) ->
+                stemBranch.stem == tianDeCombined
+              }.map { (scale, _) -> scale }
             }
-          }
+            is Either.Right -> {
+              emptySet()
+            }
+          }.toSet()
+            .takeIf { it.isNotEmpty() }
+            ?.also { add(AuspiciousPattern(Auspicious.天德合, it)) }
         }
       }
     }

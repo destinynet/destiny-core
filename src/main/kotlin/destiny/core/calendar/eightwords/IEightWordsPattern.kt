@@ -20,12 +20,12 @@ enum class Reacting {
   BEATEN
 }
 
-enum class Auspicious {
-  天赦日 ,
-  玉堂日,
-  天德貴人,
-  月德貴人,
-  天德合,
+enum class Auspicious(val scales : Set<Scale> = emptySet()) {
+  天赦日(setOf(Scale.DAY)),
+  玉堂日(setOf(Scale.DAY)),
+  天德貴人(Scale.entries.toSet()),
+  月德貴人(setOf(Scale.DAY , Scale.HOUR)),
+  天德合(Scale.entries.toSet()),
 }
 
 enum class Inauspicious {
@@ -43,7 +43,7 @@ sealed class IdentityPattern : IEightWordsPattern {
   data class StemRooted(val scale: Scale, val stem: Stem, val roots: Set<Pair<Scale, Branch>>) : IdentityPattern()
 
   /** 吉祥日 [Auspicious] */
-  data class AuspiciousDay(val value : Auspicious) : IdentityPattern()
+  data class AuspiciousPattern(val value : Auspicious, val scales: Set<Scale> = emptySet()) : IdentityPattern()
 
   /** 不祥日 [Inauspicious] */
   data class InauspiciousDay(val value : Inauspicious) : IdentityPattern()
