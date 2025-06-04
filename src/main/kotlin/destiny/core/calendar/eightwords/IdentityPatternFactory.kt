@@ -10,11 +10,15 @@ import destiny.core.calendar.eightwords.IdentityPatterns.branchCombined
 import destiny.core.calendar.eightwords.IdentityPatterns.branchOpposition
 import destiny.core.calendar.eightwords.IdentityPatterns.stemCombined
 import destiny.core.calendar.eightwords.IdentityPatterns.stemRooted
-import destiny.core.chinese.*
+import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.IStemBranch
+import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
+import destiny.core.chinese.StemBranch.*
 import destiny.core.chinese.eightwords.HiddenStemsStandardImpl
 import destiny.core.chinese.eightwords.IHiddenStems
+import destiny.core.chinese.trilogy
 
 interface IdentityPatternFactory {
   fun IEightWords.getPatterns(): Set<IdentityPattern>
@@ -131,10 +135,10 @@ object IdentityPatterns {
         // 天赦日
         run {
           val applied = when (monthBranch) {
-            in listOf(寅, 卯, 辰) -> day == StemBranch.戊寅
-            in listOf(巳, 午, 未) -> day == StemBranch.甲午
-            in listOf(申, 酉, 戌) -> day == StemBranch.戊申
-            in listOf(亥, 子, 丑) -> day == StemBranch.甲子
+            in listOf(寅, 卯, 辰) -> day == 戊寅
+            in listOf(巳, 午, 未) -> day == 甲午
+            in listOf(申, 酉, 戌) -> day == 戊申
+            in listOf(亥, 子, 丑) -> day == 甲子
             else                  -> false
           }
           if (applied) {
@@ -194,6 +198,89 @@ object IdentityPatterns {
         }
       }
     }
+  }
+
+  /**
+   * 不祥日
+   */
+  val inauspiciousDay = object : IdentityPatternFactory {
+    override fun IEightWords.getPatterns(): Set<InauspiciousDay> {
+      val monthBranch = this@getPatterns.month.branch
+      val day = this@getPatterns.day
+      val dayStem = this@getPatterns.day.stem
+      val dayBranch = this@getPatterns.day.branch
+
+
+      return buildSet {
+        // 受死日
+        // 受死日的求法：
+        // 正月起戌，然後從戌起單月順排。
+        // 如正月起戌，三月為戌的下一位為亥，五月為子，依次類推。（正三五七九十一）
+        //
+        // 二月起辰，然後從辰起雙月順排。
+        // 如二月起辰，四月為辰的下一位為巳，六月為午，依次類推。
+        run {
+
+//          val expectedBranch = monthBranch.indexFromOne.let { indexFromOne ->
+//            if (indexFromOne % 2 == 1) {
+//              // 單月 ,
+//              // 寅 = 3 , (3-1)/2 - 1 = 0
+//              // 辰 = 5 , (5-1)/2 - 1 = 1
+//              // ...
+//              // 戌 = 11, (11-1)/2 -1 = 4
+//              // 子 = 1 , (1-1)/2 - 1 = -1 ==> change to 5
+//              val steps = ((indexFromOne - 1) / 2 - 1).let {
+//                if (it < 0)
+//                  6 + it
+//                else
+//                  it
+//              }
+//              戌.next(steps)
+//            } else {
+//              // 雙月 ,
+//              // 卯 = 4 ,  4/2 - 2 = 0
+//              // 巳 = 6 ,  6/2 - 2 = 1
+//              // ...
+//              // 亥 = 12, 12/2 - 2 = 4
+//              // 丑 =  2, 2/2  - 2 =-1 ==> change to 5
+//              val steps = (indexFromOne / 2 - 2).let {
+//                if (it < 0)
+//                  6 + it
+//                else
+//                  it
+//              }
+//              辰.next(steps)
+//            }
+//          }
+
+          val expectedBranch: Branch = when (monthBranch) {
+            寅 -> 戌
+            卯 -> 辰
+            辰 -> 亥
+            巳 -> 巳
+            午 -> 子
+            未 -> 午
+            申 -> 丑
+            酉 -> 未
+            戌 -> 寅
+            亥 -> 申
+            子 -> 卯
+            丑 -> 酉
+          }
+          if (dayBranch == expectedBranch) {
+            add(InauspiciousDay(Inauspicious.受死日))
+          }
+        }
+
+        // 陰差陽錯日
+        run {
+          if (setOf(丙子, 丙午, 丁丑, 丁未, 戊寅, 戊申, 辛卯, 辛酉, 壬辰, 壬戌, 癸巳, 癸亥).contains(day)) {
+            add(InauspiciousDay(Inauspicious.陰差陽錯))
+          }
+        }
+      }
+    }
+
   }
 
 

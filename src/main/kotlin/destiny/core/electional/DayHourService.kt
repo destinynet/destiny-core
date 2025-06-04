@@ -161,6 +161,11 @@ class DayHourService(
         .map { p -> EwEvent.EwGlobalEvent.AuspiciousDay(gmtJulDay, p, outer) }
     }
 
+    val inauspiciousDays = with(IdentityPatterns.inauspiciousDay) {
+      outer.getPatterns().asSequence().filterIsInstance<IdentityPattern.InauspiciousDay>()
+        .map { p -> EwEvent.EwGlobalEvent.InauspiciousDay(gmtJulDay, p, outer) }
+    }
+
     val personalAffecting: Sequence<EwEvent.EwPersonalEvent.StemAffecting> = with(affecting) {
       inner.getPatterns(outer.day, outer.hour).asSequence().map { pattern ->
         pattern as FlowPattern.Affecting
@@ -205,8 +210,10 @@ class DayHourService(
     }
 
     return sequenceOf(
-      globalStemCombined, globalBranchCombined, globalTrilogy, globalBranchOpposition, globalStemRooted, auspiciousDays,
-      personalAffecting, personalStemCombined, personalBranchCombined, personalTrilogyToFlow, personalToFlowTrilogy, personalBranchOpposition).flatten()
+      globalStemCombined, globalBranchCombined, globalTrilogy, globalBranchOpposition, globalStemRooted,
+      auspiciousDays, inauspiciousDays,
+      personalAffecting, personalStemCombined, personalBranchCombined, personalTrilogyToFlow, personalToFlowTrilogy, personalBranchOpposition
+    ).flatten()
   }
 
   private fun searchEwEvents(

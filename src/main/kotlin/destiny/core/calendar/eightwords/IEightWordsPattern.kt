@@ -29,7 +29,8 @@ enum class Auspicious {
 }
 
 enum class Inauspicious {
-
+  受死日,
+  陰差陽錯,
 }
 
 sealed class IdentityPattern : IEightWordsPattern {
@@ -44,7 +45,7 @@ sealed class IdentityPattern : IEightWordsPattern {
   /** 吉祥日 [Auspicious] */
   data class AuspiciousDay(val value : Auspicious) : IdentityPattern()
 
-  /** 凶日 */
+  /** 不祥日 [Inauspicious] */
   data class InauspiciousDay(val value : Inauspicious) : IdentityPattern()
 
 }
