@@ -10,10 +10,15 @@ import destiny.core.calendar.eightwords.IdentityPatterns.trilogy
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.StemBranch.*
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
+import java.util.stream.Stream
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class IdentityPatternsTest {
 
   @Nested
@@ -44,6 +49,27 @@ class IdentityPatternsTest {
               Trilogy(setOf(MONTH to 未, DAY to 亥, HOUR to 卯)),
             ), patterns
           )
+        }
+      }
+    }
+  }
+
+
+  private fun 天赦日() = Stream.of(
+    EightWords(乙巳, 己卯, 戊寅, 壬子), // 2025-03-10
+    EightWords(乙巳, 辛巳, 甲午, 甲子), // 2025-05-25
+    EightWords(乙巳, 癸未, 甲午, 甲子), // 2025-07-24
+    EightWords(乙巳, 乙酉, 戊申, 壬子), // 2025-10-06
+    EightWords(乙巳, 戊子, 甲子, 壬子), // 2025-12-21
+  )
+
+  @ParameterizedTest
+  @MethodSource
+  fun 天赦日(ew: EightWords) {
+    with(auspiciousPattern) {
+      ew.getPatterns().also { patterns ->
+        assertTrue {
+          patterns.contains(IdentityPattern.AuspiciousPattern(Auspicious.天赦日, setOf(DAY)))
         }
       }
     }
@@ -156,7 +182,7 @@ class IdentityPatternsTest {
 
     @Test
     fun 時柱() {
-      val ew = EightWords(乙巳, 戊寅, 丁未 , 丙午)
+      val ew = EightWords(乙巳, 戊寅, 丁未, 丙午)
       with(auspiciousPattern) {
         ew.getPatterns().also { patterns ->
           assertTrue {
@@ -223,7 +249,7 @@ class IdentityPatternsTest {
       with(auspiciousPattern) {
         ew.getPatterns().also { patterns ->
           assertTrue {
-            patterns.contains(IdentityPattern.AuspiciousPattern(Auspicious.天德合, setOf(YEAR , DAY, HOUR)))
+            patterns.contains(IdentityPattern.AuspiciousPattern(Auspicious.天德合, setOf(YEAR, DAY, HOUR)))
           }
         }
       }

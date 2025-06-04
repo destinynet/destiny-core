@@ -148,7 +148,7 @@ object IdentityPatterns {
             else                  -> false
           }
           if (applied) {
-            add(AuspiciousPattern(Auspicious.天赦日))
+            add(AuspiciousPattern(Auspicious.天赦日, setOf(Scale.DAY)))
           }
         }
 

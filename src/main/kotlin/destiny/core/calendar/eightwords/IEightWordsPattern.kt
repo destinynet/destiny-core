@@ -43,7 +43,13 @@ sealed class IdentityPattern : IEightWordsPattern {
   data class StemRooted(val scale: Scale, val stem: Stem, val roots: Set<Pair<Scale, Branch>>) : IdentityPattern()
 
   /** 吉祥日 [Auspicious] */
-  data class AuspiciousPattern(val value : Auspicious, val scales: Set<Scale> = emptySet()) : IdentityPattern()
+  data class AuspiciousPattern(val value : Auspicious, val scales: Set<Scale> = emptySet()) : IdentityPattern() {
+    init {
+      require(value.scales.containsAll(scales)) {
+        "Invalid scales $scales for ${value.name}, only allowed: ${value.scales}"
+      }
+    }
+  }
 
   /** 不祥日 [Inauspicious] */
   data class InauspiciousDay(val value : Inauspicious) : IdentityPattern()
