@@ -22,7 +22,6 @@ import destiny.core.calendar.eightwords.FlowDayHourPatterns.branchOpposition
 import destiny.core.calendar.eightwords.FlowDayHourPatterns.stemCombined
 import destiny.core.calendar.eightwords.FlowDayHourPatterns.toFlowTrilogy
 import destiny.core.calendar.eightwords.FlowDayHourPatterns.trilogyToFlow
-import destiny.core.chinese.eightwords.PersonPresentConfig
 import destiny.core.chinese.eightwords.PersonPresentFeature
 import destiny.core.electional.DayHourEvent.*
 import jakarta.inject.Named
@@ -39,7 +38,7 @@ class DayHourService(
   private val retrogradeImpl : IRetrograde,
 ) {
 
-  fun traverse(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, ewConfig: IPersonPresentConfig = PersonPresentConfig()): Sequence<DayHourEvent> {
+  fun traverse(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config : Config): Sequence<DayHourEvent> {
     require(model.toDate.isAfter(model.fromDate)) { "toDate must be after the fromDate" }
 
     val loc = model.loc?:bdnp.location
@@ -47,10 +46,18 @@ class DayHourService(
     val fromGmtJulDay = model.fromDate.atTime(0, 0).toGmtJulDay(loc)
     val toGmtJulDay = model.toDate.plusDays(1).atTime(0, 0).toGmtJulDay(loc)
 
-    return (searchAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc) + searchEwEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, ewConfig))
+    return sequence {
+      config.ewConfig?.also {
+        yieldAll(searchEwEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, it))
+      }
+      config.astrologyConfig?.also {
+        yieldAll(searchAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, it))
+      }
+    }
+
   }
 
-  private fun searchAstrologyEvents(bdnp: IBirthDataNamePlace, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay, loc: ILocation): Sequence<AstroEvent> {
+  private fun searchAstrologyEvents(bdnp: IBirthDataNamePlace, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay, loc: ILocation, config: Config.AstrologyConfig): Sequence<AstroEvent> {
     val innerStars = setOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
 
     val harmonyAngles = setOf(0.0, 60.0, 120.0, 240.0, 300.0)
@@ -104,27 +111,29 @@ class DayHourService(
       }
     }
 
-
-
-    return sequenceOf(
+    return sequence {
       // 全球星體交角
-      globalEvents,
+      yieldAll(globalEvents)
       // 全球 to 個人 , 和諧交角
-      searchPersonalEvents(innerStars, harmonyAngles).map { aspectData -> AstroEvent.AspectEvent(Type.GOOD, aspectData, Impact.PERSONAL) },
+      yieldAll(searchPersonalEvents(innerStars, tensionAngles).map { aspectData -> AstroEvent.AspectEvent(Type.BAD, aspectData, Impact.PERSONAL) })
       // 全球 to 個人 , 緊張交角
-      searchPersonalEvents(innerStars, tensionAngles).map { aspectData -> AstroEvent.AspectEvent(Type.BAD, aspectData, Impact.PERSONAL) },
+      yieldAll(searchPersonalEvents(innerStars, tensionAngles).map { aspectData -> AstroEvent.AspectEvent(Type.BAD, aspectData, Impact.PERSONAL) })
       // 月亮空亡
-      moonVocSeq,
-      // 內行星滯留
-      planetStationaries,
-      // 星體當日逆行
-      planetRetrogrades,
-    ).flatten()
+      if (config.voc) {
+        yieldAll(moonVocSeq)
+      }
+      if (config.retrograde) {
+        // 內行星滯留
+        yieldAll(planetStationaries)
+        // 星體當日逆行
+        yieldAll(planetRetrogrades)
+      }
+    }
   }
 
   private val supportedScales = setOf(Scale.DAY, Scale.HOUR)
 
-  private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords): Sequence<EwEvent> {
+  private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords, config : Config.EwConfig): Sequence<EwEvent> {
 
     val globalStemCombined: Sequence<EwEvent.EwGlobalEvent.StemCombined> = with(IdentityPatterns.stemCombined) {
       outer.getPatterns().asSequence().filterIsInstance<IdentityPattern.StemCombined>()
@@ -216,11 +225,23 @@ class DayHourService(
       }.map { pattern -> EwEvent.EwPersonalEvent.BranchOpposition(gmtJulDay, pattern, outer) }
     }
 
-    return sequenceOf(
-      globalStemCombined, globalBranchCombined, globalTrilogy, globalBranchOpposition, globalStemRooted,
-      auspiciousDays, inauspiciousDays,
-      personalAffecting, personalStemCombined, personalBranchCombined, personalTrilogyToFlow, personalToFlowTrilogy, personalBranchOpposition
-    ).flatten()
+    return sequence {
+      yieldAll(globalStemCombined)
+      yieldAll(globalBranchCombined)
+      yieldAll(globalTrilogy)
+      yieldAll(globalBranchOpposition)
+      yieldAll(globalStemRooted)
+      if (config.shanSha) {
+        yieldAll(auspiciousDays)
+        yieldAll(inauspiciousDays)
+      }
+      yieldAll(personalAffecting)
+      yieldAll(personalStemCombined)
+      yieldAll(personalBranchCombined)
+      yieldAll(personalTrilogyToFlow)
+      yieldAll(personalToFlowTrilogy)
+      yieldAll(personalBranchOpposition)
+    }
   }
 
   private fun searchEwEvents(
@@ -228,19 +249,20 @@ class DayHourService(
     fromGmtJulDay: GmtJulDay,
     toGmtJulDay: GmtJulDay,
     loc: ILocation = bdnp.location,
-    config: IPersonPresentConfig = PersonPresentConfig()
+    config: Config.EwConfig
   ): Sequence<EwEvent> {
 
-    val personEw = ewPersonPresentFeature.getPersonModel(bdnp, config).eightWords
+    val ewPersonPresentConfig = config.personPresentConfig
+    val personEw = ewPersonPresentFeature.getPersonModel(bdnp, ewPersonPresentConfig).eightWords
     logger.debug { "本命八字 : $personEw" }
-    val fromEw: IEightWords = ewFeature.getModel(fromGmtJulDay, loc, config)
+    val fromEw: IEightWords = ewFeature.getModel(fromGmtJulDay, loc, ewPersonPresentConfig)
 
     return generateSequence(fromEw to fromGmtJulDay) { (outerEw, gmtJulDay) ->
 
-      ewFeature.next(gmtJulDay + 0.01, loc, config)
+      ewFeature.next(gmtJulDay + 0.01, loc, ewPersonPresentConfig)
     }.takeWhile { (outerEw, gmtJulDay) -> gmtJulDay < toGmtJulDay }
       .flatMap { (outerEw, gmtJulDay) ->
-        matchEwEvents(gmtJulDay, outerEw, personEw)
+        matchEwEvents(gmtJulDay, outerEw, personEw, config)
       }
   }
 }
