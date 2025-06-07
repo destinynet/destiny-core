@@ -3,7 +3,6 @@
  */
 package destiny.core.chinese
 
-import destiny.tools.ArrayTools
 import java.io.Serializable
 
 
@@ -27,10 +26,7 @@ data class StemBranchOptional(
 
   fun next(n: Int): StemBranchOptional? {
     val index = getIndex(this)
-
-    return index?.let {
-      get(it + n)
-    }
+    return index?.let { get(it + n) }
   }
 
   override fun toString(): String {
@@ -40,11 +36,15 @@ data class StemBranchOptional(
   companion object {
 
     // 0[甲子] ~ 59[癸亥]
-    private val ARRAY: Array<StemBranchOptional> by lazy {
-      var n = 0
-      generateSequence {
-        StemBranchOptional(Stem[n % 10], Branch[n % 12]).takeIf { n++ < 60 }
-      }.toList().toTypedArray()
+    private val SIXTY_COMBINATIONS: List<StemBranchOptional> by lazy {
+      (0 until 60).map { n ->
+        StemBranchOptional(Stem[n % 10], Branch[n % 12])
+      }
+    }
+
+    // 建立 StemBranchOptional 到索引的映射
+    private val indexMap: Map<StemBranchOptional, Int> by lazy {
+      SIXTY_COMBINATIONS.withIndex().associate { (index, sb) -> sb to index }
     }
 
     fun empty(): StemBranchOptional {
@@ -54,22 +54,22 @@ data class StemBranchOptional(
 
     // 0[甲子] ~ 59[癸亥]
     private operator fun get(index: Int): StemBranchOptional {
-      return ArrayTools[ARRAY, index]
+      return SIXTY_COMBINATIONS[index.mod(60)]
     }
 
     operator fun get(stem: Stem?, branch: Branch?): StemBranchOptional {
 
       return if (stem != null && branch != null) {
-        val sIndex = Stem.getIndex(stem)
-        val bIndex = Branch.getIndex(branch)
+        val sIndex = stem.index
+        val bIndex = branch.index
 
         when (sIndex - bIndex) {
           0, -10 -> get(bIndex)
-          2, -8 -> get(bIndex + 12)
-          4, -6 -> get(bIndex + 24)
-          6, -4 -> get(bIndex + 36)
-          8, -2 -> get(bIndex + 48)
-          else -> StemBranchOptional(stem, branch)
+          2, -8  -> get(bIndex + 12)
+          4, -6  -> get(bIndex + 24)
+          6, -4  -> get(bIndex + 36)
+          8, -2  -> get(bIndex + 48)
+          else   -> StemBranchOptional(stem, branch)
         }
       } else {
         StemBranchOptional(stem, branch)
@@ -92,15 +92,15 @@ data class StemBranchOptional(
     }
 
     private fun getIndex(sb: StemBranchOptional): Int? {
-
-      if (sb.stem != null && sb.branch != null) {
-        return ARRAY.first { it == sb }.let { ARRAY.indexOf(it) }
+      return if (sb.stem != null && sb.branch != null) {
+        indexMap[sb]
+      } else {
+        null
       }
-      return null
     }
 
     operator fun iterator(): Iterator<StemBranchOptional> {
-      return ARRAY.iterator()
+      return SIXTY_COMBINATIONS.iterator()
     }
   }
 

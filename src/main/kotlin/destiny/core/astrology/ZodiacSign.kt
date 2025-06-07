@@ -10,7 +10,6 @@ import destiny.core.astrology.Quality.*
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.IYinYang
-import destiny.tools.ArrayTools
 import destiny.tools.CircleTools.normalize
 import destiny.tools.getTitle
 import kotlinx.serialization.Serializable
@@ -66,12 +65,11 @@ enum class ZodiacSign(val abbrKey: String,
 
   /** 取得對沖的星座  */
   val oppositeSign: ZodiacSign
-    get() = entries[normalize(this.index + 6)]
+    get() = get(ordinal + 6)
+
 
   /** 取得星座的 index , 為 0-based , 牡羊座為 0 , 金牛座為 1 , ... , 雙魚座為 11  */
-  val index: Int by lazy {
-    entries.indexOf(this)
-  }
+  val index: Int = ordinal
 
   /**
    * @return 取得星座的地支名稱 (牡羊 : 戌)
@@ -89,7 +87,7 @@ enum class ZodiacSign(val abbrKey: String,
 //  }
 
   override fun next(n: Int): ZodiacSign {
-    return get(index + n)
+    return get(ordinal + n)
   }
 
   override val booleanValue: Boolean
@@ -98,6 +96,10 @@ enum class ZodiacSign(val abbrKey: String,
   companion object {
 
     private val resource = ZodiacSign::class.qualifiedName!!
+
+    private val branchToZodiacMap: Map<Branch, ZodiacSign> by lazy {
+      entries.associateBy { it.branch }
+    }
 
     private val map = mapOf(
       ARIES to 戌,
@@ -122,7 +124,7 @@ enum class ZodiacSign(val abbrKey: String,
      * 11 : 雙魚
      */
     operator fun get(index: Int): ZodiacSign {
-      return ArrayTools[entries.toTypedArray(), index]
+      return entries[index.mod(entries.size)]
     }
 
     /** 取得黃道帶上的某度，屬於哪個星座  */
@@ -148,7 +150,7 @@ enum class ZodiacSign(val abbrKey: String,
      * 從地支，找星座
      */
     fun of(branch: Branch): ZodiacSign {
-      return map.map { (k, v) -> v to k }.toMap().getValue(branch)
+      return branchToZodiacMap.getValue(branch)
     }
 
     /**

@@ -3,8 +3,6 @@ package destiny.core.calendar
 
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.寅
-import destiny.tools.ArrayTools
-import java.util.*
 
 enum class SolarTerms(val zodiacDegree: Int) {
   立春(315),
@@ -40,21 +38,19 @@ enum class SolarTerms(val zodiacDegree: Int) {
    * ...
    */
   val major: Boolean
-    get() = getIndex(this) % 2 == 0
+    get() = ordinal % 2 == 0
 
   /** 取得地支  */
   val branch: Branch
-    get() {
-      val index = getIndex(this)
-      return 寅.next(index / 2)
-    }
+    get() = 寅.next(ordinal / 2)
+
 
   operator fun next(): SolarTerms {
-    return get(getIndex(this) + 1)
+    return get(ordinal + 1)
   }
 
   fun previous(): SolarTerms {
-    return get(getIndex(this) - 1)
+    return get(ordinal - 1)
   }
 
 
@@ -63,17 +59,19 @@ enum class SolarTerms(val zodiacDegree: Int) {
   }
 
   companion object {
+    private val branchToSolarTermsMap: Map<Branch, List<SolarTerms>> by lazy {
+      entries.groupBy { it.branch }
+    }
 
     /**
      * @param solarTerm 節氣
      * @return 傳回 index , 立春為 0 , 雨水為 1 , ... , 大寒 為 23
      */
-    fun getIndex(solarTerm: SolarTerms): Int {
-      return Arrays.binarySearch(entries.toTypedArray(), solarTerm)
-    }
+    fun getIndex(solarTerm: SolarTerms): Int = solarTerm.ordinal
+
 
     fun of(branch: Branch) : List<SolarTerms> {
-      return entries.filter { it.branch == branch }.toList()
+      return branchToSolarTermsMap[branch] ?: emptyList()
     }
 
     /**
@@ -81,16 +79,15 @@ enum class SolarTerms(val zodiacDegree: Int) {
      * @return 0 傳回立春 , 1 傳回 雨水 , ... , 23 傳回 大寒 , 接著連續 24 傳回立春
      */
     operator fun get(solarTermsIndex: Int): SolarTerms {
-      return ArrayTools[entries.toTypedArray(), solarTermsIndex]
+      return entries[solarTermsIndex.mod(entries.size)]
     }
 
     /**
      * @return 從黃經度數，取得節氣
      */
     fun getFromDegree(degree: Double): SolarTerms {
-      var index = degree.toInt() / 15 + 3
-      if (index >= 24)
-        index -= 24
+      val normalizedDegree = degree.mod(360.0)
+      val index = ((normalizedDegree.toInt() / 15) + 3).mod(24)
       return get(index)
     }
 
@@ -115,21 +112,11 @@ enum class SolarTerms(val zodiacDegree: Int) {
      * @return 下一個「節」（如果 reverse == true，則傳回上一個「節」）
      */
     fun getNextMajorSolarTerms(currentSolarTerms: SolarTerms, reverse: Boolean): SolarTerms {
-      val currentSolarTermsIndex = getIndex(currentSolarTerms)
-      return if (currentSolarTermsIndex % 2 == 0) {
-        //立春 , 驚蟄 , 清明 ...
-        if (!reverse)
-        //順推
-          currentSolarTerms.next().next()
-        else
-          currentSolarTerms
-      } else {
-        //雨水 , 春分 , 穀雨 ...
-        if (!reverse)
-        //順推
-          currentSolarTerms.next()
-        else
-          currentSolarTerms.previous()
+      return when {
+        currentSolarTerms.major && !reverse  -> currentSolarTerms.next().next()
+        currentSolarTerms.major && reverse   -> currentSolarTerms
+        !currentSolarTerms.major && !reverse -> currentSolarTerms.next()
+        else                                 -> currentSolarTerms.previous()
       }
     }
   }

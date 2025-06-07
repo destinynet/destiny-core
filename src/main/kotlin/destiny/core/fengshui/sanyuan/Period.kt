@@ -2,7 +2,6 @@ package destiny.core.fengshui.sanyuan
 
 import destiny.core.ILoop
 import destiny.core.fengshui.sanyuan.NineStar.Companion.toStar
-import destiny.tools.ArrayTools
 import kotlinx.serialization.Serializable
 
 /**
@@ -23,7 +22,8 @@ enum class Period(val value: Int) : ILoop<Period> {
   companion object {
 
     fun Int.toPeriod(): Period {
-      return ArrayTools[entries.toTypedArray(), this - 1]
+      val index = (this - 1).mod(entries.size)
+      return entries[index]
     }
 
     fun of(value: Int): Period {

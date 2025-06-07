@@ -5,7 +5,6 @@ package destiny.core.chinese
 
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
-import destiny.tools.ArrayTools
 
 
 /**
@@ -145,14 +144,14 @@ enum class StemBranchUnconstrained(override val stem: Stem,
 
   /** @return 0[甲子] ~ 119[甲亥] */
   val index: Int
-    get() = getIndex(this)
+    get() = ordinal
 
   /**
    * 取得下 n 組干支組合
    * n = 0 : 傳回自己
    */
   override fun next(n: Int): StemBranchUnconstrained {
-    return get(getIndex(this) + n)
+    return get(ordinal + n)
   }
 
 
@@ -163,12 +162,8 @@ enum class StemBranchUnconstrained(override val stem: Stem,
    * 「甲子」領先「乙子」119
    */
   fun getAheadOf(other: StemBranchUnconstrained): Int {
-    val steps = index - other.index
+    val steps = ordinal - other.ordinal
     return if (steps >= 0) steps else steps + 120
-  }
-
-  private fun getIndex(sbu: StemBranchUnconstrained): Int {
-    return entries.indexOf(sbu)
   }
 
   override val naYin: NaYin?
@@ -178,13 +173,18 @@ enum class StemBranchUnconstrained(override val stem: Stem,
 
   companion object {
 
+    // 建立 stem-branch 組合到枚舉值的映射
+    private val stemBranchMap: Map<Pair<Stem, Branch>, StemBranchUnconstrained> by lazy {
+      entries.associateBy { it.stem to it.branch }
+    }
+
     /** 0[甲子] ~ 119[甲亥] */
     operator fun get(index: Int): StemBranchUnconstrained {
-      return ArrayTools[entries.toTypedArray(), index]
+      return entries[index.mod(120)]
     }
 
     operator fun get(stem: Stem, branch: Branch): StemBranchUnconstrained? {
-      return entries.firstOrNull { it.stem == stem && it.branch == branch }
+      return stemBranchMap[stem to branch]
     }
   }
 }

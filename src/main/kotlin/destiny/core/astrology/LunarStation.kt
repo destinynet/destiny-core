@@ -10,7 +10,6 @@ import destiny.core.News.NorthSouth.NORTH
 import destiny.core.News.NorthSouth.SOUTH
 import destiny.core.astrology.Planet.*
 import destiny.core.chinese.Animal
-import destiny.tools.ArrayTools
 import destiny.tools.getTitle
 import destiny.tools.serializers.astrology.LunarStationSerializer
 import kotlinx.serialization.Serializable
@@ -80,7 +79,7 @@ sealed class LunarStation(
     override val type: KClass<out Point> = LunarStation::class
 
     operator fun get(index: Int): LunarStation {
-      return ArrayTools[values, index]
+      return values[index.mod(values.size)]
     }
 
     override val values by lazy {

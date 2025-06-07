@@ -4,7 +4,6 @@
 package destiny.core.chinese.lunarStation
 
 import destiny.core.ILoop
-import destiny.tools.ArrayTools
 
 enum class House {
   山, 林, 崗, 湯, 火, 野, 刀, 砧, 路, 江, 湖, 田,
@@ -16,12 +15,12 @@ enum class SelfHouse(val house: House) : ILoop<SelfHouse> {
   刀(House.刀), 砧(House.砧), 路(House.路), 江(House.江), 湖(House.湖), 田(House.田);
 
   override fun next(n: Int): SelfHouse {
-    return get(entries.indexOf(this) + n)
+    return get(ordinal + n)
   }
 
   companion object {
     operator fun get(index: Int): SelfHouse {
-      return ArrayTools[entries.toTypedArray(), index]
+      return entries[index.mod(entries.size)]
     }
   }
 }
@@ -31,12 +30,12 @@ enum class OppoHouse(val house: House) : ILoop<OppoHouse> {
   天(House.天), 草(House.草), 岸(House.岸), 風(House.風), 湯火(House.湯火), 月(House.月);
 
   override fun next(n: Int): OppoHouse {
-    return get(entries.indexOf(this) + n)
+    return get(ordinal + n)
   }
 
   companion object {
     operator fun get(index: Int): OppoHouse {
-      return ArrayTools[entries.toTypedArray(), index]
+      return entries[index.mod(entries.size)]
     }
   }
 }

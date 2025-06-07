@@ -8,9 +8,7 @@ package destiny.core.calendar
 import destiny.core.calendar.SolarTerms.*
 import destiny.core.calendar.SolarTerms.Companion.getIndex
 import destiny.core.chinese.Branch.*
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertSame
+import kotlin.test.*
 
 
 class SolarTermsTest {
@@ -160,5 +158,166 @@ class SolarTermsTest {
     assertSame(大寒, SolarTerms[23])
     assertSame(立春, SolarTerms[24])
 
+  }
+
+  @Test
+  fun testMajor() {
+    // 節（奇數索引）
+    assertTrue(立春.major)
+    assertFalse(雨水.major)
+    assertTrue(驚蟄.major)
+    assertFalse(春分.major)
+    assertTrue(清明.major)
+    assertFalse(穀雨.major)
+    assertTrue(立夏.major)
+    assertFalse(小滿.major)
+    assertTrue(芒種.major)
+    assertFalse(夏至.major)
+    assertTrue(小暑.major)
+    assertFalse(大暑.major)
+    assertTrue(立秋.major)
+    assertFalse(處暑.major)
+    assertTrue(白露.major)
+    assertFalse(秋分.major)
+    assertTrue(寒露.major)
+    assertFalse(霜降.major)
+    assertTrue(立冬.major)
+    assertFalse(小雪.major)
+    assertTrue(大雪.major)
+    assertFalse(冬至.major)
+    assertTrue(小寒.major)
+    assertFalse(大寒.major)
+  }
+
+  /** 測試根據地支取得節氣列表 */
+  @Test
+  fun testOfBranch() {
+    assertEquals(listOf(立春, 雨水), SolarTerms.of(寅))
+    assertEquals(listOf(驚蟄, 春分), SolarTerms.of(卯))
+    assertEquals(listOf(清明, 穀雨), SolarTerms.of(辰))
+    assertEquals(listOf(立夏, 小滿), SolarTerms.of(巳))
+    assertEquals(listOf(芒種, 夏至), SolarTerms.of(午))
+    assertEquals(listOf(小暑, 大暑), SolarTerms.of(未))
+    assertEquals(listOf(立秋, 處暑), SolarTerms.of(申))
+    assertEquals(listOf(白露, 秋分), SolarTerms.of(酉))
+    assertEquals(listOf(寒露, 霜降), SolarTerms.of(戌))
+    assertEquals(listOf(立冬, 小雪), SolarTerms.of(亥))
+    assertEquals(listOf(大雪, 冬至), SolarTerms.of(子))
+    assertEquals(listOf(小寒, 大寒), SolarTerms.of(丑))
+  }
+
+  /** 測試從黃經度數取得節氣 */
+  @Test
+  fun testGetFromDegree() {
+    assertEquals(春分, SolarTerms.getFromDegree(0.0))
+    assertEquals(清明, SolarTerms.getFromDegree(15.0))
+    assertEquals(穀雨, SolarTerms.getFromDegree(30.0))
+    assertEquals(立夏, SolarTerms.getFromDegree(45.0))
+    assertEquals(小滿, SolarTerms.getFromDegree(60.0))
+    assertEquals(芒種, SolarTerms.getFromDegree(75.0))
+    assertEquals(夏至, SolarTerms.getFromDegree(90.0))
+    assertEquals(小暑, SolarTerms.getFromDegree(105.0))
+    assertEquals(大暑, SolarTerms.getFromDegree(120.0))
+    assertEquals(立秋, SolarTerms.getFromDegree(135.0))
+    assertEquals(處暑, SolarTerms.getFromDegree(150.0))
+    assertEquals(白露, SolarTerms.getFromDegree(165.0))
+    assertEquals(秋分, SolarTerms.getFromDegree(180.0))
+    assertEquals(寒露, SolarTerms.getFromDegree(195.0))
+    assertEquals(霜降, SolarTerms.getFromDegree(210.0))
+    assertEquals(立冬, SolarTerms.getFromDegree(225.0))
+    assertEquals(小雪, SolarTerms.getFromDegree(240.0))
+    assertEquals(大雪, SolarTerms.getFromDegree(255.0))
+    assertEquals(冬至, SolarTerms.getFromDegree(270.0))
+    assertEquals(小寒, SolarTerms.getFromDegree(285.0))
+    assertEquals(大寒, SolarTerms.getFromDegree(300.0))
+    assertEquals(立春, SolarTerms.getFromDegree(315.0))
+    assertEquals(雨水, SolarTerms.getFromDegree(330.0))
+    assertEquals(驚蟄, SolarTerms.getFromDegree(345.0))
+
+    // 測試度數超過360的情況
+    assertEquals(春分, SolarTerms.getFromDegree(360.0))
+    assertEquals(清明, SolarTerms.getFromDegree(375.0))
+    assertEquals(立春, SolarTerms.getFromDegree(675.0)) // 315 + 360
+
+    // 測試負度數
+    assertEquals(大寒, SolarTerms.getFromDegree(-60.0)) // 300 - 360
+  }
+
+
+  /** 測試取得上一個「節」、下一個「節」 */
+  @Test
+  fun testGetPrevNextMajorSolarTerms() {
+    // 當前就是「節」的情況
+    assertEquals(立春 to 驚蟄, SolarTerms.getPrevNextMajorSolarTerms(立春))
+    assertEquals(驚蟄 to 清明, SolarTerms.getPrevNextMajorSolarTerms(驚蟄))
+    assertEquals(清明 to 立夏, SolarTerms.getPrevNextMajorSolarTerms(清明))
+
+    // 當前是「氣」的情況
+    assertEquals(立春 to 驚蟄, SolarTerms.getPrevNextMajorSolarTerms(雨水))
+    assertEquals(驚蟄 to 清明, SolarTerms.getPrevNextMajorSolarTerms(春分))
+    assertEquals(清明 to 立夏, SolarTerms.getPrevNextMajorSolarTerms(穀雨))
+
+    // 邊界情況
+    assertEquals(小寒 to 立春, SolarTerms.getPrevNextMajorSolarTerms(大寒))
+    assertEquals(大雪 to 小寒, SolarTerms.getPrevNextMajorSolarTerms(冬至))
+  }
+
+  /** 測試取得下一個「節」 */
+  @Test
+  fun testGetNextMajorSolarTerms() {
+    // 順推情況
+    // 當前是「節」
+    assertEquals(驚蟄, SolarTerms.getNextMajorSolarTerms(立春, false))
+    assertEquals(清明, SolarTerms.getNextMajorSolarTerms(驚蟄, false))
+    assertEquals(立夏, SolarTerms.getNextMajorSolarTerms(清明, false))
+
+    // 當前是「氣」
+    assertEquals(驚蟄, SolarTerms.getNextMajorSolarTerms(雨水, false))
+    assertEquals(清明, SolarTerms.getNextMajorSolarTerms(春分, false))
+    assertEquals(立夏, SolarTerms.getNextMajorSolarTerms(穀雨, false))
+
+    // 逆推情況
+    // 當前是「節」
+    assertEquals(立春, SolarTerms.getNextMajorSolarTerms(立春, true))
+    assertEquals(驚蟄, SolarTerms.getNextMajorSolarTerms(驚蟄, true))
+    assertEquals(清明, SolarTerms.getNextMajorSolarTerms(清明, true))
+
+    // 當前是「氣」
+    assertEquals(立春, SolarTerms.getNextMajorSolarTerms(雨水, true))
+    assertEquals(驚蟄, SolarTerms.getNextMajorSolarTerms(春分, true))
+    assertEquals(清明, SolarTerms.getNextMajorSolarTerms(穀雨, true))
+
+    // 邊界情況測試
+    assertEquals(立春, SolarTerms.getNextMajorSolarTerms(小寒, false))
+    assertEquals(立春, SolarTerms.getNextMajorSolarTerms(大寒, false))
+    assertEquals(小寒, SolarTerms.getNextMajorSolarTerms(大寒, true))
+  }
+
+  @Test
+  fun testZodiacDegree() {
+    assertEquals(315, 立春.zodiacDegree)
+    assertEquals(330, 雨水.zodiacDegree)
+    assertEquals(345, 驚蟄.zodiacDegree)
+    assertEquals(0, 春分.zodiacDegree)
+    assertEquals(15, 清明.zodiacDegree)
+    assertEquals(30, 穀雨.zodiacDegree)
+    assertEquals(45, 立夏.zodiacDegree)
+    assertEquals(60, 小滿.zodiacDegree)
+    assertEquals(75, 芒種.zodiacDegree)
+    assertEquals(90, 夏至.zodiacDegree)
+    assertEquals(105, 小暑.zodiacDegree)
+    assertEquals(120, 大暑.zodiacDegree)
+    assertEquals(135, 立秋.zodiacDegree)
+    assertEquals(150, 處暑.zodiacDegree)
+    assertEquals(165, 白露.zodiacDegree)
+    assertEquals(180, 秋分.zodiacDegree)
+    assertEquals(195, 寒露.zodiacDegree)
+    assertEquals(210, 霜降.zodiacDegree)
+    assertEquals(225, 立冬.zodiacDegree)
+    assertEquals(240, 小雪.zodiacDegree)
+    assertEquals(255, 大雪.zodiacDegree)
+    assertEquals(270, 冬至.zodiacDegree)
+    assertEquals(285, 小寒.zodiacDegree)
+    assertEquals(300, 大寒.zodiacDegree)
   }
 }

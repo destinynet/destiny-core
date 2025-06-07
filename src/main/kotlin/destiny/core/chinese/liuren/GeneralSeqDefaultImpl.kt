@@ -5,7 +5,6 @@ package destiny.core.chinese.liuren
 
 import destiny.core.Descriptive
 import destiny.core.chinese.liuren.General.*
-import destiny.tools.ArrayTools
 import destiny.tools.asDescriptive
 import java.io.Serializable
 import java.util.*
@@ -24,7 +23,7 @@ class GeneralSeqDefaultImpl : IGeneralSeq,
     private val ARRAY = arrayOf(貴人, 螣蛇, 朱雀, 六合, 勾陳, 青龍, 天空, 白虎, 太常, 玄武, 太陰, 天后)
 
     private operator fun get(index: Int): General {
-      return ArrayTools[ARRAY, index]
+      return ARRAY[index.mod(ARRAY.size)]
     }
 
     private fun getIndex(g: General): Int {

@@ -5,7 +5,6 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch.甲子
 import destiny.core.chinese.StemBranch.癸亥
-import destiny.tools.ArrayTools
 import destiny.tools.serializers.IStemBranchSerializer
 import kotlinx.serialization.Serializable
 
@@ -16,7 +15,6 @@ import kotlinx.serialization.Serializable
 sealed interface IStemBranch : IStemBranchOptional, ILoop<IStemBranch> {
   override val stem: Stem
   override val branch: Branch
-
   val naYin : NaYin?
 }
 
@@ -100,14 +98,14 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
 
   /** @return 0[甲子] ~ 59[癸亥] */
   val index: Int
-    get() = getIndex(this)
+    get() = ordinal
 
   /**
    * 取得下 n 組干支組合
    * n = 0 : 傳回自己
    */
   override fun next(n: Int): StemBranch {
-    return get(getIndex(this) + n)
+    return get(ordinal + n)
   }
 
   /**
@@ -121,19 +119,6 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
     return if (steps >= 0) steps else steps + 60
   }
 
-  /** 取得干支的差距，例如 "乙丑" 距離 "甲子" 的差距為 "1" , 通常是用於計算「虛歲」 (尚需加一)  */
-  fun differs(sb: StemBranch): Int {
-    return getIndex(this) - sb.index
-  }
-
-  /**
-   * 0[甲子] ~ 59[癸亥]
-   * @param sb 取得某組干支的順序
-   * @return 0[甲子] ~ 59[癸亥]
-   */
-  private fun getIndex(sb: StemBranch): Int {
-    return entries.indexOf(sb)
-  }
 
   /** 取得「空亡」的兩個地支  */
   val empties: Set<Branch>
@@ -158,7 +143,7 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
      * @param index 0[甲子] ~ 59[癸亥]
      */
     operator fun get(index: Int): StemBranch {
-      return ArrayTools[entries.toTypedArray(), index]
+      return entries[index.mod(entries.size)]
     }
 
     fun of(stem: Stem?, branch: Branch?): StemBranch? {

@@ -3,13 +3,17 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.tools.ArrayTools
-import destiny.tools.getTitle
 import destiny.tools.KotlinLogging
+import destiny.tools.getTitle
 import java.io.Serializable
 import java.util.*
 
 abstract class HouseSeqAbstractImpl : IHouseSeq, Serializable {
+  // 建立 House 到索引的映射（延遲初始化，提升查找性能）
+  private val houseToIndexMap: Map<House, Int> by lazy {
+    houses.withIndex().associate { (index, house) -> house to index }
+  }
+
 
   override fun next(from: House, n: Int): House {
     return get(getIndex(from) + n)
@@ -22,7 +26,7 @@ abstract class HouseSeqAbstractImpl : IHouseSeq, Serializable {
     if (index1 < 0 || index2 < 0)
       return -1
     val steps = index1 - index2
-    return if (steps >= 0) steps else steps + 12
+    return if (steps >= 0) steps else steps + houses.size
   }
 
   override fun getTitle(locale: Locale): String {
@@ -34,11 +38,11 @@ abstract class HouseSeqAbstractImpl : IHouseSeq, Serializable {
   }
 
   private operator fun get(index: Int): House {
-    return ArrayTools[houses, index]
+    return houses[index.mod(houses.size)]
   }
 
   private fun getIndex(h: House): Int {
-    return listOf(*houses).indexOf(h)
+    return houseToIndexMap[h] ?: -1
   }
 
   companion object {

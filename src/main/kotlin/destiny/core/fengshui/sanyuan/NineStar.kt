@@ -9,7 +9,6 @@ import destiny.core.chinese.FiveElement.*
 import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
 import destiny.core.iching.Symbol
 import destiny.core.iching.SymbolAcquired
-import destiny.tools.ArrayTools
 
 enum class NineStar(val period: Period, val color: Char, val fiveElement: FiveElement) : ILoop<NineStar> {
   貪狼(1.toPeriod(), '白', 水), // 一白水星 , 坎
@@ -30,10 +29,14 @@ enum class NineStar(val period: Period, val color: Char, val fiveElement: FiveEl
   }
 
   companion object {
+    private val valueToStarMap: Map<Int, NineStar> by lazy {
+      entries.associateBy { it.period.value }
+    }
 
     /** 透過數字，反查九星 */
     fun Int.toStar(): NineStar {
-      return ArrayTools[entries.toTypedArray(), this - 1]
+      val normalizedValue = ((this - 1).mod(9)) + 1 // 確保值在 1-9 範圍內
+      return valueToStarMap.getValue(normalizedValue)
     }
 
     fun of(period: Period): NineStar {

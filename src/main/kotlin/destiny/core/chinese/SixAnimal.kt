@@ -4,7 +4,6 @@
 package destiny.core.chinese
 
 import destiny.core.ILoop
-import destiny.tools.ArrayTools
 
 enum class SixAnimal(val shortName:String) : ILoop<SixAnimal> {
   青龍("龍"),
@@ -15,7 +14,7 @@ enum class SixAnimal(val shortName:String) : ILoop<SixAnimal> {
   玄武("玄");
 
   override fun next(n: Int): SixAnimal {
-    return get(getIndex(this) + n)
+    return get(ordinal + n)
   }
 
   companion object {
@@ -31,7 +30,7 @@ enum class SixAnimal(val shortName:String) : ILoop<SixAnimal> {
     }
 
     operator fun get(index: Int): SixAnimal {
-      return ArrayTools[entries.toTypedArray(), index]
+      return entries[index.mod(entries.size)]
     }
 
     fun getSixAnimals(dayStem: Stem): List<SixAnimal> {
