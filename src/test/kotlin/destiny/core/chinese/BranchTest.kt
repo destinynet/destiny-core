@@ -12,6 +12,39 @@ import kotlin.test.*
 class BranchTest {
 
   @Test
+  fun testOpposite() {
+    assertSame(午, 子.opposite)
+    assertSame(未, 丑.opposite)
+    assertSame(申, 寅.opposite)
+    assertSame(酉, 卯.opposite)
+    assertSame(戌, 辰.opposite)
+    assertSame(亥, 巳.opposite)
+    assertSame(子, 午.opposite)
+    assertSame(丑, 未.opposite)
+    assertSame(寅, 申.opposite)
+    assertSame(卯, 酉.opposite)
+    assertSame(辰, 戌.opposite)
+    assertSame(巳, 亥.opposite)
+  }
+
+  @Test
+  fun testCombined() {
+    assertSame(丑, 子.combined)
+    assertSame(子, 丑.combined)
+    assertSame(亥, 寅.combined)
+    assertSame(戌, 卯.combined)
+    assertSame(酉, 辰.combined)
+    assertSame(申, 巳.combined)
+    assertSame(未, 午.combined)
+    assertSame(午, 未.combined)
+    assertSame(巳, 申.combined)
+    assertSame(辰, 酉.combined)
+    assertSame(卯, 戌.combined)
+    assertSame(寅, 亥.combined)
+  }
+
+
+  @Test
   fun testGetAheadOf() {
     assertSame(0, 子.getAheadOf(子))
     assertSame(1, 子.getAheadOf(亥))
@@ -61,7 +94,7 @@ class BranchTest {
 
   @Test
   fun testPrev() {
-    assertSame(亥 , 子.prev)
+    assertSame(亥, 子.prev)
 
     assertSame(子, 子.prev(0))
     assertSame(亥, 子.prev(1))
@@ -151,17 +184,49 @@ class BranchTest {
 
   @Test
   fun testQuads() {
-    assertEquals(setOf(子 , 午 , 卯 , 酉) , 子.quads)
-    assertEquals(setOf(丑 , 未 , 辰 , 戌) , 丑.quads)
-    assertEquals(setOf(寅 , 巳 , 申 , 亥) , 寅.quads)
+    assertEquals(setOf(子, 午, 卯, 酉), 子.quads)
+    assertEquals(setOf(丑, 未, 辰, 戌), 丑.quads)
+    assertEquals(setOf(寅, 巳, 申, 亥), 寅.quads)
   }
 
   @Test
   fun testTrine() {
-    assertEquals(setOf(申 , 子 , 辰) , 子.trinities)
-    assertEquals(setOf(巳 , 酉 , 丑) , 丑.trinities)
-    assertEquals(setOf(寅 , 午 , 戌) , 寅.trinities)
-    assertEquals(setOf(亥 , 卯 , 未) , 卯.trinities)
+    assertSame(戌, setOf(寅, 午).trine())
+    assertSame(辰, setOf(申, 子).trine())
+    assertSame(未, setOf(亥, 卯).trine())
+    assertSame(丑, setOf(巳, 酉).trine())
+    assertNull(setOf(子, 丑).trine())
+    assertNull(setOf(寅, 卯).trine())
+    assertNull(setOf(辰, 巳).trine())
+    assertNull(setOf(午, 未).trine())
+    assertNull(setOf(申, 酉).trine())
+    assertNull(setOf(戌, 亥).trine())
+  }
+
+  @Test
+  fun testTrinities() {
+    assertEquals(setOf(申, 子, 辰), 子.trinities)
+    assertEquals(setOf(巳, 酉, 丑), 丑.trinities)
+    assertEquals(setOf(寅, 午, 戌), 寅.trinities)
+    assertEquals(setOf(亥, 卯, 未), 卯.trinities)
+  }
+
+  @Test
+  fun testGrip() {
+    assertSame(丑, setOf(子, 寅).grip())
+    assertSame(寅, setOf(丑, 卯).grip())
+    assertSame(卯, setOf(寅, 辰).grip())
+    assertSame(辰, setOf(卯, 巳).grip())
+    assertSame(巳, setOf(辰, 午).grip())
+    assertSame(午, setOf(巳, 未).grip())
+    assertSame(未, setOf(午, 申).grip())
+    assertSame(申, setOf(未, 酉).grip())
+    assertSame(酉, setOf(申, 戌).grip())
+    assertSame(戌, setOf(酉, 亥).grip())
+    assertSame(亥, setOf(戌, 子).grip())
+    assertSame(子, setOf(亥, 丑).grip())
+
+    assertNull(setOf(子, 卯).grip())
   }
 
   @Test

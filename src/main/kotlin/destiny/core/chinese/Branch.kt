@@ -3,7 +3,6 @@ package destiny.core.chinese
 
 import destiny.core.ILoop
 import destiny.core.chinese.Branch.*
-import destiny.tools.ArrayTools
 
 /**
  * 地支系統
@@ -15,7 +14,7 @@ enum class Branch : ILoop<Branch> {
 
   /** 取得對沖 的地支  */
   val opposite: Branch
-    get() = Branch[index + 6]
+    get() = next(6)
 
   /** 取得 六合 的地支  */
   val combined: Branch
@@ -40,20 +39,18 @@ enum class Branch : ILoop<Branch> {
   /**
    * 子[0] ~ 亥[11]
    */
-  val index: Int
-    get() = getIndex(this)
+  val index: Int = ordinal
 
   /**
    * 子[1] ~ 亥[12]
    */
-  val indexFromOne: Int
-    get() = index + 1
+  val indexFromOne = ordinal + 1
 
   /** 三合 */
   val trinities : Set<Branch>
     get() = setOf(this, next(4), next(8))
 
-  /** 刑 */
+  /** 刑 、四正 */
   val quads : Set<Branch>
     get() = setOf(this, next(3), next(6), next(9))
 
@@ -62,7 +59,8 @@ enum class Branch : ILoop<Branch> {
    * n = 0 : 傳回自己
    */
   override fun next(n: Int): Branch {
-    return get(getIndex(this) + n)
+    val targetIndex = (ordinal + n).mod(entries.size)
+    return entries[targetIndex]
   }
 
 
@@ -89,7 +87,7 @@ enum class Branch : ILoop<Branch> {
      * 11 為 亥
      */
     operator fun get(index: Int): Branch {
-      return ArrayTools[entries.toTypedArray(), index]
+      return entries[index.mod(entries.size)]
     }
 
 
@@ -138,30 +136,21 @@ fun Collection<Branch?>.grip(): Branch? {
   }
 }
 
-private val trilogies: Set<Pair<Set<Branch>, FiveElement>>
-  get() {
-    return setOf(
-      setOf(申, 子, 辰) to FiveElement.水,
-      setOf(巳, 酉, 丑) to FiveElement.金,
-      setOf(亥, 卯, 未) to FiveElement.木,
-      setOf(寅, 午, 戌) to FiveElement.火,
-    )
-  }
+private val trilogies: Map<Set<Branch>, FiveElement> = mapOf(
+  setOf(申, 子, 辰) to FiveElement.水,
+  setOf(巳, 酉, 丑) to FiveElement.金,
+  setOf(亥, 卯, 未) to FiveElement.木,
+  setOf(寅, 午, 戌) to FiveElement.火,
+)
 
 /** 地支三合  */
 fun Branch.trilogy(): FiveElement {
-  return trilogies.first {
-    it.first.contains(this)
-  }.second
+  return trilogies.entries.first { it.key.contains(this) }.value
 }
 
 fun trilogy(branch1: Branch, branch2: Branch, branch3: Branch): FiveElement? {
-  return setOf(branch1, branch2, branch3).takeIf { it.size == 3 }
-    ?.let { all3 ->
-      trilogies.firstOrNull { (set, _) ->
-        set.containsAll(all3)
-      }?.second
-    }
+  val branchSet = setOf(branch1, branch2, branch3)
+  return trilogies.entries.firstOrNull { it.key == branchSet }?.value
 }
 
 fun Branch.trilogyCount(vararg branches: Branch): Int {
@@ -171,28 +160,19 @@ fun Branch.trilogyCount(vararg branches: Branch): Int {
 }
 
 
-val directions: Set<Pair<Set<Branch>, FiveElement>>
-  get() {
-    return setOf(
-      setOf(亥, 子, 丑) to FiveElement.水,
-      setOf(寅, 卯, 辰) to FiveElement.木,
-      setOf(巳, 午, 未) to FiveElement.火,
-      setOf(申, 酉, 戌) to FiveElement.金,
-    )
-  }
+private val directions: Map<Set<Branch>, FiveElement> = mapOf(
+  setOf(亥, 子, 丑) to FiveElement.水,
+  setOf(寅, 卯, 辰) to FiveElement.木,
+  setOf(巳, 午, 未) to FiveElement.火,
+  setOf(申, 酉, 戌) to FiveElement.金,
+)
 
 /** 地支三會  */
 fun Branch.direction(): FiveElement {
-  return directions.first {
-    it.first.contains(this)
-  }.second
+  return directions.entries.first { it.key.contains(this) }.value
 }
 
 fun direction(branch1: Branch, branch2: Branch, branch3: Branch): FiveElement? {
-  return setOf(branch1, branch2, branch3).takeIf { it.size == 3 }
-    ?.let { all3 ->
-      directions.firstOrNull { (set, _) ->
-        set.containsAll(all3)
-      }?.second
-    }
+  val branchSet = setOf(branch1, branch2, branch3)
+  return directions.entries.firstOrNull { it.key == branchSet }?.value
 }

@@ -2,7 +2,6 @@ package destiny.core.chinese
 
 import destiny.core.ILoop
 import destiny.core.chinese.FiveElement.*
-import destiny.tools.ArrayTools
 
 /** 天干系統  */
 enum class Stem : Comparable<Stem>, IFiveElement, IYinYang , ILoop<Stem> {
@@ -12,12 +11,10 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang , ILoop<Stem> {
 
 
   /** 甲[0] ... 癸[9]  */
-  val index: Int
-    get() = getIndex(this)
+  val index: Int = ordinal
 
   /** 甲[1] ... 癸[10]  */
-  val indexFromOne: Int
-    get() = getIndex(this) + 1
+  val indexFromOne: Int = ordinal + 1
 
 
   /**
@@ -25,7 +22,8 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang , ILoop<Stem> {
    * n = 0 : 傳回自己
    */
   override fun next(n: Int): Stem {
-    return get(getIndex(this) + n)
+    val targetIndex = (ordinal + n).mod(entries.size)
+    return entries[targetIndex]
   }
 
 
@@ -59,17 +57,47 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang , ILoop<Stem> {
 
   val combined: Pair<Stem, FiveElement>
     get() {
-      val stem = get(this.index + 5)
-      return stem to
-        when (index % 5) {
-          0    -> 土
-          1    -> 金
-          2    -> 水
-          3    -> 木
-          4    -> 火
-          else -> throw RuntimeException("impossible")
-        }
+      val stem = entries[(ordinal + 5) % 10]
+      val element = when (ordinal % 5) {
+        0    -> 土
+        1    -> 金
+        2    -> 水
+        3    -> 木
+        4    -> 火
+        else -> throw RuntimeException("impossible")
+      }
+      return stem to element
     }
+
+  /**
+   * 十二運算法 - 根據天干的陰陽性決定順逆行
+   * 陽干順行，陰干逆行
+   */
+  fun twelve(twelve: Twelve): Branch {
+    // 每個天干的長生起始位置
+    val startBranch = when (this) {
+      甲 -> Branch.亥  // 甲木長生在亥
+      乙 -> Branch.午  // 乙木長生在午
+      丙 -> Branch.寅  // 丙火長生在寅
+      丁 -> Branch.酉  // 丁火長生在酉
+      戊 -> Branch.寅  // 戊土長生在寅（同丙火）
+      己 -> Branch.酉  // 己土長生在酉（同丁火）
+      庚 -> Branch.巳  // 庚金長生在巳
+      辛 -> Branch.子  // 辛金長生在子
+      壬 -> Branch.申  // 壬水長生在申
+      癸 -> Branch.卯  // 癸水長生在卯
+    }
+
+    val twelveIndex = twelve.ordinal
+
+    return if (this.booleanValue) {
+      // 陽干順行：長生、沐浴、冠帶、臨官...
+      startBranch.next(twelveIndex)
+    } else {
+      // 陰干逆行：長生、沐浴、冠帶、臨官...（從自己的長生位開始逆行）
+      startBranch.prev(twelveIndex)
+    }
+  }
 
   companion object {
 
@@ -94,7 +122,7 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang , ILoop<Stem> {
      * @return
      */
     operator fun get(index: Int): Stem {
-      return ArrayTools[entries.toTypedArray(), index]
+      return entries[index.mod(entries.size)]
     }
 
     operator fun get(c: Char): Stem? {
@@ -103,13 +131,11 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang , ILoop<Stem> {
 
     /** 甲[0] ... 癸[9]  */
     fun getIndex(hs: Stem): Int {
-      return entries.indexOf(hs)//  Arrays.binarySearch(values(), hs)
+      return entries.indexOf(hs)
     }
 
     fun Stem.combinedCount(vararg elements: Stem): Int {
-      return elements.map { each ->
-        if (this.combined.first == each) 1 else 0
-      }.sum()
+      return elements.count { this.combined.first == it }
     }
   }
 

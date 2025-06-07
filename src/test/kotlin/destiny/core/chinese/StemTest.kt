@@ -9,13 +9,18 @@ import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.Stem.Companion.combinedCount
 import destiny.tools.KotlinLogging
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import java.util.*
+import java.util.stream.Stream
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class StemTest {
 
   val logger = KotlinLogging.logger { }
@@ -198,17 +203,37 @@ class StemTest {
   }
 
 
-  @Test
-  fun testHashCode() {
-    logger.info("${甲.hashCode()}")
-    logger.info("${乙.hashCode()}")
-    logger.info("${丙.hashCode()}")
-    logger.info("${丁.hashCode()}")
-    logger.info("${戊.hashCode()}")
-    logger.info("${己.hashCode()}")
-    logger.info("${庚.hashCode()}")
-    logger.info("${辛.hashCode()}")
-    logger.info("${壬.hashCode()}")
-    logger.info("${癸.hashCode()}")
+  private fun testTwelve() = Stream.of(
+    Triple(甲 , Twelve.生 , Branch.亥),
+    Triple(甲 , Twelve.敗 , Branch.子),
+    Triple(甲 , Twelve.冠 , Branch.丑),
+    Triple(甲 , Twelve.祿 , Branch.寅),
+    Triple(甲 , Twelve.旺 , Branch.卯),
+    Triple(甲 , Twelve.衰 , Branch.辰),
+    Triple(甲 , Twelve.病 , Branch.巳),
+    Triple(甲 , Twelve.死 , Branch.午),
+    Triple(甲 , Twelve.墓 , Branch.未),
+    Triple(甲 , Twelve.絕 , Branch.申),
+    Triple(甲 , Twelve.胎 , Branch.酉),
+    Triple(甲 , Twelve.養 , Branch.戌),
+    Triple(乙 , Twelve.生 , Branch.午),
+    Triple(乙 , Twelve.敗 , Branch.巳),
+    Triple(乙 , Twelve.冠 , Branch.辰),
+    Triple(乙 , Twelve.祿 , Branch.卯),
+    Triple(乙 , Twelve.旺 , Branch.寅),
+    Triple(乙 , Twelve.衰 , Branch.丑),
+    Triple(乙 , Twelve.病 , Branch.子),
+    Triple(乙 , Twelve.死 , Branch.亥),
+    Triple(乙 , Twelve.墓 , Branch.戌),
+    Triple(乙 , Twelve.絕 , Branch.酉),
+    Triple(乙 , Twelve.胎 , Branch.申),
+    Triple(乙 , Twelve.養 , Branch.未),
+  )
+  @ParameterizedTest
+  @MethodSource
+  fun testTwelve(triple : Triple<Stem , Twelve , Branch> ) {
+    val (stem, twelve , branch) = triple
+    assertSame(branch , stem.twelve(twelve))
   }
+
 }
