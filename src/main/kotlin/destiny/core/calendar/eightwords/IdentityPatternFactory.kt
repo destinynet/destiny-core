@@ -119,6 +119,24 @@ object IdentityPatterns {
       val dayStem = this@getPatterns.day.stem
       val dayBranch = this@getPatterns.day.branch
 
+      // 天醫的查法：以月支為準，對應的地支
+      fun Branch.天醫(): Branch {
+        return when (this) {
+          寅 -> 丑  // 正月（寅月）見丑
+          卯 -> 寅  // 二月（卯月）見寅
+          辰 -> 卯  // 三月（辰月）見卯
+          巳 -> 辰  // 四月（巳月）見辰
+          午 -> 巳  // 五月（午月）見巳
+          未 -> 午  // 六月（未月）見午
+          申 -> 未  // 七月（申月）見未
+          酉 -> 申  // 八月（酉月）見申
+          戌 -> 酉  // 九月（戌月）見酉
+          亥 -> 戌  // 十月（亥月）見戌
+          子 -> 亥  // 十一月（子月）見亥
+          丑 -> 子  // 十二月（丑月）見子
+        }
+      }
+
       // 正月生者見丁，二月生者見申，三月生者見壬，四月生者見辛，五月生者見亥，六月生者見甲， 七月生者見癸，八月生者見寅， 九月生者見丙，十月生者見乙，十一隻主者見已，十二月生者見庚
       fun Branch.天德(): Either<Stem, Branch> {
         return when (this) {
@@ -247,6 +265,23 @@ object IdentityPatterns {
               add(AuspiciousPattern(Auspicious.天乙貴人, it))
             }
         }
+
+        // 天醫貴人
+        run {
+          val expectedTianyiBranch = monthBranch.天醫()
+
+          this@getPatterns.getScaleMap()
+            .filter { (scale, stemBranch) ->
+              scale != Scale.MONTH && stemBranch.branch == expectedTianyiBranch  // 排除月柱
+            }
+            .map { (scale, _) -> scale }
+            .toSet()
+            .takeIf { it.isNotEmpty() }
+            ?.also {
+              add(AuspiciousPattern(Auspicious.天醫, it))
+            }
+        }
+
       }
     }
   }

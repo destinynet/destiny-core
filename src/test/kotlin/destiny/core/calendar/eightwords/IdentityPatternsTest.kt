@@ -300,6 +300,73 @@ class IdentityPatternsTest {
         }
       }
     }
+
+    @Nested
+    inner class 天醫Test {
+
+      /**
+       * 單柱測試：三月生（辰月）見卯，天醫在日柱
+       */
+      @Test
+      fun 單柱() {
+        val ew = EightWords(乙巳, 庚辰, 乙卯, 戊寅) // 辰月，日支有卯
+        with(auspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.AuspiciousPattern(Auspicious.天醫, setOf(DAY)))
+            }
+          }
+        }
+      }
+
+      /**
+       * 多柱測試：二月生（卯月）見寅，天醫在年柱和時柱
+       */
+      @Test
+      fun 多柱() {
+        val ew = EightWords(甲寅, 乙卯, 丙申, 戊寅) // 卯月，年支和時支都有寅
+        with(auspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.AuspiciousPattern(Auspicious.天醫, setOf(YEAR, HOUR)))
+            }
+          }
+        }
+      }
+
+
+      /**
+       * 邊界測試：十二月生（丑月）見子，天醫在時柱
+       */
+      @Test
+      fun 十二月生() {
+        val ew = EightWords(甲寅, 丁丑, 己卯, 甲子) // 丑月，時支有子
+        with(auspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertTrue {
+              patterns.contains(IdentityPattern.AuspiciousPattern(Auspicious.天醫, setOf(HOUR)))
+            }
+          }
+        }
+      }
+
+      /**
+       * 反向測試：確保不符合天醫條件的不會被誤判
+       */
+      @Test
+      fun 無天醫() {
+        val ew = EightWords(甲寅, 庚辰, 己未, 戊戌) // 辰月，但四柱都沒有卯
+        with(auspiciousPattern) {
+          ew.getPatterns().also { patterns ->
+            assertFalse {
+              patterns.any { pattern ->
+                pattern is IdentityPattern.AuspiciousPattern && pattern.value == Auspicious.天醫
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
 
