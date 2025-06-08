@@ -24,7 +24,7 @@ interface IEclipseFactory {
   fun getRangeSolarEclipses(fromGmt: GmtJulDay,
                             toGmt: GmtJulDay,
                             types: Set<SolarType> = SolarType.entries.toSet()
-  ): List<AbstractSolarEclipse> {
+  ): Sequence<AbstractSolarEclipse> {
     require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
 
     val backwardSeq = generateSequence(getNextSolarEclipse(fromGmt, false, types)) {
@@ -41,7 +41,7 @@ interface IEclipseFactory {
         || it.begin < fromGmt && toGmt < it.end
     }
 
-    return sequenceOf(backwardSeq , forwardSeq).flatten().sortedBy { it.begin }.toList()
+    return sequenceOf(backwardSeq , forwardSeq).flatten().sortedBy { it.begin }
   }
 
   // ================================== 月食 ==================================
@@ -52,7 +52,7 @@ interface IEclipseFactory {
   /** 全球，某時間範圍內的月食記錄 */
   fun getRangeLunarEclipses(fromGmt: GmtJulDay,
                             toGmt: GmtJulDay,
-                            types: Set<LunarType> = LunarType.entries.toSet()): List<AbstractLunarEclipse> {
+                            types: Set<LunarType> = LunarType.entries.toSet()): Sequence<AbstractLunarEclipse> {
     require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
 
     val backwardSeq = generateSequence(getNextLunarEclipse(fromGmt, false)) {
@@ -69,7 +69,7 @@ interface IEclipseFactory {
         || it.begin < fromGmt && toGmt < it.end
     }
 
-    return sequenceOf(backwardSeq, forwardSeq).flatten().sortedBy { it.begin }.toList()
+    return sequenceOf(backwardSeq, forwardSeq).flatten().sortedBy { it.begin }
   }
 
   // ================================== 日食觀測 ==================================

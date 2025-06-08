@@ -292,39 +292,6 @@ object IdentityPatterns {
         // 二月起辰，然後從辰起雙月順排。
         // 如二月起辰，四月為辰的下一位為巳，六月為午，依次類推。
         run {
-
-//          val expectedBranch = monthBranch.indexFromOne.let { indexFromOne ->
-//            if (indexFromOne % 2 == 1) {
-//              // 單月 ,
-//              // 寅 = 3 , (3-1)/2 - 1 = 0
-//              // 辰 = 5 , (5-1)/2 - 1 = 1
-//              // ...
-//              // 戌 = 11, (11-1)/2 -1 = 4
-//              // 子 = 1 , (1-1)/2 - 1 = -1 ==> change to 5
-//              val steps = ((indexFromOne - 1) / 2 - 1).let {
-//                if (it < 0)
-//                  6 + it
-//                else
-//                  it
-//              }
-//              戌.next(steps)
-//            } else {
-//              // 雙月 ,
-//              // 卯 = 4 ,  4/2 - 2 = 0
-//              // 巳 = 6 ,  6/2 - 2 = 1
-//              // ...
-//              // 亥 = 12, 12/2 - 2 = 4
-//              // 丑 =  2, 2/2  - 2 =-1 ==> change to 5
-//              val steps = (indexFromOne / 2 - 2).let {
-//                if (it < 0)
-//                  6 + it
-//                else
-//                  it
-//              }
-//              辰.next(steps)
-//            }
-//          }
-
           val expectedBranch: Branch = when (monthBranch) {
             寅 -> 戌
             卯 -> 辰

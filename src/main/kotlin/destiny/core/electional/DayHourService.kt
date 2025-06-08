@@ -12,6 +12,7 @@ import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseImpl
+import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools.toGmtJulDay
@@ -36,6 +37,7 @@ class DayHourService(
   private val relativeTransitImpl: IRelativeTransit,
   private val voidCourseFeature: IVoidCourseFeature,
   private val retrogradeImpl : IRetrograde,
+  private val eclipseImpl: IEclipseFactory,
 ) {
 
   fun traverse(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config : Config): Sequence<DayHourEvent> {
@@ -111,6 +113,16 @@ class DayHourService(
       }
     }
 
+    // 日食
+    val solarEclipses = eclipseImpl.getRangeSolarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
+      AstroEvent.Eclipse(eclipse)
+    }
+
+    // 月食
+    val lunarEclipse = eclipseImpl.getRangeLunarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
+      AstroEvent.Eclipse(eclipse)
+    }
+
     return sequence {
       // 全球星體交角
       yieldAll(globalEvents)
@@ -128,6 +140,10 @@ class DayHourService(
         // 星體當日逆行
         yieldAll(planetRetrogrades)
       }
+      // 日食
+      yieldAll(solarEclipses)
+      // 月食
+      yieldAll(lunarEclipse)
     }
   }
 

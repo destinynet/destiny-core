@@ -11,6 +11,16 @@ import java.lang.reflect.Type
 import kotlin.reflect.KType
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.microseconds
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
+import kotlin.time.DurationUnit.*
 
 /**
  * Set<Container<IAnimal>> to find which container contains [type] == Cat
@@ -96,5 +106,19 @@ fun Type.toKType(): KType {
 
     is Class<*>          -> this.kotlin.createType()
     else                 -> throw IllegalArgumentException("Unsupported type: $this")
+  }
+}
+
+fun Duration.truncate(unit: DurationUnit): Duration {
+  return toComponents { days: Long, hours: Int, minutes: Int, seconds: Int, nanoseconds: Int ->
+    when (unit) {
+      NANOSECONDS  -> this // there's no smaller unit than NANOSECONDS, so just return the current Duration
+      MICROSECONDS -> days.days + hours.hours + minutes.minutes + seconds.seconds + nanoseconds.nanoseconds.inWholeSeconds.seconds + nanoseconds.nanoseconds.inWholeMicroseconds.microseconds
+      MILLISECONDS -> days.days + hours.hours + minutes.minutes + seconds.seconds + nanoseconds.nanoseconds.inWholeSeconds.seconds + nanoseconds.nanoseconds.inWholeMilliseconds.milliseconds
+      SECONDS      -> days.days + hours.hours + minutes.minutes + seconds.seconds
+      MINUTES      -> days.days + hours.hours + minutes.minutes
+      HOURS        -> days.days + hours.hours
+      DAYS         -> days.days
+    }
   }
 }
