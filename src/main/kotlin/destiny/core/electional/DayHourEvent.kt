@@ -5,6 +5,7 @@ import destiny.core.Scale
 import destiny.core.astrology.AspectData
 import destiny.core.astrology.Planet
 import destiny.core.astrology.Stationary
+import destiny.core.astrology.StationaryType
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.IEclipse
 import destiny.core.astrology.prediction.SynastryAspect
@@ -242,9 +243,15 @@ sealed class DayHourEvent : IEvent {
     }
 
     /** 星體滯留 */
-    data class PlanetStationary(val stationary: Stationary) : AstroEvent() {
+    data class PlanetStationary(val stationary: Stationary, val transitToNatalAspects: Set<SynastryAspect>) : AstroEvent() {
       override val begin: GmtJulDay = stationary.begin
-      override val type: Type = Type.CAUTION
+      override val type: Type
+        get() {
+          return when(stationary.type) {
+            StationaryType.DIRECT_TO_RETROGRADE -> Type.BAD
+            StationaryType.RETROGRADE_TO_DIRECT -> Type.CAUTION
+          }
+        }
       override val span: Span = Span.INSTANT
       override val impact: Impact = Impact.GLOBAL
     }
@@ -261,7 +268,7 @@ sealed class DayHourEvent : IEvent {
     /**
      * 日食 or 月食
      */
-    data class Eclipse(val eclipse: IEclipse, val aspects: Set<SynastryAspect>) : AstroEvent() {
+    data class Eclipse(val eclipse: IEclipse, val transitToNatalAspects: Set<SynastryAspect>) : AstroEvent() {
       override val type: Type = Type.CAUTION
       override val span: Span = Span.HOURS
       override val impact: Impact = Impact.GLOBAL

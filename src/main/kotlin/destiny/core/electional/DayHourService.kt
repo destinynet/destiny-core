@@ -81,6 +81,24 @@ class DayHourService(
       starPositionImpl.getPosition(planet, bdnp.gmtJulDay, bdnp.location).lngDeg
     }
 
+    val houseRelatedPoints = listOf(Axis.values.toList(), Arabic.values.toList()).flatten()
+
+    /**
+     * [chosenPoint] 外圈的某星 針對內圈 的星體，形成哪些交角
+     */
+    fun IHoroscopeModel.outerToInner(chosenPoint : AstroPoint): Set<SynastryAspect> {
+      return horoscopeFeature.synastry(this, inner, modernAspectCalculator).filter { aspect ->
+        aspect.outerPoint == chosenPoint && (
+          if (includeHour)
+            true
+          else {
+            aspect.innerPoint !in houseRelatedPoints
+          }
+          )
+      }.toSet()
+    }
+
+
     fun searchPersonalEvents(outerStars: Set<Planet>, angles: Set<Double>): Sequence<AspectData> {
       return outerStars.asSequence().flatMap { outer ->
         innerStars.flatMap { inner ->
@@ -111,10 +129,13 @@ class DayHourService(
     val vocConfig = VoidCourseConfig(MOON , vocImpl = VoidCourseImpl.Medieval)
     val moonVocSeq: Sequence<AstroEvent.MoonVoc> = voidCourseFeature.getVoidCourses(fromGmtJulDay, toGmtJulDay, loc, relativeTransitImpl, vocConfig).map { AstroEvent.MoonVoc(it) }
 
+
+
     // 滯留
     val planetStationaries = sequenceOf(MERCURY, VENUS, MARS, JUPITER, SATURN).flatMap { planet ->
       retrogradeImpl.getRangeStationaries(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl).map { s ->
-        AstroEvent.PlanetStationary(s)
+        val outer = horoscopeFeature.getModel(s.gmtJulDay, loc, config.horoscopeConfig)
+        AstroEvent.PlanetStationary(s, outer.outerToInner(planet))
       }
     }
 
@@ -126,40 +147,18 @@ class DayHourService(
     }
 
 
-    val houseRelatedPoints = listOf(Axis.values.toList(), Arabic.values.toList()).flatten()
+
 
     // 日食
     val solarEclipses = eclipseImpl.getRangeSolarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
       val outer = horoscopeFeature.getModel(eclipse.max , loc, config.horoscopeConfig)
-
-      val aspects: Set<SynastryAspect> = horoscopeFeature.synastry(outer, inner, modernAspectCalculator).filter { aspect ->
-        aspect.outerPoint == SUN && (
-          if (includeHour)
-            true
-          else {
-            aspect.innerPoint !in houseRelatedPoints
-          }
-          )
-      }
-        .toSet()
-
-      AstroEvent.Eclipse(eclipse, aspects)
+      AstroEvent.Eclipse(eclipse, outer.outerToInner(SUN))
     }
 
     // 月食
     val lunarEclipse = eclipseImpl.getRangeLunarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
       val outer = horoscopeFeature.getModel(eclipse.max, loc, config.horoscopeConfig)
-      val aspects: Set<SynastryAspect> = horoscopeFeature.synastry(outer, inner, modernAspectCalculator).filter { aspect ->
-        aspect.outerPoint == MOON && (
-          if (includeHour)
-            true
-          else {
-            aspect.innerPoint !in houseRelatedPoints
-          }
-          )
-      }
-        .toSet()
-      AstroEvent.Eclipse(eclipse, aspects)
+      AstroEvent.Eclipse(eclipse, outer.outerToInner(MOON))
     }
 
     return sequence {
