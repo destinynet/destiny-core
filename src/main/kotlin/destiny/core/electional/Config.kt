@@ -27,5 +27,7 @@ data class Config(
     val retrograde: Boolean = true,
     /** 日食、月食 */
     val eclipse : Boolean = true,
+    /** 月相 */
+    val lunarPhase: Boolean = true,
   )
 }

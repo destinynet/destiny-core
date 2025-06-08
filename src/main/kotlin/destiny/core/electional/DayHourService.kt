@@ -84,11 +84,11 @@ class DayHourService(
     val houseRelatedPoints = listOf(Axis.values.toList(), Arabic.values.toList()).flatten()
 
     /**
-     * [chosenPoint] 外圈的某星 針對內圈 的星體，形成哪些交角
+     * [chosenPoints] 外圈的某星 針對內圈 的星體，形成哪些交角
      */
-    fun IHoroscopeModel.outerToInner(chosenPoint : AstroPoint): Set<SynastryAspect> {
+    fun IHoroscopeModel.outerToInner(vararg chosenPoints : AstroPoint): Set<SynastryAspect> {
       return horoscopeFeature.synastry(this, inner, modernAspectCalculator).filter { aspect ->
-        aspect.outerPoint == chosenPoint && (
+        aspect.outerPoint in chosenPoints && (
           if (includeHour)
             true
           else {
@@ -161,6 +161,21 @@ class DayHourService(
       AstroEvent.Eclipse(eclipse, outer.outerToInner(MOON))
     }
 
+    // 月相
+    val lunarPhaseEvents = sequenceOf(
+      0.0 to LunarPhase.NEW,
+      90.0 to LunarPhase.FIRST_QUARTER,
+      180.0 to LunarPhase.FULL,
+      270.0 to LunarPhase.LAST_QUARTER
+    ).flatMap { (angle , phase) ->
+      relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(MOON, SUN, fromGmtJulDay, toGmtJulDay, angle).map { gmtJulDay ->
+        val outer = horoscopeFeature.getModel(gmtJulDay, loc, config.horoscopeConfig)
+        // 外圈只考量 SUN , MOON , 找出與本命的交角
+        AstroEvent.LunarPhaseEvent(phase , gmtJulDay, outer.outerToInner(SUN, MOON))
+      }
+    }
+
+
     return sequence {
       // 全球星體交角
       yieldAll(globalEvents)
@@ -183,6 +198,10 @@ class DayHourService(
         yieldAll(solarEclipses)
         // 月食
         yieldAll(lunarEclipse)
+      }
+      if (config.lunarPhase) {
+        // 月相
+        yieldAll(lunarPhaseEvents)
       }
     }
   }

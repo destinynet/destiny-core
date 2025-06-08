@@ -41,12 +41,12 @@ interface IRelativeTransit {
     fromJulDay: GmtJulDay,
     toJulDay: GmtJulDay,
     angle: Double
-  ): List<GmtJulDay> {
+  ): Sequence<GmtJulDay> {
 
     return generateSequence(getRelativeTransit(transitStar, relativeStar, angle, fromJulDay, true)) {
       getRelativeTransit(transitStar, relativeStar, angle, it + 0.000001, true)
     }.takeWhile { it < toJulDay }
-      .toList()
+
   }
 
 

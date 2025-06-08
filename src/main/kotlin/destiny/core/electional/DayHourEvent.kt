@@ -2,10 +2,7 @@ package destiny.core.electional
 
 import destiny.core.FlowScale
 import destiny.core.Scale
-import destiny.core.astrology.AspectData
-import destiny.core.astrology.Planet
-import destiny.core.astrology.Stationary
-import destiny.core.astrology.StationaryType
+import destiny.core.astrology.*
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.IEclipse
 import destiny.core.astrology.prediction.SynastryAspect
@@ -274,6 +271,22 @@ sealed class DayHourEvent : IEvent {
       override val impact: Impact = Impact.GLOBAL
       override val begin: GmtJulDay = eclipse.max
     }
+
+    /**
+     * 月相
+     */
+    data class LunarPhaseEvent(val phase: LunarPhase,
+                               override val begin: GmtJulDay,
+                               val transitToNatalAspects: Set<SynastryAspect>) : AstroEvent() {
+      override val span: Span = Span.INSTANT
+      override val impact: Impact = Impact.GLOBAL
+      override val type: Type = when (phase) {
+        LunarPhase.NEW          -> Type.GOOD
+        LunarPhase.FULL         -> Type.GOOD
+        LunarPhase.FIRST_QUARTER,
+        LunarPhase.LAST_QUARTER -> Type.CAUTION
+      }
+                               }
   }
 
 }
