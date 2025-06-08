@@ -13,6 +13,7 @@ import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.astrology.eclipse.IEclipseFactory
+import destiny.core.astrology.prediction.SynastryAspect
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools.toGmtJulDay
@@ -38,9 +39,11 @@ class DayHourService(
   private val voidCourseFeature: IVoidCourseFeature,
   private val retrogradeImpl : IRetrograde,
   private val eclipseImpl: IEclipseFactory,
+  private val horoscopeFeature: IHoroscopeFeature,
+  private val modernAspectCalculator: IAspectCalculator,
 ) {
 
-  fun traverse(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config : Config): Sequence<DayHourEvent> {
+  fun traverse(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config : Config, includeHour: Boolean): Sequence<DayHourEvent> {
     require(model.toDate.isAfter(model.fromDate)) { "toDate must be after the fromDate" }
 
     val loc = model.loc?:bdnp.location
@@ -50,20 +53,29 @@ class DayHourService(
 
     return sequence {
       config.ewConfig?.also {
-        yieldAll(searchEwEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, it))
+        yieldAll(searchEwEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, includeHour, it))
       }
       config.astrologyConfig?.also {
-        yieldAll(searchAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, it))
+        yieldAll(searchAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, includeHour, it))
       }
     }
 
   }
 
-  private fun searchAstrologyEvents(bdnp: IBirthDataNamePlace, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay, loc: ILocation, config: Config.AstrologyConfig): Sequence<AstroEvent> {
+  private fun searchAstrologyEvents(
+    bdnp: IBirthDataNamePlace,
+    fromGmtJulDay: GmtJulDay,
+    toGmtJulDay: GmtJulDay,
+    loc: ILocation,
+    includeHour: Boolean,
+    config: Config.AstrologyConfig
+  ): Sequence<AstroEvent> {
     val innerStars = setOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
 
     val harmonyAngles = setOf(0.0, 60.0, 120.0, 240.0, 300.0)
     val tensionAngles = setOf(90.0, 180.0)
+
+    val inner = horoscopeFeature.getModel(bdnp.gmtJulDay, loc, config.horoscopeConfig)
 
     val innerStarPosMap: Map<Planet, ZodiacDegree> = innerStars.associateWith { planet ->
       starPositionImpl.getPosition(planet, bdnp.gmtJulDay, bdnp.location).lngDeg
@@ -113,21 +125,48 @@ class DayHourService(
       }
     }
 
+
+    val houseRelatedPoints = listOf(Axis.values.toList(), Arabic.values.toList()).flatten()
+
     // 日食
     val solarEclipses = eclipseImpl.getRangeSolarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
-      AstroEvent.Eclipse(eclipse)
+      val outer = horoscopeFeature.getModel(eclipse.max , loc, config.horoscopeConfig)
+
+      val aspects: Set<SynastryAspect> = horoscopeFeature.synastry(outer, inner, modernAspectCalculator).filter { aspect ->
+        aspect.outerPoint == SUN && (
+          if (includeHour)
+            true
+          else {
+            aspect.innerPoint !in houseRelatedPoints
+          }
+          )
+      }
+        .toSet()
+
+      AstroEvent.Eclipse(eclipse, aspects)
     }
 
     // 月食
     val lunarEclipse = eclipseImpl.getRangeLunarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
-      AstroEvent.Eclipse(eclipse)
+      val outer = horoscopeFeature.getModel(eclipse.max, loc, config.horoscopeConfig)
+      val aspects: Set<SynastryAspect> = horoscopeFeature.synastry(outer, inner, modernAspectCalculator).filter { aspect ->
+        aspect.outerPoint == MOON && (
+          if (includeHour)
+            true
+          else {
+            aspect.innerPoint !in houseRelatedPoints
+          }
+          )
+      }
+        .toSet()
+      AstroEvent.Eclipse(eclipse, aspects)
     }
 
     return sequence {
       // 全球星體交角
       yieldAll(globalEvents)
       // 全球 to 個人 , 和諧交角
-      yieldAll(searchPersonalEvents(innerStars, tensionAngles).map { aspectData -> AstroEvent.AspectEvent(Type.BAD, aspectData, Impact.PERSONAL) })
+      yieldAll(searchPersonalEvents(innerStars, harmonyAngles).map { aspectData -> AstroEvent.AspectEvent(Type.GOOD, aspectData, Impact.PERSONAL) })
       // 全球 to 個人 , 緊張交角
       yieldAll(searchPersonalEvents(innerStars, tensionAngles).map { aspectData -> AstroEvent.AspectEvent(Type.BAD, aspectData, Impact.PERSONAL) })
       // 月亮空亡
@@ -140,16 +179,18 @@ class DayHourService(
         // 星體當日逆行
         yieldAll(planetRetrogrades)
       }
-      // 日食
-      yieldAll(solarEclipses)
-      // 月食
-      yieldAll(lunarEclipse)
+      if (config.eclipse) {
+        // 日食
+        yieldAll(solarEclipses)
+        // 月食
+        yieldAll(lunarEclipse)
+      }
     }
   }
 
   private val supportedScales = setOf(Scale.DAY, Scale.HOUR)
 
-  private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords, config : Config.EwConfig): Sequence<EwEvent> {
+  private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords, config : Config.EwConfig, includeHour: Boolean): Sequence<EwEvent> {
 
     val globalStemCombined: Sequence<EwEvent.EwGlobalEvent.StemCombined> = with(IdentityPatterns.stemCombined) {
       outer.getPatterns().asSequence().filterIsInstance<IdentityPattern.StemCombined>()
@@ -257,6 +298,15 @@ class DayHourService(
       yieldAll(personalTrilogyToFlow)
       yieldAll(personalToFlowTrilogy)
       yieldAll(personalBranchOpposition)
+    }.filter {
+      if (includeHour)
+        true
+      else {
+        when(it) {
+          is EwEvent.EwPersonalEvent -> !it.hourRelated
+          is EwEvent.EwGlobalEvent   -> true
+        }
+      }
     }
   }
 
@@ -265,7 +315,8 @@ class DayHourService(
     fromGmtJulDay: GmtJulDay,
     toGmtJulDay: GmtJulDay,
     loc: ILocation = bdnp.location,
-    config: Config.EwConfig
+    includeHour: Boolean,
+    config: Config.EwConfig,
   ): Sequence<EwEvent> {
 
     val ewPersonPresentConfig = config.personPresentConfig
@@ -278,7 +329,7 @@ class DayHourService(
       ewFeature.next(gmtJulDay + 0.01, loc, ewPersonPresentConfig)
     }.takeWhile { (outerEw, gmtJulDay) -> gmtJulDay < toGmtJulDay }
       .flatMap { (outerEw, gmtJulDay) ->
-        matchEwEvents(gmtJulDay, outerEw, personEw, config)
+        matchEwEvents(gmtJulDay, outerEw, personEw, config, includeHour)
       }
   }
 }

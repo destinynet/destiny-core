@@ -38,7 +38,7 @@ class Electional {
   interface IDayHourModel : ITraversalModel {
     val topN: Int
     val purpose: ElectionalPurpose
-    val filterOutHour: Boolean
+    val includeHour: Boolean
     val timeRange: TimeRange?
     val notes: String?
   }
@@ -51,7 +51,7 @@ class Electional {
     private val traversal: TraversalModel,
     override val topN: Int,
     override val purpose: ElectionalPurpose,
-    override val filterOutHour: Boolean,
+    override val includeHour: Boolean,
     override val timeRange: TimeRange? = null,
     override val notes: String? = null,
   ) : IDayHourModel, ITraversalModel by traversal

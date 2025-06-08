@@ -7,6 +7,7 @@ import destiny.core.astrology.Planet
 import destiny.core.astrology.Stationary
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.IEclipse
+import destiny.core.astrology.prediction.SynastryAspect
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.IEvent
 import destiny.core.calendar.IEventSpan
@@ -260,7 +261,7 @@ sealed class DayHourEvent : IEvent {
     /**
      * 日食 or 月食
      */
-    data class Eclipse(val eclipse : IEclipse) : AstroEvent() {
+    data class Eclipse(val eclipse: IEclipse, val aspects: Set<SynastryAspect>) : AstroEvent() {
       override val type: Type = Type.CAUTION
       override val span: Span = Span.HOURS
       override val impact: Impact = Impact.GLOBAL

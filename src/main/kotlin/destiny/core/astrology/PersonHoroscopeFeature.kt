@@ -7,7 +7,6 @@ import destiny.core.Gender
 import destiny.core.SynastryGrain
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Axis.RISING
-import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.prediction.MidPointFocalAspect
 import destiny.core.astrology.prediction.SynastryAspect
 import destiny.core.calendar.GmtJulDay
@@ -15,7 +14,6 @@ import destiny.core.calendar.ILocation
 import destiny.tools.*
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-
 
 
 @Serializable
@@ -43,12 +41,41 @@ class PersonHoroscopeConfigBuilder : Builder<PersonHoroscopeConfig> {
 }
 
 interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPersonHoroscopeModel> {
+
+
+
   fun synastry(
     modelInner: IPersonHoroscopeModel, modelOuter: IPersonHoroscopeModel,
     aspectCalculator: IAspectCalculator,
     midpointAspectCalculator: IAspectCalculator,
     aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
     mode: SynastryGrain = SynastryGrain.BOTH_FULL
+  ): SynastryHoroscope
+}
+
+
+@Named
+class PersonHoroscopeFeature(
+  private val horoscopeFeature: IHoroscopeFeature
+) :
+  AbstractCachedPersonFeature<IPersonHoroscopeConfig, IPersonHoroscopeModel>(), IPersonHoroscopeFeature {
+
+  override val key: String = "personHoroscope"
+
+  override val defaultConfig: IPersonHoroscopeConfig = PersonHoroscopeConfig()
+
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: IPersonHoroscopeConfig): IPersonHoroscopeModel {
+    val horoscopeModel = horoscopeFeature.getModel(gmtJulDay, loc, config.horoscopeConfig)
+    return PersonHoroscopeModel(horoscopeModel, gender, name)
+  }
+
+  override fun synastry(
+    modelInner: IPersonHoroscopeModel,
+    modelOuter: IPersonHoroscopeModel,
+    aspectCalculator: IAspectCalculator,
+    midpointAspectCalculator: IAspectCalculator,
+    aspects: Set<Aspect>,
+    mode: SynastryGrain
   ): SynastryHoroscope {
     val innerPoints = modelInner.points.let { points ->
       when (mode) {
@@ -57,7 +84,7 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
       }
     }.toList()
 
-    val outerPoints = modelOuter.points.let { points ->
+    val outerPoints: List<AstroPoint> = modelOuter.points.let { points ->
       when (mode) {
         SynastryGrain.BOTH_FULL, SynastryGrain.INNER_DATE_OUTER_FULL -> points
         else                                                         -> points.filter { it != Planet.MOON }
@@ -67,14 +94,9 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
     val posMapOuter = modelOuter.positionMap
     val posMapInner = modelInner.positionMap
 
-    val synastryAspects = outerPoints.asSequence().flatMap { pOuter -> innerPoints.asSequence().map { pInner -> pOuter to pInner } }
-      .mapNotNull { (pOuter, pInner) ->
-        aspectCalculator.getAspectPattern(pOuter, pInner, posMapOuter, posMapInner, { null }, { null }, aspects)
-          ?.let { p: IPointAspectPattern ->
-            val pOuterHouse = posMapOuter[pOuter]?.lng?.toZodiacDegree()?.let { zDeg -> modelInner.getHouse(zDeg) }
-            val pInnerHouse = posMapInner[pInner]?.lng?.toZodiacDegree()?.let { zDeg -> modelInner.getHouse(zDeg) }
-            SynastryAspect(pOuter, pInner, pOuterHouse, pInnerHouse, p.aspect, p.orb, null, p.score)
-          }
+    val synastryAspects: Set<SynastryAspect>  = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, aspects)
+      .filter { aspect ->
+        outerPoints.contains(aspect.outerPoint) && innerPoints.contains(aspect.outerPoint)
       }.toSet()
 
     // 中點
@@ -89,28 +111,17 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
     val synastryMidpointAspects = setOf(CONJUNCTION, SEMISQUARE, SQUARE, SESQUIQUADRATE, OPPOSITION)
     val midpointFocalAspects = modelOuter.getMidPointsWithFocal(midPointFocals, midPointOrb).flatMap { outerFocal: IMidPointWithFocal ->
       modelInner.getMidPointsWithFocal(midPointFocals, midPointOrb).map { innerFocal: IMidPointWithFocal ->
-        Triple(outerFocal, innerFocal, midpointAspectCalculator.getAspectPattern(outerFocal.focal, innerFocal.focal, posMapOuter, posMapInner, { null }, { null }, synastryMidpointAspects))
+        Triple(
+          outerFocal,
+          innerFocal,
+          midpointAspectCalculator.getAspectPattern(outerFocal.focal, innerFocal.focal, posMapOuter, posMapInner, { null }, { null }, synastryMidpointAspects)
+        )
       }.filter { (_, _, p) -> p != null }
-        .map { (outerFocal, innerFocal , pattern) ->
+        .map { (outerFocal, innerFocal, pattern) ->
           MidPointFocalAspect(outerFocal, innerFocal, pattern!!.aspect, pattern.orb)
         }
-      }.toSet()
+    }.toSet()
 
     return SynastryHoroscope(mode, modelInner, modelOuter, synastryAspects, midpointFocalAspects)
-  }
-}
-
-
-@Named
-class PersonHoroscopeFeature(private val horoscopeFeature: Feature<IHoroscopeConfig, IHoroscopeModel>) :
-  AbstractCachedPersonFeature<IPersonHoroscopeConfig, IPersonHoroscopeModel>(), IPersonHoroscopeFeature {
-
-  override val key: String = "personHoroscope"
-
-  override val defaultConfig: IPersonHoroscopeConfig = PersonHoroscopeConfig()
-
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: IPersonHoroscopeConfig): IPersonHoroscopeModel {
-    val horoscopeModel = horoscopeFeature.getModel(gmtJulDay, loc, config.horoscopeConfig)
-    return PersonHoroscopeModel(horoscopeModel, gender, name)
   }
 }

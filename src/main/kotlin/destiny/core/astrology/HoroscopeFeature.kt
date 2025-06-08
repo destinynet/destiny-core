@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import com.github.benmanes.caffeine.cache.Caffeine
+import destiny.core.astrology.Aspect.Importance
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.*
 import destiny.core.astrology.classical.rules.Misc
@@ -28,7 +29,7 @@ data class HoroscopeConfig(
   override var pressure: Double = 1013.25,
   override var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval,
   override var place: String? = null,
-  override val relocations: Map<AstroPoint , Double> = emptyMap()
+  override val relocations: Map<AstroPoint, Double> = emptyMap()
 ) : IHoroscopeConfig
 
 
@@ -42,7 +43,7 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
   var pressure: Double = 1013.25
   var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval
   var place: String? = null
-  var relocations: Map<AstroPoint , Double> = emptyMap()
+  var relocations: Map<AstroPoint, Double> = emptyMap()
 
   override fun build(): HoroscopeConfig {
     return HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, place, relocations)
@@ -109,6 +110,27 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     aspectCalculator: IAspectCalculator,
     config: IHoroscopeConfig
   ): IProgressionModel
+
+
+  fun synastry(
+    outer: IHoroscopeModel,
+    inner: IHoroscopeModel,
+    aspectCalculator: IAspectCalculator,
+    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
+  ): Set<SynastryAspect> {
+    val posMapOuter = outer.positionMap
+    val posMapInner = inner.positionMap
+    return outer.points.asSequence().flatMap { pOuter -> inner.points.asSequence().map { pInner -> pOuter to pInner } }
+      .mapNotNull { (pOuter, pInner) ->
+        aspectCalculator.getAspectPattern(pOuter, pInner, posMapOuter, posMapInner, { null }, { null }, aspects)
+          ?.let { p: IPointAspectPattern ->
+            val pOuterHouse = posMapOuter[pOuter]?.lng?.toZodiacDegree()?.let { zDeg -> inner.getHouse(zDeg) }
+            val pInnerHouse = posMapInner[pInner]?.lng?.toZodiacDegree()?.let { zDeg -> inner.getHouse(zDeg) }
+            SynastryAspect(pOuter, pInner, pOuterHouse, pInnerHouse, p.aspect, p.orb, null, p.score)
+          }
+      }.toSet()
+  }
+
 }
 
 data class ProgressionCalcObj(
@@ -126,7 +148,7 @@ class HoroscopeFeature(
   private val julDayResolver: JulDayResolver,
   private val retrogradeImpl: IRetrograde,
   private val starPositionImpl: IStarPosition<*>,
-  private val starTransitImpl : IStarTransit,
+  private val starTransitImpl: IStarTransit,
   @Transient
   private val horoscopeFeatureCache: Cache<GmtCacheKey<*>, IHoroscopeModel>
 ) : AbstractCachedFeature<IHoroscopeConfig, IHoroscopeModel>(), IHoroscopeFeature {
@@ -148,7 +170,7 @@ class HoroscopeFeature(
           if (config.relocations.containsKey(point)) {
             val newLng = config.relocations[point]!!
             val newPos = Pos(newLng, it.lat)
-            val az = Azimuth(it.azimuthDeg , it.trueAltitude, it.apparentAltitude)
+            val az = Azimuth(it.azimuthDeg, it.trueAltitude, it.apparentAltitude)
             PosWithAzimuth(newPos, az)
           } else {
             it
@@ -168,19 +190,20 @@ class HoroscopeFeature(
       planetHourFeature.getModel(gmtJulDay, loc, PlanetaryHourConfig(PlanetaryHourType.ASTRO, TransConfig(temperature = config.temperature, pressure = config.pressure)))
 
     // 星體逆行狀態
-    val retrogradePhaseMap: Map<Star, RetrogradePhase> = config.points.asSequence().filter { it is Planet || it is LunarNode.NORTH_TRUE || it is LunarNode.SOUTH_TRUE }.map { it as Star }.map { star ->
-      star to retrogradeImpl.getRetrogradePhase(star, gmtJulDay, starPositionImpl, starTransitImpl)
-    }.filter { (_, v) -> v != null }.associate { (k, v) -> k to v!! }
+    val retrogradePhaseMap: Map<Star, RetrogradePhase> =
+      config.points.asSequence().filter { it is Planet || it is LunarNode.NORTH_TRUE || it is LunarNode.SOUTH_TRUE }.map { it as Star }.map { star ->
+        star to retrogradeImpl.getRetrogradePhase(star, gmtJulDay, starPositionImpl, starTransitImpl)
+      }.filter { (_, v) -> v != null }.associate { (k, v) -> k to v!! }
 
     val rulerPtolemyImpl: IRuler = RulerPtolemyImpl()
     val rulingHouseMap: Map<Planet, Set<RulingHouse>> = with(rulerPtolemyImpl) {
-      cuspDegreeMap.map { (house , zodiacDeg: ZodiacDegree) ->
+      cuspDegreeMap.map { (house, zodiacDeg: ZodiacDegree) ->
         val ruler = zodiacDeg.sign.getRulerPoint(null) as Planet?
         Triple(house, ruler, zodiacDeg)
-      }.filter { (_, ruler , _) -> ruler != null }
-        .map { (house, ruler, zodiacDeg) ->  Triple(house, ruler!!, zodiacDeg)}
+      }.filter { (_, ruler, _) -> ruler != null }
+        .map { (house, ruler, zodiacDeg) -> Triple(house, ruler!!, zodiacDeg) }
         .groupBy { triple -> triple.second }
-        .mapValues { (_: Planet,v: List<Triple<Int, Planet, ZodiacDegree>>) -> v.map { triple -> RulingHouse(triple.first, triple.third.sign) }.toSet() }
+        .mapValues { (_: Planet, v: List<Triple<Int, Planet, ZodiacDegree>>) -> v.map { triple -> RulingHouse(triple.first, triple.third.sign) }.toSet() }
         .toMap()
     }
 
