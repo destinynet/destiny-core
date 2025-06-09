@@ -230,7 +230,7 @@ sealed class DayHourEvent : IEvent {
         get() = when(aspectData.aspect) {
           Aspect.CONJUNCTION , Aspect.SEXTILE, Aspect.TRINE -> Type.GOOD
           Aspect.SQUARE , Aspect.OPPOSITION -> Type.BAD
-          else -> throw RuntimeException("Unsupported aspect ${aspectData.aspect}")
+          else -> throw IllegalArgumentException("Unsupported aspect ${aspectData.aspect}")
         }
 
       override val span: Span = Span.INSTANT
