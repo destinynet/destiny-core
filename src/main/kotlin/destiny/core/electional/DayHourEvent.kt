@@ -240,7 +240,7 @@ sealed class DayHourEvent : IEvent {
     }
 
     /** 星體滯留 */
-    data class PlanetStationary(val stationary: Stationary, val transitToNatalAspects: Set<SynastryAspect>) : AstroEvent() {
+    data class PlanetStationary(val stationary: Stationary, val zodiacDegree: IZodiacDegree, val transitToNatalAspects: Set<SynastryAspect>) : AstroEvent() {
       override val begin: GmtJulDay = stationary.begin
       override val type: Type
         get() {
@@ -265,7 +265,7 @@ sealed class DayHourEvent : IEvent {
     /**
      * 日食 or 月食
      */
-    data class Eclipse(val eclipse: IEclipse, val transitToNatalAspects: Set<SynastryAspect>) : AstroEvent() {
+    data class Eclipse(val eclipse: IEclipse, val zodiacDegree: IZodiacDegree, val transitToNatalAspects: Set<SynastryAspect>) : AstroEvent() {
       override val type: Type = Type.CAUTION
       override val span: Span = Span.HOURS
       override val impact: Impact = Impact.GLOBAL
@@ -276,6 +276,7 @@ sealed class DayHourEvent : IEvent {
      * 月相
      */
     data class LunarPhaseEvent(val phase: LunarPhase,
+                               val zodiacDegree: IZodiacDegree,
                                override val begin: GmtJulDay,
                                val transitToNatalAspects: Set<SynastryAspect>) : AstroEvent() {
       override val span: Span = Span.INSTANT

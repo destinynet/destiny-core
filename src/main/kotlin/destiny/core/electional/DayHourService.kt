@@ -133,9 +133,9 @@ class DayHourService(
 
     // 滯留
     val planetStationaries = sequenceOf(MERCURY, VENUS, MARS, JUPITER, SATURN).flatMap { planet ->
-      retrogradeImpl.getRangeStationaries(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl).map { s ->
+      retrogradeImpl.getRangeStationaries(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl).map { s: Stationary ->
         val outer = horoscopeFeature.getModel(s.gmtJulDay, loc, config.horoscopeConfig)
-        AstroEvent.PlanetStationary(s, outer.outerToInner(planet))
+        AstroEvent.PlanetStationary(s, outer.getZodiacDegree(planet)!!, outer.outerToInner(planet))
       }
     }
 
@@ -152,13 +152,13 @@ class DayHourService(
     // 日食
     val solarEclipses = eclipseImpl.getRangeSolarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
       val outer = horoscopeFeature.getModel(eclipse.max , loc, config.horoscopeConfig)
-      AstroEvent.Eclipse(eclipse, outer.outerToInner(SUN))
+      AstroEvent.Eclipse(eclipse, outer.getZodiacDegree(SUN)!!, outer.outerToInner(SUN))
     }
 
     // 月食
     val lunarEclipse = eclipseImpl.getRangeLunarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
       val outer = horoscopeFeature.getModel(eclipse.max, loc, config.horoscopeConfig)
-      AstroEvent.Eclipse(eclipse, outer.outerToInner(MOON))
+      AstroEvent.Eclipse(eclipse, outer.getZodiacDegree(MOON)!!, outer.outerToInner(MOON))
     }
 
     // 月相
@@ -170,8 +170,9 @@ class DayHourService(
     ).flatMap { (angle , phase) ->
       relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(MOON, SUN, fromGmtJulDay, toGmtJulDay, angle).map { gmtJulDay ->
         val outer = horoscopeFeature.getModel(gmtJulDay, loc, config.horoscopeConfig)
+        val zDeg = outer.getZodiacDegree(MOON)!!
         // 外圈只考量 SUN , MOON , 找出與本命的交角
-        AstroEvent.LunarPhaseEvent(phase , gmtJulDay, outer.outerToInner(SUN, MOON))
+        AstroEvent.LunarPhaseEvent(phase, zDeg, gmtJulDay, outer.outerToInner(SUN, MOON))
       }
     }
 
