@@ -225,7 +225,14 @@ sealed class DayHourEvent : IEvent {
   sealed class AstroEvent : DayHourEvent() {
 
     /** 交角 */
-    data class AspectEvent(override val type: Type, val aspectData: AspectData, override val impact: Impact) : AstroEvent() {
+    data class AspectEvent(val aspectData: AspectData, override val impact: Impact) : AstroEvent() {
+      override val type: Type
+        get() = when(aspectData.aspect) {
+          Aspect.CONJUNCTION , Aspect.SEXTILE, Aspect.TRINE -> Type.GOOD
+          Aspect.SQUARE , Aspect.OPPOSITION -> Type.BAD
+          else -> throw RuntimeException("Unsupported aspect ${aspectData.aspect}")
+        }
+
       override val span: Span = Span.INSTANT
       override val begin: GmtJulDay = aspectData.gmtJulDay
     }
@@ -253,18 +260,14 @@ sealed class DayHourEvent : IEvent {
       override val impact: Impact = Impact.GLOBAL
     }
 
-    /**
-     * 當日星體逆行
-     */
+    /** 當日星體逆行 */
     data class PlanetRetrograde(val planet: Planet, override val begin: GmtJulDay, val progress: Double) : AstroEvent() {
       override val type: Type = Type.BAD
       override val span: Span = Span.DAY
       override val impact: Impact = Impact.GLOBAL
     }
 
-    /**
-     * 日食 or 月食
-     */
+    /** 日食 or 月食 */
     data class Eclipse(val eclipse: IEclipse, val zodiacDegree: IZodiacDegree, val transitToNatalAspects: Set<SynastryAspect>) : AstroEvent() {
       override val type: Type = Type.CAUTION
       override val span: Span = Span.HOURS
@@ -272,9 +275,7 @@ sealed class DayHourEvent : IEvent {
       override val begin: GmtJulDay = eclipse.max
     }
 
-    /**
-     * 月相
-     */
+    /** 月相 */
     data class LunarPhaseEvent(val phase: LunarPhase,
                                val zodiacDegree: IZodiacDegree,
                                override val begin: GmtJulDay,

@@ -118,12 +118,7 @@ class DayHourService(
       innerStars, setOf(harmonyAngles, tensionAngles).flatten().toSet(),
       fromGmtJulDay, toGmtJulDay
     ).map { aspectData ->
-      val type = when (aspectData.aspect) {
-        Aspect.CONJUNCTION, Aspect.SEXTILE, Aspect.TRINE -> Type.GOOD
-        Aspect.SQUARE, Aspect.OPPOSITION                 -> Type.BAD
-        else                                             -> throw RuntimeException("Unknown aspect ${aspectData.aspect}")
-      }
-      AstroEvent.AspectEvent(type, aspectData, Impact.GLOBAL)
+      AstroEvent.AspectEvent(aspectData, Impact.GLOBAL)
     }
 
     val vocConfig = VoidCourseConfig(MOON , vocImpl = VoidCourseImpl.Medieval)
@@ -181,9 +176,9 @@ class DayHourService(
       // 全球星體交角
       yieldAll(globalEvents)
       // 全球 to 個人 , 和諧交角
-      yieldAll(searchPersonalEvents(innerStars, harmonyAngles).map { aspectData -> AstroEvent.AspectEvent(Type.GOOD, aspectData, Impact.PERSONAL) })
+      yieldAll(searchPersonalEvents(innerStars, harmonyAngles).map { aspectData -> AstroEvent.AspectEvent(aspectData, Impact.PERSONAL) })
       // 全球 to 個人 , 緊張交角
-      yieldAll(searchPersonalEvents(innerStars, tensionAngles).map { aspectData -> AstroEvent.AspectEvent(Type.BAD, aspectData, Impact.PERSONAL) })
+      yieldAll(searchPersonalEvents(innerStars, tensionAngles).map { aspectData -> AstroEvent.AspectEvent(aspectData, Impact.PERSONAL) })
       // 月亮空亡
       if (config.voc) {
         yieldAll(moonVocSeq)
