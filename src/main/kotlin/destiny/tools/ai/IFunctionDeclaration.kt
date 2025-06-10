@@ -7,7 +7,6 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.full.valueParameters
 
-/** used by OpenAI, Gemini and Claude */
 interface IFunctionDeclaration {
   data class Parameter(val name: String, val type: String, val description: String, val required: Boolean)
 
