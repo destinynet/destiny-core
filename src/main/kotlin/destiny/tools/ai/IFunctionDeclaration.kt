@@ -12,14 +12,19 @@ interface IFunctionDeclaration {
 
   val name: String
   val description: String
+  val keywords: Array<String>
   val parameters: List<Parameter>
   fun applied(msgs: List<Msg>): Boolean
   fun invoke(parameters: Map<String, Any>): String
+  val fullDescriptionForIndexing: String
+    get() = "$description . keywords : ${keywords.joinToString(", ")}"
 }
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class FunctionDeclaration(val name: String, val description: String)
+annotation class FunctionDeclaration(val name: String,
+                                     val description: String,
+                                     val keywords: Array<String>)
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
@@ -38,6 +43,9 @@ abstract class AnnotatedFunctionDeclaration : IFunctionDeclaration {
 
   override val description: String
     get() = this::class.annotations.filterIsInstance<FunctionDeclaration>().first().description
+
+  override val keywords: Array<String>
+    get() = this::class.annotations.filterIsInstance<FunctionDeclaration>().first().keywords
 
   abstract val callbackName: String
 
