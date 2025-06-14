@@ -30,6 +30,7 @@ interface IZodiacDegree : Comparable<IZodiacDegree>, Serializable {
 }
 
 /** 黃道帶度數 */
+@kotlinx.serialization.Serializable
 @JvmInline
 value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree {
   init {

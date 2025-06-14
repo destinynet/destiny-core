@@ -4,6 +4,7 @@ import destiny.core.astrology.IPointAspectPattern.Type
 import destiny.core.toString
 import destiny.tools.AlignTools
 import destiny.tools.Score
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.math.abs
@@ -63,9 +64,11 @@ interface IPointAspectPattern : IPointAnglePattern, Comparable<IPointAspectPatte
 
 
 /** 兩顆（可能相同）星體的交角 */
+@Serializable
 data class PointAspectPattern(
   override val points: List<AstroPoint>,
   override val angle: Double,
+  @SerialName("patternType")
   override val type: Type?,
   override val orb: Double,
   override val score: Score? = null

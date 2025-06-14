@@ -5,6 +5,7 @@ package destiny.tools
 
 import java.io.Serializable
 
+@kotlinx.serialization.Serializable
 @JvmInline
 value class Score(val value: Double) : Comparable<Score>, Serializable {
   init {
