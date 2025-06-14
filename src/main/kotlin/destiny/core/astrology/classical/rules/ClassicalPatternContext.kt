@@ -997,7 +997,11 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
-  /** DD / FF / DF 互陷 */
+  /**
+   * Reception by Debility
+   * DD / FF / DF 互陷
+   * 兩顆行星互相進入對方的失勢之地（Detriment/Fall）
+   *  */
   val mutualDeception = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return with(essentialImpl) {
