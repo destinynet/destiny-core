@@ -50,7 +50,7 @@ class HedgeChatService(
 
     val allModels = setOf(config.preferred) + config.fallbacks
 
-    val deferredMap: Map<ProviderModel, Deferred<Reply.Normal<T>?>> = allModels.associateWith { providerModel: ProviderModel ->
+    val deferredMap: Map<ProviderModel, Deferred<Reply<T>?>> = allModels.associateWith { providerModel: ProviderModel ->
 
       val currentChatOptions = chatOptionsTemplate.copy(
         temperature = providerModel.temperature ?: chatOptionsTemplate.temperature
@@ -58,33 +58,47 @@ class HedgeChatService(
 
       async(Dispatchers.IO + CoroutineName("ChatCompletion-${providerModel.provider}/${providerModel.model}")) {
         val impl = domainModelService.findImpl(providerModel.provider)
-        impl.typedChatComplete(providerModel.model, messages, config.user, funCalls, config.modelTimeout, currentChatOptions, postProcessors, formatSpec, locale, json)?.let { r ->
-          when(r) {
-            is Reply.Normal<*> -> r as Reply.Normal<T>
-            else -> null
-          }
-        }
+        impl.typedChatComplete(providerModel.model, messages, config.user, funCalls, config.modelTimeout, currentChatOptions, postProcessors, formatSpec, locale, json)
       }
     }
 
-    val preferredResult: Reply.Normal<T>? = withTimeoutOrNull(config.preferredWait) {
+    val preferredResult: Reply<T>? = withTimeoutOrNull(config.preferredWait) {
       deferredMap[config.preferred]?.await()
     }
 
-    if (preferredResult != null) {
-      // preferred 在 delay 內完成	-> 回傳 preferred，並取消其他
-      logger.info { "preferredResult != null" }
+    if (preferredResult is Reply.Normal) {
+      // preferred 在時限內成功完成 -> 回傳 preferred，並取消其他
+      logger.info { "Preferred model ${config.preferred} succeeded within the time limit." }
       deferredMap.filterKeys { it != config.preferred }.values.forEach { it.cancel() }
       preferredResult
     } else {
-      // preferred 超時但 fallback 有完成	-> 回傳第一個成功 fallback
+      // preferred 超時、失敗(Error)或回傳null -> 從 fallbacks 中選擇第一個成功的
+      if (preferredResult != null) {
+        logger.warn { "Preferred model ${config.preferred} failed or returned an error: $preferredResult. Looking for a fallback..." }
+      } else {
+        logger.warn { "Preferred model ${config.preferred} timed out. Looking for a fallback..." }
+      }
+
+      // 4. 只在 fallbacks 中 select，不再包含已經失敗的 preferred
+      val fallbackDeferreds = deferredMap.filterKeys { it in config.fallbacks }
+
+
       select {
-        deferredMap.forEach { (model, deferred) ->
-          deferred.onAwait { res -> res?.let { model to it } }
+        fallbackDeferreds.forEach { (model, deferred) ->
+          deferred.onAwait { res ->
+            // 只選擇成功的 Normal 結果
+            if (res is Reply.Normal) {
+              model to res
+            } else {
+              // 忽略 Error 或 null 的結果
+              null
+            }
+          }
         }
-      }?.also { (winnerModel: ProviderModel, _) ->
+      }?.also { (winnerModel, _) ->
         logger.info { "Using fallback result from $winnerModel" }
-        deferredMap.filterKeys { it != winnerModel }.values.forEach { it.cancel() }
+        // 取消所有其他仍在執行的任務
+        deferredMap.filterKeys { it != winnerModel }.values.forEach { if (it.isActive) it.cancel() }
       }?.second
     }
   }
