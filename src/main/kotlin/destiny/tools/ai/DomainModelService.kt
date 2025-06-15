@@ -15,6 +15,13 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
+interface IProviderModel {
+  val provider: Provider?
+  val model: String?
+
+  fun withProviderModel(provider: Provider, model: String): IProviderModel
+}
+
 @Serializable
 data class ProviderModel(val provider: Provider, val model: String, @Contextual val temperature: Temperature? = null)
 

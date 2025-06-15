@@ -3,8 +3,6 @@ package destiny.tools.ai
 import destiny.tools.KotlinLogging
 import destiny.tools.ai.model.FormatSpec
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.time.Duration
@@ -128,11 +126,15 @@ abstract class AbstractChatCompletion : IChatCompletion {
         val serializer = formatSpec.serializer
 
         val typedResult: T = try {
-          if (serializer.descriptor.kind == PrimitiveKind.STRING && serializer.descriptor == String.serializer().descriptor) {
-
+          if (formatSpec.kClass == String::class) {
             processedString as T
           } else {
-            json.decodeFromString(serializer, processedString) // 使用類成員或傳入的 json
+            val parsed = json.decodeFromString(serializer, processedString)
+            if (parsed is IProviderModel) {
+              (parsed as IProviderModel).withProviderModel(provider, model) as T
+            } else {
+              parsed
+            }
           }
         } catch (e: SerializationException) {
           logger.warn(e) { "Failed to deserialize content from $model (serializer: ${serializer.descriptor.serialName}). Content: $processedString" }
