@@ -10,8 +10,8 @@ import destiny.core.astrology.Planet.SUN
 import java.io.Serializable
 
 /**
- * 「現代占星術」中，考量星體的交角容許度，內定實作 <br></br>
- * 內定只考慮日月的交角有特別的容許度 <br></br>
+ * 「現代占星術」中，考量星體的交角容許度，內定實作
+ * 內定只考慮日月的交角有特別的容許度
  * 參考資料 http://www.myastrologybook.com/aspects-and-orbs.htm
  */
 

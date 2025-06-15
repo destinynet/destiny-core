@@ -28,6 +28,8 @@ class AspectEffectiveFixedOrb(val orb: Double) : IAspectEffective {
   }
 
   override fun isEffective(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree, aspect: Aspect): Boolean {
-    return deg1.getAngle(deg2) <= orb
+    val angle = deg1.getAngle(deg2)
+    val angleDiff = abs(angle - aspect.degree)
+    return angleDiff <= orb
   }
 }

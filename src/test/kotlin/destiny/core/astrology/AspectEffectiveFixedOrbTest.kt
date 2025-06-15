@@ -8,8 +8,7 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import kotlin.test.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class AspectEffectiveFixedOrbTest {
@@ -58,5 +57,28 @@ internal class AspectEffectiveFixedOrbTest {
         assertEquals(data.score, score.value)
       }
     }
+  }
+
+  @Test
+  fun testIsEffective_bug_wrongAspect() {
+    // 設定一個固定的容許度 orb = 8.0 度
+    val impl = AspectEffectiveFixedOrb(8.0)
+
+    val p1 = Planet.SUN
+    val p2 = Planet.MARS
+
+    // 設定兩個星體位置，它們之間的夾角為 5.0 度 (15.0 - 10.0)
+    val deg1 = 10.0.toZodiacDegree()
+    val deg2 = 15.0.toZodiacDegree()
+
+    // 測試一個【不應該】成立的相位：三分相 (TRINE , 120度)
+    // 正確的邏輯：角度差 |5.0 - 120.0| = 115.0 , 遠大於 orb 8.0 , 應為 false
+    assertFalse(impl.isEffective(p1, deg1, p2, deg2, Aspect.TRINE))
+
+
+    // 作為對照，測試它們【確實】形成的相位：合相 (CONJUNCTION , 0度)
+    // 正確的邏輯：角度差 |5.0 - 0.0| = 5.0 , 小於 orb 8.0 , 應為 true
+    // 錯誤的邏輯：直接比較夾角 5.0 <= 8.0 , 結果為 true
+    assertTrue(impl.isEffective(p1, deg1, p2, deg2, Aspect.CONJUNCTION))
   }
 }

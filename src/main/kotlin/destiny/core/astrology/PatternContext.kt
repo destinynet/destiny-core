@@ -407,7 +407,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   // 群星聚集 某宮位 (至少四顆星)
   private val stelliumHouse = object : IPatternFactory {
     override fun getPatterns(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
-      return posMap.map { (point, pos) -> point to IHoroscopeModel.getHouse(pos.lngDeg, cuspDegreeMap) }
+      return posMap.asSequence().map { (point, pos) -> point to IHoroscopeModel.getHouse(pos.lngDeg, cuspDegreeMap) }
         .groupBy { (_, house) -> house }
         .filter { (_, list: List<Pair<AstroPoint, Int>>) -> list.size >= 4 }
         .map { (house, list: List<Pair<AstroPoint, Int>>) ->
