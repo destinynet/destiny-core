@@ -47,7 +47,18 @@ interface IReturnContext : Conversable, IDiscrete {
     config: IHoroscopeConfig,
     newPlace: String?,
     threshold: Double?
-  ): AnnualReport
+  ): SolarReturnDto
+
+  fun IPersonHoroscopeModel.getMonthlyReport(
+    year: Int,
+    month: Int,
+    nowLoc: ILocation,
+    aspectEffective: IAspectEffective,
+    aspectCalculator: IAspectCalculator,
+    config: IHoroscopeConfig,
+    newPlace: String?,
+    threshold: Double?
+  ): LunarReturnDto
 
 }
 
@@ -142,34 +153,63 @@ class ReturnContext(
     config: IHoroscopeConfig,
     newPlace: String?,
     threshold: Double?
-  ): AnnualReport {
-    val rulerImpl: IRuler = RulerPtolemyImpl()
-
+  ): SolarReturnDto {
     val birthMonth = this.time.get(ChronoField.MONTH_OF_YEAR)
     val birthDay = this.time.get(ChronoField.DAY_OF_MONTH)
 
     // plus 1 month , 預期會收斂到每年生日附近
     val ahead = LocalDate.of(year, birthMonth, birthDay).plusMonths(1).atStartOfDay().toGmtJulDay(nowLoc)
 
-    val solarModel = getReturnHoroscope(this, ahead, nowLoc, newPlace)
+    val returnModel: ReturnModel = getReturnHoroscope(this, ahead, nowLoc, newPlace)
 
-    val solarDto: IHoroscopeDto = with(dtoFactory) {
-      solarModel.horoscope.toHoroscopeDto(rulerImpl, aspectEffective, aspectCalculator, config)
+    val horoscopeDto: IHoroscopeDto = with(dtoFactory) {
+      returnModel.horoscope.toHoroscopeDto(rulerImpl, aspectEffective, aspectCalculator, config)
     }.let { it as HoroscopeDto }
-      // 移除 終點資訊，畢竟這在 return chart 參考度不高
+      // 移除 中點資訊，畢竟這在 return chart 參考度不高
       .copy(midPoints = emptyList())
 
-    val synastryAspects: List<SynastryAspect> = horoscopeFeature.synastry(solarModel.horoscope, this, aspectCalculator, threshold)
+    val synastryAspects: List<SynastryAspect> = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold)
 
-    return AnnualReport(
-      year, solarDto, synastryAspects,
-      solarModel.from.toLmt(nowLoc, julDayResolver) as LocalDateTime,
-      solarModel.to.toLmt(nowLoc, julDayResolver) as LocalDateTime
+    return SolarReturnDto(
+      year, horoscopeDto, synastryAspects,
+      returnModel.from.toLmt(nowLoc, julDayResolver) as LocalDateTime,
+      returnModel.to.toLmt(nowLoc, julDayResolver) as LocalDateTime
+    )
+  }
+
+  override fun IPersonHoroscopeModel.getMonthlyReport(
+    year: Int,
+    month: Int,
+    nowLoc: ILocation,
+    aspectEffective: IAspectEffective,
+    aspectCalculator: IAspectCalculator,
+    config: IHoroscopeConfig,
+    newPlace: String?,
+    threshold: Double?
+  ): LunarReturnDto {
+    // 從月底，收斂回來
+    val ahead = LocalDate.of(year, month, 1).plusMonths(1).atStartOfDay().toGmtJulDay(nowLoc)
+
+    val returnModel: ReturnModel = getReturnHoroscope(this, ahead, nowLoc, newPlace)
+
+    val horoscopeDto: IHoroscopeDto = with(dtoFactory) {
+      returnModel.horoscope.toHoroscopeDto(rulerImpl, aspectEffective, aspectCalculator, config)
+    }.let { it as HoroscopeDto }
+      // 移除 中點資訊，畢竟這在 return chart 參考度不高
+      .copy(midPoints = emptyList())
+
+    val synastryAspects: List<SynastryAspect> = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold)
+
+    return LunarReturnDto(
+      year, month, horoscopeDto, synastryAspects,
+      returnModel.from.toLmt(nowLoc, julDayResolver) as LocalDateTime,
+      returnModel.to.toLmt(nowLoc, julDayResolver) as LocalDateTime
     )
   }
 
 
   companion object {
+    private val rulerImpl: IRuler = RulerPtolemyImpl()
     val logger = KotlinLogging.logger { }
   }
 

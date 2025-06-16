@@ -10,12 +10,24 @@ import java.time.LocalDateTime
 
 
 @Serializable
-data class AnnualReport(
+data class SolarReturnDto(
   val year: Int,
   val solarReturn: IHoroscopeDto,
   val synastryAspects: List<SynastryAspect>,
   @Serializable(with = LocalDateTimeSerializer::class)
   val from: LocalDateTime,
   @Serializable(with = LocalDateTimeSerializer::class)
-  val to: LocalDateTime,
+  val to: LocalDateTime
+)
+
+@Serializable
+data class LunarReturnDto(
+  val year: Int,
+  val month: Int,
+  val lunarReturn: IHoroscopeDto,
+  val synastryAspects: List<SynastryAspect>,
+  @Serializable(with = LocalDateTimeSerializer::class)
+  val from: LocalDateTime,
+  @Serializable(with = LocalDateTimeSerializer::class)
+  val to: LocalDateTime
 )
