@@ -153,9 +153,11 @@ class ReturnContext(
 
     val solarModel = getReturnHoroscope(this, ahead, nowLoc, newPlace)
 
-    val solarDto = with(dtoFactory) {
+    val solarDto: IHoroscopeDto = with(dtoFactory) {
       solarModel.horoscope.toHoroscopeDto(rulerImpl, aspectEffective, aspectCalculator, config)
-    }
+    }.let { it as HoroscopeDto }
+      // 移除 終點資訊，畢竟這在 return chart 參考度不高
+      .copy(midPoints = emptyList())
 
     val synastryAspects: List<SynastryAspect> = horoscopeFeature.synastry(solarModel.horoscope, this, aspectCalculator, threshold)
 
