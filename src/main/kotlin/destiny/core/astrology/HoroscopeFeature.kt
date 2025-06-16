@@ -131,6 +131,92 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
       }.toSet()
   }
 
+  fun IHoroscopeModel.getTightAspects(aspectCalculator: IAspectCalculator, threshold: Double): List<IPointAspectPattern> {
+    return with(aspectCalculator) { getAspectPatterns() }
+      .filter { p -> p.score != null && p.score!!.value >= threshold }
+      .sortedByDescending { it.score }
+  }
+
+  fun AstroPoint.getAspects(m: IHoroscopeModel, threshold: Double, aspectCalculator: IAspectCalculator): List<IPointAspectPattern> {
+    return m.getTightAspects(aspectCalculator, threshold).filter { it.points.contains(this) }
+  }
+
+  fun IHoroscopeModel.getByStarMap(threshold: Double, aspectCalculator: IAspectCalculator, rulerImpl: IRuler): Map<AstroPoint, Natal.StarPosInfo> {
+    return points.associateWith { astroPoint ->
+
+      val zodiacSign: ZodiacSign = getZodiacSign(astroPoint)!!
+      val dispositors: Set<Planet> = with(rulerImpl) {
+        zodiacSign.getRulerPoint(null)
+          .takeIf { it != null }
+          .let { it as Planet }
+          .let { setOf(it) }
+      }
+
+      Natal.StarPosInfo(
+        getZodiacDegree(astroPoint)!!,
+        zodiacSign.element,
+        zodiacSign.quality,
+        getHouse(astroPoint)!!,
+        if (astroPoint is Star) {
+          getMotion(astroPoint)
+        } else {
+          null
+        },
+        if (astroPoint is Star) {
+          getRetrogradePhase(astroPoint)
+        } else null,
+        if (astroPoint is Planet) {
+          getRulingHouses(astroPoint)
+        } else emptySet(),
+        dispositors,
+        astroPoint.getAspects(this, threshold, aspectCalculator)
+      )
+    }
+  }
+
+  /**
+   * value : 0 to 100
+   */
+  fun IHoroscopeModel.elementDistribution(): Map<Element, Double> {
+    val elementCounts: Map<Element, Int> = signPointsMap
+      .flatMap { (sign, points) ->
+        points.filter { it is Planet || it is Axis }.map { sign.element }
+      }
+      .groupingBy { it }
+      .eachCount()
+
+    val total = elementCounts.values.sum().toDouble()
+
+    return elementCounts.mapValues { (_, count) -> count / total * 100 }
+  }
+
+  /**
+   * value : 0 to 100
+   */
+  fun IHoroscopeModel.qualityDistribution(): Map<Quality, Double> {
+    val qualityCounts: Map<Quality, Int> = signPointsMap
+      .flatMap { (sign, points) ->
+        points.filter { it is Planet || it is Axis }.map { sign.quality }
+      }
+      .groupingBy { it }
+      .eachCount()
+
+    val total = qualityCounts.values.sum().toDouble()
+
+    return qualityCounts.mapValues { (_, count) -> count / total * 100 }
+  }
+
+
+  /** 特殊格局 */
+  fun IHoroscopeModel.getPatterns(patternContext: PatternContext, threshold: Double = 0.8): List<AstroPattern> {
+    return patternContext.patterns.asSequence().flatMap { factory ->
+      factory.getPatterns(positionMap, cuspDegreeMap)
+    }
+      .filter { p -> p.score != null && p.score!!.value >= 0.8 }
+      .sortedByDescending { it.score }
+      .toList()
+  }
+
 }
 
 data class ProgressionCalcObj(
@@ -150,7 +236,7 @@ class HoroscopeFeature(
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
   @Transient
-  private val horoscopeFeatureCache: Cache<GmtCacheKey<*>, IHoroscopeModel>
+  private val horoscopeFeatureCache: Cache<GmtCacheKey<*>, IHoroscopeModel>,
 ) : AbstractCachedFeature<IHoroscopeConfig, IHoroscopeModel>(), IHoroscopeFeature {
   override val key: String = "horoscope"
 

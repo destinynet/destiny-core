@@ -8,7 +8,6 @@ package destiny.tools.serializers.astrology
 import destiny.core.astrology.RetrogradePhase
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
@@ -50,7 +49,6 @@ object RetrogradePhaseWithDescriptionSerializer : KSerializer<RetrogradePhase?> 
       when (val index = dec.decodeElementIndex(descriptor)) {
         0                            -> state = dec.decodeNullableSerializableElement(descriptor, index, String.serializer())
         CompositeDecoder.DECODE_DONE -> break
-        else                         -> throw SerializationException("Unexpected index: $index")
       }
     }
     dec.endStructure(descriptor)

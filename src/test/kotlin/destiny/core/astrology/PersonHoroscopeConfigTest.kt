@@ -4,7 +4,6 @@
 package destiny.core.astrology
 
 import destiny.core.AbstractConfigTest
-import destiny.core.Gender
 import destiny.core.astrology.HoroscopeConfigBuilder.Companion.horoscope
 import destiny.core.astrology.PersonHoroscopeConfigBuilder.Companion.personHoroscope
 import destiny.core.astrology.classical.VoidCourseImpl
@@ -25,7 +24,7 @@ internal class PersonHoroscopeConfigTest : AbstractConfigTest<PersonHoroscopeCon
       pressure = 1000.0,
       vocImpl = VoidCourseImpl.Hellenistic,
       place = "台北市"
-    ), Gender.女, "小明"
+    )
   )
 
   override val configByFunction: PersonHoroscopeConfig
@@ -42,8 +41,6 @@ internal class PersonHoroscopeConfigTest : AbstractConfigTest<PersonHoroscopeCon
       }
       return with(horoscopeConfig) {
         personHoroscope {
-          gender = Gender.女
-          name = "小明"
         }
       }
     }
@@ -61,11 +58,6 @@ internal class PersonHoroscopeConfigTest : AbstractConfigTest<PersonHoroscopeCon
     assertTrue(raw.contains(""""pressure":\s*1000.0""".toRegex()))
     assertTrue(raw.contains(""""vocImpl":\s*"Hellenistic"""".toRegex()))
     assertTrue(raw.contains(""""place":\s*"台北市"""".toRegex()))
-
-    assertTrue(raw.contains(""""gender":\s*"女"""".toRegex()))
-    assertTrue(raw.contains(""""name":\s*"小明"""".toRegex()))
-
-
   }
 
 }

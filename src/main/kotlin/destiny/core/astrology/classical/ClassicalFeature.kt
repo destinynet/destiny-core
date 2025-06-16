@@ -32,8 +32,7 @@ class ClassicalFeature(private val horoscopeFeature: HoroscopeFeature,
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: Pair<IClassicalConfig, IHoroscopeConfig>): Map<Planet, List<IPlanetPattern>> {
 
-    val classicalConfig = config.first
-    val horoscopeConfig = config.second
+    val (classicalConfig, horoscopeConfig) = config
 
     val h = horoscopeFeature.getModel(gmtJulDay, loc, horoscopeConfig)
 

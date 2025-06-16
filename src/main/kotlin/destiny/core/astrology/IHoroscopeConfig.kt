@@ -1,6 +1,5 @@
 package destiny.core.astrology
 
-import destiny.core.Gender
 import destiny.core.IPresentConfig
 import destiny.core.astrology.classical.ClassicalConfig
 import destiny.core.astrology.classical.VoidCourseImpl
@@ -29,11 +28,11 @@ interface IClassicalConfig : java.io.Serializable {
 }
 
 interface IPersonHoroscopeConfig : IHoroscopeConfig {
-  var gender: Gender
-  var name: String?
+//  var gender: Gender
+//  var name: String?
   val personHoroscopeConfig: PersonHoroscopeConfig
     get() {
-      return PersonHoroscopeConfig(horoscopeConfig, gender, name)
+      return PersonHoroscopeConfig(horoscopeConfig)
     }
 }
 

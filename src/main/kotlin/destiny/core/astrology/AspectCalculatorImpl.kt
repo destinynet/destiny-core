@@ -10,13 +10,17 @@ import destiny.tools.Score
 import java.io.Serializable
 import kotlin.math.abs
 
-class AspectCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
-                           private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>) : IAspectCalculator, Serializable {
+class AspectCalculatorImpl(
+  val aspectEffectiveImpl: IAspectEffective,
+  private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>
+) : IAspectCalculator, Serializable {
 
 
-  override fun getAspectPattern(p1: AstroPoint, p2: AstroPoint,
-                                p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,
-                                laterForP1: () -> IPos?, laterForP2: () -> IPos?, aspects: Set<Aspect>): IPointAspectPattern? {
+  override fun getAspectPattern(
+    p1: AstroPoint, p2: AstroPoint,
+    p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,
+    laterForP1: () -> IPos?, laterForP2: () -> IPos?, aspects: Set<Aspect>
+  ): IPointAspectPattern? {
     return aspects
       .intersect(aspectEffectiveImpl.applicableAspects)
       .asSequence()
@@ -72,10 +76,12 @@ class AspectCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
   }
 
 
-  override fun getPointAspectAndScore(point: AstroPoint,
-                                      positionMap: Map<AstroPoint, IPos>,
-                                      points: Set<AstroPoint>,
-                                      aspects: Set<Aspect>): Set<Triple<AstroPoint, Aspect, Score>> {
+  override fun getPointAspectAndScore(
+    point: AstroPoint,
+    positionMap: Map<AstroPoint, IPos>,
+    points: Set<AstroPoint>,
+    aspects: Set<Aspect>
+  ): Set<Triple<AstroPoint, Aspect, Score>> {
     return positionMap[point]?.lngDeg?.let { starDeg ->
       points
         .asSequence()

@@ -5,6 +5,7 @@ import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.IMidPointWithFocal
 import destiny.core.astrology.IPointAspectPattern
 import destiny.tools.Score
+import kotlinx.serialization.Serializable
 
 interface ISynastryAspect : IPointAspectPattern {
   val outerPoint: AstroPoint
@@ -16,6 +17,7 @@ interface ISynastryAspect : IPointAspectPattern {
     get() = listOf(outerPoint, innerPoint)
 }
 
+@Serializable
 data class SynastryAspect(
   override val outerPoint: AstroPoint,
   override val innerPoint: AstroPoint,

@@ -8,9 +8,11 @@ import destiny.core.astrology.*
 import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.tools.Feature
 import destiny.tools.KotlinLogging
 import java.io.Serializable
+import java.time.LocalDate
 import kotlin.math.absoluteValue
 
 /**
@@ -31,6 +33,8 @@ interface IReturnContext : Conversable, IDiscrete {
 
   /** 對外主要的 method , 取得 return 盤  */
   fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel
+
+  fun IPersonHoroscopeModel.getAnnualReport(year: Int , nowLoc: ILocation): AnnualReport
 
 }
 
@@ -59,7 +63,7 @@ class ReturnContext(
     return getConvergentPeriod(natalModel.gmtJulDay, nowGmtJulDay).let { (from, to) ->
 
       val config = HoroscopeConfig(
-        setOf(*Planet.values, *Axis.array, LunarNode.NORTH_TRUE, LunarNode.SOUTH_MEAN),
+        natalModel.points,
         HouseSystem.PLACIDUS,
         Coordinate.ECLIPTIC,
         Centric.GEO,
@@ -112,6 +116,16 @@ class ReturnContext(
       val to = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), beforeNatalGmtJulDay, false, coordinate)
       from to to
     }
+  }
+
+  override fun IPersonHoroscopeModel.getAnnualReport(year: Int, nowLoc: ILocation): AnnualReport {
+    val yearStart = LocalDate.of(year , 1 , 1).atStartOfDay()
+    val yearEnd = yearStart.plusYears(1)
+
+    val yearStartModel = getReturnHoroscope(this, yearStart.toGmtJulDay(nowLoc), nowLoc)
+    val yearEndModel = getReturnHoroscope(this, yearEnd.toGmtJulDay(nowLoc), nowLoc)
+
+    TODO()
   }
 
 

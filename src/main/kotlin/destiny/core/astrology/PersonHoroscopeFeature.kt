@@ -18,18 +18,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PersonHoroscopeConfig(
+  // 暫時只有此 horoscopeConfig , 未來再依情形添加其他可能的設定
   override val horoscopeConfig: HoroscopeConfig = HoroscopeConfig(),
-  override var gender: Gender = Gender.男,
-  override var name: String? = null) : IPersonHoroscopeConfig, IHoroscopeConfig by horoscopeConfig
+) : IPersonHoroscopeConfig, IHoroscopeConfig by horoscopeConfig
 
 context(IHoroscopeConfig)
 @DestinyMarker
 class PersonHoroscopeConfigBuilder : Builder<PersonHoroscopeConfig> {
-  var gender: Gender = Gender.男
-  var name: String? = null
 
   override fun build(): PersonHoroscopeConfig {
-    return PersonHoroscopeConfig(horoscopeConfig, gender, name)
+    return PersonHoroscopeConfig(horoscopeConfig)
   }
 
   companion object {
@@ -41,8 +39,6 @@ class PersonHoroscopeConfigBuilder : Builder<PersonHoroscopeConfig> {
 }
 
 interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPersonHoroscopeModel> {
-
-
 
   fun synastry(
     modelInner: IPersonHoroscopeModel, modelOuter: IPersonHoroscopeModel,
@@ -94,7 +90,7 @@ class PersonHoroscopeFeature(
     val posMapOuter = modelOuter.positionMap
     val posMapInner = modelInner.positionMap
 
-    val synastryAspects: Set<SynastryAspect>  = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, aspects)
+    val synastryAspects: Set<SynastryAspect> = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, aspects)
       .filter { aspect ->
         outerPoints.contains(aspect.outerPoint) && innerPoints.contains(aspect.outerPoint)
       }.toSet()
@@ -124,4 +120,6 @@ class PersonHoroscopeFeature(
 
     return SynastryHoroscope(mode, modelInner, modelOuter, synastryAspects, midpointFocalAspects)
   }
+
+
 }
