@@ -68,13 +68,15 @@ class DtoFactory(
           // if 交角 = 0 => 0.6 + 0.4 * ( 8 - 0 ) / 8 = 1.0
           val score = (startScore + (1 - startScore) * (toleranceOrb - orb) / toleranceOrb).toScore()
           AxisStar(p, orb, score)
-        }.toList()
+        }
+        .sortedByDescending { it.score }
+        .toList()
     }
 
     val allPlanets = points.filterIsInstance<Planet>().size
     val houseStarDistribution: Map<HouseType, Natal.HouseStarDistribution> = HouseType.entries.associateWith { houseType ->
       val starCount = getHousePoints(houseType).filterIsInstance<Planet>().size
-      Natal.HouseStarDistribution(starCount, (starCount.toDouble() / allPlanets))
+      Natal.HouseStarDistribution(starCount, (starCount.toDouble() * 100.0 / allPlanets))
     }
 
     val classicalConfig: IClassicalConfig = ClassicalConfig(classicalFactories)

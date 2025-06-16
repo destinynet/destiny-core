@@ -50,8 +50,8 @@ data class HoroscopeDto(
   override val stars: Map<AstroPoint, StarPosInfo>,
   override val axisStars: Map<Axis, List<AxisStar>>,
   override val houseStarDistribution: Map<HouseType, HouseStarDistribution>,
-  override val elementPercentage: Map<Element, Double>,
-  override val qualityPercentage: Map<Quality, Double>,
+  override val elementPercentage: Map<Element, @Serializable(with = DoubleTwoDecimalSerializer::class) Double>,
+  override val qualityPercentage: Map<Quality, @Serializable(with = DoubleTwoDecimalSerializer::class) Double>,
   override val tightestAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern>,
   override val astroPatterns: List<AstroPattern>,
   override val classicalAstrologyPatterns: List<String>,
@@ -81,8 +81,8 @@ data class Natal(
   override val stars: Map<AstroPoint, StarPosInfo>,
   override val axisStars: Map<Axis, List<AxisStar>>,
   override val houseStarDistribution: Map<HouseType, HouseStarDistribution>,
-  override val elementPercentage: Map<Element, Double>,
-  override val qualityPercentage: Map<Quality, Double>,
+  override val elementPercentage: Map<Element, @Serializable(with = DoubleTwoDecimalSerializer::class) Double>,
+  override val qualityPercentage: Map<Quality, @Serializable(with = DoubleTwoDecimalSerializer::class) Double>,
   override val tightestAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern>,
   override val astroPatterns: List<AstroPattern>,
   override val classicalAstrologyPatterns: List<String>,
@@ -116,5 +116,7 @@ data class Natal(
   )
 
   @Serializable
-  data class HouseStarDistribution(val starCount: Int, val percentage: Double)
+  data class HouseStarDistribution(val starCount: Int,
+                                   @Serializable(with = DoubleTwoDecimalSerializer::class)
+                                   val percentage: Double)
 }
