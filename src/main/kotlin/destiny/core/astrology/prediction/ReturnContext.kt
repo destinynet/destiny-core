@@ -41,22 +41,22 @@ interface IReturnContext : Conversable, IDiscrete {
 class ReturnContext(
   /** 返照法所採用的行星 , 太陽/太陰 , 或是其他  */
   override val planet: Planet = Planet.SUN,
+  /** 計算星體的介面  */
+  private val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator,
+  /** 計算星體到黃道幾度的時刻，的介面  */
+  private var starTransitImpl: IStarTransit,
+  private val horoscopeFeature: Feature<IHoroscopeConfig, IHoroscopeModel>,
+
   /** 是否順推 , true 代表順推 , false 則為逆推 */
   override val forward: Boolean = true,
   /** 交角 , 通常是 0 , 代表回歸到原始度數  */
   override val orb: Double = 0.0,
   /** 是否消除歲差，內定是不計算歲差  */
-  override val precession: Boolean = false,
-
-  /** 計算星體的介面  */
-  private val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator,
-  /** 計算星體到黃道幾度的時刻，的介面  */
-  private var starTransitImpl: IStarTransit,
-  private val horoscopeFeature: Feature<IHoroscopeConfig, IHoroscopeModel>
+  override val precession: Boolean = false
 ) : IReturnContext, Serializable {
 
   override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel {
-    return getConvergentClamps(natalModel.gmtJulDay, nowGmtJulDay).let { (from, to) ->
+    return getConvergentPeriod(natalModel.gmtJulDay, nowGmtJulDay).let { (from, to) ->
 
       val config = HoroscopeConfig(
         setOf(*Planet.values, *Axis.array, LunarNode.NORTH_TRUE, LunarNode.SOUTH_MEAN),
@@ -91,7 +91,7 @@ class ReturnContext(
     }
   }
 
-  override fun getConvergentClamps(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): Pair<GmtJulDay, GmtJulDay> {
+  override fun getConvergentPeriod(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): Pair<GmtJulDay, GmtJulDay> {
     val coordinate = if (precession) Coordinate.SIDEREAL else Coordinate.ECLIPTIC
     // 先計算出生盤中，該星體的黃道位置
     val natalPlanetDegree: ZodiacDegree = starPositionWithAzimuthImpl.getPosition(planet, natalGmtJulDay, Centric.GEO, coordinate).lngDeg

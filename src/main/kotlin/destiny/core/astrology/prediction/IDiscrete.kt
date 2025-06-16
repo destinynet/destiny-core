@@ -8,6 +8,11 @@ import destiny.core.calendar.GmtJulDay
  */
 interface IDiscrete : Mappable {
 
-  /** 收斂到哪兩個日期之間 */
-  fun getConvergentClamps(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): Pair<GmtJulDay, GmtJulDay>
+  /**
+   * 收斂到哪兩個日期之間
+   * 取得此離散收斂事件的有效時間區間 (validity period)。
+   * 在這個區間內的所有 nowGmtJulDay 都會收斂到同一個結果。
+   * @return Pair<GmtJulDay, GmtJulDay> 代表區間的開始與結束。
+   * */
+  fun getConvergentPeriod(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): Pair<GmtJulDay, GmtJulDay>
 }
