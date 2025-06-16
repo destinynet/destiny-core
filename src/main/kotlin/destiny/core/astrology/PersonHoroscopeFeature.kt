@@ -61,7 +61,10 @@ class PersonHoroscopeFeature(
   override val defaultConfig: IPersonHoroscopeConfig = PersonHoroscopeConfig()
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: IPersonHoroscopeConfig): IPersonHoroscopeModel {
-    val horoscopeModel = horoscopeFeature.getModel(gmtJulDay, loc, config.horoscopeConfig)
+
+    val newConfig = config.horoscopeConfig.copy(place = place)
+
+    val horoscopeModel: IHoroscopeModel = horoscopeFeature.getModel(gmtJulDay, loc, newConfig)
     return PersonHoroscopeModel(horoscopeModel, gender, name)
   }
 
@@ -90,10 +93,10 @@ class PersonHoroscopeFeature(
     val posMapOuter = modelOuter.positionMap
     val posMapInner = modelInner.positionMap
 
-    val synastryAspects: Set<SynastryAspect> = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, aspects)
+    val synastryAspects: List<SynastryAspect> = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, null, aspects)
       .filter { aspect ->
         outerPoints.contains(aspect.outerPoint) && innerPoints.contains(aspect.outerPoint)
-      }.toSet()
+      }.toList()
 
     // 中點
     val midPointFocals = buildSet {

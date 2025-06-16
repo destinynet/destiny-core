@@ -16,6 +16,9 @@ import destiny.tools.serializers.astrology.RetrogradePhaseWithDescriptionSeriali
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
+/**
+ * DTO for [IHoroscopeModel]
+ */
 interface IHoroscopeDto {
   val time: LocalDateTime
   val location: ILocation
@@ -23,6 +26,7 @@ interface IHoroscopeDto {
   val signs: Map<ZodiacSign, List<AstroPoint>>
   val houses: List<HouseDto>
   val stars: Map<AstroPoint, StarPosInfo>
+  val axisStars : Map<Axis , List<AxisStar>>
   val houseStarDistribution: Map<HouseType, HouseStarDistribution>
   val elementPercentage: Map<Element, Double>
   val qualityPercentage: Map<Quality, Double>
@@ -44,6 +48,7 @@ data class HoroscopeDto(
   override val signs: Map<ZodiacSign, List<AstroPoint>>,
   override val houses: List<HouseDto>,
   override val stars: Map<AstroPoint, StarPosInfo>,
+  override val axisStars: Map<Axis, List<AxisStar>>,
   override val houseStarDistribution: Map<HouseType, HouseStarDistribution>,
   override val elementPercentage: Map<Element, Double>,
   override val qualityPercentage: Map<Quality, Double>,
@@ -54,7 +59,6 @@ data class HoroscopeDto(
   override val graphPatterns: Graph<Planet>,
   override val midPoints: List<@Serializable(with = IMidPointWithFocalSerializer::class) IMidPointWithFocal>
 ) : IHoroscopeDto
-
 
 interface IPersonHoroscopeDto : IHoroscopeDto , IBirthDataNamePlace
 
@@ -75,6 +79,7 @@ data class Natal(
   override val signs: Map<ZodiacSign, List<AstroPoint>>,
   override val houses: List<HouseDto>,
   override val stars: Map<AstroPoint, StarPosInfo>,
+  override val axisStars: Map<Axis, List<AxisStar>>,
   override val houseStarDistribution: Map<HouseType, HouseStarDistribution>,
   override val elementPercentage: Map<Element, Double>,
   override val qualityPercentage: Map<Quality, Double>,
@@ -88,7 +93,8 @@ data class Natal(
   constructor(gender: Gender, age: Int, name: String?, dto: IHoroscopeDto) :
     this(
       gender, age, name,
-      dto.time, dto.location, dto.place, dto.signs, dto.houses, dto.stars,
+      dto.time, dto.location, dto.place, dto.signs, dto.houses,
+      dto.stars, dto.axisStars,
       dto.houseStarDistribution, dto.elementPercentage, dto.qualityPercentage,
       dto.tightestAspects, dto.astroPatterns, dto.classicalAstrologyPatterns, dto.graphPatterns, dto.midPoints
     )

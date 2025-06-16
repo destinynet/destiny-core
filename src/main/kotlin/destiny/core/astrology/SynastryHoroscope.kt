@@ -14,7 +14,7 @@ class SynastryHoroscope(
   val mode: SynastryGrain,
   val inner: IPersonHoroscopeModel,
   val outer: IPersonHoroscopeModel,
-  val progressedAspects: Set<ISynastryAspect>,
+  val progressedAspects: List<ISynastryAspect>,
   val midpointFocalAspects: Set<ISynastryAspect>
 ) : Serializable {
 

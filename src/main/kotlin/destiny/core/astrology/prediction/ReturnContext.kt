@@ -5,14 +5,19 @@
 package destiny.core.astrology.prediction
 
 import destiny.core.astrology.*
+import destiny.core.astrology.classical.IRuler
+import destiny.core.astrology.classical.RulerPtolemyImpl
 import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools.toGmtJulDay
-import destiny.tools.Feature
+import destiny.core.calendar.toLmt
 import destiny.tools.KotlinLogging
 import java.io.Serializable
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.temporal.ChronoField
 import kotlin.math.absoluteValue
 
 /**
@@ -32,9 +37,17 @@ interface IReturnContext : Conversable, IDiscrete {
   val precession: Boolean
 
   /** 對外主要的 method , 取得 return 盤  */
-  fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel
+  fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation, nowPlace: String? = null): ReturnModel
 
-  fun IPersonHoroscopeModel.getAnnualReport(year: Int , nowLoc: ILocation): AnnualReport
+  fun IPersonHoroscopeModel.getAnnualReport(
+    year: Int,
+    nowLoc: ILocation,
+    aspectEffective: IAspectEffective,
+    aspectCalculator: IAspectCalculator,
+    config: IHoroscopeConfig,
+    newPlace: String?,
+    threshold: Double?
+  ): AnnualReport
 
 }
 
@@ -48,8 +61,10 @@ class ReturnContext(
   /** 計算星體的介面  */
   private val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator,
   /** 計算星體到黃道幾度的時刻，的介面  */
-  private var starTransitImpl: IStarTransit,
-  private val horoscopeFeature: Feature<IHoroscopeConfig, IHoroscopeModel>,
+  private val starTransitImpl: IStarTransit,
+  private val horoscopeFeature: IHoroscopeFeature,
+  private val dtoFactory: DtoFactory,
+  private val julDayResolver: JulDayResolver,
 
   /** 是否順推 , true 代表順推 , false 則為逆推 */
   override val forward: Boolean = true,
@@ -59,7 +74,7 @@ class ReturnContext(
   override val precession: Boolean = false
 ) : IReturnContext, Serializable {
 
-  override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel {
+  override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation, nowPlace: String?): ReturnModel {
     return getConvergentPeriod(natalModel.gmtJulDay, nowGmtJulDay).let { (from, to) ->
 
       val config = HoroscopeConfig(
@@ -69,7 +84,8 @@ class ReturnContext(
         Centric.GEO,
         0.0,
         1013.25,
-        VoidCourseImpl.Medieval
+        VoidCourseImpl.Medieval,
+        nowPlace,
       )
       val horoscope = horoscopeFeature.getModel(from, nowLoc, config)
       ReturnModel(horoscope, from, to)
@@ -104,7 +120,7 @@ class ReturnContext(
     return if (forward) {
       // 順推
       val from = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay, false, coordinate)
-      val to = starTransitImpl.getNextTransitGmt(planet , (natalPlanetDegree + orb), nowGmtJulDay, true, coordinate)
+      val to = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay, true, coordinate)
       from to to
     } else {
       // 逆推
@@ -118,14 +134,36 @@ class ReturnContext(
     }
   }
 
-  override fun IPersonHoroscopeModel.getAnnualReport(year: Int, nowLoc: ILocation): AnnualReport {
-    val yearStart = LocalDate.of(year , 1 , 1).atStartOfDay()
-    val yearEnd = yearStart.plusYears(1)
+  override fun IPersonHoroscopeModel.getAnnualReport(
+    year: Int,
+    nowLoc: ILocation,
+    aspectEffective: IAspectEffective,
+    aspectCalculator: IAspectCalculator,
+    config: IHoroscopeConfig,
+    newPlace: String?,
+    threshold: Double?
+  ): AnnualReport {
+    val rulerImpl: IRuler = RulerPtolemyImpl()
 
-    val yearStartModel = getReturnHoroscope(this, yearStart.toGmtJulDay(nowLoc), nowLoc)
-    val yearEndModel = getReturnHoroscope(this, yearEnd.toGmtJulDay(nowLoc), nowLoc)
+    val birthMonth = this.time.get(ChronoField.MONTH_OF_YEAR)
+    val birthDay = this.time.get(ChronoField.DAY_OF_MONTH)
 
-    TODO()
+    // plus 1 month , 預期會收斂到每年生日附近
+    val ahead = LocalDate.of(year, birthMonth, birthDay).plusMonths(1).atStartOfDay().toGmtJulDay(nowLoc)
+
+    val solarModel = getReturnHoroscope(this, ahead, nowLoc, newPlace)
+
+    val solarDto = with(dtoFactory) {
+      solarModel.horoscope.toHoroscopeDto(rulerImpl, aspectEffective, aspectCalculator, config)
+    }
+
+    val synastryAspects: List<SynastryAspect> = horoscopeFeature.synastry(solarModel.horoscope, this, aspectCalculator, threshold)
+
+    return AnnualReport(
+      year, solarDto, synastryAspects,
+      solarModel.from.toLmt(nowLoc, julDayResolver) as LocalDateTime,
+      solarModel.to.toLmt(nowLoc, julDayResolver) as LocalDateTime
+    )
   }
 
 

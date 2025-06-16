@@ -116,8 +116,9 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     outer: IHoroscopeModel,
     inner: IHoroscopeModel,
     aspectCalculator: IAspectCalculator,
+    threshold: Double?,
     aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
-  ): Set<SynastryAspect> {
+  ): List<SynastryAspect> {
     val posMapOuter = outer.positionMap
     val posMapInner = inner.positionMap
     return outer.points.asSequence().flatMap { pOuter -> inner.points.asSequence().map { pInner -> pOuter to pInner } }
@@ -128,7 +129,16 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
             val pInnerHouse = posMapInner[pInner]?.lng?.toZodiacDegree()?.let { zDeg -> inner.getHouse(zDeg) }
             SynastryAspect(pOuter, pInner, pOuterHouse, pInnerHouse, p.aspect, p.orb, null, p.score)
           }
-      }.toSet()
+      }
+      .filter {
+        if (threshold != null) {
+          it.score != null && it.score.value > threshold
+        } else {
+          true
+        }
+      }
+      .sortedByDescending { it.score }
+      .toList()
   }
 
   fun IHoroscopeModel.getTightAspects(aspectCalculator: IAspectCalculator, threshold: Double): List<IPointAspectPattern> {

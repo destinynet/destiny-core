@@ -3,6 +3,8 @@ package destiny.tools.serializers.astrology
 import destiny.core.astrology.*
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
+import destiny.tools.serializers.DoubleTwoDecimalSerializer
+import destiny.tools.serializers.ScoreTwoDecimalSerializer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
@@ -30,8 +32,10 @@ object IPointAspectPatternSerializer : KSerializer<IPointAspectPattern> {
       encodeDoubleElement(descriptor, 1, value.angle)
       encodeSerializableElement(descriptor, 2, Aspect.serializer(), value.aspect)
       encodeNullableSerializableElement(descriptor, 3, IPointAspectPattern.Type.serializer(), value.type)
-      encodeDoubleElement(descriptor, 4, value.orb)
-      encodeNullableSerializableElement(descriptor, 5, Double.serializer(), value.score?.value)
+//      encodeDoubleElement(descriptor, 4, value.orb)
+      encodeNullableSerializableElement(descriptor, 4, DoubleTwoDecimalSerializer, value.orb)
+//      encodeNullableSerializableElement(descriptor, 5, Double.serializer(), value.score?.value)
+      encodeNullableSerializableElement(descriptor, 5, ScoreTwoDecimalSerializer, value.score)
     }
   }
 

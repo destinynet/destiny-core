@@ -4,6 +4,7 @@
 package destiny.tools.serializers.astrology
 
 import destiny.core.astrology.*
+import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -23,7 +24,7 @@ object IMidPointWithFocalSerializer : KSerializer<IMidPointWithFocal> {
     encoder.encodeStructure(descriptor) {
       encodeSerializableElement(descriptor, 0, IMidPointSerializer, value)
       encodeSerializableElement(descriptor, 1, AstroPoint.serializer(), value.focal)
-      encodeDoubleElement(descriptor, 2, value.orb)
+      encodeSerializableElement(descriptor, 2, DoubleTwoDecimalSerializer, value.orb)
     }
   }
 

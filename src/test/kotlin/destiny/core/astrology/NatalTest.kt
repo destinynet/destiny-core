@@ -76,6 +76,13 @@ class NatalTest {
         )
       ),
       mapOf(
+        Axis.RISING to listOf(AxisStar(SUN, 0.5, 0.99.toScore())),
+        Axis.MERIDIAN to listOf(
+          AxisStar(MOON, 1.0, 0.92.toScore()),
+          AxisStar(JUPITER, 0.5, 0.95.toScore()),
+        ),
+      ),
+      mapOf(
         HouseType.ANGULAR to Natal.HouseStarDistribution(5, 0.5),
         HouseType.SUCCEDENT to Natal.HouseStarDistribution(3, 0.3),
         HouseType.CADENT to Natal.HouseStarDistribution(2, 0.2),

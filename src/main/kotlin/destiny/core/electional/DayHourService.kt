@@ -86,8 +86,8 @@ class DayHourService(
     /**
      * [chosenPoints] 外圈的某星 針對內圈 的星體，形成哪些交角
      */
-    fun IHoroscopeModel.outerToInner(vararg chosenPoints : AstroPoint): Set<SynastryAspect> {
-      return horoscopeFeature.synastry(this, inner, modernAspectCalculator).filter { aspect ->
+    fun IHoroscopeModel.outerToInner(vararg chosenPoints : AstroPoint): List<SynastryAspect> {
+      return horoscopeFeature.synastry(this, inner, modernAspectCalculator, threshold = null).filter { aspect ->
         aspect.outerPoint in chosenPoints && (
           if (includeHour)
             true
@@ -95,7 +95,7 @@ class DayHourService(
             aspect.innerPoint !in houseRelatedPoints
           }
           )
-      }.toSet()
+      }
     }
 
 

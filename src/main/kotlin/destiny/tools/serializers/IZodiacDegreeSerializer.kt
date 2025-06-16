@@ -22,7 +22,7 @@ object IZodiacDegreeSerializer : KSerializer<IZodiacDegree> {
   override fun serialize(encoder: Encoder, value: IZodiacDegree) {
     encoder.encodeStructure(descriptor) {
       encodeSerializableElement(descriptor, 0, ZodiacSign.serializer(), value.sign)
-      encodeDoubleElement(descriptor, 1, value.signDegree.second)
+      encodeSerializableElement(descriptor, 1, DoubleTwoDecimalSerializer, value.signDegree.second)
     }
   }
 
