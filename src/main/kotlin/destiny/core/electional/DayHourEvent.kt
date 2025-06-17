@@ -5,7 +5,6 @@ import destiny.core.Scale
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.IEclipse
-import destiny.core.astrology.prediction.SynastryAspect
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.IEvent
 import destiny.core.calendar.IEventSpan

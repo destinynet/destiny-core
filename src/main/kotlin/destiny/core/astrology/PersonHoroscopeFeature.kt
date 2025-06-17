@@ -7,8 +7,6 @@ import destiny.core.Gender
 import destiny.core.SynastryGrain
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Axis.RISING
-import destiny.core.astrology.prediction.MidPointFocalAspect
-import destiny.core.astrology.prediction.SynastryAspect
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.*
@@ -94,6 +92,7 @@ class PersonHoroscopeFeature(
     val posMapInner = modelInner.positionMap
 
     val synastryAspects: List<SynastryAspect> = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, null, aspects)
+      .aspects
       .filter { aspect ->
         outerPoints.contains(aspect.outerPoint) && innerPoints.contains(aspect.outerPoint)
       }.toList()

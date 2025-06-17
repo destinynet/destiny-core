@@ -4,6 +4,7 @@
 package destiny.core.astrology.prediction
 
 import destiny.core.astrology.IHoroscopeDto
+import destiny.core.astrology.Synastry
 import destiny.tools.serializers.LocalDateTimeSerializer
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
@@ -13,7 +14,7 @@ import java.time.LocalDateTime
 data class SolarReturnDto(
   val year: Int,
   val solarReturn: IHoroscopeDto,
-  val synastryAspects: List<SynastryAspect>,
+  val synastry: Synastry,
   @Serializable(with = LocalDateTimeSerializer::class)
   val from: LocalDateTime,
   @Serializable(with = LocalDateTimeSerializer::class)
@@ -25,7 +26,7 @@ data class LunarReturnDto(
   val year: Int,
   val month: Int,
   val lunarReturn: IHoroscopeDto,
-  val synastryAspects: List<SynastryAspect>,
+  val synastry: Synastry,
   @Serializable(with = LocalDateTimeSerializer::class)
   val from: LocalDateTime,
   @Serializable(with = LocalDateTimeSerializer::class)

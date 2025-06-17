@@ -168,10 +168,10 @@ class ReturnContext(
       // 移除 中點資訊，畢竟這在 return chart 參考度不高
       .copy(midPoints = emptyList())
 
-    val synastryAspects: List<SynastryAspect> = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold)
+    val synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold)
 
     return SolarReturnDto(
-      year, horoscopeDto, synastryAspects,
+      year, horoscopeDto, synastry,
       returnModel.from.toLmt(nowLoc, julDayResolver) as LocalDateTime,
       returnModel.to.toLmt(nowLoc, julDayResolver) as LocalDateTime
     )
@@ -198,10 +198,10 @@ class ReturnContext(
       // 移除 中點資訊，畢竟這在 return chart 參考度不高
       .copy(midPoints = emptyList())
 
-    val synastryAspects: List<SynastryAspect> = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold)
+    val synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold)
 
     return LunarReturnDto(
-      year, month, horoscopeDto, synastryAspects,
+      year, month, horoscopeDto, synastry,
       returnModel.from.toLmt(nowLoc, julDayResolver) as LocalDateTime,
       returnModel.to.toLmt(nowLoc, julDayResolver) as LocalDateTime
     )

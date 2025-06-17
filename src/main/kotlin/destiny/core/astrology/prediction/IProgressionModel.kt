@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.prediction
 
+import destiny.core.astrology.ISynastryAspect
 import destiny.core.calendar.GmtJulDay
 import java.io.Serializable
 

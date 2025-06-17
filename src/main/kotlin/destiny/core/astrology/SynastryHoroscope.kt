@@ -4,9 +4,8 @@
 package destiny.core.astrology
 
 import destiny.core.SynastryGrain
-import destiny.core.astrology.prediction.ISynastryAspect
-import destiny.core.astrology.prediction.MidPointFocalAspect
-import java.io.Serializable
+import destiny.tools.serializers.DoubleTwoDecimalSerializer
+import kotlinx.serialization.Serializable
 
 data class SynastryFocalAspect(val inner: AstroPoint, val outer: AstroPoint, val aspect: Aspect, val orb: Double, val involved: List<MidPointFocalAspect>)
 
@@ -16,7 +15,7 @@ class SynastryHoroscope(
   val outer: IPersonHoroscopeModel,
   val progressedAspects: List<ISynastryAspect>,
   val midpointFocalAspects: Set<ISynastryAspect>
-) : Serializable {
+) {
 
   val progressedAspectsByScore: List<ISynastryAspect>
     get() {
@@ -36,3 +35,21 @@ class SynastryHoroscope(
 }
 
 data class HouseOverlayRow(val point: AstroPoint, val inner: Int, val innerToOuter: Int, val outer : Int, val outerToInner: Int)
+
+
+/**
+ * outer 星體，映射到 inner natal 的第幾宮 , 以及距離宮首幾度
+ */
+@Serializable
+data class HouseOverlay(
+  val outerPoint: AstroPoint,
+  val innerHouse: Int,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val degreeToCusp: Double,
+)
+
+@Serializable
+data class Synastry(
+  val aspects: List<SynastryAspect>,
+  val houseOverlayMap: Map<Int, List<HouseOverlay>>
+)

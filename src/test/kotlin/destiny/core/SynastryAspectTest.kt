@@ -9,6 +9,6 @@ class SynastryAspectTest : EnumTest() {
 
   @Test
   fun testString() {
-    testEnums(SynastryAspect::class)
+    testEnums(SynastryRelationship::class)
   }
 }

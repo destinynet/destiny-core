@@ -12,7 +12,7 @@ enum class SynastryGrain {
   BOTH_DATE               // Both parties only have date, no time
 }
 
-enum class SynastryAspect {
+enum class SynastryRelationship {
   LOVE,
   FRIENDSHIP,
   PARTNERSHIP,
@@ -25,7 +25,7 @@ interface ISynastryModel : Serializable {
   val outer: IBirthDataNamePlace
   val grain: SynastryGrain
   val domainBdnp: Domain.Bdnp
-  val aspect: SynastryAspect
+  val relationship: SynastryRelationship
 }
 
 @kotlinx.serialization.Serializable
@@ -37,7 +37,7 @@ data class SynastryModel(
   override val grain: SynastryGrain,
   @kotlinx.serialization.Serializable(with = DomainSerializer::class)
   override val domainBdnp: Domain.Bdnp,
-  override val aspect: SynastryAspect
+  override val relationship: SynastryRelationship
 ) : ISynastryModel
 
 enum class SynastryDomain {

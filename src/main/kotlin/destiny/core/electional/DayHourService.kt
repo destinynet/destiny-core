@@ -13,7 +13,6 @@ import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.astrology.eclipse.IEclipseFactory
-import destiny.core.astrology.prediction.SynastryAspect
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools.toGmtJulDay
@@ -87,7 +86,7 @@ class DayHourService(
      * [chosenPoints] 外圈的某星 針對內圈 的星體，形成哪些交角
      */
     fun IHoroscopeModel.outerToInner(vararg chosenPoints : AstroPoint): List<SynastryAspect> {
-      return horoscopeFeature.synastry(this, inner, modernAspectCalculator, threshold = null).filter { aspect ->
+      return horoscopeFeature.synastry(this, inner, modernAspectCalculator, threshold = null).aspects.filter { aspect ->
         aspect.outerPoint in chosenPoints && (
           if (includeHour)
             true

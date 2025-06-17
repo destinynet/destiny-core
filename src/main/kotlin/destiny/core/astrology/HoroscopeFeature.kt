@@ -118,15 +118,15 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     aspectCalculator: IAspectCalculator,
     threshold: Double?,
     aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
-  ): List<SynastryAspect> {
+  ): Synastry {
     val posMapOuter = outer.positionMap
     val posMapInner = inner.positionMap
-    return outer.points.asSequence().flatMap { pOuter -> inner.points.asSequence().map { pInner -> pOuter to pInner } }
+    val synastryAspects: List<SynastryAspect> = outer.points.asSequence().flatMap { pOuter -> inner.points.asSequence().map { pInner -> pOuter to pInner } }
       .mapNotNull { (pOuter, pInner) ->
         aspectCalculator.getAspectPattern(pOuter, pInner, posMapOuter, posMapInner, { null }, { null }, aspects)
           ?.let { p: IPointAspectPattern ->
-            val pOuterHouse = posMapOuter[pOuter]?.lng?.toZodiacDegree()?.let { zDeg -> inner.getHouse(zDeg) }
-            val pInnerHouse = posMapInner[pInner]?.lng?.toZodiacDegree()?.let { zDeg -> inner.getHouse(zDeg) }
+            val pOuterHouse = posMapOuter[pOuter]?.lngDeg?.let { zDeg -> inner.getHouse(zDeg) }
+            val pInnerHouse = posMapInner[pInner]?.lngDeg?.let { zDeg -> inner.getHouse(zDeg) }
             SynastryAspect(pOuter, pInner, pOuterHouse, pInnerHouse, p.aspect, p.orb, null, p.score)
           }
       }
@@ -139,6 +139,20 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
       }
       .sortedByDescending { it.score }
       .toList()
+
+    val houseOverlayStars = outer.points.filter { it is Planet || it is FixedStar || it is LunarPoint }
+    val houseOverlayMap = houseOverlayStars.asSequence().map { pOuter: AstroPoint ->
+      posMapOuter[pOuter]?.lngDeg?.let { zDeg ->
+        val pOuterHouse = inner.getHouse(zDeg)
+        val degreeToCusp = inner.getCuspDegree(pOuterHouse).getAngle(zDeg)
+        HouseOverlay(pOuter, pOuterHouse,  degreeToCusp)
+      }
+    }.filterNotNull()
+      .groupBy { it.innerHouse }
+      .mapValues { (_: Int, overlays: List<HouseOverlay>) -> overlays.sortedBy { it.degreeToCusp } }
+      .toMap()
+
+    return Synastry(synastryAspects, houseOverlayMap)
   }
 
   fun IHoroscopeModel.getTightAspects(aspectCalculator: IAspectCalculator, threshold: Double): List<IPointAspectPattern> {

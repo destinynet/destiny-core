@@ -6,6 +6,7 @@ package destiny.core.astrology.prediction
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.IPointAspectPattern
 import destiny.core.astrology.Planet
+import destiny.core.astrology.SynastryAspect
 import kotlin.test.Test
 
 internal class ProgressedAspectTest {
