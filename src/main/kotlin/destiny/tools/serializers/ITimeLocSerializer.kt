@@ -26,15 +26,17 @@ object ITimeLocSerializer : KSerializer<ITimeLoc> {
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ITimeLoc") {
     element<Long>("time")
     element<ILocation>("loc")
+    element<String>("localDateTime", isOptional = true)
   }
 
   override fun serialize(encoder: Encoder, value: ITimeLoc) {
     val zoneId = ZoneId.systemDefault()
-    val epochSec = (value.time as LocalDateTime).atZone(zoneId).toEpochSecond()
+    val ldt = value.time as LocalDateTime
+    val epochSec = ldt.atZone(zoneId).toEpochSecond()
     encoder.encodeStructure(descriptor) {
-      // TODO : encodeSerializableElement(descriptor, 0, LocalDateTimeSerializer, value.time as LocalDateTime)
       encodeLongElement(descriptor, 0, epochSec)
       encodeSerializableElement(descriptor, 1, ILocationSerializer, value.location)
+      encodeStringElement(descriptor, 2, ldt.toString()) // 輔助資訊
     }
   }
 
@@ -46,12 +48,12 @@ object ITimeLocSerializer : KSerializer<ITimeLoc> {
       loop@ while (true) {
         when (decodeElementIndex(descriptor)) {
           0    -> time = run {
-            // TODO : check decodeSerializableElement(descriptor, 0, LocalDateTimeSerializer)
             val epochSec = decodeLongElement(descriptor, 0)
             LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSec), zoneId)
           }
 
           1    -> loc = decodeSerializableElement(descriptor, 1, ILocationSerializer)
+          2    -> decodeStringElement(descriptor, 2) // localDateTime , do nothing
           else -> break@loop
         }
       }
