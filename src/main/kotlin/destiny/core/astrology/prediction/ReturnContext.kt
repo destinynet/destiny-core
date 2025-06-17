@@ -11,13 +11,10 @@ import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.toLmt
 import destiny.tools.KotlinLogging
 import java.io.Serializable
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.temporal.ChronoField
 import kotlin.math.absoluteValue
 
 /**
@@ -39,27 +36,15 @@ interface IReturnContext : Conversable, IDiscrete {
   /** 對外主要的 method , 取得 return 盤  */
   fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation, nowPlace: String? = null): ReturnModel
 
-  fun IPersonHoroscopeModel.getAnnualReport(
-    year: Int,
+  fun IHoroscopeModel.getReturnDto(
+    gmtJulDay: GmtJulDay,
     nowLoc: ILocation,
     aspectEffective: IAspectEffective,
     aspectCalculator: IAspectCalculator,
     config: IHoroscopeConfig,
     newPlace: String?,
     threshold: Double?
-  ): SolarReturnDto
-
-  fun IPersonHoroscopeModel.getMonthlyReport(
-    year: Int,
-    month: Int,
-    nowLoc: ILocation,
-    aspectEffective: IAspectEffective,
-    aspectCalculator: IAspectCalculator,
-    config: IHoroscopeConfig,
-    newPlace: String?,
-    threshold: Double?
-  ): LunarReturnDto
-
+  ): ReturnDto
 }
 
 
@@ -145,22 +130,16 @@ class ReturnContext(
     }
   }
 
-  override fun IPersonHoroscopeModel.getAnnualReport(
-    year: Int,
+  override fun IHoroscopeModel.getReturnDto(
+    gmtJulDay: GmtJulDay,
     nowLoc: ILocation,
     aspectEffective: IAspectEffective,
     aspectCalculator: IAspectCalculator,
     config: IHoroscopeConfig,
     newPlace: String?,
     threshold: Double?
-  ): SolarReturnDto {
-    val birthMonth = this.time.get(ChronoField.MONTH_OF_YEAR)
-    val birthDay = this.time.get(ChronoField.DAY_OF_MONTH)
-
-    // plus 1 month , 預期會收斂到每年生日附近
-    val ahead = LocalDate.of(year, birthMonth, birthDay).plusMonths(1).atStartOfDay().toGmtJulDay(nowLoc)
-
-    val returnModel: ReturnModel = getReturnHoroscope(this, ahead, nowLoc, newPlace)
+  ): ReturnDto {
+    val returnModel: ReturnModel = getReturnHoroscope(this, gmtJulDay, nowLoc, newPlace)
 
     val horoscopeDto: IHoroscopeDto = with(dtoFactory) {
       returnModel.horoscope.toHoroscopeDto(rulerImpl, aspectEffective, aspectCalculator, config)
@@ -170,42 +149,17 @@ class ReturnContext(
 
     val synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold)
 
-    return SolarReturnDto(
-      year, horoscopeDto, synastry,
-      returnModel.from.toLmt(nowLoc, julDayResolver) as LocalDateTime,
-      returnModel.to.toLmt(nowLoc, julDayResolver) as LocalDateTime
-    )
+    val from = returnModel.from.toLmt(nowLoc, julDayResolver) as LocalDateTime
+    val to = returnModel.to.toLmt(nowLoc, julDayResolver) as LocalDateTime
+    return when (this@ReturnContext.planet) {
+      Planet.SUN  -> SolarReturnDto(horoscopeDto, synastry, from, to)
+      Planet.MOON -> LunarReturnDto(horoscopeDto, synastry, from, to)
+      else        -> throw IllegalArgumentException("Unsupported planet: $planet")
+    }
   }
 
-  override fun IPersonHoroscopeModel.getMonthlyReport(
-    year: Int,
-    month: Int,
-    nowLoc: ILocation,
-    aspectEffective: IAspectEffective,
-    aspectCalculator: IAspectCalculator,
-    config: IHoroscopeConfig,
-    newPlace: String?,
-    threshold: Double?
-  ): LunarReturnDto {
-    // 從月底，收斂回來
-    val ahead = LocalDate.of(year, month, 1).plusMonths(1).atStartOfDay().toGmtJulDay(nowLoc)
 
-    val returnModel: ReturnModel = getReturnHoroscope(this, ahead, nowLoc, newPlace)
 
-    val horoscopeDto: IHoroscopeDto = with(dtoFactory) {
-      returnModel.horoscope.toHoroscopeDto(rulerImpl, aspectEffective, aspectCalculator, config)
-    }.let { it as HoroscopeDto }
-      // 移除 中點資訊，畢竟這在 return chart 參考度不高
-      .copy(midPoints = emptyList())
-
-    val synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold)
-
-    return LunarReturnDto(
-      year, month, horoscopeDto, synastry,
-      returnModel.from.toLmt(nowLoc, julDayResolver) as LocalDateTime,
-      returnModel.to.toLmt(nowLoc, julDayResolver) as LocalDateTime
-    )
-  }
 
 
   companion object {

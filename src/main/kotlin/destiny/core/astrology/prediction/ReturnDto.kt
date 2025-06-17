@@ -20,7 +20,6 @@ interface ReturnDto {
 
 @Serializable
 data class SolarReturnDto(
-  val year: Int,
   @SerialName("solarReturn")
   override val horoscope: IHoroscopeDto,
   override val synastry: Synastry,
@@ -32,8 +31,6 @@ data class SolarReturnDto(
 
 @Serializable
 data class LunarReturnDto(
-  val year: Int,
-  val month: Int,
   @SerialName("lunarReturn")
   override val horoscope: IHoroscopeDto,
   override val synastry: Synastry,
