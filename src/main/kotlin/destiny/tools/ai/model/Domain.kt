@@ -50,9 +50,13 @@ sealed class Domain(val bdnpGenerated: Boolean) {
   /** 卜卦占星 */
   data object HORARY : Domain(false)
 
-  sealed class Daily : Domain(true) {
+  /** 運勢 */
+  sealed class Period : Domain(true) {
     /** 占星每日運勢 */
-    data object DAILY_HOROSCOPE : Daily()
+    data object DAILY_HOROSCOPE : Period()
+
+    /** 占星每月運勢 */
+    data object MONTHLY_HOROSCOPE : Period()
   }
 
   /** 合盤 */

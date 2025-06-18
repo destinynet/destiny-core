@@ -5,7 +5,7 @@ package destiny.tools.ai.model
 
 import destiny.tools.ai.model.Domain.*
 import destiny.tools.ai.model.Domain.Bdnp.*
-import destiny.tools.ai.model.Domain.Daily.DAILY_HOROSCOPE
+import destiny.tools.ai.model.Domain.Period.DAILY_HOROSCOPE
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -42,7 +42,7 @@ interface IReturnContext : Conversable, IDiscrete {
     aspectEffective: IAspectEffective,
     aspectCalculator: IAspectCalculator,
     config: IHoroscopeConfig,
-    newPlace: String?,
+    nowPlace: String?,
     threshold: Double?
   ): ReturnDto
 }
@@ -81,7 +81,7 @@ class ReturnContext(
         0.0,
         1013.25,
         VoidCourseImpl.Medieval,
-        nowPlace,
+        nowPlace ?: natalModel.place,
       )
       val horoscope = horoscopeFeature.getModel(from, nowLoc, config)
       ReturnModel(horoscope, from, to)
@@ -136,10 +136,10 @@ class ReturnContext(
     aspectEffective: IAspectEffective,
     aspectCalculator: IAspectCalculator,
     config: IHoroscopeConfig,
-    newPlace: String?,
+    nowPlace: String?,
     threshold: Double?
   ): ReturnDto {
-    val returnModel: ReturnModel = getReturnHoroscope(this, gmtJulDay, nowLoc, newPlace)
+    val returnModel: ReturnModel = getReturnHoroscope(this, gmtJulDay, nowLoc, nowPlace)
 
     val horoscopeDto: IHoroscopeDto = with(dtoFactory) {
       returnModel.horoscope.toHoroscopeDto(rulerImpl, aspectEffective, aspectCalculator, config)

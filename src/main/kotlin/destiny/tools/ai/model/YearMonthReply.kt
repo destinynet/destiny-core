@@ -12,6 +12,7 @@ data class YearMonthReply(
   val domains: Map<BirthDataDomain, String>
 ) {
   companion object {
+    val monthlyFormatSpec = FormatSpec.of<YearMonthReply>("lunar_return_reply", "Response format for this month")
     val formatSpec = FormatSpec.of<YearMonthReply>("year_month_reply", "Response format for this period")
   }
 }
