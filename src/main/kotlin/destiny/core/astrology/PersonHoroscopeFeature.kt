@@ -91,11 +91,13 @@ class PersonHoroscopeFeature(
     val posMapOuter = modelOuter.positionMap
     val posMapInner = modelInner.positionMap
 
-    val synastryAspects: List<SynastryAspect> = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, null, aspects)
-      .aspects
+    val synastry = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, null, aspects)
+
+    val synastryAspects: List<SynastryAspect> = synastry.aspects
       .filter { aspect ->
-        outerPoints.contains(aspect.outerPoint) && innerPoints.contains(aspect.outerPoint)
-      }.toList()
+        // 因為 outerPoint / innerPoint 可能因為 GRAIN 之故（只有日期沒有時間），不能考慮 MOON , 因此要確定，形成交角的星體，可能不能有 MOON
+        outerPoints.contains(aspect.outerPoint) && innerPoints.contains(aspect.innerPoint)
+      }
 
     // 中點
     val midPointFocals = buildSet {
@@ -120,7 +122,7 @@ class PersonHoroscopeFeature(
         }
     }.toSet()
 
-    return SynastryHoroscope(mode, modelInner, modelOuter, synastryAspects, midpointFocalAspects)
+    return SynastryHoroscope(mode, modelInner, modelOuter, synastryAspects, midpointFocalAspects, synastry.houseOverlayMap)
   }
 
 

@@ -28,3 +28,4 @@ object ScoreTwoDecimalSerializer : KSerializer<Score> {
     return decoder.decodeDouble().toScore()
   }
 }
+

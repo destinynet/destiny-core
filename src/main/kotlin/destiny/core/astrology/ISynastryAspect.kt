@@ -55,9 +55,13 @@ data class SynastryAspect(
   }
 }
 
-data class MidPointFocalAspect(val outer : IMidPointWithFocal, val inner : IMidPointWithFocal,
+@Serializable
+data class MidPointFocalAspect(val outer : IMidPointWithFocal,
+                               val inner : IMidPointWithFocal,
                                override val aspect: Aspect,
+                               @Serializable(with = DoubleTwoDecimalSerializer::class)
                                override val orb: Double) : ISynastryAspect {
+
   override val points: List<AstroPoint> = listOf(outer.focal, inner.focal)
   override val outerPoint: AstroPoint = outer.focal
   override val innerPoint: AstroPoint = inner.focal

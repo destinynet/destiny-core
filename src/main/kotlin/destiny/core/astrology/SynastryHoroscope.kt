@@ -7,14 +7,21 @@ import destiny.core.SynastryGrain
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import kotlinx.serialization.Serializable
 
-data class SynastryFocalAspect(val inner: AstroPoint, val outer: AstroPoint, val aspect: Aspect, val orb: Double, val involved: List<MidPointFocalAspect>)
+@Serializable
+data class SynastryFocalAspect(val inner: AstroPoint,
+                               val outer: AstroPoint,
+                               val aspect: Aspect,
+                               @Serializable(with = DoubleTwoDecimalSerializer::class)
+                               val orb: Double,
+                               val involved: List<MidPointFocalAspect>)
 
 class SynastryHoroscope(
   val mode: SynastryGrain,
   val inner: IPersonHoroscopeModel,
   val outer: IPersonHoroscopeModel,
   val progressedAspects: List<ISynastryAspect>,
-  val midpointFocalAspects: Set<ISynastryAspect>
+  val midpointFocalAspects: Set<ISynastryAspect>,
+  val houseOverlayMap: Map<Int, List<HouseOverlay>>
 ) {
 
   val progressedAspectsByScore: List<ISynastryAspect>
