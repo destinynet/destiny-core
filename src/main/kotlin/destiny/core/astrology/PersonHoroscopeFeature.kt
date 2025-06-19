@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.Gender
 import destiny.core.SynastryGrain
+import destiny.core.SynastryRelationship
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Axis.RISING
 import destiny.core.calendar.GmtJulDay
@@ -39,12 +40,14 @@ class PersonHoroscopeConfigBuilder : Builder<PersonHoroscopeConfig> {
 interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPersonHoroscopeModel> {
 
   fun synastry(
-    modelInner: IPersonHoroscopeModel, modelOuter: IPersonHoroscopeModel,
+    modelInner: IPersonHoroscopeModel,
+    modelOuter: IPersonHoroscopeModel,
+    relationship: SynastryRelationship?,
     aspectCalculator: IAspectCalculator,
     midpointAspectCalculator: IAspectCalculator,
-    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
-    mode: SynastryGrain = SynastryGrain.BOTH_FULL
-  ): SynastryHoroscope
+    grain: SynastryGrain = SynastryGrain.BOTH_FULL,
+    aspects: Set<Aspect> = Companion.getAspects(Importance.HIGH).toSet()
+  ): SynastryRequestDto
 }
 
 
@@ -69,20 +72,21 @@ class PersonHoroscopeFeature(
   override fun synastry(
     modelInner: IPersonHoroscopeModel,
     modelOuter: IPersonHoroscopeModel,
+    relationship: SynastryRelationship?,
     aspectCalculator: IAspectCalculator,
     midpointAspectCalculator: IAspectCalculator,
-    aspects: Set<Aspect>,
-    mode: SynastryGrain
-  ): SynastryHoroscope {
+    grain: SynastryGrain,
+    aspects: Set<Aspect>
+  ): SynastryRequestDto {
     val innerPoints = modelInner.points.let { points ->
-      when (mode) {
+      when (grain) {
         SynastryGrain.BOTH_FULL, SynastryGrain.INNER_FULL_OUTER_DATE -> points
         else                                                         -> points.filter { it != Planet.MOON }
       }
     }.toList()
 
     val outerPoints: List<AstroPoint> = modelOuter.points.let { points ->
-      when (mode) {
+      when (grain) {
         SynastryGrain.BOTH_FULL, SynastryGrain.INNER_DATE_OUTER_FULL -> points
         else                                                         -> points.filter { it != Planet.MOON }
       }
@@ -109,7 +113,7 @@ class PersonHoroscopeFeature(
     val midPointOrb = 2.0
 
     val synastryMidpointAspects = setOf(CONJUNCTION, SEMISQUARE, SQUARE, SESQUIQUADRATE, OPPOSITION)
-    val midpointFocalAspects = modelOuter.getMidPointsWithFocal(midPointFocals, midPointOrb).flatMap { outerFocal: IMidPointWithFocal ->
+    val midpointTrees: List<SynastryMidpointTree> = modelOuter.getMidPointsWithFocal(midPointFocals, midPointOrb).flatMap { outerFocal: IMidPointWithFocal ->
       modelInner.getMidPointsWithFocal(midPointFocals, midPointOrb).map { innerFocal: IMidPointWithFocal ->
         Triple(
           outerFocal,
@@ -117,12 +121,18 @@ class PersonHoroscopeFeature(
           midpointAspectCalculator.getAspectPattern(outerFocal.focal, innerFocal.focal, posMapOuter, posMapInner, { null }, { null }, synastryMidpointAspects)
         )
       }.filter { (_, _, p) -> p != null }
-        .map { (outerFocal, innerFocal, pattern) ->
-          MidPointFocalAspect(outerFocal, innerFocal, pattern!!.aspect, pattern.orb)
+        .map { (outerFocal: IMidPointWithFocal, innerFocal, pattern) ->
+          MidPointFocalAspect(outerFocal as MidPointWithFocal , innerFocal as MidPointWithFocal, pattern!!.aspect, pattern.orb)
         }
-    }.toSet()
+    }.groupBy { Triple(it.inner.focal, it.outer.focal, it.aspect) }
+      .asSequence()
+      .map { (triple: Triple<AstroPoint, AstroPoint, Aspect>, aspects: List<MidPointFocalAspect>) ->
+        SynastryMidpointTree(triple.first, triple.second, triple.third, aspects.first().orb, aspects)
+      }
+      .sortedBy { it.orb }
+      .toList()
 
-    return SynastryHoroscope(mode, modelInner, modelOuter, synastryAspects, midpointFocalAspects, synastry.houseOverlayMap)
+    return SynastryRequestDto(modelInner, modelOuter, grain, relationship, synastryAspects, midpointTrees, synastry.houseOverlayMap)
   }
 
 

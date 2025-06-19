@@ -29,7 +29,7 @@ data class MidPoint(override val points: Set<AstroPoint>,
   }
 }
 
-interface IMidPointWithFocal : IMidPoint {
+sealed interface IMidPointWithFocal : IMidPoint {
   val focal: AstroPoint
   val orb: Double
 }

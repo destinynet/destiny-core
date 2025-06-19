@@ -3,6 +3,7 @@ package destiny.core.astrology
 import destiny.tools.Score
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import destiny.tools.serializers.ScoreTwoDecimalSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 interface ISynastryAspect : IPointAspectPattern {
@@ -56,8 +57,8 @@ data class SynastryAspect(
 }
 
 @Serializable
-data class MidPointFocalAspect(val outer : IMidPointWithFocal,
-                               val inner : IMidPointWithFocal,
+data class MidPointFocalAspect(val outer : MidPointWithFocal,
+                               val inner : MidPointWithFocal,
                                override val aspect: Aspect,
                                @Serializable(with = DoubleTwoDecimalSerializer::class)
                                override val orb: Double) : ISynastryAspect {
@@ -66,6 +67,7 @@ data class MidPointFocalAspect(val outer : IMidPointWithFocal,
   override val outerPoint: AstroPoint = outer.focal
   override val innerPoint: AstroPoint = inner.focal
 
+  @SerialName("patternType")
   override val type: IPointAspectPattern.Type? = null
   override val outerPointHouse: Int? = null
   override val innerPointHouse: Int? = null
