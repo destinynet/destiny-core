@@ -12,6 +12,12 @@ import destiny.core.calendar.eightwords.FlowLargeYearPatterns.toFlowTrilogy
 import destiny.core.calendar.eightwords.FlowLargeYearPatterns.trilogyToFlow
 import destiny.core.calendar.eightwords.FlowPattern.*
 import destiny.core.chinese.IStemBranch
+import destiny.core.chinese.eightwords.FlowTranslator.translateAffecting
+import destiny.core.chinese.eightwords.FlowTranslator.translateBranchCombined
+import destiny.core.chinese.eightwords.FlowTranslator.translateBranchOpposition
+import destiny.core.chinese.eightwords.FlowTranslator.translateStemCombined
+import destiny.core.chinese.eightwords.FlowTranslator.translateToFlowTrilogy
+import destiny.core.chinese.eightwords.FlowTranslator.translateTrilogyToFlow
 
 /**
  * 大運、流年
@@ -67,4 +73,17 @@ fun IEightWords.getFlowLargeYearPatterns(flowLarge: IStemBranch, flowYear: IStem
       this@getFlowLargeYearPatterns.getPatterns(flowLarge, flowYear)
     }
   }.toSet()
+}
+
+fun IEightWords.yearKeyPoints(flowLarge: IStemBranch, flowYear: IStemBranch): List<String> {
+  return getFlowLargeYearPatterns(flowLarge, flowYear).let {
+    buildList {
+      addAll(it.translateAffecting())
+      addAll(it.translateStemCombined())
+      addAll(it.translateBranchCombined())
+      addAll(it.translateTrilogyToFlow())
+      addAll(it.translateToFlowTrilogy())
+      addAll(it.translateBranchOpposition())
+    }
+  }
 }

@@ -4,15 +4,25 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.News
+import destiny.core.Scale
 import destiny.core.astrology.*
 import destiny.core.calendar.*
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.eightwords.EwBdnp.*
+import destiny.core.chinese.eightwords.FortuneData
+import destiny.core.chinese.eightwords.HiddenStemsStandardImpl
+import destiny.core.chinese.eightwords.IPersonContextModel
+import destiny.core.chinese.eightwords.ReactionUtil
 import destiny.tools.KotlinLogging
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 val logger = KotlinLogging.logger { }
 
@@ -400,5 +410,101 @@ object Lmt {
       21, 22 -> 亥
       else   -> throw IllegalArgumentException("Cannot find EarthlyBranches for this LMT : $lmtHour")
     }
+  }
+}
+
+// 八字
+val ew: (IEightWords) -> Map<Scale, String> = {
+  mapOf(
+    Scale.YEAR to it.year.toString(),
+    Scale.MONTH to it.month.toString(),
+    Scale.DAY to it.day.toString(),
+    Scale.HOUR to it.hour.toString()
+  )
+}
+
+// 納音
+val nayin: (IEightWords) -> Map<Scale, String> = {
+  mapOf(
+    Scale.YEAR to it.year.naYin.name,
+    Scale.MONTH to it.month.naYin!!.name,
+    Scale.DAY to it.day.naYin.name,
+    Scale.HOUR to it.hour.naYin!!.name
+  )
+}
+
+// 空亡
+val empties: (IEightWords) -> Map<Scale, String> = {
+  mapOf(
+    Scale.YEAR to it.year.empties.joinToString(","),
+    Scale.MONTH to (it.month as StemBranch).empties.joinToString(","),
+    Scale.DAY to it.day.empties.joinToString(","),
+    Scale.HOUR to (it.hour as StemBranch).empties.joinToString(","),
+  )
+}
+
+// 節氣資訊
+val solarTermsPos: (SolarTermsTimePos) -> String = {
+  buildString {
+    append("出生於 ")
+    append(it.prevMajor.solarTerms).append(" 後")
+    append(it.toPrevMajorSeconds.toDuration(DurationUnit.SECONDS).inWholeDays)
+    append("日")
+    append(" , 還有 ")
+    append(it.toNextMajorSeconds.toDuration(DurationUnit.SECONDS).inWholeDays)
+    append("日到 ")
+    append(it.nextMajor.solarTerms)
+  }
+}
+
+private val reactionUtil = ReactionUtil(HiddenStemsStandardImpl())
+
+// 八字詳情
+val ewDetails: (IEightWords) -> Map<Scale, StemAndBranch> = {
+  val dayStem = it.day.stem
+  mapOf(
+    Scale.YEAR to it.year.toStemAndBranch(dayStem),
+    Scale.MONTH to it.month.toStemAndBranch(dayStem),
+    Scale.DAY to StemAndBranch(
+      StemReaction(
+        it.day.stem,
+        "日主"
+      ),
+      it.day.branch, reactionUtil.getHiddenStemReactions(it.day.branch, dayStem).map { (hiddenStem, reaction) ->
+        StemReaction(hiddenStem, reaction.name)
+      }
+    ),
+    Scale.HOUR to it.hour.toStemAndBranch(dayStem)
+  )
+}
+
+fun IStemBranch.toStemAndBranch(dayStem: Stem): StemAndBranch {
+  return StemAndBranch(
+    StemReaction(
+      this.stem,
+      ReactionUtil.getReaction(this.stem, dayStem).name
+    ),
+    this.branch, reactionUtil.getHiddenStemReactions(this.branch, dayStem).map { (hiddenStem, reaction) ->
+      StemReaction(hiddenStem, reaction.name)
+    }
+  )
+}
+
+private val julianDayResolver = JulDayResolver1582CutoverImpl()
+
+// 九條大運
+val fortuneLarges: (IPersonContextModel) -> List<FortuneLarge> = {
+  val dayStem = it.eightWords.day.stem
+  val now = LocalDateTime.now().toGmtJulDay(it.location)
+  it.fortuneDataLarges.map { fData: FortuneData ->
+    FortuneLarge(
+      now >= fData.startFortuneGmtJulDay && now <= fData.endFortuneGmtJulDay,
+      fData.stemBranch,
+      fData.stemBranch.toStemAndBranch(dayStem),
+      fData.startFortuneGmtJulDay.toLmt(it.location, julianDayResolver).toLocalDate() as LocalDate,
+      fData.startFortuneAge,
+      fData.endFortuneGmtJulDay.toLmt(it.location, julianDayResolver).toLocalDate() as LocalDate,
+      fData.endFortuneAge
+    )
   }
 }

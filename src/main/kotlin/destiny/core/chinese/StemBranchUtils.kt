@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese
 
-import destiny.core.chinese.Branch.子
+import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 
 object StemBranchUtils {
@@ -27,6 +27,23 @@ object StemBranchUtils {
       丙, 辛 -> StemBranch[戊, 子].next(hourBranch.getAheadOf(子)).stem
       丁, 壬 -> StemBranch[庚, 子].next(hourBranch.getAheadOf(子)).stem
       戊, 癸 -> StemBranch[壬, 子].next(hourBranch.getAheadOf(子)).stem
+    }
+  }
+
+  fun Branch.toAnimal(): String {
+    return when (this) {
+      子 -> "鼠"
+      丑 -> "牛"
+      寅 -> "虎"
+      卯 -> "兔"
+      辰 -> "龍"
+      巳 -> "蛇"
+      午 -> "馬"
+      未 -> "羊"
+      申 -> "猴"
+      酉 -> "雞"
+      戌 -> "狗"
+      亥 -> "豬"
     }
   }
 }
