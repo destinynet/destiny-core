@@ -14,8 +14,6 @@ import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUtils.toAnimal
-import destiny.core.chinese.eightwords.EwBdnp.Patterns
-import destiny.core.chinese.eightwords.EwBdnp.YearData.Companion.yearData
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
@@ -100,7 +98,7 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
       this.eightWords.let { ew -> empties.invoke(ew) },
       this.eightWords.let { ew -> ewDetails.invoke(ew) },
       this.solarTermsTimePos.let { solarTermsPos.invoke(it) },
-      this.eightWords.let { ew -> Patterns.patterns.invoke(ew) },
+      this.eightWords.let { ew -> patterns.invoke(ew) },
       fortuneLarges.invoke(this),
       this.score,
       (if (this.score <= 2) "日主稍弱" else if (this.score >= 6) "日主強旺" else null),

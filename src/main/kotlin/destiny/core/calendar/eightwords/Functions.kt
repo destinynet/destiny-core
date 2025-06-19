@@ -10,11 +10,14 @@ import destiny.core.calendar.*
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.StemBranchYearTool.getYearStemBranch
+import destiny.core.chinese.eightwords.*
 import destiny.core.chinese.eightwords.EwBdnp.*
-import destiny.core.chinese.eightwords.FortuneData
-import destiny.core.chinese.eightwords.HiddenStemsStandardImpl
-import destiny.core.chinese.eightwords.IPersonContextModel
-import destiny.core.chinese.eightwords.ReactionUtil
+import destiny.core.chinese.eightwords.IdentityTranslator.translateBranchCombined
+import destiny.core.chinese.eightwords.IdentityTranslator.translateBranchOpposition
+import destiny.core.chinese.eightwords.IdentityTranslator.translateStemCombined
+import destiny.core.chinese.eightwords.IdentityTranslator.translateStemRooted
+import destiny.core.chinese.eightwords.IdentityTranslator.translateTrilogy
 import destiny.tools.KotlinLogging
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -507,4 +510,40 @@ val fortuneLarges: (IPersonContextModel) -> List<FortuneLarge> = {
       fData.endFortuneAge
     )
   }
+}
+
+val yearData: (IPersonPresentModel, IStemBranch, Int) -> YearData = { ewModel, flowLarge, year: Int ->
+  val yearStemBranch = getYearStemBranch(year)
+  val dayStem = ewModel.eightWords.day.stem
+
+  YearData(
+    year,
+    yearStemBranch == ewModel.presentYear,
+    yearStemBranch,
+    yearStemBranch.toStemAndBranch(dayStem),
+    ewModel.eightWords.yearKeyPoints(flowLarge, yearStemBranch)
+  )
+}
+
+// 格局特徵
+val patterns: (IEightWords) -> Patterns = {
+  val ew = it.eightWordsNullable as IEightWords
+
+  Patterns(
+    with(IdentityPatterns.stemCombined) {
+      ew.getPatterns().translateStemCombined()
+    },
+    with(IdentityPatterns.branchCombined) {
+      ew.getPatterns().translateBranchCombined()
+    },
+    with(IdentityPatterns.trilogy) {
+      ew.getPatterns().translateTrilogy()
+    },
+    with(IdentityPatterns.branchOpposition) {
+      ew.getPatterns().translateBranchOpposition()
+    },
+    with(IdentityPatterns.stemRooted) {
+      ew.getPatterns().translateStemRooted()
+    }
+  )
 }

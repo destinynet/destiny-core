@@ -9,20 +9,10 @@ import destiny.core.RequestDto
 import destiny.core.Scale
 import destiny.core.astrology.ZodiacSign
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.eightwords.IEightWords
-import destiny.core.calendar.eightwords.IdentityPatterns
-import destiny.core.calendar.eightwords.toStemAndBranch
-import destiny.core.calendar.eightwords.yearKeyPoints
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
-import destiny.core.chinese.StemBranchYearTool.getYearStemBranch
-import destiny.core.chinese.eightwords.IdentityTranslator.translateBranchCombined
-import destiny.core.chinese.eightwords.IdentityTranslator.translateBranchOpposition
-import destiny.core.chinese.eightwords.IdentityTranslator.translateStemCombined
-import destiny.core.chinese.eightwords.IdentityTranslator.translateStemRooted
-import destiny.core.chinese.eightwords.IdentityTranslator.translateTrilogy
 import destiny.tools.serializers.GenderSerializer
 import destiny.tools.serializers.ILocationSerializer
 import destiny.tools.serializers.LocalDateSerializer
@@ -86,32 +76,7 @@ data class EwBdnp(
     val branchOpposition: List<String>,
     @SerialName("天干通根")
     val stemRooted: List<String>
-  ) {
-    companion object {
-      // 格局特徵
-      val patterns: (IEightWords) -> Patterns = {
-        val ew = it.eightWordsNullable as IEightWords
-
-        Patterns(
-          with(IdentityPatterns.stemCombined) {
-            ew.getPatterns().translateStemCombined()
-          },
-          with(IdentityPatterns.branchCombined) {
-            ew.getPatterns().translateBranchCombined()
-          },
-          with(IdentityPatterns.trilogy) {
-            ew.getPatterns().translateTrilogy()
-          },
-          with(IdentityPatterns.branchOpposition) {
-            ew.getPatterns().translateBranchOpposition()
-          },
-          with(IdentityPatterns.stemRooted) {
-            ew.getPatterns().translateStemRooted()
-          }
-        )
-      }
-    }
-  }
+  )
 
   @Serializable
   data class StemReaction(
@@ -163,20 +128,5 @@ data class EwBdnp(
     val stemAndBranch: StemAndBranch,
     @SerialName("註解")
     val notes: List<String>
-  ) {
-    companion object {
-      val yearData: (IPersonPresentModel, IStemBranch, Int) -> YearData = { ewModel, flowLarge, year: Int ->
-        val yearStemBranch = getYearStemBranch(year)
-        val dayStem = ewModel.eightWords.day.stem
-
-        YearData(
-          year,
-          yearStemBranch == ewModel.presentYear,
-          yearStemBranch,
-          yearStemBranch.toStemAndBranch(dayStem),
-          ewModel.eightWords.yearKeyPoints(flowLarge, yearStemBranch)
-        )
-      }
-    }
-  }
+  )
 }

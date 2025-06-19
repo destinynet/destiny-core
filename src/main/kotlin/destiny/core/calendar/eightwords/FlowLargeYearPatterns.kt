@@ -87,3 +87,4 @@ fun IEightWords.yearKeyPoints(flowLarge: IStemBranch, flowYear: IStemBranch): Li
     }
   }
 }
+
