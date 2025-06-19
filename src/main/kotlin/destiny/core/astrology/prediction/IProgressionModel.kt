@@ -20,15 +20,11 @@ interface ITransitModel : Serializable {
 interface IProgressionModel : ITransitModel {
   val type : ProgressionType
   val convergentTime: GmtJulDay
-  val progressedAspects: Set<ISynastryAspect>
-  val progressedAspectsByScore : List<ISynastryAspect>
-    get() {
-      return progressedAspects.asSequence().sortedByDescending { it.score }.toList()
-    }
+  val progressedAspects: List<ISynastryAspect>
 }
 
 data class ProgressionModel(override val type: ProgressionType,
                             override val natalTime: GmtJulDay,
                             override val viewTime: GmtJulDay,
                             override val convergentTime: GmtJulDay,
-                            override val progressedAspects: Set<ISynastryAspect>) : IProgressionModel
+                            override val progressedAspects: List<ISynastryAspect>) : IProgressionModel

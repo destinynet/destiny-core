@@ -9,7 +9,6 @@ import destiny.core.SynastryGrain
 import destiny.core.SynastryRelationship
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import destiny.tools.serializers.IBirthDataNamePlaceSerializer
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -29,7 +28,6 @@ class SynastryRequestDto(
   val outer: IBirthDataNamePlace,
   val grain: SynastryGrain,
   val relationship: SynastryRelationship?,
-  @SerialName("aspects")
   val aspects: List<SynastryAspect>,
   val midpointTrees: List<SynastryMidpointTree>,
   val houseOverlayMap: Map<Int, List<HouseOverlay>>,

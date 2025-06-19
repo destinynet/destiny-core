@@ -6,6 +6,7 @@ package destiny.core.astrology
 import destiny.core.Gender
 import destiny.core.Graph
 import destiny.core.IBirthDataNamePlace
+import destiny.core.RequestDto
 import destiny.core.astrology.Natal.HouseStarDistribution
 import destiny.core.astrology.Natal.StarPosInfo
 import destiny.core.calendar.ILocation
@@ -65,6 +66,7 @@ interface IPersonHoroscopeDto : IHoroscopeDto , IBirthDataNamePlace
 /**
  * a DTO object for a [IPersonHoroscopeModel]
  */
+@RequestDto
 @Serializable
 data class Natal(
   @Serializable(with = GenderSerializer::class)

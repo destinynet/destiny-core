@@ -360,7 +360,9 @@ class HoroscopeFeature(
                   val p2House = model.getHouse(posMapInner[p2]!!.lng.toZodiacDegree())
                   SynastryAspect(p1, p2, p1House, p2House, p.aspect, p.orb, p.type!!, p.score)
                 }
-            }.toSet()
+            }
+            .sortedByDescending { it.score }
+            .toList()
 
           ProgressionModel(progression.type, model.gmtJulDay, progressionTime, convergentTime, progressedAspects)
         }
