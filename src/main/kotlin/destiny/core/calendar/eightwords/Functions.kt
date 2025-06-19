@@ -493,6 +493,21 @@ fun IStemBranch.toStemAndBranch(dayStem: Stem): StemAndBranch {
   )
 }
 
+/**
+ * 本命四柱 特徵
+ */
+fun IEightWords.identityKeyPoints(): List<String> {
+  return getIdentityPatterns().let {
+    buildList {
+      addAll(it.translateStemCombined())
+      addAll(it.translateBranchCombined())
+      addAll(it.translateTrilogy())
+      addAll(it.translateBranchOpposition())
+      addAll(it.translateStemRooted())
+    }
+  }
+}
+
 private val julianDayResolver = JulDayResolver1582CutoverImpl()
 
 // 九條大運
@@ -504,6 +519,7 @@ val fortuneLarges: (IPersonContextModel) -> List<FortuneLarge> = {
       now >= fData.startFortuneGmtJulDay && now <= fData.endFortuneGmtJulDay,
       fData.stemBranch,
       fData.stemBranch.toStemAndBranch(dayStem),
+      it.eightWords.fortuneLargeKeyPoints(fData.stemBranch),
       fData.startFortuneGmtJulDay.toLmt(it.location, julianDayResolver).toLocalDate() as LocalDate,
       fData.startFortuneAge,
       fData.endFortuneGmtJulDay.toLmt(it.location, julianDayResolver).toLocalDate() as LocalDate,

@@ -94,6 +94,7 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
       this.risingStemBranch,
       ZodiacSign.of(this.risingStemBranch.branch),
       this.eightWords.let { ew.invoke(it) },
+      this.eightWords.identityKeyPoints(),
       this.eightWords.let { ew -> nayin.invoke(ew) },
       this.eightWords.let { ew -> empties.invoke(ew) },
       this.eightWords.let { ew -> ewDetails.invoke(ew) },

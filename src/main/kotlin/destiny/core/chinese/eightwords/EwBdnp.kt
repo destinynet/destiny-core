@@ -45,6 +45,8 @@ data class EwBdnp(
   val risingSign: ZodiacSign,
   @SerialName("八字")
   val ew: Map<Scale, String>,
+  @SerialName("八字特徵")
+  val notes: List<String>,
   @SerialName("納音")
   val nayin: Map<Scale, String>,
   @SerialName("空亡")
@@ -106,6 +108,8 @@ data class EwBdnp(
     val stemBranch: IStemBranch,
     @SerialName("十神藏干")
     val stemAndBranch: StemAndBranch,
+    @SerialName("大運特徵")
+    val notes: List<String>,
     @Serializable(with = LocalDateSerializer::class)
     val startDate: LocalDate,
     val startAge: Int,
@@ -126,7 +130,7 @@ data class EwBdnp(
     val stemBranch: IStemBranch,
     @SerialName("十神藏干")
     val stemAndBranch: StemAndBranch,
-    @SerialName("註解")
+    @SerialName("流年特徵")
     val notes: List<String>
   )
 }

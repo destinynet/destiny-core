@@ -88,3 +88,20 @@ fun IEightWords.yearKeyPoints(flowLarge: IStemBranch, flowYear: IStemBranch): Li
   }
 }
 
+
+/**
+ * 本命四柱、大運 特徵
+ */
+fun IEightWords.fortuneLargeKeyPoints(flowLarge: IStemBranch): List<String> {
+  return getFlowLargePatterns(flowLarge).let {
+    buildList {
+      addAll(it.translateAffecting())
+      addAll(it.translateStemCombined())
+      addAll(it.translateBranchCombined())
+      addAll(it.translateTrilogyToFlow())
+      addAll(it.translateToFlowTrilogy())
+      addAll(it.translateBranchOpposition())
+    }
+  }
+}
+
