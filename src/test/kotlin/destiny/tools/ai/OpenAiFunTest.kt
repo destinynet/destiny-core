@@ -98,7 +98,7 @@ class OpenAiFunTest {
           "id": "chatcmpl-8bN5aJO2IWtlxMcHblpnKzwcIfPeL",
           "object": "chat.completion",
           "created": 1703917582,
-          "model": "gpt-3.5-turbo-0613",
+          "model": "gpt-4.1-nano",
           "choices": [
             {
               "index": 0,
@@ -124,7 +124,7 @@ class OpenAiFunTest {
       assertEquals("chatcmpl-8bN5aJO2IWtlxMcHblpnKzwcIfPeL", result.id)
       assertEquals("chat.completion", result.`object`)
       assertEquals(1703917582, result.created)
-      assertEquals("gpt-3.5-turbo-0613", result.model)
+      assertEquals("gpt-4.1-nano", result.model)
       assertEquals(1, result.choices.size)
       assertEquals(24, result.usage.promptTokens)
       assertEquals(12, result.usage.completionTokens)
