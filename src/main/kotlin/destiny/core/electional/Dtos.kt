@@ -41,7 +41,7 @@ class Dtos {
   )
 
 
-  class EwIdentity {
+  abstract class EwIdentity : IEventDto {
 
     /**
      * 本命天干合化
@@ -50,10 +50,10 @@ class Dtos {
      * */
     @Serializable
     data class StemCombinedDto(
-      val description : String,
+      override val description: String,
       val natalStems: Set<NatalStems>,
       val combined: FiveElement
-    )
+    ) : EwIdentity()
 
     /**
      * 本命地支六合
@@ -62,9 +62,9 @@ class Dtos {
      */
     @Serializable
     data class BranchCombinedDto(
-      val description : String,
+      override val description: String,
       val natalBranches: Set<NatalBranches>
-    )
+    ) : EwIdentity()
 
     /**
      * 本命地支三合
@@ -74,10 +74,10 @@ class Dtos {
      */
     @Serializable
     data class TrilogyDto(
-      val description : String,
+      override val description: String,
       val natalBranches: Set<NatalBranches>,
       val trilogy: FiveElement
-    )
+    ) : EwIdentity()
 
     /**
      * 本命地支正沖
@@ -86,9 +86,9 @@ class Dtos {
      */
     @Serializable
     data class BranchOppositionDto(
-      val description : String,
+      override val description: String,
       val natalBranches: Set<NatalBranches>
-    )
+    ) : EwIdentity()
 
     /**
      * 本命天干通根
@@ -97,13 +97,13 @@ class Dtos {
      */
     @Serializable
     data class StemRootedDto(
-      val description : String,
+      override val description: String,
       val natalStems: Set<NatalStems>,
       val natalBranches: Set<NatalBranches>
-    )
+    ) : EwIdentity()
   }
 
-  class EwFlow {
+  abstract class EwFlow : IEventDto {
 
     @Serializable
     data class FlowStems(
@@ -125,11 +125,11 @@ class Dtos {
      */
     @Serializable
     data class AffectingDto(
-      val description: String,
+      override val description: String,
       val natalStems: NatalStems,
       val reacting: Reacting,
       val flowScales: Set<FlowScale>
-    )
+    ) : EwFlow()
 
     /**
      * 天干相合
@@ -138,11 +138,11 @@ class Dtos {
      */
     @Serializable
     data class StemCombinedDto(
-      val description: String,
+      override val description: String,
       val natalStems: NatalStems,
       val flowStems: FlowStems,
       val combined: FiveElement
-    )
+    ) : EwFlow()
 
     /**
      * 地支相合
@@ -151,10 +151,10 @@ class Dtos {
      */
     @Serializable
     data class BranchCombinedDto(
-      val description: String,
+      override val description: String,
       val natalBranches: NatalBranches,
       val flowBranches: FlowBranches,
-    )
+    ) : EwFlow()
 
     /**
      * 本命兩柱 與流運某干支 形成三合
@@ -163,10 +163,10 @@ class Dtos {
      */
     @Serializable
     data class TrilogyToFlowDto(
-      val description: String,
+      override val description: String,
       val natalBranches: Set<NatalBranches>,
       val flowBranches: FlowBranches,
-    )
+    ) : EwFlow()
 
     /**
      * 本命某柱 與流運兩柱 形成三合
@@ -175,10 +175,10 @@ class Dtos {
      */
     @Serializable
     data class ToFlowTrilogyDto(
-      val description: String,
+      override val description: String,
       val natalBranches: NatalBranches,
       val flowBranches: Set<FlowBranches>,
-    )
+    ) : EwFlow()
 
     /**
      * 地支正沖
@@ -187,10 +187,10 @@ class Dtos {
      */
     @Serializable
     data class BranchOppositionDto(
-      val description: String,
+      override val description: String,
       val natalBranches: NatalBranches,
       val flowBranches: FlowBranches,
-    )
+    ) : EwFlow()
   }
 
 }
