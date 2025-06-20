@@ -11,7 +11,8 @@ import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem
 import destiny.core.chinese.trilogy
 import destiny.core.electional.Dtos
-import destiny.core.electional.Dtos.EwIdentity.NatalStems
+import destiny.core.electional.Dtos.NatalBranches
+import destiny.core.electional.Dtos.NatalStems
 import destiny.tools.getTitle
 import java.util.*
 
@@ -26,38 +27,41 @@ object IdentityTranslator {
    * ex : 年干(丁) 與 月干、時干(均為壬) 合木
    * ex : 年干、日干(均為丁) 與 月干、時干(均為壬) 合木
    */
+  private fun Pair<FiveElement , List<StemCombined>>.translateStemCombined(): String {
+    val groupedPillars: List<Pair<Stem, List<Pair<Scale, Stem>>>> = this.second.flatMap { it.pillars }.distinct().groupBy { (_, stem) -> stem }.toList()
+
+    return buildString {
+      append(
+        groupedPillars.joinToString(" 與 ") { (stem: Stem, list: List<Pair<Scale, Stem>>) ->
+          buildString {
+            append(
+              list.joinToString("、") {
+                it.first.getTitle(locale) + "干"
+              }
+            )
+            append("(")
+            if (list.size > 1)
+              append("均為")
+            append(stem)
+            append(")")
+          }
+        }
+      )
+      append(" 合").append(this@translateStemCombined.first)
+    }
+  }
+
   fun Set<IdentityPattern>.translateStemCombined(): List<String> {
     return this.filterIsInstance<StemCombined>().groupBy { p -> p.pillars.first().second.combined.second }
       .map { (five: FiveElement, p: List<StemCombined>) ->
-        val groupedPillars: List<Pair<Stem, List<Pair<Scale, Stem>>>> = p.flatMap { it.pillars }.distinct().groupBy { (_, stem) -> stem }.toList()
-        buildString {
-          append(
-            groupedPillars.joinToString(" 與 ") { (stem: Stem, list: List<Pair<Scale, Stem>>) ->
-              buildString {
-                append(
-                  list.joinToString("、") {
-                    it.first.getTitle(locale) + "干"
-                  }
-                )
-                append("(")
-                if (list.size > 1)
-                  append("均為")
-                append(stem)
-                append(")")
-              }
-            }
-          )
-          append(" 合").append(five)
-        }
+        (five to p).translateStemCombined()
       }.toList()
   }
 
   fun Set<StemCombined>.toStemCombinedDtos(): Set<Dtos.EwIdentity.StemCombinedDto> {
-
     return this.groupBy { p -> p.pillars.first().second.combined.second }
       .map { (five: FiveElement, patterns) ->
-
-        val description = setOf(*patterns.toTypedArray()).translateStemCombined().first()
+        val description = (five to patterns).translateStemCombined()
 
         val natalStems = patterns.flatMap { it.pillars }.groupBy { it.second }.map { (stem, scales) ->
           NatalStems(scales.map { it.first }.toSet(), stem)
@@ -74,34 +78,37 @@ object IdentityTranslator {
    * ex : 年支、月支、時支(均為 子) 六合 日支(丑)
    * ex : 年支、月支(均為 子) 六合 日支、時支(均為 丑)
    */
+
+  private fun List<BranchCombined>.translateBranchCombined(): String {
+    return this.flatMap { it.pillars }.groupBy({ it.second }, { it.first }).map { (branch, scales) ->
+      buildString {
+        append(
+          scales.distinct().joinToString("、") { s ->
+            s.getTitle(locale) + "支"
+          }
+        )
+        append("(")
+        if (scales.distinct().size > 1)
+          append("均為 ")
+        append(branch)
+        append(")")
+      }
+    }.joinToString(" 六合 ")
+  }
+
   fun Set<IdentityPattern>.translateBranchCombined(): List<String> {
-    return this.filterIsInstance<BranchCombined>().groupBy { p -> p.pillars.map { it.second }.toSet() }.map { (k, v) ->
-      v.flatMap { it.pillars }.groupBy({ it.second }, { it.first }).map { (branch, scales) ->
-        buildString {
-          append(
-            scales.distinct().joinToString("、") { s ->
-              s.getTitle(locale) + "支"
-            }
-          )
-          append("(")
-          if (scales.distinct().size > 1)
-            append("均為 ")
-          append(branch)
-          append(")")
-        }
-      }.joinToString(" 六合 ")
-    }
+    return this.filterIsInstance<BranchCombined>().groupBy { p -> p.pillars.map { it.second }.toSet() }.map { (_: Set<Branch>, patterns: List<BranchCombined>) -> patterns.translateBranchCombined() }
   }
 
   fun Set<BranchCombined>.toBranchCombinedDtos(): Set<Dtos.EwIdentity.BranchCombinedDto> {
     return this.groupBy { p -> p.pillars.map { it.second }.toSet() }
-      .map { (_, patterns) ->
-        val description = setOf(*patterns.toTypedArray()).translateBranchCombined().first()
+      .map { (_: Set<Branch>, patterns: List<BranchCombined>) ->
+        val description = patterns.translateBranchCombined()
 
         val natalBranches = patterns.flatMap { it.pillars }
           .groupBy { it.second } // Group by Branch
           .map { (branch, pairs) ->
-            Dtos.EwIdentity.NatalBranches(pairs.map { it.first }.toSet(), branch)
+            NatalBranches(pairs.map { it.first }.toSet(), branch)
           }.toSet()
 
         Dtos.EwIdentity.BranchCombinedDto(description, natalBranches)
@@ -112,26 +119,30 @@ object IdentityTranslator {
    * 地支三合
    * ex : 年支、月支、日支三合木局
    */
+  fun Trilogy.translateTrilogy() : String {
+    return buildString {
+      append(
+        pillars.joinToString("、") {
+          it.first.getTitle(locale) + "支"
+        }
+      )
+      append("三合")
+      append(pillars.first().second.trilogy().getTitle(locale)).append("局")
+    }
+  }
+
   fun Set<IdentityPattern>.translateTrilogy(): List<String> {
-    return this.filterIsInstance<Trilogy>().map { trilogy ->
-      buildString {
-        append(
-          trilogy.pillars.joinToString("、") {
-            it.first.getTitle(locale) + "支"
-          }
-        )
-        append("三合")
-        append(trilogy.pillars.first().second.trilogy().getTitle(locale)).append("局")
-      }
+    return this.filterIsInstance<Trilogy>().map { trilogy: Trilogy ->
+      trilogy.translateTrilogy()
     }
   }
 
   fun Set<Trilogy>.toTrilogyDtos(): Set<Dtos.EwIdentity.TrilogyDto> {
     return this.map { pattern ->
-      val description = setOf(pattern).translateTrilogy().first()
+      val description = pattern.translateTrilogy()
 
       val natalBranches = pattern.pillars.map { (scale, branch) ->
-        Dtos.EwIdentity.NatalBranches(setOf(scale), branch)
+        NatalBranches(setOf(scale), branch)
       }.toSet()
 
       val trilogyElement = pattern.pillars.first().second.trilogy()
@@ -173,7 +184,7 @@ object IdentityTranslator {
         val natalBranches = patterns.flatMap { it.pillars }
           .groupBy { it.second } // Group by Branch
           .map { (branch, pairs) ->
-            Dtos.EwIdentity.NatalBranches(pairs.map { it.first }.toSet(), branch)
+            NatalBranches(pairs.map { it.first }.toSet(), branch)
           }.toSet()
 
         Dtos.EwIdentity.BranchOppositionDto(description, natalBranches)
@@ -185,43 +196,46 @@ object IdentityTranslator {
    * ex : 年干(丁) 通根 日支(未)、時支(午)
    * ex : 年干、時干(均為 丁) 通根 日支(未)
    */
-  fun Set<IdentityPattern>.translateStemRooted(): List<String> {
-    return this.filterIsInstance<StemRooted>().groupBy { p -> p.roots }.map { (roots: Set<Pair<Scale, Branch>>, patterns: List<StemRooted>) ->
-      buildString {
-        append(
-          patterns.joinToString("、") {
-            it.scale.getTitle(locale) + "干"
-          }
-        )
-        append("(")
-        if (patterns.size > 1)
-          append("均為 ")
-        append(patterns.first().stem)
-        append(")")
 
-        append(" 通根 ")
-        append(roots.joinToString("、") {
-          it.first.getTitle(locale) + "支" + "(" + it.second + ")"
-        })
-      }
+  private fun Pair<Set<Pair<Scale, Branch>> , List<StemRooted>>.translateStemRooted() : String {
+    return buildString {
+      append(
+        second.joinToString("、") {
+          it.scale.getTitle(locale) + "干"
+        }
+      )
+      append("(")
+      if (second.size > 1)
+        append("均為 ")
+      append(second.first().stem)
+      append(")")
+
+      append(" 通根 ")
+      append(first.joinToString("、") {
+        it.first.getTitle(locale) + "支" + "(" + it.second + ")"
+      })
+    }
+  }
+
+  fun Set<IdentityPattern>.translateStemRooted(): List<String> {
+    return this.filterIsInstance<StemRooted>().groupBy { p -> p.roots }.map {
+      (roots: Set<Pair<Scale, Branch>>, patterns: List<StemRooted>) ->
+        (roots to patterns).translateStemRooted()
     }
   }
 
   fun Set<StemRooted>.toStemRootedDtos(): Set<Dtos.EwIdentity.StemRootedDto> {
-    // Group by the set of rooting branches
     return this.groupBy { it.roots }
       .map { (roots, patterns) ->
-        val description = setOf(*patterns.toTypedArray()).translateStemRooted().first()
+        val description = (roots to patterns).translateStemRooted()
 
-        // The stems that are being rooted
         val natalStems = patterns.groupBy { it.stem }
           .map { (stem, stemPatterns) ->
             NatalStems(stemPatterns.map { it.scale }.toSet(), stem)
           }.toSet()
 
-        // The branches that are providing the roots
         val natalBranches = roots.map { (scale, branch) ->
-          Dtos.EwIdentity.NatalBranches(setOf(scale), branch)
+          NatalBranches(setOf(scale), branch)
         }.toSet()
 
         Dtos.EwIdentity.StemRootedDto(description, natalStems, natalBranches)

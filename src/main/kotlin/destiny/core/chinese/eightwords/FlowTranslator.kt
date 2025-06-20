@@ -7,9 +7,14 @@ import destiny.core.FlowScale
 import destiny.core.Scale
 import destiny.core.calendar.eightwords.FlowPattern
 import destiny.core.calendar.eightwords.FlowPattern.*
+import destiny.core.calendar.eightwords.Reacting
 import destiny.core.calendar.eightwords.Reacting.*
 import destiny.core.chinese.Branch
+import destiny.core.chinese.Stem
 import destiny.core.chinese.trilogy
+import destiny.core.electional.Dtos
+import destiny.core.electional.Dtos.EwFlow.FlowBranches
+import destiny.core.electional.Dtos.NatalBranches
 import destiny.tools.getTitle
 import java.util.*
 
@@ -24,29 +29,43 @@ object FlowTranslator {
   /**
    * 大運、流年同時影響本命天干
    */
-  fun Set<FlowPattern>.translateAffecting(): List<String> {
-    return this.filterIsInstance<Affecting>().groupBy { it.reacting }.map { (reacting, p: List<Affecting>) ->
-      buildString {
-        append("本命")
-        append(p.joinToString("、") { it.scale.getTitle(locale) + "干" })
-        append("(")
-        if (p.size > 1)
-          append("均為 ")
-        append(p.first().stem)
-        append(") ")
-        val flowScales = p.flatMap { it.flowScales }.distinct().joinToString("、") { it.getTitle(locale) }
-        append(
-          when (reacting) {
-            SAME       -> "與 ${flowScales}五行相同"
-            PRODUCING  -> "生/洩 出${flowScales}"
-            PRODUCED   -> "得到 $flowScales 五行 所生"
-            DOMINATING -> "同時剋制 $flowScales (消耗能量)"
-            BEATEN     -> "同時被 $flowScales 所剋制 (消耗能量)"
-          }
-        )
-      }
+  private fun Pair<Reacting, List<Affecting>>.translateAffecting(): String {
+    return buildString {
+      append("本命")
+      append(second.joinToString("、") { it.scale.getTitle(locale) + "干" })
+      append("(")
+      if (second.size > 1)
+        append("均為 ")
+      append(second.first().stem)
+      append(") ")
+      val flowScales = second.flatMap { it.flowScales }.distinct().joinToString("、") { it.getTitle(locale) }
+      append(
+        when (first) {
+          SAME       -> "與 ${flowScales}五行相同"
+          PRODUCING  -> "生/洩 出${flowScales}"
+          PRODUCED   -> "得到 $flowScales 五行 所生"
+          DOMINATING -> "同時剋制 $flowScales (消耗能量)"
+          BEATEN     -> "同時被 $flowScales 所剋制 (消耗能量)"
+        }
+      )
     }
   }
+
+  fun Set<FlowPattern>.translateAffecting(): List<String> {
+    return this.filterIsInstance<Affecting>().groupBy { it.reacting }.map { (reacting, p: List<Affecting>) ->
+      (reacting to p).translateAffecting()
+    }
+  }
+
+  fun Set<Affecting>.toAffectingDtos() : Set<Dtos.EwFlow.AffectingDto> {
+    return this.groupBy { it.reacting }.map { (reacting, patterns) ->
+      val description = (reacting to patterns).translateAffecting()
+      val natalStems = Dtos.NatalStems(patterns.map { it.scale }.toSet(), patterns.first().stem)
+      val flowScales: Set<FlowScale> = patterns.flatMap { it.flowScales }.toSet()
+      Dtos.EwFlow.AffectingDto(description, natalStems, reacting, flowScales)
+    }.toSet()
+  }
+
 
   /**
    * 大運、流年合住本命天干
@@ -60,37 +79,50 @@ object FlowTranslator {
    * ex : 本命時干(己) 被流年、流月(均為 甲)合住，甲己合化土
    * ex : 本命日干、時干(均為 己) 被流年、流月(均為 甲)合住，甲己合化土
    */
+  private fun Pair<Stem, List<StemCombined>>.translateStemCombined(): String {
+    return buildString {
+      append("本命")
+      val distinctPillars = second.map { it.scale }.distinct()
+      append(
+        distinctPillars.joinToString("、") {
+          it.getTitle(locale) + "干"
+        }
+      )
+      append("(")
+      if (distinctPillars.size > 1)
+        append("均為 ")
+      append(first)
+      append(") ")
+
+      val distinctFlowScales = second.map { it.flowScale }.distinct()
+      append("被")
+      append(distinctFlowScales.joinToString("、") {
+        it.getTitle(locale)
+      })
+      append("(")
+      if (distinctFlowScales.size > 1)
+        append("均為 ")
+      append(first.combined.first)
+      append(")")
+      append("合住")
+      append("，")
+      append(setOf(first, first.combined.first).sorted().joinToString("")).append("合化").append(first.combined.second)
+    }
+  }
+
   fun Set<FlowPattern>.translateStemCombined(): List<String> {
     return this.filterIsInstance<StemCombined>().groupBy { it.stem }.map { (stem, p: List<StemCombined>) ->
-      buildString {
-        append("本命")
-        val distinctPillars = p.map { it.scale }.distinct()
-        append(
-          distinctPillars.joinToString("、") {
-            it.getTitle(locale) + "干"
-          }
-        )
-        append("(")
-        if (distinctPillars.size > 1)
-          append("均為 ")
-        append(stem)
-        append(") ")
-
-        val distinctFlowScales = p.map { it.flowScale }.distinct()
-        append("被")
-        append(distinctFlowScales.joinToString("、") {
-          it.getTitle(locale)
-        })
-        append("(")
-        if (distinctFlowScales.size > 1)
-          append("均為 ")
-        append(stem.combined.first)
-        append(")")
-        append("合住")
-        append("，")
-        append(setOf(stem, stem.combined.first).sorted().joinToString("")).append("合化").append(stem.combined.second)
-      }
+      (stem to p).translateStemCombined()
     }
+  }
+
+  fun Set<StemCombined>.toStemCombinedDtos() : Set<Dtos.EwFlow.StemCombinedDto> {
+    return this.groupBy { it.stem }.map { (stem, patterns: List<StemCombined>) ->
+      val description = (stem to patterns).translateStemCombined()
+      val natalStems = Dtos.NatalStems(patterns.map { it.scale }.toSet() , stem)
+      val flowStems: Dtos.EwFlow.FlowStems = Dtos.EwFlow.FlowStems(patterns.map { it.flowScale }.toSet(), stem.combined.first)
+      Dtos.EwFlow.StemCombinedDto(description, natalStems, flowStems, stem.combined.second)
+    }.toSet()
   }
 
   /**
@@ -106,39 +138,53 @@ object FlowTranslator {
    * ex : 流月地支(午) 合住 本命月支、日支(均為 未)
    * ex : 流年、流月地支(均為 午) 合住 本命月支、日支(均為 未)
    */
-  fun Set<FlowPattern>.translateBranchCombined(): List<String> {
-    return this.filterIsInstance<BranchCombined>().groupBy { it.branch }.map { (branch, p: List<BranchCombined>) ->
-      buildString {
-        val distinctFlowScales = p.map { it.flowScale }.distinct()
-        append(
-          distinctFlowScales.joinToString("、") {
-            it.getTitle(locale)
-          }
-        )
-        append("地支")
-        append("(")
-        if (distinctFlowScales.size > 1)
-          append("均為 ")
-        append(branch.combined)
-        append(")")
+  private fun Pair<Branch, List<BranchCombined>>.translateBranchCombined(): String {
+    return buildString {
+      val distinctFlowScales = second.map { it.flowScale }.distinct()
+      append(
+        distinctFlowScales.joinToString("、") {
+          it.getTitle(locale)
+        }
+      )
+      append("地支")
+      append("(")
+      if (distinctFlowScales.size > 1)
+        append("均為 ")
+      append(first.combined)
+      append(")")
 
-        append(" 合住 ")
+      append(" 合住 ")
 
-        append("本命")
-        val distinctPillars = p.map { it.scale }.distinct()
-        append(
-          distinctPillars.joinToString("、") {
-            it.getTitle(locale) + "支"
-          }
-        )
-        append("(")
-        if (distinctPillars.size > 1)
-          append("均為 ")
-        append(branch)
-        append(")")
-      }
+      append("本命")
+      val distinctPillars = second.map { it.scale }.distinct()
+      append(
+        distinctPillars.joinToString("、") {
+          it.getTitle(locale) + "支"
+        }
+      )
+      append("(")
+      if (distinctPillars.size > 1)
+        append("均為 ")
+      append(first)
+      append(")")
     }
   }
+
+  fun Set<FlowPattern>.translateBranchCombined(): List<String> {
+    return this.filterIsInstance<BranchCombined>().groupBy { it.branch }.map { (branch, p: List<BranchCombined>) ->
+      (branch to p).translateBranchCombined()
+    }
+  }
+
+  fun Set<BranchCombined>.toBranchCombinedDtos() : Set<Dtos.EwFlow.BranchCombinedDto> {
+    return this.groupBy { it.branch }.map { (branch, patterns) ->
+      val description = (branch to patterns).translateBranchCombined()
+      val natalBranches = NatalBranches(patterns.map { it.scale }.toSet(), branch)
+      val flowBranches = FlowBranches(patterns.map { it.flowScale }.toSet(), branch.combined)
+      Dtos.EwFlow.BranchCombinedDto(description, natalBranches, flowBranches)
+    }.toSet()
+  }
+
 
   /**
    * 本命已經三合取二_再拱大運或流年
@@ -151,25 +197,42 @@ object FlowTranslator {
    * ex : 流年(辰)與本命年柱(子)、時柱(申)三合水局
    * ex : 流年(辰)、流月(辰)與本命年柱(子)、時柱(申)三合水局
    */
+  private fun Pair<Set<Pair<Scale, Branch>>, List<TrilogyToFlow>>.translateTrilogyToFlow(): String {
+    return buildString {
+      append(
+        second.joinToString("、") {
+          it.flow.first.getTitle(locale) + "(" + it.flow.second.getTitle(locale) + ")"
+        }
+      )
+
+      append("與本命")
+      append(
+        first.joinToString("、") {
+          it.first.getTitle(locale) + "柱(" + it.second + ")"
+        }
+      )
+      append("三合")
+      append(first.first().second.trilogy()).append("局")
+    }
+  }
+
   fun Set<FlowPattern>.translateTrilogyToFlow(): List<String> {
     return this.filterIsInstance<TrilogyToFlow>().groupBy { it.pairs }.map { (pairs: Set<Pair<Scale, Branch>>, patterns: List<TrilogyToFlow>) ->
-      buildString {
-        append(
-          patterns.joinToString("、") {
-            it.flow.first.getTitle(locale) + "(" + it.flow.second.getTitle(locale) + ")"
-          }
-        )
-
-        append("與本命")
-        append(
-          pairs.joinToString("、") {
-            it.first.getTitle(locale) + "柱(" + it.second + ")"
-          }
-        )
-        append("三合")
-        append(pairs.first().second.trilogy()).append("局")
-      }
+      (pairs to patterns).translateTrilogyToFlow()
     }
+  }
+
+  fun Set<TrilogyToFlow>.toTrilogyToFlowDtos() : Set<Dtos.EwFlow.TrilogyToFlowDto> {
+    return this.groupBy { it.pairs }.map { (pairs, patterns) ->
+      val description = (pairs to patterns).translateTrilogyToFlow()
+
+      val natalBranches = pairs.map { (scale, branch) ->
+        NatalBranches(setOf(scale), branch)
+      }.toSet()
+
+      val flowBranches = FlowBranches(patterns.map { it.flow.first }.toSet(), patterns.first().flow.second)
+      Dtos.EwFlow.TrilogyToFlowDto(description, natalBranches, flowBranches)
+    }.toSet()
   }
 
   /**
@@ -179,30 +242,50 @@ object FlowTranslator {
    * ex : 流年(辰)、流月(子) 與本命時支(申) 三合 水局
    * ex : 流年(辰)、流月(申) 與本命年支、時支(均為子) 三合 水局
    */
+  private fun Pair<Set<Pair<FlowScale, Branch>>, List<ToFlowTrilogy>>.translateToFlowTrilogy(): String {
+    return buildString {
+      append(
+        first.joinToString("、") {
+          it.first.getTitle(locale) + "(" + it.second + ")"
+        }
+      )
+      append(" 與本命")
+      append(
+        second.joinToString("、") {
+          it.scale.getTitle(locale) + "支"
+        }
+      )
+      append("(")
+      if (second.size > 1)
+        append("均為")
+      append(second.first().branch)
+      append(")")
+      append(" 三合 ")
+      append(second.first().branch.trilogy())
+      append("局")
+    }
+  }
+
   fun Set<FlowPattern>.translateToFlowTrilogy(): List<String> {
     return this.filterIsInstance<ToFlowTrilogy>().groupBy { it.flows }.map { (flows: Set<Pair<FlowScale, Branch>>, p: List<ToFlowTrilogy>) ->
-      buildString {
-        append(
-          flows.joinToString("、") {
-            it.first.getTitle(locale) + "(" + it.second + ")"
-          }
-        )
-        append(" 與本命")
-        append(
-          p.joinToString("、") {
-            it.scale.getTitle(locale) + "支"
-          }
-        )
-        append("(")
-        if (p.size > 1)
-          append("均為")
-        append(p.first().branch)
-        append(")")
-        append(" 三合 ")
-        append(p.first().branch.trilogy())
-        append("局")
-      }
+      (flows to p).translateToFlowTrilogy()
     }
+  }
+
+  fun Set<ToFlowTrilogy>.toToFlowTrilogyDtos() : Set<Dtos.EwFlow.ToFlowTrilogyDto> {
+    return this.groupBy { it.flows }.map { (flows: Set<Pair<FlowScale, Branch>>, patterns: List<ToFlowTrilogy>) ->
+      val description = (flows to patterns).translateToFlowTrilogy()
+
+      val natalBranches: NatalBranches = patterns.map { it.scale }.toSet().let { scales ->
+        NatalBranches(scales, patterns.first().branch)
+      }
+
+      val flowBranches: Set<FlowBranches> = flows.map { (flowScale, branch) ->
+        FlowBranches(setOf(flowScale), branch)
+      }.toSet()
+
+      Dtos.EwFlow.ToFlowTrilogyDto(description, natalBranches, flowBranches)
+    }.toSet()
   }
 
   /**
@@ -216,38 +299,62 @@ object FlowTranslator {
    * ex : 流月地支(酉) 正沖 本命時支(卯)
    * ex : 流年、流月地支(均為 丑) 正沖 本命月支、日支(均為 未)
    */
+  private fun Pair<Branch, List<Pair<Scale, FlowScale>>>.translateBranchOpposition(): String {
+    val ewScales = second.map { it.first }.toSet()
+    val flowScales = second.map { it.second }.toSet()
+    return buildString {
+      append(
+        flowScales.joinToString("、") {
+          it.getTitle(locale)
+        }
+      )
+      append("地支")
+      append("(")
+      if (flowScales.size > 1)
+        append("均為 ")
+      append(first.opposite)
+      append(")")
+
+      append(" 正沖 ")
+
+      append("本命")
+      append(
+        ewScales.joinToString("、") {
+          it.getTitle(locale) + "支"
+        }
+      )
+
+      append("(")
+      if (ewScales.size > 1)
+        append("均為 ")
+      append(first)
+      append(")")
+    }
+  }
+
   fun Set<FlowPattern>.translateBranchOpposition(): List<String> {
     return this.filterIsInstance<BranchOpposition>().groupBy({ p -> p.branch }, { p -> p.scale to p.flowScale }).map { (branch, scalePairs: List<Pair<Scale, FlowScale>>) ->
-      val ewScales = scalePairs.map { it.first }.toSet()
-      val flowScales = scalePairs.map { it.second }.toSet()
-      buildString {
-        append(
-          flowScales.joinToString("、") {
-            it.getTitle(locale)
-          }
-        )
-        append("地支")
-        append("(")
-        if (flowScales.size > 1)
-          append("均為 ")
-        append(branch.opposite)
-        append(")")
-
-        append(" 正沖 ")
-
-        append("本命")
-        append(
-          ewScales.joinToString("、") {
-            it.getTitle(locale) + "支"
-          }
-        )
-
-        append("(")
-        if (ewScales.size > 1)
-          append("均為 ")
-        append(branch)
-        append(")")
-      }
+      (branch to scalePairs).translateBranchOpposition()
     }
+  }
+
+  fun Set<BranchOpposition>.toBranchOppositionDtos() : Set<Dtos.EwFlow.BranchOppositionDto> {
+    return this.groupBy({ p -> p.branch }, { p -> p.scale to p.flowScale }).map {
+      (branch, scalePairs) ->
+      val description = (branch to scalePairs).translateBranchOpposition()
+
+      val natalBranches: Set<NatalBranches> = scalePairs.map { (scale, _) ->
+        NatalBranches(setOf(scale), branch)
+      }.toSet()
+
+      val flowBranches = setOf(
+        FlowBranches(
+          scalePairs.map { it.second }.toSet(), branch.opposite
+        )
+      )
+
+      Dtos.EwFlow.BranchOppositionDto(description, natalBranches, flowBranches)
+    }.toSet()
+
   }
 }
