@@ -13,12 +13,12 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.StemBranchYearTool.getYearStemBranch
 import destiny.core.chinese.eightwords.*
 import destiny.core.chinese.eightwords.EwBdnp.*
+import destiny.core.chinese.eightwords.IdentityTranslator.toBranchCombinedDtos
+import destiny.core.chinese.eightwords.IdentityTranslator.toBranchOppositionDtos
 import destiny.core.chinese.eightwords.IdentityTranslator.toStemCombinedDtos
-import destiny.core.chinese.eightwords.IdentityTranslator.translateBranchCombined
-import destiny.core.chinese.eightwords.IdentityTranslator.translateBranchOpposition
-import destiny.core.chinese.eightwords.IdentityTranslator.translateStemCombined
-import destiny.core.chinese.eightwords.IdentityTranslator.translateStemRooted
-import destiny.core.chinese.eightwords.IdentityTranslator.translateTrilogy
+import destiny.core.chinese.eightwords.IdentityTranslator.toStemRootedDtos
+import destiny.core.chinese.eightwords.IdentityTranslator.toTrilogyDtos
+import destiny.core.electional.Dtos
 import destiny.tools.KotlinLogging
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -497,22 +497,18 @@ fun IStemBranch.toStemAndBranch(dayStem: Stem): StemAndBranch {
 /**
  * 本命四柱 特徵
  */
-fun IEightWords.identityKeyPoints(): List<String> {
-
-  getIdentityPatterns().let { patterns ->
-    patterns.filterIsInstance<IdentityPattern.StemCombined>().toStemCombinedDtos()
-  }
-
-  return getIdentityPatterns().let {
-    buildList {
-      addAll(it.translateStemCombined())
-      addAll(it.translateBranchCombined())
-      addAll(it.translateTrilogy())
-      addAll(it.translateBranchOpposition())
-      addAll(it.translateStemRooted())
+fun IEightWords.identityDtos() : Set<Dtos.EwIdentity> {
+  return getIdentityPatterns().let { patterns ->
+    buildSet {
+      addAll(patterns.filterIsInstance<IdentityPattern.StemCombined>().toStemCombinedDtos())
+      addAll(patterns.filterIsInstance<IdentityPattern.BranchCombined>().toBranchCombinedDtos())
+      addAll(patterns.filterIsInstance<IdentityPattern.Trilogy>().toTrilogyDtos())
+      addAll(patterns.filterIsInstance<IdentityPattern.BranchOpposition>().toBranchOppositionDtos())
+      addAll(patterns.filterIsInstance<IdentityPattern.StemRooted>().toStemRootedDtos())
     }
   }
 }
+
 
 private val julianDayResolver = JulDayResolver1582CutoverImpl()
 
@@ -525,7 +521,7 @@ val fortuneLarges: (IPersonContextModel) -> List<FortuneLarge> = {
       now >= fData.startFortuneGmtJulDay && now <= fData.endFortuneGmtJulDay,
       fData.stemBranch,
       fData.stemBranch.toStemAndBranch(dayStem),
-      it.eightWords.fortuneLargeKeyPoints(fData.stemBranch),
+      it.eightWords.fortuneLargeDtos(fData.stemBranch),
       fData.startFortuneGmtJulDay.toLmt(it.location, julianDayResolver).toLocalDate() as LocalDate,
       fData.startFortuneAge,
       fData.endFortuneGmtJulDay.toLmt(it.location, julianDayResolver).toLocalDate() as LocalDate,
@@ -543,29 +539,6 @@ val yearData: (IPersonPresentModel, IStemBranch, Int) -> YearData = { ewModel, f
     yearStemBranch == ewModel.presentYear,
     yearStemBranch,
     yearStemBranch.toStemAndBranch(dayStem),
-    ewModel.eightWords.yearKeyPoints(flowLarge, yearStemBranch)
-  )
-}
-
-// 格局特徵
-val patterns: (IEightWords) -> Patterns = {
-  val ew = it.eightWordsNullable as IEightWords
-
-  Patterns(
-    with(IdentityPatterns.stemCombined) {
-      ew.getPatterns().translateStemCombined()
-    },
-    with(IdentityPatterns.branchCombined) {
-      ew.getPatterns().translateBranchCombined()
-    },
-    with(IdentityPatterns.trilogy) {
-      ew.getPatterns().translateTrilogy()
-    },
-    with(IdentityPatterns.branchOpposition) {
-      ew.getPatterns().translateBranchOpposition()
-    },
-    with(IdentityPatterns.stemRooted) {
-      ew.getPatterns().translateStemRooted()
-    }
+    ewModel.eightWords.yearDtos(flowLarge, yearStemBranch)
   )
 }

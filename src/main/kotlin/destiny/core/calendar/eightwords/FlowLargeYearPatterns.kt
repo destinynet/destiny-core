@@ -12,12 +12,13 @@ import destiny.core.calendar.eightwords.FlowLargeYearPatterns.toFlowTrilogy
 import destiny.core.calendar.eightwords.FlowLargeYearPatterns.trilogyToFlow
 import destiny.core.calendar.eightwords.FlowPattern.*
 import destiny.core.chinese.IStemBranch
-import destiny.core.chinese.eightwords.FlowTranslator.translateAffecting
-import destiny.core.chinese.eightwords.FlowTranslator.translateBranchCombined
-import destiny.core.chinese.eightwords.FlowTranslator.translateBranchOpposition
-import destiny.core.chinese.eightwords.FlowTranslator.translateStemCombined
-import destiny.core.chinese.eightwords.FlowTranslator.translateToFlowTrilogy
-import destiny.core.chinese.eightwords.FlowTranslator.translateTrilogyToFlow
+import destiny.core.chinese.eightwords.FlowTranslator.toAffectingDtos
+import destiny.core.chinese.eightwords.FlowTranslator.toBranchCombinedDtos
+import destiny.core.chinese.eightwords.FlowTranslator.toBranchOppositionDtos
+import destiny.core.chinese.eightwords.FlowTranslator.toStemCombinedDtos
+import destiny.core.chinese.eightwords.FlowTranslator.toToFlowTrilogyDtos
+import destiny.core.chinese.eightwords.FlowTranslator.toTrilogyToFlowDtos
+import destiny.core.electional.Dtos
 
 /**
  * 大運、流年
@@ -75,33 +76,35 @@ fun IEightWords.getFlowLargeYearPatterns(flowLarge: IStemBranch, flowYear: IStem
   }.toSet()
 }
 
-fun IEightWords.yearKeyPoints(flowLarge: IStemBranch, flowYear: IStemBranch): List<String> {
-  return getFlowLargeYearPatterns(flowLarge, flowYear).let {
-    buildList {
-      addAll(it.translateAffecting())
-      addAll(it.translateStemCombined())
-      addAll(it.translateBranchCombined())
-      addAll(it.translateTrilogyToFlow())
-      addAll(it.translateToFlowTrilogy())
-      addAll(it.translateBranchOpposition())
-    }
-  }
-}
-
-
 /**
  * 本命四柱、大運 特徵
  */
-fun IEightWords.fortuneLargeKeyPoints(flowLarge: IStemBranch): List<String> {
-  return getFlowLargePatterns(flowLarge).let {
-    buildList {
-      addAll(it.translateAffecting())
-      addAll(it.translateStemCombined())
-      addAll(it.translateBranchCombined())
-      addAll(it.translateTrilogyToFlow())
-      addAll(it.translateToFlowTrilogy())
-      addAll(it.translateBranchOpposition())
+fun IEightWords.fortuneLargeDtos(flowLarge: IStemBranch) : Set<Dtos.EwFlow> {
+  return getFlowLargePatterns(flowLarge).let { patterns: Set<FlowPattern> ->
+    buildSet {
+      addAll(patterns.filterIsInstance<Affecting>().toAffectingDtos())
+      addAll(patterns.filterIsInstance<StemCombined>().toStemCombinedDtos())
+      addAll(patterns.filterIsInstance<BranchCombined>().toBranchCombinedDtos())
+      addAll(patterns.filterIsInstance<TrilogyToFlow>().toTrilogyToFlowDtos())
+      addAll(patterns.filterIsInstance<ToFlowTrilogy>().toToFlowTrilogyDtos())
+      addAll(patterns.filterIsInstance<BranchOpposition>().toBranchOppositionDtos())
     }
   }
 }
+
+
+/** 大運、流年 特徵 */
+fun IEightWords.yearDtos(flowLarge: IStemBranch, flowYear: IStemBranch): Set<Dtos.EwFlow> {
+  return getFlowLargeYearPatterns(flowLarge, flowYear).let { patterns: Set<FlowPattern> ->
+    buildSet {
+      addAll(patterns.filterIsInstance<Affecting>().toAffectingDtos())
+      addAll(patterns.filterIsInstance<StemCombined>().toStemCombinedDtos())
+      addAll(patterns.filterIsInstance<BranchCombined>().toBranchCombinedDtos())
+      addAll(patterns.filterIsInstance<TrilogyToFlow>().toTrilogyToFlowDtos())
+      addAll(patterns.filterIsInstance<ToFlowTrilogy>().toToFlowTrilogyDtos())
+      addAll(patterns.filterIsInstance<BranchOpposition>().toBranchOppositionDtos())
+    }
+  }
+}
+
 

@@ -41,7 +41,8 @@ class Dtos {
   )
 
 
-  abstract class EwIdentity : IEventDto {
+  @Serializable
+  sealed class EwIdentity : IEventDto {
 
     /**
      * 本命天干合化
@@ -103,7 +104,8 @@ class Dtos {
     ) : EwIdentity()
   }
 
-  abstract class EwFlow : IEventDto {
+  @Serializable
+  sealed class EwFlow : IEventDto {
 
     @Serializable
     data class FlowStems(

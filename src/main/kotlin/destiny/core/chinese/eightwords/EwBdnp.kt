@@ -13,6 +13,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
+import destiny.core.electional.Dtos
 import destiny.tools.serializers.GenderSerializer
 import destiny.tools.serializers.ILocationSerializer
 import destiny.tools.serializers.LocalDateSerializer
@@ -46,7 +47,7 @@ data class EwBdnp(
   @SerialName("八字")
   val ew: Map<Scale, String>,
   @SerialName("八字特徵")
-  val notes: List<String>,
+  val notes: Set<Dtos.EwIdentity>,
   @SerialName("納音")
   val nayin: Map<Scale, String>,
   @SerialName("空亡")
@@ -55,8 +56,6 @@ data class EwBdnp(
   val ewDetails: Map<Scale, StemAndBranch>,
   @SerialName("節氣資訊")
   val solarTermsPos: String,
-  @SerialName("格局特徵")
-  val pattern: Patterns,
   @SerialName("大運")
   val fortuneLarges: List<FortuneLarge>,
   @SerialName("日主分數（八分法，滿分八分）")
@@ -65,20 +64,6 @@ data class EwBdnp(
   val scoreDescription: String? = null,
   val recentYears: List<YearData>
 ) : IBirthDataNamePlace {
-
-  @Serializable
-  data class Patterns(
-    @SerialName("天干五合")
-    val stemCombined: List<String>,
-    @SerialName("地支六合")
-    val branchCombined: List<String>,
-    @SerialName("地支三合局")
-    val trilogy: List<String>,
-    @SerialName("地支正沖")
-    val branchOpposition: List<String>,
-    @SerialName("天干通根")
-    val stemRooted: List<String>
-  )
 
   @Serializable
   data class StemReaction(
@@ -109,7 +94,7 @@ data class EwBdnp(
     @SerialName("十神藏干")
     val stemAndBranch: StemAndBranch,
     @SerialName("大運特徵")
-    val notes: List<String>,
+    val notes: Set<Dtos.EwFlow>,
     @Serializable(with = LocalDateSerializer::class)
     val startDate: LocalDate,
     val startAge: Int,
@@ -131,6 +116,6 @@ data class EwBdnp(
     @SerialName("十神藏干")
     val stemAndBranch: StemAndBranch,
     @SerialName("流年特徵")
-    val notes: List<String>
+    val notes: Set<Dtos.EwFlow>
   )
 }
