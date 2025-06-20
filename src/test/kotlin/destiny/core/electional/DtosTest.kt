@@ -48,7 +48,7 @@ class DtosTest {
         val dtos = with(stemCombined) {
           ew.getPatterns()
         }.map { it as IdentityPattern.StemCombined }
-          .toSet().toStemCombinedDtos()
+          .toStemCombinedDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.StemCombinedDto(
@@ -69,7 +69,7 @@ class DtosTest {
         val dtos = with(stemCombined) {
           ew.getPatterns()
         }.map { it as IdentityPattern.StemCombined }
-          .toSet().toStemCombinedDtos()
+          .toStemCombinedDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.StemCombinedDto(
@@ -98,7 +98,7 @@ class DtosTest {
         val dtos = with(stemCombined) {
           ew.getPatterns()
         }.map { it as IdentityPattern.StemCombined }
-          .toSet().toStemCombinedDtos()
+          .toStemCombinedDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.StemCombinedDto(
@@ -119,7 +119,7 @@ class DtosTest {
         val dtos = with(stemCombined) {
           ew.getPatterns()
         }.map { it as IdentityPattern.StemCombined }
-          .toSet().toStemCombinedDtos()
+          .toStemCombinedDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.StemCombinedDto(
@@ -144,7 +144,7 @@ class DtosTest {
         val dtos = with(branchCombined) {
           ew.getPatterns()
         }.map { it as IdentityPattern.BranchCombined }
-          .toSet().toBranchCombinedDtos()
+          .toBranchCombinedDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.BranchCombinedDto(
@@ -171,7 +171,7 @@ class DtosTest {
         val dtos = with(branchCombined) {
           ew.getPatterns()
         }.map { it as IdentityPattern.BranchCombined }
-          .toSet().toBranchCombinedDtos()
+          .toBranchCombinedDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.BranchCombinedDto(
@@ -191,7 +191,7 @@ class DtosTest {
         val dtos = with(branchCombined) {
           ew.getPatterns()
         }.map { it as IdentityPattern.BranchCombined }
-          .toSet().toBranchCombinedDtos()
+          .toBranchCombinedDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.BranchCombinedDto(
@@ -211,7 +211,7 @@ class DtosTest {
         val dtos = with(branchCombined) {
           ew.getPatterns()
         }.map { it as IdentityPattern.BranchCombined }
-          .toSet().toBranchCombinedDtos()
+          .toBranchCombinedDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.BranchCombinedDto(
@@ -236,7 +236,7 @@ class DtosTest {
         val dtos = with(trilogy) {
           ew.getPatterns()
         }.map { it as IdentityPattern.Trilogy }
-          .toSet().toTrilogyDtos()
+          .toTrilogyDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.TrilogyDto(
@@ -258,7 +258,7 @@ class DtosTest {
         val dtos = with(trilogy) {
           ew.getPatterns()
         }.map { it as IdentityPattern.Trilogy }
-          .toSet().toTrilogyDtos()
+          .toTrilogyDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.TrilogyDto(
@@ -293,7 +293,7 @@ class DtosTest {
         val dtos = with(branchOpposition) {
           ew.getPatterns()
         }.map { it as IdentityPattern.BranchOpposition }
-          .toSet().toBranchOppositionDtos()
+          .toBranchOppositionDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.BranchOppositionDto(
@@ -320,7 +320,7 @@ class DtosTest {
         val dtos = with(branchOpposition) {
           ew.getPatterns()
         }.map { it as IdentityPattern.BranchOpposition }
-          .toSet().toBranchOppositionDtos()
+          .toBranchOppositionDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.BranchOppositionDto(
@@ -340,7 +340,7 @@ class DtosTest {
         val dtos = with(branchOpposition) {
           ew.getPatterns()
         }.map { it as IdentityPattern.BranchOpposition }
-          .toSet().toBranchOppositionDtos()
+          .toBranchOppositionDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.BranchOppositionDto(
@@ -364,7 +364,7 @@ class DtosTest {
         val dtos = with(stemRooted) {
           ew.getPatterns()
         }.map { it as IdentityPattern.StemRooted }
-          .toSet().toStemRootedDtos()
+          .toStemRootedDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.StemRootedDto(
@@ -405,7 +405,7 @@ class DtosTest {
         val dtos = with(stemRooted) {
           ew.getPatterns()
         }.map { it as IdentityPattern.StemRooted }
-          .toSet().toStemRootedDtos()
+          .toStemRootedDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.StemRootedDto(
@@ -438,7 +438,7 @@ class DtosTest {
         val dtos = with(stemRooted) {
           ew.getPatterns()
         }.map { it as IdentityPattern.StemRooted }
-          .toSet().toStemRootedDtos()
+          .toStemRootedDtos()
 
         val expected = setOf(
           Dtos.EwIdentity.StemRootedDto(
@@ -485,7 +485,7 @@ class DtosTest {
           val dtos = with(FlowLargePatterns.stemCombined) {
             ew.getPatterns(甲辰)
           }.map { it as FlowPattern.StemCombined }
-            .toSet().toStemCombinedDtos()
+            .toStemCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.StemCombinedDto(
@@ -504,7 +504,7 @@ class DtosTest {
           val dtos = with(FlowLargePatterns.stemCombined) {
             ew.getPatterns(甲辰)
           }.map { it as FlowPattern.StemCombined }
-            .toSet().toStemCombinedDtos()
+            .toStemCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.StemCombinedDto(
@@ -527,7 +527,7 @@ class DtosTest {
           val dtos = with(FlowLargePatterns.branchCombined) {
             ew.getPatterns(甲戌)
           }.map { it as FlowPattern.BranchCombined }
-            .toSet().toBranchCombinedDtos()
+            .toBranchCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchCombinedDto(
@@ -545,7 +545,7 @@ class DtosTest {
           val dtos = with(FlowLargePatterns.branchCombined) {
             ew.getPatterns(庚午)
           }.map { it as FlowPattern.BranchCombined }
-            .toSet().toBranchCombinedDtos()
+            .toBranchCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchCombinedDto(
@@ -567,7 +567,7 @@ class DtosTest {
           val dtos = with(trilogyToFlow) {
             ew.getPatterns(甲辰).toSet()
           }.map { it as FlowPattern.TrilogyToFlow }
-            .toSet().toTrilogyToFlowDtos()
+            .toTrilogyToFlowDtos()
 
           val expected = setOf(
             Dtos.EwFlow.TrilogyToFlowDto(
@@ -588,7 +588,7 @@ class DtosTest {
           val dtos = with(trilogyToFlow) {
             ew.getPatterns(戊辰).toSet()
           }.map { it as FlowPattern.TrilogyToFlow }
-            .toSet().toTrilogyToFlowDtos()
+            .toTrilogyToFlowDtos()
 
           val expected = setOf(
             Dtos.EwFlow.TrilogyToFlowDto(
@@ -614,7 +614,7 @@ class DtosTest {
           val dtos = with(FlowLargePatterns.branchOpposition) {
             ew.getPatterns(癸酉).toSet()
           }.map { it as FlowPattern.BranchOpposition }
-            .toSet().toBranchOppositionDtos()
+            .toBranchOppositionDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchOppositionDto(
@@ -632,7 +632,7 @@ class DtosTest {
           val dtos = with(FlowLargePatterns.branchOpposition) {
             ew.getPatterns(辛丑).toSet()
           }.map { it as FlowPattern.BranchOpposition }
-            .toSet().toBranchOppositionDtos()
+            .toBranchOppositionDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchOppositionDto(
@@ -657,7 +657,7 @@ class DtosTest {
         val dtos = with(FlowLargeYearPatterns.affecting) {
           ew.getPatterns(甲辰, 甲戌).toSet()
         }.map { it as FlowPattern.Affecting }
-          .toSet().toAffectingDtos()
+          .toAffectingDtos()
 
         val expected = setOf(
           Dtos.EwFlow.AffectingDto(
@@ -691,7 +691,7 @@ class DtosTest {
           val dtos = with(FlowLargeYearPatterns.stemCombined) {
             ew.getPatterns(甲辰, 甲戌).toSet()
           }.map { it as FlowPattern.StemCombined }
-            .toSet().toStemCombinedDtos()
+            .toStemCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.StemCombinedDto(
@@ -710,7 +710,7 @@ class DtosTest {
           val dtos = with(FlowLargeYearPatterns.stemCombined) {
             ew.getPatterns(甲辰, 甲戌).toSet()
           }.map { it as FlowPattern.StemCombined }
-            .toSet().toStemCombinedDtos()
+            .toStemCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.StemCombinedDto(
@@ -733,7 +733,7 @@ class DtosTest {
           val dtos = with(FlowLargeYearPatterns.branchCombined) {
             ew.getPatterns(甲辰, 甲戌).toSet()
           }.map { it as FlowPattern.BranchCombined }
-            .toSet().toBranchCombinedDtos()
+            .toBranchCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchCombinedDto(
@@ -751,7 +751,7 @@ class DtosTest {
           val dtos = with(FlowLargeYearPatterns.branchCombined) {
             ew.getPatterns(甲辰, 庚午).toSet()
           }.map { it as FlowPattern.BranchCombined }
-            .toSet().toBranchCombinedDtos()
+            .toBranchCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchCombinedDto(
@@ -774,7 +774,7 @@ class DtosTest {
           val dtos = with(FlowLargeYearPatterns.branchCombined) {
             ew.getPatterns(丙午, 丙午).toSet()
           }.map { it as FlowPattern.BranchCombined }
-            .toSet().toBranchCombinedDtos()
+            .toBranchCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchCombinedDto(
@@ -796,7 +796,7 @@ class DtosTest {
           val dtos = with(FlowLargeYearPatterns.trilogyToFlow) {
             ew.getPatterns(甲辰, 丙子).toSet()
           }.map { it as FlowPattern.TrilogyToFlow }
-            .toSet().toTrilogyToFlowDtos()
+            .toTrilogyToFlowDtos()
 
           val expected = setOf(
             Dtos.EwFlow.TrilogyToFlowDto(
@@ -817,7 +817,7 @@ class DtosTest {
           val dtos = with(FlowLargeYearPatterns.trilogyToFlow) {
             ew.getPatterns(甲辰, 戊辰).toSet()
           }.map { it as FlowPattern.TrilogyToFlow }
-            .toSet().toTrilogyToFlowDtos()
+            .toTrilogyToFlowDtos()
 
           val expected = setOf(
             Dtos.EwFlow.TrilogyToFlowDto(
@@ -843,7 +843,7 @@ class DtosTest {
           val dtos = with(toFlowTrilogy) {
             ew.getPatterns(甲辰, 丙子).toSet()
           }.map { it as FlowPattern.ToFlowTrilogy }
-            .toSet().toToFlowTrilogyDtos()
+            .toToFlowTrilogyDtos()
 
           val expected = setOf(
             Dtos.EwFlow.ToFlowTrilogyDto(
@@ -864,7 +864,7 @@ class DtosTest {
           val dtos = with(toFlowTrilogy) {
             ew.getPatterns(甲辰, 壬申).toSet()
           }.map { it as FlowPattern.ToFlowTrilogy }
-            .toSet().toToFlowTrilogyDtos()
+            .toToFlowTrilogyDtos()
 
           val expected = setOf(
             Dtos.EwFlow.ToFlowTrilogyDto(
@@ -889,7 +889,7 @@ class DtosTest {
           val dtos = with(FlowLargeYearPatterns.branchOpposition) {
             ew.getPatterns(甲戌, 癸酉).toSet()
           }.map { it as FlowPattern.BranchOpposition }
-            .toSet().toBranchOppositionDtos()
+            .toBranchOppositionDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchOppositionDto(
@@ -907,7 +907,7 @@ class DtosTest {
           val dtos = with(FlowLargeYearPatterns.branchOpposition) {
             ew.getPatterns(辛丑, 辛丑).toSet()
           }.map { it as FlowPattern.BranchOpposition }
-            .toSet().toBranchOppositionDtos()
+            .toBranchOppositionDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchOppositionDto(
@@ -931,7 +931,7 @@ class DtosTest {
         val dtos = with(affecting) {
           ew.getPatterns(甲辰, 甲戌)
         }.map { it as FlowPattern.Affecting }
-          .toSet().toAffectingDtos()
+          .toAffectingDtos()
 
         val expected = setOf(
           Dtos.EwFlow.AffectingDto(
@@ -965,7 +965,7 @@ class DtosTest {
           val dtos = with(FlowYearMonthPatterns.stemCombined) {
             ew.getPatterns(甲辰, 甲戌).toSet()
           }.map { it as FlowPattern.StemCombined }
-            .toSet().toStemCombinedDtos()
+            .toStemCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.StemCombinedDto(
@@ -984,7 +984,7 @@ class DtosTest {
           val dtos = with(FlowYearMonthPatterns.stemCombined) {
             ew.getPatterns(甲辰, 甲戌).toSet()
           }.map { it as FlowPattern.StemCombined }
-            .toSet().toStemCombinedDtos()
+            .toStemCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.StemCombinedDto(
@@ -1007,7 +1007,7 @@ class DtosTest {
           val dtos = with(FlowYearMonthPatterns.branchCombined) {
             ew.getPatterns(甲辰, 甲戌).toSet()
           }.map { it as FlowPattern.BranchCombined }
-            .toSet().toBranchCombinedDtos()
+            .toBranchCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchCombinedDto(
@@ -1025,7 +1025,7 @@ class DtosTest {
           val dtos = with(FlowYearMonthPatterns.branchCombined) {
             ew.getPatterns(甲辰, 庚午).toSet()
           }.map { it as FlowPattern.BranchCombined }
-            .toSet().toBranchCombinedDtos()
+            .toBranchCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchCombinedDto(
@@ -1048,7 +1048,7 @@ class DtosTest {
           val dtos = with(FlowYearMonthPatterns.branchCombined) {
             ew.getPatterns(丙午, 丙午).toSet()
           }.map { it as FlowPattern.BranchCombined }
-            .toSet().toBranchCombinedDtos()
+            .toBranchCombinedDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchCombinedDto(
@@ -1070,7 +1070,7 @@ class DtosTest {
           val dtos = with(FlowYearMonthPatterns.trilogyToFlow) {
             ew.getPatterns(甲辰, 丙子).toSet()
           }.map { it as FlowPattern.TrilogyToFlow }
-            .toSet().toTrilogyToFlowDtos()
+            .toTrilogyToFlowDtos()
 
           val expected = setOf(
             Dtos.EwFlow.TrilogyToFlowDto(
@@ -1091,7 +1091,7 @@ class DtosTest {
           val dtos = with(FlowYearMonthPatterns.trilogyToFlow) {
             ew.getPatterns(甲辰, 戊辰).toSet()
           }.map { it as FlowPattern.TrilogyToFlow }
-            .toSet().toTrilogyToFlowDtos()
+            .toTrilogyToFlowDtos()
 
           val expected = setOf(
             Dtos.EwFlow.TrilogyToFlowDto(
@@ -1117,7 +1117,7 @@ class DtosTest {
           val dtos = with(FlowYearMonthPatterns.toFlowTrilogy) {
             ew.getPatterns(甲辰, 丙子).toSet()
           }.map { it as FlowPattern.ToFlowTrilogy }
-            .toSet().toToFlowTrilogyDtos()
+            .toToFlowTrilogyDtos()
 
           val expected = setOf(
             Dtos.EwFlow.ToFlowTrilogyDto(
@@ -1138,7 +1138,7 @@ class DtosTest {
           val dtos = with(FlowYearMonthPatterns.toFlowTrilogy) {
             ew.getPatterns(甲辰, 壬申).toSet()
           }.map { it as FlowPattern.ToFlowTrilogy }
-            .toSet().toToFlowTrilogyDtos()
+            .toToFlowTrilogyDtos()
 
           val expected = setOf(
             Dtos.EwFlow.ToFlowTrilogyDto(
@@ -1164,7 +1164,7 @@ class DtosTest {
           val dtos = with(FlowYearMonthPatterns.branchOpposition) {
             ew.getPatterns(甲辰, 癸酉).toSet()
           }.map { it as FlowPattern.BranchOpposition }
-            .toSet().toBranchOppositionDtos()
+            .toBranchOppositionDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchOppositionDto(
@@ -1182,7 +1182,7 @@ class DtosTest {
           val dtos = with(FlowYearMonthPatterns.branchOpposition) {
             ew.getPatterns(辛丑, 辛丑).toSet()
           }.map { it as FlowPattern.BranchOpposition }
-            .toSet().toBranchOppositionDtos()
+            .toBranchOppositionDtos()
 
           val expected = setOf(
             Dtos.EwFlow.BranchOppositionDto(

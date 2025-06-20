@@ -13,6 +13,7 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.StemBranchYearTool.getYearStemBranch
 import destiny.core.chinese.eightwords.*
 import destiny.core.chinese.eightwords.EwBdnp.*
+import destiny.core.chinese.eightwords.IdentityTranslator.toStemCombinedDtos
 import destiny.core.chinese.eightwords.IdentityTranslator.translateBranchCombined
 import destiny.core.chinese.eightwords.IdentityTranslator.translateBranchOpposition
 import destiny.core.chinese.eightwords.IdentityTranslator.translateStemCombined
@@ -497,6 +498,11 @@ fun IStemBranch.toStemAndBranch(dayStem: Stem): StemAndBranch {
  * 本命四柱 特徵
  */
 fun IEightWords.identityKeyPoints(): List<String> {
+
+  getIdentityPatterns().let { patterns ->
+    patterns.filterIsInstance<IdentityPattern.StemCombined>().toStemCombinedDtos()
+  }
+
   return getIdentityPatterns().let {
     buildList {
       addAll(it.translateStemCombined())

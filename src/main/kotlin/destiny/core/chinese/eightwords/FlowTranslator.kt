@@ -57,7 +57,7 @@ object FlowTranslator {
     }
   }
 
-  fun Set<Affecting>.toAffectingDtos() : Set<Dtos.EwFlow.AffectingDto> {
+  fun Iterable<Affecting>.toAffectingDtos() : Set<Dtos.EwFlow.AffectingDto> {
     return this.groupBy { it.reacting }.map { (reacting, patterns) ->
       val description = (reacting to patterns).translateAffecting()
       val natalStems = Dtos.NatalStems(patterns.map { it.scale }.toSet(), patterns.first().stem)
@@ -116,7 +116,7 @@ object FlowTranslator {
     }
   }
 
-  fun Set<StemCombined>.toStemCombinedDtos() : Set<Dtos.EwFlow.StemCombinedDto> {
+  fun Iterable<StemCombined>.toStemCombinedDtos() : Set<Dtos.EwFlow.StemCombinedDto> {
     return this.groupBy { it.stem }.map { (stem, patterns: List<StemCombined>) ->
       val description = (stem to patterns).translateStemCombined()
       val natalStems = Dtos.NatalStems(patterns.map { it.scale }.toSet() , stem)
@@ -176,7 +176,7 @@ object FlowTranslator {
     }
   }
 
-  fun Set<BranchCombined>.toBranchCombinedDtos() : Set<Dtos.EwFlow.BranchCombinedDto> {
+  fun Iterable<BranchCombined>.toBranchCombinedDtos() : Set<Dtos.EwFlow.BranchCombinedDto> {
     return this.groupBy { it.branch }.map { (branch, patterns) ->
       val description = (branch to patterns).translateBranchCombined()
       val natalBranches = NatalBranches(patterns.map { it.scale }.toSet(), branch)
@@ -222,7 +222,7 @@ object FlowTranslator {
     }
   }
 
-  fun Set<TrilogyToFlow>.toTrilogyToFlowDtos() : Set<Dtos.EwFlow.TrilogyToFlowDto> {
+  fun Iterable<TrilogyToFlow>.toTrilogyToFlowDtos() : Set<Dtos.EwFlow.TrilogyToFlowDto> {
     return this.groupBy { it.pairs }.map { (pairs, patterns) ->
       val description = (pairs to patterns).translateTrilogyToFlow()
 
@@ -272,7 +272,7 @@ object FlowTranslator {
     }
   }
 
-  fun Set<ToFlowTrilogy>.toToFlowTrilogyDtos() : Set<Dtos.EwFlow.ToFlowTrilogyDto> {
+  fun Iterable<ToFlowTrilogy>.toToFlowTrilogyDtos() : Set<Dtos.EwFlow.ToFlowTrilogyDto> {
     return this.groupBy { it.flows }.map { (flows: Set<Pair<FlowScale, Branch>>, patterns: List<ToFlowTrilogy>) ->
       val description = (flows to patterns).translateToFlowTrilogy()
 
@@ -338,7 +338,7 @@ object FlowTranslator {
     }
   }
 
-  fun Set<BranchOpposition>.toBranchOppositionDtos() : Set<Dtos.EwFlow.BranchOppositionDto> {
+  fun Iterable<BranchOpposition>.toBranchOppositionDtos() : Set<Dtos.EwFlow.BranchOppositionDto> {
     return this.groupBy { it.branch }.map { (branch, patterns) ->
       val description = (branch to patterns.map { it.scale to it.flowScale }).translateBranchOpposition()
 

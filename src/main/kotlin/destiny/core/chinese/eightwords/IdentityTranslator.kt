@@ -58,7 +58,7 @@ object IdentityTranslator {
       }.toList()
   }
 
-  fun Set<StemCombined>.toStemCombinedDtos(): Set<Dtos.EwIdentity.StemCombinedDto> {
+  fun Iterable<StemCombined>.toStemCombinedDtos(): Set<Dtos.EwIdentity.StemCombinedDto> {
     return this.groupBy { p -> p.pillars.first().second.combined.second }
       .map { (five: FiveElement, patterns) ->
         val description = (five to patterns).translateStemCombined()
@@ -100,7 +100,7 @@ object IdentityTranslator {
     return this.filterIsInstance<BranchCombined>().groupBy { p -> p.pillars.map { it.second }.toSet() }.map { (_: Set<Branch>, patterns: List<BranchCombined>) -> patterns.translateBranchCombined() }
   }
 
-  fun Set<BranchCombined>.toBranchCombinedDtos(): Set<Dtos.EwIdentity.BranchCombinedDto> {
+  fun Iterable<BranchCombined>.toBranchCombinedDtos(): Set<Dtos.EwIdentity.BranchCombinedDto> {
     return this.groupBy { p -> p.pillars.map { it.second }.toSet() }
       .map { (_: Set<Branch>, patterns: List<BranchCombined>) ->
         val description = patterns.translateBranchCombined()
@@ -137,7 +137,7 @@ object IdentityTranslator {
     }
   }
 
-  fun Set<Trilogy>.toTrilogyDtos(): Set<Dtos.EwIdentity.TrilogyDto> {
+  fun Iterable<Trilogy>.toTrilogyDtos(): Set<Dtos.EwIdentity.TrilogyDto> {
     return this.map { pattern ->
       val description = pattern.translateTrilogy()
 
@@ -176,7 +176,7 @@ object IdentityTranslator {
     }
   }
 
-  fun Set<BranchOpposition>.toBranchOppositionDtos(): Set<Dtos.EwIdentity.BranchOppositionDto> {
+  fun Iterable<BranchOpposition>.toBranchOppositionDtos(): Set<Dtos.EwIdentity.BranchOppositionDto> {
     return this.groupBy { p -> p.pillars.map { it.second }.toSet() }
       .map { (_, patterns) ->
         val description = setOf(*patterns.toTypedArray()).translateBranchOpposition().first()
@@ -224,7 +224,7 @@ object IdentityTranslator {
     }
   }
 
-  fun Set<StemRooted>.toStemRootedDtos(): Set<Dtos.EwIdentity.StemRootedDto> {
+  fun Iterable<StemRooted>.toStemRootedDtos(): Set<Dtos.EwIdentity.StemRootedDto> {
     return this.groupBy { it.roots }
       .map { (roots, patterns) ->
         val description = (roots to patterns).translateStemRooted()
