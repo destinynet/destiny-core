@@ -619,8 +619,8 @@ class DtosTest {
           val expected = setOf(
             Dtos.EwFlow.BranchOppositionDto(
               "大運地支(酉) 正沖 本命時支(卯)",
-              setOf(Dtos.NatalBranches(setOf(HOUR), 卯)),
-              setOf(Dtos.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 酉))
+              Dtos.NatalBranches(setOf(HOUR), 卯),
+              Dtos.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 酉)
             )
           )
           assertEquals(expected, dtos)
@@ -637,11 +637,8 @@ class DtosTest {
           val expected = setOf(
             Dtos.EwFlow.BranchOppositionDto(
               "大運地支(丑) 正沖 本命月支、日支(均為 未)",
-              setOf(
-                Dtos.NatalBranches(setOf(MONTH), 未),
-                Dtos.NatalBranches(setOf(DAY), 未)
-              ),
-              setOf(Dtos.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 丑))
+              Dtos.NatalBranches(setOf(MONTH, DAY), 未),
+              Dtos.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 丑)
             )
           )
           assertEquals(expected, dtos)
@@ -897,8 +894,8 @@ class DtosTest {
           val expected = setOf(
             Dtos.EwFlow.BranchOppositionDto(
               "流年地支(酉) 正沖 本命時支(卯)",
-              setOf(Dtos.NatalBranches(setOf(HOUR), 卯)),
-              setOf(Dtos.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 酉))
+              Dtos.NatalBranches(setOf(HOUR), 卯),
+              Dtos.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 酉)
             )
           )
           assertEquals(expected, dtos)
@@ -915,11 +912,8 @@ class DtosTest {
           val expected = setOf(
             Dtos.EwFlow.BranchOppositionDto(
               "大運、流年地支(均為 丑) 正沖 本命月支、日支(均為 未)",
-              setOf(
-                Dtos.NatalBranches(setOf(MONTH), 未),
-                Dtos.NatalBranches(setOf(DAY), 未)
-              ),
-              setOf(Dtos.EwFlow.FlowBranches(setOf(FlowScale.LARGE, FlowScale.YEAR), 丑))
+              Dtos.NatalBranches(setOf(MONTH, DAY), 未),
+              Dtos.EwFlow.FlowBranches(setOf(FlowScale.LARGE, FlowScale.YEAR), 丑)
             )
           )
           assertEquals(expected, dtos)
@@ -1175,8 +1169,8 @@ class DtosTest {
           val expected = setOf(
             Dtos.EwFlow.BranchOppositionDto(
               "流月地支(酉) 正沖 本命時支(卯)",
-              setOf(Dtos.NatalBranches(setOf(HOUR), 卯)),
-              setOf(Dtos.EwFlow.FlowBranches(setOf(FlowScale.MONTH), 酉))
+              Dtos.NatalBranches(setOf(HOUR), 卯),
+              Dtos.EwFlow.FlowBranches(setOf(FlowScale.MONTH), 酉)
             )
           )
           assertEquals(expected, dtos)
@@ -1193,11 +1187,8 @@ class DtosTest {
           val expected = setOf(
             Dtos.EwFlow.BranchOppositionDto(
               "流年、流月地支(均為 丑) 正沖 本命月支、日支(均為 未)",
-              setOf(
-                Dtos.NatalBranches(setOf(MONTH), 未),
-                Dtos.NatalBranches(setOf(DAY), 未)
-              ),
-              setOf(Dtos.EwFlow.FlowBranches(setOf(FlowScale.YEAR, FlowScale.MONTH), 丑))
+              Dtos.NatalBranches(setOf(MONTH, DAY), 未),
+              Dtos.EwFlow.FlowBranches(setOf(FlowScale.YEAR, FlowScale.MONTH), 丑)
             )
           )
           assertEquals(expected, dtos)

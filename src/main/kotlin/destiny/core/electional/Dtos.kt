@@ -188,8 +188,8 @@ class Dtos {
     @Serializable
     data class BranchOppositionDto(
       val description: String,
-      val natalBranches: Set<NatalBranches>,
-      val flowBranches: Set<FlowBranches>,
+      val natalBranches: NatalBranches,
+      val flowBranches: FlowBranches,
     )
   }
 

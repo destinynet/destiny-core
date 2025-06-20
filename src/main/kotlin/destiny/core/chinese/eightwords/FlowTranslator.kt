@@ -339,22 +339,13 @@ object FlowTranslator {
   }
 
   fun Set<BranchOpposition>.toBranchOppositionDtos() : Set<Dtos.EwFlow.BranchOppositionDto> {
-    return this.groupBy({ p -> p.branch }, { p -> p.scale to p.flowScale }).map {
-      (branch, scalePairs) ->
-      val description = (branch to scalePairs).translateBranchOpposition()
+    return this.groupBy { it.branch }.map { (branch, patterns) ->
+      val description = (branch to patterns.map { it.scale to it.flowScale }).translateBranchOpposition()
 
-      val natalBranches: Set<NatalBranches> = scalePairs.map { (scale, _) ->
-        NatalBranches(setOf(scale), branch)
-      }.toSet()
-
-      val flowBranches = setOf(
-        FlowBranches(
-          scalePairs.map { it.second }.toSet(), branch.opposite
-        )
-      )
+      val natalBranches = NatalBranches(patterns.map { it.scale }.toSet(), branch)
+      val flowBranches = FlowBranches(patterns.map { it.flowScale }.toSet(), branch.opposite)
 
       Dtos.EwFlow.BranchOppositionDto(description, natalBranches, flowBranches)
     }.toSet()
-
   }
 }
