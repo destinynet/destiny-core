@@ -5,7 +5,6 @@ package destiny.core.chinese.eightwords
 
 import destiny.core.FlowScale
 import destiny.core.Scale
-import destiny.core.calendar.eightwords.FlowPattern
 import destiny.core.calendar.eightwords.FlowPattern.*
 import destiny.core.calendar.eightwords.Reacting
 import destiny.core.calendar.eightwords.Reacting.*
@@ -48,12 +47,6 @@ object FlowTranslator {
           BEATEN     -> "同時被 $flowScales 所剋制 (消耗能量)"
         }
       )
-    }
-  }
-
-  fun Set<FlowPattern>.translateAffecting(): List<String> {
-    return this.filterIsInstance<Affecting>().groupBy { it.reacting }.map { (reacting, p: List<Affecting>) ->
-      (reacting to p).translateAffecting()
     }
   }
 
@@ -107,12 +100,6 @@ object FlowTranslator {
       append("合住")
       append("，")
       append(setOf(first, first.combined.first).sorted().joinToString("")).append("合化").append(first.combined.second)
-    }
-  }
-
-  fun Set<FlowPattern>.translateStemCombined(): List<String> {
-    return this.filterIsInstance<StemCombined>().groupBy { it.stem }.map { (stem, p: List<StemCombined>) ->
-      (stem to p).translateStemCombined()
     }
   }
 
@@ -170,12 +157,6 @@ object FlowTranslator {
     }
   }
 
-  fun Set<FlowPattern>.translateBranchCombined(): List<String> {
-    return this.filterIsInstance<BranchCombined>().groupBy { it.branch }.map { (branch, p: List<BranchCombined>) ->
-      (branch to p).translateBranchCombined()
-    }
-  }
-
   fun Iterable<BranchCombined>.toBranchCombinedDtos() : Set<Dtos.EwFlow.BranchCombinedDto> {
     return this.groupBy { it.branch }.map { (branch, patterns) ->
       val description = (branch to patterns).translateBranchCombined()
@@ -213,12 +194,6 @@ object FlowTranslator {
       )
       append("三合")
       append(first.first().second.trilogy()).append("局")
-    }
-  }
-
-  fun Set<FlowPattern>.translateTrilogyToFlow(): List<String> {
-    return this.filterIsInstance<TrilogyToFlow>().groupBy { it.pairs }.map { (pairs: Set<Pair<Scale, Branch>>, patterns: List<TrilogyToFlow>) ->
-      (pairs to patterns).translateTrilogyToFlow()
     }
   }
 
@@ -263,12 +238,6 @@ object FlowTranslator {
       append(" 三合 ")
       append(second.first().branch.trilogy())
       append("局")
-    }
-  }
-
-  fun Set<FlowPattern>.translateToFlowTrilogy(): List<String> {
-    return this.filterIsInstance<ToFlowTrilogy>().groupBy { it.flows }.map { (flows: Set<Pair<FlowScale, Branch>>, p: List<ToFlowTrilogy>) ->
-      (flows to p).translateToFlowTrilogy()
     }
   }
 
@@ -329,12 +298,6 @@ object FlowTranslator {
         append("均為 ")
       append(first)
       append(")")
-    }
-  }
-
-  fun Set<FlowPattern>.translateBranchOpposition(): List<String> {
-    return this.filterIsInstance<BranchOpposition>().groupBy({ p -> p.branch }, { p -> p.scale to p.flowScale }).map { (branch, scalePairs: List<Pair<Scale, FlowScale>>) ->
-      (branch to scalePairs).translateBranchOpposition()
     }
   }
 

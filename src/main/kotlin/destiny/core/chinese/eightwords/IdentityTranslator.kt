@@ -51,13 +51,6 @@ object IdentityTranslator {
     }
   }
 
-  fun Set<IdentityPattern>.translateStemCombined(): List<String> {
-    return this.filterIsInstance<StemCombined>().groupBy { p -> p.pillars.first().second.combined.second }
-      .map { (five: FiveElement, p: List<StemCombined>) ->
-        (five to p).translateStemCombined()
-      }.toList()
-  }
-
   fun Iterable<StemCombined>.toStemCombinedDtos(): Set<Dtos.EwIdentity.StemCombinedDto> {
     return this.groupBy { p -> p.pillars.first().second.combined.second }
       .map { (five: FiveElement, patterns) ->
@@ -96,10 +89,6 @@ object IdentityTranslator {
     }.joinToString(" 六合 ")
   }
 
-  fun Set<IdentityPattern>.translateBranchCombined(): List<String> {
-    return this.filterIsInstance<BranchCombined>().groupBy { p -> p.pillars.map { it.second }.toSet() }.map { (_: Set<Branch>, patterns: List<BranchCombined>) -> patterns.translateBranchCombined() }
-  }
-
   fun Iterable<BranchCombined>.toBranchCombinedDtos(): Set<Dtos.EwIdentity.BranchCombinedDto> {
     return this.groupBy { p -> p.pillars.map { it.second }.toSet() }
       .map { (_: Set<Branch>, patterns: List<BranchCombined>) ->
@@ -131,12 +120,6 @@ object IdentityTranslator {
     }
   }
 
-  fun Set<IdentityPattern>.translateTrilogy(): List<String> {
-    return this.filterIsInstance<Trilogy>().map { trilogy: Trilogy ->
-      trilogy.translateTrilogy()
-    }
-  }
-
   fun Iterable<Trilogy>.toTrilogyDtos(): Set<Dtos.EwIdentity.TrilogyDto> {
     return this.map { pattern ->
       val description = pattern.translateTrilogy()
@@ -152,34 +135,31 @@ object IdentityTranslator {
   }
 
   /**
-   * 地支六沖
    * ex : 年支(丑) 正沖 日支(未)
    * ex : 年支(未) 正沖 月支、日支、時支(均為 丑)
    * ex : 年支、時支(均為 未) 正沖 月支、日支(均為 丑)
    */
-  fun Set<IdentityPattern>.translateBranchOpposition(): List<String> {
-    return this.filterIsInstance<BranchOpposition>().groupBy { p -> p.pillars.map { it.second }.toSet() }.map { (_, v) ->
-      v.flatMap { it.pillars }.groupBy({ it.second }, { it.first }).map { (branch, scales) ->
-        buildString {
-          append(
-            scales.distinct().joinToString("、") { s ->
-              s.getTitle(locale) + "支"
-            }
-          )
-          append("(")
-          if (scales.distinct().size > 1)
-            append("均為 ")
-          append(branch)
-          append(")")
-        }
-      }.joinToString(" 正沖 ")
-    }
+  fun List<BranchOpposition>.translateBranchOpposition() : String {
+    return this.flatMap { it.pillars }.groupBy({ it.second }, { it.first }).map { (branch: Branch, scales: List<Scale>) ->
+      buildString {
+        append(
+          scales.distinct().joinToString("、") { s ->
+            s.getTitle(locale) + "支"
+          }
+        )
+        append("(")
+        if (scales.distinct().size > 1)
+          append("均為 ")
+        append(branch)
+        append(")")
+      }
+    }.joinToString(" 正沖 ")
   }
 
   fun Iterable<BranchOpposition>.toBranchOppositionDtos(): Set<Dtos.EwIdentity.BranchOppositionDto> {
     return this.groupBy { p -> p.pillars.map { it.second }.toSet() }
-      .map { (_, patterns) ->
-        val description = setOf(*patterns.toTypedArray()).translateBranchOpposition().first()
+      .map { (_, patterns: List<BranchOpposition>) ->
+        val description = patterns.translateBranchOpposition()
 
         val natalBranches = patterns.flatMap { it.pillars }
           .groupBy { it.second } // Group by Branch
@@ -214,13 +194,6 @@ object IdentityTranslator {
       append(first.joinToString("、") {
         it.first.getTitle(locale) + "支" + "(" + it.second + ")"
       })
-    }
-  }
-
-  fun Set<IdentityPattern>.translateStemRooted(): List<String> {
-    return this.filterIsInstance<StemRooted>().groupBy { p -> p.roots }.map {
-      (roots: Set<Pair<Scale, Branch>>, patterns: List<StemRooted>) ->
-        (roots to patterns).translateStemRooted()
     }
   }
 
