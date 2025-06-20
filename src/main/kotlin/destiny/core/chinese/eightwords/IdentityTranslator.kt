@@ -10,6 +10,8 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem
 import destiny.core.chinese.trilogy
+import destiny.core.electional.Dtos
+import destiny.core.electional.Dtos.EwIdentity.NatalStems
 import destiny.tools.getTitle
 import java.util.*
 
@@ -50,6 +52,21 @@ object IdentityTranslator {
       }.toList()
   }
 
+  fun Set<StemCombined>.toStemCombinedDtos(): Set<Dtos.EwIdentity.StemCombinedDto> {
+
+    return this.groupBy { p -> p.pillars.first().second.combined.second }
+      .map { (five: FiveElement, patterns) ->
+
+        val description = setOf(*patterns.toTypedArray()).translateStemCombined().first()
+
+        val natalStems = patterns.flatMap { it.pillars }.groupBy { it.second }.map { (stem, scales) ->
+          NatalStems(scales.map { it.first }.toSet(), stem)
+        }.toSet()
+
+        Dtos.EwIdentity.StemCombinedDto(description, natalStems, five)
+      }.toSet()
+  }
+
   /**
    * 地支六合
    * ex : 年支(子) 六合 月支(丑)
@@ -58,12 +75,12 @@ object IdentityTranslator {
    * ex : 年支、月支(均為 子) 六合 日支、時支(均為 丑)
    */
   fun Set<IdentityPattern>.translateBranchCombined(): List<String> {
-    return this.filterIsInstance<BranchCombined>().groupBy { p -> p.pillars.map { it.second }.toSet() }.map { (k,v) ->
-      v.flatMap { it.pillars }.groupBy ({ it.second } , {it.first}).map { (branch,scales) ->
+    return this.filterIsInstance<BranchCombined>().groupBy { p -> p.pillars.map { it.second }.toSet() }.map { (k, v) ->
+      v.flatMap { it.pillars }.groupBy({ it.second }, { it.first }).map { (branch, scales) ->
         buildString {
           append(
             scales.distinct().joinToString("、") { s ->
-              s.getTitle(locale)+"支"
+              s.getTitle(locale) + "支"
             }
           )
           append("(")
@@ -74,6 +91,21 @@ object IdentityTranslator {
         }
       }.joinToString(" 六合 ")
     }
+  }
+
+  fun Set<BranchCombined>.toBranchCombinedDtos(): Set<Dtos.EwIdentity.BranchCombinedDto> {
+    return this.groupBy { p -> p.pillars.map { it.second }.toSet() }
+      .map { (_, patterns) ->
+        val description = setOf(*patterns.toTypedArray()).translateBranchCombined().first()
+
+        val natalBranches = patterns.flatMap { it.pillars }
+          .groupBy { it.second } // Group by Branch
+          .map { (branch, pairs) ->
+            Dtos.EwIdentity.NatalBranches(pairs.map { it.first }.toSet(), branch)
+          }.toSet()
+
+        Dtos.EwIdentity.BranchCombinedDto(description, natalBranches)
+      }.toSet()
   }
 
   /**
@@ -94,15 +126,29 @@ object IdentityTranslator {
     }
   }
 
+  fun Set<Trilogy>.toTrilogyDtos(): Set<Dtos.EwIdentity.TrilogyDto> {
+    return this.map { pattern ->
+      val description = setOf(pattern).translateTrilogy().first()
+
+      val natalBranches = pattern.pillars.map { (scale, branch) ->
+        Dtos.EwIdentity.NatalBranches(setOf(scale), branch)
+      }.toSet()
+
+      val trilogyElement = pattern.pillars.first().second.trilogy()
+
+      Dtos.EwIdentity.TrilogyDto(description, natalBranches, trilogyElement)
+    }.toSet()
+  }
+
   /**
    * 地支六沖
    * ex : 年支(丑) 正沖 日支(未)
    * ex : 年支(未) 正沖 月支、日支、時支(均為 丑)
    * ex : 年支、時支(均為 未) 正沖 月支、日支(均為 丑)
    */
-  fun Set<IdentityPattern>.translateBranchOpposition() : List<String> {
+  fun Set<IdentityPattern>.translateBranchOpposition(): List<String> {
     return this.filterIsInstance<BranchOpposition>().groupBy { p -> p.pillars.map { it.second }.toSet() }.map { (_, v) ->
-      v.flatMap { it.pillars }.groupBy ({ it.second } , {it.first}).map { (branch, scales) ->
+      v.flatMap { it.pillars }.groupBy({ it.second }, { it.first }).map { (branch, scales) ->
         buildString {
           append(
             scales.distinct().joinToString("、") { s ->
@@ -119,12 +165,27 @@ object IdentityTranslator {
     }
   }
 
+  fun Set<BranchOpposition>.toBranchOppositionDtos(): Set<Dtos.EwIdentity.BranchOppositionDto> {
+    return this.groupBy { p -> p.pillars.map { it.second }.toSet() }
+      .map { (_, patterns) ->
+        val description = setOf(*patterns.toTypedArray()).translateBranchOpposition().first()
+
+        val natalBranches = patterns.flatMap { it.pillars }
+          .groupBy { it.second } // Group by Branch
+          .map { (branch, pairs) ->
+            Dtos.EwIdentity.NatalBranches(pairs.map { it.first }.toSet(), branch)
+          }.toSet()
+
+        Dtos.EwIdentity.BranchOppositionDto(description, natalBranches)
+      }.toSet()
+  }
+
   /**
    * 天干通根
    * ex : 年干(丁) 通根 日支(未)、時支(午)
    * ex : 年干、時干(均為 丁) 通根 日支(未)
    */
-  fun Set<IdentityPattern>.translateStemRooted() : List<String> {
+  fun Set<IdentityPattern>.translateStemRooted(): List<String> {
     return this.filterIsInstance<StemRooted>().groupBy { p -> p.roots }.map { (roots: Set<Pair<Scale, Branch>>, patterns: List<StemRooted>) ->
       buildString {
         append(
@@ -140,14 +201,34 @@ object IdentityTranslator {
 
         append(" 通根 ")
         append(roots.joinToString("、") {
-          it.first.getTitle(locale)+"支"+"("+it.second+")"
+          it.first.getTitle(locale) + "支" + "(" + it.second + ")"
         })
       }
-
     }
   }
 
-  fun Set<IdentityPattern>.translateAuspiciousDays() : List<String> {
+  fun Set<StemRooted>.toStemRootedDtos(): Set<Dtos.EwIdentity.StemRootedDto> {
+    // Group by the set of rooting branches
+    return this.groupBy { it.roots }
+      .map { (roots, patterns) ->
+        val description = setOf(*patterns.toTypedArray()).translateStemRooted().first()
+
+        // The stems that are being rooted
+        val natalStems = patterns.groupBy { it.stem }
+          .map { (stem, stemPatterns) ->
+            NatalStems(stemPatterns.map { it.scale }.toSet(), stem)
+          }.toSet()
+
+        // The branches that are providing the roots
+        val natalBranches = roots.map { (scale, branch) ->
+          Dtos.EwIdentity.NatalBranches(setOf(scale), branch)
+        }.toSet()
+
+        Dtos.EwIdentity.StemRootedDto(description, natalStems, natalBranches)
+      }.toSet()
+  }
+
+  fun Set<IdentityPattern>.translateAuspiciousDays(): List<String> {
     return listOf(
       this.filterIsInstance<AuspiciousPattern>().joinToString("、") {
         it.value.name
