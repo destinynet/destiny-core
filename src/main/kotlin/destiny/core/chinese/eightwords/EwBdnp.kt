@@ -47,7 +47,7 @@ data class EwBdnp(
   @SerialName("八字")
   val ew: Map<Scale, String>,
   @SerialName("八字特徵")
-  val notes: Set<Dtos.EwIdentity>,
+  val notes: Set<Dtos.EwEvent.EwIdentity>,
   @SerialName("納音")
   val nayin: Map<Scale, String>,
   @SerialName("空亡")
@@ -94,7 +94,7 @@ data class EwBdnp(
     @SerialName("十神藏干")
     val stemAndBranch: StemAndBranch,
     @SerialName("大運特徵")
-    val notes: Set<Dtos.EwFlow>,
+    val notes: Set<Dtos.EwEvent.EwFlow>,
     @Serializable(with = LocalDateSerializer::class)
     val startDate: LocalDate,
     val startAge: Int,
@@ -116,6 +116,6 @@ data class EwBdnp(
     @SerialName("十神藏干")
     val stemAndBranch: StemAndBranch,
     @SerialName("流年特徵")
-    val notes: Set<Dtos.EwFlow>
+    val notes: Set<Dtos.EwEvent.EwFlow>
   )
 }

@@ -56,7 +56,7 @@ object IdentityDtoTransformer {
     }
   }
 
-  fun Iterable<StemCombined>.toStemCombinedDtos(): Set<Dtos.EwIdentity.StemCombinedDto> {
+  fun Iterable<StemCombined>.toStemCombinedDtos(): Set<Dtos.EwEvent.EwIdentity.StemCombinedDto> {
     return this.groupBy { p -> p.pillars.first().second.combined.second }
       .map { (five: FiveElement, patterns) ->
         val description = (five to patterns).translateStemCombined()
@@ -65,7 +65,7 @@ object IdentityDtoTransformer {
           NatalStems(scales.map { it.first }.toSet(), stem)
         }.toSet()
 
-        Dtos.EwIdentity.StemCombinedDto(description, natalStems, five)
+        Dtos.EwEvent.EwIdentity.StemCombinedDto(description, natalStems, five)
       }.toSet()
   }
 
@@ -94,7 +94,7 @@ object IdentityDtoTransformer {
     }.joinToString(" 六合 ")
   }
 
-  fun Iterable<BranchCombined>.toBranchCombinedDtos(): Set<Dtos.EwIdentity.BranchCombinedDto> {
+  fun Iterable<BranchCombined>.toBranchCombinedDtos(): Set<Dtos.EwEvent.EwIdentity.BranchCombinedDto> {
     return this.groupBy { p -> p.pillars.map { it.second }.toSet() }
       .map { (_: Set<Branch>, patterns: List<BranchCombined>) ->
         val description = patterns.translateBranchCombined()
@@ -105,7 +105,7 @@ object IdentityDtoTransformer {
             NatalBranches(pairs.map { it.first }.toSet(), branch)
           }.toSet()
 
-        Dtos.EwIdentity.BranchCombinedDto(description, natalBranches)
+        Dtos.EwEvent.EwIdentity.BranchCombinedDto(description, natalBranches)
       }.toSet()
   }
 
@@ -125,7 +125,7 @@ object IdentityDtoTransformer {
     }
   }
 
-  fun Iterable<Trilogy>.toTrilogyDtos(): Set<Dtos.EwIdentity.TrilogyDto> {
+  fun Iterable<Trilogy>.toTrilogyDtos(): Set<Dtos.EwEvent.EwIdentity.TrilogyDto> {
     return this.map { pattern ->
       val description = pattern.translateTrilogy()
 
@@ -135,7 +135,7 @@ object IdentityDtoTransformer {
 
       val trilogyElement = pattern.pillars.first().second.trilogy()
 
-      Dtos.EwIdentity.TrilogyDto(description, natalBranches, trilogyElement)
+      Dtos.EwEvent.EwIdentity.TrilogyDto(description, natalBranches, trilogyElement)
     }.toSet()
   }
 
@@ -161,7 +161,7 @@ object IdentityDtoTransformer {
     }.joinToString(" 正沖 ")
   }
 
-  fun Iterable<BranchOpposition>.toBranchOppositionDtos(): Set<Dtos.EwIdentity.BranchOppositionDto> {
+  fun Iterable<BranchOpposition>.toBranchOppositionDtos(): Set<Dtos.EwEvent.EwIdentity.BranchOppositionDto> {
     return this.groupBy { p -> p.pillars.map { it.second }.toSet() }
       .map { (_, patterns: List<BranchOpposition>) ->
         val description = patterns.translateBranchOpposition()
@@ -172,7 +172,7 @@ object IdentityDtoTransformer {
             NatalBranches(pairs.map { it.first }.toSet(), branch)
           }.toSet()
 
-        Dtos.EwIdentity.BranchOppositionDto(description, natalBranches)
+        Dtos.EwEvent.EwIdentity.BranchOppositionDto(description, natalBranches)
       }.toSet()
   }
 
@@ -202,7 +202,7 @@ object IdentityDtoTransformer {
     }
   }
 
-  fun Iterable<StemRooted>.toStemRootedDtos(): Set<Dtos.EwIdentity.StemRootedDto> {
+  fun Iterable<StemRooted>.toStemRootedDtos(): Set<Dtos.EwEvent.EwIdentity.StemRootedDto> {
     return this.groupBy { it.roots }
       .map { (roots, patterns) ->
         val description = (roots to patterns).translateStemRooted()
@@ -216,11 +216,11 @@ object IdentityDtoTransformer {
           NatalBranches(setOf(scale), branch)
         }.toSet()
 
-        Dtos.EwIdentity.StemRootedDto(description, natalStems, natalBranches)
+        Dtos.EwEvent.EwIdentity.StemRootedDto(description, natalStems, natalBranches)
       }.toSet()
   }
 
-  fun Iterable<AuspiciousPattern>.toAuspiciousDto(): Dtos.EwIdentity.AuspiciousDto {
+  fun Iterable<AuspiciousPattern>.toAuspiciousDto(): Dtos.EwEvent.EwIdentity.AuspiciousDto {
     val scaleMap: Map<Scale, Set<Auspicious>> = Scale.entries.associateWith { scale ->
       this.filter { it.scales.contains(scale) }.map { it.value }.toSet()
     }
@@ -233,11 +233,11 @@ object IdentityDtoTransformer {
       }
     }.joinToString("；")
 
-    return Dtos.EwIdentity.AuspiciousDto(description, scaleMap)
+    return Dtos.EwEvent.EwIdentity.AuspiciousDto(description, scaleMap)
   }
 
 
-  fun Iterable<InauspiciousPattern>.toInauspiciousDto(): Dtos.EwIdentity.InauspiciousDto {
+  fun Iterable<InauspiciousPattern>.toInauspiciousDto(): Dtos.EwEvent.EwIdentity.InauspiciousDto {
     val scaleMap: Map<Scale, Set<Inauspicious>> = Scale.entries.associateWith { scale ->
       this.filter { it.scales.contains(scale) }.map { it.value }.toSet()
     }
@@ -250,7 +250,7 @@ object IdentityDtoTransformer {
       }
     }.joinToString("；")
 
-    return Dtos.EwIdentity.InauspiciousDto(description, scaleMap)
+    return Dtos.EwEvent.EwIdentity.InauspiciousDto(description, scaleMap)
   }
 
 

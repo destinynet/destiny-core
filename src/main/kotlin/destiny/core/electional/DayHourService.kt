@@ -23,8 +23,22 @@ import destiny.core.calendar.eightwords.FlowDayHourPatterns.branchOpposition
 import destiny.core.calendar.eightwords.FlowDayHourPatterns.stemCombined
 import destiny.core.calendar.eightwords.FlowDayHourPatterns.toFlowTrilogy
 import destiny.core.calendar.eightwords.FlowDayHourPatterns.trilogyToFlow
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toAffectingDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toBranchCombinedDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toBranchOppositionDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toStemCombinedDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toToFlowTrilogyDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toTrilogyToFlowDtos
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toAuspiciousDto
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toBranchCombinedDtos
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toBranchOppositionDtos
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toInauspiciousDto
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemCombinedDtos
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemRootedDtos
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toTrilogyDtos
 import destiny.core.chinese.eightwords.PersonPresentFeature
-import destiny.core.electional.DayHourEvent.*
+import destiny.core.electional.DayHourEvent.AstroEvent
+import destiny.core.electional.DayHourEvent.EwEvent
 import jakarta.inject.Named
 
 
@@ -202,6 +216,122 @@ class DayHourService(
   }
 
   private val supportedScales = setOf(Scale.DAY, Scale.HOUR)
+
+  private fun matchEwEventsV2(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords, config: Config.EwConfig, includeHour: Boolean): Sequence<IEventDto> {
+    val globalStemCombined = with(IdentityPatterns.stemCombined) {
+      outer.getPatterns().filterIsInstance<IdentityPattern.StemCombined>()
+        .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
+        .toStemCombinedDtos()
+    }
+
+    val globalBranchCombined = with(IdentityPatterns.branchCombined) {
+      outer.getPatterns().filterIsInstance<IdentityPattern.BranchCombined>()
+        .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
+        .toBranchCombinedDtos()
+    }
+
+    val globalTrilogy = with(IdentityPatterns.trilogy) {
+      outer.getPatterns().filterIsInstance<IdentityPattern.Trilogy>()
+        .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
+        .toTrilogyDtos()
+    }
+
+    val globalBranchOpposition = with(IdentityPatterns.branchOpposition) {
+      outer.getPatterns().filterIsInstance<IdentityPattern.BranchOpposition>()
+        .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
+        .toBranchOppositionDtos()
+    }
+
+    val globalStemRooted = with(IdentityPatterns.stemRooted) {
+      outer.getPatterns().filterIsInstance<IdentityPattern.StemRooted>()
+        .filter { p -> p.scale in supportedScales }
+        .toStemRootedDtos()
+    }
+
+    val auspiciousDays = with(IdentityPatterns.auspiciousPattern) {
+      outer.getPatterns().filterIsInstance<IdentityPattern.AuspiciousPattern>()
+        .filter { p -> p.scales.any { s -> s in supportedScales } }
+        .toAuspiciousDto()
+    }
+
+    val inauspiciousDays = with(IdentityPatterns.inauspiciousPattern) {
+      outer.getPatterns().filterIsInstance<IdentityPattern.InauspiciousPattern>()
+        .filter { p -> p.scales.any { s -> s in supportedScales } }
+        .toInauspiciousDto()
+    }
+
+    val personalAffecting = with(affecting) {
+      inner.getPatterns(outer.day, outer.hour).map { pattern ->
+        pattern as FlowPattern.Affecting
+      }.toAffectingDtos()
+    }
+
+    val personalStemCombined = with(stemCombined) {
+      inner.getPatterns(outer.day, outer.hour).map { pattern ->
+        pattern as FlowPattern.StemCombined
+      }.toStemCombinedDtos()
+    }
+
+    val personalBranchCombined = with(branchCombined) {
+      inner.getPatterns(outer.day, outer.hour).map { pattern ->
+        pattern as FlowPattern.BranchCombined
+      }.toBranchCombinedDtos()
+    }
+
+    val personalTrilogyToFlow = with(trilogyToFlow) {
+      inner.getPatterns(outer.day, outer.hour).map { pattern ->
+        pattern as FlowPattern.TrilogyToFlow
+      }.toTrilogyToFlowDtos()
+    }
+
+    val personalToFlowTrilogy = with(toFlowTrilogy) {
+      inner.getPatterns(outer.day, outer.hour).map { pattern ->
+        pattern as FlowPattern.ToFlowTrilogy
+      }.filter { pattern ->
+        /**
+         * 限制 [FlowPattern.ToFlowTrilogy.flows] 必須至少包含 [FlowScale.DAY] or [FlowScale.HOUR]
+         * 這樣找「流日」「流時」才有意義
+         */
+        val flowScales = pattern.flows.map { it.first }
+        flowScales.any { it == FlowScale.DAY || it == FlowScale.HOUR }
+      }.toToFlowTrilogyDtos()
+    }
+
+    val personalBranchOpposition = with(branchOpposition) {
+      inner.getPatterns(outer.day, outer.hour).map { pattern ->
+        pattern as FlowPattern.BranchOpposition
+      }.toBranchOppositionDtos()
+    }
+
+    return sequence {
+      yieldAll(globalStemCombined)
+      yieldAll(globalBranchCombined)
+      yieldAll(globalTrilogy)
+      yieldAll(globalBranchOpposition)
+      yieldAll(globalStemRooted)
+      if (config.shanSha) {
+        yield(auspiciousDays)
+        yield(inauspiciousDays)
+      }
+
+      yieldAll(personalAffecting)
+      yieldAll(personalStemCombined)
+      yieldAll(personalBranchCombined)
+      yieldAll(personalTrilogyToFlow)
+      yieldAll(personalToFlowTrilogy)
+      yieldAll(personalBranchOpposition)
+    }.filter { it: IEventDto ->
+      if (includeHour)
+        true
+      else {
+        when (it) {
+          is Dtos.EwEvent.EwFlow     -> !it.hourRelated
+          is Dtos.EwEvent.EwIdentity -> true
+          is Dtos.Astro              -> true
+        }
+      }
+    }
+  }
 
   private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords, config : Config.EwConfig, includeHour: Boolean): Sequence<EwEvent> {
 

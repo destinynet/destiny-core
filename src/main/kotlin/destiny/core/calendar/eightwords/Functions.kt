@@ -497,7 +497,7 @@ fun IStemBranch.toStemAndBranch(dayStem: Stem): StemAndBranch {
 /**
  * 本命四柱 特徵
  */
-fun IEightWords.identityDtos() : Set<Dtos.EwIdentity> {
+fun IEightWords.identityDtos() : Set<Dtos.EwEvent.EwIdentity> {
   return getIdentityPatterns().let { patterns ->
     buildSet {
       addAll(patterns.filterIsInstance<IdentityPattern.StemCombined>().toStemCombinedDtos())

@@ -26,11 +26,6 @@ sealed class DayHourEvent : IEvent {
 
   abstract val span: Span
 
-  enum class Impact {
-    PERSONAL,
-    GLOBAL
-  }
-
   abstract val impact: Impact
 
   sealed class EwEvent : DayHourEvent() {

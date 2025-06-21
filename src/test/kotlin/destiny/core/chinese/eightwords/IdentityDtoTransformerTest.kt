@@ -40,7 +40,7 @@ class IdentityDtoTransformerTest {
         .toStemCombinedDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.StemCombinedDto(
+        Dtos.EwEvent.EwIdentity.StemCombinedDto(
           "年干(丁) 與 月干(壬) 合木",
           setOf(
             Dtos.NatalStems(setOf(YEAR), 丁),
@@ -61,7 +61,7 @@ class IdentityDtoTransformerTest {
         .toStemCombinedDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.StemCombinedDto(
+        Dtos.EwEvent.EwIdentity.StemCombinedDto(
           "年干(丁) 與 月干(壬) 合木",
           setOf(
             Dtos.NatalStems(setOf(YEAR), 丁),
@@ -69,7 +69,7 @@ class IdentityDtoTransformerTest {
           ),
           FiveElement.木
         ),
-        Dtos.EwIdentity.StemCombinedDto(
+        Dtos.EwEvent.EwIdentity.StemCombinedDto(
           "日干(癸) 與 時干(戊) 合火",
           setOf(
             Dtos.NatalStems(setOf(DAY), 癸),
@@ -90,7 +90,7 @@ class IdentityDtoTransformerTest {
         .toStemCombinedDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.StemCombinedDto(
+        Dtos.EwEvent.EwIdentity.StemCombinedDto(
           "年干(丁) 與 月干、時干(均為壬) 合木",
           setOf(
             Dtos.NatalStems(setOf(YEAR), 丁),
@@ -111,7 +111,7 @@ class IdentityDtoTransformerTest {
         .toStemCombinedDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.StemCombinedDto(
+        Dtos.EwEvent.EwIdentity.StemCombinedDto(
           "年干、日干(均為丁) 與 月干、時干(均為壬) 合木",
           setOf(
             Dtos.NatalStems(setOf(YEAR, DAY), 丁),
@@ -136,14 +136,14 @@ class IdentityDtoTransformerTest {
         .toBranchCombinedDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.BranchCombinedDto(
+        Dtos.EwEvent.EwIdentity.BranchCombinedDto(
           "年支(子) 六合 月支(丑)",
           setOf(
             Dtos.NatalBranches(setOf(YEAR), 子),
             Dtos.NatalBranches(setOf(MONTH), 丑)
           )
         ),
-        Dtos.EwIdentity.BranchCombinedDto(
+        Dtos.EwEvent.EwIdentity.BranchCombinedDto(
           "日支(亥) 六合 時支(寅)",
           setOf(
             Dtos.NatalBranches(setOf(DAY), 亥),
@@ -163,7 +163,7 @@ class IdentityDtoTransformerTest {
         .toBranchCombinedDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.BranchCombinedDto(
+        Dtos.EwEvent.EwIdentity.BranchCombinedDto(
           "年支(子) 六合 月支、日支、時支(均為 丑)",
           setOf(
             Dtos.NatalBranches(setOf(YEAR), 子),
@@ -183,7 +183,7 @@ class IdentityDtoTransformerTest {
         .toBranchCombinedDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.BranchCombinedDto(
+        Dtos.EwEvent.EwIdentity.BranchCombinedDto(
           "年支、月支、時支(均為 子) 六合 日支(丑)",
           setOf(
             Dtos.NatalBranches(setOf(YEAR, MONTH, HOUR), 子),
@@ -203,7 +203,7 @@ class IdentityDtoTransformerTest {
         .toBranchCombinedDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.BranchCombinedDto(
+        Dtos.EwEvent.EwIdentity.BranchCombinedDto(
           "年支、月支(均為 子) 六合 日支、時支(均為 丑)",
           setOf(
             Dtos.NatalBranches(setOf(YEAR, MONTH), 子),
@@ -228,7 +228,7 @@ class IdentityDtoTransformerTest {
         .toTrilogyDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.TrilogyDto(
+        Dtos.EwEvent.EwIdentity.TrilogyDto(
           "年支、月支、日支三合木局",
           setOf(
             Dtos.NatalBranches(setOf(YEAR), 卯),
@@ -250,7 +250,7 @@ class IdentityDtoTransformerTest {
         .toTrilogyDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.TrilogyDto(
+        Dtos.EwEvent.EwIdentity.TrilogyDto(
           "年支、月支、日支三合木局",
           setOf(
             Dtos.NatalBranches(setOf(YEAR), 卯),
@@ -259,7 +259,7 @@ class IdentityDtoTransformerTest {
           ),
           FiveElement.木
         ),
-        Dtos.EwIdentity.TrilogyDto(
+        Dtos.EwEvent.EwIdentity.TrilogyDto(
           "月支、日支、時支三合木局",
           setOf(
             Dtos.NatalBranches(setOf(MONTH), 未),
@@ -285,14 +285,14 @@ class IdentityDtoTransformerTest {
         .toBranchOppositionDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.BranchOppositionDto(
+        Dtos.EwEvent.EwIdentity.BranchOppositionDto(
           "年支(丑) 正沖 日支(未)",
           setOf(
             Dtos.NatalBranches(setOf(YEAR), 丑),
             Dtos.NatalBranches(setOf(DAY), 未)
           )
         ),
-        Dtos.EwIdentity.BranchOppositionDto(
+        Dtos.EwEvent.EwIdentity.BranchOppositionDto(
           "月支(子) 正沖 時支(午)",
           setOf(
             Dtos.NatalBranches(setOf(MONTH), 子),
@@ -312,7 +312,7 @@ class IdentityDtoTransformerTest {
         .toBranchOppositionDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.BranchOppositionDto(
+        Dtos.EwEvent.EwIdentity.BranchOppositionDto(
           "年支(未) 正沖 月支、日支、時支(均為 丑)",
           setOf(
             Dtos.NatalBranches(setOf(YEAR), 未),
@@ -332,7 +332,7 @@ class IdentityDtoTransformerTest {
         .toBranchOppositionDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.BranchOppositionDto(
+        Dtos.EwEvent.EwIdentity.BranchOppositionDto(
           "年支、時支(均為 未) 正沖 月支、日支(均為 丑)",
           setOf(
             Dtos.NatalBranches(setOf(YEAR, HOUR), 未),
@@ -356,7 +356,7 @@ class IdentityDtoTransformerTest {
         .toStemRootedDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.StemRootedDto(
+        Dtos.EwEvent.EwIdentity.StemRootedDto(
           "月干(戊) 通根 年支(辰)、月支(寅)",
           setOf(
             Dtos.NatalStems(setOf(MONTH), 戊)
@@ -366,7 +366,7 @@ class IdentityDtoTransformerTest {
             Dtos.NatalBranches(setOf(MONTH), 寅)
           )
         ),
-        Dtos.EwIdentity.StemRootedDto(
+        Dtos.EwEvent.EwIdentity.StemRootedDto(
           "日干(甲) 通根 月支(寅)",
           setOf(
             Dtos.NatalStems(setOf(DAY), 甲)
@@ -375,7 +375,7 @@ class IdentityDtoTransformerTest {
             Dtos.NatalBranches(setOf(MONTH), 寅)
           )
         ),
-        Dtos.EwIdentity.StemRootedDto(
+        Dtos.EwEvent.EwIdentity.StemRootedDto(
           "時干(癸) 通根 年支(辰)",
           setOf(
             Dtos.NatalStems(setOf(HOUR), 癸)
@@ -397,7 +397,7 @@ class IdentityDtoTransformerTest {
         .toStemRootedDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.StemRootedDto(
+        Dtos.EwEvent.EwIdentity.StemRootedDto(
           "年干(丁) 通根 日支(未)、時支(午)",
           setOf(
             Dtos.NatalStems(setOf(YEAR), 丁)
@@ -407,7 +407,7 @@ class IdentityDtoTransformerTest {
             Dtos.NatalBranches(setOf(HOUR), 午)
           )
         ),
-        Dtos.EwIdentity.StemRootedDto(
+        Dtos.EwEvent.EwIdentity.StemRootedDto(
           "日干(癸) 通根 年支(丑)、月支(子)",
           setOf(
             Dtos.NatalStems(setOf(DAY), 癸)
@@ -430,7 +430,7 @@ class IdentityDtoTransformerTest {
         .toStemRootedDtos()
 
       val expected = setOf(
-        Dtos.EwIdentity.StemRootedDto(
+        Dtos.EwEvent.EwIdentity.StemRootedDto(
           "年干、時干(均為 丁) 通根 日支(未)",
           setOf(
             Dtos.NatalStems(setOf(YEAR, HOUR), 丁)
@@ -439,7 +439,7 @@ class IdentityDtoTransformerTest {
             Dtos.NatalBranches(setOf(DAY), 未)
           )
         ),
-        Dtos.EwIdentity.StemRootedDto(
+        Dtos.EwEvent.EwIdentity.StemRootedDto(
           "日干(癸) 通根 年支(丑)、月支(子)",
           setOf(
             Dtos.NatalStems(setOf(DAY), 癸)
