@@ -10,12 +10,12 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem
 import destiny.core.chinese.eightwords.FlowDtoTransformer
-import destiny.core.chinese.eightwords.FlowDtoTransformer.translateAffecting
-import destiny.core.chinese.eightwords.FlowDtoTransformer.translateBranchCombined
-import destiny.core.chinese.eightwords.FlowDtoTransformer.translateBranchOpposition
-import destiny.core.chinese.eightwords.FlowDtoTransformer.translateStemCombined
-import destiny.core.chinese.eightwords.FlowDtoTransformer.translateToFlowTrilogy
-import destiny.core.chinese.eightwords.FlowDtoTransformer.translateTrilogyToFlow
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toAffectingDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toBranchCombinedDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toBranchOppositionDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toStemCombinedDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toToFlowTrilogyDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toTrilogyToFlowDtos
 import destiny.core.chinese.eightwords.IdentityDtoTransformer
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toAuspiciousDto
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toBranchCombinedDtos
@@ -145,7 +145,7 @@ class Dtos {
     /**
      * 五行生剋
      * DTO for [FlowPattern.Affecting]
-     * translated by [FlowDtoTransformer.translateAffecting]
+     * transformed by [FlowDtoTransformer.toAffectingDtos]
      */
     @Serializable
     data class AffectingDto(
@@ -158,7 +158,7 @@ class Dtos {
     /**
      * 天干相合
      * DTO for [FlowPattern.StemCombined]
-     * translated by [FlowDtoTransformer.translateStemCombined]
+     * transformed by [FlowDtoTransformer.toStemCombinedDtos]
      */
     @Serializable
     data class StemCombinedDto(
@@ -171,7 +171,7 @@ class Dtos {
     /**
      * 地支相合
      * DTO for [FlowPattern.BranchCombined]
-     * translated by [FlowDtoTransformer.translateBranchCombined]
+     * transformed by [FlowDtoTransformer.toBranchCombinedDtos]
      */
     @Serializable
     data class BranchCombinedDto(
@@ -183,7 +183,7 @@ class Dtos {
     /**
      * 本命兩柱 與流運某干支 形成三合
      * DTO for [FlowPattern.TrilogyToFlow]
-     * translated by [FlowDtoTransformer.translateTrilogyToFlow]
+     * transformed by [FlowDtoTransformer.toTrilogyToFlowDtos]
      */
     @Serializable
     data class TrilogyToFlowDto(
@@ -195,7 +195,7 @@ class Dtos {
     /**
      * 本命某柱 與流運兩柱 形成三合
      * DTO for [FlowPattern.ToFlowTrilogy]
-     * translated by [FlowDtoTransformer.translateToFlowTrilogy]
+     * transformed by [FlowDtoTransformer.toToFlowTrilogyDtos]
      */
     @Serializable
     data class ToFlowTrilogyDto(
@@ -207,7 +207,7 @@ class Dtos {
     /**
      * 地支正沖
      * DTO for [FlowPattern.BranchOpposition]
-     * translated by [FlowDtoTransformer.translateBranchOpposition]
+     * transformed by [FlowDtoTransformer.toBranchOppositionDtos]
      */
     @Serializable
     data class BranchOppositionDto(
