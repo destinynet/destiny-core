@@ -5,6 +5,7 @@ package destiny.core.chinese.eightwords
 
 import destiny.core.FlowScale
 import destiny.core.Scale
+import destiny.core.calendar.eightwords.FlowPattern
 import destiny.core.calendar.eightwords.FlowPattern.*
 import destiny.core.calendar.eightwords.Reacting
 import destiny.core.calendar.eightwords.Reacting.*
@@ -20,6 +21,7 @@ import java.util.*
 
 /**
  * 八字Flow (大運、流年、流月) 與本命四柱 特徵翻譯
+ * DTOs transformer for [FlowPattern]
  */
 object FlowDtoTransformer {
 

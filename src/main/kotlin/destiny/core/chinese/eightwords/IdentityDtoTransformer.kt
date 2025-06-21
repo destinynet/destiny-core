@@ -4,8 +4,10 @@
 package destiny.core.chinese.eightwords
 
 import destiny.core.Scale
+import destiny.core.calendar.eightwords.Auspicious
 import destiny.core.calendar.eightwords.IdentityPattern
 import destiny.core.calendar.eightwords.IdentityPattern.*
+import destiny.core.calendar.eightwords.Inauspicious
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem
@@ -17,6 +19,9 @@ import destiny.tools.getTitle
 import java.util.*
 
 
+/**
+ * DTOs transformer for [IdentityPattern]
+ */
 object IdentityDtoTransformer {
 
   private val locale = Locale.TAIWAN
@@ -215,20 +220,37 @@ object IdentityDtoTransformer {
       }.toSet()
   }
 
-  fun Set<IdentityPattern>.translateAuspiciousDays(): List<String> {
-    return listOf(
-      this.filterIsInstance<AuspiciousPattern>().joinToString("、") {
-        it.value.name
+  fun Iterable<AuspiciousPattern>.toAuspiciousDto(): Dtos.EwIdentity.AuspiciousDto {
+    val scaleMap: Map<Scale, Set<Auspicious>> = Scale.entries.associateWith { scale ->
+      this.filter { it.scales.contains(scale) }.map { it.value }.toSet()
+    }
+
+    val description = scaleMap.mapNotNull {  (scale, auspiciousSet) ->
+      if (auspiciousSet.isEmpty()) {
+        null
+      } else {
+        scale.getTitle(locale) + "柱 : " + auspiciousSet.joinToString("、") { it.name }
       }
-    )
+    }.joinToString("；")
+
+    return Dtos.EwIdentity.AuspiciousDto(description, scaleMap)
   }
 
-  fun Set<IdentityPattern>.translateInauspiciousDays(): List<String> {
-    return listOf(
-      this.filterIsInstance<InauspiciousPattern>().joinToString("、") {
-        it.value.name
+
+  fun Iterable<InauspiciousPattern>.toInauspiciousDto(): Dtos.EwIdentity.InauspiciousDto {
+    val scaleMap: Map<Scale, Set<Inauspicious>> = Scale.entries.associateWith { scale ->
+      this.filter { it.scales.contains(scale) }.map { it.value }.toSet()
+    }
+
+    val description = scaleMap.mapNotNull {  (scale, inauspiciousSet) ->
+      if (inauspiciousSet.isEmpty()) {
+        null
+      } else {
+        scale.getTitle(locale) + "柱 : " + inauspiciousSet.joinToString("、") { it.name }
       }
-    )
+    }.joinToString("；")
+
+    return Dtos.EwIdentity.InauspiciousDto(description, scaleMap)
   }
 
 

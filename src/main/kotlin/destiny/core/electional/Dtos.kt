@@ -5,9 +5,7 @@ package destiny.core.electional
 
 import destiny.core.FlowScale
 import destiny.core.Scale
-import destiny.core.calendar.eightwords.FlowPattern
-import destiny.core.calendar.eightwords.IdentityPattern
-import destiny.core.calendar.eightwords.Reacting
+import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem
@@ -19,11 +17,13 @@ import destiny.core.chinese.eightwords.FlowDtoTransformer.translateStemCombined
 import destiny.core.chinese.eightwords.FlowDtoTransformer.translateToFlowTrilogy
 import destiny.core.chinese.eightwords.FlowDtoTransformer.translateTrilogyToFlow
 import destiny.core.chinese.eightwords.IdentityDtoTransformer
-import destiny.core.chinese.eightwords.IdentityDtoTransformer.translateBranchCombined
-import destiny.core.chinese.eightwords.IdentityDtoTransformer.translateBranchOpposition
-import destiny.core.chinese.eightwords.IdentityDtoTransformer.translateStemCombined
-import destiny.core.chinese.eightwords.IdentityDtoTransformer.translateStemRooted
-import destiny.core.chinese.eightwords.IdentityDtoTransformer.translateTrilogy
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toAuspiciousDto
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toBranchCombinedDtos
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toBranchOppositionDtos
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toInauspiciousDto
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemCombinedDtos
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemRootedDtos
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.toTrilogyDtos
 import kotlinx.serialization.Serializable
 
 class Dtos {
@@ -47,7 +47,7 @@ class Dtos {
     /**
      * 本命天干合化
      * DTO for [IdentityPattern.StemCombined]
-     * translated by [IdentityDtoTransformer.translateStemCombined]
+     * transformed by [IdentityDtoTransformer.toStemCombinedDtos]
      * */
     @Serializable
     data class StemCombinedDto(
@@ -59,7 +59,7 @@ class Dtos {
     /**
      * 本命地支六合
      * DTO for [IdentityPattern.BranchCombined]
-     * translated by [IdentityDtoTransformer.translateBranchCombined]
+     * transformed by [IdentityDtoTransformer.toBranchCombinedDtos]
      */
     @Serializable
     data class BranchCombinedDto(
@@ -70,7 +70,7 @@ class Dtos {
     /**
      * 本命地支三合
      * DTO for [IdentityPattern.Trilogy]
-     * translated by [IdentityDtoTransformer.translateTrilogy]
+     * transformed by [IdentityDtoTransformer.toTrilogyDtos]
      *
      */
     @Serializable
@@ -83,7 +83,7 @@ class Dtos {
     /**
      * 本命地支正沖
      * DTO for [IdentityPattern.BranchOpposition]
-     * translated by [IdentityDtoTransformer.translateBranchOpposition]
+     * transformed by [IdentityDtoTransformer.toBranchOppositionDtos]
      */
     @Serializable
     data class BranchOppositionDto(
@@ -94,13 +94,35 @@ class Dtos {
     /**
      * 本命天干通根
      * DTO for [IdentityPattern.StemRooted]
-     * translated by [IdentityDtoTransformer.translateStemRooted]
+     * transformed by [IdentityDtoTransformer.toStemRootedDtos]
      */
     @Serializable
     data class StemRootedDto(
       override val description: String,
       val natalStems: Set<NatalStems>,
       val natalBranches: Set<NatalBranches>
+    ) : EwIdentity()
+
+    /**
+     * 吉祥
+     * DTO for [IdentityPattern.AuspiciousPattern]
+     * transformed by [IdentityDtoTransformer.toAuspiciousDto]
+     */
+    @Serializable
+    data class AuspiciousDto(
+      override val description: String,
+      val scales: Map<Scale, Set<Auspicious>>
+    ) : EwIdentity()
+
+    /**
+     * 不祥
+     * DTO for [IdentityPattern.InauspiciousPattern]
+     * transformed by [IdentityDtoTransformer.toInauspiciousDto]
+     */
+    @Serializable
+    data class InauspiciousDto(
+      override val description: String,
+      val scales: Map<Scale, Set<Inauspicious>>
     ) : EwIdentity()
   }
 
