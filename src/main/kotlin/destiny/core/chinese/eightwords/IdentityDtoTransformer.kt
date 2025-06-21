@@ -17,7 +17,7 @@ import destiny.tools.getTitle
 import java.util.*
 
 
-object IdentityTranslator {
+object IdentityDtoTransformer {
 
   private val locale = Locale.TAIWAN
 
@@ -108,7 +108,7 @@ object IdentityTranslator {
    * 地支三合
    * ex : 年支、月支、日支三合木局
    */
-  fun Trilogy.translateTrilogy() : String {
+  private fun Trilogy.translateTrilogy() : String {
     return buildString {
       append(
         pillars.joinToString("、") {
@@ -139,7 +139,7 @@ object IdentityTranslator {
    * ex : 年支(未) 正沖 月支、日支、時支(均為 丑)
    * ex : 年支、時支(均為 未) 正沖 月支、日支(均為 丑)
    */
-  fun List<BranchOpposition>.translateBranchOpposition() : String {
+  private fun List<BranchOpposition>.translateBranchOpposition() : String {
     return this.flatMap { it.pillars }.groupBy({ it.second }, { it.first }).map { (branch: Branch, scales: List<Scale>) ->
       buildString {
         append(

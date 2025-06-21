@@ -12,12 +12,12 @@ import destiny.core.calendar.eightwords.FlowLargeYearPatterns.toFlowTrilogy
 import destiny.core.calendar.eightwords.FlowLargeYearPatterns.trilogyToFlow
 import destiny.core.calendar.eightwords.FlowPattern.*
 import destiny.core.chinese.IStemBranch
-import destiny.core.chinese.eightwords.FlowTranslator.toAffectingDtos
-import destiny.core.chinese.eightwords.FlowTranslator.toBranchCombinedDtos
-import destiny.core.chinese.eightwords.FlowTranslator.toBranchOppositionDtos
-import destiny.core.chinese.eightwords.FlowTranslator.toStemCombinedDtos
-import destiny.core.chinese.eightwords.FlowTranslator.toToFlowTrilogyDtos
-import destiny.core.chinese.eightwords.FlowTranslator.toTrilogyToFlowDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toAffectingDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toBranchCombinedDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toBranchOppositionDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toStemCombinedDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toToFlowTrilogyDtos
+import destiny.core.chinese.eightwords.FlowDtoTransformer.toTrilogyToFlowDtos
 import destiny.core.electional.Dtos
 
 /**

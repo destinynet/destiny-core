@@ -21,7 +21,7 @@ import java.util.*
 /**
  * 八字Flow (大運、流年、流月) 與本命四柱 特徵翻譯
  */
-object FlowTranslator {
+object FlowDtoTransformer {
 
   private val locale = Locale.TAIWAN
 

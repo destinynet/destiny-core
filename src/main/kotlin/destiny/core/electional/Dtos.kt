@@ -11,19 +11,19 @@ import destiny.core.calendar.eightwords.Reacting
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem
-import destiny.core.chinese.eightwords.FlowTranslator
-import destiny.core.chinese.eightwords.FlowTranslator.translateAffecting
-import destiny.core.chinese.eightwords.FlowTranslator.translateBranchCombined
-import destiny.core.chinese.eightwords.FlowTranslator.translateBranchOpposition
-import destiny.core.chinese.eightwords.FlowTranslator.translateStemCombined
-import destiny.core.chinese.eightwords.FlowTranslator.translateToFlowTrilogy
-import destiny.core.chinese.eightwords.FlowTranslator.translateTrilogyToFlow
-import destiny.core.chinese.eightwords.IdentityTranslator
-import destiny.core.chinese.eightwords.IdentityTranslator.translateBranchCombined
-import destiny.core.chinese.eightwords.IdentityTranslator.translateBranchOpposition
-import destiny.core.chinese.eightwords.IdentityTranslator.translateStemCombined
-import destiny.core.chinese.eightwords.IdentityTranslator.translateStemRooted
-import destiny.core.chinese.eightwords.IdentityTranslator.translateTrilogy
+import destiny.core.chinese.eightwords.FlowDtoTransformer
+import destiny.core.chinese.eightwords.FlowDtoTransformer.translateAffecting
+import destiny.core.chinese.eightwords.FlowDtoTransformer.translateBranchCombined
+import destiny.core.chinese.eightwords.FlowDtoTransformer.translateBranchOpposition
+import destiny.core.chinese.eightwords.FlowDtoTransformer.translateStemCombined
+import destiny.core.chinese.eightwords.FlowDtoTransformer.translateToFlowTrilogy
+import destiny.core.chinese.eightwords.FlowDtoTransformer.translateTrilogyToFlow
+import destiny.core.chinese.eightwords.IdentityDtoTransformer
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.translateBranchCombined
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.translateBranchOpposition
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.translateStemCombined
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.translateStemRooted
+import destiny.core.chinese.eightwords.IdentityDtoTransformer.translateTrilogy
 import kotlinx.serialization.Serializable
 
 class Dtos {
@@ -47,7 +47,7 @@ class Dtos {
     /**
      * 本命天干合化
      * DTO for [IdentityPattern.StemCombined]
-     * translated by [IdentityTranslator.translateStemCombined]
+     * translated by [IdentityDtoTransformer.translateStemCombined]
      * */
     @Serializable
     data class StemCombinedDto(
@@ -59,7 +59,7 @@ class Dtos {
     /**
      * 本命地支六合
      * DTO for [IdentityPattern.BranchCombined]
-     * translated by [IdentityTranslator.translateBranchCombined]
+     * translated by [IdentityDtoTransformer.translateBranchCombined]
      */
     @Serializable
     data class BranchCombinedDto(
@@ -70,7 +70,7 @@ class Dtos {
     /**
      * 本命地支三合
      * DTO for [IdentityPattern.Trilogy]
-     * translated by [IdentityTranslator.translateTrilogy]
+     * translated by [IdentityDtoTransformer.translateTrilogy]
      *
      */
     @Serializable
@@ -83,7 +83,7 @@ class Dtos {
     /**
      * 本命地支正沖
      * DTO for [IdentityPattern.BranchOpposition]
-     * translated by [IdentityTranslator.translateBranchOpposition]
+     * translated by [IdentityDtoTransformer.translateBranchOpposition]
      */
     @Serializable
     data class BranchOppositionDto(
@@ -94,7 +94,7 @@ class Dtos {
     /**
      * 本命天干通根
      * DTO for [IdentityPattern.StemRooted]
-     * translated by [IdentityTranslator.translateStemRooted]
+     * translated by [IdentityDtoTransformer.translateStemRooted]
      */
     @Serializable
     data class StemRootedDto(
@@ -123,7 +123,7 @@ class Dtos {
     /**
      * 五行生剋
      * DTO for [FlowPattern.Affecting]
-     * translated by [FlowTranslator.translateAffecting]
+     * translated by [FlowDtoTransformer.translateAffecting]
      */
     @Serializable
     data class AffectingDto(
@@ -136,7 +136,7 @@ class Dtos {
     /**
      * 天干相合
      * DTO for [FlowPattern.StemCombined]
-     * translated by [FlowTranslator.translateStemCombined]
+     * translated by [FlowDtoTransformer.translateStemCombined]
      */
     @Serializable
     data class StemCombinedDto(
@@ -149,7 +149,7 @@ class Dtos {
     /**
      * 地支相合
      * DTO for [FlowPattern.BranchCombined]
-     * translated by [FlowTranslator.translateBranchCombined]
+     * translated by [FlowDtoTransformer.translateBranchCombined]
      */
     @Serializable
     data class BranchCombinedDto(
@@ -161,7 +161,7 @@ class Dtos {
     /**
      * 本命兩柱 與流運某干支 形成三合
      * DTO for [FlowPattern.TrilogyToFlow]
-     * translated by [FlowTranslator.translateTrilogyToFlow]
+     * translated by [FlowDtoTransformer.translateTrilogyToFlow]
      */
     @Serializable
     data class TrilogyToFlowDto(
@@ -173,7 +173,7 @@ class Dtos {
     /**
      * 本命某柱 與流運兩柱 形成三合
      * DTO for [FlowPattern.ToFlowTrilogy]
-     * translated by [FlowTranslator.translateToFlowTrilogy]
+     * translated by [FlowDtoTransformer.translateToFlowTrilogy]
      */
     @Serializable
     data class ToFlowTrilogyDto(
@@ -185,7 +185,7 @@ class Dtos {
     /**
      * 地支正沖
      * DTO for [FlowPattern.BranchOpposition]
-     * translated by [FlowTranslator.translateBranchOpposition]
+     * translated by [FlowDtoTransformer.translateBranchOpposition]
      */
     @Serializable
     data class BranchOppositionDto(
