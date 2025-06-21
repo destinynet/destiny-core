@@ -172,21 +172,28 @@ object FlowDtoTransformer {
   /**
    * 本命已經三合取二_再拱大運或流年
    * ex : 大運(辰)與本命年柱(子)、時柱(申)三合水局
-   * ex : 大運(辰)與本命年柱(子)、時柱(申)三合水局
    *
    * ex : 大運(辰)與本命年柱(子)、時柱(申)三合水局
-   * ex : 大運(辰)、流年(辰)與本命年柱(子)、時柱(申)三合水局
+   * ex : 大運、流年(均為 辰)與本命年柱(子)、時柱(申)三合水局
    *
    * ex : 流年(辰)與本命年柱(子)、時柱(申)三合水局
-   * ex : 流年(辰)、流月(辰)與本命年柱(子)、時柱(申)三合水局
+   * ex : 流年、流月(均為 辰)與本命年柱(子)、時柱(申)三合水局
    */
   private fun Pair<Set<Pair<Scale, Branch>>, List<TrilogyToFlow>>.translateTrilogyToFlow(): String {
     return buildString {
+
+      val flowsSize = second.map { it.flow.first }.size
+
       append(
         second.joinToString("、") {
-          it.flow.first.getTitle(locale) + "(" + it.flow.second.getTitle(locale) + ")"
+          it.flow.first.getTitle(locale) //+ "(" + it.flow.second.getTitle(locale) + ")"
         }
       )
+      append("(")
+      if (flowsSize > 1)
+        append("均為 ")
+      append(second.first().flow.second)
+      append(")")
 
       append("與本命")
       append(

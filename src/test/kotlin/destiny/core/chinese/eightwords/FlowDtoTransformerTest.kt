@@ -375,8 +375,7 @@ class FlowDtoTransformerTest {
 
         val expected = setOf(
           Dtos.EwFlow.TrilogyToFlowDto(
-            // TODO : tune description
-            "大運(辰)、流年(辰)與本命年柱(子)、時柱(申)三合水局",
+            "大運、流年(均為 辰)與本命年柱(子)、時柱(申)三合水局",
             setOf(
               Dtos.NatalBranches(setOf(YEAR), 子),
               Dtos.NatalBranches(setOf(HOUR), 申)
@@ -649,7 +648,7 @@ class FlowDtoTransformerTest {
 
         val expected = setOf(
           Dtos.EwFlow.TrilogyToFlowDto(
-            "流年(辰)、流月(辰)與本命年柱(子)、時柱(申)三合水局",
+            "流年、流月(均為 辰)與本命年柱(子)、時柱(申)三合水局",
             setOf(
               Dtos.NatalBranches(setOf(YEAR), 子),
               Dtos.NatalBranches(setOf(HOUR), 申)
