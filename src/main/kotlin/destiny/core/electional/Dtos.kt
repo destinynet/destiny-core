@@ -34,19 +34,19 @@ sealed interface IEventDto {
 class Dtos {
 
   @Serializable
-  data class NatalStems(
-    val scales: Set<Scale>,
-    val stem: Stem
-  )
-
-  @Serializable
-  data class NatalBranches(
-    val scales: Set<Scale>,
-    val branch: Branch
-  )
-
-  @Serializable
   sealed class EwEvent {
+
+    @Serializable
+    data class NatalStems(
+      val scales: Set<Scale>,
+      val stem: Stem
+    )
+
+    @Serializable
+    data class NatalBranches(
+      val scales: Set<Scale>,
+      val branch: Branch
+    )
 
     @Serializable
     sealed class EwIdentity : IEventDto {

@@ -13,8 +13,8 @@ import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem
 import destiny.core.chinese.trilogy
 import destiny.core.electional.Dtos
-import destiny.core.electional.Dtos.NatalBranches
-import destiny.core.electional.Dtos.NatalStems
+import destiny.core.electional.Dtos.EwEvent.NatalBranches
+import destiny.core.electional.Dtos.EwEvent.NatalStems
 import destiny.tools.getTitle
 import java.util.*
 

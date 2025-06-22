@@ -13,7 +13,8 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.trilogy
 import destiny.core.electional.Dtos
-import destiny.core.electional.Dtos.NatalBranches
+import destiny.core.electional.Dtos.EwEvent.NatalBranches
+import destiny.core.electional.Dtos.EwEvent.NatalStems
 import destiny.tools.getTitle
 import java.util.*
 
@@ -54,7 +55,7 @@ object FlowDtoTransformer {
   fun Iterable<Affecting>.toAffectingDtos() : Set<Dtos.EwEvent.EwFlow.AffectingDto> {
     return this.groupBy { it.reacting }.map { (reacting, patterns) ->
       val description = (reacting to patterns).translateAffecting()
-      val natalStems = Dtos.NatalStems(patterns.map { it.scale }.toSet(), patterns.first().stem)
+      val natalStems = NatalStems(patterns.map { it.scale }.toSet(), patterns.first().stem)
       val flowScales: Set<FlowScale> = patterns.flatMap { it.flowScales }.toSet()
       Dtos.EwEvent.EwFlow.AffectingDto(description, natalStems, reacting, flowScales)
     }.toSet()
@@ -107,7 +108,7 @@ object FlowDtoTransformer {
   fun Iterable<StemCombined>.toStemCombinedDtos() : Set<Dtos.EwEvent.EwFlow.StemCombinedDto> {
     return this.groupBy { it.stem }.map { (stem, patterns: List<StemCombined>) ->
       val description = (stem to patterns).translateStemCombined()
-      val natalStems = Dtos.NatalStems(patterns.map { it.scale }.toSet() , stem)
+      val natalStems = NatalStems(patterns.map { it.scale }.toSet() , stem)
       val flowStems: Dtos.EwEvent.EwFlow.FlowStems = Dtos.EwEvent.EwFlow.FlowStems(patterns.map { it.flowScale }.toSet(), stem.combined.first)
       Dtos.EwEvent.EwFlow.StemCombinedDto(description, natalStems, flowStems, stem.combined.second)
     }.toSet()
