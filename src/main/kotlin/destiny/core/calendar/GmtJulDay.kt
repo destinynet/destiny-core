@@ -125,7 +125,7 @@ fun Instant.toGmtJulDay(): GmtJulDay {
 }
 
 fun GmtJulDay.toLmt(loc: ILocation, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-  return TimeTools.getLmtFromGmt(this, loc, julDayResolver)
+  return this.toLmt(loc.zoneId, julDayResolver)
 }
 
 fun GmtJulDay.toLmt(zoneId: ZoneId, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {

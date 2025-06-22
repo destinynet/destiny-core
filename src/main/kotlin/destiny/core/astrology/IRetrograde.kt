@@ -11,6 +11,7 @@ import destiny.core.astrology.StationaryType.RETROGRADE_TO_DIRECT
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.IEvent
 import destiny.tools.KotlinLogging
+import kotlinx.serialization.Serializable
 
 enum class RetrogradePhase {
   PREPARING,
@@ -29,6 +30,7 @@ data class RetrogradeSpan(
 ) : IStarEventSpan
 
 /** 星體停滯資訊 */
+@Serializable
 data class Stationary(val gmtJulDay: GmtJulDay, val star: Star, val type: StationaryType, val pos: IPos) : IEvent {
   override val begin: GmtJulDay
     get() = gmtJulDay

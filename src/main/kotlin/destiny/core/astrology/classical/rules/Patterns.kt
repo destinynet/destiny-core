@@ -10,6 +10,7 @@ import destiny.core.astrology.classical.MutualDataWithSign
 import destiny.core.calendar.GmtJulDay
 import destiny.core.chinese.YinYang
 import destiny.core.toString
+import kotlinx.serialization.Serializable
 import java.util.*
 
 /**
@@ -139,6 +140,7 @@ sealed class Misc : IPlanetPattern {
 
   /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [exactAspectPrior] , 後一個準確交角資訊為 [exactAspectAfter]
    * */
+  @Serializable
   data class VoidCourseSpan(override val planet: Planet,
                             override val begin : GmtJulDay, override val fromPos : IZodiacDegree,
                             override val end : GmtJulDay, override val toPos : IZodiacDegree,

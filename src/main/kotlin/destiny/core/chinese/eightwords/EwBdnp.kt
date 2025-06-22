@@ -13,7 +13,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
-import destiny.core.electional.Dtos
+import destiny.core.electional.Ew
 import destiny.tools.serializers.GenderSerializer
 import destiny.tools.serializers.ILocationSerializer
 import destiny.tools.serializers.LocalDateSerializer
@@ -47,7 +47,7 @@ data class EwBdnp(
   @SerialName("八字")
   val ew: Map<Scale, String>,
   @SerialName("八字特徵")
-  val notes: Set<Dtos.EwEvent.EwIdentity>,
+  val notes: Set<Ew.EwIdentity>,
   @SerialName("納音")
   val nayin: Map<Scale, String>,
   @SerialName("空亡")
@@ -94,7 +94,7 @@ data class EwBdnp(
     @SerialName("十神藏干")
     val stemAndBranch: StemAndBranch,
     @SerialName("大運特徵")
-    val notes: Set<Dtos.EwEvent.EwFlow>,
+    val notes: Set<Ew.EwFlow>,
     @Serializable(with = LocalDateSerializer::class)
     val startDate: LocalDate,
     val startAge: Int,
@@ -116,6 +116,6 @@ data class EwBdnp(
     @SerialName("十神藏干")
     val stemAndBranch: StemAndBranch,
     @SerialName("流年特徵")
-    val notes: Set<Dtos.EwEvent.EwFlow>
+    val notes: Set<Ew.EwFlow>
   )
 }

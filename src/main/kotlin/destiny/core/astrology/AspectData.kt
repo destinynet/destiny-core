@@ -8,6 +8,8 @@ import destiny.core.IGmtJulDay
 import destiny.core.astrology.IPointAspectPattern.Type
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.Score
+import destiny.tools.serializers.DoubleTwoDecimalSerializer
+import destiny.tools.serializers.ScoreTwoDecimalSerializer
 import java.io.Serializable
 
 
@@ -16,13 +18,16 @@ interface IAspectData : IPointAspectPattern, IGmtJulDay
 /**
  * 存放兩顆「不同」星體交角的資料結構
  * */
+@kotlinx.serialization.Serializable
 data class AspectData(
   val pointAspectPattern: PointAspectPattern,
   /** 交會型態 : 接近 or 分離 */
   override val type: Type? = null,
   /** orb 不列入 equals / hashCode 計算  */
+  @kotlinx.serialization.Serializable(with = DoubleTwoDecimalSerializer::class)
   override val orb: Double = 0.0,
   /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
+  @kotlinx.serialization.Serializable(with = ScoreTwoDecimalSerializer::class)
   override val score: Score? = null,
   override val gmtJulDay: GmtJulDay
 ) : IAspectData, IPointAspectPattern by pointAspectPattern, Serializable {

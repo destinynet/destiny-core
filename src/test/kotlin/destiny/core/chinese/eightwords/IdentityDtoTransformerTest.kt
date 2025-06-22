@@ -20,7 +20,7 @@ import destiny.core.chinese.eightwords.IdentityDtoTransformer.toBranchOpposition
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemCombinedDtos
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemRootedDtos
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toTrilogyDtos
-import destiny.core.electional.Dtos.EwEvent.*
+import destiny.core.electional.Ew.*
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -18,7 +18,7 @@ import destiny.core.chinese.eightwords.FlowDtoTransformer.toBranchOppositionDtos
 import destiny.core.chinese.eightwords.FlowDtoTransformer.toStemCombinedDtos
 import destiny.core.chinese.eightwords.FlowDtoTransformer.toToFlowTrilogyDtos
 import destiny.core.chinese.eightwords.FlowDtoTransformer.toTrilogyToFlowDtos
-import destiny.core.electional.Dtos
+import destiny.core.electional.Ew
 
 /**
  * 大運、流年
@@ -79,7 +79,7 @@ fun IEightWords.getFlowLargeYearPatterns(flowLarge: IStemBranch, flowYear: IStem
 /**
  * 本命四柱、大運 特徵
  */
-fun IEightWords.fortuneLargeDtos(flowLarge: IStemBranch) : Set<Dtos.EwEvent.EwFlow> {
+fun IEightWords.fortuneLargeDtos(flowLarge: IStemBranch) : Set<Ew.EwFlow> {
   return getFlowLargePatterns(flowLarge).let { patterns: Set<FlowPattern> ->
     buildSet {
       addAll(patterns.filterIsInstance<Affecting>().toAffectingDtos())
@@ -94,7 +94,7 @@ fun IEightWords.fortuneLargeDtos(flowLarge: IStemBranch) : Set<Dtos.EwEvent.EwFl
 
 
 /** 大運、流年 特徵 */
-fun IEightWords.yearDtos(flowLarge: IStemBranch, flowYear: IStemBranch): Set<Dtos.EwEvent.EwFlow> {
+fun IEightWords.yearDtos(flowLarge: IStemBranch, flowYear: IStemBranch): Set<Ew.EwFlow> {
   return getFlowLargeYearPatterns(flowLarge, flowYear).let { patterns: Set<FlowPattern> ->
     buildSet {
       addAll(patterns.filterIsInstance<Affecting>().toAffectingDtos())

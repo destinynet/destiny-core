@@ -19,9 +19,9 @@ import destiny.core.chinese.eightwords.FlowDtoTransformer.toBranchOppositionDtos
 import destiny.core.chinese.eightwords.FlowDtoTransformer.toStemCombinedDtos
 import destiny.core.chinese.eightwords.FlowDtoTransformer.toToFlowTrilogyDtos
 import destiny.core.chinese.eightwords.FlowDtoTransformer.toTrilogyToFlowDtos
-import destiny.core.electional.Dtos
-import destiny.core.electional.Dtos.EwEvent.NatalBranches
-import destiny.core.electional.Dtos.EwEvent.NatalStems
+import destiny.core.electional.Ew
+import destiny.core.electional.Ew.NatalBranches
+import destiny.core.electional.Ew.NatalStems
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -44,10 +44,10 @@ class FlowDtoTransformerTest {
           .toStemCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.StemCombinedDto(
+          Ew.EwFlow.StemCombinedDto(
             "本命時干(己) 被大運(甲)合住，甲己合化土",
             NatalStems(setOf(HOUR), 己),
-            Dtos.EwEvent.EwFlow.FlowStems(setOf(FlowScale.LARGE), 甲),
+            Ew.EwFlow.FlowStems(setOf(FlowScale.LARGE), 甲),
             FiveElement.土
           )
         )
@@ -63,10 +63,10 @@ class FlowDtoTransformerTest {
           .toStemCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.StemCombinedDto(
+          Ew.EwFlow.StemCombinedDto(
             "本命日干、時干(均為 己) 被大運(甲)合住，甲己合化土",
             NatalStems(setOf(DAY, HOUR), 己),
-            Dtos.EwEvent.EwFlow.FlowStems(setOf(FlowScale.LARGE), 甲),
+            Ew.EwFlow.FlowStems(setOf(FlowScale.LARGE), 甲),
             FiveElement.土
           )
         )
@@ -86,10 +86,10 @@ class FlowDtoTransformerTest {
           .toBranchCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchCombinedDto(
+          Ew.EwFlow.BranchCombinedDto(
             "大運地支(戌) 合住 本命時支(卯)",
             NatalBranches(setOf(HOUR), 卯),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 戌),
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 戌),
           )
         )
         assertEquals(expected, dtos)
@@ -104,10 +104,10 @@ class FlowDtoTransformerTest {
           .toBranchCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchCombinedDto(
+          Ew.EwFlow.BranchCombinedDto(
             "大運地支(午) 合住 本命月支、日支、時支(均為 未)",
             NatalBranches(setOf(MONTH, DAY, HOUR), 未),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 午),
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 午),
           )
         )
         assertEquals(expected, dtos)
@@ -126,13 +126,13 @@ class FlowDtoTransformerTest {
           .toTrilogyToFlowDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.TrilogyToFlowDto(
+          Ew.EwFlow.TrilogyToFlowDto(
             "大運(辰)與本命年柱(子)、時柱(申)三合水局",
             setOf(
               NatalBranches(setOf(YEAR), 子),
               NatalBranches(setOf(HOUR), 申)
             ),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 辰)
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 辰)
           )
         )
         assertEquals(expected, dtos)
@@ -147,13 +147,13 @@ class FlowDtoTransformerTest {
           .toTrilogyToFlowDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.TrilogyToFlowDto(
+          Ew.EwFlow.TrilogyToFlowDto(
             "大運(辰)與本命年柱(子)、時柱(申)三合水局",
             setOf(
               NatalBranches(setOf(YEAR), 子),
               NatalBranches(setOf(HOUR), 申)
             ),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 辰)
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 辰)
           )
         )
         assertEquals(expected, dtos)
@@ -173,10 +173,10 @@ class FlowDtoTransformerTest {
           .toBranchOppositionDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchOppositionDto(
+          Ew.EwFlow.BranchOppositionDto(
             "大運地支(酉) 正沖 本命時支(卯)",
             NatalBranches(setOf(HOUR), 卯),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 酉)
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 酉)
           )
         )
         assertEquals(expected, dtos)
@@ -191,10 +191,10 @@ class FlowDtoTransformerTest {
           .toBranchOppositionDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchOppositionDto(
+          Ew.EwFlow.BranchOppositionDto(
             "大運地支(丑) 正沖 本命月支、日支(均為 未)",
             NatalBranches(setOf(MONTH, DAY), 未),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 丑)
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 丑)
           )
         )
         assertEquals(expected, dtos)
@@ -216,19 +216,19 @@ class FlowDtoTransformerTest {
         .toAffectingDtos()
 
       val expected = setOf(
-        Dtos.EwEvent.EwFlow.AffectingDto(
+        Ew.EwFlow.AffectingDto(
           "本命年干、日干(均為 丙) 得到 大運、流年 五行 所生",
           NatalStems(setOf(YEAR, DAY), 丙),
           Reacting.PRODUCED,
           setOf(FlowScale.LARGE, FlowScale.YEAR)
         ),
-        Dtos.EwEvent.EwFlow.AffectingDto(
+        Ew.EwFlow.AffectingDto(
           "本命月干(乙) 與 大運、流年五行相同",
           NatalStems(setOf(MONTH), 乙),
           Reacting.SAME,
           setOf(FlowScale.LARGE, FlowScale.YEAR)
         ),
-        Dtos.EwEvent.EwFlow.AffectingDto(
+        Ew.EwFlow.AffectingDto(
           "本命時干(壬) 生/洩 出大運、流年",
           NatalStems(setOf(HOUR), 壬),
           Reacting.PRODUCING,
@@ -250,10 +250,10 @@ class FlowDtoTransformerTest {
           .toStemCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.StemCombinedDto(
+          Ew.EwFlow.StemCombinedDto(
             "本命時干(己) 被大運、流年(均為 甲)合住，甲己合化土",
             NatalStems(setOf(HOUR), 己),
-            Dtos.EwEvent.EwFlow.FlowStems(setOf(FlowScale.LARGE, FlowScale.YEAR), 甲),
+            Ew.EwFlow.FlowStems(setOf(FlowScale.LARGE, FlowScale.YEAR), 甲),
             FiveElement.土
           )
         )
@@ -269,10 +269,10 @@ class FlowDtoTransformerTest {
           .toStemCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.StemCombinedDto(
+          Ew.EwFlow.StemCombinedDto(
             "本命日干、時干(均為 己) 被大運、流年(均為 甲)合住，甲己合化土",
             NatalStems(setOf(DAY, HOUR), 己),
-            Dtos.EwEvent.EwFlow.FlowStems(setOf(FlowScale.LARGE, FlowScale.YEAR), 甲),
+            Ew.EwFlow.FlowStems(setOf(FlowScale.LARGE, FlowScale.YEAR), 甲),
             FiveElement.土
           )
         )
@@ -292,10 +292,10 @@ class FlowDtoTransformerTest {
           .toBranchCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchCombinedDto(
+          Ew.EwFlow.BranchCombinedDto(
             "流年地支(戌) 合住 本命時支(卯)",
             NatalBranches(setOf(HOUR), 卯),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 戌),
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 戌),
           )
         )
         assertEquals(expected, dtos)
@@ -310,15 +310,15 @@ class FlowDtoTransformerTest {
           .toBranchCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchCombinedDto(
+          Ew.EwFlow.BranchCombinedDto(
             "大運地支(辰) 合住 本命時支(酉)",
             NatalBranches(setOf(HOUR), 酉),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 辰),
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 辰),
           ),
-          Dtos.EwEvent.EwFlow.BranchCombinedDto(
+          Ew.EwFlow.BranchCombinedDto(
             "流年地支(午) 合住 本命月支、日支(均為 未)",
             NatalBranches(setOf(MONTH, DAY), 未),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 午),
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 午),
           )
         )
         assertEquals(expected, dtos)
@@ -333,10 +333,10 @@ class FlowDtoTransformerTest {
           .toBranchCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchCombinedDto(
+          Ew.EwFlow.BranchCombinedDto(
             "大運、流年地支(均為 午) 合住 本命月支、日支(均為 未)",
             NatalBranches(setOf(MONTH, DAY), 未),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.LARGE, FlowScale.YEAR), 午),
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.LARGE, FlowScale.YEAR), 午),
           )
         )
         assertEquals(expected, dtos)
@@ -355,13 +355,13 @@ class FlowDtoTransformerTest {
           .toTrilogyToFlowDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.TrilogyToFlowDto(
+          Ew.EwFlow.TrilogyToFlowDto(
             "大運(辰)與本命年柱(子)、時柱(申)三合水局",
             setOf(
               NatalBranches(setOf(YEAR), 子),
               NatalBranches(setOf(HOUR), 申)
             ),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 辰)
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 辰)
           )
         )
         assertEquals(expected, dtos)
@@ -376,13 +376,13 @@ class FlowDtoTransformerTest {
           .toTrilogyToFlowDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.TrilogyToFlowDto(
+          Ew.EwFlow.TrilogyToFlowDto(
             "大運、流年(均為 辰)與本命年柱(子)、時柱(申)三合水局",
             setOf(
               NatalBranches(setOf(YEAR), 子),
               NatalBranches(setOf(HOUR), 申)
             ),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.LARGE, FlowScale.YEAR), 辰)
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.LARGE, FlowScale.YEAR), 辰)
           )
         )
         assertEquals(expected, dtos)
@@ -401,12 +401,12 @@ class FlowDtoTransformerTest {
           .toToFlowTrilogyDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.ToFlowTrilogyDto(
+          Ew.EwFlow.ToFlowTrilogyDto(
             "大運(辰)、流年(子) 與本命時支(申) 三合 水局",
             NatalBranches(setOf(HOUR), 申),
             setOf(
-              Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 辰),
-              Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 子)
+              Ew.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 辰),
+              Ew.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 子)
             )
           )
         )
@@ -422,12 +422,12 @@ class FlowDtoTransformerTest {
           .toToFlowTrilogyDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.ToFlowTrilogyDto(
+          Ew.EwFlow.ToFlowTrilogyDto(
             "大運(辰)、流年(申) 與本命年支、時支(均為子) 三合 水局",
             NatalBranches(setOf(YEAR, HOUR), 子),
             setOf(
-              Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 辰),
-              Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 申)
+              Ew.EwFlow.FlowBranches(setOf(FlowScale.LARGE), 辰),
+              Ew.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 申)
             )
           )
         )
@@ -447,10 +447,10 @@ class FlowDtoTransformerTest {
           .toBranchOppositionDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchOppositionDto(
+          Ew.EwFlow.BranchOppositionDto(
             "流年地支(酉) 正沖 本命時支(卯)",
             NatalBranches(setOf(HOUR), 卯),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 酉)
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 酉)
           )
         )
         assertEquals(expected, dtos)
@@ -465,10 +465,10 @@ class FlowDtoTransformerTest {
           .toBranchOppositionDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchOppositionDto(
+          Ew.EwFlow.BranchOppositionDto(
             "大運、流年地支(均為 丑) 正沖 本命月支、日支(均為 未)",
             NatalBranches(setOf(MONTH, DAY), 未),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.LARGE, FlowScale.YEAR), 丑)
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.LARGE, FlowScale.YEAR), 丑)
           )
         )
         assertEquals(expected, dtos)
@@ -489,19 +489,19 @@ class FlowDtoTransformerTest {
         .toAffectingDtos()
 
       val expected = setOf(
-        Dtos.EwEvent.EwFlow.AffectingDto(
+        Ew.EwFlow.AffectingDto(
           "本命年干、日干(均為 丙) 得到 流年、流月 五行 所生",
           NatalStems(setOf(YEAR, DAY), 丙),
           Reacting.PRODUCED,
           setOf(FlowScale.YEAR, FlowScale.MONTH)
         ),
-        Dtos.EwEvent.EwFlow.AffectingDto(
+        Ew.EwFlow.AffectingDto(
           "本命月干(乙) 與 流年、流月五行相同",
           NatalStems(setOf(MONTH), 乙),
           Reacting.SAME,
           setOf(FlowScale.YEAR, FlowScale.MONTH)
         ),
-        Dtos.EwEvent.EwFlow.AffectingDto(
+        Ew.EwFlow.AffectingDto(
           "本命時干(壬) 生/洩 出流年、流月",
           NatalStems(setOf(HOUR), 壬),
           Reacting.PRODUCING,
@@ -523,10 +523,10 @@ class FlowDtoTransformerTest {
           .toStemCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.StemCombinedDto(
+          Ew.EwFlow.StemCombinedDto(
             "本命時干(己) 被流年、流月(均為 甲)合住，甲己合化土",
             NatalStems(setOf(HOUR), 己),
-            Dtos.EwEvent.EwFlow.FlowStems(setOf(FlowScale.YEAR, FlowScale.MONTH), 甲),
+            Ew.EwFlow.FlowStems(setOf(FlowScale.YEAR, FlowScale.MONTH), 甲),
             FiveElement.土
           )
         )
@@ -542,10 +542,10 @@ class FlowDtoTransformerTest {
           .toStemCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.StemCombinedDto(
+          Ew.EwFlow.StemCombinedDto(
             "本命日干、時干(均為 己) 被流年、流月(均為 甲)合住，甲己合化土",
             NatalStems(setOf(DAY, HOUR), 己),
-            Dtos.EwEvent.EwFlow.FlowStems(setOf(FlowScale.YEAR, FlowScale.MONTH), 甲),
+            Ew.EwFlow.FlowStems(setOf(FlowScale.YEAR, FlowScale.MONTH), 甲),
             FiveElement.土
           )
         )
@@ -565,10 +565,10 @@ class FlowDtoTransformerTest {
           .toBranchCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchCombinedDto(
+          Ew.EwFlow.BranchCombinedDto(
             "流月地支(戌) 合住 本命時支(卯)",
             NatalBranches(setOf(HOUR), 卯),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.MONTH), 戌),
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.MONTH), 戌),
           )
         )
         assertEquals(expected, dtos)
@@ -583,15 +583,15 @@ class FlowDtoTransformerTest {
           .toBranchCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchCombinedDto(
+          Ew.EwFlow.BranchCombinedDto(
             "流月地支(午) 合住 本命月支、日支(均為 未)",
             NatalBranches(setOf(MONTH, DAY), 未),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.MONTH), 午),
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.MONTH), 午),
           ),
-          Dtos.EwEvent.EwFlow.BranchCombinedDto(
+          Ew.EwFlow.BranchCombinedDto(
             "流年地支(辰) 合住 本命時支(酉)",
             NatalBranches(setOf(HOUR), 酉),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 辰),
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 辰),
           )
         )
         assertEquals(expected, dtos)
@@ -606,10 +606,10 @@ class FlowDtoTransformerTest {
           .toBranchCombinedDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchCombinedDto(
+          Ew.EwFlow.BranchCombinedDto(
             "流年、流月地支(均為 午) 合住 本命月支、日支(均為 未)",
             NatalBranches(setOf(MONTH, DAY), 未),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.YEAR, FlowScale.MONTH), 午),
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.YEAR, FlowScale.MONTH), 午),
           )
         )
         assertEquals(expected, dtos)
@@ -628,13 +628,13 @@ class FlowDtoTransformerTest {
           .toTrilogyToFlowDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.TrilogyToFlowDto(
+          Ew.EwFlow.TrilogyToFlowDto(
             "流年(辰)與本命年柱(子)、時柱(申)三合水局",
             setOf(
               NatalBranches(setOf(YEAR), 子),
               NatalBranches(setOf(HOUR), 申)
             ),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 辰)
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 辰)
           )
         )
         assertEquals(expected, dtos)
@@ -649,13 +649,13 @@ class FlowDtoTransformerTest {
           .toTrilogyToFlowDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.TrilogyToFlowDto(
+          Ew.EwFlow.TrilogyToFlowDto(
             "流年、流月(均為 辰)與本命年柱(子)、時柱(申)三合水局",
             setOf(
               NatalBranches(setOf(YEAR), 子),
               NatalBranches(setOf(HOUR), 申)
             ),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.YEAR, FlowScale.MONTH), 辰)
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.YEAR, FlowScale.MONTH), 辰)
           )
         )
         assertEquals(expected, dtos)
@@ -675,12 +675,12 @@ class FlowDtoTransformerTest {
           .toToFlowTrilogyDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.ToFlowTrilogyDto(
+          Ew.EwFlow.ToFlowTrilogyDto(
             "流年(辰)、流月(子) 與本命時支(申) 三合 水局",
             NatalBranches(setOf(HOUR), 申),
             setOf(
-              Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 辰),
-              Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.MONTH), 子)
+              Ew.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 辰),
+              Ew.EwFlow.FlowBranches(setOf(FlowScale.MONTH), 子)
             )
           )
         )
@@ -696,12 +696,12 @@ class FlowDtoTransformerTest {
           .toToFlowTrilogyDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.ToFlowTrilogyDto(
+          Ew.EwFlow.ToFlowTrilogyDto(
             "流年(辰)、流月(申) 與本命年支、時支(均為子) 三合 水局",
             NatalBranches(setOf(YEAR, HOUR), 子),
             setOf(
-              Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 辰),
-              Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.MONTH), 申)
+              Ew.EwFlow.FlowBranches(setOf(FlowScale.YEAR), 辰),
+              Ew.EwFlow.FlowBranches(setOf(FlowScale.MONTH), 申)
             )
           )
         )
@@ -722,10 +722,10 @@ class FlowDtoTransformerTest {
           .toBranchOppositionDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchOppositionDto(
+          Ew.EwFlow.BranchOppositionDto(
             "流月地支(酉) 正沖 本命時支(卯)",
             NatalBranches(setOf(HOUR), 卯),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.MONTH), 酉)
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.MONTH), 酉)
           )
         )
         assertEquals(expected, dtos)
@@ -740,10 +740,10 @@ class FlowDtoTransformerTest {
           .toBranchOppositionDtos()
 
         val expected = setOf(
-          Dtos.EwEvent.EwFlow.BranchOppositionDto(
+          Ew.EwFlow.BranchOppositionDto(
             "流年、流月地支(均為 丑) 正沖 本命月支、日支(均為 未)",
             NatalBranches(setOf(MONTH, DAY), 未),
-            Dtos.EwEvent.EwFlow.FlowBranches(setOf(FlowScale.YEAR, FlowScale.MONTH), 丑)
+            Ew.EwFlow.FlowBranches(setOf(FlowScale.YEAR, FlowScale.MONTH), 丑)
           )
         )
         assertEquals(expected, dtos)
