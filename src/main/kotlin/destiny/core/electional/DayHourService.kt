@@ -44,6 +44,8 @@ import destiny.core.chinese.eightwords.IdentityDtoTransformer.toTrilogyDtos
 import destiny.core.chinese.eightwords.PersonPresentFeature
 import destiny.core.electional.DayHourEvent.AstroEvent
 import destiny.core.electional.DayHourEvent.EwEvent
+import destiny.core.electional.Ew.NatalBranches
+import destiny.core.electional.Ew.NatalStems
 import destiny.tools.getTitle
 import destiny.tools.round
 import destiny.tools.truncate
@@ -112,19 +114,19 @@ class DayHourService(
         .fold(mutableListOf<IEventDto>()) { acc, event ->
           when (event) {
             is EwEventDto    -> {
-              if (event.event.span == Span.DAY &&
+              if (event.span == Span.DAY &&
                 acc.none { it is EwEventDto && it.event == event.event }
               ) {
-                logger.trace { "adding event (${event.event.span}) : $event" }
+                logger.trace { "adding event (${event.span}) : $event" }
                 acc.add(event)
               }
             }
 
             is AstroEventDto -> {
-              if (event.event.span == Span.DAY &&
+              if (event.span == Span.DAY &&
                 acc.none { it is AstroEventDto && it.event == event.event }
               ) {
-                logger.trace { "adding event (${event.event.span}) : $event" }
+                logger.trace { "adding event (${event.span}) : $event" }
                 acc.add(event)
               }
             }
@@ -132,12 +134,13 @@ class DayHourService(
           acc
         }
 
-      Daily(date, allDayEvents, events.filter { it.event.span != Span.DAY }.sorted())
-    }
+      Daily(date, allDayEvents, events.filter { it.span != Span.DAY }.sorted())
+    }.sorted()
   }
 
   fun traverseV2(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, includeHour: Boolean): Sequence<IEventDto> {
-    require(model.toDate.isAfter(model.fromDate)) { "toDate must be after the fromDate" }
+    require(!model.toDate.isBefore(model.fromDate)) { "toDate must be after the fromDate" }
+    //require(model.toDate.isAfter(model.fromDate)) { "toDate must be after the fromDate" }
 
     val loc = model.loc ?: bdnp.location
 
@@ -205,6 +208,7 @@ class DayHourService(
       return (this.toLmt(loc, julDayResolver) as LocalDateTime).roundAndTruncate()
     }
 
+    val outerStars = setOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
     val innerStars = setOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
 
     val angles = setOf(0.0, 60.0, 120.0, 240.0, 300.0, 90.0, 180.0)
@@ -248,14 +252,14 @@ class DayHourService(
     }
 
     val globalEvents = relativeTransitImpl.mutualAspectingEvents(
-      innerStars, angles,
+      outerStars, angles,
       fromGmtJulDay, toGmtJulDay
     ).map { aspectData: AspectData ->
-      val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
+      val (outerStar1, outerStar2) = aspectData.points.let { it[0] to it[1] }
       val description = buildString {
-        append("[transit ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
+        append("[transit ${outerStar1.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [transit ${outerStar2.asLocaleString().getTitle(Locale.ENGLISH)}]")
       }
-      AstroEventDto(Astro.AspectEvent(description, aspectData, Impact.GLOBAL), aspectData.gmtJulDay.toLmt())
+      AstroEventDto(Astro.AspectEvent(description, aspectData, Impact.GLOBAL), aspectData.gmtJulDay.toLmt(), null, Span.INSTANT)
     }
 
     val vocConfig = VoidCourseConfig(MOON, vocImpl = VoidCourseImpl.Medieval)
@@ -267,7 +271,7 @@ class DayHourService(
           append("to ${it.toPos.sign.getTitle(Locale.ENGLISH)}/${it.toPos.signDegree.second.truncate(2)}°. ")
           // TODO : Till
         }
-        AstroEventDto(Astro.MoonVoc(description, it), it.begin.toLmt(), it.end.toLmt())
+        AstroEventDto(Astro.MoonVoc(description, it), it.begin.toLmt(), it.end.toLmt(), Span.HOURS)
       }
 
 
@@ -285,7 +289,7 @@ class DayHourService(
             appendLine(transitToNatalAspects.describeAspects(includeHour))
           }
         }
-        AstroEventDto(Astro.PlanetStationary(description, s, zodiacDegree, transitToNatalAspects), s.gmtJulDay.toLmt())
+        AstroEventDto(Astro.PlanetStationary(description, s, zodiacDegree, transitToNatalAspects), s.gmtJulDay.toLmt(), null, Span.INSTANT)
       }
     }
 
@@ -296,7 +300,7 @@ class DayHourService(
           append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Retrograde (逆行). ")
           append("Progress = ${(progress * 100.0).truncate(2)}%")
         }
-        AstroEventDto(Astro.PlanetRetrograde(description, planet, progress), gmtJulDay.toLmt())
+        AstroEventDto(Astro.PlanetRetrograde(description, planet, progress), gmtJulDay.toLmt(), null, Span.DAY)
       }
     }
 
@@ -314,7 +318,7 @@ class DayHourService(
           appendLine(transitToNatalAspects.describeAspects(includeHour))
         }
       }
-      AstroEventDto(Astro.Eclipse(description, eclipse, transitToNatalAspects), eclipse.max.toLmt())
+      AstroEventDto(Astro.Eclipse(description, eclipse, transitToNatalAspects), eclipse.max.toLmt(), null, Span.HOURS)
     }
 
     // 月食
@@ -331,7 +335,7 @@ class DayHourService(
           appendLine(transitToNatalAspects.describeAspects(includeHour))
         }
       }
-      AstroEventDto(Astro.Eclipse(description, eclipse, transitToNatalAspects), eclipse.max.toLmt())
+      AstroEventDto(Astro.Eclipse(description, eclipse, transitToNatalAspects), eclipse.max.toLmt(), null, Span.HOURS)
     }
 
     // 月相
@@ -362,7 +366,7 @@ class DayHourService(
             appendLine(transitToNatalAspects.describeAspects(includeHour))
           }
         }
-        AstroEventDto(Astro.LunarPhaseEvent(description, phase, zodiacDegree, transitToNatalAspects), gmtJulDay.toLmt())
+        AstroEventDto(Astro.LunarPhaseEvent(description, phase, zodiacDegree, transitToNatalAspects), gmtJulDay.toLmt(), null, Span.INSTANT)
       }
     }
 
@@ -376,7 +380,7 @@ class DayHourService(
         val description = buildString {
           append("[transit ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
         }
-        AstroEventDto(Astro.AspectEvent(description, aspectData, Impact.PERSONAL), aspectData.gmtJulDay.toLmt())
+        AstroEventDto(Astro.AspectEvent(description, aspectData, Impact.PERSONAL), aspectData.gmtJulDay.toLmt(), null, Span.INSTANT)
       })
 
       yieldAll(moonVocSeq)
@@ -537,31 +541,39 @@ class DayHourService(
     val globalStemCombined = with(IdentityPatterns.stemCombined) {
       outer.getPatterns().filterIsInstance<IdentityPattern.StemCombined>()
         .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
-        .toStemCombinedDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt()) }
+        .toStemCombinedDtos().map {
+          EwEventDto(it, outer, gmtJulDay.toLmt(), null, it.natalStems.findSpanByStems())
+        }
     }
 
     val globalBranchCombined = with(IdentityPatterns.branchCombined) {
       outer.getPatterns().filterIsInstance<IdentityPattern.BranchCombined>()
         .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
-        .toBranchCombinedDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt()) }
+        .toBranchCombinedDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt(), null, it.natalBranches.findSpanByBranches()) }
     }
 
     val globalTrilogy = with(IdentityPatterns.trilogy) {
       outer.getPatterns().filterIsInstance<IdentityPattern.Trilogy>()
         .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
-        .toTrilogyDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt()) }
+        .toTrilogyDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt(), null, it.natalBranches.findSpanByBranches()) }
     }
 
     val globalBranchOpposition = with(IdentityPatterns.branchOpposition) {
       outer.getPatterns().filterIsInstance<IdentityPattern.BranchOpposition>()
         .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
-        .toBranchOppositionDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt()) }
+        .toBranchOppositionDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt(), null, it.natalBranches.findSpanByBranches()) }
     }
 
     val globalStemRooted = with(IdentityPatterns.stemRooted) {
       outer.getPatterns().filterIsInstance<IdentityPattern.StemRooted>()
         .filter { p -> p.pillar in supportedScales }
-        .toStemRootedDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt()) }
+        .toStemRootedDtos().map { event ->
+          val span = setOf(
+            event.natalStems.maxBy { it.pillars.max() }.pillars.max(),
+            event.natalBranches.maxBy { it.pillars.max() }.pillars.max()
+          ).max().toSpan()
+          EwEventDto(event, outer, gmtJulDay.toLmt(), null, span)
+        }
     }
 
     val auspiciousDays: EwEventDto? = with(IdentityPatterns.auspiciousPattern) {
@@ -570,8 +582,9 @@ class DayHourService(
           // 找日柱、過濾掉時柱
           p.pillars.contains(Scale.DAY) && !p.pillars.contains(Scale.HOUR)
         }
-        .toAuspiciousDto()?.let {
-          EwEventDto(it, outer, gmtJulDay.toLmt())
+        .toAuspiciousDto()?.let { event ->
+          val span = event.pillars.filter { it.value.isNotEmpty() }.keys.max().toSpan()
+          EwEventDto(event, outer, gmtJulDay.toLmt(), null, span)
         }
     }
 
@@ -581,33 +594,36 @@ class DayHourService(
           // 找日柱、過濾掉時柱
           p.pillars.contains(Scale.DAY) && !p.pillars.contains(Scale.HOUR)
         }
-        .toInauspiciousDto()?.let {
-          EwEventDto(it, outer, gmtJulDay.toLmt())
+        .toInauspiciousDto()?.let {event ->
+          val span = event.pillars.filter { it.value.isNotEmpty() }.keys.max().toSpan()
+          EwEventDto(event, outer, gmtJulDay.toLmt(), null, span)
         }
     }
 
     val personalAffecting = with(affecting) {
       inner.getPatterns(outer.day, outer.hour).map { pattern ->
         pattern as FlowPattern.Affecting
-      }.toAffectingDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt()) }
+      }.toAffectingDtos().map {
+        EwEventDto(it, outer, gmtJulDay.toLmt(), null, it.flowScales.max().toSpan())
+      }
     }
 
     val personalStemCombined = with(stemCombined) {
       inner.getPatterns(outer.day, outer.hour).map { pattern ->
         pattern as FlowPattern.StemCombined
-      }.toStemCombinedDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt()) }
+      }.toStemCombinedDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt(), null, it.flowStems.scales.max().toSpan()) }
     }
 
     val personalBranchCombined = with(branchCombined) {
       inner.getPatterns(outer.day, outer.hour).map { pattern ->
         pattern as FlowPattern.BranchCombined
-      }.toBranchCombinedDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt()) }
+      }.toBranchCombinedDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt(), null, it.flowBranches.scales.max().toSpan()) }
     }
 
     val personalTrilogyToFlow = with(trilogyToFlow) {
       inner.getPatterns(outer.day, outer.hour).map { pattern ->
         pattern as FlowPattern.TrilogyToFlow
-      }.toTrilogyToFlowDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt()) }
+      }.toTrilogyToFlowDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt(), null, it.flowBranches.scales.max().toSpan()) }
     }
 
     val personalToFlowTrilogy = with(toFlowTrilogy) {
@@ -620,13 +636,14 @@ class DayHourService(
          */
         val flowScales = pattern.flows.map { it.first }
         flowScales.any { it == FlowScale.DAY || it == FlowScale.HOUR }
-      }.toToFlowTrilogyDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt()) }
+      }.toToFlowTrilogyDtos()
+        .map { event -> EwEventDto(event, outer, gmtJulDay.toLmt(), null, event.flowBranches.maxBy { it.scales.max() }.scales.max().toSpan()) }
     }
 
     val personalBranchOpposition = with(branchOpposition) {
       inner.getPatterns(outer.day, outer.hour).map { pattern ->
         pattern as FlowPattern.BranchOpposition
-      }.toBranchOppositionDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt()) }
+      }.toBranchOppositionDtos().map { EwEventDto(it, outer, gmtJulDay.toLmt(), null, it.flowBranches.scales.max().toSpan()) }
     }
 
     return sequence {
@@ -836,6 +853,33 @@ class DayHourService(
           this.truncatedTo(ChronoUnit.SECONDS)
         }
         ).truncatedTo(ChronoUnit.MINUTES)
+    }
+
+    private const val NOT_SUPPORTED = "not supported"
+    private const val IMPOSSIBLE_FLOW_SCALE = "impossible flowScale"
+
+    fun Set<NatalStems>.findSpanByStems(): Span {
+      return this.maxBy { it.pillars.max() }.pillars.max().toSpan()
+    }
+
+    fun Set<NatalBranches>.findSpanByBranches(): Span {
+      return this.maxBy { it.pillars.max() }.pillars.max().toSpan()
+    }
+
+    fun Scale.toSpan(): Span {
+      return when (this) {
+        Scale.DAY               -> Span.DAY
+        Scale.HOUR              -> Span.HOURS
+        Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException(NOT_SUPPORTED)
+      }
+    }
+
+    fun FlowScale.toSpan(): Span {
+      return when (this) {
+        FlowScale.DAY  -> Span.DAY
+        FlowScale.HOUR -> Span.HOURS
+        else           -> throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
+      }
     }
   }
 

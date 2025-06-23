@@ -42,6 +42,7 @@ import kotlinx.serialization.encoding.encodeStructure
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+@Serializable
 enum class Span {
   DAY,
   HOURS, // 數小時
@@ -52,7 +53,6 @@ enum class Span {
 sealed interface IAggregatedEvent {
   val description: String
   val impact: Impact
-  val span: Span
 }
 
 @Serializable(with = IEventDtoSerializer::class)
@@ -61,6 +61,7 @@ sealed interface IEventDto : Comparable<IEventDto> {
   val begin: LocalDateTime
   val end: LocalDateTime?
   val impact: Impact
+  val span: Span
 
   override fun compareTo(other: IEventDto): Int {
     return begin.compareTo(other.begin)
@@ -73,6 +74,7 @@ object IEventDtoSerializer : KSerializer<IEventDto> {
     element("begin", LocalDateTimeSerializer.descriptor)
     element("end", LocalDateTimeSerializer.descriptor, isOptional = true)
     element("impact", Impact.serializer().descriptor)
+    element("span", Span.serializer().descriptor)
   }
 
   override fun serialize(encoder: Encoder, value: IEventDto) {
@@ -81,6 +83,7 @@ object IEventDtoSerializer : KSerializer<IEventDto> {
       encodeSerializableElement(descriptor, 1, LocalDateTimeSerializer, value.begin)
       value.end?.also { encodeSerializableElement(descriptor, 2, LocalDateTimeSerializer, it) }
       encodeSerializableElement(descriptor, 3, Impact.serializer(), value.impact)
+      encodeSerializableElement(descriptor, 4, Span.serializer(), value.span)
     }
   }
 
@@ -96,7 +99,8 @@ data class EwEventDto(
   @Serializable(with = LocalDateTimeSerializer::class)
   override val begin: LocalDateTime,
   @Serializable(with = LocalDateTimeSerializer::class)
-  override val end : LocalDateTime? = null
+  override val end : LocalDateTime? = null,
+  override val span: Span
 ) : IEventDto {
   override val impact: Impact = event.impact
 }
@@ -107,7 +111,8 @@ data class AstroEventDto(
   @Serializable(with = LocalDateTimeSerializer::class)
   override val begin: LocalDateTime,
   @Serializable(with = LocalDateTimeSerializer::class)
-  override val end : LocalDateTime? = null
+  override val end : LocalDateTime? = null,
+  override val span: Span
 ) : IEventDto {
   override val impact: Impact = event.impact
 }
@@ -119,7 +124,11 @@ data class Daily(
   val localDate : LocalDate,
   val allDayEvents : List<IEventDto>,
   val hourEvents : List<IEventDto>
-)
+) : Comparable<Daily> {
+  override fun compareTo(other: Daily): Int {
+    return localDate.compareTo(other.localDate)
+  }
+}
 
 /** 八字事件 */
 @Serializable
@@ -154,10 +163,7 @@ sealed class Ew : IAggregatedEvent {
       override val description: String,
       val natalStems: Set<NatalStems>,
       val combined: FiveElement
-    ) : EwIdentity() {
-      override val span: Span
-        get() = natalStems.findSpanByStems()
-    }
+    ) : EwIdentity()
 
     /**
      * 本命地支六合
@@ -169,10 +175,7 @@ sealed class Ew : IAggregatedEvent {
     data class BranchCombinedDto(
       override val description: String,
       val natalBranches: Set<NatalBranches>
-    ) : EwIdentity() {
-      override val span: Span
-        get() = natalBranches.findSpanByBranches()
-    }
+    ) : EwIdentity()
 
     /**
      * 本命地支三合
@@ -186,9 +189,7 @@ sealed class Ew : IAggregatedEvent {
       override val description: String,
       val natalBranches: Set<NatalBranches>,
       val trilogy: FiveElement
-    ) : EwIdentity() {
-      override val span: Span = natalBranches.findSpanByBranches()
-    }
+    ) : EwIdentity()
 
     /**
      * 本命地支正沖
@@ -200,9 +201,7 @@ sealed class Ew : IAggregatedEvent {
     data class BranchOppositionDto(
       override val description: String,
       val natalBranches: Set<NatalBranches>
-    ) : EwIdentity() {
-      override val span: Span = natalBranches.findSpanByBranches()
-    }
+    ) : EwIdentity()
 
     /**
      * 本命天干通根
@@ -215,15 +214,7 @@ sealed class Ew : IAggregatedEvent {
       override val description: String,
       val natalStems: Set<NatalStems>,
       val natalBranches: Set<NatalBranches>
-    ) : EwIdentity() {
-      override val span: Span
-        get() {
-          return setOf(
-            natalStems.maxBy { it.pillars.max() }.pillars.max(),
-            natalBranches.maxBy { it.pillars.max() }.pillars.max()
-          ).max().toSpan()
-        }
-    }
+    ) : EwIdentity()
 
     /**
      * 吉祥
@@ -235,9 +226,7 @@ sealed class Ew : IAggregatedEvent {
     data class AuspiciousDto(
       override val description: String,
       val pillars: Map<Scale, Set<Auspicious>>
-    ) : EwIdentity() {
-      override val span: Span = pillars.filter { it.value.isNotEmpty() }.keys.max().toSpan()
-    }
+    ) : EwIdentity()
 
     /**
      * 不祥
@@ -249,9 +238,7 @@ sealed class Ew : IAggregatedEvent {
     data class InauspiciousDto(
       override val description: String,
       val pillars: Map<Scale, Set<Inauspicious>>
-    ) : EwIdentity() {
-      override val span: Span = pillars.filter { it.value.isNotEmpty() }.keys.max().toSpan()
-    }
+    ) : EwIdentity()
   }
 
   @Serializable
@@ -289,8 +276,6 @@ sealed class Ew : IAggregatedEvent {
       val flowScales: Set<FlowScale>
     ) : EwFlow() {
       override val hourRelated: Boolean = natalStems.pillars.contains(Scale.HOUR)
-      override val span: Span
-        get() = flowScales.max().toSpan()
     }
 
     /**
@@ -307,8 +292,6 @@ sealed class Ew : IAggregatedEvent {
       val combined: FiveElement
     ) : EwFlow() {
       override val hourRelated: Boolean = natalStems.pillars.contains(Scale.HOUR)
-      override val span: Span
-        get() = flowStems.scales.max().toSpan()
     }
 
     /**
@@ -324,8 +307,6 @@ sealed class Ew : IAggregatedEvent {
       val flowBranches: FlowBranches,
     ) : EwFlow() {
       override val hourRelated: Boolean = natalBranches.pillars.contains(Scale.HOUR)
-      override val span: Span
-        get() = flowBranches.scales.max().toSpan()
     }
 
     /**
@@ -341,9 +322,6 @@ sealed class Ew : IAggregatedEvent {
       val flowBranches: FlowBranches,
     ) : EwFlow() {
       override val hourRelated: Boolean = natalBranches.any { it.pillars.contains(Scale.HOUR) }
-      override val span: Span
-        get() = flowBranches.scales.max().toSpan()
-
     }
 
     /**
@@ -359,8 +337,6 @@ sealed class Ew : IAggregatedEvent {
       val flowBranches: Set<FlowBranches>,
     ) : EwFlow() {
       override val hourRelated: Boolean = natalBranches.pillars.contains(Scale.HOUR)
-      override val span: Span
-        get() = flowBranches.maxBy { it.scales.max() }.scales.max().toSpan()
     }
 
     /**
@@ -376,39 +352,7 @@ sealed class Ew : IAggregatedEvent {
       val flowBranches: FlowBranches,
     ) : EwFlow() {
       override val hourRelated: Boolean = natalBranches.pillars.contains(Scale.HOUR)
-      override val span: Span
-        get() = flowBranches.scales.max().toSpan()
     }
-  }
-
-  companion object {
-    private const val NOT_SUPPORTED = "not supported"
-    private const val IMPOSSIBLE_FLOW_SCALE = "impossible flowScale"
-
-    fun Set<NatalStems>.findSpanByStems(): Span {
-      return this.maxBy { it.pillars.max() }.pillars.max().toSpan()
-    }
-
-    fun Set<NatalBranches>.findSpanByBranches(): Span {
-      return this.maxBy { it.pillars.max() }.pillars.max().toSpan()
-    }
-
-    fun Scale.toSpan(): Span {
-      return when (this) {
-        Scale.DAY               -> Span.DAY
-        Scale.HOUR              -> Span.HOURS
-        Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException(NOT_SUPPORTED)
-      }
-    }
-
-    fun FlowScale.toSpan(): Span {
-      return when (this) {
-        FlowScale.DAY  -> Span.DAY
-        FlowScale.HOUR -> Span.HOURS
-        else           -> throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
-      }
-    }
-
   }
 }
 
@@ -419,22 +363,21 @@ sealed class Astro : IAggregatedEvent {
 
   /** 交角 */
   @Serializable
+  @SerialName("Astro.AspectEvent")
   data class AspectEvent(
     override val description: String,
     val aspectData: AspectData,
     override val impact: Impact
-  ) : Astro() {
-    override val span: Span = Span.INSTANT
-  }
+  ) : Astro()
 
   /** 月亮空亡 */
   @Serializable
+  @SerialName("Astro.MoonVoc")
   data class MoonVoc(
     override val description: String,
     val voidCourseSpan: Misc.VoidCourseSpan
   ) : Astro() {
     override val impact: Impact = Impact.GLOBAL
-    override val span: Span = Span.HOURS
   }
 
   /** 星體滯留 */
@@ -448,7 +391,6 @@ sealed class Astro : IAggregatedEvent {
     val transitToNatalAspects: List<SynastryAspect>
   ) : Astro() {
     override val impact: Impact = Impact.GLOBAL
-    override val span: Span = Span.INSTANT
   }
 
   /** 當日星體逆行 */
@@ -461,7 +403,6 @@ sealed class Astro : IAggregatedEvent {
     val progress: Double
   ) : Astro() {
     override val impact: Impact = Impact.GLOBAL
-    override val span: Span = Span.DAY
   }
 
   /** 日食 or 月食 */
@@ -472,7 +413,6 @@ sealed class Astro : IAggregatedEvent {
     val transitToNatalAspects: List<SynastryAspect>
   ) : Astro() {
     override val impact: Impact = Impact.GLOBAL
-    override val span: Span = Span.HOURS
   }
 
   /** 月相 */
@@ -485,7 +425,6 @@ sealed class Astro : IAggregatedEvent {
     val transitToNatalAspects: List<SynastryAspect>
   ) : Astro() {
     override val impact: Impact = Impact.GLOBAL
-    override val span: Span = Span.INSTANT
   }
 
 }
