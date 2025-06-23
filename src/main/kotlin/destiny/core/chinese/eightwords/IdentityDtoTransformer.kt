@@ -4,10 +4,8 @@
 package destiny.core.chinese.eightwords
 
 import destiny.core.Scale
-import destiny.core.calendar.eightwords.Auspicious
 import destiny.core.calendar.eightwords.IdentityPattern
 import destiny.core.calendar.eightwords.IdentityPattern.*
-import destiny.core.calendar.eightwords.Inauspicious
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem
@@ -221,44 +219,32 @@ object IdentityDtoTransformer {
   }
 
   fun Iterable<AuspiciousPattern>.toAuspiciousDto(): Ew.EwIdentity.AuspiciousDto? {
-    val scaleMap: Map<Scale, Set<Auspicious>> = Scale.entries.associateWith { scale ->
+    return Scale.entries.associateWith { scale ->
       this.filter { it.pillars.contains(scale) }.map { it.value }.toSet()
-    }
-
-    val description = scaleMap.mapNotNull {  (scale, auspiciousSet) ->
-      if (auspiciousSet.isEmpty()) {
-        null
-      } else {
-        scale.getTitle(locale) + "柱 : " + auspiciousSet.joinToString("、") { it.name }
-      }
-    }.joinToString("；")
-
-    return scaleMap.filter { (_, auspiciousSet) ->
+    }.filter { (_, auspiciousSet) ->
       auspiciousSet.isNotEmpty()
-    }.toMap().takeIf {  it.isNotEmpty() }?.let {
-      Ew.EwIdentity.AuspiciousDto(description, it)
+    }.takeIf { it.isNotEmpty() }?.let { scaleMap ->
+      val description = scaleMap.map { (scale, auspiciousSet) ->
+        scale.getTitle(locale) + "柱 : " + auspiciousSet.joinToString("、") { it.name }
+      }.joinToString("；")
+
+      Ew.EwIdentity.AuspiciousDto(description, scaleMap)
     }
   }
 
 
   fun Iterable<InauspiciousPattern>.toInauspiciousDto(): Ew.EwIdentity.InauspiciousDto? {
-    val scaleMap: Map<Scale, Set<Inauspicious>> = Scale.entries.associateWith { scale ->
+    return Scale.entries.associateWith { scale ->
       this.filter { it.pillars.contains(scale) }.map { it.value }.toSet()
-    }
+    }.filter { (_, inauspiciousSet) ->
+      inauspiciousSet.isNotEmpty()
+     }.takeIf { it.isNotEmpty() }
+      ?.let { scaleMap ->
+        val description = scaleMap.map { (scale , inauspiciousSet) ->
+          scale.getTitle(locale) + "柱 : " + inauspiciousSet.joinToString("、") { it.name }
+        }.joinToString("；")
 
-    val description = scaleMap.mapNotNull {  (scale, inauspiciousSet) ->
-      if (inauspiciousSet.isEmpty()) {
-        null
-      } else {
-        scale.getTitle(locale) + "柱 : " + inauspiciousSet.joinToString("、") { it.name }
-      }
-    }.joinToString("；")
-
-    return scaleMap.filter { (_, inauspiciousSet) ->
-      (inauspiciousSet.isNotEmpty())
-    }
-      .toMap().takeIf { it.isNotEmpty() }?.let { map ->
-        Ew.EwIdentity.InauspiciousDto(description, map)
+        Ew.EwIdentity.InauspiciousDto(description, scaleMap)
       }
   }
 

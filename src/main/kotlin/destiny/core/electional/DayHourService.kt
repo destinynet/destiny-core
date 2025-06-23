@@ -3,10 +3,7 @@
  */
 package destiny.core.electional
 
-import destiny.core.FlowScale
-import destiny.core.IBirthDataNamePlace
-import destiny.core.Scale
-import destiny.core.asLocaleString
+import destiny.core.*
 import destiny.core.astrology.*
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
@@ -74,7 +71,10 @@ class DayHourService(
 ) {
 
 
-  fun aggregate(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, includeHour: Boolean): List<Daily> {
+  /**
+   * @param timeRange : 每日限定時間
+   */
+  fun aggregate(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, includeHour: Boolean, timeRange: TimeRange? = null): List<Daily> {
 
     val daySelector: (IEventDto) -> LocalDate = {
       when (it.event) {
@@ -134,7 +134,19 @@ class DayHourService(
           acc
         }
 
-      Daily(date, allDayEvents, events.filter { it.span != Span.DAY }.sorted())
+      val nonAllDayEvents =
+        events.filter { it.span != Span.DAY }
+          .filter { eventDto: IEventDto ->
+            if (timeRange != null) {
+              val (begin: LocalTime, end: LocalTime) = timeRange
+              eventDto.begin >= date.atTime(begin) && eventDto.begin <= date.atTime(end)
+            } else {
+              true
+            }
+          }
+          .sorted()
+
+      Daily(date, allDayEvents, nonAllDayEvents)
     }.sorted()
   }
 
@@ -297,7 +309,7 @@ class DayHourService(
     val planetRetrogrades = sequenceOf(MERCURY, VENUS, MARS, JUPITER, SATURN).flatMap { planet ->
       retrogradeImpl.getDailyRetrogrades(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl, starTransitImpl).map { (gmtJulDay, progress) ->
         val description = buildString {
-          append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Retrograde (逆行). ")
+          append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Retrograding (逆行). ")
           append("Progress = ${(progress * 100.0).truncate(2)}%")
         }
         AstroEventDto(Astro.PlanetRetrograde(description, planet, progress), gmtJulDay.toLmt(), null, Span.DAY)
@@ -383,12 +395,26 @@ class DayHourService(
         AstroEventDto(Astro.AspectEvent(description, aspectData, Impact.PERSONAL), aspectData.gmtJulDay.toLmt(), null, Span.INSTANT)
       })
 
-      yieldAll(moonVocSeq)
-      yieldAll(planetStationaries)
-      yieldAll(planetRetrogrades)
-      yieldAll(solarEclipses)
-      yieldAll(lunarEclipses)
-      yieldAll(lunarPhaseEvents)
+      if (config.voc) {
+        // 月亮空亡
+        yieldAll(moonVocSeq)
+      }
+      if (config.retrograde) {
+        // 內行星滯留
+        yieldAll(planetStationaries)
+        // 星體當日逆行
+        yieldAll(planetRetrogrades)
+      }
+      if (config.eclipse) {
+        // 日食
+        yieldAll(solarEclipses)
+        // 月食
+        yieldAll(lunarEclipses)
+      }
+      if (config.lunarPhase) {
+        // 月相
+        yieldAll(lunarPhaseEvents)
+      }
     }
   }
 
@@ -579,8 +605,8 @@ class DayHourService(
     val auspiciousDays: EwEventDto? = with(IdentityPatterns.auspiciousPattern) {
       outer.getPatterns().filterIsInstance<IdentityPattern.AuspiciousPattern>()
         .filter { p ->
-          // 找日柱、過濾掉時柱
-          p.pillars.contains(Scale.DAY) && !p.pillars.contains(Scale.HOUR)
+          // 找日柱
+          p.pillars.contains(Scale.DAY)
         }
         .toAuspiciousDto()?.let { event ->
           val span = event.pillars.filter { it.value.isNotEmpty() }.keys.max().toSpan()
@@ -591,10 +617,10 @@ class DayHourService(
     val inauspiciousDays: EwEventDto? = with(IdentityPatterns.inauspiciousPattern) {
       outer.getPatterns().filterIsInstance<IdentityPattern.InauspiciousPattern>()
         .filter { p ->
-          // 找日柱、過濾掉時柱
-          p.pillars.contains(Scale.DAY) && !p.pillars.contains(Scale.HOUR)
+          // 找日柱
+          p.pillars.contains(Scale.DAY)
         }
-        .toInauspiciousDto()?.let {event ->
+        .toInauspiciousDto()?.let { event ->
           val span = event.pillars.filter { it.value.isNotEmpty() }.keys.max().toSpan()
           EwEventDto(event, outer, gmtJulDay.toLmt(), null, span)
         }

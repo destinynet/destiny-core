@@ -407,6 +407,7 @@ sealed class Astro : IAggregatedEvent {
 
   /** 日食 or 月食 */
   @Serializable
+  @SerialName("Astro.Eclipse")
   data class Eclipse(
     override val description: String,
     val eclipse: IEclipse,
@@ -417,6 +418,7 @@ sealed class Astro : IAggregatedEvent {
 
   /** 月相 */
   @Serializable
+  @SerialName("Astro.LunarPhaseEvent")
   data class LunarPhaseEvent(
     override val description: String,
     val phase: LunarPhase,
