@@ -126,7 +126,7 @@ class VoidCourseHellenistic(
             橫跨共 ${pos1.lngDeg.getAngle(pos2.lngDeg)} 度 , 超過 30度。
           """.trimIndent()
             }
-            Misc.VoidCourseSpan(planet, exactAspectPrior.gmtJulDay, pos1, exactAspectAfter.gmtJulDay, pos2, exactAspectPrior, exactAspectAfter)
+            Misc.VoidCourseSpan(planet, exactAspectPrior.gmtJulDay, pos1, exactAspectAfter.gmtJulDay, pos2, exactAspectPrior as AspectData, exactAspectAfter as AspectData)
           }
         }
       }
@@ -202,7 +202,8 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
 
             val beginGmt = starTransitImpl.getNextTransitGmt(planet, beginDegree, gmtJulDay, false)
             val endGmt = starTransitImpl.getNextTransitGmt(planet, endDegree, gmtJulDay, true)
-            Misc.VoidCourseSpan(planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter)
+            Misc.VoidCourseSpan(planet, beginGmt, beginDegree, endGmt, endDegree,
+                                exactAspectPrior as AspectData, exactAspectAfter as AspectData)
           }
         }
       }
@@ -247,7 +248,7 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
             val endGmt = starTransitImpl.getNextTransitGmt(planet, nextSign.degree.toZodiacDegree(), gmtJulDay, true)
             val endDegree = nextSign.degree.toZodiacDegree()
             Misc.VoidCourseSpan(
-              planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter
+              planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior as AspectData, exactAspectAfter as AspectData
             )
           }
         }

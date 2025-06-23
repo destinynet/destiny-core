@@ -186,7 +186,7 @@ object IdentityDtoTransformer {
     return buildString {
       append(
         second.joinToString("、") {
-          it.scale.getTitle(locale) + "干"
+          it.pillar.getTitle(locale) + "干"
         }
       )
       append("(")
@@ -209,7 +209,7 @@ object IdentityDtoTransformer {
 
         val natalStems = patterns.groupBy { it.stem }
           .map { (stem, stemPatterns) ->
-            NatalStems(stemPatterns.map { it.scale }.toSet(), stem)
+            NatalStems(stemPatterns.map { it.pillar }.toSet(), stem)
           }.toSet()
 
         val natalBranches = roots.map { (scale, branch) ->
@@ -220,9 +220,9 @@ object IdentityDtoTransformer {
       }.toSet()
   }
 
-  fun Iterable<AuspiciousPattern>.toAuspiciousDto(): Ew.EwIdentity.AuspiciousDto {
+  fun Iterable<AuspiciousPattern>.toAuspiciousDto(): Ew.EwIdentity.AuspiciousDto? {
     val scaleMap: Map<Scale, Set<Auspicious>> = Scale.entries.associateWith { scale ->
-      this.filter { it.scales.contains(scale) }.map { it.value }.toSet()
+      this.filter { it.pillars.contains(scale) }.map { it.value }.toSet()
     }
 
     val description = scaleMap.mapNotNull {  (scale, auspiciousSet) ->
@@ -233,13 +233,15 @@ object IdentityDtoTransformer {
       }
     }.joinToString("；")
 
-    return Ew.EwIdentity.AuspiciousDto(description, scaleMap)
+    return scaleMap.takeIf { it.values.any { set -> set.isNotEmpty() } }?.let { map ->
+      Ew.EwIdentity.AuspiciousDto(description, map)
+    }
   }
 
 
-  fun Iterable<InauspiciousPattern>.toInauspiciousDto(): Ew.EwIdentity.InauspiciousDto {
+  fun Iterable<InauspiciousPattern>.toInauspiciousDto(): Ew.EwIdentity.InauspiciousDto? {
     val scaleMap: Map<Scale, Set<Inauspicious>> = Scale.entries.associateWith { scale ->
-      this.filter { it.scales.contains(scale) }.map { it.value }.toSet()
+      this.filter { it.pillars.contains(scale) }.map { it.value }.toSet()
     }
 
     val description = scaleMap.mapNotNull {  (scale, inauspiciousSet) ->
@@ -250,7 +252,10 @@ object IdentityDtoTransformer {
       }
     }.joinToString("；")
 
-    return Ew.EwIdentity.InauspiciousDto(description, scaleMap)
+    return scaleMap.takeIf { it.values.any { set -> set.isNotEmpty() } } ?.let { map ->
+      Ew.EwIdentity.InauspiciousDto(description, map)
+    }
+
   }
 
 

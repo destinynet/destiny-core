@@ -18,7 +18,7 @@ enum class RuleType {
 }
 
 interface IPlanetPattern : IClassicalPattern {
-  val type: RuleType
+  val ruleType: RuleType
   val planet: Planet
 }
 

@@ -33,7 +33,7 @@ object FlowDtoTransformer {
   private fun Pair<Reacting, List<Affecting>>.translateAffecting(): String {
     return buildString {
       append("本命")
-      append(second.joinToString("、") { it.scale.getTitle(locale) + "干" })
+      append(second.joinToString("、") { it.pillar.getTitle(locale) + "干" })
       append("(")
       if (second.size > 1)
         append("均為 ")
@@ -55,7 +55,7 @@ object FlowDtoTransformer {
   fun Iterable<Affecting>.toAffectingDtos() : Set<Ew.EwFlow.AffectingDto> {
     return this.groupBy { it.reacting }.map { (reacting, patterns) ->
       val description = (reacting to patterns).translateAffecting()
-      val natalStems = NatalStems(patterns.map { it.scale }.toSet(), patterns.first().stem)
+      val natalStems = NatalStems(patterns.map { it.pillar }.toSet(), patterns.first().stem)
       val flowScales: Set<FlowScale> = patterns.flatMap { it.flowScales }.toSet()
       Ew.EwFlow.AffectingDto(description, natalStems, reacting, flowScales)
     }.toSet()
@@ -77,7 +77,7 @@ object FlowDtoTransformer {
   private fun Pair<Stem, List<StemCombined>>.translateStemCombined(): String {
     return buildString {
       append("本命")
-      val distinctPillars = second.map { it.scale }.distinct()
+      val distinctPillars = second.map { it.pillar }.distinct()
       append(
         distinctPillars.joinToString("、") {
           it.getTitle(locale) + "干"
@@ -108,7 +108,7 @@ object FlowDtoTransformer {
   fun Iterable<StemCombined>.toStemCombinedDtos() : Set<Ew.EwFlow.StemCombinedDto> {
     return this.groupBy { it.stem }.map { (stem, patterns: List<StemCombined>) ->
       val description = (stem to patterns).translateStemCombined()
-      val natalStems = NatalStems(patterns.map { it.scale }.toSet() , stem)
+      val natalStems = NatalStems(patterns.map { it.pillar }.toSet(), stem)
       val flowStems: Ew.EwFlow.FlowStems = Ew.EwFlow.FlowStems(patterns.map { it.flowScale }.toSet(), stem.combined.first)
       Ew.EwFlow.StemCombinedDto(description, natalStems, flowStems, stem.combined.second)
     }.toSet()
@@ -145,7 +145,7 @@ object FlowDtoTransformer {
       append(" 合住 ")
 
       append("本命")
-      val distinctPillars = second.map { it.scale }.distinct()
+      val distinctPillars = second.map { it.pillar }.distinct()
       append(
         distinctPillars.joinToString("、") {
           it.getTitle(locale) + "支"
@@ -162,7 +162,7 @@ object FlowDtoTransformer {
   fun Iterable<BranchCombined>.toBranchCombinedDtos() : Set<Ew.EwFlow.BranchCombinedDto> {
     return this.groupBy { it.branch }.map { (branch, patterns) ->
       val description = (branch to patterns).translateBranchCombined()
-      val natalBranches = NatalBranches(patterns.map { it.scale }.toSet(), branch)
+      val natalBranches = NatalBranches(patterns.map { it.pillar }.toSet(), branch)
       val flowBranches = Ew.EwFlow.FlowBranches(patterns.map { it.flowScale }.toSet(), branch.combined)
       Ew.EwFlow.BranchCombinedDto(description, natalBranches, flowBranches)
     }.toSet()
@@ -236,7 +236,7 @@ object FlowDtoTransformer {
       append(" 與本命")
       append(
         second.joinToString("、") {
-          it.scale.getTitle(locale) + "支"
+          it.pillar.getTitle(locale) + "支"
         }
       )
       append("(")
@@ -254,7 +254,7 @@ object FlowDtoTransformer {
     return this.groupBy { it.flows }.map { (flows: Set<Pair<FlowScale, Branch>>, patterns: List<ToFlowTrilogy>) ->
       val description = (flows to patterns).translateToFlowTrilogy()
 
-      val natalBranches: NatalBranches = patterns.map { it.scale }.toSet().let { scales ->
+      val natalBranches: NatalBranches = patterns.map { it.pillar }.toSet().let { scales ->
         NatalBranches(scales, patterns.first().branch)
       }
 
@@ -312,9 +312,9 @@ object FlowDtoTransformer {
 
   fun Iterable<BranchOpposition>.toBranchOppositionDtos() : Set<Ew.EwFlow.BranchOppositionDto> {
     return this.groupBy { it.branch }.map { (branch, patterns) ->
-      val description = (branch to patterns.map { it.scale to it.flowScale }).translateBranchOpposition()
+      val description = (branch to patterns.map { it.pillar to it.flowScale }).translateBranchOpposition()
 
-      val natalBranches = NatalBranches(patterns.map { it.scale }.toSet(), branch)
+      val natalBranches = NatalBranches(patterns.map { it.pillar }.toSet(), branch)
       val flowBranches = Ew.EwFlow.FlowBranches(patterns.map { it.flowScale }.toSet(), branch.opposite)
 
       Ew.EwFlow.BranchOppositionDto(description, natalBranches, flowBranches)

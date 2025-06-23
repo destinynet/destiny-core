@@ -122,3 +122,8 @@ fun Duration.truncate(unit: DurationUnit): Duration {
     }
   }
 }
+
+fun Double.round(epsilon: Double = 1e-6): Double {
+  val nearest = kotlin.math.round(this)
+  return if (kotlin.math.abs(this - nearest) < epsilon) nearest else this
+}

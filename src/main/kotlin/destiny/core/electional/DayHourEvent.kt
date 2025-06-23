@@ -50,12 +50,12 @@ sealed class DayHourEvent : IEvent {
       /** 本命某天干, 同時受到 流日、流時 的影響 */
       data class StemAffecting(override val begin: GmtJulDay, override val pattern: FlowPattern.Affecting, override val outer: IEightWords) : EwPersonalEvent() {
         override val outerScale: Scale = Scale.HOUR
-        override val hourRelated: Boolean = pattern.scale == Scale.HOUR
+        override val hourRelated: Boolean = pattern.pillar == Scale.HOUR
       }
 
       /** 天干五合 , 限定只比對流日、流時的天干 , 對本命哪個 天干 五合 */
       data class StemCombined(override val begin: GmtJulDay, override val pattern: FlowPattern.StemCombined, override val outer: IEightWords) : EwPersonalEvent() {
-        override val hourRelated: Boolean = pattern.scale == Scale.HOUR
+        override val hourRelated: Boolean = pattern.pillar == Scale.HOUR
         override val outerScale: Scale
           get() = when (pattern.flowScale) {
             FlowScale.DAY  -> Scale.DAY
@@ -66,7 +66,7 @@ sealed class DayHourEvent : IEvent {
 
       /** 地支六合 , 限定只比對 流日、流時的地支 , 對本命哪個 地支 六合 */
       data class BranchCombined(override val begin: GmtJulDay, override val pattern: FlowPattern.BranchCombined, override val outer: IEightWords) : EwPersonalEvent() {
-        override val hourRelated: Boolean = pattern.scale == Scale.HOUR
+        override val hourRelated: Boolean = pattern.pillar == Scale.HOUR
         override val outerScale: Scale
           get() = when (pattern.flowScale) {
             FlowScale.DAY  -> Scale.DAY
@@ -89,7 +89,7 @@ sealed class DayHourEvent : IEvent {
 
       /** 本命某地支 , 與流運 某兩柱 (其中一個必須是 DAY or HOUR) 形成三合 , 其中，限制 [FlowPattern.ToFlowTrilogy.flows] 必須至少包含 [FlowScale.DAY] or [FlowScale.HOUR] */
       data class ToFlowTrilogy(override val begin: GmtJulDay, override val pattern: FlowPattern.ToFlowTrilogy, override val outer: IEightWords) : EwPersonalEvent() {
-        override val hourRelated: Boolean = pattern.scale == Scale.HOUR
+        override val hourRelated: Boolean = pattern.pillar == Scale.HOUR
         override val outerScale: Scale
           get() {
             val flowScales: List<FlowScale> = pattern.flows.map { it.first }
@@ -105,7 +105,7 @@ sealed class DayHourEvent : IEvent {
 
       /** 地支正沖 , 哪個流日 or 流時 , 正沖本命哪 地支 */
       data class BranchOpposition(override val begin: GmtJulDay, override val pattern: FlowPattern.BranchOpposition, override val outer: IEightWords) : EwPersonalEvent() {
-        override val hourRelated: Boolean = pattern.scale == Scale.HOUR
+        override val hourRelated: Boolean = pattern.pillar == Scale.HOUR
         override val outerScale: Scale
           get() = when (pattern.flowScale) {
             FlowScale.DAY  -> Scale.DAY
@@ -166,7 +166,7 @@ sealed class DayHourEvent : IEvent {
         override val span: Span
           get() = when (
             setOf(
-              pattern.scale,
+              pattern.pillar,
               pattern.roots.map { it.first }.max()
             ).max()
           ) {

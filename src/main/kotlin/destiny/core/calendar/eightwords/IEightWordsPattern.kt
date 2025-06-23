@@ -20,7 +20,7 @@ enum class Reacting {
   BEATEN
 }
 
-enum class Auspicious(val scales : Set<Scale> = emptySet()) {
+enum class Auspicious(val pillars : Set<Scale> = emptySet()) {
   天赦日(setOf(Scale.DAY)),
   玉堂日(setOf(Scale.DAY)),
   天德貴人(Scale.entries.toSet()),
@@ -30,7 +30,7 @@ enum class Auspicious(val scales : Set<Scale> = emptySet()) {
   天醫(setOf(Scale.YEAR, Scale.DAY, Scale.HOUR)),
 }
 
-enum class Inauspicious(val scales: Set<Scale> = emptySet()) {
+enum class Inauspicious(val pillars: Set<Scale> = emptySet()) {
   受死日(setOf(Scale.DAY)),
   // 月 to 日為主 , 月、時次之 , 年再次之
   陰差陽錯(Scale.entries.toSet()),
@@ -46,22 +46,22 @@ sealed class IdentityPattern : IEightWordsPattern {
   data class Trilogy(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
   data class BranchOpposition(val pillars: Set<Pair<Scale, Branch>>) : IdentityPattern()
   /** 天干通根 */
-  data class StemRooted(val scale: Scale, val stem: Stem, val roots: Set<Pair<Scale, Branch>>) : IdentityPattern()
+  data class StemRooted(val pillar: Scale, val stem: Stem, val roots: Set<Pair<Scale, Branch>>) : IdentityPattern()
 
   /** 吉祥 [Auspicious] */
-  data class AuspiciousPattern(val value : Auspicious, val scales: Set<Scale> = emptySet()) : IdentityPattern() {
+  data class AuspiciousPattern(val value : Auspicious, val pillars: Set<Scale> = emptySet()) : IdentityPattern() {
     init {
-      require(value.scales.containsAll(scales)) {
-        "Invalid scales $scales for ${value.name}, only allowed: ${value.scales}"
+      require(value.pillars.containsAll(pillars)) {
+        "Invalid pillars $pillars for ${value.name}, only allowed: ${value.pillars}"
       }
     }
   }
 
   /** 不祥 [Inauspicious] */
-  data class InauspiciousPattern(val value : Inauspicious, val scales: Set<Scale> = emptySet()) : IdentityPattern() {
+  data class InauspiciousPattern(val value : Inauspicious, val pillars: Set<Scale> = emptySet()) : IdentityPattern() {
     init {
-      require(value.scales.containsAll(scales)) {
-        "Invalid scales $scales for ${value.name}, only allowed: ${value.scales}"
+      require(value.pillars.containsAll(pillars)) {
+        "Invalid pillars $pillars for ${value.name}, only allowed: ${value.pillars}"
       }
     }
   }
@@ -70,17 +70,17 @@ sealed class IdentityPattern : IEightWordsPattern {
 
 sealed class FlowPattern : IEightWordsPattern {
   /** 五行生剋 */
-  data class Affecting(val scale: Scale, val stem: Stem, val reacting: Reacting, val flowScales: Set<FlowScale>) : FlowPattern()
+  data class Affecting(val pillar: Scale, val stem: Stem, val reacting: Reacting, val flowScales: Set<FlowScale>) : FlowPattern()
   /** 天干相合 */
-  data class StemCombined(val scale: Scale, val stem: Stem, val flowScale: FlowScale) : FlowPattern()
+  data class StemCombined(val pillar: Scale, val stem: Stem, val flowScale: FlowScale) : FlowPattern()
   /** 地支相合 */
-  data class BranchCombined(val scale: Scale, val branch: Branch, val flowScale: FlowScale) : FlowPattern()
+  data class BranchCombined(val pillar: Scale, val branch: Branch, val flowScale: FlowScale) : FlowPattern()
   /** 本命兩柱 與流運某干支 形成三合 */
   data class TrilogyToFlow(val pairs: Set<Pair<Scale, Branch>>, val flow: Pair<FlowScale, Branch>) : FlowPattern()
   /** 本命某柱 與流運兩柱 形成三合 */
-  data class ToFlowTrilogy(val scale: Scale, val branch: Branch, val flows: Set<Pair<FlowScale, Branch>>) : FlowPattern()
+  data class ToFlowTrilogy(val pillar: Scale, val branch: Branch, val flows: Set<Pair<FlowScale, Branch>>) : FlowPattern()
   /** 地支相沖 */
-  data class BranchOpposition(val scale: Scale, val branch: Branch, val flowScale: FlowScale) : FlowPattern()
+  data class BranchOpposition(val pillar: Scale, val branch: Branch, val flowScale: FlowScale) : FlowPattern()
 }
 
 

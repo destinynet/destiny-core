@@ -10,6 +10,7 @@ import destiny.core.astrology.classical.MutualDataWithSign
 import destiny.core.calendar.GmtJulDay
 import destiny.core.chinese.YinYang
 import destiny.core.toString
+import destiny.tools.serializers.IZodiacDegreeSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
 
@@ -20,7 +21,7 @@ import java.util.*
 
 sealed class EssentialDignity : IPlanetPattern {
 
-  override val type: RuleType = RuleType.ESSENTIAL
+  override val ruleType: RuleType = RuleType.ESSENTIAL
 
   data class Ruler(override val planet: Planet, val sign: ZodiacSign) : EssentialDignity()
   data class Exaltation(override val planet: Planet, val sign: ZodiacSign) : EssentialDignity()
@@ -51,7 +52,7 @@ sealed class EssentialDignity : IPlanetPattern {
 
 sealed class AccidentalDignity : IPlanetPattern {
 
-  override val type: RuleType = RuleType.ACCIDENTAL
+  override val ruleType: RuleType = RuleType.ACCIDENTAL
 
   data class House_1_10(override val planet: Planet, val house: Int) : AccidentalDignity()
   data class House_4_7_11(override val planet: Planet, val house: Int) : AccidentalDignity()
@@ -87,7 +88,7 @@ sealed class AccidentalDignity : IPlanetPattern {
 
 
 sealed class Debility : IPlanetPattern {
-  override val type: RuleType = RuleType.DEBILITY
+  override val ruleType: RuleType = RuleType.DEBILITY
 
   data class Detriment(override val planet: Planet, val sign: ZodiacSign) : Debility()
   data class Fall(override val planet: Planet, val sign: ZodiacSign) : Debility()
@@ -136,15 +137,19 @@ sealed class Debility : IPlanetPattern {
 }
 
 sealed class Misc : IPlanetPattern {
-  override val type: RuleType = RuleType.MISC
+  override val ruleType: RuleType = RuleType.MISC
 
   /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [exactAspectPrior] , 後一個準確交角資訊為 [exactAspectAfter]
    * */
   @Serializable
   data class VoidCourseSpan(override val planet: Planet,
-                            override val begin : GmtJulDay, override val fromPos : IZodiacDegree,
-                            override val end : GmtJulDay, override val toPos : IZodiacDegree,
-                            val exactAspectPrior: IAspectData, val exactAspectAfter: IAspectData) : Misc(), IStarEventSpan {
+                            override val begin : GmtJulDay,
+                            @Serializable(with = IZodiacDegreeSerializer::class)
+                            override val fromPos : IZodiacDegree,
+                            override val end : GmtJulDay,
+                            @Serializable(with = IZodiacDegreeSerializer::class)
+                            override val toPos : IZodiacDegree,
+                            val exactAspectPrior: AspectData, val exactAspectAfter: AspectData) : Misc(), IStarEventSpan {
     override val star: Star = planet
 
     override fun getTitle(locale: Locale): String {
