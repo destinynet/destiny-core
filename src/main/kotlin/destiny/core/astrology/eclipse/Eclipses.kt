@@ -5,9 +5,11 @@ package destiny.core.astrology.eclipse
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.IEventSpan
+import kotlinx.serialization.Serializable
 
 /** 日食、月食 的最上層 抽象 class  */
-interface IEclipse : IEventSpan {
+@Serializable
+sealed interface IEclipse : IEventSpan {
 
   /** 不論是 全食、偏食、還是環食，都會有「最大值」  */
   val max: GmtJulDay
@@ -27,26 +29,26 @@ interface ISolarEclipse : IEclipse {
 }
 
 /** 日偏食 , 沒有額外參數 */
-interface ISolarEclipsePartial : ISolarEclipse
+sealed interface ISolarEclipsePartial : ISolarEclipse
 
 /** 日全食 */
-interface ISolarEclipseTotal : ISolarEclipsePartial {
+sealed interface ISolarEclipseTotal : ISolarEclipsePartial {
   val totalBegin: GmtJulDay
   val totalEnd: GmtJulDay
 }
 
 /** 日環食 , 為 , 日全食 的一種 */
-interface ISolarEclipseAnnular : ISolarEclipseTotal {
+sealed interface ISolarEclipseAnnular : ISolarEclipseTotal {
   val annularBegin: GmtJulDay
   val annularEnd: GmtJulDay
 }
 
 /** 混合型 , 全環食 , 非常罕見 */
-interface ISolarEclipseHybrid : ISolarEclipseAnnular
+sealed interface ISolarEclipseHybrid : ISolarEclipseAnnular
 
 
 /** 中線 ， 開始與結束  */
-interface IEclipseCenter {
+sealed interface IEclipseCenter {
   val centerBegin: GmtJulDay
   val centerEnd: GmtJulDay
 }
@@ -55,6 +57,7 @@ interface IEclipseCenter {
 sealed class AbstractSolarEclipse : ISolarEclipse {
 
   /** 日偏食 */
+  @Serializable
   data class SolarEclipsePartial(
     override val begin: GmtJulDay,
     override val max: GmtJulDay,
@@ -63,6 +66,7 @@ sealed class AbstractSolarEclipse : ISolarEclipse {
   }
 
   /** 日全食 , 為 偏食 的一種 , 內定「無中線」 */
+  @Serializable
   data class SolarEclipseTotal(
     private val partial: SolarEclipsePartial,
     override val totalBegin: GmtJulDay,
@@ -71,6 +75,7 @@ sealed class AbstractSolarEclipse : ISolarEclipse {
   }
 
   /** 日全食 , 有中線 */
+  @Serializable
   data class SolarEclipseTotalCentered(
     private val total: SolarEclipseTotal,
     override val centerBegin: GmtJulDay,
@@ -79,6 +84,7 @@ sealed class AbstractSolarEclipse : ISolarEclipse {
   }
 
   /** 日環食 , 為 全食 的一種 , 內定是「無中線」 */
+  @Serializable
   data class SolarEclipseAnnular(
     private val total: SolarEclipseTotal,
     // NOTE : swisseph 尚未實作 annular Begin/End 之值， 都會傳回 0.0
@@ -88,6 +94,7 @@ sealed class AbstractSolarEclipse : ISolarEclipse {
   }
 
   /** 日環食 , 有中線 */
+  @Serializable
   data class SolarEclipseAnnularCentered(
     private val annular: SolarEclipseAnnular,
     override val centerBegin: GmtJulDay,
@@ -96,6 +103,7 @@ sealed class AbstractSolarEclipse : ISolarEclipse {
   }
 
   /** 混合型 , 全環食 , 非常罕見 */
+  @Serializable
   data class SolarEclipseHybrid(private val annularCentered: SolarEclipseAnnularCentered) : AbstractSolarEclipse(),
     ISolarEclipseAnnular by annularCentered, IEclipseCenter by annularCentered, ISolarEclipseHybrid {
     override val solarType: SolarType = SolarType.HYBRID
@@ -130,13 +138,11 @@ interface ILunarEclipse : IEclipse {
   val penumbraEnd: GmtJulDay
     get() = end
 
-
-
   val lunarType: LunarType
 }
 
 /** 月偏食 */
-interface ILunarEclipsePartial : ILunarEclipse {
+sealed interface ILunarEclipsePartial : ILunarEclipse {
   /** 月亮最先碰觸地球本影 (U1) , 此時月亮剛接觸 Umbra */
   val partialBegin: GmtJulDay
 
@@ -145,7 +151,7 @@ interface ILunarEclipsePartial : ILunarEclipse {
 }
 
 /** 月全食 */
-interface ILunarEclipseTotal : ILunarEclipsePartial {
+sealed interface ILunarEclipseTotal : ILunarEclipsePartial {
   /** 月亮全部進入地球本影 剛開始 (U2)  */
   val totalBegin: GmtJulDay
 
@@ -156,6 +162,7 @@ interface ILunarEclipseTotal : ILunarEclipsePartial {
 sealed class AbstractLunarEclipse : ILunarEclipse {
 
   /** 半影月食 */
+  @Serializable
   data class LunarEclipsePenumbra(
     override val begin: GmtJulDay,
     override val max: GmtJulDay,
@@ -164,6 +171,7 @@ sealed class AbstractLunarEclipse : ILunarEclipse {
   }
 
   /** 月偏食 */
+  @Serializable
   data class LunarEclipsePartial(
     private val penumbra: LunarEclipsePenumbra,
     override val partialBegin: GmtJulDay,
@@ -172,6 +180,7 @@ sealed class AbstractLunarEclipse : ILunarEclipse {
   }
 
   /** 月全食 */
+  @Serializable
   data class LunarEclipseTotal(
     private val partial: LunarEclipsePartial,
     override val totalBegin: GmtJulDay,

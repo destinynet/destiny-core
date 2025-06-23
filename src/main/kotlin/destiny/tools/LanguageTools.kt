@@ -8,6 +8,8 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+import kotlin.math.floor
+import kotlin.math.pow
 import kotlin.reflect.KType
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
@@ -123,7 +125,23 @@ fun Duration.truncate(unit: DurationUnit): Duration {
   }
 }
 
-fun Double.round(epsilon: Double = 1e-6): Double {
+fun Double.round(epsilon: Double = 1e-5): Double {
   val nearest = kotlin.math.round(this)
   return if (kotlin.math.abs(this - nearest) < epsilon) nearest else this
+}
+
+private val POW10 = DoubleArray(5) { i -> 10.0.pow(i) }
+private val FORMAT_TEMPLATES = Array(5) { i -> "%.${i}f" }
+
+fun Double.truncate(n: Int, epsilon: Double = 1e-5): String {
+  require(n in 0..5)
+  val factor = POW10[n]
+  val scaled = this * factor
+  val rounded = kotlin.math.round(scaled)
+  val result = if (kotlin.math.abs(scaled - rounded) < epsilon) {
+    rounded / factor
+  } else {
+    floor(scaled) / factor
+  }
+  return FORMAT_TEMPLATES[n].format(result)
 }

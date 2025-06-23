@@ -5,10 +5,65 @@ package destiny.tools
 
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class LanguageToolsKtTest {
+
+  @Nested
+  inner class DoubleTruncateTest {
+
+    @Test
+    fun testExactRound() {
+      assertEquals("2.00", 1.99999999.truncate(2))
+      assertEquals("0.00", 0.0000001.truncate(2))
+      assertEquals("1.00", 0.99999999.truncate(2))
+      assertEquals("100.00", 99.9999999.truncate(2))
+    }
+
+    @Test
+    fun testTruncateWithoutRound() {
+      assertEquals("1.99", 1.994.truncate(2))
+      assertEquals("0.12", 0.12999.truncate(2))
+      assertEquals("12.34", 12.3456.truncate(2))
+      assertEquals("359.99", 359.999.truncate(2))
+    }
+
+    @Test
+    fun testEdgeCases() {
+      assertEquals("100", 100.0.truncate(0))
+      assertEquals("0", 0.0.truncate(0))
+      assertEquals("0.0", 0.04.truncate(1))
+      assertEquals("0.00", 0.004.truncate(2))
+      assertEquals("0.00", 0.0000001.truncate(2))
+    }
+
+    @Test
+    fun testEpsilonEffect() {
+      // 使用不同 epsilon 會影響判斷是否 round
+      val value = 1.995
+      assertEquals("1.99", value.truncate(2, epsilon = 1e-3))
+      assertEquals("2.00", value.truncate(2, epsilon = 0.6))
+    }
+
+    @Test
+    fun testInvalidInput() {
+      try {
+        (-1.0).truncate(-1)
+        assert(false) { "Should throw exception for negative n" }
+      } catch (e: IllegalArgumentException) {
+        // pass
+      }
+
+      try {
+        1.0.truncate(6)
+        assert(false) { "Should throw exception for n > 5" }
+      } catch (e: IllegalArgumentException) {
+        // pass
+      }
+    }
+  }
 
 
   @Nested

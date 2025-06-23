@@ -233,8 +233,10 @@ object IdentityDtoTransformer {
       }
     }.joinToString("；")
 
-    return scaleMap.takeIf { it.values.any { set -> set.isNotEmpty() } }?.let { map ->
-      Ew.EwIdentity.AuspiciousDto(description, map)
+    return scaleMap.filter { (_, auspiciousSet) ->
+      auspiciousSet.isNotEmpty()
+    }.toMap().takeIf {  it.isNotEmpty() }?.let {
+      Ew.EwIdentity.AuspiciousDto(description, it)
     }
   }
 
@@ -252,10 +254,12 @@ object IdentityDtoTransformer {
       }
     }.joinToString("；")
 
-    return scaleMap.takeIf { it.values.any { set -> set.isNotEmpty() } } ?.let { map ->
-      Ew.EwIdentity.InauspiciousDto(description, map)
+    return scaleMap.filter { (_, inauspiciousSet) ->
+      (inauspiciousSet.isNotEmpty())
     }
-
+      .toMap().takeIf { it.isNotEmpty() }?.let { map ->
+        Ew.EwIdentity.InauspiciousDto(description, map)
+      }
   }
 
 

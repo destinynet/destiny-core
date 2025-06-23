@@ -46,6 +46,7 @@ import destiny.core.electional.DayHourEvent.AstroEvent
 import destiny.core.electional.DayHourEvent.EwEvent
 import destiny.tools.getTitle
 import destiny.tools.round
+import destiny.tools.truncate
 import jakarta.inject.Named
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -69,7 +70,6 @@ class DayHourService(
   private val modernAspectCalculator: IAspectCalculator,
   private val julDayResolver: JulDayResolver
 ) {
-
 
 
   fun aggregate(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, includeHour: Boolean): List<Daily> {
@@ -111,7 +111,7 @@ class DayHourService(
         .sortedBy { it.begin } // 確保先來的在前
         .fold(mutableListOf<IEventDto>()) { acc, event ->
           when (event) {
-            is EwEventDto -> {
+            is EwEventDto    -> {
               if (event.event.span == Span.DAY &&
                 acc.none { it is EwEventDto && it.event == event.event }
               ) {
@@ -119,6 +119,7 @@ class DayHourService(
                 acc.add(event)
               }
             }
+
             is AstroEventDto -> {
               if (event.event.span == Span.DAY &&
                 acc.none { it is AstroEventDto && it.event == event.event }
@@ -131,7 +132,7 @@ class DayHourService(
           acc
         }
 
-      Daily(date, allDayEvents, events.filter { it.event.span != Span.DAY})
+      Daily(date, allDayEvents, events.filter { it.event.span != Span.DAY }.sorted())
     }
   }
 
@@ -186,7 +187,7 @@ class DayHourService(
         if (includeHour) {
           append(" (H${aspect.innerPointHouse})")
         }
-        append("] orb = ${aspect.orb.toString().take(4)}")
+        append("] orb = ${aspect.orb.truncate(2)}")
       }
     }
   }
@@ -262,8 +263,8 @@ class DayHourService(
       .map { it: Misc.VoidCourseSpan ->
         val description = buildString {
           append("${it.planet.asLocaleString().getTitle(Locale.ENGLISH)} Void of Course (空亡). ")
-          append("From ${it.fromPos.sign.getTitle(Locale.ENGLISH)}/${it.fromPos.signDegree.second.toString().take(4)}° ")
-          append("to ${it.toPos.sign.getTitle(Locale.ENGLISH)}/${it.toPos.signDegree.second.toString().take(4)}°. ")
+          append("From ${it.fromPos.sign.getTitle(Locale.ENGLISH)}/${it.fromPos.signDegree.second.truncate(2)}° ")
+          append("to ${it.toPos.sign.getTitle(Locale.ENGLISH)}/${it.toPos.signDegree.second.truncate(2)}°. ")
           // TODO : Till
         }
         AstroEventDto(Astro.MoonVoc(description, it), it.begin.toLmt(), it.end.toLmt())
@@ -278,7 +279,7 @@ class DayHourService(
         val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(planet)
         val description = buildString {
           append("${s.star.asLocaleString().getTitle(Locale.ENGLISH)} Stationary (滯留). ${s.type.getTitle(Locale.ENGLISH)}")
-          append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.toString().take(4)}°")
+          append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncate(2)}°")
           if (transitToNatalAspects.isNotEmpty()) {
             appendLine()
             appendLine(transitToNatalAspects.describeAspects(includeHour))
@@ -293,7 +294,7 @@ class DayHourService(
       retrogradeImpl.getDailyRetrogrades(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl, starTransitImpl).map { (gmtJulDay, progress) ->
         val description = buildString {
           append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Retrograde (逆行). ")
-          append("Progress = $progress")
+          append("Progress = ${(progress * 100.0).truncate(2)}%")
         }
         AstroEventDto(Astro.PlanetRetrograde(description, planet, progress), gmtJulDay.toLmt())
       }
@@ -307,7 +308,7 @@ class DayHourService(
       val description = buildString {
         append("Solar Eclipse (日食). ")
         append("Type = ${eclipse.solarType.getTitle(Locale.ENGLISH)}")
-        append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.toString().take(4)}°")
+        append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncate(2)}°")
         if (transitToNatalAspects.isNotEmpty()) {
           appendLine()
           appendLine(transitToNatalAspects.describeAspects(includeHour))
@@ -324,7 +325,7 @@ class DayHourService(
       val description = buildString {
         append("Lunar Eclipse (月食). ")
         append("Type = ${eclipse.lunarType.getTitle(Locale.ENGLISH)}")
-        append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.toString().take(4)}°")
+        append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncate(2)}°")
         if (transitToNatalAspects.isNotEmpty()) {
           appendLine()
           appendLine(transitToNatalAspects.describeAspects(includeHour))
@@ -355,7 +356,7 @@ class DayHourService(
             }
           )
           append(phase.getTitle(Locale.ENGLISH))
-          append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.toString().take(4)}°")
+          append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncate(2)}°")
           if (transitToNatalAspects.isNotEmpty()) {
             appendLine()
             appendLine(transitToNatalAspects.describeAspects(includeHour))
@@ -527,7 +528,7 @@ class DayHourService(
 
   private val supportedScales = setOf(Scale.DAY, Scale.HOUR)
 
-  private fun matchEwEventsV2(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords, config: Config.EwConfig, loc: ILocation, includeHour: Boolean): Sequence<EwEventDto> {
+  private fun matchEwEventsV2(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords, config: Config.EwConfig, loc: ILocation, includeHour: Boolean): Sequence<IEventDto> {
 
     fun GmtJulDay.toLmt(): LocalDateTime {
       return (this.toLmt(loc, julDayResolver) as LocalDateTime).roundAndTruncate()

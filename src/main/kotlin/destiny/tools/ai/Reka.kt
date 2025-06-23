@@ -93,7 +93,9 @@ class Reka {
       @SerialName("input_tokens")
       val inputTokens: Int,
       @SerialName("output_tokens")
-      val outputTokens: Int
+      val outputTokens: Int,
+      @SerialName("reasoning_tokens")
+      val reasoningTokens: Int? = null
     )
   }
 

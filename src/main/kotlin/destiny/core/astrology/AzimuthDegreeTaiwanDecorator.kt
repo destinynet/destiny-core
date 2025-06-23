@@ -5,6 +5,7 @@
 package destiny.core.astrology
 
 import destiny.tools.Decorator
+import destiny.tools.truncate
 
 /**
  * 地平方位角 的簡易描述
@@ -19,21 +20,21 @@ class AzimuthDegreeTaiwanDecorator : Decorator<Double> {
     }?.value ?: run {
       val sb = StringBuilder()
       if (value <= 45)
-        sb.append("北偏東").append(value.toString().take(4))
+        sb.append("北偏東").append(value.truncate(1))
       else if (value > 45 && value < 90)
-        sb.append("東偏北").append((90 - value).toString().take(4))
+        sb.append("東偏北").append((90 - value).truncate(1))
       else if (value > 90 && value <= 135)
-        sb.append("東偏南").append((value - 90).toString().take(4))
+        sb.append("東偏南").append((value - 90).truncate(1))
       else if (value > 135 && value < 180)
-        sb.append("南偏東").append((180 - value).toString().take(4))
+        sb.append("南偏東").append((180 - value).truncate(1))
       else if (value > 180 && value <= 225)
-        sb.append("南偏西").append((value - 180).toString().take(4))
+        sb.append("南偏西").append((value - 180).truncate(1))
       else if (value > 225 && value < 270)
-        sb.append("西偏南").append((270 - value).toString().take(4))
+        sb.append("西偏南").append((270 - value).truncate(1))
       else if (value > 270 && value <= 315)
-        sb.append("西偏北").append((value - 270).toString().take(4))
+        sb.append("西偏北").append((value - 270).truncate(1))
       else
-        sb.append("北偏西").append((360 - value).toString().take(4))
+        sb.append("北偏西").append((360 - value).truncate(1))
       sb.append("度")
       sb.toString()
     }

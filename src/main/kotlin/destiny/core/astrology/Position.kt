@@ -2,9 +2,11 @@ package destiny.core.astrology
 
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.CircleTools.normalize
-import java.io.Serializable
+import destiny.tools.serializers.DoubleTwoDecimalSerializer
+import kotlinx.serialization.Serializable
 
-interface IPos : IZodiacDegree {
+@Serializable
+sealed interface IPos : IZodiacDegree {
   val lng: Double
   val lat: Double
 
@@ -21,7 +23,12 @@ interface IPos : IZodiacDegree {
   }
 }
 
-data class Pos(override val lng: Double, override val lat: Double) : IPos {
+@Serializable
+data class Pos(
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  override val lng: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  override val lat: Double) : IPos {
   override val zDeg: Double
     get() = lng
 }
@@ -58,14 +65,21 @@ interface IStarPos : IPos {
   }
 }
 
-data class StarPosition(val pos: IPos,
-                        override val distance: Double,
-                        override val speedLng: Double,
-                        override val speedLat: Double,
-                        override val speedDistance: Double) : IStarPos, IPos by pos
+@Serializable
+data class StarPosition(
+  val pos: IPos,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  override val distance: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  override val speedLng: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  override val speedLat: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  override val speedDistance: Double
+) : IStarPos, IPos by pos
 
 interface IStarPositionWithAzimuth : IStarPos, IPosWithAzimuth, IAzimuth
 
 data class StarPosWithAzimuth(
   val starPos: IStarPos,
-  val azimuth: Azimuth) : IStarPositionWithAzimuth, IStarPos by starPos, IAzimuth by azimuth, Serializable
+  val azimuth: Azimuth) : IStarPositionWithAzimuth, IStarPos by starPos, IAzimuth by azimuth, java.io.Serializable

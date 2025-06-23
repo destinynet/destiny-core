@@ -27,11 +27,18 @@ import destiny.core.chinese.eightwords.IdentityDtoTransformer.toInauspiciousDto
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemCombinedDtos
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemRootedDtos
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toTrilogyDtos
+import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import destiny.tools.serializers.IZodiacDegreeSerializer
 import destiny.tools.serializers.LocalDateSerializer
 import destiny.tools.serializers.LocalDateTimeSerializer
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.encodeStructure
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -48,7 +55,7 @@ sealed interface IAggregatedEvent {
   val span: Span
 }
 
-@Serializable
+@Serializable(with = IEventDtoSerializer::class)
 sealed interface IEventDto : Comparable<IEventDto> {
   val event: IAggregatedEvent
   val begin: LocalDateTime
@@ -57,6 +64,28 @@ sealed interface IEventDto : Comparable<IEventDto> {
 
   override fun compareTo(other: IEventDto): Int {
     return begin.compareTo(other.begin)
+  }
+}
+
+object IEventDtoSerializer : KSerializer<IEventDto> {
+  override val descriptor: SerialDescriptor = buildClassSerialDescriptor("IEventDto") {
+    element("event", IAggregatedEvent.serializer().descriptor)
+    element("begin", LocalDateTimeSerializer.descriptor)
+    element("end", LocalDateTimeSerializer.descriptor, isOptional = true)
+    element("impact", Impact.serializer().descriptor)
+  }
+
+  override fun serialize(encoder: Encoder, value: IEventDto) {
+    encoder.encodeStructure(descriptor) {
+      encodeSerializableElement(descriptor, 0, IAggregatedEvent.serializer(), value.event)
+      encodeSerializableElement(descriptor, 1, LocalDateTimeSerializer, value.begin)
+      value.end?.also { encodeSerializableElement(descriptor, 2, LocalDateTimeSerializer, it) }
+      encodeSerializableElement(descriptor, 3, Impact.serializer(), value.impact)
+    }
+  }
+
+  override fun deserialize(decoder: Decoder): IEventDto {
+    throw UnsupportedOperationException("Deserialization not supported for IEventDto")
   }
 }
 
@@ -126,7 +155,8 @@ sealed class Ew : IAggregatedEvent {
       val natalStems: Set<NatalStems>,
       val combined: FiveElement
     ) : EwIdentity() {
-      override val span: Span = natalStems.findSpanByStems()
+      override val span: Span
+        get() = natalStems.findSpanByStems()
     }
 
     /**
@@ -140,7 +170,8 @@ sealed class Ew : IAggregatedEvent {
       override val description: String,
       val natalBranches: Set<NatalBranches>
     ) : EwIdentity() {
-      override val span: Span = natalBranches.findSpanByBranches()
+      override val span: Span
+        get() = natalBranches.findSpanByBranches()
     }
 
     /**
@@ -258,13 +289,8 @@ sealed class Ew : IAggregatedEvent {
       val flowScales: Set<FlowScale>
     ) : EwFlow() {
       override val hourRelated: Boolean = natalStems.pillars.contains(Scale.HOUR)
-      override val span: Span = flowScales.max().let {
-        when (it) {
-          FlowScale.DAY  -> Span.DAY
-          FlowScale.HOUR -> Span.HOURS
-          else           -> throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
-        }
-      }
+      override val span: Span
+        get() = flowScales.max().toSpan()
     }
 
     /**
@@ -281,13 +307,8 @@ sealed class Ew : IAggregatedEvent {
       val combined: FiveElement
     ) : EwFlow() {
       override val hourRelated: Boolean = natalStems.pillars.contains(Scale.HOUR)
-      override val span: Span = flowStems.scales.max().let {
-        when (it) {
-          FlowScale.DAY  -> Span.DAY
-          FlowScale.HOUR -> Span.HOURS
-          else           -> throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
-        }
-      }
+      override val span: Span
+        get() = flowStems.scales.max().toSpan()
     }
 
     /**
@@ -303,13 +324,8 @@ sealed class Ew : IAggregatedEvent {
       val flowBranches: FlowBranches,
     ) : EwFlow() {
       override val hourRelated: Boolean = natalBranches.pillars.contains(Scale.HOUR)
-      override val span: Span = flowBranches.scales.max().let {
-        when (it) {
-          FlowScale.DAY  -> Span.DAY
-          FlowScale.HOUR -> Span.HOURS
-          else           -> throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
-        }
-      }
+      override val span: Span
+        get() = flowBranches.scales.max().toSpan()
     }
 
     /**
@@ -325,13 +341,9 @@ sealed class Ew : IAggregatedEvent {
       val flowBranches: FlowBranches,
     ) : EwFlow() {
       override val hourRelated: Boolean = natalBranches.any { it.pillars.contains(Scale.HOUR) }
-      override val span: Span = flowBranches.scales.max().let {
-        when (it) {
-          FlowScale.DAY  -> Span.DAY
-          FlowScale.HOUR -> Span.HOURS
-          else           -> throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
-        }
-      }
+      override val span: Span
+        get() = flowBranches.scales.max().toSpan()
+
     }
 
     /**
@@ -347,13 +359,8 @@ sealed class Ew : IAggregatedEvent {
       val flowBranches: Set<FlowBranches>,
     ) : EwFlow() {
       override val hourRelated: Boolean = natalBranches.pillars.contains(Scale.HOUR)
-      override val span: Span = flowBranches.maxBy { it.scales.max() }.scales.max().let {
-        when (it) {
-          FlowScale.DAY  -> Span.DAY
-          FlowScale.HOUR -> Span.HOURS
-          else           -> throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
-        }
-      }
+      override val span: Span
+        get() = flowBranches.maxBy { it.scales.max() }.scales.max().toSpan()
     }
 
     /**
@@ -369,13 +376,8 @@ sealed class Ew : IAggregatedEvent {
       val flowBranches: FlowBranches,
     ) : EwFlow() {
       override val hourRelated: Boolean = natalBranches.pillars.contains(Scale.HOUR)
-      override val span: Span = flowBranches.scales.max().let {
-        when (it) {
-          FlowScale.DAY  -> Span.DAY
-          FlowScale.HOUR -> Span.HOURS
-          else           -> throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
-        }
-      }
+      override val span: Span
+        get() = flowBranches.scales.max().toSpan()
     }
   }
 
@@ -396,6 +398,14 @@ sealed class Ew : IAggregatedEvent {
         Scale.DAY               -> Span.DAY
         Scale.HOUR              -> Span.HOURS
         Scale.YEAR, Scale.MONTH -> throw IllegalArgumentException(NOT_SUPPORTED)
+      }
+    }
+
+    fun FlowScale.toSpan(): Span {
+      return when (this) {
+        FlowScale.DAY  -> Span.DAY
+        FlowScale.HOUR -> Span.HOURS
+        else           -> throw IllegalArgumentException(IMPOSSIBLE_FLOW_SCALE)
       }
     }
 
@@ -429,6 +439,7 @@ sealed class Astro : IAggregatedEvent {
 
   /** 星體滯留 */
   @Serializable
+  @SerialName("Astro.PlanetStationary")
   data class PlanetStationary(
     override val description: String,
     val stationary: Stationary,
@@ -442,9 +453,11 @@ sealed class Astro : IAggregatedEvent {
 
   /** 當日星體逆行 */
   @Serializable
+  @SerialName("Astro.PlanetRetrograde")
   data class PlanetRetrograde(
     override val description: String,
     val planet: Planet,
+    @Serializable(with = DoubleTwoDecimalSerializer::class)
     val progress: Double
   ) : Astro() {
     override val impact: Impact = Impact.GLOBAL

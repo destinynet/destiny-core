@@ -14,14 +14,6 @@ import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
-/**
- * 目前這星體的位置，以及其「時辰」(「類似」地盤12宮)
- */
-data class PositionWithBranch(
-  private val pos: IPos,
-  val hour: StemBranch
-) : IPos by pos
-
 
 /** 純粹八字（不含「人」的資料） */
 interface IEightWordsContextModel : ITimeLoc {
