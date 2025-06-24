@@ -153,6 +153,8 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
 
     return Synastry(synastryAspects, houseOverlayMap)
   }
+
+  fun getSolarArc(model: IHoroscopeModel, time: GmtJulDay, config: IHoroscopeConfig) : Map<AstroPoint, IZodiacDegree>
 }
 
 data class ProgressionCalcObj(
@@ -281,6 +283,16 @@ class HoroscopeFeature(
       }
     }
     return performOperation(param)
+  }
+
+  override fun getSolarArc(model: IHoroscopeModel, time: GmtJulDay, config: IHoroscopeConfig): Map<AstroPoint, IZodiacDegree> {
+    val sunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, time, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
+    val sunPosDiff = sunPos.lngDeg - model.getPosition(Planet.SUN)!!.lngDeg
+
+
+    return model.positionMap.mapValues { (_, pos) ->
+      pos.lngDeg + sunPosDiff
+    }
   }
 
   companion object {
