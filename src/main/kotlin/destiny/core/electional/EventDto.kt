@@ -60,7 +60,7 @@ sealed interface IEventDto : Comparable<IEventDto> {
   val event: IAggregatedEvent
   val begin: LocalDateTime
   val end: LocalDateTime?
-  val impact: Impact
+
   val span: Span
 
   override fun compareTo(other: IEventDto): Int {
@@ -73,7 +73,6 @@ object IEventDtoSerializer : KSerializer<IEventDto> {
     element("event", IAggregatedEvent.serializer().descriptor)
     element("begin", LocalDateTimeSerializer.descriptor)
     element("end", LocalDateTimeSerializer.descriptor, isOptional = true)
-    element("impact", Impact.serializer().descriptor)
     element("span", Span.serializer().descriptor)
   }
 
@@ -82,8 +81,7 @@ object IEventDtoSerializer : KSerializer<IEventDto> {
       encodeSerializableElement(descriptor, 0, IAggregatedEvent.serializer(), value.event)
       encodeSerializableElement(descriptor, 1, LocalDateTimeSerializer, value.begin)
       value.end?.also { encodeSerializableElement(descriptor, 2, LocalDateTimeSerializer, it) }
-      encodeSerializableElement(descriptor, 3, Impact.serializer(), value.impact)
-      encodeSerializableElement(descriptor, 4, Span.serializer(), value.span)
+      encodeSerializableElement(descriptor, 3, Span.serializer(), value.span)
     }
   }
 
@@ -101,9 +99,7 @@ data class EwEventDto(
   @Serializable(with = LocalDateTimeSerializer::class)
   override val end : LocalDateTime? = null,
   override val span: Span
-) : IEventDto {
-  override val impact: Impact = event.impact
-}
+) : IEventDto
 
 @Serializable
 data class AstroEventDto(
@@ -113,10 +109,7 @@ data class AstroEventDto(
   @Serializable(with = LocalDateTimeSerializer::class)
   override val end : LocalDateTime? = null,
   override val span: Span
-) : IEventDto {
-  override val impact: Impact = event.impact
-}
-
+) : IEventDto
 
 @Serializable
 data class Daily(
