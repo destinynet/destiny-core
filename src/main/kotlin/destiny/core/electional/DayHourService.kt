@@ -132,7 +132,7 @@ class DayHourService(
           acc
         }
 
-      val nonAllDayEvents =
+      val nonAllDayEvents: Map<LocalDateTime, List<IEventDto>> =
         events.filter { it.span != Span.DAY }
           .filter { eventDto: IEventDto ->
             if (timeRange != null) {
@@ -145,10 +145,54 @@ class DayHourService(
           .sorted()
           .groupBy { it.begin }
 
-
-
       Daily(date, allDayEvents, nonAllDayEvents)
     }.sorted()
+  }
+
+  /** 純文字模式 輸出 */
+  fun text(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, includeHour: Boolean, timeRange: TimeRange? = null): String {
+    return aggregate(bdnp, model, config, includeHour, timeRange).joinToString("\n") { daily ->
+      val date = daily.localDate
+      buildString {
+        appendLine("$date , ${date.dayOfWeek}")
+        appendLine("\t全天")
+
+        daily.allDayEvents.forEach { eventDto ->
+          append("\t\t")
+          append(
+            when (eventDto.event.impact) {
+              Impact.GLOBAL   -> " (g) "
+              Impact.PERSONAL -> " (p) "
+            }
+          )
+          appendLine(eventDto.event.description)
+        }
+
+        daily.hourEvents.forEach { (time, eventDtos: List<IEventDto>) ->
+          append("\t$time")
+          eventDtos.filterIsInstance<EwEventDto>().firstOrNull()?.also { ewEventDto ->
+            append(" (${ewEventDto.outer.hour}時)")
+          }
+          appendLine()
+
+          eventDtos.map { it.event }.forEach { aggregatedEvent: IAggregatedEvent ->
+            appendLine(
+              buildString {
+                append("\t\t")
+                append(
+                  when (aggregatedEvent.impact) {
+                    Impact.GLOBAL   -> " (g) "
+                    Impact.PERSONAL -> " (p) "
+                  }
+                )
+                append(aggregatedEvent.description)
+              }
+            )
+          }
+
+        }
+      }
+    }
   }
 
   private fun traverse(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, includeHour: Boolean): Sequence<IEventDto> {
