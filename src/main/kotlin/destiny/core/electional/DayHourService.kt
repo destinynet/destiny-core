@@ -145,14 +145,16 @@ class DayHourService(
             }
           }
           .sorted()
+          .groupBy { it.begin }
+
+
 
       Daily(date, allDayEvents, nonAllDayEvents)
     }.sorted()
   }
 
-  fun traverseV2(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, includeHour: Boolean): Sequence<IEventDto> {
+  private fun traverseV2(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, includeHour: Boolean): Sequence<IEventDto> {
     require(!model.toDate.isBefore(model.fromDate)) { "toDate must be after the fromDate" }
-    //require(model.toDate.isAfter(model.fromDate)) { "toDate must be after the fromDate" }
 
     val loc = model.loc ?: bdnp.location
 
@@ -292,7 +294,12 @@ class DayHourService(
       retrogradeImpl.getRangeStationaries(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl).map { s: Stationary ->
         val outer = horoscopeFeature.getModel(s.gmtJulDay, loc, config.horoscopeConfig)
         val zodiacDegree = outer.getZodiacDegree(planet)!!
-        val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(planet)
+        val transitToNatalAspects: List<SynastryAspect> = if (config.includeTransitToNatalAspects) {
+          outer.outerToInner(planet)
+        } else {
+          emptyList()
+        }
+
         val description = buildString {
           append("${s.star.asLocaleString().getTitle(Locale.ENGLISH)} Stationary (滯留). ${s.type.getTitle(Locale.ENGLISH)}")
           append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncate(2)}°")
@@ -320,7 +327,12 @@ class DayHourService(
     val solarEclipses = eclipseImpl.getRangeSolarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
       val outer = horoscopeFeature.getModel(eclipse.max, loc, config.horoscopeConfig)
       val zodiacDegree = outer.getZodiacDegree(SUN)!!
-      val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(SUN)
+      val transitToNatalAspects: List<SynastryAspect> = if (config.includeTransitToNatalAspects) {
+        outer.outerToInner(SUN)
+      } else {
+        emptyList()
+      }
+
       val description = buildString {
         append("Solar Eclipse (日食). ")
         append("Type = ${eclipse.solarType.getTitle(Locale.ENGLISH)}")
@@ -337,7 +349,12 @@ class DayHourService(
     val lunarEclipses = eclipseImpl.getRangeLunarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
       val outer = horoscopeFeature.getModel(eclipse.max, loc, config.horoscopeConfig)
       val zodiacDegree = outer.getZodiacDegree(MOON)!!
-      val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(MOON)
+      val transitToNatalAspects: List<SynastryAspect> = if (config.includeTransitToNatalAspects) {
+        outer.outerToInner(MOON)
+      } else {
+        emptyList()
+      }
+
       val description = buildString {
         append("Lunar Eclipse (月食). ")
         append("Type = ${eclipse.lunarType.getTitle(Locale.ENGLISH)}")
@@ -360,7 +377,11 @@ class DayHourService(
       relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(MOON, SUN, fromGmtJulDay, toGmtJulDay, angle).map { gmtJulDay ->
         val outer = horoscopeFeature.getModel(gmtJulDay, loc, config.horoscopeConfig)
         val zodiacDegree = outer.getZodiacDegree(MOON)!!
-        val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(MOON, SUN)
+        val transitToNatalAspects: List<SynastryAspect> = if (config.includeTransitToNatalAspects) {
+          outer.outerToInner(MOON, SUN)
+        } else {
+          emptyList()
+        }
         val description = buildString {
           append("${MOON.asLocaleString().getTitle(Locale.ENGLISH)} ")
           append(
@@ -384,16 +405,20 @@ class DayHourService(
 
 
     return sequence {
-      yieldAll(globalEvents)
 
-      // 全球 to 個人 , 交角
-      yieldAll(searchPersonalEvents(innerStars, angles).map { aspectData ->
-        val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
-        val description = buildString {
-          append("[transit ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
-        }
-        AstroEventDto(Astro.AspectEvent(description, aspectData, Impact.PERSONAL), aspectData.gmtJulDay.toLmt(), null, Span.INSTANT)
-      })
+      if (config.aspect) {
+        // 全球星體交角
+        yieldAll(globalEvents)
+
+        // 全球 to 個人 , 交角
+        yieldAll(searchPersonalEvents(innerStars, angles).map { aspectData ->
+          val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
+          val description = buildString {
+            append("[transit ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
+          }
+          AstroEventDto(Astro.AspectEvent(description, aspectData, Impact.PERSONAL), aspectData.gmtJulDay.toLmt(), null, Span.INSTANT)
+        })
+      }
 
       if (config.voc) {
         // 月亮空亡

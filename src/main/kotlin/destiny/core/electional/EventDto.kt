@@ -121,9 +121,9 @@ data class AstroEventDto(
 @Serializable
 data class Daily(
   @Serializable(with = LocalDateSerializer::class)
-  val localDate : LocalDate,
-  val allDayEvents : List<IEventDto>,
-  val hourEvents : List<IEventDto>
+  val localDate: LocalDate,
+  val allDayEvents: List<IEventDto>,
+  val hourEvents: Map<@Serializable(with = LocalDateTimeSerializer::class) LocalDateTime, List<IEventDto>>
 ) : Comparable<Daily> {
   override fun compareTo(other: Daily): Int {
     return localDate.compareTo(other.localDate)

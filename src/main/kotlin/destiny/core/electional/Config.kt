@@ -20,7 +20,10 @@ data class Config(
   )
 
   data class AstrologyConfig(
+    /** 占星盤的設定 */
     val horoscopeConfig : IHoroscopeConfig = HoroscopeConfig(),
+    /** 計算星體交角 */
+    val aspect: Boolean = true,
     /** 月亮空亡 */
     val voc: Boolean = true,
     /** 星體逆行 */
@@ -29,5 +32,9 @@ data class Config(
     val eclipse : Boolean = true,
     /** 月相 */
     val lunarPhase: Boolean = true,
+    /**
+     * 是否在 DTO 中包含「過運星體 to 本命星體」的詳細相位資料。預設為 false
+     */
+    val includeTransitToNatalAspects: Boolean = false
   )
 }
