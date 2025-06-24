@@ -294,11 +294,7 @@ class DayHourService(
       retrogradeImpl.getRangeStationaries(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl).map { s: Stationary ->
         val outer = horoscopeFeature.getModel(s.gmtJulDay, loc, config.horoscopeConfig)
         val zodiacDegree = outer.getZodiacDegree(planet)!!
-        val transitToNatalAspects: List<SynastryAspect> = if (config.includeTransitToNatalAspects) {
-          outer.outerToInner(planet)
-        } else {
-          emptyList()
-        }
+        val transitToNatalAspects = outer.outerToInner(planet)
 
         val description = buildString {
           append("${s.star.asLocaleString().getTitle(Locale.ENGLISH)} Stationary (滯留). ${s.type.getTitle(Locale.ENGLISH)}")
@@ -308,7 +304,12 @@ class DayHourService(
             appendLine(transitToNatalAspects.describeAspects(includeHour))
           }
         }
-        AstroEventDto(Astro.PlanetStationary(description, s, zodiacDegree, transitToNatalAspects), s.gmtJulDay.toLmt(), null, Span.INSTANT)
+        AstroEventDto(
+          Astro.PlanetStationary(
+            description, s, zodiacDegree,
+            if (config.includeTransitToNatalAspects) transitToNatalAspects else emptyList()
+          ), s.gmtJulDay.toLmt(), null, Span.INSTANT
+        )
       }
     }
 
@@ -327,11 +328,7 @@ class DayHourService(
     val solarEclipses = eclipseImpl.getRangeSolarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
       val outer = horoscopeFeature.getModel(eclipse.max, loc, config.horoscopeConfig)
       val zodiacDegree = outer.getZodiacDegree(SUN)!!
-      val transitToNatalAspects: List<SynastryAspect> = if (config.includeTransitToNatalAspects) {
-        outer.outerToInner(SUN)
-      } else {
-        emptyList()
-      }
+      val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(SUN)
 
       val description = buildString {
         append("Solar Eclipse (日食). ")
@@ -342,18 +339,20 @@ class DayHourService(
           appendLine(transitToNatalAspects.describeAspects(includeHour))
         }
       }
-      AstroEventDto(Astro.Eclipse(description, eclipse, transitToNatalAspects), eclipse.max.toLmt(), null, Span.HOURS)
+      AstroEventDto(
+        Astro.Eclipse(
+          description, eclipse,
+          if (config.includeTransitToNatalAspects) transitToNatalAspects else emptyList()
+        ), eclipse.max.toLmt(), null, Span.HOURS
+      )
     }
 
     // 月食
     val lunarEclipses = eclipseImpl.getRangeLunarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
       val outer = horoscopeFeature.getModel(eclipse.max, loc, config.horoscopeConfig)
       val zodiacDegree = outer.getZodiacDegree(MOON)!!
-      val transitToNatalAspects: List<SynastryAspect> = if (config.includeTransitToNatalAspects) {
-        outer.outerToInner(MOON)
-      } else {
-        emptyList()
-      }
+      val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(MOON)
+
 
       val description = buildString {
         append("Lunar Eclipse (月食). ")
@@ -364,7 +363,12 @@ class DayHourService(
           appendLine(transitToNatalAspects.describeAspects(includeHour))
         }
       }
-      AstroEventDto(Astro.Eclipse(description, eclipse, transitToNatalAspects), eclipse.max.toLmt(), null, Span.HOURS)
+      AstroEventDto(
+        Astro.Eclipse(
+          description, eclipse,
+          if (config.includeTransitToNatalAspects) transitToNatalAspects else emptyList()
+        ), eclipse.max.toLmt(), null, Span.HOURS
+      )
     }
 
     // 月相
@@ -377,11 +381,8 @@ class DayHourService(
       relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(MOON, SUN, fromGmtJulDay, toGmtJulDay, angle).map { gmtJulDay ->
         val outer = horoscopeFeature.getModel(gmtJulDay, loc, config.horoscopeConfig)
         val zodiacDegree = outer.getZodiacDegree(MOON)!!
-        val transitToNatalAspects: List<SynastryAspect> = if (config.includeTransitToNatalAspects) {
-          outer.outerToInner(MOON, SUN)
-        } else {
-          emptyList()
-        }
+        val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(MOON, SUN)
+
         val description = buildString {
           append("${MOON.asLocaleString().getTitle(Locale.ENGLISH)} ")
           append(
@@ -399,7 +400,15 @@ class DayHourService(
             appendLine(transitToNatalAspects.describeAspects(includeHour))
           }
         }
-        AstroEventDto(Astro.LunarPhaseEvent(description, phase, zodiacDegree, transitToNatalAspects), gmtJulDay.toLmt(), null, Span.INSTANT)
+        AstroEventDto(
+          Astro.LunarPhaseEvent(
+            description, phase, zodiacDegree,
+            if (config.includeTransitToNatalAspects) transitToNatalAspects else emptyList()
+          ),
+          gmtJulDay.toLmt(),
+          null,
+          Span.INSTANT
+        )
       }
     }
 
