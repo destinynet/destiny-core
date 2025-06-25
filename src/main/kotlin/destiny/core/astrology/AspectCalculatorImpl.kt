@@ -4,8 +4,8 @@
 package destiny.core.astrology
 
 import com.google.common.collect.Sets
-import destiny.core.astrology.IPointAspectPattern.Type.APPLYING
-import destiny.core.astrology.IPointAspectPattern.Type.SEPARATING
+import destiny.core.astrology.IPointAspectPattern.AspectType.APPLYING
+import destiny.core.astrology.IPointAspectPattern.AspectType.SEPARATING
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.Score
 import java.io.Serializable

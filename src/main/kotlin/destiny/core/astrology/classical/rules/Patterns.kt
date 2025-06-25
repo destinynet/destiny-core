@@ -79,7 +79,7 @@ sealed class AccidentalDignity : IPlanetPattern {
   data class JoyHouse(override val planet: Planet, val house: Int) : AccidentalDignity()
   data class Hayz(override val planet: Planet, val dayNight: DayNight, val yinYang: YinYang, val sign: ZodiacSign) : AccidentalDignity()
   data class Besieged_Jupiter_Venus(override val planet: Planet) : AccidentalDignity()
-  data class Translation_of_Light(override val planet: Planet, val from: Planet, val to: Planet, val angle: Double, val aspectType: IPointAspectPattern.Type?) :
+  data class Translation_of_Light(override val planet: Planet, val from: Planet, val to: Planet, val angle: Double, val aspectType: IPointAspectPattern.AspectType?) :
     AccidentalDignity()
 
   data class Collection_of_Light(override val planet: Planet, val twoPlanets: List<Planet>, val angle: Double) : AccidentalDignity()

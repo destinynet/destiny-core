@@ -108,13 +108,13 @@ data class Natal(
     val element: Element,
     val quality: Quality,
     val house: Int,
-    val motion: Motion?,
+    val motion: Motion? = null,
     @Serializable(with = RetrogradePhaseWithDescriptionSerializer::class)
-    val retrogradePhase: RetrogradePhase?,
-    val rulingHouses : Set<RulingHouse>,
+    val retrogradePhase: RetrogradePhase? = null,
+    val rulingHouses : Set<RulingHouse> = emptySet(),
     /** 定位星資訊 */
     val dispositors: Set<Planet>,
-    val astroAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern>
+    val astroAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern> = emptyList()
   )
 
   @Serializable

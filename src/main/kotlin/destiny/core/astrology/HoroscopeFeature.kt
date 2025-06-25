@@ -159,7 +159,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
             val pOuterHouse = inner.getHouse(outer[pOuter]!!.zDeg.toZodiacDegree())
             val pInnerHouse = inner.getHouse(inner.positionMap[pInner]!!.lng.toZodiacDegree())
 
-            SynastryAspect(pOuter, pInner, pOuterHouse, pInnerHouse, p.aspect, p.orb, p.type, p.score)
+            SynastryAspect(pOuter, pInner, pOuterHouse, pInnerHouse, p.aspect, p.orb, p.aspectType, p.score)
           }
       }
       .filter {
@@ -188,7 +188,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
       .mapNotNull { (pOuter, pInner) ->
         aspectCalculator.getAspectPattern(pOuter, pInner, outer, inner, laterForP1, laterForP2, aspects)
           ?.let { p: IPointAspectPattern ->
-            SynastryAspect(pOuter, pInner, null, null, p.aspect, p.orb, p.type, p.score)
+            SynastryAspect(pOuter, pInner, null, null, p.aspect, p.orb, p.aspectType, p.score)
           }
       }
       .filter {
@@ -202,7 +202,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
       .toList()
   }
 
-  fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, config: IHoroscopeConfig) : ISolarArcModel
+  fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig) : ISolarArcModel
 }
 
 data class ProgressionCalcObj(
@@ -319,7 +319,7 @@ class HoroscopeFeature(
                 ?.let { p: IPointAspectPattern ->
                   val p1House = model.getHouse(posMapOuter[p1]!!.lng.toZodiacDegree())
                   val p2House = model.getHouse(posMapInner[p2]!!.lng.toZodiacDegree())
-                  SynastryAspect(p1, p2, p1House, p2House, p.aspect, p.orb, p.type!!, p.score)
+                  SynastryAspect(p1, p2, p1House, p2House, p.aspect, p.orb, p.aspectType!!, p.score)
                 }
             }
             .sortedByDescending { it.score }
@@ -332,7 +332,8 @@ class HoroscopeFeature(
     return performOperation(param)
   }
 
-  override fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, config: IHoroscopeConfig): ISolarArcModel {
+  override fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator,
+                           threshold: Double?, config: IHoroscopeConfig): ISolarArcModel {
 
     val diffDays = (viewTime - model.gmtJulDay) / TROPICAL_YEAR_DAYS
     val convergentJulDay = model.gmtJulDay + diffDays
@@ -361,9 +362,9 @@ class HoroscopeFeature(
     val laterForP2: ((AstroPoint) -> IZodiacDegree?) = { p -> model.getZodiacDegree(p) }
 
     val synastryAspects = if (innerConsiderHour) {
-      synastryAspects(posMap, model, laterForP1, laterForP2, aspectCalculator, 0.9)
+      synastryAspects(posMap, model, laterForP1, laterForP2, aspectCalculator, threshold)
     } else {
-      synastryAspects(posMap, model.positionMap, laterForP1, laterForP2, aspectCalculator, 0.9)
+      synastryAspects(posMap, model.positionMap, laterForP1, laterForP2, aspectCalculator, threshold)
     }
 
     return SolarArcModel(model.gmtJulDay, innerConsiderHour, viewTime,

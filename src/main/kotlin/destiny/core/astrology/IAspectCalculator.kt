@@ -5,13 +5,13 @@
 package destiny.core.astrology
 
 import destiny.core.astrology.Aspect.Importance
-import destiny.core.astrology.IPointAspectPattern.Type
-import destiny.core.astrology.IPointAspectPattern.Type.APPLYING
-import destiny.core.astrology.IPointAspectPattern.Type.SEPARATING
+import destiny.core.astrology.IPointAspectPattern.AspectType
+import destiny.core.astrology.IPointAspectPattern.AspectType.APPLYING
+import destiny.core.astrology.IPointAspectPattern.AspectType.SEPARATING
 import destiny.tools.Score
 
 /**
- * 計算一張命盤 [IHoroscopeModel] 內部的交角列表 , [IHoroscopeModel] 的 extension function, 查詢出來的 [IPointAspectPattern] 具備 [IPointAspectPattern.type]
+ * 計算一張命盤 [IHoroscopeModel] 內部的交角列表 , [IHoroscopeModel] 的 extension function, 查詢出來的 [IPointAspectPattern] 具備 [IPointAspectPattern.aspectType]
  *
  * 或是兩張命盤，彼此的交角列表
  */
@@ -93,12 +93,12 @@ interface IAspectCalculator  {
    * 一個星盤當中，兩個星體，是否形成交角。以及即將形成 ([APPLYING] , 入相位)，還是離開該交角 ([SEPARATING] , 出相位)
    * 如果不是形成 aspect 交角，會傳回 null
    * */
-  fun IHoroscopeModel.getAspectType(p1: AstroPoint, p2: AstroPoint, aspect: Aspect): Type? {
-    return this.getAspectPatterns(setOf(p1, p2), setOf(aspect)).firstOrNull()?.type
+  fun IHoroscopeModel.getAspectType(p1: AstroPoint, p2: AstroPoint, aspect: Aspect): AspectType? {
+    return this.getAspectPatterns(setOf(p1, p2), setOf(aspect)).firstOrNull()?.aspectType
   }
 
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */
-  fun IHoroscopeModel.getAspectAndType(p1: AstroPoint, p2: AstroPoint, aspects: Set<Aspect>): Pair<Aspect , Type>? {
+  fun IHoroscopeModel.getAspectAndType(p1: AstroPoint, p2: AstroPoint, aspects: Set<Aspect>): Pair<Aspect , AspectType>? {
     return aspects.asSequence().map { aspect ->
       aspect to this.getAspectType(p1, p2, aspect)
     }.filter { (_, type) ->
@@ -109,7 +109,7 @@ interface IAspectCalculator  {
   }
 
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */
-  fun IHoroscopeModel.getAspectType(p1: AstroPoint, p2: AstroPoint, aspects: Set<Aspect>): Type? {
+  fun IHoroscopeModel.getAspectType(p1: AstroPoint, p2: AstroPoint, aspects: Set<Aspect>): AspectType? {
     return getAspectAndType(p1, p2, aspects)?.second
   }
 

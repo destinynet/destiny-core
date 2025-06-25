@@ -20,7 +20,7 @@ object IPointAspectPatternSerializer : KSerializer<IPointAspectPattern> {
     element("points", ListSerializer(AstroPoint.serializer()).descriptor)
     element<Double>("angle")
     element<Aspect>("aspect")
-    element<IPointAspectPattern.Type>("type", isOptional = true)
+    element<IPointAspectPattern.AspectType>("type", isOptional = true)
     element<Double>("orb")
     element<Double>("score", isOptional = true)
   }
@@ -31,7 +31,7 @@ object IPointAspectPatternSerializer : KSerializer<IPointAspectPattern> {
       encodeSerializableElement(descriptor, 0, ListSerializer(AstroPoint.serializer()), value.points)
       encodeDoubleElement(descriptor, 1, value.angle)
       encodeSerializableElement(descriptor, 2, Aspect.serializer(), value.aspect)
-      encodeNullableSerializableElement(descriptor, 3, IPointAspectPattern.Type.serializer(), value.type)
+      encodeNullableSerializableElement(descriptor, 3, IPointAspectPattern.AspectType.serializer(), value.aspectType)
 //      encodeDoubleElement(descriptor, 4, value.orb)
       encodeNullableSerializableElement(descriptor, 4, DoubleTwoDecimalSerializer, value.orb)
 //      encodeNullableSerializableElement(descriptor, 5, Double.serializer(), value.score?.value)
@@ -43,7 +43,7 @@ object IPointAspectPatternSerializer : KSerializer<IPointAspectPattern> {
     var points: List<AstroPoint> = emptyList()
     var angle = 0.0
     var aspect: Aspect? = null
-    var type: IPointAspectPattern.Type? = null
+    var aspectType: IPointAspectPattern.AspectType? = null
     var orb = 0.0
     var score: Score? = null
 
@@ -53,7 +53,7 @@ object IPointAspectPatternSerializer : KSerializer<IPointAspectPattern> {
           0                            -> points = decodeSerializableElement(descriptor, 0, ListSerializer(AstroPoint.serializer()))
           1                            -> angle = decodeDoubleElement(descriptor, 1)
           2                            -> aspect = decodeSerializableElement(descriptor, 2, Aspect.serializer())
-          3                            -> type = decodeNullableSerializableElement(descriptor, 3, IPointAspectPattern.Type.serializer())
+          3                            -> aspectType = decodeNullableSerializableElement(descriptor, 3, IPointAspectPattern.AspectType.serializer())
           4                            -> orb = decodeDoubleElement(descriptor, 4)
           5                            -> score = decodeNullableSerializableElement(descriptor, 5, Double.serializer())?.toScore()
           CompositeDecoder.DECODE_DONE -> break
@@ -65,6 +65,6 @@ object IPointAspectPatternSerializer : KSerializer<IPointAspectPattern> {
     val p2 = points[1]
 
 
-    return PointAspectPattern(sortedSetOf(AstroPointComparator, p1, p2).toList(), angle, type, orb, score)
+    return PointAspectPattern(sortedSetOf(AstroPointComparator, p1, p2).toList(), angle, aspectType, orb, score)
   }
 }

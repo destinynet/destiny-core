@@ -3,7 +3,7 @@
  */
 package destiny.core.astrology
 
-import destiny.core.astrology.IPointAspectPattern.Type
+import destiny.core.astrology.IPointAspectPattern.AspectType
 import destiny.core.astrology.Planet.*
 import destiny.tools.Score.Companion.toScore
 import kotlin.test.*
@@ -54,18 +54,18 @@ internal class PointAspectPatternTest {
   }
 
   /**
-   * 考量 [Type]
+   * 考量 [AspectType]
    */
   @Test
   fun testEquals3_Type() {
-    val p1 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, Type.APPLYING, 1.0)
-    val p2 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, Type.APPLYING, 1.0)
+    val p1 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, AspectType.APPLYING, 1.0)
+    val p2 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, AspectType.APPLYING, 1.0)
     assertEquals(p1, p2)
 
     val p3 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, null, 1.0)
     assertNotEquals(p1, p3)
 
-    val p4 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, Type.SEPARATING, 1.0)
+    val p4 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, AspectType.SEPARATING, 1.0)
     assertEquals("[S] [太陽, 太陽] CONJUNCTION 誤差  1.0度", p4.brief())
     assertNotEquals(p1, p4)
   }
@@ -75,8 +75,8 @@ internal class PointAspectPatternTest {
    */
   @Test
   fun testEquals4_Score() {
-    val p1 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, Type.APPLYING, 1.0 , 0.1.toScore())
-    val p2 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, Type.APPLYING, 1.0 , 0.2.toScore())
+    val p1 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, AspectType.APPLYING, 1.0, 0.1.toScore())
+    val p2 = PointAspectPattern.of(SUN, SUN, Aspect.CONJUNCTION, AspectType.APPLYING, 1.0, 0.2.toScore())
     assertEquals(p1, p2)
   }
 

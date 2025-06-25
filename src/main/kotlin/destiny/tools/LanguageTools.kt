@@ -8,6 +8,7 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+import java.time.LocalDateTime
 import kotlin.math.floor
 import kotlin.math.pow
 import kotlin.reflect.KType
@@ -144,4 +145,13 @@ fun Double.truncate(n: Int, epsilon: Double = 1e-5): String {
     floor(scaled) / factor
   }
   return FORMAT_TEMPLATES[n].format(result)
+}
+
+fun LocalDateTime.roundToNearestSecond(): LocalDateTime {
+  val nano = this.nano
+  return when {
+    nano < 1_000_000   -> this.withNano(0)  // 小於 1ms，直接捨去
+    nano > 999_000_000 -> this.plusSeconds(1).withNano(0)  // 幾乎整秒，自動進位
+    else               -> this  // 其餘保留原樣
+  }
 }

@@ -23,5 +23,5 @@ data class HouseDto(
   @Serializable(with = IZodiacDegreeSerializer::class)
   val cusp: IZodiacDegree,
   val ruler: AstroPoint,
-  val stars: List<AstroPoint>
+  val stars: List<AstroPoint> = emptyList()
 )

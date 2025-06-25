@@ -4,7 +4,7 @@
 package destiny.core.astrology.classical
 
 import destiny.core.astrology.*
-import destiny.core.astrology.IPointAspectPattern.Type.APPLYING
+import destiny.core.astrology.IPointAspectPattern.AspectType.APPLYING
 import destiny.tools.KotlinLogging
 import java.io.Serializable
 import kotlin.math.abs
@@ -162,8 +162,8 @@ class CollectionOfLightImpl(private val besiegedImpl: IBesieged,
     return with(aspectCalculator) {
       h.getAspectPatterns(p1 , setOf(p1, p2), Aspect.getAspects(Aspect.Importance.HIGH).toSet())
         .takeIf { it.isEmpty() }
-        ?.takeIf { h.getAspectPatterns(setOf(point, p1), aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()).firstOrNull()?.type === APPLYING }
-        ?.takeIf { h.getAspectPatterns(setOf(point, p2), aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()).firstOrNull()?.type === APPLYING }
+        ?.takeIf { h.getAspectPatterns(setOf(point, p1), aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()).firstOrNull()?.aspectType === APPLYING }
+        ?.takeIf { h.getAspectPatterns(setOf(point, p2), aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()).firstOrNull()?.aspectType === APPLYING }
         ?.let { true }
         ?: false
     }

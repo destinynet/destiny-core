@@ -203,12 +203,12 @@ class PatternTranslatorKtTest {
       assertEquals("Sun is besieged by Venus and Jupiter." , it.enDesc)
     }
 
-    Translation_of_Light(SATURN, VENUS, JUPITER, 120.0, IPointAspectPattern.Type.APPLYING).also {
+    Translation_of_Light(SATURN, VENUS, JUPITER, 120.0, IPointAspectPattern.AspectType.APPLYING).also {
       assertEquals("傳遞光線" , it.title)
       assertEquals("土星 從 金星 傳遞光線到 木星 ，金星 與 木星 APPLYING 交角 120.0 度。" , it.twDesc)
       assertEquals("Saturn translates light from Venus to Jupiter. Venus and Jupiter are APPLYING aspect 120.0 degree." , it.enDesc)
     }
-    Translation_of_Light(SATURN, VENUS, JUPITER, 120.0, IPointAspectPattern.Type.SEPARATING).also {
+    Translation_of_Light(SATURN, VENUS, JUPITER, 120.0, IPointAspectPattern.AspectType.SEPARATING).also {
       assertEquals("傳遞光線", it.title)
       assertEquals("土星 從 金星 傳遞光線到 木星 ，金星 與 木星 SEPARATING 交角 120.0 度。", it.twDesc)
       assertEquals("Saturn translates light from Venus to Jupiter. Venus and Jupiter are SEPARATING aspect 120.0 degree.", it.enDesc)

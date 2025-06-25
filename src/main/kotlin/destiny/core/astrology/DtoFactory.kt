@@ -40,7 +40,7 @@ class DtoFactory(
     }
 
     val threshold = 0.9
-    val byStar = with(horoscopeFeature) { getByStarMap(threshold, aspectCalculator, rulerImpl) }
+    val byStar = getByStarMap(threshold, aspectCalculator, rulerImpl)
 
     val angularConsideringPoints = points.filter { it is Planet || it is FixedStar || it is LunarPoint }
 
@@ -88,20 +88,20 @@ class DtoFactory(
       }
     }
 
-    return with(horoscopeFeature) {
-      HoroscopeDto(
-        time as LocalDateTime, location, place, signPointsMap, byHouse, byStar,
-        axisStars,
-        houseStarDistribution,
-        elementDistribution(),
-        qualityDistribution(),
-        getTightAspects(aspectCalculator, threshold),
-        getPatterns(PatternContext(aspectAffective, aspectCalculator), threshold),
-        classicalPatterns,
-        getGraph(rulerImpl),
-        getMidPointsWithFocal().filter { it.orb <= 1.0 }
-      )
-    }
+    return HoroscopeDto(
+      time as LocalDateTime, location, place,
+      signPointsMap.filter { (_, points) -> points.isNotEmpty() },
+      byHouse, byStar,
+      axisStars,
+      houseStarDistribution,
+      elementDistribution(),
+      qualityDistribution(),
+      getTightAspects(aspectCalculator, threshold),
+      getPatterns(PatternContext(aspectAffective, aspectCalculator), threshold),
+      classicalPatterns,
+      getGraph(rulerImpl),
+      getMidPointsWithFocal().filter { it.orb <= 1.0 }
+    )
   }
 
   private fun IPersonHoroscopeModel.getAge(viewGmt: GmtJulDay): Int {

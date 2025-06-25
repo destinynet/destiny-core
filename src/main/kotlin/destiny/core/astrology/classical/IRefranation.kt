@@ -52,7 +52,7 @@ class RefranationImpl(private val aspectCalculator: IAspectCalculator,
     return aspects.asSequence().map { aspect ->
       /** 此兩星正在 apply 哪個交角  */
       aspect to with(aspectCalculator) { horoscope.getAspectType(planet, otherPoint, aspect) }
-    }.firstOrNull { (_, type) -> type === IPointAspectPattern.Type.APPLYING }
+    }.firstOrNull { (_, type) -> type === IPointAspectPattern.AspectType.APPLYING }
       ?.let { (applyingAspect, _) -> applyingAspect }
       ?.let { applyingAspect ->
         logger.debug("兩星 : {} {} 正在接近此角度 {}", planet, otherPoint, applyingAspect)

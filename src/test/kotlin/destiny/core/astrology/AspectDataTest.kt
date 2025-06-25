@@ -3,7 +3,7 @@
  */
 package destiny.core.astrology
 
-import destiny.core.astrology.IPointAspectPattern.Type
+import destiny.core.astrology.IPointAspectPattern.AspectType
 import destiny.core.astrology.Planet.*
 import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.tools.Score.Companion.toScore
@@ -33,7 +33,7 @@ internal class AspectDataTest {
     assertEquals(p1, p5)
 
     // Type 會影響
-    val p6 = AspectData.of(SUN, MOON, Aspect.CONJUNCTION, 0.0, null, Type.APPLYING, 0.1.toGmtJulDay())
+    val p6 = AspectData.of(SUN, MOON, Aspect.CONJUNCTION, 0.0, null, AspectType.APPLYING, 0.1.toGmtJulDay())
     assertNotEquals(p1, p6)
   }
 
@@ -52,7 +52,7 @@ internal class AspectDataTest {
     val p5 = AspectData.of(listOf(SUN, MOON), Aspect.CONJUNCTION, 0.0, null, null, 0.1.toGmtJulDay())
     assertEquals(p1, p5)
 
-    val p6 = AspectData.of(listOf(SUN, MOON), Aspect.CONJUNCTION, 0.0, null, Type.APPLYING, 0.0.toGmtJulDay())
+    val p6 = AspectData.of(listOf(SUN, MOON), Aspect.CONJUNCTION, 0.0, null, AspectType.APPLYING, 0.0.toGmtJulDay())
     assertNotEquals(p1, p6)
   }
 

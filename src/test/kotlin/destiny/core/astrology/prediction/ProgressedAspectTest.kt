@@ -13,6 +13,6 @@ internal class ProgressedAspectTest {
 
   @Test
   fun testInitOk() {
-    SynastryAspect(Planet.MOON, Planet.SUN, 1, 1, Aspect.CONJUNCTION, 0.1, IPointAspectPattern.Type.APPLYING, null)
+    SynastryAspect(Planet.MOON, Planet.SUN, 1, 1, Aspect.CONJUNCTION, 0.1, IPointAspectPattern.AspectType.APPLYING, null)
   }
 }

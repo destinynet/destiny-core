@@ -5,7 +5,7 @@ package destiny.tools.serializers.astrology
 
 import com.jayway.jsonpath.JsonPath
 import destiny.core.astrology.Aspect
-import destiny.core.astrology.IPointAspectPattern.Type
+import destiny.core.astrology.IPointAspectPattern.AspectType
 import destiny.core.astrology.Planet
 import destiny.core.astrology.PointAspectPattern
 import destiny.tools.KotlinLogging
@@ -22,7 +22,7 @@ class IPointAspectPatternSerializerTest {
   @Test
   fun testSerialize_full() {
 
-    val pattern = PointAspectPattern.of(Planet.JUPITER, Planet.VENUS, Aspect.TRINE, Type.APPLYING, 0.1, 0.99.toScore())
+    val pattern = PointAspectPattern.of(Planet.JUPITER, Planet.VENUS, Aspect.TRINE, AspectType.APPLYING, 0.1, 0.99.toScore())
 
     Json.encodeToString(IPointAspectPatternSerializer, pattern).also { rawJson ->
       logger.info { rawJson }
@@ -31,7 +31,7 @@ class IPointAspectPatternSerializerTest {
       assertEquals(Planet.JUPITER.nameKey, docCtx.read("$.points[1]"))
       assertEquals(120.0, docCtx.read("$.angle"))
       assertEquals(Aspect.TRINE.name, docCtx.read("$.aspect"))
-      assertEquals(Type.APPLYING.name, docCtx.read("$.type"))
+      assertEquals(AspectType.APPLYING.name, docCtx.read("$.type"))
       assertEquals(0.1, docCtx.read("$.orb"))
       assertEquals(0.99, docCtx.read("$.score"))
 

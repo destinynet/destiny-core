@@ -13,7 +13,7 @@ interface ITranslationOfLight {
   /**
    * 此星盤中 , planet 是否有傳遞光線 , 若有的話 , 從哪顆星 (triple.first) 傳遞到 哪顆星 (triple.second) , 以及 , 這兩顆星是否有形成什麼交角 (可能為null)
    */
-  fun getResult(planet: Planet, h: IHoroscopeModel): Triple<Planet, Planet, IPointAspectPattern.Type?>?
+  fun getResult(planet: Planet, h: IHoroscopeModel): Triple<Planet, Planet, IPointAspectPattern.AspectType?>?
 }
 
 
@@ -39,7 +39,7 @@ interface ITranslationOfLight {
 class TranslationOfLightImpl(private val aspectCalculator: IAspectCalculator,
                              private val besiegedImpl: IBesieged) : ITranslationOfLight, Serializable {
 
-  override fun getResult(planet: Planet, h: IHoroscopeModel): Triple<Planet, Planet, IPointAspectPattern.Type?>? {
+  override fun getResult(planet: Planet, h: IHoroscopeModel): Triple<Planet, Planet, IPointAspectPattern.AspectType?>? {
     // 不考慮合相的交角
     val aspects = setOf(Aspect.SEXTILE, Aspect.SQUARE, Aspect.TRINE, Aspect.OPPOSITION)
 
@@ -61,18 +61,18 @@ class TranslationOfLightImpl(private val aspectCalculator: IAspectCalculator,
               p2 to h.getAspectType(planet, p2, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
             ).takeIf { map -> map.values.all { it != null } }?.mapValues { (_, maybeAspectType) -> maybeAspectType!! }?.takeIf { map ->
                 // 分別形成 出相位 以及 入相位
-                map.values.toSet() == setOf(IPointAspectPattern.Type.APPLYING, IPointAspectPattern.Type.SEPARATING)
-              }?.let { map: Map<Planet, IPointAspectPattern.Type> ->
+                map.values.toSet() == setOf(IPointAspectPattern.AspectType.APPLYING, IPointAspectPattern.AspectType.SEPARATING)
+              }?.let { map: Map<Planet, IPointAspectPattern.AspectType> ->
 
                 // p1 , p2 不一定有交角
-                val typeOptional: IPointAspectPattern.Type? = h.getAspectType(p1, p2, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
+                val aspectTypeOptional: IPointAspectPattern.AspectType? = h.getAspectType(p1, p2, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
 
                 // 出相位
-                val separatingPoint = map.keys.first { p -> map.getValue(p) === IPointAspectPattern.Type.SEPARATING }
+                val separatingPoint = map.keys.first { p -> map.getValue(p) === IPointAspectPattern.AspectType.SEPARATING }
                 // 入相位
                 val applyingPoint = map.keys.minus(separatingPoint).first()
 
-                Triple(separatingPoint, applyingPoint, typeOptional)
+                Triple(separatingPoint, applyingPoint, aspectTypeOptional)
               }
           }
 

@@ -3,7 +3,6 @@ package destiny.core.astrology
 import destiny.tools.Score
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import destiny.tools.serializers.ScoreTwoDecimalSerializer
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 interface ISynastryAspect : IPointAspectPattern {
@@ -25,7 +24,7 @@ data class SynastryAspect(
   override val aspect: Aspect,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   override val orb: Double,
-  override val type: IPointAspectPattern.Type?,
+  override val aspectType: IPointAspectPattern.AspectType?,
   @Serializable(with = ScoreTwoDecimalSerializer::class)
   override val score: Score?
 ) : ISynastryAspect {
@@ -40,7 +39,7 @@ data class SynastryAspect(
     if (outerPointHouse != other.outerPointHouse) return false
     if (innerPointHouse != other.innerPointHouse) return false
     if (aspect != other.aspect) return false
-    if (type != other.type) return false
+    if (aspectType != other.aspectType) return false
 
     return true
   }
@@ -51,7 +50,7 @@ data class SynastryAspect(
     result = 31 * result + (outerPointHouse ?: 0)
     result = 31 * result + (innerPointHouse ?: 0)
     result = 31 * result + aspect.hashCode()
-    result = 31 * result + type.hashCode()
+    result = 31 * result + aspectType.hashCode()
     return result
   }
 }
@@ -67,8 +66,7 @@ data class MidPointFocalAspect(val outer : MidPointWithFocal,
   override val outerPoint: AstroPoint = outer.focal
   override val innerPoint: AstroPoint = inner.focal
 
-  @SerialName("patternType")
-  override val type: IPointAspectPattern.Type? = null
+  override val aspectType: IPointAspectPattern.AspectType? = null
   override val outerPointHouse: Int? = null
   override val innerPointHouse: Int? = null
   override val angle: Double = aspect.degree

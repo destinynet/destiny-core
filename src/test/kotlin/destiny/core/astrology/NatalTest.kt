@@ -56,7 +56,7 @@ class NatalTest {
           ),
           setOf(MARS),
           listOf(
-            AspectData.of(SUN, JUPITER, Aspect.TRINE, 0.8, 0.99.toScore(), IPointAspectPattern.Type.APPLYING, ldt.toGmtJulDay(loc))
+            AspectData.of(SUN, JUPITER, Aspect.TRINE, 0.8, 0.99.toScore(), IPointAspectPattern.AspectType.APPLYING, ldt.toGmtJulDay(loc))
           )
         ),
         MERCURY to Natal.StarPosInfo(
@@ -71,7 +71,7 @@ class NatalTest {
           ),
           setOf(VENUS),
           listOf(
-            AspectData.of(MERCURY, SATURN, Aspect.SEXTILE, 2.5, 0.85.toScore(), IPointAspectPattern.Type.SEPARATING, ldt.toGmtJulDay(loc))
+            AspectData.of(MERCURY, SATURN, Aspect.SEXTILE, 2.5, 0.85.toScore(), IPointAspectPattern.AspectType.SEPARATING, ldt.toGmtJulDay(loc))
           )
         )
       ),
@@ -99,8 +99,8 @@ class NatalTest {
         Quality.MUTABLE to 0.3333
       ),
       listOf(
-        AspectData.of(SUN, JUPITER, Aspect.TRINE, 0.8, 0.99.toScore(), IPointAspectPattern.Type.APPLYING, ldt.toGmtJulDay(loc)),
-        AspectData.of(MOON, VENUS, Aspect.SEXTILE, 0.2, 0.98.toScore(), IPointAspectPattern.Type.SEPARATING, ldt.toGmtJulDay(loc)),
+        AspectData.of(SUN, JUPITER, Aspect.TRINE, 0.8, 0.99.toScore(), IPointAspectPattern.AspectType.APPLYING, ldt.toGmtJulDay(loc)),
+        AspectData.of(MOON, VENUS, Aspect.SEXTILE, 0.2, 0.98.toScore(), IPointAspectPattern.AspectType.SEPARATING, ldt.toGmtJulDay(loc)),
       ),
       listOf(
         GrandTrine(setOf(SUN, JUPITER, VENUS), Element.WATER, 0.91.toScore()),

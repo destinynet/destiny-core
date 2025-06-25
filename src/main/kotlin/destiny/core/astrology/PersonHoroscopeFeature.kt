@@ -48,6 +48,7 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
     grain: SynastryGrain = SynastryGrain.BOTH_FULL,
     aspects: Set<Aspect> = Companion.getAspects(Importance.HIGH).toSet()
   ): SynastryRequestDto
+
 }
 
 
@@ -134,6 +135,7 @@ class PersonHoroscopeFeature(
 
     return SynastryRequestDto(modelInner, modelOuter, grain, relationship, synastryAspects, midpointTrees, synastry.houseOverlayMap)
   }
+
 
 
 }
