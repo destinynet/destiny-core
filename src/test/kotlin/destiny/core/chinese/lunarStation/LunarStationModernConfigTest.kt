@@ -61,7 +61,7 @@ internal class LunarStationModernConfigTest : AbstractConfigTest<LunarStationMod
     assertFalse(raw.contains(""""yearEpoch":\s*"EPOCH_1564"""".toRegex()))
 
     assertTrue(raw.contains(""""method":\s*"SPECIFIED"""".toRegex()))
-    assertTrue(raw.contains(""""specifiedGmtJulDay":\s*2459449\.0""".toRegex()))
+    assertTrue(raw.contains(""""julDay":\s*2459449.""".toRegex()))
     assertTrue(raw.contains(""""description":\s*"test123"""".toRegex()))
 
     assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))

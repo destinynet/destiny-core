@@ -37,8 +37,12 @@ object GmtJulDaySerializer : KSerializer<GmtJulDay> {
     composite.encodeDoubleElement(descriptor, 0, jd)
 
     val gmtStr = value.toLmt(ZoneId.of("UTC"), julDayResolver)
-      .let { it as LocalDateTime }
-      .roundToNearestSecond()
+      .let {
+        if (it is LocalDateTime)
+          it.roundToNearestSecond()
+        else
+          it
+      }
       .toString()  // 轉成 ISO 格式
 
     composite.encodeStringElement(descriptor, 1, gmtStr)
