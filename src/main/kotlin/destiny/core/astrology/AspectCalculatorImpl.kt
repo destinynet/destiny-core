@@ -6,6 +6,7 @@ package destiny.core.astrology
 import com.google.common.collect.Sets
 import destiny.core.astrology.IPointAspectPattern.Type.APPLYING
 import destiny.core.astrology.IPointAspectPattern.Type.SEPARATING
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.Score
 import java.io.Serializable
 import kotlin.math.abs
@@ -18,23 +19,24 @@ class AspectCalculatorImpl(
 
   override fun getAspectPattern(
     p1: AstroPoint, p2: AstroPoint,
-    p1PosMap: Map<AstroPoint, IPos>, p2PosMap: Map<AstroPoint, IPos>,
-    laterForP1: () -> IPos?, laterForP2: () -> IPos?, aspects: Set<Aspect>
+    p1PosMap: Map<AstroPoint, IZodiacDegree>, p2PosMap: Map<AstroPoint, IZodiacDegree>,
+    laterForP1: () -> IZodiacDegree?, laterForP2: () -> IZodiacDegree?, aspects: Set<Aspect>
   ): IPointAspectPattern? {
     return aspects
       .intersect(aspectEffectiveImpl.applicableAspects)
       .asSequence()
       .map { aspect ->
-        aspect to aspectEffectiveImpl.getEffectiveErrorAndScore(p1, p1PosMap.getValue(p1).lngDeg, p2, p2PosMap.getValue(p2).lngDeg, aspect)
+        aspect to aspectEffectiveImpl.getEffectiveErrorAndScore(p1, p1PosMap.getValue(p1).zDeg.toZodiacDegree(),
+                                                                p2, p2PosMap.getValue(p2).zDeg.toZodiacDegree(), aspect)
       }.firstOrNull { (_, maybeErrorAndScore) -> maybeErrorAndScore != null }
       ?.let { (aspect, maybeErrorAndScore) -> aspect to maybeErrorAndScore!! }
       ?.let { (aspect, errorAndScore) ->
         val error = errorAndScore.first
         val score = errorAndScore.second
 
-        laterForP1.invoke()?.lngDeg?.let { deg1Next ->
-          laterForP2.invoke()?.lngDeg?.let { deg2Next ->
-            val planetsAngleNext = deg1Next.getAngle(deg2Next)
+        laterForP1.invoke()?.zDeg?.let { deg1Next ->
+          laterForP2.invoke()?.zDeg?.let { deg2Next ->
+            val planetsAngleNext = deg1Next.toZodiacDegree().getAngle(deg2Next)
             val errorNext = abs(planetsAngleNext - aspect.degree)
             val type = if (errorNext <= error) APPLYING else SEPARATING
             PointAspectPattern.of(p1, p2, aspect, type, error, score)

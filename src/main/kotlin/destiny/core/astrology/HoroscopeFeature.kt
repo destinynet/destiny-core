@@ -119,25 +119,8 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
   ): Synastry {
     val posMapOuter = outer.positionMap
-    val posMapInner = inner.positionMap
-    val synastryAspects: List<SynastryAspect> = outer.points.asSequence().flatMap { pOuter -> inner.points.asSequence().map { pInner -> pOuter to pInner } }
-      .mapNotNull { (pOuter, pInner) ->
-        aspectCalculator.getAspectPattern(pOuter, pInner, posMapOuter, posMapInner, { null }, { null }, aspects)
-          ?.let { p: IPointAspectPattern ->
-            val pOuterHouse = posMapOuter[pOuter]?.lngDeg?.let { zDeg -> inner.getHouse(zDeg) }
-            val pInnerHouse = posMapInner[pInner]?.lngDeg?.let { zDeg -> inner.getHouse(zDeg) }
-            SynastryAspect(pOuter, pInner, pOuterHouse, pInnerHouse, p.aspect, p.orb, null, p.score)
-          }
-      }
-      .filter {
-        if (threshold != null) {
-          it.score != null && it.score.value > threshold
-        } else {
-          true
-        }
-      }
-      .sortedByDescending { it.score }
-      .toList()
+
+    val synastryAspects: List<SynastryAspect> = synastryAspects(outer.positionMap, inner.positionMap, aspectCalculator, threshold, aspects)
 
     val houseOverlayStars = outer.points.filter { it is Planet || it is FixedStar || it is LunarPoint }
     val houseOverlayMap = houseOverlayStars.asSequence().map { pOuter: AstroPoint ->
@@ -154,7 +137,32 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     return Synastry(synastryAspects, houseOverlayMap)
   }
 
-  fun getSolarArc(model: IHoroscopeModel, time: GmtJulDay, config: IHoroscopeConfig) : Map<AstroPoint, IZodiacDegree>
+  fun synastryAspects(
+    outer : Map<AstroPoint, IZodiacDegree>,
+    inner : Map<AstroPoint, IZodiacDegree>,
+    aspectCalculator: IAspectCalculator,
+    threshold: Double?,
+    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
+  ): List<SynastryAspect> {
+    return outer.keys.asSequence().flatMap { pOuter -> inner.keys.asSequence().map { pInner -> pOuter to pInner } }
+      .mapNotNull { (pOuter, pInner) ->
+        aspectCalculator.getAspectPattern(pOuter, pInner, outer, inner, { null }, { null }, aspects)
+          ?.let { p: IPointAspectPattern ->
+            SynastryAspect(pOuter, pInner, null, null, p.aspect, p.orb, null, p.score)
+          }
+      }
+      .filter {
+        if (threshold != null) {
+          it.score != null && it.score.value > threshold
+        } else {
+          true
+        }
+      }
+      .sortedByDescending { it.score }
+      .toList()
+  }
+
+  fun getSolarArc(model: IHoroscopeModel, time: GmtJulDay, config: IHoroscopeConfig) : Pair<Map<AstroPoint, IZodiacDegree>, Map<AstroPoint, IZodiacDegree>>
 }
 
 data class ProgressionCalcObj(
@@ -285,14 +293,22 @@ class HoroscopeFeature(
     return performOperation(param)
   }
 
-  override fun getSolarArc(model: IHoroscopeModel, time: GmtJulDay, config: IHoroscopeConfig): Map<AstroPoint, IZodiacDegree> {
+  override fun getSolarArc(model: IHoroscopeModel, time: GmtJulDay, config: IHoroscopeConfig): Pair<Map<AstroPoint, IZodiacDegree>, Map<AstroPoint, IZodiacDegree>> {
     val sunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, time, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
     val sunPosDiff = sunPos.lngDeg - model.getPosition(Planet.SUN)!!.lngDeg
-
-
-    return model.positionMap.mapValues { (_, pos) ->
+    val posMap = model.positionMap.mapValues { (_, pos) ->
       pos.lngDeg + sunPosDiff
     }
+
+    val later = time.plus(0.1)
+    val laterSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, later, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
+    val laterSunPosDiff = laterSunPos.lngDeg - sunPos.lngDeg
+
+    val laterPosMap: Map<AstroPoint, ZodiacDegree> = model.positionMap.mapValues { (_, pos) ->
+      pos.lngDeg + laterSunPosDiff
+    }
+
+    return posMap to laterPosMap
   }
 
   companion object {
