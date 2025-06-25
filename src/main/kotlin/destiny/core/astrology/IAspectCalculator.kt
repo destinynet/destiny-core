@@ -19,7 +19,7 @@ interface IAspectCalculator  {
 
   fun getAspectPattern(p1: AstroPoint, p2: AstroPoint,
                        p1PosMap: Map<AstroPoint, IZodiacDegree>, p2PosMap: Map<AstroPoint, IZodiacDegree>,
-                       laterForP1: () -> IZodiacDegree?, laterForP2: () -> IZodiacDegree?,
+                       laterForP1: ((AstroPoint) -> IZodiacDegree?)?, laterForP2: ((AstroPoint) -> IZodiacDegree?)?,
                        aspects: Set<Aspect>): IPointAspectPattern?
 
   /** 取得此星盤中，所有的交角資料 */

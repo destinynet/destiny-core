@@ -15,7 +15,7 @@ class ProgressionMinor(override val forward: Boolean = true) : AbstractProgressi
   override val type: ProgressionType = ProgressionType.MINOR
 
   /** MP (一月一年) , 分子是 一年  */
-  override val numerator: Double = Constants.SIDEREAL_YEAR
+  override val numerator: Double = Constants.SIDEREAL_YEAR_SECONDS
 
   /** MP (一月一年) , 分母是 一月  */
   override val denominator: Double = Constants.SIDEREAL_MONTH

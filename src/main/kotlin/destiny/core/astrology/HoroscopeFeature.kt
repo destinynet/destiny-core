@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import destiny.core.astrology.Aspect.Importance
+import destiny.core.astrology.Constants.TROPICAL_YEAR_DAYS
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.*
 import destiny.core.astrology.classical.rules.Misc
@@ -120,7 +121,10 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   ): Synastry {
     val posMapOuter = outer.positionMap
 
-    val synastryAspects: List<SynastryAspect> = synastryAspects(outer.positionMap, inner.positionMap, aspectCalculator, threshold, aspects)
+    val synastryAspects: List<SynastryAspect> = synastryAspects(
+      outer.positionMap, inner,
+      null, null,
+      aspectCalculator, threshold, aspects)
 
     val houseOverlayStars = outer.points.filter { it is Planet || it is FixedStar || it is LunarPoint }
     val houseOverlayMap = houseOverlayStars.asSequence().map { pOuter: AstroPoint ->
@@ -137,18 +141,25 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     return Synastry(synastryAspects, houseOverlayMap)
   }
 
+  /**
+   * 適用於 inner 具備完整時辰的情形
+   */
   fun synastryAspects(
     outer : Map<AstroPoint, IZodiacDegree>,
-    inner : Map<AstroPoint, IZodiacDegree>,
+    inner : IHoroscopeModel,
+    laterForP1: ((AstroPoint) -> IZodiacDegree?)?, laterForP2: ((AstroPoint) -> IZodiacDegree?)?,
     aspectCalculator: IAspectCalculator,
     threshold: Double?,
     aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
   ): List<SynastryAspect> {
-    return outer.keys.asSequence().flatMap { pOuter -> inner.keys.asSequence().map { pInner -> pOuter to pInner } }
+    return outer.keys.asSequence().flatMap { pOuter -> inner.positionMap.keys.asSequence().map { pInner -> pOuter to pInner } }
       .mapNotNull { (pOuter, pInner) ->
-        aspectCalculator.getAspectPattern(pOuter, pInner, outer, inner, { null }, { null }, aspects)
+        aspectCalculator.getAspectPattern(pOuter, pInner, outer, inner.positionMap, laterForP1, laterForP2, aspects)
           ?.let { p: IPointAspectPattern ->
-            SynastryAspect(pOuter, pInner, null, null, p.aspect, p.orb, null, p.score)
+            val pOuterHouse = inner.getHouse(outer[pOuter]!!.zDeg.toZodiacDegree())
+            val pInnerHouse = inner.getHouse(inner.positionMap[pInner]!!.lng.toZodiacDegree())
+
+            SynastryAspect(pOuter, pInner, pOuterHouse, pInnerHouse, p.aspect, p.orb, p.type, p.score)
           }
       }
       .filter {
@@ -162,7 +173,36 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
       .toList()
   }
 
-  fun getSolarArc(model: IHoroscopeModel, time: GmtJulDay, config: IHoroscopeConfig) : Pair<Map<AstroPoint, IZodiacDegree>, Map<AstroPoint, IZodiacDegree>>
+  /**
+   * 適用於 inner (maybe natal) 不具備時辰的情形
+   */
+  fun synastryAspects(
+    outer: Map<AstroPoint, IZodiacDegree>,
+    inner: Map<AstroPoint, IZodiacDegree>,
+    laterForP1: ((AstroPoint) -> IZodiacDegree?)?, laterForP2: ((AstroPoint) -> IZodiacDegree?)?,
+    aspectCalculator: IAspectCalculator,
+    threshold: Double?,
+    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
+  ): List<SynastryAspect> {
+    return outer.keys.asSequence().flatMap { pOuter -> inner.keys.asSequence().map { pInner -> pOuter to pInner } }
+      .mapNotNull { (pOuter, pInner) ->
+        aspectCalculator.getAspectPattern(pOuter, pInner, outer, inner, laterForP1, laterForP2, aspects)
+          ?.let { p: IPointAspectPattern ->
+            SynastryAspect(pOuter, pInner, null, null, p.aspect, p.orb, p.type, p.score)
+          }
+      }
+      .filter {
+        if (threshold != null) {
+          it.score != null && it.score.value > threshold
+        } else {
+          true
+        }
+      }
+      .sortedByDescending { it.score }
+      .toList()
+  }
+
+  fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, config: IHoroscopeConfig) : ISolarArcModel
 }
 
 data class ProgressionCalcObj(
@@ -193,7 +233,6 @@ class HoroscopeFeature(
     get() = horoscopeFeatureCache as Cache<GmtCacheKey<IHoroscopeConfig>, IHoroscopeModel>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IHoroscopeConfig): IHoroscopeModel {
-
     val positionMap: Map<AstroPoint, IPosWithAzimuth> = config.points.map { point ->
       point to pointPosFuncMap[point]?.getPosition(gmtJulDay, loc, config.centric, config.coordinate, config.temperature, config.pressure)
     }.filter { (_, v) -> v != null }
@@ -293,22 +332,41 @@ class HoroscopeFeature(
     return performOperation(param)
   }
 
-  override fun getSolarArc(model: IHoroscopeModel, time: GmtJulDay, config: IHoroscopeConfig): Pair<Map<AstroPoint, IZodiacDegree>, Map<AstroPoint, IZodiacDegree>> {
-    val sunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, time, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
-    val sunPosDiff = sunPos.lngDeg - model.getPosition(Planet.SUN)!!.lngDeg
+  override fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, config: IHoroscopeConfig): ISolarArcModel {
+
+    val diffDays = (viewTime - model.gmtJulDay) / TROPICAL_YEAR_DAYS
+    val t = model.gmtJulDay + diffDays
+
+    val convergentSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, t, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
+
+    logger.trace { "natal sun = ${model.getPosition(Planet.SUN)!!.lngDeg}" }
+    logger.trace { "convergent sun = ${convergentSunPos.lngDeg}" }
+
+    val sunPosDiff = convergentSunPos.lngDeg.getAngle(model.getPosition(Planet.SUN)!!.zDeg)
     val posMap = model.positionMap.mapValues { (_, pos) ->
       pos.lngDeg + sunPosDiff
     }
 
-    val later = time.plus(0.1)
-    val laterSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, later, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
-    val laterSunPosDiff = laterSunPos.lngDeg - sunPos.lngDeg
+    logger.info { "sunPosDiff = $sunPosDiff" }
 
-    val laterPosMap: Map<AstroPoint, ZodiacDegree> = model.positionMap.mapValues { (_, pos) ->
-      pos.lngDeg + laterSunPosDiff
+    val later = t.plus(0.01)
+    val convergentAndLaterSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, later, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
+    // 修正：計算 later 時間點相對於「本命太陽」的「完整弧角」
+    val laterFullSunArc = convergentAndLaterSunPos.lngDeg - model.getPosition(Planet.SUN)!!.lngDeg
+    val laterPosMap = model.positionMap.mapValues { (_, pos) ->
+      pos.lngDeg + laterFullSunArc
     }
 
-    return posMap to laterPosMap
+    val laterForP1: ((AstroPoint) -> IZodiacDegree?) = { p -> laterPosMap[p] }
+    val laterForP2: ((AstroPoint) -> IZodiacDegree?) = { p -> model.getZodiacDegree(p) }
+
+    val synastryAspects = if (innerConsiderHour) {
+      synastryAspects(posMap, model, laterForP1, laterForP2, aspectCalculator, 0.9)
+    } else {
+      synastryAspects(posMap, model.positionMap, laterForP1, laterForP2, aspectCalculator, 0.9)
+    }
+
+    return SolarArcModel(model.gmtJulDay, innerConsiderHour, viewTime, model.location, posMap, synastryAspects)
   }
 
   companion object {

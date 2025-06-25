@@ -20,8 +20,8 @@ interface ISynastryAspect : IPointAspectPattern {
 data class SynastryAspect(
   override val outerPoint: AstroPoint,
   override val innerPoint: AstroPoint,
-  override val outerPointHouse: Int?,
-  override val innerPointHouse: Int?,
+  override val outerPointHouse: Int? = null,
+  override val innerPointHouse: Int? = null,
   override val aspect: Aspect,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   override val orb: Double,

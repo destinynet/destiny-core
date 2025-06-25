@@ -33,7 +33,7 @@ class ProgressionSecondary(override val forward: Boolean = true) : AbstractProgr
   override val type: ProgressionType = ProgressionType.SECONDARY
 
   /** SP (一日一年) , 分子是 一年  */
-  override val numerator: Double = Constants.SIDEREAL_YEAR
+  override val numerator: Double = Constants.SIDEREAL_YEAR_SECONDS
 
   /** SP (一日一年) , 分母是 一日  */
   override val denominator: Double = Constants.SIDEREAL_DAY

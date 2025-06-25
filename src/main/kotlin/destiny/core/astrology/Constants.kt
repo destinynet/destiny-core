@@ -13,10 +13,12 @@ object Constants {
   const val MEAN_YEAR = SECONDS_OF_DAY * 365.0000    //31536000
 
   /** 回歸年 (From one equinox to the next) */
-  const val TROPICAL_YEAR = SECONDS_OF_DAY * 365.242190  //31556925.2
+  const val TROPICAL_YEAR_DAYS = 365.242190
+  const val TROPICAL_YEAR_SECONDS = SECONDS_OF_DAY * TROPICAL_YEAR_DAYS  //31556925.2
 
   /** 恆星年 (Between maximum elevation passages of a fixed star) */
-  const val SIDEREAL_YEAR = SECONDS_OF_DAY * 365.256363  //31558149.8
+  const val SIDEREAL_YEAR_DAYS = 365.256363
+  const val SIDEREAL_YEAR_SECONDS = SECONDS_OF_DAY * SIDEREAL_YEAR_DAYS  //31558149.8
 
   /** 恆星月 (1994-2000)  */
   const val SIDEREAL_MONTH = SECONDS_OF_DAY * 27.321662 // 2360591.6

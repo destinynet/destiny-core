@@ -20,7 +20,7 @@ class AspectCalculatorImpl(
   override fun getAspectPattern(
     p1: AstroPoint, p2: AstroPoint,
     p1PosMap: Map<AstroPoint, IZodiacDegree>, p2PosMap: Map<AstroPoint, IZodiacDegree>,
-    laterForP1: () -> IZodiacDegree?, laterForP2: () -> IZodiacDegree?, aspects: Set<Aspect>
+    laterForP1: ((AstroPoint) -> IZodiacDegree?)?, laterForP2: ((AstroPoint) -> IZodiacDegree?)?, aspects: Set<Aspect>
   ): IPointAspectPattern? {
     return aspects
       .intersect(aspectEffectiveImpl.applicableAspects)
@@ -34,8 +34,8 @@ class AspectCalculatorImpl(
         val error = errorAndScore.first
         val score = errorAndScore.second
 
-        laterForP1.invoke()?.zDeg?.let { deg1Next ->
-          laterForP2.invoke()?.zDeg?.let { deg2Next ->
+        laterForP1?.invoke(p1)?.zDeg?.let { deg1Next ->
+          laterForP2?.invoke(p2)?.zDeg?.let { deg2Next ->
             val planetsAngleNext = deg1Next.toZodiacDegree().getAngle(deg2Next)
             val errorNext = abs(planetsAngleNext - aspect.degree)
             val type = if (errorNext <= error) APPLYING else SEPARATING
@@ -62,8 +62,8 @@ class AspectCalculatorImpl(
         // 8.64 seconds
         val later = this.gmtJulDay.plus(0.0001)
 
-        val laterForP1: () -> IPos? = { pointPosFuncMap[p1]?.getPosition(later, location) }
-        val laterForP2: () -> IPos? = { pointPosFuncMap[p2]?.getPosition(later, location) }
+        val laterForP1: ((AstroPoint) -> IZodiacDegree?) = { p -> pointPosFuncMap[p]?.getPosition(later, location) }
+        val laterForP2: ((AstroPoint) -> IZodiacDegree?) = { p -> pointPosFuncMap[p]?.getPosition(later, location) }
 
         getAspectPattern(p1, p2, posMap, posMap, laterForP1, laterForP2, aspects)
       }
