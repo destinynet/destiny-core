@@ -335,21 +335,21 @@ class HoroscopeFeature(
   override fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, config: IHoroscopeConfig): ISolarArcModel {
 
     val diffDays = (viewTime - model.gmtJulDay) / TROPICAL_YEAR_DAYS
-    val t = model.gmtJulDay + diffDays
+    val convergentJulDay = model.gmtJulDay + diffDays
 
-    val convergentSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, t, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
+    val convergentSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, convergentJulDay, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
 
     logger.trace { "natal sun = ${model.getPosition(Planet.SUN)!!.lngDeg}" }
     logger.trace { "convergent sun = ${convergentSunPos.lngDeg}" }
 
-    val sunPosDiff = convergentSunPos.lngDeg.getAngle(model.getPosition(Planet.SUN)!!.zDeg)
+    val solarArcDegree: Double = convergentSunPos.lngDeg.getAngle(model.getPosition(Planet.SUN)!!.zDeg)
     val posMap = model.positionMap.mapValues { (_, pos) ->
-      pos.lngDeg + sunPosDiff
+      pos.lngDeg + solarArcDegree
     }
 
-    logger.info { "sunPosDiff = $sunPosDiff" }
+    logger.info { "solarArcDegree = $solarArcDegree" }
 
-    val later = t.plus(0.01)
+    val later = convergentJulDay.plus(0.01)
     val convergentAndLaterSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, later, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
     // 修正：計算 later 時間點相對於「本命太陽」的「完整弧角」
     val laterFullSunArc = convergentAndLaterSunPos.lngDeg - model.getPosition(Planet.SUN)!!.lngDeg
@@ -366,7 +366,9 @@ class HoroscopeFeature(
       synastryAspects(posMap, model.positionMap, laterForP1, laterForP2, aspectCalculator, 0.9)
     }
 
-    return SolarArcModel(model.gmtJulDay, innerConsiderHour, viewTime, model.location, posMap, synastryAspects)
+    return SolarArcModel(model.gmtJulDay, innerConsiderHour, viewTime,
+                         convergentJulDay, solarArcDegree,
+                         model.location, posMap, synastryAspects)
   }
 
   companion object {
