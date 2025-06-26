@@ -19,8 +19,10 @@ sealed interface ISolarArcModel {
   val natalGmtJulDay: GmtJulDay
   val natalHasTime : Boolean
   val viewGmtJulDay: GmtJulDay
+  val forward: Boolean
   val convergentJulDay: GmtJulDay
-  val solarArcDegree: Double
+  // may be negative (if forward = false)
+  val degreeMoved: Double
   val loc : ILocation
   val positionMap: Map<AstroPoint, IZodiacDegree>
   val synastryAspects: List<SynastryAspect>
@@ -32,9 +34,10 @@ data class SolarArcModel(
   override val natalGmtJulDay: GmtJulDay,
   override val natalHasTime: Boolean,
   override val viewGmtJulDay: GmtJulDay,
+  override val forward: Boolean = true,
   override val convergentJulDay: GmtJulDay,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
-  override val solarArcDegree: Double,
+  override val degreeMoved: Double,
   @Serializable(with = ILocationSerializer::class)
   override val loc: ILocation,
   override val positionMap: Map<AstroPoint, @Serializable(with = IZodiacDegreeTwoDecimalSerializer::class) IZodiacDegree>,

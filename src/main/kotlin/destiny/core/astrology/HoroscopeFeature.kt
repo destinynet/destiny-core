@@ -202,7 +202,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
       .toList()
   }
 
-  fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig) : ISolarArcModel
+  fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig, forward: Boolean = true) : ISolarArcModel
 }
 
 data class ProgressionCalcObj(
@@ -333,26 +333,42 @@ class HoroscopeFeature(
   }
 
   override fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator,
-                           threshold: Double?, config: IHoroscopeConfig): ISolarArcModel {
+                           threshold: Double?, config: IHoroscopeConfig, forward: Boolean): ISolarArcModel {
+
+    require(viewTime > model.gmtJulDay) { "viewTime should be after model.gmtJulDay" }
 
     val diffDays = (viewTime - model.gmtJulDay) / TROPICAL_YEAR_DAYS
-    val convergentJulDay = model.gmtJulDay + diffDays
+    val convergentJulDay = if (forward)
+      model.gmtJulDay + diffDays
+    else
+      model.gmtJulDay - diffDays
+
 
     val convergentSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, convergentJulDay, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
 
-    logger.trace { "natal sun = ${model.getPosition(Planet.SUN)!!.lngDeg}" }
+    val natalSunPos = model.getPosition(Planet.SUN)!!
+    logger.trace { "natal sun = ${natalSunPos.lngDeg}" }
     logger.trace { "convergent sun = ${convergentSunPos.lngDeg}" }
 
-    val solarArcDegree: Double = convergentSunPos.lngDeg.getAngle(model.getPosition(Planet.SUN)!!.zDeg)
-    val posMap = model.positionMap.mapValues { (_, pos) ->
-      pos.lngDeg + solarArcDegree
+    // may be negative (if forward = false)
+    val degreeMoved: Double = convergentSunPos.lngDeg.getAngle(natalSunPos.lngDeg).let {
+      if (!forward) -it else it
     }
 
-    logger.info { "solarArcDegree = $solarArcDegree" }
+    val posMap = model.positionMap.mapValues { (_, pos) ->
+      pos.lngDeg + degreeMoved
+    }
 
-    val later = convergentJulDay.plus(0.01)
+    logger.info { "solarArcDegree = $degreeMoved" }
+
+    val later = if (forward)
+      convergentJulDay + 0.01
+    else
+      convergentJulDay - 0.01
+
+
     val convergentAndLaterSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, later, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
-    // 修正：計算 later 時間點相對於「本命太陽」的「完整弧角」
+    // 計算 later 時間點相對於「本命太陽」的「完整弧角」
     val laterFullSunArc = convergentAndLaterSunPos.lngDeg - model.getPosition(Planet.SUN)!!.lngDeg
     val laterPosMap = model.positionMap.mapValues { (_, pos) ->
       pos.lngDeg + laterFullSunArc
@@ -368,7 +384,8 @@ class HoroscopeFeature(
     }
 
     return SolarArcModel(model.gmtJulDay, innerConsiderHour, viewTime,
-                         convergentJulDay, solarArcDegree,
+                         forward,
+                         convergentJulDay, degreeMoved,
                          model.location, posMap, synastryAspects)
   }
 
