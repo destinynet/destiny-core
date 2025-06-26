@@ -433,6 +433,21 @@ class DayHourService(
       }
     }
 
+    // 星體換星座
+    val degrees = (0..<360 step 30).map { it.toDouble().toZodiacDegree() }.toSet()
+    val starChangeSigns = sequenceOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN).flatMap { planet ->
+      starTransitImpl.getRangeTransitGmt(planet, degrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
+        val newSign = zDeg.sign
+        val description = buildString {
+          append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Change Sign (星座換位). ")
+          append("From ${zDeg.sign.prev.getTitle(Locale.ENGLISH)} to ${newSign.getTitle(Locale.ENGLISH)}")
+        }
+        AstroEventDto(
+          Astro.StarChangeSign(description, planet, newSign), gmt.toLmt(), null, Span.INSTANT, Impact.GLOBAL
+        )
+      }
+    }
+
 
     return sequence {
 
@@ -469,6 +484,10 @@ class DayHourService(
       if (config.lunarPhase) {
         // 月相
         yieldAll(lunarPhaseEvents)
+      }
+      if (config.starChangeSign){
+        // 星體換星座
+        yieldAll(starChangeSigns)
       }
     }
   }

@@ -35,6 +35,8 @@ data class Config(
     /**
      * 是否在 DTO 中包含「過運星體 to 本命星體」的詳細相位資料。預設為 false
      */
-    val includeTransitToNatalAspects: Boolean = false
+    val includeTransitToNatalAspects: Boolean = false,
+    /** 星體換星座 */
+    val starChangeSign : Boolean = true
   )
 }

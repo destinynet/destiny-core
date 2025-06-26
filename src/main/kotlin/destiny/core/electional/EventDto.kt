@@ -73,6 +73,7 @@ object IEventDtoSerializer : KSerializer<IEventDto> {
     element("begin", LocalDateTimeSerializer.descriptor)
     element("end", LocalDateTimeSerializer.descriptor, isOptional = true)
     element("span", Span.serializer().descriptor)
+    element("impact", Impact.serializer().descriptor)
   }
 
   override fun serialize(encoder: Encoder, value: IEventDto) {
@@ -81,6 +82,7 @@ object IEventDtoSerializer : KSerializer<IEventDto> {
       encodeSerializableElement(descriptor, 1, LocalDateTimeSerializer, value.begin)
       value.end?.also { encodeSerializableElement(descriptor, 2, LocalDateTimeSerializer, it) }
       encodeSerializableElement(descriptor, 3, Span.serializer(), value.span)
+      encodeSerializableElement(descriptor, 4, Impact.serializer(), value.impact)
     }
   }
 
@@ -407,6 +409,15 @@ sealed class Astro : IAggregatedEvent {
     @Serializable(with = IZodiacDegreeSerializer::class)
     val zodiacDegree: IZodiacDegree,
     val transitToNatalAspects: List<SynastryAspect>
+  ) : Astro()
+
+  /** 星體換星座 */
+  @Serializable
+  @SerialName("Astro.StarChangeSign")
+  data class StarChangeSign(
+    override val description: String,
+    val astroPoint: AstroPoint,
+    val newSign: ZodiacSign,
   ) : Astro()
 
 }
