@@ -5,7 +5,10 @@ package destiny.core.astrology
 
 import destiny.core.IBirthDataNamePlace
 import destiny.core.astrology.classical.RulerPtolemyImpl
+import destiny.core.astrology.prediction.ProgressionSecondary
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.TimeTools.toGmtJulDay
+import destiny.core.electional.DayHourService
 import jakarta.inject.Named
 import java.time.LocalDate
 
@@ -18,6 +21,14 @@ interface IReportFactory {
     threshold: Double?,
     config: IPersonHoroscopeConfig
   ): TransitSolarArcModel
+
+  fun getProgressionAstroEventsModel(
+    bdnp: IBirthDataNamePlace,
+    grain: BirthDataGrain,
+    fromTime: GmtJulDay,
+    toTime: GmtJulDay,
+    config: IPersonHoroscopeConfig
+  ): ProgressionAstroEventsModel
 }
 
 @Named
@@ -27,6 +38,8 @@ class ReportFactory(
   private val aspectEffectiveModern: IAspectEffective,
   private val modernAspectCalculator: IAspectCalculator,
   private val dtoFactory: DtoFactory,
+  private val starTransitImpl: IStarTransit,
+  private val dayHourService: DayHourService
 ) : IReportFactory {
   override fun getTransitSolarArcModel(
     bdnp: IBirthDataNamePlace,
@@ -65,5 +78,48 @@ class ReportFactory(
     )
 
     return TransitSolarArcModel(natal, grain, localDate, solarArcModel, transitToSolarArcAspects)
+  }
+
+  override fun getProgressionAstroEventsModel(
+    bdnp: IBirthDataNamePlace,
+    grain: BirthDataGrain,
+    fromTime: GmtJulDay,
+    toTime: GmtJulDay,
+    config: IPersonHoroscopeConfig
+  ): ProgressionAstroEventsModel {
+    val progressionSecondary = ProgressionSecondary()
+    val convergentFrom = progressionSecondary.getConvergentTime(bdnp.gmtJulDay, fromTime)
+    val convergentTo = progressionSecondary.getConvergentTime(bdnp.gmtJulDay, toTime)
+
+    val traverseConfig = destiny.core.electional.Config(
+      ewConfig = null,
+      astrologyConfig = destiny.core.electional.Config.AstrologyConfig(
+        aspect = true,
+        voc = true,
+        retrograde = true,
+        eclipse = true,
+        lunarPhase = true,
+        includeTransitToNatalAspects = false,
+        starChangeSign = true
+      )
+    )
+
+    val includeHour = when (grain) {
+      BirthDataGrain.DAY    -> false
+      BirthDataGrain.MINUTE -> true
+    }
+
+    dayHourService.traverse(bdnp, bdnp.location, convergentFrom, convergentTo, traverseConfig, includeHour).map { eventDto ->
+      //val divergentTime = progressionSecondary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin.toGmtJulDay(bdnp.location))
+      //ProgressionEvent(eventDto as AstroEventDto, divergentTime)
+    }
+
+
+    val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(bdnp, config)
+    val natal: IPersonHoroscopeDto = with(dtoFactory) {
+      model.toPersonHoroscopeDto(convergentFrom, RulerPtolemyImpl(), aspectEffectiveModern, modernAspectCalculator, config)
+    }
+
+    TODO("Not yet implemented")
   }
 }

@@ -18,8 +18,10 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 
 
+/** 只顯示到「分」*/
 object GmtJulDaySerializer : KSerializer<GmtJulDay> {
 
   val julDayResolver = JulDayResolver1582CutoverImpl()
@@ -39,7 +41,7 @@ object GmtJulDaySerializer : KSerializer<GmtJulDay> {
     val gmtStr = value.toLmt(ZoneId.of("UTC"), julDayResolver)
       .let {
         if (it is LocalDateTime)
-          it.roundToNearestSecond()
+          it.roundToNearestSecond().truncatedTo(ChronoUnit.MINUTES)
         else
           it
       }

@@ -11,6 +11,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.chinese.YinYang
 import destiny.core.toString
 import destiny.tools.serializers.IZodiacDegreeSerializer
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.util.*
 
@@ -143,9 +144,11 @@ sealed class Misc : IPlanetPattern {
    * */
   @Serializable
   data class VoidCourseSpan(override val planet: Planet,
+                            @Contextual
                             override val begin : GmtJulDay,
                             @Serializable(with = IZodiacDegreeSerializer::class)
                             override val fromPos : IZodiacDegree,
+                            @Contextual
                             override val end : GmtJulDay,
                             @Serializable(with = IZodiacDegreeSerializer::class)
                             override val toPos : IZodiacDegree,

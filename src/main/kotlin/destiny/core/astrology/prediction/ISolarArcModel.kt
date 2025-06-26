@@ -9,7 +9,6 @@ import destiny.core.astrology.SynastryAspect
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
-import destiny.tools.serializers.GmtJulDaySerializer
 import destiny.tools.serializers.ILocationSerializer
 import destiny.tools.serializers.IZodiacDegreeTwoDecimalSerializer
 import kotlinx.serialization.Serializable
@@ -30,7 +29,6 @@ sealed interface ISolarArcModel {
 
 @Serializable
 data class SolarArcModel(
-  @Serializable(with = GmtJulDaySerializer::class)
   override val natalGmtJulDay: GmtJulDay,
   override val natalHasTime: Boolean,
   override val viewGmtJulDay: GmtJulDay,

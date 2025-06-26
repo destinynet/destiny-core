@@ -6,6 +6,7 @@ package destiny.core.calendar.eightwords
 import destiny.core.Scale
 import destiny.core.chinese.*
 import destiny.tools.ChineseStringTools
+import kotlinx.serialization.SerialName
 import java.io.Serializable
 
 /**
@@ -184,6 +185,7 @@ data class EightWordsNullable(override val year: IStemBranchOptional,
  * 2018-04-01 起， 將此 class 與 [EightWordsNullable] 拆離繼承關係
  */
 @kotlinx.serialization.Serializable
+@SerialName("EightWords")
 data class EightWords(override val year: StemBranch,
                       override val month: IStemBranch,
                       override val day: StemBranch,

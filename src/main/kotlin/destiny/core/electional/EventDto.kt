@@ -8,6 +8,7 @@ import destiny.core.Scale
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.IEclipse
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
@@ -31,14 +32,9 @@ import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import destiny.tools.serializers.IZodiacDegreeSerializer
 import destiny.tools.serializers.LocalDateSerializer
 import destiny.tools.serializers.LocalDateTimeSerializer
-import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.encoding.encodeStructure
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -54,11 +50,11 @@ sealed interface IAggregatedEvent {
   val description: String
 }
 
-@Serializable(with = IEventDtoSerializer::class)
+//@Serializable(with = IEventDtoSerializer::class)
 sealed interface IEventDto : Comparable<IEventDto> {
   val event: IAggregatedEvent
-  val begin: LocalDateTime
-  val end: LocalDateTime?
+  val begin: GmtJulDay
+  val end: GmtJulDay?
   val span: Span
   val impact: Impact
 
@@ -67,49 +63,27 @@ sealed interface IEventDto : Comparable<IEventDto> {
   }
 }
 
-object IEventDtoSerializer : KSerializer<IEventDto> {
-  override val descriptor: SerialDescriptor = buildClassSerialDescriptor("IEventDto") {
-    element("event", IAggregatedEvent.serializer().descriptor)
-    element("begin", LocalDateTimeSerializer.descriptor)
-    element("end", LocalDateTimeSerializer.descriptor, isOptional = true)
-    element("span", Span.serializer().descriptor)
-    element("impact", Impact.serializer().descriptor)
-  }
-
-  override fun serialize(encoder: Encoder, value: IEventDto) {
-    encoder.encodeStructure(descriptor) {
-      encodeSerializableElement(descriptor, 0, IAggregatedEvent.serializer(), value.event)
-      encodeSerializableElement(descriptor, 1, LocalDateTimeSerializer, value.begin)
-      value.end?.also { encodeSerializableElement(descriptor, 2, LocalDateTimeSerializer, it) }
-      encodeSerializableElement(descriptor, 3, Span.serializer(), value.span)
-      encodeSerializableElement(descriptor, 4, Impact.serializer(), value.impact)
-    }
-  }
-
-  override fun deserialize(decoder: Decoder): IEventDto {
-    throw UnsupportedOperationException("Deserialization not supported for IEventDto")
-  }
-}
-
 @Serializable
+@SerialName("EwEventDto")
 data class EwEventDto(
   override val event: Ew,
   val outer: IEightWords,
-  @Serializable(with = LocalDateTimeSerializer::class)
-  override val begin: LocalDateTime,
-  @Serializable(with = LocalDateTimeSerializer::class)
-  override val end : LocalDateTime? = null,
+  @Contextual
+  override val begin: GmtJulDay,
+  @Contextual
+  override val end : GmtJulDay? = null,
   override val span: Span,
   override val impact: Impact
 ) : IEventDto
 
 @Serializable
+@SerialName("AstroEventDto")
 data class AstroEventDto(
   override val event: Astro,
-  @Serializable(with = LocalDateTimeSerializer::class)
-  override val begin: LocalDateTime,
-  @Serializable(with = LocalDateTimeSerializer::class)
-  override val end : LocalDateTime? = null,
+  @Contextual
+  override val begin: GmtJulDay,
+  @Contextual
+  override val end : GmtJulDay? = null,
   override val span: Span,
   override val impact: Impact
 ) : IEventDto
