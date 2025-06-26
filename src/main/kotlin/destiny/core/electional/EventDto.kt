@@ -52,7 +52,6 @@ enum class Span {
 @Serializable
 sealed interface IAggregatedEvent {
   val description: String
-  val impact: Impact
 }
 
 @Serializable(with = IEventDtoSerializer::class)
@@ -60,8 +59,8 @@ sealed interface IEventDto : Comparable<IEventDto> {
   val event: IAggregatedEvent
   val begin: LocalDateTime
   val end: LocalDateTime?
-
   val span: Span
+  val impact: Impact
 
   override fun compareTo(other: IEventDto): Int {
     return begin.compareTo(other.begin)
@@ -98,7 +97,8 @@ data class EwEventDto(
   override val begin: LocalDateTime,
   @Serializable(with = LocalDateTimeSerializer::class)
   override val end : LocalDateTime? = null,
-  override val span: Span
+  override val span: Span,
+  override val impact: Impact
 ) : IEventDto
 
 @Serializable
@@ -108,7 +108,8 @@ data class AstroEventDto(
   override val begin: LocalDateTime,
   @Serializable(with = LocalDateTimeSerializer::class)
   override val end : LocalDateTime? = null,
-  override val span: Span
+  override val span: Span,
+  override val impact: Impact
 ) : IEventDto
 
 @Serializable
@@ -143,7 +144,6 @@ sealed class Ew : IAggregatedEvent {
 
   @Serializable
   sealed class EwIdentity : Ew() {
-    override val impact: Impact = Impact.GLOBAL
 
     /**
      * 本命天干合化
@@ -236,8 +236,6 @@ sealed class Ew : IAggregatedEvent {
 
   @Serializable
   sealed class EwFlow : Ew() {
-
-    override val impact: Impact = Impact.PERSONAL
 
     /** 是否與本命時柱相關 */
     abstract val hourRelated: Boolean
@@ -359,8 +357,7 @@ sealed class Astro : IAggregatedEvent {
   @SerialName("Astro.AspectEvent")
   data class AspectEvent(
     override val description: String,
-    val aspectData: AspectData,
-    override val impact: Impact
+    val aspectData: AspectData
   ) : Astro()
 
   /** 月亮空亡 */
@@ -369,9 +366,7 @@ sealed class Astro : IAggregatedEvent {
   data class MoonVoc(
     override val description: String,
     val voidCourseSpan: Misc.VoidCourseSpan
-  ) : Astro() {
-    override val impact: Impact = Impact.GLOBAL
-  }
+  ) : Astro()
 
   /** 星體滯留 */
   @Serializable
@@ -382,9 +377,7 @@ sealed class Astro : IAggregatedEvent {
     @Serializable(with = IZodiacDegreeSerializer::class)
     val zodiacDegree: IZodiacDegree,
     val transitToNatalAspects: List<SynastryAspect>
-  ) : Astro() {
-    override val impact: Impact = Impact.GLOBAL
-  }
+  ) : Astro()
 
   /** 當日星體逆行 */
   @Serializable
@@ -394,9 +387,7 @@ sealed class Astro : IAggregatedEvent {
     val planet: Planet,
     @Serializable(with = DoubleTwoDecimalSerializer::class)
     val progress: Double
-  ) : Astro() {
-    override val impact: Impact = Impact.GLOBAL
-  }
+  ) : Astro()
 
   /** 日食 or 月食 */
   @Serializable
@@ -405,9 +396,7 @@ sealed class Astro : IAggregatedEvent {
     override val description: String,
     val eclipse: IEclipse,
     val transitToNatalAspects: List<SynastryAspect>
-  ) : Astro() {
-    override val impact: Impact = Impact.GLOBAL
-  }
+  ) : Astro()
 
   /** 月相 */
   @Serializable
@@ -418,9 +407,7 @@ sealed class Astro : IAggregatedEvent {
     @Serializable(with = IZodiacDegreeSerializer::class)
     val zodiacDegree: IZodiacDegree,
     val transitToNatalAspects: List<SynastryAspect>
-  ) : Astro() {
-    override val impact: Impact = Impact.GLOBAL
-  }
+  ) : Astro()
 
 }
 

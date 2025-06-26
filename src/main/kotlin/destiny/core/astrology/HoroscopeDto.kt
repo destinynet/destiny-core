@@ -27,7 +27,7 @@ interface IHoroscopeDto {
   val signs: Map<ZodiacSign, List<AstroPoint>>
   val houses: List<HouseDto>
   val stars: Map<AstroPoint, StarPosInfo>
-  val axisStars : Map<Axis , List<AxisStar>>
+  val axisStars : Map<Axis, List<AxisStar>>
   val houseStarDistribution: Map<HouseType, HouseStarDistribution>
   val elementPercentage: Map<Element, Double>
   val qualityPercentage: Map<Quality, Double>
@@ -61,7 +61,7 @@ data class HoroscopeDto(
   override val midPoints: List<@Serializable(with = IMidPointWithFocalSerializer::class) IMidPointWithFocal>
 ) : IHoroscopeDto
 
-interface IPersonHoroscopeDto : IHoroscopeDto , IBirthDataNamePlace
+interface IPersonHoroscopeDto : IHoroscopeDto, IBirthDataNamePlace
 
 /**
  * a DTO object for a [IPersonHoroscopeModel]
