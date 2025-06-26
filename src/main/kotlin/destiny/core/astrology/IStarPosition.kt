@@ -17,7 +17,6 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IStarPosition<out T : IStarPos> {
 
-  /** 設定觀測地點，對於 [Centric.TOPO] 有用 . 2017-07-03 註記 : 此 method 無法移除 */
   fun setLocation(location: ILocation)
 
   fun getPosition(star: Star, gmtJulDay: GmtJulDay, centric: Centric, coordinate: Coordinate): T

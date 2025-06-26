@@ -12,13 +12,10 @@ import java.time.LocalDate
 @Serializable
 data class TransitSolarArcModel(
   val natal: IPersonHoroscopeDto,
-  val grain: Grain,
+  val grain: BirthDataGrain,
   @Serializable(with = LocalDateSerializer::class)
   val localDate: LocalDate,
   val solarArcModel: ISolarArcModel,
   val transitToSolarArcAspects: List<SynastryAspect>
 ) {
-  enum class Grain {
-    DAY , MINUTE
-  }
 }

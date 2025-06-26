@@ -10,10 +10,10 @@ import jakarta.inject.Named
 import java.time.LocalDate
 
 
-interface IDailyReportFactory {
+interface IReportFactory {
   fun getTransitSolarArcModel(
     bdnp: IBirthDataNamePlace,
-    grain: TransitSolarArcModel.Grain,
+    grain: BirthDataGrain,
     localDate: LocalDate,
     threshold: Double?,
     config: IPersonHoroscopeConfig
@@ -21,16 +21,16 @@ interface IDailyReportFactory {
 }
 
 @Named
-class DailyReportFactory(
+class ReportFactory(
   private val personHoroscopeFeature: IPersonHoroscopeFeature,
   private val horoscopeFeature: IHoroscopeFeature,
   private val aspectEffectiveModern: IAspectEffective,
   private val modernAspectCalculator: IAspectCalculator,
   private val dtoFactory: DtoFactory,
-) : IDailyReportFactory {
+) : IReportFactory {
   override fun getTransitSolarArcModel(
     bdnp: IBirthDataNamePlace,
-    grain: TransitSolarArcModel.Grain,
+    grain: BirthDataGrain,
     localDate: LocalDate,
     threshold: Double?,
     config: IPersonHoroscopeConfig
@@ -42,8 +42,8 @@ class DailyReportFactory(
     }
 
     val innerConsiderHour = when (grain) {
-      TransitSolarArcModel.Grain.DAY -> false
-      TransitSolarArcModel.Grain.MINUTE -> true
+      BirthDataGrain.DAY    -> false
+      BirthDataGrain.MINUTE -> true
     }
 
     val solarArcModel = horoscopeFeature.getSolarArc(model, viewGmt, innerConsiderHour, modernAspectCalculator, threshold, config)
