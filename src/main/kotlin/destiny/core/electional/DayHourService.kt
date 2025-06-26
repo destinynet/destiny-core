@@ -248,10 +248,6 @@ class DayHourService(
     config: Config.AstrologyConfig
   ): Sequence<IEventDto> {
 
-    fun GmtJulDay.toLmt(): LocalDateTime {
-      return (this.toLmt(loc, julDayResolver) as LocalDateTime).roundAndTruncate()
-    }
-
     val outerStars = setOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
     val innerStars = setOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
 

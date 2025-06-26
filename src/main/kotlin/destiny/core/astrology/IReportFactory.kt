@@ -6,9 +6,14 @@ package destiny.core.astrology
 import destiny.core.IBirthDataNamePlace
 import destiny.core.astrology.classical.RulerPtolemyImpl
 import destiny.core.astrology.prediction.ProgressionSecondary
+import destiny.core.astrology.prediction.ProgressionTertiary
 import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools.toGmtJulDay
+import destiny.core.calendar.toLmt
+import destiny.core.electional.AstroEventDto
 import destiny.core.electional.DayHourService
+import destiny.tools.KotlinLogging
 import jakarta.inject.Named
 import java.time.LocalDate
 
@@ -38,8 +43,8 @@ class ReportFactory(
   private val aspectEffectiveModern: IAspectEffective,
   private val modernAspectCalculator: IAspectCalculator,
   private val dtoFactory: DtoFactory,
-  private val starTransitImpl: IStarTransit,
-  private val dayHourService: DayHourService
+  private val dayHourService: DayHourService,
+  private val julDayResolver: JulDayResolver,
 ) : IReportFactory {
   override fun getTransitSolarArcModel(
     bdnp: IBirthDataNamePlace,
@@ -88,15 +93,26 @@ class ReportFactory(
     config: IPersonHoroscopeConfig
   ): ProgressionAstroEventsModel {
     val progressionSecondary = ProgressionSecondary()
-    val convergentFrom = progressionSecondary.getConvergentTime(bdnp.gmtJulDay, fromTime)
-    val convergentTo = progressionSecondary.getConvergentTime(bdnp.gmtJulDay, toTime)
+    val progressionTertiary = ProgressionTertiary()
+
+    val secondaryProgressionConvergentFrom = progressionSecondary.getConvergentTime(bdnp.gmtJulDay, fromTime)
+    val secondaryProgressionConvergentTo = progressionSecondary.getConvergentTime(bdnp.gmtJulDay, toTime)
+
+    val tertiaryProgressionConvergentFrom = progressionTertiary.getConvergentTime(bdnp.gmtJulDay, fromTime)
+    val tertiaryProgressionConvergentTo = progressionTertiary.getConvergentTime(bdnp.gmtJulDay, toTime)
+
+    val loc = bdnp.location
+    logger.info { "secondaryProgression convergentFrom = ${secondaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
+    logger.info { "secondaryProgression convergentTo   = ${secondaryProgressionConvergentTo.toLmt(loc, julDayResolver)}" }
+    logger.info { "tertiaryProgression  convergentFrom = ${tertiaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
+    logger.info { "tertiaryProgression  convergentTo   = ${tertiaryProgressionConvergentTo.toLmt(loc, julDayResolver)}" }
 
     val traverseConfig = destiny.core.electional.Config(
       ewConfig = null,
       astrologyConfig = destiny.core.electional.Config.AstrologyConfig(
-        aspect = true,
+        aspect = false,
         voc = true,
-        retrograde = true,
+        retrograde = false,
         eclipse = true,
         lunarPhase = true,
         includeTransitToNatalAspects = false,
@@ -109,17 +125,26 @@ class ReportFactory(
       BirthDataGrain.MINUTE -> true
     }
 
-    dayHourService.traverse(bdnp, bdnp.location, convergentFrom, convergentTo, traverseConfig, includeHour).map { eventDto ->
-      //val divergentTime = progressionSecondary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin.toGmtJulDay(bdnp.location))
-      //ProgressionEvent(eventDto as AstroEventDto, divergentTime)
-    }
+    val secondaryProgressionEvents: List<ProgressionEvent> = dayHourService.traverse(bdnp, bdnp.location, secondaryProgressionConvergentFrom, secondaryProgressionConvergentTo, traverseConfig, includeHour).map { eventDto ->
+      val divergentTime = progressionSecondary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
+      ProgressionEvent(eventDto as AstroEventDto, divergentTime)
+    }.toList()
+
+    val tertiaryProgressionEvents: List<ProgressionEvent> = dayHourService.traverse(bdnp, bdnp.location, tertiaryProgressionConvergentFrom, tertiaryProgressionConvergentTo, traverseConfig, includeHour).map { eventDto ->
+      val divergentTime = progressionTertiary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
+      ProgressionEvent(eventDto as AstroEventDto, divergentTime)
+    }.toList()
 
 
     val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(bdnp, config)
     val natal: IPersonHoroscopeDto = with(dtoFactory) {
-      model.toPersonHoroscopeDto(convergentFrom, RulerPtolemyImpl(), aspectEffectiveModern, modernAspectCalculator, config)
+      model.toPersonHoroscopeDto(secondaryProgressionConvergentFrom, RulerPtolemyImpl(), aspectEffectiveModern, modernAspectCalculator, config)
     }
 
-    TODO("Not yet implemented")
+    return ProgressionAstroEventsModel(natal, grain, fromTime, toTime, secondaryProgressionEvents, tertiaryProgressionEvents)
+  }
+
+  companion object {
+    private val logger = KotlinLogging.logger { }
   }
 }
