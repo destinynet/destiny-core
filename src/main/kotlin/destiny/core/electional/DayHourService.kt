@@ -438,15 +438,16 @@ class DayHourService(
 
     // 星體換星座
     val degrees = (0..<360 step 30).map { it.toDouble().toZodiacDegree() }.toSet()
-    val starChangeSigns = sequenceOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN).flatMap { planet ->
+    val ingressStars = sequenceOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN).flatMap { planet ->
       starTransitImpl.getRangeTransitGmt(planet, degrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
         val newSign = zDeg.sign
+        val oldSign = newSign.prev
         val description = buildString {
-          append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Change Sign (星座換位). ")
-          append("From ${zDeg.sign.prev.getTitle(Locale.ENGLISH)} to ${newSign.getTitle(Locale.ENGLISH)}")
+          append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Ingresses (Change Sign). ")
+          append("From ${oldSign.getTitle(Locale.ENGLISH)} to ${newSign.getTitle(Locale.ENGLISH)}")
         }
         AstroEventDto(
-          Astro.StarChangeSign(description, planet, newSign), gmt, null, Span.INSTANT, Impact.GLOBAL
+          Astro.StarIngress(description, planet, oldSign, newSign), gmt, null, Span.INSTANT, Impact.GLOBAL
         )
       }
     }
@@ -488,9 +489,9 @@ class DayHourService(
         // 月相
         yieldAll(lunarPhaseEvents)
       }
-      if (config.starChangeSign){
+      if (config.ingress){
         // 星體換星座
-        yieldAll(starChangeSigns)
+        yieldAll(ingressStars)
       }
     }
   }

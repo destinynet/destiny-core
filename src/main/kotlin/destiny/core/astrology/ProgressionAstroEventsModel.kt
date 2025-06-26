@@ -4,6 +4,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.electional.Astro
 import destiny.core.electional.AstroEventDto
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 
@@ -15,20 +16,21 @@ interface IProgressionEvent {
 }
 
 @Serializable
+@SerialName("ProgressionEvent")
 data class ProgressionEvent(
-  val astroEventDto: AstroEventDto,
+  val astroEvent: AstroEventDto,
 
   @Contextual
   override val divergentTime: GmtJulDay
 ) : IProgressionEvent {
   override val astro: Astro
-    get() = astroEventDto.event
+    get() = astroEvent.event
 
   override val description: String
-    get() = astroEventDto.event.description
+    get() = astroEvent.event.description
 
   override val convergentTime: GmtJulDay
-    get() = astroEventDto.begin
+    get() = astroEvent.begin
 }
 
 

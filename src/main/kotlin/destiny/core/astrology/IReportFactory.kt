@@ -110,13 +110,13 @@ class ReportFactory(
     val traverseConfig = destiny.core.electional.Config(
       ewConfig = null,
       astrologyConfig = destiny.core.electional.Config.AstrologyConfig(
-        aspect = false,
+        aspect = true,
         voc = true,
         retrograde = false,
         eclipse = true,
         lunarPhase = true,
         includeTransitToNatalAspects = false,
-        starChangeSign = true
+        ingress = true
       )
     )
 

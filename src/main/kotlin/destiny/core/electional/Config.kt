@@ -37,6 +37,6 @@ data class Config(
      */
     val includeTransitToNatalAspects: Boolean = false,
     /** 星體換星座 */
-    val starChangeSign : Boolean = true
+    val ingress : Boolean = true
   )
 }
