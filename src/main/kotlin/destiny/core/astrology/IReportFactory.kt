@@ -102,16 +102,17 @@ class ReportFactory(
     val tertiaryProgressionConvergentTo = progressionTertiary.getConvergentTime(bdnp.gmtJulDay, toTime)
 
     val loc = bdnp.location
-    logger.info { "secondaryProgression convergentFrom = ${secondaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
-    logger.info { "secondaryProgression convergentTo   = ${secondaryProgressionConvergentTo.toLmt(loc, julDayResolver)}" }
-    logger.info { "tertiaryProgression  convergentFrom = ${tertiaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
-    logger.info { "tertiaryProgression  convergentTo   = ${tertiaryProgressionConvergentTo.toLmt(loc, julDayResolver)}" }
+    logger.debug { "secondaryProgression convergentFrom = ${secondaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
+    logger.debug { "secondaryProgression convergentTo   = ${secondaryProgressionConvergentTo.toLmt(loc, julDayResolver)}" }
+    logger.debug { "tertiaryProgression  convergentFrom = ${tertiaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
+    logger.debug { "tertiaryProgression  convergentTo   = ${tertiaryProgressionConvergentTo.toLmt(loc, julDayResolver)}" }
 
     val traverseConfig = destiny.core.electional.Config(
       ewConfig = null,
       astrologyConfig = destiny.core.electional.Config.AstrologyConfig(
         aspect = true,
-        voc = true,
+        voc = false,
+        stationary = true,
         retrograde = false,
         eclipse = true,
         lunarPhase = true,

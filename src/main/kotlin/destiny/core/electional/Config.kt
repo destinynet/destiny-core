@@ -26,6 +26,8 @@ data class Config(
     val aspect: Boolean = true,
     /** 月亮空亡 */
     val voc: Boolean = true,
+    /** 星體滯留 */
+    val stationary: Boolean = true,
     /** 星體逆行 */
     val retrograde: Boolean = true,
     /** 日食、月食 */

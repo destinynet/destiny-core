@@ -473,9 +473,11 @@ class DayHourService(
         // 月亮空亡
         yieldAll(moonVocSeq)
       }
-      if (config.retrograde) {
+      if (config.stationary) {
         // 內行星滯留
         yieldAll(planetStationaries)
+      }
+      if (config.retrograde) {
         // 星體當日逆行
         yieldAll(planetRetrogrades)
       }
