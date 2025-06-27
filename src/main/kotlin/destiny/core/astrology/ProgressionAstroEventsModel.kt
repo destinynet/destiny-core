@@ -1,6 +1,6 @@
 package destiny.core.astrology
 
-import destiny.core.astrology.prediction.ProgressionType
+import destiny.core.astrology.prediction.PredictiveTechnique
 import destiny.core.calendar.GmtJulDay
 import destiny.core.electional.Astro
 import destiny.core.electional.AstroEventDto
@@ -20,7 +20,7 @@ sealed interface IProgressionEvent {
   val description: String
   val convergentTime: GmtJulDay
   val divergentTime: GmtJulDay
-  val source: ProgressionType
+  val source: PredictiveTechnique
 }
 
 class IProgressionEventSerializer(private val gmtJulDayTimeSerializer: KSerializer<GmtJulDay>,
@@ -47,7 +47,7 @@ class IProgressionEventSerializer(private val gmtJulDayTimeSerializer: KSerializ
 }
 
 data class ProgressionEvent(
-  override val source: ProgressionType,
+  override val source: PredictiveTechnique,
   val astroEvent: AstroEventDto,
   override val divergentTime: GmtJulDay
 ) : IProgressionEvent {

@@ -5,9 +5,9 @@ package destiny.core.astrology
 
 import destiny.core.IBirthDataNamePlace
 import destiny.core.astrology.classical.RulerPtolemyImpl
+import destiny.core.astrology.prediction.PredictiveTechnique
 import destiny.core.astrology.prediction.ProgressionSecondary
 import destiny.core.astrology.prediction.ProgressionTertiary
-import destiny.core.astrology.prediction.ProgressionType
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools.toGmtJulDay
@@ -129,11 +129,11 @@ class ReportFactory(
 
     val secondaryProgressionEvents = dayHourService.traverse(bdnp, bdnp.location, secondaryProgressionConvergentFrom, secondaryProgressionConvergentTo, traverseConfig, includeHour).map { eventDto ->
         val divergentTime = progressionSecondary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
-        ProgressionEvent(ProgressionType.SECONDARY, eventDto as AstroEventDto, divergentTime)
+        ProgressionEvent(PredictiveTechnique.SECONDARY, eventDto as AstroEventDto, divergentTime)
       }
     val tertiaryProgressionEvents = dayHourService.traverse(bdnp, bdnp.location, tertiaryProgressionConvergentFrom, tertiaryProgressionConvergentTo, traverseConfig, includeHour).map { eventDto ->
       val divergentTime = progressionTertiary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
-      ProgressionEvent(ProgressionType.TERTIARY, eventDto as AstroEventDto, divergentTime)
+      ProgressionEvent(PredictiveTechnique.TERTIARY, eventDto as AstroEventDto, divergentTime)
     }
 
     val events = (secondaryProgressionEvents + tertiaryProgressionEvents).sortedBy { it.divergentTime }.toList()
