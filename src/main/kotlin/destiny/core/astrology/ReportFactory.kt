@@ -129,12 +129,12 @@ class ReportFactory(
     val secondaryProgressionEvents: List<ProgressionEvent> = dayHourService.traverse(bdnp, bdnp.location, secondaryProgressionConvergentFrom, secondaryProgressionConvergentTo, traverseConfig, includeHour).map { eventDto ->
       val divergentTime = progressionSecondary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
       ProgressionEvent(eventDto as AstroEventDto, divergentTime)
-    }.toList()
+    }.sortedBy { it.divergentTime }.toList()
 
     val tertiaryProgressionEvents: List<ProgressionEvent> = dayHourService.traverse(bdnp, bdnp.location, tertiaryProgressionConvergentFrom, tertiaryProgressionConvergentTo, traverseConfig, includeHour).map { eventDto ->
       val divergentTime = progressionTertiary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
       ProgressionEvent(eventDto as AstroEventDto, divergentTime)
-    }.toList()
+    }.sortedBy { it.divergentTime }.toList()
 
 
     val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(bdnp, config)
