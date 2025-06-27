@@ -1,5 +1,6 @@
 package destiny.core.astrology
 
+import destiny.core.astrology.prediction.ProgressionType
 import destiny.core.calendar.GmtJulDay
 import destiny.core.electional.Astro
 import destiny.core.electional.AstroEventDto
@@ -19,20 +20,24 @@ sealed interface IProgressionEvent {
   val description: String
   val convergentTime: GmtJulDay
   val divergentTime: GmtJulDay
+  val source: ProgressionType
 }
 
-class IProgressionEventSerializer(private val gmtJulDaySerializer: KSerializer<GmtJulDay>) : KSerializer<IProgressionEvent> {
+class IProgressionEventSerializer(private val gmtJulDayTimeSerializer: KSerializer<GmtJulDay>,
+                                  private val gmtJulDayDateSerializer : KSerializer<GmtJulDay>) : KSerializer<IProgressionEvent> {
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("IProgressionEvent") {
+    element<String>("source")
     element<String>("description")
-    element("convergentTime", gmtJulDaySerializer.descriptor)
-    element("divergentTime", gmtJulDaySerializer.descriptor)
+    element("convergentTime", gmtJulDayTimeSerializer.descriptor)
+    element("divergentDate", gmtJulDayDateSerializer.descriptor)
   }
 
   override fun serialize(encoder: Encoder, value: IProgressionEvent) {
     encoder.encodeStructure(descriptor) {
-      encodeStringElement(descriptor, 0, value.description)
-      encodeSerializableElement(descriptor, 1, gmtJulDaySerializer, value.convergentTime)
-      encodeSerializableElement(descriptor, 2, gmtJulDaySerializer, value.divergentTime)
+      encodeStringElement(descriptor, 0, value.source.name)
+      encodeStringElement(descriptor, 1, value.description)
+      encodeSerializableElement(descriptor, 2, gmtJulDayTimeSerializer, value.convergentTime)
+      encodeSerializableElement(descriptor, 3, gmtJulDayDateSerializer, value.divergentTime)
     }
   }
 
@@ -42,6 +47,7 @@ class IProgressionEventSerializer(private val gmtJulDaySerializer: KSerializer<G
 }
 
 data class ProgressionEvent(
+  override val source: ProgressionType,
   val astroEvent: AstroEventDto,
   override val divergentTime: GmtJulDay
 ) : IProgressionEvent {
@@ -64,6 +70,5 @@ data class ProgressionAstroEventsModel(
   val fromTime: GmtJulDay,
   @Contextual
   val toTime: GmtJulDay,
-  val secondaryProgressionEvents: List<@Contextual IProgressionEvent>,
-  val tertiaryProgressionEvents: List<@Contextual IProgressionEvent>
+  val events: List<@Contextual IProgressionEvent>,
 )

@@ -7,6 +7,7 @@ import destiny.core.IBirthDataNamePlace
 import destiny.core.astrology.classical.RulerPtolemyImpl
 import destiny.core.astrology.prediction.ProgressionSecondary
 import destiny.core.astrology.prediction.ProgressionTertiary
+import destiny.core.astrology.prediction.ProgressionType
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools.toGmtJulDay
@@ -126,15 +127,16 @@ class ReportFactory(
       BirthDataGrain.MINUTE -> true
     }
 
-    val secondaryProgressionEvents: List<ProgressionEvent> = dayHourService.traverse(bdnp, bdnp.location, secondaryProgressionConvergentFrom, secondaryProgressionConvergentTo, traverseConfig, includeHour).map { eventDto ->
-      val divergentTime = progressionSecondary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
-      ProgressionEvent(eventDto as AstroEventDto, divergentTime)
-    }.sortedBy { it.divergentTime }.toList()
-
-    val tertiaryProgressionEvents: List<ProgressionEvent> = dayHourService.traverse(bdnp, bdnp.location, tertiaryProgressionConvergentFrom, tertiaryProgressionConvergentTo, traverseConfig, includeHour).map { eventDto ->
+    val secondaryProgressionEvents = dayHourService.traverse(bdnp, bdnp.location, secondaryProgressionConvergentFrom, secondaryProgressionConvergentTo, traverseConfig, includeHour).map { eventDto ->
+        val divergentTime = progressionSecondary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
+        ProgressionEvent(ProgressionType.SECONDARY, eventDto as AstroEventDto, divergentTime)
+      }
+    val tertiaryProgressionEvents = dayHourService.traverse(bdnp, bdnp.location, tertiaryProgressionConvergentFrom, tertiaryProgressionConvergentTo, traverseConfig, includeHour).map { eventDto ->
       val divergentTime = progressionTertiary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
-      ProgressionEvent(eventDto as AstroEventDto, divergentTime)
-    }.sortedBy { it.divergentTime }.toList()
+      ProgressionEvent(ProgressionType.TERTIARY, eventDto as AstroEventDto, divergentTime)
+    }
+
+    val events = (secondaryProgressionEvents + tertiaryProgressionEvents).sortedBy { it.divergentTime }.toList()
 
 
     val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(bdnp, config)
@@ -142,7 +144,7 @@ class ReportFactory(
       model.toPersonHoroscopeDto(secondaryProgressionConvergentFrom, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, config)
     }
 
-    return ProgressionAstroEventsModel(natal, grain, fromTime, toTime, secondaryProgressionEvents, tertiaryProgressionEvents)
+    return ProgressionAstroEventsModel(natal, grain, fromTime, toTime, events)
   }
 
   companion object {
