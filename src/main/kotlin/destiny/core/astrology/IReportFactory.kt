@@ -56,7 +56,7 @@ class ReportFactory(
     val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(bdnp, config)
     val viewGmt = localDate.atTime(12, 0).toGmtJulDay(bdnp.location)
     val natal: IPersonHoroscopeDto = with(dtoFactory) {
-      model.toPersonHoroscopeDto(viewGmt, RulerPtolemyImpl(), aspectEffectiveModern, modernAspectCalculator, config)
+      model.toPersonHoroscopeDto(viewGmt, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, config)
     }
 
     val innerConsiderHour = when (grain) {
@@ -139,7 +139,7 @@ class ReportFactory(
 
     val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(bdnp, config)
     val natal: IPersonHoroscopeDto = with(dtoFactory) {
-      model.toPersonHoroscopeDto(secondaryProgressionConvergentFrom, RulerPtolemyImpl(), aspectEffectiveModern, modernAspectCalculator, config)
+      model.toPersonHoroscopeDto(secondaryProgressionConvergentFrom, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, config)
     }
 
     return ProgressionAstroEventsModel(natal, grain, fromTime, toTime, secondaryProgressionEvents, tertiaryProgressionEvents)

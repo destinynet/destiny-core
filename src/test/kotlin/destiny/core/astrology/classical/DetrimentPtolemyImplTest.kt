@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 
 class DetrimentPtolemyImplTest {
 
-  internal var impl = DetrimentPtolemyImpl()
+  internal var impl = DetrimentPtolemyImpl
 
   @Test
   fun `不分日夜，取得在此星座陷落的行星`() {

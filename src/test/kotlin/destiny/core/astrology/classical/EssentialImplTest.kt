@@ -21,14 +21,14 @@ class EssentialImplTest {
 
   private val logger = KotlinLogging.logger { }
 
-  private val triplicityImpl: ITriplicity = TriplicityWilliamImpl()
+  private val triplicityImpl: ITriplicity = TriplicityWilliamImpl
 
-  private val rulerImpl: IRuler = RulerPtolemyImpl()
-  private val detrimentImpl: IDetriment = DetrimentPtolemyImpl()
-  private val exaltImpl: IExaltation = ExaltationPtolemyImpl()
-  private val fallImpl: IFall = FallPtolemyImpl()
-  private val termImpl: ITerm = TermPtolomyImpl()
-  private val faceImpl: IFace = FacePtolomyImpl()
+  private val rulerImpl: IRuler = RulerPtolemyImpl
+  private val detrimentImpl: IDetriment = DetrimentPtolemyImpl
+  private val exaltImpl: IExaltation = ExaltationPtolemyImpl
+  private val fallImpl: IFall = FallPtolemyImpl
+  private val termImpl: ITerm = TermPtolomyImpl
+  private val faceImpl: IFace = FacePtolomyImpl
   private val dayNightDifferentiator = DayNightSimpleImpl(JulDayResolver1582CutoverImpl())
   private val essentialImpl: IEssential = EssentialImpl(rulerImpl, exaltImpl, fallImpl, detrimentImpl, triplicityImpl, termImpl, faceImpl, dayNightDifferentiator)
 

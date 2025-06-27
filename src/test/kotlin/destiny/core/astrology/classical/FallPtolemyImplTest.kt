@@ -14,7 +14,7 @@ import kotlin.test.assertSame
 
 class FallPtolemyImplTest {
 
-  private val fallImpl : IFall = FallPtolemyImpl()
+  private val fallImpl : IFall = FallPtolemyImpl
 
   @Test
   fun getPoint() {

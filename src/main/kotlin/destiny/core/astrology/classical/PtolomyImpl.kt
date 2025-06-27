@@ -19,7 +19,8 @@ import java.io.Serializable
 /**
  * Ruler 托勒密 Ptolemy 實作
  */
-class RulerPtolemyImpl : AbstractPtolemy(), IRuler {
+object RulerPtolemyImpl : AbstractPtolemy(), IRuler {
+  private fun readResolve(): Any = RulerPtolemyImpl
 
   override fun ZodiacSign.getRulerPoint(dayNight: DayNight?): Planet? {
     return if (dayNight != null)
@@ -44,7 +45,8 @@ class RulerPtolemyImpl : AbstractPtolemy(), IRuler {
  * Detriment 托勒密 Ptolemy 實作
  * (Ruler 對沖)
  */
-class DetrimentPtolemyImpl : AbstractPtolemy(), IDetriment {
+object DetrimentPtolemyImpl : AbstractPtolemy(), IDetriment {
+  private fun readResolve(): Any = DetrimentPtolemyImpl
 
   override fun ZodiacSign.getDetrimentPoint(): Planet {
     return rulerMap.getValue(this.oppositeSign)
@@ -61,7 +63,8 @@ class DetrimentPtolemyImpl : AbstractPtolemy(), IDetriment {
 }
 
 /** Exaltation , +4 */
-class ExaltationPtolemyImpl : AbstractPtolemy(), IExaltation {
+object ExaltationPtolemyImpl : AbstractPtolemy(), IExaltation {
+  private fun readResolve(): Any = ExaltationPtolemyImpl
 
   /** 哪顆星體在此星座 擢升 (EXALT , +4) , 必定為 1 or 0 顆星 */
   override fun ZodiacSign.getExaltPoint(): AstroPoint? {
@@ -80,7 +83,8 @@ class ExaltationPtolemyImpl : AbstractPtolemy(), IExaltation {
 }
 
 /** Fall , -4 */
-class FallPtolemyImpl : AbstractPtolemy(), IFall, Serializable {
+object FallPtolemyImpl : AbstractPtolemy(), IFall, Serializable {
+  private fun readResolve(): Any = FallPtolemyImpl
 
   /** 哪顆星體在此星座 落 (FALL , -4) , 必定為 1 or 0 顆星 */
   override fun ZodiacSign.getFallPoint(): AstroPoint? {
@@ -115,7 +119,8 @@ class FallPtolemyImpl : AbstractPtolemy(), IFall, Serializable {
  * William Lily 指稱 , 托勒密後來把水象星座 的日夜 ruler 都改為火星 , 但此實作仍拆分為 金星、月亮
  * 另一版本實作 [TriplicityWilliamImpl] 則作此調整
  * */
-class TriplicityPtolomyImpl : ITriplicity, Serializable {
+object TriplicityPtolomyImpl : ITriplicity, Serializable {
+  private fun readResolve(): Any = TriplicityPtolomyImpl
 
   /** 哪顆星在此星座得到三分相 (+3) */
   override fun ZodiacSign.getTriplicityPoint(dayNight: DayNight): AstroPoint {
@@ -151,7 +156,8 @@ class TriplicityPtolomyImpl : ITriplicity, Serializable {
 }
 
 
-class TermPtolomyImpl : ITerm, Serializable {
+object TermPtolomyImpl : ITerm, Serializable {
+  private fun readResolve(): Any = TermPtolomyImpl
 
   override fun getPoint(degree: ZodiacDegree): AstroPoint {
     val signIndex = degree.value.toInt() / 30
@@ -167,87 +173,84 @@ class TermPtolomyImpl : ITerm, Serializable {
     return getPoint((this.degree + degree).toZodiacDegree())
   }
 
-  companion object {
-    /**
-     * Terms , +2
-     * Ptolemy's Table , 以五分法
-     * */
-    private val termPointDegrees = listOf(
-      //戌
-      PointDegree(JUPITER, 6.0),
-      PointDegree(VENUS, 14.0),
-      PointDegree(MERCURY, 21.0),
-      PointDegree(MARS, 26.0),
-      PointDegree(SATURN, 30.0),
-      //酉
-      PointDegree(VENUS, 38.0),
-      PointDegree(MERCURY, 45.0),
-      PointDegree(JUPITER, 52.0),
-      PointDegree(SATURN, 56.0),
-      PointDegree(MARS, 60.0),
-      //申
-      PointDegree(MERCURY, 67.0),
-      PointDegree(JUPITER, 74.0),
-      PointDegree(VENUS, 81.0),
-      PointDegree(SATURN, 85.0),
-      PointDegree(MARS, 90.0),
-      //未
-      PointDegree(MARS, 96.0),
-      PointDegree(JUPITER, 103.0),
-      PointDegree(MERCURY, 110.0),
-      PointDegree(VENUS, 117.0),
-      PointDegree(SATURN, 120.0),
-      //午
-      PointDegree(SATURN, 126.0),
-      PointDegree(MERCURY, 133.0),
-      PointDegree(VENUS, 139.0),
-      PointDegree(JUPITER, 145.0),
-      PointDegree(MARS, 150.0),
-      //巳
-      PointDegree(MERCURY, 157.0),
-      PointDegree(VENUS, 163.0),
-      PointDegree(JUPITER, 168.0),
-      PointDegree(SATURN, 174.0),
-      PointDegree(MARS, 180.0),
-      //辰
-      PointDegree(SATURN, 186.0),
-      PointDegree(VENUS, 191.0),
-      PointDegree(JUPITER, 199.0),
-      PointDegree(MERCURY, 204.0),
-      PointDegree(MARS, 210.0),
-      //卯
-      PointDegree(MARS, 216.0),
-      PointDegree(JUPITER, 224.0),
-      PointDegree(VENUS, 231.0),
-      PointDegree(MERCURY, 237.0),
-      PointDegree(SATURN, 240.0),
-      //寅
-      PointDegree(JUPITER, 248.0),
-      PointDegree(VENUS, 254.0),
-      PointDegree(MERCURY, 259.0),
-      PointDegree(SATURN, 265.0),
-      PointDegree(MARS, 270.0),
-      //丑
-      PointDegree(VENUS, 276.0),
-      PointDegree(MERCURY, 282.0),
-      PointDegree(JUPITER, 289.0),
-      PointDegree(MARS, 295.0),
-      PointDegree(SATURN, 300.0),
-      //子
-      PointDegree(SATURN, 306.0),
-      PointDegree(MERCURY, 312.0),
-      PointDegree(VENUS, 320.0),
-      PointDegree(JUPITER, 325.0),
-      PointDegree(MARS, 330.0),
-      //亥
-      PointDegree(VENUS, 338.0),
-      PointDegree(JUPITER, 344.0),
-      PointDegree(MERCURY, 350.0),
-      PointDegree(MARS, 356.0),
-      PointDegree(SATURN, 359.999999999999) //如果改成 360 , 會被 normalize 成 0
-    )
-
-  }
+  /**
+   * Terms , +2
+   * Ptolemy's Table , 以五分法
+   * */
+  private val termPointDegrees = listOf(
+    //戌
+    PointDegree(JUPITER, 6.0),
+    PointDegree(VENUS, 14.0),
+    PointDegree(MERCURY, 21.0),
+    PointDegree(MARS, 26.0),
+    PointDegree(SATURN, 30.0),
+    //酉
+    PointDegree(VENUS, 38.0),
+    PointDegree(MERCURY, 45.0),
+    PointDegree(JUPITER, 52.0),
+    PointDegree(SATURN, 56.0),
+    PointDegree(MARS, 60.0),
+    //申
+    PointDegree(MERCURY, 67.0),
+    PointDegree(JUPITER, 74.0),
+    PointDegree(VENUS, 81.0),
+    PointDegree(SATURN, 85.0),
+    PointDegree(MARS, 90.0),
+    //未
+    PointDegree(MARS, 96.0),
+    PointDegree(JUPITER, 103.0),
+    PointDegree(MERCURY, 110.0),
+    PointDegree(VENUS, 117.0),
+    PointDegree(SATURN, 120.0),
+    //午
+    PointDegree(SATURN, 126.0),
+    PointDegree(MERCURY, 133.0),
+    PointDegree(VENUS, 139.0),
+    PointDegree(JUPITER, 145.0),
+    PointDegree(MARS, 150.0),
+    //巳
+    PointDegree(MERCURY, 157.0),
+    PointDegree(VENUS, 163.0),
+    PointDegree(JUPITER, 168.0),
+    PointDegree(SATURN, 174.0),
+    PointDegree(MARS, 180.0),
+    //辰
+    PointDegree(SATURN, 186.0),
+    PointDegree(VENUS, 191.0),
+    PointDegree(JUPITER, 199.0),
+    PointDegree(MERCURY, 204.0),
+    PointDegree(MARS, 210.0),
+    //卯
+    PointDegree(MARS, 216.0),
+    PointDegree(JUPITER, 224.0),
+    PointDegree(VENUS, 231.0),
+    PointDegree(MERCURY, 237.0),
+    PointDegree(SATURN, 240.0),
+    //寅
+    PointDegree(JUPITER, 248.0),
+    PointDegree(VENUS, 254.0),
+    PointDegree(MERCURY, 259.0),
+    PointDegree(SATURN, 265.0),
+    PointDegree(MARS, 270.0),
+    //丑
+    PointDegree(VENUS, 276.0),
+    PointDegree(MERCURY, 282.0),
+    PointDegree(JUPITER, 289.0),
+    PointDegree(MARS, 295.0),
+    PointDegree(SATURN, 300.0),
+    //子
+    PointDegree(SATURN, 306.0),
+    PointDegree(MERCURY, 312.0),
+    PointDegree(VENUS, 320.0),
+    PointDegree(JUPITER, 325.0),
+    PointDegree(MARS, 330.0),
+    //亥
+    PointDegree(VENUS, 338.0),
+    PointDegree(JUPITER, 344.0),
+    PointDegree(MERCURY, 350.0),
+    PointDegree(MARS, 356.0),
+    PointDegree(SATURN, 359.999999999999) //如果改成 360 , 會被 normalize 成 0
+  )
 }
 
 /**
@@ -273,7 +276,8 @@ class TermPtolomyImpl : ITerm, Serializable {
 
 
 
-class FacePtolomyImpl : IFace, Serializable {
+object FacePtolomyImpl : IFace, Serializable {
+  private fun readResolve(): Any = FacePtolomyImpl
 
   /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360  */
   override fun getPoint(degree: ZodiacDegree): Planet {
@@ -286,59 +290,33 @@ class FacePtolomyImpl : IFace, Serializable {
     return getPoint((this.degree + degree).toZodiacDegree())
   }
 
-  companion object {
-    /** 因為間距固定 10度 , 所以 list 不用儲存度數  */
-    private val faceStarList = listOf(
-      //戌
-      MARS
-      , SUN
-      , VENUS
-      //酉
-      , MERCURY
-      , MOON
-      , SATURN
-      //申
-      , JUPITER
-      , MARS
-      , SUN
-      //未
-      , VENUS
-      , MERCURY
-      , MOON
-      //午
-      , SATURN
-      , JUPITER
-      , MARS
-      //巳
-      , SUN
-      , VENUS
-      , MERCURY
-      //辰
-      , MOON
-      , SATURN
-      , JUPITER
-      //卯
-      , MARS
-      , SUN
-      , VENUS
-      //寅
-      , MERCURY
-      , MOON
-      , SATURN
-      //丑
-      , JUPITER
-      , MARS
-      , SUN
-      //子
-      , VENUS
-      , MERCURY
-      , MOON
-      //亥
-      , SATURN
-      , JUPITER
-      , MARS
-    )
-  }
+  /** 因為間距固定 10度 , 所以 list 不用儲存度數  */
+  private val faceStarList = listOf(
+    //戌
+    MARS, SUN, VENUS
+    //酉
+    , MERCURY, MOON, SATURN
+    //申
+    , JUPITER, MARS, SUN
+    //未
+    , VENUS, MERCURY, MOON
+    //午
+    , SATURN, JUPITER, MARS
+    //巳
+    , SUN, VENUS, MERCURY
+    //辰
+    , MOON, SATURN, JUPITER
+    //卯
+    , MARS, SUN, VENUS
+    //寅
+    , MERCURY, MOON, SATURN
+    //丑
+    , JUPITER, MARS, SUN
+    //子
+    , VENUS, MERCURY, MOON
+    //亥
+    , SATURN, JUPITER, MARS
+  )
 }
 
 

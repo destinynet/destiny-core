@@ -13,7 +13,7 @@ import kotlin.test.assertSame
 
 class TriplicitySchonerImplTest {
 
-  val impl: ITriplicity = TriplicitySchonerImpl()
+  val impl: ITriplicity = TriplicitySchonerImpl
 
   @Test
   fun getTriplicityPoint() {

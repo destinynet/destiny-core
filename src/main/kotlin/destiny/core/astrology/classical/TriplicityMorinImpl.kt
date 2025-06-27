@@ -42,7 +42,8 @@ import java.io.Serializable
  *
  * </pre>
  */
-class TriplicityMorinImpl : ITriplicity, Serializable {
+object TriplicityMorinImpl : ITriplicity, Serializable {
+  private fun readResolve(): Any = TriplicityMorinImpl
 
   /** 哪顆星在此星座得到三分相 (+3) */
   override fun ZodiacSign.getTriplicityPoint(dayNight: DayNight): Planet {

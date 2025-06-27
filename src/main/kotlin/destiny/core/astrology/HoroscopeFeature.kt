@@ -266,7 +266,7 @@ class HoroscopeFeature(
         star to retrogradeImpl.getRetrogradePhase(star, gmtJulDay, starPositionImpl, starTransitImpl)
       }.filter { (_, v) -> v != null }.associate { (k, v) -> k to v!! }
 
-    val rulerPtolemyImpl: IRuler = RulerPtolemyImpl()
+    val rulerPtolemyImpl: IRuler = RulerPtolemyImpl
     val rulingHouseMap: Map<Planet, Set<RulingHouse>> = with(rulerPtolemyImpl) {
       cuspDegreeMap.map { (house, zodiacDeg: ZodiacDegree) ->
         val ruler = zodiacDeg.sign.getRulerPoint(null) as Planet?
@@ -335,7 +335,7 @@ class HoroscopeFeature(
   override fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator,
                            threshold: Double?, config: IHoroscopeConfig, forward: Boolean): ISolarArcModel {
 
-    require(viewTime > model.gmtJulDay) { "viewTime should be after model.gmtJulDay" }
+    require(viewTime >= model.gmtJulDay) { "viewTime should be after model.gmtJulDay" }
 
     val diffDays = (viewTime - model.gmtJulDay) / TROPICAL_YEAR_DAYS
     val convergentJulDay = if (forward)

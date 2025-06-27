@@ -18,8 +18,8 @@ import java.io.Serializable
 @Deprecated("似乎不實用")
 class MutualDeception(private val essentialImpl: IEssential) {
 
-  private val rulerImpl : IRuler = RulerPtolemyImpl()
-  private val exaltImpl : IExaltation = ExaltationPtolemyImpl()
+  private val rulerImpl : IRuler = RulerPtolemyImpl
+  private val exaltImpl : IExaltation = ExaltationPtolemyImpl
 
   fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Serializable>>? {
     return rulerMutualDeception(h, planet)

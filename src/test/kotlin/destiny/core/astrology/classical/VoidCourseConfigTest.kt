@@ -3,12 +3,13 @@
  */
 package destiny.core.astrology.classical
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.Centric
 import destiny.core.astrology.Planet
 import destiny.core.astrology.classical.VoidCourseConfigBuilder.Companion.voidCourse
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class VoidCourseConfigTest : AbstractConfigTest<VoidCourseConfig>() {
   override val serializer: KSerializer<VoidCourseConfig> = VoidCourseConfig.serializer()
@@ -22,8 +23,8 @@ internal class VoidCourseConfigTest : AbstractConfigTest<VoidCourseConfig>() {
   }
 
   override val assertion: (String) -> Unit = { raw ->
-    assertTrue(raw.contains(""""planet":\s*"Planet.VENUS"""".toRegex()))
-    assertTrue(raw.contains(""""centric":\s*"TOPO"""".toRegex()))
-    assertTrue(raw.contains(""""vocImpl":\s*"WilliamLilly"""".toRegex()))
+    assertEquals("Planet.VENUS", JsonPath.read(raw, "$.planet"))
+    assertEquals("TOPO", JsonPath.read(raw, "$.centric"))
+    assertEquals("WilliamLilly", JsonPath.read(raw, "$.vocImpl"))
   }
 }

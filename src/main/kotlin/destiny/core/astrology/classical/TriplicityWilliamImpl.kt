@@ -26,7 +26,8 @@ import java.io.Serializable
  * Lilly makes Mars the day and night ruler of the watery triplicity and
  * ignores participating rulers.
  */
-class TriplicityWilliamImpl : ITriplicity, Serializable {
+object TriplicityWilliamImpl : ITriplicity, Serializable {
+  private fun readResolve(): Any = TriplicityWilliamImpl
 
   /** 哪顆星在此星座得到三分相 (+3) */
   override fun ZodiacSign.getTriplicityPoint(dayNight: DayNight): Planet {

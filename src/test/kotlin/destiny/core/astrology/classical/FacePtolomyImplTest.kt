@@ -12,7 +12,7 @@ import kotlin.test.assertSame
 
 class FacePtolomyImplTest {
   
-  val impl = FacePtolomyImpl()
+  val impl = FacePtolomyImpl
 
   @Test
   fun getPointFromDegree() {

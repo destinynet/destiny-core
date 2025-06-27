@@ -11,7 +11,7 @@ import kotlin.test.assertSame
 
 class TermPtolomyImplTest {
 
-  val impl = TermPtolomyImpl()
+  val impl = TermPtolomyImpl
 
   @Test
   fun getPoint_from_degree() {

@@ -275,7 +275,7 @@ class AnalyzerTest {
   }
 
   private val rulerMap: Map<ZodiacSign, Planet> = ZodiacSign.entries.associateWith { sign ->
-    with(RulerPtolemyImpl()) {
+    with(RulerPtolemyImpl) {
       sign.getRulerPoint(null)
     }!!
   }

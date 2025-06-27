@@ -163,7 +163,7 @@ class ReturnContext(
 
 
   companion object {
-    private val rulerImpl: IRuler = RulerPtolemyImpl()
+    private val rulerImpl: IRuler = RulerPtolemyImpl
     val logger = KotlinLogging.logger { }
   }
 

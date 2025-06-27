@@ -14,7 +14,7 @@ import kotlin.test.assertTrue
 
 class RulerPtolemyImplTest {
 
-  internal var impl : IRuler = RulerPtolemyImpl()
+  internal var impl : IRuler = RulerPtolemyImpl
 
 
   @Test

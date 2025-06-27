@@ -14,7 +14,7 @@ import kotlin.test.assertSame
 
 class ExaltationPtolemyImplTest {
 
-  private val exaltImpl: IExaltation = ExaltationPtolemyImpl()
+  private val exaltImpl: IExaltation = ExaltationPtolemyImpl
 
   @Test
   fun `從星座找尋 EXALT 的星體`() {
