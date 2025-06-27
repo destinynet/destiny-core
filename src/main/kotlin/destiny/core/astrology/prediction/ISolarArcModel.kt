@@ -14,7 +14,7 @@ import destiny.tools.serializers.IZodiacDegreeTwoDecimalSerializer
 import kotlinx.serialization.Serializable
 
 
-sealed interface ISolarArcModel {
+sealed interface ISolarArcModel : ITransitModel {
   val natalGmtJulDay: GmtJulDay
   val natalHasTime : Boolean
   val viewGmtJulDay: GmtJulDay
@@ -40,4 +40,9 @@ data class SolarArcModel(
   override val loc: ILocation,
   override val positionMap: Map<AstroPoint, @Serializable(with = IZodiacDegreeTwoDecimalSerializer::class) IZodiacDegree>,
   override val synastryAspects: List<SynastryAspect>
-) : ISolarArcModel
+) : ISolarArcModel {
+  override val natalTime: GmtJulDay
+    get() = natalGmtJulDay
+  override val viewTime: GmtJulDay
+    get() = viewGmtJulDay
+}

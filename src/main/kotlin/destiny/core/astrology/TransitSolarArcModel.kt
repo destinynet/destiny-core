@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.RequestDto
 import destiny.core.astrology.prediction.ISolarArcModel
+import destiny.core.astrology.prediction.ITransitModel
 import destiny.tools.serializers.LocalDateSerializer
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
@@ -19,4 +20,4 @@ data class TransitSolarArcModel(
   val localDate: LocalDate,
   val solarArcModel: ISolarArcModel,
   val transitToSolarArcAspects: List<SynastryAspect>
-)
+) : ITransitModel by solarArcModel
