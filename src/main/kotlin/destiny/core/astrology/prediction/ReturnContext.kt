@@ -11,10 +11,8 @@ import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.toLmt
 import destiny.tools.KotlinLogging
 import java.io.Serializable
-import java.time.LocalDateTime
 import kotlin.math.absoluteValue
 
 /**
@@ -149,11 +147,9 @@ class ReturnContext(
 
     val synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold)
 
-    val from = returnModel.from.toLmt(nowLoc, julDayResolver) as LocalDateTime
-    val to = returnModel.to.toLmt(nowLoc, julDayResolver) as LocalDateTime
     return when (this@ReturnContext.planet) {
-      Planet.SUN  -> SolarReturnDto(horoscopeDto, synastry, from, to)
-      Planet.MOON -> LunarReturnDto(horoscopeDto, synastry, from, to)
+      Planet.SUN  -> SolarReturnDto(horoscopeDto, synastry, returnModel.from, returnModel.to)
+      Planet.MOON -> LunarReturnDto(horoscopeDto, synastry, returnModel.from, returnModel.to)
       else        -> throw IllegalArgumentException("Unsupported planet: $planet")
     }
   }
