@@ -155,3 +155,5 @@ fun LocalDateTime.roundToNearestSecond(): LocalDateTime {
     else               -> this  // 其餘保留原樣
   }
 }
+
+fun <K,V> Map<K,V>.reverse(): Map<V, K> = this.entries.associate { it.value to it.key }

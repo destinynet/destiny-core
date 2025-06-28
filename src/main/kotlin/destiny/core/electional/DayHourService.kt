@@ -42,6 +42,7 @@ import destiny.core.chinese.eightwords.PersonPresentFeature
 import destiny.core.electional.Ew.NatalBranches
 import destiny.core.electional.Ew.NatalStems
 import destiny.tools.getTitle
+import destiny.tools.reverse
 import destiny.tools.round
 import destiny.tools.truncate
 import jakarta.inject.Named
@@ -437,11 +438,19 @@ class DayHourService(
     }
 
     // 星體換星座
-    val degrees = (0..<360 step 30).map { it.toDouble().toZodiacDegree() }.toSet()
+    val signDegrees = (0..<360 step 30).map { it.toDouble().toZodiacDegree() }.toSet()
     val signIngresses = sequenceOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN).flatMap { planet ->
-      starTransitImpl.getRangeTransitGmt(planet, degrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
-        val newSign = zDeg.sign
-        val oldSign = newSign.prev
+      starTransitImpl.getRangeTransitGmt(planet, signDegrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
+
+        val speed = starPositionImpl.getPosition(planet, gmt, loc).speedLng
+        val (newSign, oldSign) = if (speed >= 0) {
+          // 順行：進入 zDeg.sign，來自前一個星座
+          zDeg.sign to zDeg.sign.prev
+        } else {
+          // 逆行：離開 zDeg.sign，進入前一個星座
+          zDeg.sign.prev to zDeg.sign
+        }
+
         val description = buildString {
           append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Ingresses (Change Sign). ")
           append("From ${oldSign.getTitle(Locale.ENGLISH)} to ${newSign.getTitle(Locale.ENGLISH)}")
@@ -451,6 +460,42 @@ class DayHourService(
         )
       }
     }
+
+    // 星體換宮位
+    val houseIngresses = if (includeHour) {
+      // grain 到「時/分」, 宮位可信
+      val cuspDegreeMap: Map<ZodiacDegree, Int> = inner.cuspDegreeMap.reverse()
+      val cuspDegrees = cuspDegreeMap.keys.toSet()
+      sequenceOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN).flatMap { planet ->
+        starTransitImpl.getRangeTransitGmt(planet, cuspDegrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
+          // maybe retrograde
+          val speed = starPositionImpl.getPosition(planet, gmt, loc).speedLng
+
+          val cuspHouseNumber = cuspDegreeMap.getValue(zDeg)
+
+          val (newHouse, oldHouse) = if (speed >= 0) {
+            // 順行：進入 cuspHouseNumber，來自前一個宮位
+            val fromHouse = if (cuspHouseNumber == 1) 12 else cuspHouseNumber - 1
+            cuspHouseNumber to fromHouse
+          } else {
+            // 逆行：離開 cuspHouseNumber，進入前一個宮位
+            val toHouse = if (cuspHouseNumber == 1) 12 else cuspHouseNumber - 1
+            toHouse to cuspHouseNumber
+          }
+
+          val description = buildString {
+            append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Ingresses (Change House). ")
+            append("From House $oldHouse to House $newHouse")
+          }
+          AstroEventDto(
+            Astro.HouseIngress(description, planet, oldHouse, newHouse), gmt, null, Span.INSTANT, Impact.GLOBAL
+          )
+        }
+      }
+    } else {
+      emptySequence()
+    }
+
 
 
     return sequence {
@@ -494,6 +539,10 @@ class DayHourService(
       if (config.signIngress){
         // 星體換星座
         yieldAll(signIngresses)
+      }
+      if (includeHour) {
+        // 星體換宮位
+        yieldAll(houseIngresses)
       }
     }
   }

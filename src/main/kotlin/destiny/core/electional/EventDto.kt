@@ -395,6 +395,16 @@ sealed class Astro : IAggregatedEvent {
     val newSign: ZodiacSign,
   ) : Astro()
 
+  /** 星體換宮位 */
+  @Serializable
+  @SerialName("Astro.HouseIngress")
+  data class HouseIngress(
+    override val description: String,
+    val astroPoint: AstroPoint,
+    val oldHouse: Int,
+    val newHouse: Int,
+  ) : Astro()
+
 }
 
 

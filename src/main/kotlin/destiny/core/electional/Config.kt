@@ -39,6 +39,8 @@ data class Config(
      */
     val includeTransitToNatalAspects: Boolean = false,
     /** 星體換星座 */
-    val signIngress : Boolean = true
+    val signIngress : Boolean = true,
+    /** 星體換宮位 */
+    val houseIngress : Boolean = true
   )
 }
