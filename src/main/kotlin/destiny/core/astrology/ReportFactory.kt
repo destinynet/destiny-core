@@ -118,7 +118,7 @@ class ReportFactory(
         eclipse = true,
         lunarPhase = true,
         includeTransitToNatalAspects = false,
-        ingress = true
+        signIngress = true
       )
     )
 

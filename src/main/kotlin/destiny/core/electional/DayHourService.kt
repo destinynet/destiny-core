@@ -291,7 +291,7 @@ class DayHourService(
       }
     }
 
-    val globalEvents = relativeTransitImpl.mutualAspectingEvents(
+    val globalAspectEvents = relativeTransitImpl.mutualAspectingEvents(
       outerStars, angles,
       fromGmtJulDay, toGmtJulDay
     ).map { aspectData: AspectData ->
@@ -397,7 +397,7 @@ class DayHourService(
     }
 
     // 月相
-    val lunarPhaseEvents = sequenceOf(
+    val lunarPhases = sequenceOf(
       0.0 to LunarPhase.NEW,
       90.0 to LunarPhase.FIRST_QUARTER,
       180.0 to LunarPhase.FULL,
@@ -438,7 +438,7 @@ class DayHourService(
 
     // 星體換星座
     val degrees = (0..<360 step 30).map { it.toDouble().toZodiacDegree() }.toSet()
-    val ingressStars = sequenceOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN).flatMap { planet ->
+    val signIngresses = sequenceOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN).flatMap { planet ->
       starTransitImpl.getRangeTransitGmt(planet, degrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
         val newSign = zDeg.sign
         val oldSign = newSign.prev
@@ -457,7 +457,7 @@ class DayHourService(
 
       if (config.aspect) {
         // 全球星體交角
-        yieldAll(globalEvents)
+        yieldAll(globalAspectEvents)
 
         // 全球 to 個人 , 交角
         yieldAll(searchPersonalEvents(innerStars, angles).map { aspectData ->
@@ -489,11 +489,11 @@ class DayHourService(
       }
       if (config.lunarPhase) {
         // 月相
-        yieldAll(lunarPhaseEvents)
+        yieldAll(lunarPhases)
       }
-      if (config.ingress){
+      if (config.signIngress){
         // 星體換星座
-        yieldAll(ingressStars)
+        yieldAll(signIngresses)
       }
     }
   }

@@ -39,6 +39,6 @@ data class Config(
      */
     val includeTransitToNatalAspects: Boolean = false,
     /** 星體換星座 */
-    val ingress : Boolean = true
+    val signIngress : Boolean = true
   )
 }
