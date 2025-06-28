@@ -157,7 +157,8 @@ class DayHourService(
       val date = daily.localDate
       buildString {
         appendLine("$date , ${date.dayOfWeek}")
-        appendLine("\t全天")
+        if (daily.allDayEvents.isNotEmpty())
+          appendLine("\t全天")
 
         daily.allDayEvents.forEach { eventDto ->
           append("\t\t")
@@ -443,16 +444,16 @@ class DayHourService(
       starTransitImpl.getRangeTransitGmt(planet, signDegrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
 
         val speed = starPositionImpl.getPosition(planet, gmt, loc).speedLng
-        val (newSign, oldSign) = if (speed >= 0) {
+        val (oldSign, newSign, eventType) = if (speed >= 0) {
           // 順行：進入 zDeg.sign，來自前一個星座
-          zDeg.sign to zDeg.sign.prev
+          Triple(zDeg.sign.prev , zDeg.sign , "Ingresses (enters)")
         } else {
           // 逆行：離開 zDeg.sign，進入前一個星座
-          zDeg.sign.prev to zDeg.sign
+          Triple(zDeg.sign , zDeg.sign.prev , "Regresses (retrogrades into)")
         }
 
         val description = buildString {
-          append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Ingresses (Change Sign). ")
+          append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} $eventType Sign. ")
           append("From ${oldSign.getTitle(Locale.ENGLISH)} to ${newSign.getTitle(Locale.ENGLISH)}")
         }
         AstroEventDto(
@@ -473,22 +474,24 @@ class DayHourService(
 
           val cuspHouseNumber = cuspDegreeMap.getValue(zDeg)
 
-          val (newHouse, oldHouse) = if (speed >= 0) {
+          // 根據順行或逆行，決定 old/new house 以及文字描述
+          val (oldHouse, newHouse, eventType) = if (speed >= 0) {
             // 順行：進入 cuspHouseNumber，來自前一個宮位
             val fromHouse = if (cuspHouseNumber == 1) 12 else cuspHouseNumber - 1
-            cuspHouseNumber to fromHouse
+            Triple(fromHouse, cuspHouseNumber, "Ingresses (enters)")
           } else {
-            // 逆行：離開 cuspHouseNumber，進入前一個宮位
+            // 逆行：離開 cuspHouseNumber，退入前一個宮位
             val toHouse = if (cuspHouseNumber == 1) 12 else cuspHouseNumber - 1
-            toHouse to cuspHouseNumber
+            Triple(cuspHouseNumber, toHouse, "Regresses (retrogrades into)")
           }
 
+          // 產生更精確的文字描述
           val description = buildString {
-            append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Ingresses (Change House). ")
+            append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} $eventType House. ")
             append("From House $oldHouse to House $newHouse")
           }
           AstroEventDto(
-            Astro.HouseIngress(description, planet, oldHouse, newHouse), gmt, null, Span.INSTANT, Impact.GLOBAL
+            Astro.HouseIngress(description, planet, oldHouse, newHouse), gmt, null, Span.INSTANT, Impact.PERSONAL
           )
         }
       }
@@ -540,7 +543,7 @@ class DayHourService(
         // 星體換星座
         yieldAll(signIngresses)
       }
-      if (includeHour) {
+      if (config.houseIngress && includeHour) {
         // 星體換宮位
         yieldAll(houseIngresses)
       }
