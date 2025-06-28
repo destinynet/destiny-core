@@ -43,6 +43,12 @@ class EventsTraversalSolarArcImpl(
     val toSolarArc: ISolarArcModel = horoscopeFeature.getSolarArc(inner, toGmtJulDay, includeHour, modernAspectCalculator, threshold, hConfig)
 
     val pointsToConsider = inner.points.filter { it is Planet || it is LunarNode || it is Axis }
+      .filter {
+        if (includeHour)
+          true
+        else
+          it !in Axis.values
+      }
 
     fun searchPersonalEvents(aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet()): Sequence<AspectData> {
 
