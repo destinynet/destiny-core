@@ -46,6 +46,8 @@ class ReportFactory(
   private val dtoFactory: DtoFactory,
   private val dayHourService: DayHourService,
   private val julDayResolver: JulDayResolver,
+  private val eventsTraversalSolarArcImpl: IEventsTraversal,
+  private val eventsTraversalTransitImpl: IEventsTraversal,
 ) : IReportFactory {
   override fun getTransitSolarArcModel(
     bdnp: IBirthDataNamePlace,
@@ -108,18 +110,16 @@ class ReportFactory(
     logger.debug { "tertiaryProgression  convergentFrom = ${tertiaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
     logger.debug { "tertiaryProgression  convergentTo   = ${tertiaryProgressionConvergentTo.toLmt(loc, julDayResolver)}" }
 
-    val traverseConfig = destiny.core.electional.Config(
-      ewConfig = null,
-      astrologyConfig = destiny.core.electional.Config.AstrologyConfig(
-        aspect = true,
-        voc = false,
-        stationary = true,
-        retrograde = false,
-        eclipse = true,
-        lunarPhase = true,
-        includeTransitToNatalAspects = false,
-        signIngress = true
-      )
+    val astrologyConfig = destiny.core.electional.Config.AstrologyConfig(
+      aspect = true,
+      voc = false,
+      stationary = true,
+      retrograde = false,
+      eclipse = true,
+      lunarPhase = true,
+      includeTransitToNatalAspects = false,
+      signIngress = true,
+      houseIngress = true,
     )
 
     val includeHour = when (grain) {
@@ -127,27 +127,46 @@ class ReportFactory(
       BirthDataGrain.MINUTE -> true
     }
 
-    val secondaryProgressionEvents = dayHourService.traverse(bdnp, bdnp.location, secondaryProgressionConvergentFrom, secondaryProgressionConvergentTo, traverseConfig, includeHour).map { eventDto ->
-        val divergentTime = progressionSecondary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
-        ProgressionEvent(PredictiveTechnique.SECONDARY, eventDto as AstroEventDto, divergentTime)
-      }
-    val tertiaryProgressionEvents = dayHourService.traverse(bdnp, bdnp.location, tertiaryProgressionConvergentFrom, tertiaryProgressionConvergentTo, traverseConfig, includeHour).map { eventDto ->
+
+    val secondaryProgressionEvents = dayHourService.traverseAstrologyEvents(
+      bdnp,
+      secondaryProgressionConvergentFrom,
+      secondaryProgressionConvergentTo,
+      bdnp.location,
+      includeHour,
+      astrologyConfig,
+      eventsTraversalTransitImpl
+    ).map { eventDto ->
+      val divergentTime = progressionSecondary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
+      ProgressionEvent(PredictiveTechnique.SECONDARY, eventDto as AstroEventDto, divergentTime)
+    }
+
+    val tertiaryProgressionEvents = dayHourService.traverseAstrologyEvents(
+      bdnp,
+      tertiaryProgressionConvergentFrom,
+      tertiaryProgressionConvergentTo,
+      bdnp.location,
+      includeHour,
+      astrologyConfig,
+      eventsTraversalTransitImpl
+    ).map { eventDto ->
       val divergentTime = progressionTertiary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
       ProgressionEvent(PredictiveTechnique.TERTIARY, eventDto as AstroEventDto, divergentTime)
     }
 
-    val inner = personHoroscopeFeature.getPersonModel(bdnp, config)
-    val viewGmt = secondaryProgressionConvergentFrom
-    val innerConsiderHour = when (grain) {
-      BirthDataGrain.DAY    -> false
-      BirthDataGrain.MINUTE -> true
+    val solarArcEvents = dayHourService.traverseAstrologyEvents(
+      bdnp,
+      fromTime,
+      toTime,
+      bdnp.location,
+      includeHour,
+      astrologyConfig,
+      eventsTraversalSolarArcImpl
+    ).map { eventDto ->
+      ProgressionEvent(PredictiveTechnique.SOLAR_ARC, eventDto as AstroEventDto, eventDto.begin)
     }
-    val threshold = 0.9
 
-    val solarArcModel = horoscopeFeature.getSolarArc(inner, viewGmt, innerConsiderHour, modernAspectCalculator, threshold, config)
-
-
-    val events = (secondaryProgressionEvents + tertiaryProgressionEvents)
+    val events = (secondaryProgressionEvents + tertiaryProgressionEvents + solarArcEvents)
       .sortedBy { it.divergentTime }.toList()
 
 
