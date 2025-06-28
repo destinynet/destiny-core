@@ -447,7 +447,7 @@ class DayHourService(
           append("From ${oldSign.getTitle(Locale.ENGLISH)} to ${newSign.getTitle(Locale.ENGLISH)}")
         }
         AstroEventDto(
-          Astro.StarIngress(description, planet, oldSign, newSign), gmt, null, Span.INSTANT, Impact.GLOBAL
+          Astro.SignIngress(description, planet, oldSign, newSign), gmt, null, Span.INSTANT, Impact.GLOBAL
         )
       }
     }

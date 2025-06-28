@@ -387,8 +387,8 @@ sealed class Astro : IAggregatedEvent {
 
   /** 星體換星座 */
   @Serializable
-  @SerialName("Astro.StarIngress")
-  data class StarIngress(
+  @SerialName("Astro.SignIngress")
+  data class SignIngress(
     override val description: String,
     val astroPoint: AstroPoint,
     val oldSign: ZodiacSign,
