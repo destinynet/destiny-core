@@ -359,7 +359,7 @@ class HoroscopeFeature(
       pos.lngDeg + degreeMoved
     }
 
-    logger.info { "solarArcDegree = $degreeMoved" }
+    logger.trace { "degreeMoved = $degreeMoved" }
 
     val later = if (forward)
       convergentJulDay + 0.01

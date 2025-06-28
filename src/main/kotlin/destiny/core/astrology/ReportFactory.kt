@@ -136,7 +136,19 @@ class ReportFactory(
       ProgressionEvent(PredictiveTechnique.TERTIARY, eventDto as AstroEventDto, divergentTime)
     }
 
-    val events = (secondaryProgressionEvents + tertiaryProgressionEvents).sortedBy { it.divergentTime }.toList()
+    val inner = personHoroscopeFeature.getPersonModel(bdnp, config)
+    val viewGmt = secondaryProgressionConvergentFrom
+    val innerConsiderHour = when (grain) {
+      BirthDataGrain.DAY    -> false
+      BirthDataGrain.MINUTE -> true
+    }
+    val threshold = 0.9
+
+    val solarArcModel = horoscopeFeature.getSolarArc(inner, viewGmt, innerConsiderHour, modernAspectCalculator, threshold, config)
+
+
+    val events = (secondaryProgressionEvents + tertiaryProgressionEvents)
+      .sortedBy { it.divergentTime }.toList()
 
 
     val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(bdnp, config)

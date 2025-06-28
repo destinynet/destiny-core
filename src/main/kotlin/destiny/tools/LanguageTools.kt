@@ -157,3 +157,14 @@ fun LocalDateTime.roundToNearestSecond(): LocalDateTime {
 }
 
 fun <K,V> Map<K,V>.reverse(): Map<V, K> = this.entries.associate { it.value to it.key }
+
+fun gcd(a: Double, b: Double): Double {
+  var x = a
+  var y = b
+  while (y > 1e-6) { // 誤差容忍
+    val temp = y
+    y = x % y
+    x = temp
+  }
+  return x
+}

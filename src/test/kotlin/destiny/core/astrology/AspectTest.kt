@@ -5,7 +5,10 @@
 package destiny.core.astrology
 
 import destiny.core.EnumTest
+import destiny.core.astrology.Aspect.Companion.expand
+import destiny.core.astrology.Aspect.Companion.expandMulti
 import destiny.tools.getTitle
+import org.junit.jupiter.api.Nested
 import java.util.*
 import kotlin.test.*
 
@@ -137,6 +140,81 @@ class AspectTest : EnumTest() {
     assertSame(Aspect.getAspect(-270.0), Aspect.SQUARE)
     assertSame(Aspect.getAspect(-300.0), Aspect.SEXTILE)
     assertSame(Aspect.getAspect(-360.0), Aspect.CONJUNCTION)
+  }
+
+  @Nested
+  inner class ExpandMultiTest {
+    @Test
+    fun `single aspect should expand correctly`() {
+      val aspects = setOf(Aspect.SQUARE)
+      val expanded = aspects.expandMulti()
+
+      val expectedDegrees = setOf(0.0, 90.0, 180.0, 270.0)
+      assertEquals(expectedDegrees, expanded.keys.toSet())
+
+      expectedDegrees.forEach {
+        assertTrue(
+          expanded[it]?.contains(Aspect.SQUARE) == true,
+          "Expected SQUARE to appear at $it"
+        )
+      }
+    }
+
+    @Test
+    fun `multiple aspects should not overwrite each other`() {
+      val aspects = setOf(Aspect.CONJUNCTION, Aspect.OPPOSITION)
+      val expanded = aspects.expandMulti()
+
+      // CONJUNCTION = 0.0
+      // OPPOSITION = 180.0, 0.0 (due to 180 * 2 = 360 % 360 = 0)
+      val zeroDegreeAspects = expanded[0.0] ?: emptyList()
+      val oneEightyAspects = expanded[180.0] ?: emptyList()
+
+      assertTrue(zeroDegreeAspects.containsAll(listOf(Aspect.CONJUNCTION, Aspect.OPPOSITION)))
+      assertTrue(oneEightyAspects.contains(Aspect.OPPOSITION))
+    }
+
+    @Test
+    fun `expand should include septile with non-integer degrees`() {
+      val aspects = setOf(Aspect.SEPTILE)
+      val expanded = aspects.expandMulti()
+
+      val expected = List(7) { i -> (i * Aspect.SEPTILE.degree) % 360 }
+
+      expected.forEach { degree ->
+        val matched = expanded.keys.any { kotlin.math.abs(it - degree) < 1e-6 }
+        assertTrue(matched, "Expected SEPTILE at approx $degree°")
+      }
+    }
+
+    @Test
+    fun `expand full high importance aspects`() {
+      val aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()
+      val expanded = aspects.expandMulti()
+
+      val expectedDegrees = setOf(0.0, 60.0, 90.0, 120.0, 180.0, 240.0, 270.0, 300.0)
+
+      expectedDegrees.forEach {
+        assertTrue(
+          expanded.containsKey(it),
+          "Expected high importance aspect at $it°"
+        )
+      }
+    }
+
+    @Test
+    fun `no aspect returns empty map`() {
+      val expanded = emptySet<Aspect>().expandMulti()
+      assertTrue(expanded.isEmpty())
+    }
+  }
+
+  @Test
+  fun testExpand() {
+    Aspect.getAspects(Aspect.Importance.HIGH).toSet().expand().forEach { (deg, aspect) ->
+      println("$deg -> $aspect")
+
+    }
   }
 
 }

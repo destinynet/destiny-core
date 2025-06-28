@@ -249,16 +249,25 @@ class DayHourService(
     includeHour: Boolean,
     config: Config.AstrologyConfig
   ): Sequence<IEventDto> {
+    val inner: IHoroscopeModel = horoscopeFeature.getModel(bdnp.gmtJulDay, loc, config.horoscopeConfig)
+    return searchAstrologyEvents(inner, fromGmtJulDay, toGmtJulDay, loc, includeHour, config)
+  }
+
+  fun searchAstrologyEvents(
+    inner: IHoroscopeModel,
+    fromGmtJulDay: GmtJulDay,
+    toGmtJulDay: GmtJulDay,
+    loc: ILocation,
+    includeHour: Boolean,
+    config: Config.AstrologyConfig
+  ): Sequence<IEventDto> {
 
     val outerStars = setOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
     val innerStars = setOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
 
     val angles = setOf(0.0, 60.0, 120.0, 240.0, 300.0, 90.0, 180.0)
-
-    val inner: IHoroscopeModel = horoscopeFeature.getModel(bdnp.gmtJulDay, loc, config.horoscopeConfig)
-
     val innerStarPosMap: Map<Planet, ZodiacDegree> = innerStars.associateWith { planet ->
-      starPositionImpl.getPosition(planet, bdnp.gmtJulDay, bdnp.location).lngDeg
+      starPositionImpl.getPosition(planet, inner.gmtJulDay, inner.location).lngDeg
     }
 
     val houseRelatedPoints = listOf(Axis.values.toList(), Arabic.values.toList()).flatten()
@@ -446,10 +455,10 @@ class DayHourService(
         val speed = starPositionImpl.getPosition(planet, gmt, loc).speedLng
         val (oldSign, newSign, eventType) = if (speed >= 0) {
           // 順行：進入 zDeg.sign，來自前一個星座
-          Triple(zDeg.sign.prev , zDeg.sign , "Ingresses (enters)")
+          Triple(zDeg.sign.prev, zDeg.sign, "Ingresses (enters)")
         } else {
           // 逆行：離開 zDeg.sign，進入前一個星座
-          Triple(zDeg.sign , zDeg.sign.prev , "Regresses (retrogrades into)")
+          Triple(zDeg.sign, zDeg.sign.prev, "Regresses (retrogrades into)")
         }
 
         val description = buildString {
@@ -499,8 +508,6 @@ class DayHourService(
       emptySequence()
     }
 
-
-
     return sequence {
 
       if (config.aspect) {
@@ -539,7 +546,7 @@ class DayHourService(
         // 月相
         yieldAll(lunarPhases)
       }
-      if (config.signIngress){
+      if (config.signIngress) {
         // 星體換星座
         yieldAll(signIngresses)
       }
@@ -548,6 +555,7 @@ class DayHourService(
         yieldAll(houseIngresses)
       }
     }
+
   }
 
 
