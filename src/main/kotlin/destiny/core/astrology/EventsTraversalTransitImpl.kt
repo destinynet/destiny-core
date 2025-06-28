@@ -9,7 +9,9 @@ import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.electional.*
+import destiny.core.electional.Config
+import destiny.core.electional.Impact
+import destiny.core.electional.Span
 import destiny.tools.getTitle
 import destiny.tools.reverse
 import destiny.tools.round
@@ -89,7 +91,7 @@ class EventsTraversalTransitImpl(
       val description = buildString {
         append("[transit ${outerStar1.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [transit ${outerStar2.asLocaleString().getTitle(Locale.ENGLISH)}]")
       }
-      AstroEventDto(Astro.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.GLOBAL)
+      AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.GLOBAL)
     }
 
     val vocConfig = VoidCourseConfig(Planet.MOON, vocImpl = VoidCourseImpl.Medieval)
@@ -100,7 +102,7 @@ class EventsTraversalTransitImpl(
           append("From ${it.fromPos.sign.getTitle(Locale.ENGLISH)}/${it.fromPos.signDegree.second.truncate(2)}° ")
           append("to ${it.toPos.sign.getTitle(Locale.ENGLISH)}/${it.toPos.signDegree.second.truncate(2)}°. ")
         }
-        AstroEventDto(Astro.MoonVoc(description, it), it.begin, it.end, Span.HOURS, Impact.GLOBAL)
+        AstroEventDto(AstroEvent.MoonVoc(description, it), it.begin, it.end, Span.HOURS, Impact.GLOBAL)
       }
 
 
@@ -120,7 +122,7 @@ class EventsTraversalTransitImpl(
           }
         }
         AstroEventDto(
-          Astro.PlanetStationary(
+          AstroEvent.PlanetStationary(
             description, s, zodiacDegree,
             if (config.includeTransitToNatalAspects) transitToNatalAspects else emptyList()
           ), s.gmtJulDay, null, Span.INSTANT, Impact.GLOBAL
@@ -135,7 +137,7 @@ class EventsTraversalTransitImpl(
           append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Retrograding (逆行). ")
           append("Progress = ${(progress * 100.0).truncate(2)}%")
         }
-        AstroEventDto(Astro.PlanetRetrograde(description, planet, progress), gmtJulDay, null, Span.DAY, Impact.GLOBAL)
+        AstroEventDto(AstroEvent.PlanetRetrograde(description, planet, progress), gmtJulDay, null, Span.DAY, Impact.GLOBAL)
       }
     }
 
@@ -155,7 +157,7 @@ class EventsTraversalTransitImpl(
         }
       }
       AstroEventDto(
-        Astro.Eclipse(
+        AstroEvent.Eclipse(
           description, eclipse,
           if (config.includeTransitToNatalAspects) transitToNatalAspects else emptyList()
         ), eclipse.max, null, Span.HOURS, Impact.GLOBAL
@@ -179,7 +181,7 @@ class EventsTraversalTransitImpl(
         }
       }
       AstroEventDto(
-        Astro.Eclipse(
+        AstroEvent.Eclipse(
           description, eclipse,
           if (config.includeTransitToNatalAspects) transitToNatalAspects else emptyList()
         ), eclipse.max, null, Span.HOURS, Impact.GLOBAL
@@ -216,7 +218,7 @@ class EventsTraversalTransitImpl(
           }
         }
         AstroEventDto(
-          Astro.LunarPhaseEvent(
+          AstroEvent.LunarPhaseEvent(
             description, phase, zodiacDegree,
             if (config.includeTransitToNatalAspects) transitToNatalAspects else emptyList()
           ),
@@ -245,7 +247,7 @@ class EventsTraversalTransitImpl(
           append("From ${oldSign.getTitle(Locale.ENGLISH)} to ${newSign.getTitle(Locale.ENGLISH)}")
         }
         AstroEventDto(
-          Astro.SignIngress(description, planet, oldSign, newSign), gmt, null, Span.INSTANT, Impact.GLOBAL
+          AstroEvent.SignIngress(description, planet, oldSign, newSign), gmt, null, Span.INSTANT, Impact.GLOBAL
         )
       }
     }
@@ -279,7 +281,7 @@ class EventsTraversalTransitImpl(
             append("From House $oldHouse to House $newHouse")
           }
           AstroEventDto(
-            Astro.HouseIngress(description, planet, oldHouse, newHouse), gmt, null, Span.INSTANT, Impact.PERSONAL
+            AstroEvent.HouseIngress(description, planet, oldHouse, newHouse), gmt, null, Span.INSTANT, Impact.PERSONAL
           )
         }
       }
@@ -299,7 +301,7 @@ class EventsTraversalTransitImpl(
           val description = buildString {
             append("[transit ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
           }
-          AstroEventDto(Astro.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
+          AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
         })
       }
 

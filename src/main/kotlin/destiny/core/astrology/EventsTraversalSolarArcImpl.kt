@@ -7,16 +7,13 @@ import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.prediction.ISolarArcModel
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.toLmt
-import destiny.core.electional.*
+import destiny.core.electional.Config
+import destiny.core.electional.Impact
+import destiny.core.electional.Span
 import destiny.tools.KotlinLogging
 import destiny.tools.getTitle
 import destiny.tools.reverse
-import destiny.tools.roundToNearestSecond
 import jakarta.inject.Named
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.math.abs
 
@@ -27,7 +24,6 @@ import kotlin.math.abs
 class EventsTraversalSolarArcImpl(
   private val horoscopeFeature: IHoroscopeFeature,
   private val modernAspectCalculator: IAspectCalculator,
-  private val julDayResolver: JulDayResolver,
 ) : IEventsTraversal {
 
   override fun traverse(
@@ -46,7 +42,6 @@ class EventsTraversalSolarArcImpl(
     val fromSolarArc: ISolarArcModel = horoscopeFeature.getSolarArc(inner, fromGmtJulDay, includeHour, modernAspectCalculator, threshold, hConfig)
     val toSolarArc: ISolarArcModel = horoscopeFeature.getSolarArc(inner, toGmtJulDay, includeHour, modernAspectCalculator, threshold, hConfig)
 
-    // 決定要進行計算的星體與點。 行星、月交點、以及上升/天頂軸點
     val pointsToConsider = inner.points.filter { it is Planet || it is LunarNode || it is Axis }
 
     fun searchPersonalEvents(aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet()): Sequence<AspectData> {
@@ -105,7 +100,6 @@ class EventsTraversalSolarArcImpl(
 
     // --- SA Sign Ingress ---
     fun searchSignIngressEvents(): Sequence<AstroEventDto> = sequence {
-      // 定義所有星座的起始點 (0°, 30°, 60°, ...)
       val signBoundaries = (0 until 360 step 30).map { it.toDouble().toZodiacDegree() }
 
       for (p1 in pointsToConsider) {
@@ -123,7 +117,7 @@ class EventsTraversalSolarArcImpl(
               val oldSign = newSign.prev
 
               val desc = "[SA ${p1.asLocaleString().getTitle(Locale.ENGLISH)}] Ingresses Sign. From ${oldSign.getTitle(Locale.ENGLISH)} to ${newSign.getTitle(Locale.ENGLISH)}"
-              yield(AstroEventDto(Astro.SignIngress(desc, p1, oldSign, newSign), eventGmt, null, Span.INSTANT, Impact.PERSONAL))
+              yield(AstroEventDto(AstroEvent.SignIngress(desc, p1, oldSign, newSign), eventGmt, null, Span.INSTANT, Impact.PERSONAL))
             }
           }
         }
@@ -152,7 +146,7 @@ class EventsTraversalSolarArcImpl(
               val oldHouse = if (newHouse == 1) 12 else newHouse - 1
 
               val desc = "[SA ${p1.asLocaleString().getTitle(Locale.ENGLISH)}] Ingresses House. From House $oldHouse to House $newHouse"
-              yield(AstroEventDto(Astro.HouseIngress(desc, p1, oldHouse, newHouse), eventGmt, null, Span.INSTANT, Impact.PERSONAL))
+              yield(AstroEventDto(AstroEvent.HouseIngress(desc, p1, oldHouse, newHouse), eventGmt, null, Span.INSTANT, Impact.PERSONAL))
             }
           }
         }
@@ -167,7 +161,7 @@ class EventsTraversalSolarArcImpl(
         val description = buildString {
           append("[SA ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
         }
-        AstroEventDto(Astro.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
+        AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
       }
       yieldAll(personalAspects)
 
@@ -181,15 +175,6 @@ class EventsTraversalSolarArcImpl(
         yieldAll(searchHouseIngressEvents())
       }
     }
-
-  }
-
-
-
-  fun GmtJulDay.describe(location : ILocation): String {
-    return (this.toLmt(location, julDayResolver) as LocalDateTime)
-      .roundToNearestSecond()
-      .truncatedTo(ChronoUnit.MINUTES).toString()
   }
 
   /**
@@ -225,7 +210,6 @@ class EventsTraversalSolarArcImpl(
       val currentArc = solarArcModel.degreeMoved
 
       round++
-      logger.trace { "[$round] low = ${low.describe(inner.location)} , high = ${high.describe(inner.location)} , mid = ${mid.describe(inner.location)} , currentArc = $currentArc" }
 
       if (currentArc < targetArc) {
         low = mid
@@ -236,11 +220,11 @@ class EventsTraversalSolarArcImpl(
 
     // 最終檢查 low/high 是否滿足條件且誤差夠小
     val finalModel = horoscopeFeature.getSolarArc(inner, low, true, modernAspectCalculator, null, hConfig)
-    if (abs(finalModel.degreeMoved - targetArc) < 0.01) { // 容許的誤差
-      return low
+    return if (abs(finalModel.degreeMoved - targetArc) < 0.01) { // 容許的誤差
+      low
+    } else {
+      null
     }
-
-    return null // 未找到
   }
 
   companion object {

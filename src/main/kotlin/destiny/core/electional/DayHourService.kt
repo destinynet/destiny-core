@@ -3,11 +3,11 @@
  */
 package destiny.core.electional
 
-import destiny.core.*
-import destiny.core.astrology.IEventsTraversal
-import destiny.core.astrology.IHoroscopeFeature
-import destiny.core.astrology.IHoroscopeModel
-import destiny.core.astrology.SynastryAspect
+import destiny.core.FlowScale
+import destiny.core.IBirthDataNamePlace
+import destiny.core.Scale
+import destiny.core.TimeRange
+import destiny.core.astrology.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -21,6 +21,10 @@ import destiny.core.calendar.eightwords.FlowDayHourPatterns.toFlowTrilogy
 import destiny.core.calendar.eightwords.FlowDayHourPatterns.trilogyToFlow
 import destiny.core.calendar.toLmt
 import destiny.core.chinese.Branch
+import destiny.core.chinese.eightwords.EwEvent
+import destiny.core.chinese.eightwords.EwEvent.NatalBranches
+import destiny.core.chinese.eightwords.EwEvent.NatalStems
+import destiny.core.chinese.eightwords.EwEventDto
 import destiny.core.chinese.eightwords.FlowDtoTransformer.toAffectingDtos
 import destiny.core.chinese.eightwords.FlowDtoTransformer.toBranchCombinedDtos
 import destiny.core.chinese.eightwords.FlowDtoTransformer.toBranchOppositionDtos
@@ -35,16 +39,12 @@ import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemCombinedDtos
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemRootedDtos
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toTrilogyDtos
 import destiny.core.chinese.eightwords.PersonPresentFeature
-import destiny.core.electional.Ew.NatalBranches
-import destiny.core.electional.Ew.NatalStems
-import destiny.tools.truncate
 import jakarta.inject.Named
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.ChronoUnit.DAYS
-import java.util.*
 
 
 @Named
@@ -65,8 +65,8 @@ class DayHourService(
     val daySelector: (IEventDto) -> LocalDate = {
       val beginDate = (it.begin.toLmt(bdnp.location, julDayResolver) as LocalDateTime).toLocalDate()
       when (it.event) {
-        is Astro -> beginDate
-        is Ew    -> {
+        is AstroEvent -> beginDate
+        is EwEvent    -> {
           val ewEventDto = (it as EwEventDto)
           val outer: IEightWords = ewEventDto.outer
 
@@ -91,6 +91,7 @@ class DayHourService(
             beginDate
           }
         }
+        else -> throw IllegalArgumentException("impossible : ${it.event}")
       }
     }
 
@@ -100,7 +101,7 @@ class DayHourService(
         .sortedBy { it.begin } // 確保先來的在前
         .fold(mutableListOf<IEventDto>()) { acc, event ->
           when (event) {
-            is EwEventDto    -> {
+            is EwEventDto -> {
               if (event.span == Span.DAY &&
                 acc.none { it is EwEventDto && it.event == event.event }
               ) {
@@ -208,25 +209,6 @@ class DayHourService(
     }
   }
 
-
-  private fun List<SynastryAspect>.describeAspects(includeHour: Boolean): String {
-    return this.sortedBy { it.orb }.joinToString("\n") { aspect: SynastryAspect ->
-      buildString {
-        append("\t")
-        append("(p) [transit ${aspect.outerPoint.asLocaleString().getTitle(Locale.ENGLISH)}")
-        if (includeHour) {
-          append(" (H${aspect.outerPointHouse})")
-        }
-        append("] ")
-        append(aspect.aspect)
-        append(" [natal ${aspect.innerPoint.asLocaleString().getTitle(Locale.ENGLISH)}")
-        if (includeHour) {
-          append(" (H${aspect.innerPointHouse})")
-        }
-        append("] orb = ${aspect.orb.truncate(2)}")
-      }
-    }
-  }
 
   fun traverseAstrologyEvents(
     bdnp: IBirthDataNamePlace,
@@ -377,9 +359,10 @@ class DayHourService(
           true
         else {
           when (it.event) {
-            is Ew.EwFlow     -> !(it.event as Ew.EwFlow).hourRelated
-            is Ew.EwIdentity -> true
-            is Astro         -> true
+            is EwEvent.EwFlow     -> !(it.event as EwEvent.EwFlow).hourRelated
+            is EwEvent.EwIdentity -> true
+            is AstroEvent         -> true
+            else                  -> throw IllegalArgumentException(NOT_SUPPORTED)
           }
         }
       }

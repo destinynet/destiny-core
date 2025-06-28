@@ -12,7 +12,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.toLmt
-import destiny.core.electional.AstroEventDto
 import destiny.core.electional.DayHourService
 import destiny.tools.KotlinLogging
 import jakarta.inject.Named

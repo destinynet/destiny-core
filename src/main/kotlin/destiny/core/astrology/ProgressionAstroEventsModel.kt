@@ -2,8 +2,6 @@ package destiny.core.astrology
 
 import destiny.core.astrology.prediction.PredictiveTechnique
 import destiny.core.calendar.GmtJulDay
-import destiny.core.electional.Astro
-import destiny.core.electional.AstroEventDto
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -16,7 +14,7 @@ import kotlinx.serialization.encoding.encodeStructure
 
 
 sealed interface IProgressionEvent {
-  val astro: Astro
+  val astro: AstroEvent
   val description: String
   val convergentTime: GmtJulDay
   val divergentTime: GmtJulDay
@@ -51,7 +49,7 @@ data class ProgressionEvent(
   val astroEvent: AstroEventDto,
   override val divergentTime: GmtJulDay
 ) : IProgressionEvent {
-  override val astro: Astro
+  override val astro: AstroEvent
     get() = astroEvent.event
 
   override val description: String

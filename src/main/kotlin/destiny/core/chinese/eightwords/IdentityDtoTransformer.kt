@@ -9,10 +9,9 @@ import destiny.core.calendar.eightwords.IdentityPattern.*
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem
+import destiny.core.chinese.eightwords.EwEvent.NatalBranches
+import destiny.core.chinese.eightwords.EwEvent.NatalStems
 import destiny.core.chinese.trilogy
-import destiny.core.electional.Ew
-import destiny.core.electional.Ew.NatalBranches
-import destiny.core.electional.Ew.NatalStems
 import destiny.tools.getTitle
 import java.util.*
 
@@ -54,7 +53,7 @@ object IdentityDtoTransformer {
     }
   }
 
-  fun Iterable<StemCombined>.toStemCombinedDtos(): Set<Ew.EwIdentity.StemCombinedDto> {
+  fun Iterable<StemCombined>.toStemCombinedDtos(): Set<EwEvent.EwIdentity.StemCombinedDto> {
     return this.groupBy { p -> p.pillars.first().second.combined.second }
       .map { (five: FiveElement, patterns) ->
         val description = (five to patterns).translateStemCombined()
@@ -63,7 +62,7 @@ object IdentityDtoTransformer {
           NatalStems(scales.map { it.first }.toSet(), stem)
         }.toSet()
 
-        Ew.EwIdentity.StemCombinedDto(description, natalStems, five)
+        EwEvent.EwIdentity.StemCombinedDto(description, natalStems, five)
       }.toSet()
   }
 
@@ -92,7 +91,7 @@ object IdentityDtoTransformer {
     }.joinToString(" 六合 ")
   }
 
-  fun Iterable<BranchCombined>.toBranchCombinedDtos(): Set<Ew.EwIdentity.BranchCombinedDto> {
+  fun Iterable<BranchCombined>.toBranchCombinedDtos(): Set<EwEvent.EwIdentity.BranchCombinedDto> {
     return this.groupBy { p -> p.pillars.map { it.second }.toSet() }
       .map { (_: Set<Branch>, patterns: List<BranchCombined>) ->
         val description = patterns.translateBranchCombined()
@@ -103,7 +102,7 @@ object IdentityDtoTransformer {
             NatalBranches(pairs.map { it.first }.toSet(), branch)
           }.toSet()
 
-        Ew.EwIdentity.BranchCombinedDto(description, natalBranches)
+        EwEvent.EwIdentity.BranchCombinedDto(description, natalBranches)
       }.toSet()
   }
 
@@ -123,7 +122,7 @@ object IdentityDtoTransformer {
     }
   }
 
-  fun Iterable<Trilogy>.toTrilogyDtos(): Set<Ew.EwIdentity.TrilogyDto> {
+  fun Iterable<Trilogy>.toTrilogyDtos(): Set<EwEvent.EwIdentity.TrilogyDto> {
     return this.map { pattern ->
       val description = pattern.translateTrilogy()
 
@@ -133,7 +132,7 @@ object IdentityDtoTransformer {
 
       val trilogyElement = pattern.pillars.first().second.trilogy()
 
-      Ew.EwIdentity.TrilogyDto(description, natalBranches, trilogyElement)
+      EwEvent.EwIdentity.TrilogyDto(description, natalBranches, trilogyElement)
     }.toSet()
   }
 
@@ -159,7 +158,7 @@ object IdentityDtoTransformer {
     }.joinToString(" 正沖 ")
   }
 
-  fun Iterable<BranchOpposition>.toBranchOppositionDtos(): Set<Ew.EwIdentity.BranchOppositionDto> {
+  fun Iterable<BranchOpposition>.toBranchOppositionDtos(): Set<EwEvent.EwIdentity.BranchOppositionDto> {
     return this.groupBy { p -> p.pillars.map { it.second }.toSet() }
       .map { (_, patterns: List<BranchOpposition>) ->
         val description = patterns.translateBranchOpposition()
@@ -170,7 +169,7 @@ object IdentityDtoTransformer {
             NatalBranches(pairs.map { it.first }.toSet(), branch)
           }.toSet()
 
-        Ew.EwIdentity.BranchOppositionDto(description, natalBranches)
+        EwEvent.EwIdentity.BranchOppositionDto(description, natalBranches)
       }.toSet()
   }
 
@@ -200,7 +199,7 @@ object IdentityDtoTransformer {
     }
   }
 
-  fun Iterable<StemRooted>.toStemRootedDtos(): Set<Ew.EwIdentity.StemRootedDto> {
+  fun Iterable<StemRooted>.toStemRootedDtos(): Set<EwEvent.EwIdentity.StemRootedDto> {
     return this.groupBy { it.roots }
       .map { (roots, patterns) ->
         val description = (roots to patterns).translateStemRooted()
@@ -214,11 +213,11 @@ object IdentityDtoTransformer {
           NatalBranches(setOf(scale), branch)
         }.toSet()
 
-        Ew.EwIdentity.StemRootedDto(description, natalStems, natalBranches)
+        EwEvent.EwIdentity.StemRootedDto(description, natalStems, natalBranches)
       }.toSet()
   }
 
-  fun Iterable<AuspiciousPattern>.toAuspiciousDto(): Ew.EwIdentity.AuspiciousDto? {
+  fun Iterable<AuspiciousPattern>.toAuspiciousDto(): EwEvent.EwIdentity.AuspiciousDto? {
     return Scale.entries.associateWith { scale ->
       this.filter { it.pillars.contains(scale) }.map { it.value }.toSet()
     }.filter { (_, auspiciousSet) ->
@@ -228,12 +227,12 @@ object IdentityDtoTransformer {
         scale.getTitle(locale) + "柱 : " + auspiciousSet.joinToString("、") { it.name }
       }.joinToString("；")
 
-      Ew.EwIdentity.AuspiciousDto(description, scaleMap)
+      EwEvent.EwIdentity.AuspiciousDto(description, scaleMap)
     }
   }
 
 
-  fun Iterable<InauspiciousPattern>.toInauspiciousDto(): Ew.EwIdentity.InauspiciousDto? {
+  fun Iterable<InauspiciousPattern>.toInauspiciousDto(): EwEvent.EwIdentity.InauspiciousDto? {
     return Scale.entries.associateWith { scale ->
       this.filter { it.pillars.contains(scale) }.map { it.value }.toSet()
     }.filter { (_, inauspiciousSet) ->
@@ -244,7 +243,7 @@ object IdentityDtoTransformer {
           scale.getTitle(locale) + "柱 : " + inauspiciousSet.joinToString("、") { it.name }
         }.joinToString("；")
 
-        Ew.EwIdentity.InauspiciousDto(description, scaleMap)
+        EwEvent.EwIdentity.InauspiciousDto(description, scaleMap)
       }
   }
 

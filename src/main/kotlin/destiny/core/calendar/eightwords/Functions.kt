@@ -18,7 +18,6 @@ import destiny.core.chinese.eightwords.IdentityDtoTransformer.toBranchOpposition
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemCombinedDtos
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemRootedDtos
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toTrilogyDtos
-import destiny.core.electional.Ew
 import destiny.tools.KotlinLogging
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -497,7 +496,7 @@ fun IStemBranch.toStemAndBranch(dayStem: Stem): StemAndBranch {
 /**
  * 本命四柱 特徵
  */
-fun IEightWords.identityDtos() : Set<Ew.EwIdentity> {
+fun IEightWords.identityDtos() : Set<EwEvent.EwIdentity> {
   return getIdentityPatterns().let { patterns ->
     buildSet {
       addAll(patterns.filterIsInstance<IdentityPattern.StemCombined>().toStemCombinedDtos())

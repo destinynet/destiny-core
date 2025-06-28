@@ -11,10 +11,9 @@ import destiny.core.calendar.eightwords.Reacting
 import destiny.core.calendar.eightwords.Reacting.*
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
+import destiny.core.chinese.eightwords.EwEvent.NatalBranches
+import destiny.core.chinese.eightwords.EwEvent.NatalStems
 import destiny.core.chinese.trilogy
-import destiny.core.electional.Ew
-import destiny.core.electional.Ew.NatalBranches
-import destiny.core.electional.Ew.NatalStems
 import destiny.tools.getTitle
 import java.util.*
 
@@ -52,12 +51,12 @@ object FlowDtoTransformer {
     }
   }
 
-  fun Iterable<Affecting>.toAffectingDtos() : Set<Ew.EwFlow.AffectingDto> {
+  fun Iterable<Affecting>.toAffectingDtos() : Set<EwEvent.EwFlow.AffectingDto> {
     return this.groupBy { it.reacting }.map { (reacting, patterns) ->
       val description = (reacting to patterns).translateAffecting()
       val natalStems = NatalStems(patterns.map { it.pillar }.toSet(), patterns.first().stem)
       val flowScales: Set<FlowScale> = patterns.flatMap { it.flowScales }.toSet()
-      Ew.EwFlow.AffectingDto(description, natalStems, reacting, flowScales)
+      EwEvent.EwFlow.AffectingDto(description, natalStems, reacting, flowScales)
     }.toSet()
   }
 
@@ -105,12 +104,12 @@ object FlowDtoTransformer {
     }
   }
 
-  fun Iterable<StemCombined>.toStemCombinedDtos() : Set<Ew.EwFlow.StemCombinedDto> {
+  fun Iterable<StemCombined>.toStemCombinedDtos() : Set<EwEvent.EwFlow.StemCombinedDto> {
     return this.groupBy { it.stem }.map { (stem, patterns: List<StemCombined>) ->
       val description = (stem to patterns).translateStemCombined()
       val natalStems = NatalStems(patterns.map { it.pillar }.toSet(), stem)
-      val flowStems: Ew.EwFlow.FlowStems = Ew.EwFlow.FlowStems(patterns.map { it.flowScale }.toSet(), stem.combined.first)
-      Ew.EwFlow.StemCombinedDto(description, natalStems, flowStems, stem.combined.second)
+      val flowStems: EwEvent.EwFlow.FlowStems = EwEvent.EwFlow.FlowStems(patterns.map { it.flowScale }.toSet(), stem.combined.first)
+      EwEvent.EwFlow.StemCombinedDto(description, natalStems, flowStems, stem.combined.second)
     }.toSet()
   }
 
@@ -159,12 +158,12 @@ object FlowDtoTransformer {
     }
   }
 
-  fun Iterable<BranchCombined>.toBranchCombinedDtos() : Set<Ew.EwFlow.BranchCombinedDto> {
+  fun Iterable<BranchCombined>.toBranchCombinedDtos() : Set<EwEvent.EwFlow.BranchCombinedDto> {
     return this.groupBy { it.branch }.map { (branch, patterns) ->
       val description = (branch to patterns).translateBranchCombined()
       val natalBranches = NatalBranches(patterns.map { it.pillar }.toSet(), branch)
-      val flowBranches = Ew.EwFlow.FlowBranches(patterns.map { it.flowScale }.toSet(), branch.combined)
-      Ew.EwFlow.BranchCombinedDto(description, natalBranches, flowBranches)
+      val flowBranches = EwEvent.EwFlow.FlowBranches(patterns.map { it.flowScale }.toSet(), branch.combined)
+      EwEvent.EwFlow.BranchCombinedDto(description, natalBranches, flowBranches)
     }.toSet()
   }
 
@@ -206,7 +205,7 @@ object FlowDtoTransformer {
     }
   }
 
-  fun Iterable<TrilogyToFlow>.toTrilogyToFlowDtos() : Set<Ew.EwFlow.TrilogyToFlowDto> {
+  fun Iterable<TrilogyToFlow>.toTrilogyToFlowDtos() : Set<EwEvent.EwFlow.TrilogyToFlowDto> {
     return this.groupBy { it.pairs }.map { (pairs, patterns) ->
       val description = (pairs to patterns).translateTrilogyToFlow()
 
@@ -214,8 +213,8 @@ object FlowDtoTransformer {
         NatalBranches(setOf(scale), branch)
       }.toSet()
 
-      val flowBranches = Ew.EwFlow.FlowBranches(patterns.map { it.flow.first }.toSet(), patterns.first().flow.second)
-      Ew.EwFlow.TrilogyToFlowDto(description, natalBranches, flowBranches)
+      val flowBranches = EwEvent.EwFlow.FlowBranches(patterns.map { it.flow.first }.toSet(), patterns.first().flow.second)
+      EwEvent.EwFlow.TrilogyToFlowDto(description, natalBranches, flowBranches)
     }.toSet()
   }
 
@@ -250,7 +249,7 @@ object FlowDtoTransformer {
     }
   }
 
-  fun Iterable<ToFlowTrilogy>.toToFlowTrilogyDtos() : Set<Ew.EwFlow.ToFlowTrilogyDto> {
+  fun Iterable<ToFlowTrilogy>.toToFlowTrilogyDtos() : Set<EwEvent.EwFlow.ToFlowTrilogyDto> {
     return this.groupBy { it.flows }.map { (flows: Set<Pair<FlowScale, Branch>>, patterns: List<ToFlowTrilogy>) ->
       val description = (flows to patterns).translateToFlowTrilogy()
 
@@ -258,11 +257,11 @@ object FlowDtoTransformer {
         NatalBranches(scales, patterns.first().branch)
       }
 
-      val flowBranches: Set<Ew.EwFlow.FlowBranches> = flows.map { (flowScale, branch) ->
-        Ew.EwFlow.FlowBranches(setOf(flowScale), branch)
+      val flowBranches: Set<EwEvent.EwFlow.FlowBranches> = flows.map { (flowScale, branch) ->
+        EwEvent.EwFlow.FlowBranches(setOf(flowScale), branch)
       }.toSet()
 
-      Ew.EwFlow.ToFlowTrilogyDto(description, natalBranches, flowBranches)
+      EwEvent.EwFlow.ToFlowTrilogyDto(description, natalBranches, flowBranches)
     }.toSet()
   }
 
@@ -310,14 +309,14 @@ object FlowDtoTransformer {
     }
   }
 
-  fun Iterable<BranchOpposition>.toBranchOppositionDtos() : Set<Ew.EwFlow.BranchOppositionDto> {
+  fun Iterable<BranchOpposition>.toBranchOppositionDtos() : Set<EwEvent.EwFlow.BranchOppositionDto> {
     return this.groupBy { it.branch }.map { (branch, patterns) ->
       val description = (branch to patterns.map { it.pillar to it.flowScale }).translateBranchOpposition()
 
       val natalBranches = NatalBranches(patterns.map { it.pillar }.toSet(), branch)
-      val flowBranches = Ew.EwFlow.FlowBranches(patterns.map { it.flowScale }.toSet(), branch.opposite)
+      val flowBranches = EwEvent.EwFlow.FlowBranches(patterns.map { it.flowScale }.toSet(), branch.opposite)
 
-      Ew.EwFlow.BranchOppositionDto(description, natalBranches, flowBranches)
+      EwEvent.EwFlow.BranchOppositionDto(description, natalBranches, flowBranches)
     }.toSet()
   }
 }

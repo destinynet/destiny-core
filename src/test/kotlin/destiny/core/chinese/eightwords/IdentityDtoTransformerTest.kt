@@ -15,12 +15,12 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch.*
+import destiny.core.chinese.eightwords.EwEvent.*
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toBranchCombinedDtos
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toBranchOppositionDtos
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemCombinedDtos
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toStemRootedDtos
 import destiny.core.chinese.eightwords.IdentityDtoTransformer.toTrilogyDtos
-import destiny.core.electional.Ew.*
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -5,7 +5,6 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.electional.AstroEventDto
 import destiny.core.electional.Config
 
 
