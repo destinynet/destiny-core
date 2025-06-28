@@ -113,12 +113,19 @@ class DtoFactory(
     rulerImpl: IRuler,
     aspectAffective: IAspectEffective,
     aspectCalculator: IAspectCalculator,
+    includeHouse: Boolean,
     config: IHoroscopeConfig
   ): IPersonHoroscopeDto {
-    val horoscopeDto = this.toHoroscopeDto(rulerImpl, aspectAffective, aspectCalculator, config)
+    val horoscopeDto: IHoroscopeDto = this.toHoroscopeDto(rulerImpl, aspectAffective, aspectCalculator, config)
     val age = this.getAge(viewGmt)
 
-    return Natal(gender, age, name, horoscopeDto)
+    return Natal(gender, age, name, horoscopeDto).let {
+      if (includeHouse) {
+        it
+      } else {
+        it.copy(houses = emptyList() , houseStarDistribution = emptyMap())
+      }
+    }
   }
 
   companion object {

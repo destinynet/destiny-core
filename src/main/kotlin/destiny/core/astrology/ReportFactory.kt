@@ -57,14 +57,16 @@ class ReportFactory(
   ): TransitSolarArcModel {
     val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(bdnp, config)
     val viewGmt = localDate.atTime(12, 0).toGmtJulDay(bdnp.location)
-    val natal: IPersonHoroscopeDto = with(dtoFactory) {
-      model.toPersonHoroscopeDto(viewGmt, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, config)
-    }
 
     val innerConsiderHour = when (grain) {
       BirthDataGrain.DAY    -> false
       BirthDataGrain.MINUTE -> true
     }
+
+    val natal: IPersonHoroscopeDto = with(dtoFactory) {
+      model.toPersonHoroscopeDto(viewGmt, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, innerConsiderHour, config)
+    }
+
 
     val solarArcModel = horoscopeFeature.getSolarArc(model, viewGmt, innerConsiderHour, modernAspectCalculator, threshold, config)
 
@@ -171,7 +173,7 @@ class ReportFactory(
 
     val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(bdnp, config)
     val natal: IPersonHoroscopeDto = with(dtoFactory) {
-      model.toPersonHoroscopeDto(secondaryProgressionConvergentFrom, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, config)
+      model.toPersonHoroscopeDto(secondaryProgressionConvergentFrom, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, includeHour, config)
     }
 
     return ProgressionAstroEventsModel(natal, grain, fromTime, toTime, events)
