@@ -7,7 +7,6 @@ import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.prediction.ISolarArcModel
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.electional.Config
 import destiny.core.electional.Impact
 import destiny.core.electional.Span
 import destiny.tools.KotlinLogging
@@ -33,7 +32,7 @@ class EventsTraversalSolarArcImpl(
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
     includeHour: Boolean,
-    config: Config.AstrologyConfig
+    config: AstrologyTraversalConfig
   ): Sequence<AstroEventDto> {
 
     val hConfig = HoroscopeConfig()

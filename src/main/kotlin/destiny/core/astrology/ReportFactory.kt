@@ -111,7 +111,7 @@ class ReportFactory(
     logger.debug { "tertiaryProgression  convergentFrom = ${tertiaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
     logger.debug { "tertiaryProgression  convergentTo   = ${tertiaryProgressionConvergentTo.toLmt(loc, julDayResolver)}" }
 
-    val astrologyConfig = destiny.core.electional.Config.AstrologyConfig(
+    val astrologyConfig = AstrologyTraversalConfig(
       aspect = true,
       voc = false,
       stationary = true,

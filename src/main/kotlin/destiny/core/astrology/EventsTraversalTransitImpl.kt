@@ -9,7 +9,6 @@ import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.electional.Config
 import destiny.core.electional.Impact
 import destiny.core.electional.Span
 import destiny.tools.getTitle
@@ -39,7 +38,7 @@ class EventsTraversalTransitImpl(
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
     includeHour: Boolean,
-    config: Config.AstrologyConfig
+    config: AstrologyTraversalConfig
   ): Sequence<AstroEventDto> {
     val outerStars = setOf(Planet.SUN, Planet.MOON, Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN)
     val innerStars = setOf(Planet.SUN, Planet.MOON, Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN)
@@ -69,7 +68,7 @@ class EventsTraversalTransitImpl(
 
     fun searchPersonalEvents(outerStars: Set<Planet>, angles: Set<Double>): Sequence<AspectData> {
       return outerStars.asSequence().flatMap { outer ->
-        innerStars.flatMap { inner ->
+        innerStars.asSequence().flatMap { inner ->
           innerStarPosMap[inner]?.let { innerDeg ->
             val degrees = angles.map { it.toZodiacDegree() }.map { it + innerDeg }.toSet()
             starTransitImpl.getRangeTransitGmt(outer, degrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
@@ -77,7 +76,7 @@ class EventsTraversalTransitImpl(
               val pattern = PointAspectPattern(listOf(outer, inner), angle, null, 0.0)
               AspectData(pattern, null, 0.0, null, gmt)
             }
-          } ?: emptyList()
+          } ?: emptySequence()
         }
       }
     }

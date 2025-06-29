@@ -25,6 +25,7 @@ import destiny.core.chinese.eightwords.EwEvent
 import destiny.core.chinese.eightwords.EwEvent.NatalBranches
 import destiny.core.chinese.eightwords.EwEvent.NatalStems
 import destiny.core.chinese.eightwords.EwEventDto
+import destiny.core.chinese.eightwords.EwTraversalConfig
 import destiny.core.chinese.eightwords.FlowDtoTransformer.toAffectingDtos
 import destiny.core.chinese.eightwords.FlowDtoTransformer.toBranchCombinedDtos
 import destiny.core.chinese.eightwords.FlowDtoTransformer.toBranchOppositionDtos
@@ -216,7 +217,7 @@ class DayHourService(
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
     includeHour: Boolean,
-    config: Config.AstrologyConfig,
+    config: AstrologyTraversalConfig,
     vararg traversals: IEventsTraversal
   ): Sequence<IEventDto> {
     val inner: IHoroscopeModel = horoscopeFeature.getModel(bdnp.gmtJulDay, loc, config.horoscopeConfig)
@@ -226,7 +227,7 @@ class DayHourService(
 
   private val supportedScales = setOf(Scale.DAY, Scale.HOUR)
 
-  private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords, config: Config.EwConfig, loc: ILocation, includeHour: Boolean): Sequence<IEventDto> {
+  private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords, config: EwTraversalConfig, loc: ILocation, includeHour: Boolean): Sequence<IEventDto> {
 
     val globalStemCombined = with(IdentityPatterns.stemCombined) {
       outer.getPatterns().filterIsInstance<IdentityPattern.StemCombined>()
@@ -375,7 +376,7 @@ class DayHourService(
     toGmtJulDay: GmtJulDay,
     loc: ILocation = bdnp.location,
     includeHour: Boolean,
-    config: Config.EwConfig,
+    config: EwTraversalConfig,
   ): Sequence<IEventDto> {
 
     val ewPersonPresentConfig = config.personPresentConfig

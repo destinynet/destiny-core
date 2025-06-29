@@ -5,7 +5,6 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.electional.Config
 
 
 interface IEventsTraversal {
@@ -16,7 +15,7 @@ interface IEventsTraversal {
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
     includeHour: Boolean,
-    config: Config.AstrologyConfig
+    config: AstrologyTraversalConfig
   ): Sequence<AstroEventDto>
 
 }
