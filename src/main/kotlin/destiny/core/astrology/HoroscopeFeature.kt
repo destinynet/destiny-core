@@ -224,7 +224,8 @@ class HoroscopeFeature(
   private val retrogradeImpl: IRetrograde,
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
-  private val primaryDirectionImpl: IPrimaryDirection,
+  private val primaryDirectionMundaneImpl: IPrimaryDirection,
+  private val primaryDirectionalZodiacWithoutLatitudeImpl : IPrimaryDirection,
   @Transient
   private val horoscopeFeatureCache: Cache<GmtCacheKey<*>, IHoroscopeModel>,
 ) : AbstractCachedFeature<IHoroscopeConfig, IHoroscopeModel>(), IHoroscopeFeature {
@@ -398,13 +399,7 @@ class HoroscopeFeature(
     val diffYears = (viewTime - model.gmtJulDay) / TROPICAL_YEAR_DAYS
     val diffArcs = timeKey.getArc(diffYears)
 
-    val posMap = primaryDirectionImpl.getDirectedPositions(model , diffArcs, HouseSystem.PLACIDUS)
-
-//    val laterDiffYears = diffYears + 0.0001 // about 53 minutes
-//    val laterDiffArcs = timeKey.getArc(laterDiffYears)
-//    val laterPosMap = primaryDirectionImpl.getDirectedPositions(model, laterDiffArcs, HouseSystem.PLACIDUS)
-//    val laterForP1: ((AstroPoint) -> IZodiacDegree?) = { p -> laterPosMap[p] }
-//    val laterForP2: ((AstroPoint) -> IZodiacDegree?) = { p -> model.getZodiacDegree(p) }
+    val posMap = primaryDirectionalZodiacWithoutLatitudeImpl.getDirectedPositions(model, diffArcs, HouseSystem.PLACIDUS)
 
     val synastryAspects = synastryAspects(
       posMap, model.positionMap,
