@@ -13,6 +13,7 @@ import destiny.core.electional.Span
 import destiny.tools.KotlinLogging
 import destiny.tools.getTitle
 import destiny.tools.reverse
+import destiny.tools.truncate
 import jakarta.inject.Named
 import java.util.*
 import kotlin.math.abs
@@ -183,12 +184,96 @@ class EventsTraversalSolarArcImpl(
     }
   }
 
+  private fun findGmtJulDayForArc(
+    inner: IHoroscopeModel,
+    targetArc: Double,
+    fromGmt: GmtJulDay,
+    toGmt: GmtJulDay,
+    hConfig: HoroscopeConfig
+  ): GmtJulDay? {
+    return findGmtJulDayForArcInterpolated(inner, targetArc, fromGmt, toGmt, hConfig)
+  }
+
+  fun findGmtJulDayForArcInterpolated(
+    inner: IHoroscopeModel,
+    targetArc: Double,
+    fromGmt: GmtJulDay,
+    toGmt: GmtJulDay,
+    hConfig: HoroscopeConfig
+  ): GmtJulDay? {
+    // 1. 粗略估算檢查，確保目標弧度在時間範圍內，這是一個重要的初步過濾
+    val arcAtLow = horoscopeFeature.getSolarArc(inner, fromGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
+    val arcAtHigh = horoscopeFeature.getSolarArc(inner, toGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
+
+    // 檢查 targetArc 是否真的在範圍內
+    if (targetArc < arcAtLow || targetArc > arcAtHigh) {
+      logger.trace { "Target arc $targetArc is outside the range [$arcAtLow, $arcAtHigh]" }
+      return null
+    }
+
+    // 2. 實作內插搜尋法 (Interpolation Search / Secant Method)
+    var lowGmt = fromGmt
+    var highGmt = toGmt
+    var currentArcAtLow = arcAtLow
+    var currentArcAtHigh = arcAtHigh
+
+    for (round in 1..15) { // 使用 for 迴圈取代 while，設定一個最大迭代次數以防止無限迴圈
+
+      // 檢查時間間隔或弧度差是否已經足夠小
+      if ((highGmt - lowGmt) < 0.00001 || abs(currentArcAtHigh - currentArcAtLow) < 0.0001) {
+        break
+      }
+
+      // --- 內插法核心公式 ---
+      // 根據目標弧度在當前弧度範圍內的比例，來估算下一個時間點
+      val midGmt = lowGmt + (highGmt - lowGmt) * (targetArc - currentArcAtLow) / (currentArcAtHigh - currentArcAtLow)
+
+      // 防止因浮點數計算導致猜測超出範圍
+      if (midGmt <= lowGmt || midGmt >= highGmt) {
+        logger.warn("Interpolation guess is out of bounds, falling back to binary search.")
+        // 若發生異常，可退回至二分法以確保穩健性
+        // midGmt = lowGmt + (highGmt - lowGmt) / 2
+        break
+      }
+
+      val arcAtMid = horoscopeFeature.getSolarArc(inner, midGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
+
+      logger.info {
+        "[$round] currentArc = ${arcAtMid.truncate(4)} , targetArc = ${targetArc.truncate(4)} , lowGmt = ${lowGmt.value.truncate(4)} , highGmt = ${
+          highGmt.value.truncate(
+            4
+          )
+        }"
+      }
+
+      // 根據猜測結果，縮小搜尋範圍
+      if (arcAtMid < targetArc) {
+        lowGmt = midGmt
+        currentArcAtLow = arcAtMid
+      } else {
+        highGmt = midGmt
+        currentArcAtHigh = arcAtMid
+      }
+    }
+
+    // 3. 最終檢查 lowGmt 是否滿足條件且誤差夠小
+    val finalArc = horoscopeFeature.getSolarArc(inner, lowGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
+    return if (abs(finalArc - targetArc) < 0.01) { // 容許的最終誤差
+      lowGmt
+    } else {
+      // 如果收斂失敗，可以回傳 null 或記錄一個更詳細的錯誤
+      logger.error("Failed to converge for targetArc $targetArc. Final arc: $finalArc")
+      null
+    }
+  }
+
   /**
    * 使用數值搜尋方法，找到產生指定 solar arc 的時間點
    * @param targetArc 需要達成的太陽弧度數 (0-360)
    * @return 如果在時間範圍內找到，則返回 GmtJulDay，否則返回 null
    */
-  fun findGmtJulDayForArc(
+  @Deprecated("Use findGmtJulDayForArcInterpolated instead.")
+  fun findGmtJulDayForArcBinary(
     inner: IHoroscopeModel,
     targetArc: Double,
     fromGmt: GmtJulDay,
@@ -216,6 +301,7 @@ class EventsTraversalSolarArcImpl(
       val currentArc = solarArcModel.degreeMoved
 
       round++
+      logger.info { "[$round] currentArc = ${currentArc.truncate(4)} , targetArc = ${targetArc.truncate(4)} , low = ${low.value.truncate(4)} , high = ${high.value.truncate(4)}" }
 
       if (currentArc < targetArc) {
         low = mid
@@ -232,6 +318,8 @@ class EventsTraversalSolarArcImpl(
       null
     }
   }
+
+
 
   companion object {
     private val logger = KotlinLogging.logger { }
