@@ -400,17 +400,16 @@ class HoroscopeFeature(
 
     val posMap = primaryDirectionImpl.getDirectedPositions(model , diffArcs, HouseSystem.PLACIDUS)
 
-    val laterDiffYears = diffYears + 0.0001 // about 53 minutes
-    val laterDiffArcs = timeKey.getArc(laterDiffYears)
-    val laterPosMap = primaryDirectionImpl.getDirectedPositions(model, laterDiffArcs, HouseSystem.PLACIDUS)
-    // TODO : 可能要改為 null , 因為 主限法是靜態分析，通常不看入出相
-    val laterForP1: ((AstroPoint) -> IZodiacDegree?) = { p -> laterPosMap[p] }
-    val laterForP2: ((AstroPoint) -> IZodiacDegree?) = { p -> model.getZodiacDegree(p) }
+//    val laterDiffYears = diffYears + 0.0001 // about 53 minutes
+//    val laterDiffArcs = timeKey.getArc(laterDiffYears)
+//    val laterPosMap = primaryDirectionImpl.getDirectedPositions(model, laterDiffArcs, HouseSystem.PLACIDUS)
+//    val laterForP1: ((AstroPoint) -> IZodiacDegree?) = { p -> laterPosMap[p] }
+//    val laterForP2: ((AstroPoint) -> IZodiacDegree?) = { p -> model.getZodiacDegree(p) }
 
     val synastryAspects = synastryAspects(
       posMap, model.positionMap,
-      laterForP1,
-      laterForP2,
+      laterForP1 = null,
+      laterForP2 = null,
       aspectCalculator, threshold
     )
 
