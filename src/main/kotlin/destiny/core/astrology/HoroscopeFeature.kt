@@ -204,6 +204,8 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   }
 
   fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig, forward: Boolean = true) : ISolarArcModel
+
+  fun getPrimaryDirection(model: IHoroscopeModel, viewTime: GmtJulDay, timeKey: ITimeKey, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig, forward: Boolean = true) : IPrimaryDirectionModel
 }
 
 data class ProgressionCalcObj(
@@ -222,6 +224,7 @@ class HoroscopeFeature(
   private val retrogradeImpl: IRetrograde,
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
+  private val primaryDirectionImpl: IPrimaryDirection,
   @Transient
   private val horoscopeFeatureCache: Cache<GmtCacheKey<*>, IHoroscopeModel>,
 ) : AbstractCachedFeature<IHoroscopeConfig, IHoroscopeModel>(), IHoroscopeFeature {
@@ -388,6 +391,30 @@ class HoroscopeFeature(
                          forward,
                          convergentJulDay, degreeMoved,
                          model.location, posMap, synastryAspects)
+  }
+
+
+  override fun getPrimaryDirection(model: IHoroscopeModel, viewTime: GmtJulDay, timeKey: ITimeKey, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig, forward: Boolean): IPrimaryDirectionModel {
+    val diffYears = (viewTime - model.gmtJulDay) / TROPICAL_YEAR_DAYS
+    val diffArcs = timeKey.getArc(diffYears)
+
+    val posMap = primaryDirectionImpl.getDirectedPositions(model , diffArcs, HouseSystem.PLACIDUS)
+
+    val laterDiffYears = diffYears + 0.0001 // about 53 minutes
+    val laterDiffArcs = timeKey.getArc(laterDiffYears)
+    val laterPosMap = primaryDirectionImpl.getDirectedPositions(model, laterDiffArcs, HouseSystem.PLACIDUS)
+    // TODO : 可能要改為 null , 因為 主限法是靜態分析，通常不看入出相
+    val laterForP1: ((AstroPoint) -> IZodiacDegree?) = { p -> laterPosMap[p] }
+    val laterForP2: ((AstroPoint) -> IZodiacDegree?) = { p -> model.getZodiacDegree(p) }
+
+    val synastryAspects = synastryAspects(
+      posMap, model.positionMap,
+      laterForP1,
+      laterForP2,
+      aspectCalculator, threshold
+    )
+
+    return PrimaryDirectionModel(model.gmtJulDay, viewTime, timeKey, diffArcs, posMap, synastryAspects)
   }
 
   companion object {

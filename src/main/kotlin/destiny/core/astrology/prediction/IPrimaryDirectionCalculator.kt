@@ -4,19 +4,29 @@
 package destiny.core.astrology.prediction
 
 import destiny.core.astrology.AstroPoint
+import destiny.core.astrology.Constants.TROPICAL_YEAR_DAYS
 import destiny.core.astrology.HouseSystem
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.calendar.GmtJulDay
+import kotlinx.serialization.Serializable
 
 
 /** 時間鑰匙的介面，定義了弧角如何轉換為時間 */
 interface ITimeKey {
-  fun convertArcToYears(arc: Double): Double
+  fun getArc(years: Double): Double
 }
 
 /** 托勒密之鑰：1度赤經 = 1年生命 */
+@Serializable
 object PtolemyKey : ITimeKey {
-  override fun convertArcToYears(arc: Double): Double = arc
+  override fun getArc(years: Double): Double = years
+}
+
+/** Naibod之鑰：1年 = 0.9856度 (太陽每日平均移動速度) */
+@Serializable
+object NaibodKey : ITimeKey {
+  private const val NAIBOD_ARC_PER_YEAR = 360.0 /  TROPICAL_YEAR_DAYS // 0.98564736
+  override fun getArc(years: Double): Double = years * NAIBOD_ARC_PER_YEAR
 }
 
 /** 代表一個主限法事件 */
