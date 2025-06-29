@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.astrology.*
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.IRisingSign
 import destiny.core.chinese.Branch
 import java.io.Serializable
@@ -25,7 +26,8 @@ class MainBodyHouseAstroImpl(private val risingSignImpl: IRisingSign,
    * 占星算法，取上升、月亮 為命宮、身宮， 不會需要「月數」
    * */
   override fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<Branch, Branch , Int?> {
-    val mainHouse = risingSignImpl.getRisingSign(lmt, loc, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
+    val gmtJulday = lmt.toGmtJulDay(loc)
+    val mainHouse = risingSignImpl.getRisingSign(gmtJulday, loc, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
     val moonPos = starPositionImpl.getPosition(Planet.MOON, lmt, loc, Centric.GEO, Coordinate.ECLIPTIC)
 
     val zodiacSign = moonPos.lngDeg.sign
