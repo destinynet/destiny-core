@@ -156,10 +156,11 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
       .mapNotNull { (pOuter, pInner) ->
         aspectCalculator.getAspectPattern(pOuter, pInner, outer, inner.positionMap, laterForP1, laterForP2, aspects)
           ?.let { p: IPointAspectPattern ->
-            val pOuterHouse = inner.getHouse(outer[pOuter]!!.zDeg.toZodiacDegree())
-            val pInnerHouse = inner.getHouse(inner.positionMap[pInner]!!.lng.toZodiacDegree())
-
-            SynastryAspect(pOuter, pInner, pOuterHouse, pInnerHouse, p.aspect, p.orb, p.aspectType, p.score)
+            outer[pOuter]?.zDeg?.toZodiacDegree()?.let { zDeg -> inner.getHouse(zDeg) }?.let { pOuterHouse ->
+              inner.positionMap[pInner]?.lng?.toZodiacDegree()?.let { zDeg -> inner.getHouse(zDeg) }?.let { pInnerHouse ->
+                SynastryAspect(pOuter, pInner, pOuterHouse, pInnerHouse, p.aspect, p.orb, p.aspectType, p.score)
+              }
+            }
           }
       }
       .filter {
