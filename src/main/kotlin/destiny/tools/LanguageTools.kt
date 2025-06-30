@@ -131,11 +131,13 @@ fun Double.round(epsilon: Double = 1e-5): Double {
   return if (kotlin.math.abs(this - nearest) < epsilon) nearest else this
 }
 
-private val POW10 = DoubleArray(5) { i -> 10.0.pow(i) }
-private val FORMAT_TEMPLATES = Array(5) { i -> "%.${i}f" }
+private const val MAX_PRECISION = 10
+private val POW10 = DoubleArray(MAX_PRECISION + 1) { i -> 10.0.pow(i) }
+private val FORMAT_TEMPLATES = Array(MAX_PRECISION + 1) { i -> "%.${i}f" }
+
 
 fun Double.truncate(n: Int, epsilon: Double = 1e-5): String {
-  require(n in 0..5)
+  require(n in 0..MAX_PRECISION)
   val factor = POW10[n]
   val scaled = this * factor
   val rounded = kotlin.math.round(scaled)
