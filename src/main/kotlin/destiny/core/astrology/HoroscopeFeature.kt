@@ -205,7 +205,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
 
   fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig, forward: Boolean = true) : ISolarArcModel
 
-  fun getPrimaryDirection(model: IHoroscopeModel, viewTime: GmtJulDay, timeKey: ITimeKey, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig, forward: Boolean = true) : IPrimaryDirectionModel
+
 }
 
 data class ProgressionCalcObj(
@@ -224,8 +224,6 @@ class HoroscopeFeature(
   private val retrogradeImpl: IRetrograde,
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
-  private val primaryDirectionMundaneImpl: IPrimaryDirection,
-  private val primaryDirectionalZodiacWithoutLatitudeImpl : IPrimaryDirection,
   @Transient
   private val horoscopeFeatureCache: Cache<GmtCacheKey<*>, IHoroscopeModel>,
 ) : AbstractCachedFeature<IHoroscopeConfig, IHoroscopeModel>(), IHoroscopeFeature {
@@ -394,22 +392,6 @@ class HoroscopeFeature(
                          model.location, posMap, synastryAspects)
   }
 
-
-  override fun getPrimaryDirection(model: IHoroscopeModel, viewTime: GmtJulDay, timeKey: ITimeKey, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig, forward: Boolean): IPrimaryDirectionModel {
-    val diffYears = (viewTime - model.gmtJulDay) / TROPICAL_YEAR_DAYS
-    val diffArcs = timeKey.getArc(diffYears)
-
-    val posMap = primaryDirectionalZodiacWithoutLatitudeImpl.getDirectedPositions(model, diffArcs, HouseSystem.PLACIDUS)
-
-    val synastryAspects = synastryAspects(
-      posMap, model.positionMap,
-      laterForP1 = null,
-      laterForP2 = null,
-      aspectCalculator, threshold
-    )
-
-    return PrimaryDirectionModel(model.gmtJulDay, viewTime, timeKey, diffArcs, posMap, synastryAspects)
-  }
 
   companion object {
     private val progressionCache: com.github.benmanes.caffeine.cache.Cache<ProgressionCalcObj, IProgressionModel> = Caffeine.newBuilder()
