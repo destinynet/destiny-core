@@ -2,6 +2,8 @@ package destiny.core.astrology
 
 import destiny.core.astrology.prediction.PredictiveTechnique
 import destiny.core.calendar.GmtJulDay
+import destiny.tools.serializers.LocalDateSerializer
+import destiny.tools.serializers.YearMonthSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -11,6 +13,8 @@ import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.encodeStructure
+import java.time.LocalDate
+import java.time.YearMonth
 
 
 sealed interface ITimeLineEvent {
@@ -60,13 +64,34 @@ data class TimeLineEvent(
 }
 
 
+interface ITimeLineEventsModel {
+  val natal: IPersonHoroscopeDto
+  val grain: BirthDataGrain
+  val fromTime: GmtJulDay
+  val toTime: GmtJulDay
+  val events: List<ITimeLineEvent>
+}
+
 @Serializable
 data class TimeLineEventsModel(
-  val natal: IPersonHoroscopeDto,
-  val grain: BirthDataGrain,
+  override val natal: IPersonHoroscopeDto,
+  override val grain: BirthDataGrain,
   @Contextual
-  val fromTime: GmtJulDay,
+  override val fromTime: GmtJulDay,
   @Contextual
-  val toTime: GmtJulDay,
-  val events: List<@Contextual ITimeLineEvent>,
-)
+  override val toTime: GmtJulDay,
+  override val events: List<@Contextual ITimeLineEvent>,
+) : ITimeLineEventsModel
+
+interface ITimeLineWithUserEventsModel : ITimeLineEventsModel {
+  val today: LocalDate
+  val userEvents : Map<YearMonth , String>
+}
+
+@Serializable
+data class TimeLineWithUserEventsModel(
+  private val timeLineEventsModel : TimeLineEventsModel,
+  @Serializable(with = LocalDateSerializer::class)
+  override val today: LocalDate,
+  override val userEvents: Map<@Serializable(with = YearMonthSerializer::class) YearMonth, String>
+) : ITimeLineWithUserEventsModel , ITimeLineEventsModel by timeLineEventsModel

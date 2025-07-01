@@ -33,7 +33,7 @@ interface IReportFactory {
     fromTime: GmtJulDay,
     toTime: GmtJulDay,
     config: IPersonHoroscopeConfig
-  ): TimeLineEventsModel
+  ): ITimeLineEventsModel
 }
 
 @Named
@@ -95,7 +95,7 @@ class ReportFactory(
     fromTime: GmtJulDay,
     toTime: GmtJulDay,
     config: IPersonHoroscopeConfig
-  ): TimeLineEventsModel {
+  ): ITimeLineEventsModel {
     val progressionSecondary = ProgressionSecondary()
     val progressionTertiary = ProgressionTertiary()
 
