@@ -205,7 +205,8 @@ class EventsTraversalSolarArcImpl(
     val arcAtHigh = horoscopeFeature.getSolarArc(inner, toGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
 
     // 檢查 targetArc 是否真的在範圍內
-    if (targetArc < arcAtLow || targetArc > arcAtHigh) {
+    val tolerance = 0.01
+    if (targetArc < (arcAtLow - tolerance) || targetArc > (arcAtHigh + tolerance)) {
       logger.trace { "Target arc $targetArc is outside the range [$arcAtLow, $arcAtHigh]" }
       return null
     }
