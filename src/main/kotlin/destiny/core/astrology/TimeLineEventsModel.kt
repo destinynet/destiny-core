@@ -21,8 +21,8 @@ sealed interface ITimeLineEvent {
   val source: PredictiveTechnique
 }
 
-class IProgressionEventSerializer(private val gmtJulDayTimeSerializer: KSerializer<GmtJulDay>,
-                                  private val gmtJulDayDateSerializer : KSerializer<GmtJulDay>) : KSerializer<ITimeLineEvent> {
+class ITimeLineEventSerializer(private val gmtJulDayTimeSerializer: KSerializer<GmtJulDay>,
+                               private val gmtJulDayDateSerializer : KSerializer<GmtJulDay>) : KSerializer<ITimeLineEvent> {
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ITimeLineEvent") {
     element<String>("source")
     element<String>("description")
