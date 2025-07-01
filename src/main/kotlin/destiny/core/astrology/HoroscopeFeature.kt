@@ -5,7 +5,6 @@ package destiny.core.astrology
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import destiny.core.astrology.Aspect.Importance
-import destiny.core.astrology.Constants.TROPICAL_YEAR_DAYS
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.*
 import destiny.core.astrology.classical.rules.Misc
@@ -340,21 +339,18 @@ class HoroscopeFeature(
 
     require(viewTime >= model.gmtJulDay) { "viewTime should be after model.gmtJulDay" }
 
-    val diffDays = (viewTime - model.gmtJulDay) / TROPICAL_YEAR_DAYS
-    val convergentJulDay = if (forward)
-      model.gmtJulDay + diffDays
-    else
-      model.gmtJulDay - diffDays
+    // 使用 Secondary Progression 來獲得精確的 convergent time
+    val progressionSecondary = ProgressionSecondary(forward)
+    val convergentJulDay = progressionSecondary.getConvergentTime(model.gmtJulDay, viewTime)
 
-
-    val convergentSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, convergentJulDay, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
-
+    // 計算精確的太陽弧度數
+    val convergentSunPos: IStarPos = starPositionImpl.getPosition(
+      Planet.SUN, convergentJulDay, model.location,
+      config.centric, config.coordinate, config.temperature, config.pressure
+    )
     val natalSunPos = model.getPosition(Planet.SUN)!!
-    logger.trace { "natal sun = ${natalSunPos.lngDeg}" }
-    logger.trace { "convergent sun = ${convergentSunPos.lngDeg}" }
 
-    // may be negative (if forward = false)
-    val degreeMoved: Double = convergentSunPos.lngDeg.getAngle(natalSunPos.lngDeg).let {
+    val degreeMoved: Double = convergentSunPos.lngDeg.aheadOf(natalSunPos.lngDeg).let {
       if (!forward) -it else it
     }
 
@@ -391,7 +387,6 @@ class HoroscopeFeature(
                          convergentJulDay, degreeMoved,
                          model.location, posMap, synastryAspects)
   }
-
 
   companion object {
     private val progressionCache: com.github.benmanes.caffeine.cache.Cache<ProgressionCalcObj, IProgressionModel> = Caffeine.newBuilder()
