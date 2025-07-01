@@ -27,13 +27,13 @@ interface IReportFactory {
     config: IPersonHoroscopeConfig
   ): TransitSolarArcModel
 
-  fun getProgressionAstroEventsModel(
+  fun getTimeLineEvents(
     bdnp: IBirthDataNamePlace,
     grain: BirthDataGrain,
     fromTime: GmtJulDay,
     toTime: GmtJulDay,
     config: IPersonHoroscopeConfig
-  ): ProgressionAstroEventsModel
+  ): TimeLineEventsModel
 }
 
 @Named
@@ -89,13 +89,13 @@ class ReportFactory(
     return TransitSolarArcModel(natal, grain, localDate, solarArcModel, transitToSolarArcAspects)
   }
 
-  override fun getProgressionAstroEventsModel(
+  override fun getTimeLineEvents(
     bdnp: IBirthDataNamePlace,
     grain: BirthDataGrain,
     fromTime: GmtJulDay,
     toTime: GmtJulDay,
     config: IPersonHoroscopeConfig
-  ): ProgressionAstroEventsModel {
+  ): TimeLineEventsModel {
     val progressionSecondary = ProgressionSecondary()
     val progressionTertiary = ProgressionTertiary()
 
@@ -139,7 +139,7 @@ class ReportFactory(
       eventsTraversalTransitImpl
     ).map { eventDto ->
       val divergentTime = progressionSecondary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
-      ProgressionEvent(PredictiveTechnique.SECONDARY, eventDto as AstroEventDto, divergentTime)
+      TimeLineEvent(PredictiveTechnique.SECONDARY, eventDto as AstroEventDto, divergentTime)
     }
 
     val tertiaryProgressionEvents = dayHourService.traverseAstrologyEvents(
@@ -152,7 +152,7 @@ class ReportFactory(
       eventsTraversalTransitImpl
     ).map { eventDto ->
       val divergentTime = progressionTertiary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
-      ProgressionEvent(PredictiveTechnique.TERTIARY, eventDto as AstroEventDto, divergentTime)
+      TimeLineEvent(PredictiveTechnique.TERTIARY, eventDto as AstroEventDto, divergentTime)
     }
 
     val solarArcEvents = dayHourService.traverseAstrologyEvents(
@@ -164,7 +164,7 @@ class ReportFactory(
       astrologyConfig,
       eventsTraversalSolarArcImpl
     ).map { eventDto ->
-      ProgressionEvent(PredictiveTechnique.SOLAR_ARC, eventDto as AstroEventDto, eventDto.begin)
+      TimeLineEvent(PredictiveTechnique.SOLAR_ARC, eventDto as AstroEventDto, eventDto.begin)
     }
 
     val events = (secondaryProgressionEvents + tertiaryProgressionEvents + solarArcEvents)
@@ -176,7 +176,7 @@ class ReportFactory(
       model.toPersonHoroscopeDto(secondaryProgressionConvergentFrom, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, includeHour, config)
     }
 
-    return ProgressionAstroEventsModel(natal, grain, fromTime, toTime, events)
+    return TimeLineEventsModel(natal, grain, fromTime, toTime, events)
   }
 
   companion object {

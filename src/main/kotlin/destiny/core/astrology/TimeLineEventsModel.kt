@@ -13,7 +13,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.encodeStructure
 
 
-sealed interface IProgressionEvent {
+sealed interface ITimeLineEvent {
   val astro: AstroEvent
   val description: String
   val convergentTime: GmtJulDay
@@ -22,15 +22,15 @@ sealed interface IProgressionEvent {
 }
 
 class IProgressionEventSerializer(private val gmtJulDayTimeSerializer: KSerializer<GmtJulDay>,
-                                  private val gmtJulDayDateSerializer : KSerializer<GmtJulDay>) : KSerializer<IProgressionEvent> {
-  override val descriptor: SerialDescriptor = buildClassSerialDescriptor("IProgressionEvent") {
+                                  private val gmtJulDayDateSerializer : KSerializer<GmtJulDay>) : KSerializer<ITimeLineEvent> {
+  override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ITimeLineEvent") {
     element<String>("source")
     element<String>("description")
     element("convergentTime", gmtJulDayTimeSerializer.descriptor)
     element("divergentDate", gmtJulDayDateSerializer.descriptor)
   }
 
-  override fun serialize(encoder: Encoder, value: IProgressionEvent) {
+  override fun serialize(encoder: Encoder, value: ITimeLineEvent) {
     encoder.encodeStructure(descriptor) {
       encodeStringElement(descriptor, 0, value.source.name)
       encodeStringElement(descriptor, 1, value.description)
@@ -39,16 +39,16 @@ class IProgressionEventSerializer(private val gmtJulDayTimeSerializer: KSerializ
     }
   }
 
-  override fun deserialize(decoder: Decoder): IProgressionEvent {
+  override fun deserialize(decoder: Decoder): ITimeLineEvent {
     throw UnsupportedOperationException("Deserialization not supported")
   }
 }
 
-data class ProgressionEvent(
+data class TimeLineEvent(
   override val source: PredictiveTechnique,
   val astroEvent: AstroEventDto,
   override val divergentTime: GmtJulDay
-) : IProgressionEvent {
+) : ITimeLineEvent {
   override val astro: AstroEvent
     get() = astroEvent.event
 
@@ -61,12 +61,12 @@ data class ProgressionEvent(
 
 
 @Serializable
-data class ProgressionAstroEventsModel(
+data class TimeLineEventsModel(
   val natal: IPersonHoroscopeDto,
   val grain: BirthDataGrain,
   @Contextual
   val fromTime: GmtJulDay,
   @Contextual
   val toTime: GmtJulDay,
-  val events: List<@Contextual IProgressionEvent>,
+  val events: List<@Contextual ITimeLineEvent>,
 )
