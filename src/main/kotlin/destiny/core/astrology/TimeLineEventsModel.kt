@@ -85,6 +85,7 @@ data class TimeLineEventsModel(
 
 interface ITimeLineWithUserEventsModel : ITimeLineEventsModel {
   val today: LocalDate
+  val summary: String
   val userEvents : Map<YearMonth , String>
 }
 
@@ -93,5 +94,6 @@ data class TimeLineWithUserEventsModel(
   private val timeLineEventsModel : TimeLineEventsModel,
   @Serializable(with = LocalDateSerializer::class)
   override val today: LocalDate,
+  override val summary: String,
   override val userEvents: Map<@Serializable(with = YearMonthSerializer::class) YearMonth, String>
 ) : ITimeLineWithUserEventsModel , ITimeLineEventsModel by timeLineEventsModel

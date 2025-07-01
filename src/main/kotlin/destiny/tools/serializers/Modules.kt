@@ -3,9 +3,12 @@
  */
 package destiny.tools.serializers
 
+import destiny.core.astrology.*
 import destiny.core.astrology.eclipse.AbstractLunarEclipse
 import destiny.core.astrology.eclipse.AbstractSolarEclipse
 import destiny.core.astrology.eclipse.IEclipse
+import destiny.core.astrology.prediction.ISolarArcModel
+import destiny.core.astrology.prediction.SolarArcModel
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
@@ -22,4 +25,27 @@ fun SerializersModuleBuilder.eclipseModule() {
     subclass(AbstractLunarEclipse.LunarEclipsePartial::class)
     subclass(AbstractLunarEclipse.LunarEclipseTotal::class)
   }
+}
+
+fun SerializersModuleBuilder.astrologyModule() {
+  polymorphic(IHoroscopeDto::class) {
+    subclass(HoroscopeDto::class)
+  }
+  polymorphic(IPersonHoroscopeDto::class) {
+    subclass(Natal::class)
+  }
+  polymorphic(ISynastryAspect::class) {
+    subclass(SynastryAspect::class)
+  }
+  polymorphic(ISolarArcModel::class) {
+    subclass(SolarArcModel::class)
+  }
+  polymorphic(IZodiacDegree::class) {
+    subclass(ZodiacDegree::class)
+  }
+  polymorphic(IPos::class) {
+    subclass(StarPosition::class)
+  }
+  eclipseModule()
+
 }
