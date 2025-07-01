@@ -237,7 +237,7 @@ class EventsTraversalSolarArcImpl(
 
       val arcAtMid = horoscopeFeature.getSolarArc(inner, midGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
 
-      logger.info {
+      logger.trace {
         "[$round] currentArc = ${arcAtMid.truncate(4)} , targetArc = ${targetArc.truncate(4)} , lowGmt = ${lowGmt.value.truncate(4)} , highGmt = ${
           highGmt.value.truncate(
             4
@@ -300,7 +300,7 @@ class EventsTraversalSolarArcImpl(
       val currentArc = solarArcModel.degreeMoved
 
       round++
-      logger.info { "[$round] currentArc = ${currentArc.truncate(4)} , targetArc = ${targetArc.truncate(4)} , low = ${low.value.truncate(4)} , high = ${high.value.truncate(4)}" }
+      logger.trace { "[$round] currentArc = ${currentArc.truncate(4)} , targetArc = ${targetArc.truncate(4)} , low = ${low.value.truncate(4)} , high = ${high.value.truncate(4)}" }
 
       if (currentArc < targetArc) {
         low = mid
