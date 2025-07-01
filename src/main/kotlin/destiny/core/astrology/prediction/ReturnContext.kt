@@ -42,7 +42,7 @@ interface IReturnContext : Conversable, IDiscrete {
     config: IHoroscopeConfig,
     nowPlace: String?,
     threshold: Double?
-  ): ReturnDto
+  ): IReturnDto
 }
 
 
@@ -136,7 +136,7 @@ class ReturnContext(
     config: IHoroscopeConfig,
     nowPlace: String?,
     threshold: Double?
-  ): ReturnDto {
+  ): IReturnDto {
     val returnModel: ReturnModel = getReturnHoroscope(this, gmtJulDay, nowLoc, nowPlace)
 
     val horoscopeDto: IHoroscopeDto = with(dtoFactory) {
@@ -148,8 +148,8 @@ class ReturnContext(
     val synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold)
 
     return when (this@ReturnContext.planet) {
-      Planet.SUN  -> SolarReturnDto(horoscopeDto, synastry, returnModel.from, returnModel.to)
-      Planet.MOON -> LunarReturnDto(horoscopeDto, synastry, returnModel.from, returnModel.to)
+      Planet.SUN  -> ReturnDto(ReturnType.SOLAR, horoscopeDto, synastry, returnModel.from, returnModel.to)
+      Planet.MOON -> ReturnDto(ReturnType.LUNAR, horoscopeDto, synastry, returnModel.from, returnModel.to)
       else        -> throw IllegalArgumentException("Unsupported planet: $planet")
     }
   }

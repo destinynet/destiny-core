@@ -4,12 +4,10 @@
 package destiny.core.astrology.prediction
 
 
-enum class PredictiveTechnique {
+enum class EventSource {
   TRANSIT,
   SECONDARY,
   TERTIARY,
   MINOR,
   SOLAR_ARC,
-  SOLAR_RETURN,
-  LUNAR_RETURN
 }

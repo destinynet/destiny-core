@@ -23,6 +23,6 @@ data class PeriodRequestDto(
   val bdnp: IBirthDataNamePlace,
   @Serializable(with = LocalDateSerializer::class)
   val today: LocalDate,
-  val current: ReturnDto,
-  val next: ReturnDto?,
+  val current: IReturnDto,
+  val next: IReturnDto?,
 )

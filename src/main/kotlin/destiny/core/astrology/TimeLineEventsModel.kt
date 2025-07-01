@@ -1,6 +1,6 @@
 package destiny.core.astrology
 
-import destiny.core.astrology.prediction.PredictiveTechnique
+import destiny.core.astrology.prediction.EventSource
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.serializers.LocalDateSerializer
 import destiny.tools.serializers.YearMonthSerializer
@@ -22,7 +22,7 @@ sealed interface ITimeLineEvent {
   val description: String
   val convergentTime: GmtJulDay
   val divergentTime: GmtJulDay
-  val source: PredictiveTechnique
+  val source: EventSource
 }
 
 class ITimeLineEventSerializer(private val gmtJulDayTimeSerializer: KSerializer<GmtJulDay>,
@@ -49,7 +49,7 @@ class ITimeLineEventSerializer(private val gmtJulDayTimeSerializer: KSerializer<
 }
 
 data class TimeLineEvent(
-  override val source: PredictiveTechnique,
+  override val source: EventSource,
   val astroEvent: AstroEventDto,
   override val divergentTime: GmtJulDay
 ) : ITimeLineEvent {

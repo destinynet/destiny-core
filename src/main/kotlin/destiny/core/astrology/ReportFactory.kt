@@ -5,7 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.IBirthDataNamePlace
 import destiny.core.astrology.classical.RulerPtolemyImpl
-import destiny.core.astrology.prediction.PredictiveTechnique
+import destiny.core.astrology.prediction.EventSource
 import destiny.core.astrology.prediction.ProgressionSecondary
 import destiny.core.astrology.prediction.ProgressionTertiary
 import destiny.core.calendar.GmtJulDay
@@ -32,6 +32,7 @@ interface IReportFactory {
     grain: BirthDataGrain,
     fromTime: GmtJulDay,
     toTime: GmtJulDay,
+    eventSources: Set<EventSource>,
     config: IPersonHoroscopeConfig
   ): ITimeLineEventsModel
 }
@@ -94,6 +95,7 @@ class ReportFactory(
     grain: BirthDataGrain,
     fromTime: GmtJulDay,
     toTime: GmtJulDay,
+    eventSources: Set<EventSource>,
     config: IPersonHoroscopeConfig
   ): ITimeLineEventsModel {
     val progressionSecondary = ProgressionSecondary()
@@ -128,47 +130,49 @@ class ReportFactory(
       BirthDataGrain.MINUTE -> true
     }
 
-
-    val secondaryProgressionEvents = dayHourService.traverseAstrologyEvents(
-      bdnp,
-      secondaryProgressionConvergentFrom,
-      secondaryProgressionConvergentTo,
-      bdnp.location,
-      includeHour,
-      astrologyConfig,
-      eventsTraversalTransitImpl
-    ).map { eventDto ->
-      val divergentTime = progressionSecondary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
-      TimeLineEvent(PredictiveTechnique.SECONDARY, eventDto as AstroEventDto, divergentTime)
-    }
-
-    val tertiaryProgressionEvents = dayHourService.traverseAstrologyEvents(
-      bdnp,
-      tertiaryProgressionConvergentFrom,
-      tertiaryProgressionConvergentTo,
-      bdnp.location,
-      includeHour,
-      astrologyConfig,
-      eventsTraversalTransitImpl
-    ).map { eventDto ->
-      val divergentTime = progressionTertiary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
-      TimeLineEvent(PredictiveTechnique.TERTIARY, eventDto as AstroEventDto, divergentTime)
-    }
-
-    val solarArcEvents = dayHourService.traverseAstrologyEvents(
-      bdnp,
-      fromTime,
-      toTime,
-      bdnp.location,
-      includeHour,
-      astrologyConfig,
-      eventsTraversalSolarArcImpl
-    ).map { eventDto ->
-      TimeLineEvent(PredictiveTechnique.SOLAR_ARC, eventDto as AstroEventDto, eventDto.begin)
-    }
-
-    val events = (secondaryProgressionEvents + tertiaryProgressionEvents + solarArcEvents)
-      .sortedBy { it.divergentTime }.toList()
+    val events = buildSet {
+      if (EventSource.SECONDARY in eventSources) {
+        addAll(dayHourService.traverseAstrologyEvents(
+          bdnp,
+          secondaryProgressionConvergentFrom,
+          secondaryProgressionConvergentTo,
+          bdnp.location,
+          includeHour,
+          astrologyConfig,
+          eventsTraversalTransitImpl
+        ).map { eventDto ->
+          val divergentTime = progressionSecondary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
+          TimeLineEvent(EventSource.SECONDARY, eventDto as AstroEventDto, divergentTime)
+        })
+      }
+      if (EventSource.TERTIARY in eventSources) {
+        addAll(dayHourService.traverseAstrologyEvents(
+          bdnp,
+          tertiaryProgressionConvergentFrom,
+          tertiaryProgressionConvergentTo,
+          bdnp.location,
+          includeHour,
+          astrologyConfig,
+          eventsTraversalTransitImpl
+        ).map { eventDto ->
+          val divergentTime = progressionTertiary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
+          TimeLineEvent(EventSource.TERTIARY, eventDto as AstroEventDto, divergentTime)
+        })
+      }
+      if (EventSource.SOLAR_ARC in eventSources) {
+        addAll(dayHourService.traverseAstrologyEvents(
+          bdnp,
+          fromTime,
+          toTime,
+          bdnp.location,
+          includeHour,
+          astrologyConfig,
+          eventsTraversalSolarArcImpl
+        ).map { eventDto ->
+          TimeLineEvent(EventSource.SOLAR_ARC, eventDto as AstroEventDto, eventDto.begin)
+        })
+      }
+    }.sortedBy { it.divergentTime }.toList()
 
 
     val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(bdnp, config)
