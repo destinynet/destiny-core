@@ -188,7 +188,7 @@ fun IHoroscopeModel.getPatterns(patternContext: PatternContext, threshold: Doubl
   return patternContext.patterns.asSequence().flatMap { factory ->
     factory.getPatterns(positionMap, cuspDegreeMap)
   }
-    .filter { p -> p.score != null && p.score!!.value >= 0.8 }
+    .filter { p -> p.score != null && p.score!!.value >= threshold }
     .sortedByDescending { it.score }
     .toList()
 }

@@ -142,8 +142,18 @@ class ReturnContext(
     val horoscopeDto: IHoroscopeDto = with(dtoFactory) {
       returnModel.horoscope.toHoroscopeDto(rulerImpl, aspectEffective, aspectCalculator, config, includeClassical)
     }.let { it as HoroscopeDto }
-      // 移除 中點資訊，畢竟這在 return chart 參考度不高
-      .copy(midPoints = emptyList())
+
+      // 移除以下 fields，畢竟這在 return chart 參考度不高
+      .copy(
+        // 移除 中點資訊
+        midPoints = emptyList(),
+        // 移除 星體資訊
+        stars = emptyMap(),
+        // 移除 星座資訊
+        signs = emptyMap(),
+        // 移除 宮位資訊
+        houses = emptyList()
+      )
 
     val synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold)
 

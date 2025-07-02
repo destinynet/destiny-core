@@ -46,9 +46,9 @@ data class HoroscopeDto(
   @Serializable(with = ILocationSerializer::class)
   override val location: ILocation,
   override val place: String?,
-  override val signs: Map<ZodiacSign, List<AstroPoint>>,
-  override val houses: List<HouseDto>,
-  override val stars: Map<AstroPoint, StarPosInfo>,
+  override val signs: Map<ZodiacSign, List<AstroPoint>> = emptyMap(),
+  override val houses: List<HouseDto> = emptyList(),
+  override val stars: Map<AstroPoint, StarPosInfo> = emptyMap(),
   override val axisStars: Map<Axis, List<AxisStar>>,
   override val houseStarDistribution: Map<HouseType, HouseStarDistribution>,
   override val elementPercentage: Map<Element, @Serializable(with = DoubleTwoDecimalSerializer::class) Double>,
