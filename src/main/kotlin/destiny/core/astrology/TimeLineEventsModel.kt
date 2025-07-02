@@ -94,7 +94,7 @@ interface ITimeLineWithUserEventsModel : ITimeLineEventsModel {
 
 @Serializable
 data class TimeLineWithUserEventsModel(
-  private val timeLineEventsModel : TimeLineEventsModel,
+  private val timeLineEventsModel : ITimeLineEventsModel,
   @Serializable(with = LocalDateSerializer::class)
   override val today: LocalDate,
   override val summary: String,

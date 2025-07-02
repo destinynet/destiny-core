@@ -52,10 +52,14 @@ fun SerializersModuleBuilder.astrologyModule() {
 }
 
 fun SerializersModuleBuilder.astroTimeLine() {
-  polymorphic(ITimeLineEventsModel::class) {
-    subclass(TimeLineEventsModel::class)
-  }
   polymorphic(IReturnDto::class) {
     subclass(ReturnDto::class)
   }
+  polymorphic(ITimeLineEventsModel::class) {
+    subclass(TimeLineEventsModel::class)
+  }
+  polymorphic(ITimeLineWithUserEventsModel::class) {
+    subclass(TimeLineWithUserEventsModel::class)
+  }
+
 }

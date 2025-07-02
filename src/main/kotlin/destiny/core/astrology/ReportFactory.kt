@@ -31,7 +31,8 @@ interface IReportFactory {
     fromTime: GmtJulDay,
     toTime: GmtJulDay,
     eventSources: Set<EventSource>,
-    config: IPersonHoroscopeConfig
+    config: IPersonHoroscopeConfig,
+    includeLunarReturn: Boolean
   ): ITimeLineEventsModel
 }
 
@@ -96,7 +97,8 @@ class ReportFactory(
     fromTime: GmtJulDay,
     toTime: GmtJulDay,
     eventSources: Set<EventSource>,
-    config: IPersonHoroscopeConfig
+    config: IPersonHoroscopeConfig,
+    includeLunarReturn: Boolean
   ): ITimeLineEventsModel {
     val progressionSecondary = ProgressionSecondary()
     val progressionTertiary = ProgressionTertiary()
@@ -198,18 +200,39 @@ class ReportFactory(
       }
     }
 
-    val lunarReturnContext = ReturnContext(Planet.MOON, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, returnChartIncludeClassical)
-    val lunarReturns = with(lunarReturnContext) {
-      generateSequence(model.getReturnDto(fromTime, bdnp.location, aspectEffectiveModern, modernAspectCalculator, config, bdnp.place, threshold, returnChartIncludeClassical)) { returnDto: IReturnDto ->
-        val nextFromTime = if (lunarReturnContext.forward)
-          returnDto.validTo + 1
-        else
-          returnDto.validFrom - 1
-        model.getReturnDto(nextFromTime, bdnp.location, aspectEffectiveModern, modernAspectCalculator, config, bdnp.place, threshold, false)
-      }.takeWhile { returnDto ->
-        returnDto.validFrom in fromTime..toTime || returnDto.validTo in fromTime..toTime
+
+    val lunarReturns = if (includeLunarReturn) {
+      val lunarReturnContext = ReturnContext(Planet.MOON, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, returnChartIncludeClassical)
+
+      with(lunarReturnContext) {
+        generateSequence(
+          model.getReturnDto(
+            fromTime,
+            bdnp.location,
+            aspectEffectiveModern,
+            modernAspectCalculator,
+            config,
+            bdnp.place,
+            threshold,
+            returnChartIncludeClassical
+          )
+        ) { returnDto: IReturnDto ->
+          val nextFromTime = if (lunarReturnContext.forward)
+            returnDto.validTo + 1
+          else
+            returnDto.validFrom - 1
+          model.getReturnDto(nextFromTime, bdnp.location, aspectEffectiveModern, modernAspectCalculator, config, bdnp.place, threshold, false)
+        }.takeWhile { returnDto ->
+          returnDto.validFrom in fromTime..toTime || returnDto.validTo in fromTime..toTime
+        }
       }
+    } else {
+      emptySequence()
     }
+
+
+
+
 
     val returnCharts = sequenceOf(solarReturns, lunarReturns).flatten().sortedBy { it.validFrom }.toList()
 
