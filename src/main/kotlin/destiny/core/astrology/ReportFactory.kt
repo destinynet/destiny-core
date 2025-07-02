@@ -5,9 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.IBirthDataNamePlace
 import destiny.core.astrology.classical.RulerPtolemyImpl
-import destiny.core.astrology.prediction.EventSource
-import destiny.core.astrology.prediction.ProgressionSecondary
-import destiny.core.astrology.prediction.ProgressionTertiary
+import destiny.core.astrology.prediction.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools.toGmtJulDay
@@ -48,6 +46,8 @@ class ReportFactory(
   private val julDayResolver: JulDayResolver,
   private val eventsTraversalSolarArcImpl: IEventsTraversal,
   private val eventsTraversalTransitImpl: IEventsTraversal,
+  private val starPositionImpl: IStarPosition<*>,
+  private val starTransitImpl: IStarTransit,
 ) : IReportFactory {
   override fun getTransitSolarArcModel(
     bdnp: IBirthDataNamePlace,
@@ -180,7 +180,40 @@ class ReportFactory(
       model.toPersonHoroscopeDto(secondaryProgressionConvergentFrom, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, includeHour, config)
     }
 
-    return TimeLineEventsModel(natal, grain, fromTime, toTime, events)
+    val solarReturnContext = ReturnContext(Planet.SUN, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, false)
+
+    val threshold = 0.9
+
+    val returnChartIncludeClassical = false
+
+    val solarReturns = with(solarReturnContext) {
+      generateSequence(model.getReturnDto(fromTime, bdnp.location, aspectEffectiveModern, modernAspectCalculator, config, bdnp.place, threshold, returnChartIncludeClassical)) { returnDto: IReturnDto ->
+        val nextFromTime = if (solarReturnContext.forward)
+          returnDto.validTo + 1
+        else
+          returnDto.validFrom - 1
+        model.getReturnDto(nextFromTime, bdnp.location, aspectEffectiveModern, modernAspectCalculator, config, bdnp.place, threshold, returnChartIncludeClassical)
+      }.takeWhile { returnDto ->
+        returnDto.validFrom in fromTime..toTime || returnDto.validTo in fromTime..toTime
+      }
+    }
+
+    val lunarReturnContext = ReturnContext(Planet.MOON, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, returnChartIncludeClassical)
+    val lunarReturns = with(lunarReturnContext) {
+      generateSequence(model.getReturnDto(fromTime, bdnp.location, aspectEffectiveModern, modernAspectCalculator, config, bdnp.place, threshold, returnChartIncludeClassical)) { returnDto: IReturnDto ->
+        val nextFromTime = if (lunarReturnContext.forward)
+          returnDto.validTo + 1
+        else
+          returnDto.validFrom - 1
+        model.getReturnDto(nextFromTime, bdnp.location, aspectEffectiveModern, modernAspectCalculator, config, bdnp.place, threshold, false)
+      }.takeWhile { returnDto ->
+        returnDto.validFrom in fromTime..toTime || returnDto.validTo in fromTime..toTime
+      }
+    }
+
+    val returnCharts = sequenceOf(solarReturns, lunarReturns).flatten().sortedBy { it.validFrom }.toList()
+
+    return TimeLineEventsModel(natal, grain, fromTime, toTime, events, returnCharts)
   }
 
   companion object {

@@ -55,10 +55,10 @@ data class HoroscopeDto(
   override val qualityPercentage: Map<Quality, @Serializable(with = DoubleTwoDecimalSerializer::class) Double>,
   override val tightestAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern>,
   override val astroPatterns: List<AstroPattern>,
-  override val classicalAstrologyPatterns: List<String>,
+  override val classicalAstrologyPatterns: List<String> = emptyList(),
   @Serializable(with = GraphPlanetSerializer::class)
   override val graphPatterns: Graph<Planet>,
-  override val midPoints: List<@Serializable(with = IMidPointWithFocalSerializer::class) IMidPointWithFocal>
+  override val midPoints: List<@Serializable(with = IMidPointWithFocalSerializer::class) IMidPointWithFocal> = emptyList()
 ) : IHoroscopeDto
 
 interface IPersonHoroscopeDto : IHoroscopeDto, IBirthDataNamePlace

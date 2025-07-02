@@ -7,7 +7,9 @@ import destiny.core.astrology.*
 import destiny.core.astrology.eclipse.AbstractLunarEclipse
 import destiny.core.astrology.eclipse.AbstractSolarEclipse
 import destiny.core.astrology.eclipse.IEclipse
+import destiny.core.astrology.prediction.IReturnDto
 import destiny.core.astrology.prediction.ISolarArcModel
+import destiny.core.astrology.prediction.ReturnDto
 import destiny.core.astrology.prediction.SolarArcModel
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
@@ -47,5 +49,13 @@ fun SerializersModuleBuilder.astrologyModule() {
     subclass(StarPosition::class)
   }
   eclipseModule()
+}
 
+fun SerializersModuleBuilder.astroTimeLine() {
+  polymorphic(ITimeLineEventsModel::class) {
+    subclass(TimeLineEventsModel::class)
+  }
+  polymorphic(IReturnDto::class) {
+    subclass(ReturnDto::class)
+  }
 }

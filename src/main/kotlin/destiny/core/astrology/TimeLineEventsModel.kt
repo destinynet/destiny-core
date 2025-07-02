@@ -1,6 +1,7 @@
 package destiny.core.astrology
 
 import destiny.core.astrology.prediction.EventSource
+import destiny.core.astrology.prediction.IReturnDto
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.serializers.LocalDateSerializer
 import destiny.tools.serializers.YearMonthSerializer
@@ -70,6 +71,7 @@ interface ITimeLineEventsModel {
   val fromTime: GmtJulDay
   val toTime: GmtJulDay
   val events: List<ITimeLineEvent>
+  val returnCharts : List<IReturnDto>
 }
 
 @Serializable
@@ -81,6 +83,7 @@ data class TimeLineEventsModel(
   @Contextual
   override val toTime: GmtJulDay,
   override val events: List<@Contextual ITimeLineEvent>,
+  override val returnCharts: List<IReturnDto> = emptyList()
 ) : ITimeLineEventsModel
 
 interface ITimeLineWithUserEventsModel : ITimeLineEventsModel {

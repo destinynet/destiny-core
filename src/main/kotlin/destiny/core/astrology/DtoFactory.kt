@@ -18,7 +18,6 @@ import java.util.*
 
 @Named
 class DtoFactory(
-  private val horoscopeFeature: IHoroscopeFeature,
   private val classicalFeature: ClassicalFeature,
   private val classicalFactories: List<IPlanetPatternFactory>,
 ) {
@@ -27,7 +26,8 @@ class DtoFactory(
     rulerImpl: IRuler,
     aspectAffective: IAspectEffective,
     aspectCalculator: IAspectCalculator,
-    config: IHoroscopeConfig
+    horoConfig: IHoroscopeConfig,
+    includeClassical: Boolean
   ): IHoroscopeDto {
     val byHouse: List<HouseDto> = houses.map { h ->
       HouseDto(
@@ -80,12 +80,16 @@ class DtoFactory(
     }
 
     val classicalConfig: IClassicalConfig = ClassicalConfig(classicalFactories)
-    val cfg = classicalConfig to config
+    val cfg = classicalConfig to horoConfig
 
-    val classicalPatterns = classicalFeature.getModel(gmtJulDay, location, cfg).flatMap { (_, list: List<IPlanetPattern>) ->
-      list.map {
-        PatternTranslator.getDescriptor(it).getDescription(Locale.ENGLISH)
+    val classicalPatterns  = if (includeClassical) {
+      classicalFeature.getModel(gmtJulDay, location, cfg).flatMap { (_, list: List<IPlanetPattern>) ->
+        list.map {
+          PatternTranslator.getDescriptor(it).getDescription(Locale.ENGLISH)
+        }
       }
+    } else {
+      emptyList()
     }
 
     return HoroscopeDto(
@@ -114,9 +118,9 @@ class DtoFactory(
     aspectAffective: IAspectEffective,
     aspectCalculator: IAspectCalculator,
     includeHouse: Boolean,
-    config: IHoroscopeConfig
+    horoConfig: IHoroscopeConfig
   ): IPersonHoroscopeDto {
-    val horoscopeDto: IHoroscopeDto = this.toHoroscopeDto(rulerImpl, aspectAffective, aspectCalculator, config)
+    val horoscopeDto: IHoroscopeDto = this.toHoroscopeDto(rulerImpl, aspectAffective, aspectCalculator, horoConfig, true)
     val age = this.getAge(viewGmt)
 
     return Natal(gender, age, name, horoscopeDto).let {
