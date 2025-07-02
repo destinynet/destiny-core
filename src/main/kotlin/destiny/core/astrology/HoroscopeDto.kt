@@ -54,7 +54,7 @@ data class HoroscopeDto(
   override val elementPercentage: Map<Element, @Serializable(with = DoubleTwoDecimalSerializer::class) Double>,
   override val qualityPercentage: Map<Quality, @Serializable(with = DoubleTwoDecimalSerializer::class) Double>,
   override val tightestAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern>,
-  override val astroPatterns: List<AstroPattern>,
+  override val astroPatterns: List<AstroPattern> = emptyList(),
   override val classicalAstrologyPatterns: List<String> = emptyList(),
   @Serializable(with = GraphPlanetSerializer::class)
   override val graphPatterns: Graph<Planet>,
