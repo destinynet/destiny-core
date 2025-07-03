@@ -8,6 +8,7 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+import java.net.URLConnection
 import java.time.LocalDateTime
 import kotlin.math.floor
 import kotlin.math.pow
@@ -169,4 +170,8 @@ fun gcd(a: Double, b: Double): Double {
     x = temp
   }
   return x
+}
+
+fun ByteArray.getMimeType() : String {
+  return URLConnection.guessContentTypeFromStream(this.inputStream()) ?: "application/octet-stream"
 }
