@@ -28,6 +28,7 @@ interface IReportFactory {
   fun getTimeLineEvents(
     bdnp: IBirthDataNamePlace,
     grain: BirthDataGrain,
+    viewGmtJulDay: GmtJulDay,
     fromTime: GmtJulDay,
     toTime: GmtJulDay,
     eventSources: Set<EventSource>,
@@ -94,6 +95,7 @@ class ReportFactory(
   override fun getTimeLineEvents(
     bdnp: IBirthDataNamePlace,
     grain: BirthDataGrain,
+    viewGmtJulDay: GmtJulDay,
     fromTime: GmtJulDay,
     toTime: GmtJulDay,
     eventSources: Set<EventSource>,
@@ -179,7 +181,7 @@ class ReportFactory(
 
     val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(bdnp, config)
     val natal: IPersonHoroscopeDto = with(dtoFactory) {
-      model.toPersonHoroscopeDto(secondaryProgressionConvergentFrom, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, includeHour, config)
+      model.toPersonHoroscopeDto(viewGmtJulDay , RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, includeHour, config)
     }
 
     val solarReturnContext = ReturnContext(Planet.SUN, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, false)
