@@ -34,7 +34,9 @@ class Cerebras {
       return when {
         "choices" in obj && "id" in obj   -> Response.NormalResponse.serializer()
         "message" in obj && "code" in obj -> Response.ErrorResponse.serializer()
-        else                              -> throw SerializationException("Unknown response format: $element")
+        else                              -> {
+          throw SerializationException("Unknown response: $element")
+        }
       }
     }
   }
