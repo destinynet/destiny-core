@@ -143,7 +143,7 @@ private val POW10 = DoubleArray(MAX_PRECISION + 1) { i -> 10.0.pow(i) }
 private val FORMAT_TEMPLATES = Array(MAX_PRECISION + 1) { i -> "%.${i}f" }
 
 
-fun Double.truncate(n: Int, epsilon: Double = 1e-5): String {
+fun Double.truncateToString(n: Int, epsilon: Double = 1e-5): String {
   require(n in 0..MAX_PRECISION)
   val factor = POW10[n]
   val scaled = this * factor

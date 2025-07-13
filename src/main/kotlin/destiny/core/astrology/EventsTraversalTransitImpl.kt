@@ -14,7 +14,7 @@ import destiny.core.electional.Span
 import destiny.tools.getTitle
 import destiny.tools.reverse
 import destiny.tools.round
-import destiny.tools.truncate
+import destiny.tools.truncateToString
 import jakarta.inject.Named
 import java.util.*
 
@@ -98,8 +98,8 @@ class EventsTraversalTransitImpl(
       .map { it: Misc.VoidCourseSpan ->
         val description = buildString {
           append("${it.planet.asLocaleString().getTitle(Locale.ENGLISH)} Void of Course (空亡). ")
-          append("From ${it.fromPos.sign.getTitle(Locale.ENGLISH)}/${it.fromPos.signDegree.second.truncate(2)}° ")
-          append("to ${it.toPos.sign.getTitle(Locale.ENGLISH)}/${it.toPos.signDegree.second.truncate(2)}°. ")
+          append("From ${it.fromPos.sign.getTitle(Locale.ENGLISH)}/${it.fromPos.signDegree.second.truncateToString(2)}° ")
+          append("to ${it.toPos.sign.getTitle(Locale.ENGLISH)}/${it.toPos.signDegree.second.truncateToString(2)}°. ")
         }
         AstroEventDto(AstroEvent.MoonVoc(description, it), it.begin, it.end, Span.HOURS, Impact.GLOBAL)
       }
@@ -114,7 +114,7 @@ class EventsTraversalTransitImpl(
 
         val description = buildString {
           append("${s.star.asLocaleString().getTitle(Locale.ENGLISH)} Stationary (滯留). ${s.type.getTitle(Locale.ENGLISH)}")
-          append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncate(2)}°")
+          append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
           if (transitToNatalAspects.isNotEmpty()) {
             appendLine()
             appendLine(transitToNatalAspects.describeAspects(includeHour))
@@ -134,7 +134,7 @@ class EventsTraversalTransitImpl(
       retrogradeImpl.getDailyRetrogrades(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl, starTransitImpl).map { (gmtJulDay, progress) ->
         val description = buildString {
           append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Retrograding (逆行). ")
-          append("Progress = ${(progress * 100.0).truncate(2)}%")
+          append("Progress = ${(progress * 100.0).truncateToString(2)}%")
         }
         AstroEventDto(AstroEvent.PlanetRetrograde(description, planet, progress), gmtJulDay, null, Span.DAY, Impact.GLOBAL)
       }
@@ -149,7 +149,7 @@ class EventsTraversalTransitImpl(
       val description = buildString {
         append("Solar Eclipse (日食). ")
         append("Type = ${eclipse.solarType.getTitle(Locale.ENGLISH)}")
-        append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncate(2)}°")
+        append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
         if (transitToNatalAspects.isNotEmpty()) {
           appendLine()
           appendLine(transitToNatalAspects.describeAspects(includeHour))
@@ -173,7 +173,7 @@ class EventsTraversalTransitImpl(
       val description = buildString {
         append("Lunar Eclipse (月食). ")
         append("Type = ${eclipse.lunarType.getTitle(Locale.ENGLISH)}")
-        append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncate(2)}°")
+        append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
         if (transitToNatalAspects.isNotEmpty()) {
           appendLine()
           appendLine(transitToNatalAspects.describeAspects(includeHour))
@@ -210,7 +210,7 @@ class EventsTraversalTransitImpl(
             }
           )
           append(phase.getTitle(Locale.ENGLISH))
-          append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncate(2)}°")
+          append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
           if (transitToNatalAspects.isNotEmpty()) {
             appendLine()
             appendLine(transitToNatalAspects.describeAspects(includeHour))
@@ -351,7 +351,7 @@ class EventsTraversalTransitImpl(
         if (includeHour) {
           append(" (H${aspect.innerPointHouse})")
         }
-        append("] orb = ${aspect.orb.truncate(2)}")
+        append("] orb = ${aspect.orb.truncateToString(2)}")
       }
     }
   }

@@ -12,7 +12,7 @@ import destiny.core.electional.Span
 import destiny.tools.KotlinLogging
 import destiny.tools.getTitle
 import destiny.tools.reverse
-import destiny.tools.truncate
+import destiny.tools.truncateToString
 import jakarta.inject.Named
 import java.util.*
 import kotlin.math.abs
@@ -239,8 +239,8 @@ class EventsTraversalSolarArcImpl(
       val arcAtMid = horoscopeFeature.getSolarArc(inner, midGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
 
       logger.trace {
-        "[$round] currentArc = ${arcAtMid.truncate(4)} , targetArc = ${targetArc.truncate(4)} , lowGmt = ${lowGmt.value.truncate(4)} , highGmt = ${
-          highGmt.value.truncate(
+        "[$round] currentArc = ${arcAtMid.truncateToString(4)} , targetArc = ${targetArc.truncateToString(4)} , lowGmt = ${lowGmt.value.truncateToString(4)} , highGmt = ${
+          highGmt.value.truncateToString(
             4
           )
         }"
@@ -301,7 +301,7 @@ class EventsTraversalSolarArcImpl(
       val currentArc = solarArcModel.degreeMoved
 
       round++
-      logger.trace { "[$round] currentArc = ${currentArc.truncate(4)} , targetArc = ${targetArc.truncate(4)} , low = ${low.value.truncate(4)} , high = ${high.value.truncate(4)}" }
+      logger.trace { "[$round] currentArc = ${currentArc.truncateToString(4)} , targetArc = ${targetArc.truncateToString(4)} , low = ${low.value.truncateToString(4)} , high = ${high.value.truncateToString(4)}" }
 
       if (currentArc < targetArc) {
         low = mid

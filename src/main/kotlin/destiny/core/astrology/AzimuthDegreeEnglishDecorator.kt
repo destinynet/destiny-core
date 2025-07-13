@@ -5,7 +5,7 @@
 package destiny.core.astrology
 
 import destiny.tools.Decorator
-import destiny.tools.truncate
+import destiny.tools.truncateToString
 
 class AzimuthDegreeEnglishDecorator : Decorator<Double> {
   override fun getOutputString(value: Double): String {
@@ -14,21 +14,21 @@ class AzimuthDegreeEnglishDecorator : Decorator<Double> {
       value in range
     }?.value ?: run {
       if (value <= 45)
-        "E by N " + value.truncate(1)
+        "E by N " + value.truncateToString(1)
       else if (value > 45 && value < 90)
-        "N by E " + (90 - value).truncate(1)
+        "N by E " + (90 - value).truncateToString(1)
       else if (value > 90 && value <= 135)
-        "S by E " + (value - 90).truncate(1)
+        "S by E " + (value - 90).truncateToString(1)
       else if (value > 135 && value < 180)
-        "E by S " + (180 - value).truncate(1)
+        "E by S " + (180 - value).truncateToString(1)
       else if (value > 180 && value <= 225)
-        "W by S " + (value - 180).truncate(1)
+        "W by S " + (value - 180).truncateToString(1)
       else if (value > 225 && value < 270)
-        "S by W " + (270 - value).truncate(1)
+        "S by W " + (270 - value).truncateToString(1)
       else if (value > 270 && value <= 315)
-        "N by W " + (value - 270).truncate(1)
+        "N by W " + (value - 270).truncateToString(1)
       else
-        "W by N " + (360 - value).truncate(1)
+        "W by N " + (360 - value).truncateToString(1)
     }
   }
 
