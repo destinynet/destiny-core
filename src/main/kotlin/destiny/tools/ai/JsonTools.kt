@@ -105,7 +105,7 @@ inline fun <reified K : Enum<K>, reified V> toEnumMapJsonSchema(
 
   val schema = buildJsonObject {
     put("type", "object")
-    put("description", description ?: "Map with keys from enum ${keyClass.simpleName}")
+    put("description", description ?: "Map with keys from enum ${keyClass.simpleName}. Note : only return mentioned enum keys, Please ignore un-mentioned keys.")
 
     putJsonObject("properties") {
       keyClass.java.enumConstants.forEach { enumVal ->
