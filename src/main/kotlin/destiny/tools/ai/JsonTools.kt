@@ -184,7 +184,7 @@ private fun JsonObjectBuilder.handleMapType(mapType: KType) {
     val enumClass = keyType.classifier as KClass<*>
     val enumValues = enumClass.java.enumConstants
 
-    put("description", "Map with keys from ${enumClass.simpleName} enum")
+    put("description", "Map with keys from ${enumClass.simpleName} enum. Note : only return mentioned enum keys, Please ignore un-mentioned keys.")
     put("additionalProperties", JsonPrimitive(false))
     putJsonObject("properties") {
       enumValues.forEach { enumValue ->
