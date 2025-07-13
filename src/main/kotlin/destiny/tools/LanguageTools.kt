@@ -132,6 +132,12 @@ fun Double.round(epsilon: Double = 1e-5): Double {
   return if (kotlin.math.abs(this - nearest) < epsilon) nearest else this
 }
 
+fun Double.truncate(decimals: Int): Double {
+  require(decimals >= 0) { "Decimal places must be non-negative" }
+  val factor = 10.0.pow(decimals)
+  return floor(this * factor) / factor
+}
+
 private const val MAX_PRECISION = 10
 private val POW10 = DoubleArray(MAX_PRECISION + 1) { i -> 10.0.pow(i) }
 private val FORMAT_TEMPLATES = Array(MAX_PRECISION + 1) { i -> "%.${i}f" }
