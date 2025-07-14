@@ -96,7 +96,8 @@ class PersonHoroscopeFeature(
     val posMapOuter = modelOuter.positionMap
     val posMapInner = modelInner.positionMap
 
-    val synastry = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, null, aspects)
+    val threshold = 0.9
+    val synastry = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, threshold, aspects)
 
     val synastryAspects: List<SynastryAspect> = synastry.aspects
       .filter { aspect ->
