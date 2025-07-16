@@ -127,7 +127,16 @@ class DtoFactory(
       if (includeHouse) {
         it
       } else {
-        it.copy(houses = emptyList() , houseStarDistribution = emptyMap())
+        // 只有日期，必須把 house/axis 相關資訊抹除
+        it.copy(
+          stars = it.stars.filterNot { (k, _) -> Axis.array.contains(k) },
+          houses = emptyList(),
+          houseStarDistribution = emptyMap(),
+          axisStars = emptyMap(),
+          tightestAspects = it.tightestAspects.filterNot { pattern -> pattern.points.any { p -> Axis.array.contains(p) } },
+          astroPatterns = it.astroPatterns.filterNot { pattern -> pattern.points.any { p -> Axis.array.contains(p) } },
+          midPoints =  it.midPoints.filterNot { pattern -> pattern.points.any { p -> Axis.array.contains(p) } },
+        )
       }
     }
   }
