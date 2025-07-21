@@ -34,7 +34,9 @@ interface IZodiacDegree : Comparable<IZodiacDegree>, Serializable {
 @JvmInline
 value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree {
   init {
-    require(value >= 0 && value < 360)
+    require(value >= 0 && value < 360) {
+      "invalid ZodiacDegree : $value"
+    }
   }
 
   override val zDeg: Double

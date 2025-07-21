@@ -83,7 +83,8 @@ class ReportFactory(
     // Solar Arc 盤在一天內是固定的，所以它的 "later" 位置就是它自己
     val laterForSA: ((AstroPoint) -> IZodiacDegree?) = { p -> solarArcModel.positionMap[p] }
 
-    val transitToSolarArcAspects: List<SynastryAspect> = horoscopeFeature.synastryAspects(
+    // SA 的 house 沒有意義，因此只能用 coarse 版本
+    val transitToSolarArcAspects: List<SynastryAspect> = horoscopeFeature.synastryAspectsCoarse(
       transitModel.positionMap, solarArcModel.positionMap,
       laterForTransit, laterForSA,
       modernAspectCalculator, threshold, Aspect.getAspects(Aspect.Importance.HIGH).toSet()

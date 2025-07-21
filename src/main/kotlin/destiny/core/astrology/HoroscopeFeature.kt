@@ -120,7 +120,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   ): Synastry {
     val posMapOuter = outer.positionMap
 
-    val synastryAspects: List<SynastryAspect> = synastryAspects(
+    val synastryAspects: List<SynastryAspect> = synastryAspectsFine(
       outer.positionMap, inner,
       null, null,
       aspectCalculator, threshold, aspects)
@@ -143,7 +143,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   /**
    * 適用於 inner 具備完整時辰的情形
    */
-  fun synastryAspects(
+  fun synastryAspectsFine(
     outer : Map<AstroPoint, IZodiacDegree>,
     inner : IHoroscopeModel,
     laterForP1: ((AstroPoint) -> IZodiacDegree?)?, laterForP2: ((AstroPoint) -> IZodiacDegree?)?,
@@ -174,9 +174,9 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   }
 
   /**
-   * 適用於 inner (maybe natal) 不具備時辰的情形
+   * 適用於 inner (maybe natal) 不具備時辰的情形 , 不具備 house 計算功能
    */
-  fun synastryAspects(
+  fun synastryAspectsCoarse(
     outer: Map<AstroPoint, IZodiacDegree>,
     inner: Map<AstroPoint, IZodiacDegree>,
     laterForP1: ((AstroPoint) -> IZodiacDegree?)?, laterForP2: ((AstroPoint) -> IZodiacDegree?)?,
@@ -256,7 +256,12 @@ class HoroscopeFeature(
     val cuspDegreeMap: Map<Int, ZodiacDegree> = houseCuspFeature.getModel(gmtJulDay, loc, HouseConfig(config.houseSystem, config.coordinate))
 
     // 行星空亡表
-    val vocMap: Map<Planet, Misc.VoidCourseSpan> = voidCourseFeature.getVocMap(gmtJulDay, loc, config.points, VoidCourseConfig(vocImpl = config.vocImpl))
+    val vocMap: Map<Planet, Misc.VoidCourseSpan> = try {
+      voidCourseFeature.getVocMap(gmtJulDay, loc, config.points, VoidCourseConfig(vocImpl = config.vocImpl))
+    } catch (e : Exception) {
+      logger.error { "無法計算行星空亡表, gmtJulDay = $gmtJulDay , loc = $loc , configPoints = ${config.points} , e = $e , e.message = ${e.message}" }
+      emptyMap()
+    }
 
     // 行星時 Planetary Hour
     val planetaryHour =
@@ -334,8 +339,15 @@ class HoroscopeFeature(
     return performOperation(param)
   }
 
-  override fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator,
-                           threshold: Double?, config: IHoroscopeConfig, forward: Boolean): ISolarArcModel {
+  override fun getSolarArc(
+    model: IHoroscopeModel,
+    viewTime: GmtJulDay,
+    innerConsiderHour: Boolean,
+    aspectCalculator: IAspectCalculator,
+    threshold: Double?,
+    config: IHoroscopeConfig,
+    forward: Boolean
+  ): ISolarArcModel {
 
     require(viewTime >= model.gmtJulDay) { "viewTime should be after model.gmtJulDay" }
 
@@ -354,7 +366,14 @@ class HoroscopeFeature(
       if (!forward) -it else it
     }
 
-    val posMap = model.positionMap.mapValues { (_, pos) ->
+    val innerPosMap = model.positionMap.let {
+      if (innerConsiderHour)
+        it
+      else
+        it.filter { (k, _) -> k !is Axis }
+    }
+
+    val posMap = innerPosMap.mapValues { (_, pos) ->
       pos.lngDeg + degreeMoved
     }
 
@@ -369,7 +388,7 @@ class HoroscopeFeature(
     val convergentAndLaterSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, later, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
     // 計算 later 時間點相對於「本命太陽」的「完整弧角」
     val laterFullSunArc = convergentAndLaterSunPos.lngDeg - model.getPosition(Planet.SUN)!!.lngDeg
-    val laterPosMap = model.positionMap.mapValues { (_, pos) ->
+    val laterPosMap = innerPosMap.mapValues { (_, pos) ->
       pos.lngDeg + laterFullSunArc
     }
 
@@ -377,9 +396,9 @@ class HoroscopeFeature(
     val laterForP2: ((AstroPoint) -> IZodiacDegree?) = { p -> model.getZodiacDegree(p) }
 
     val synastryAspects = if (innerConsiderHour) {
-      synastryAspects(posMap, model, laterForP1, laterForP2, aspectCalculator, threshold)
+      synastryAspectsFine(posMap, model, laterForP1, laterForP2, aspectCalculator, threshold)
     } else {
-      synastryAspects(posMap, model.positionMap, laterForP1, laterForP2, aspectCalculator, threshold)
+      synastryAspectsCoarse(posMap, innerPosMap, laterForP1, laterForP2, aspectCalculator, threshold)
     }
 
     return SolarArcModel(model.gmtJulDay, innerConsiderHour, viewTime,
