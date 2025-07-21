@@ -88,7 +88,7 @@ class EventsTraversalTransitImpl(
     ).map { aspectData: AspectData ->
       val (outerStar1, outerStar2) = aspectData.points.let { it[0] to it[1] }
       val description = buildString {
-        append("[transit ${outerStar1.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [transit ${outerStar2.asLocaleString().getTitle(Locale.ENGLISH)}]")
+        append("[outer ${outerStar1.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [outer ${outerStar2.asLocaleString().getTitle(Locale.ENGLISH)}]")
       }
       AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.GLOBAL)
     }
@@ -298,7 +298,7 @@ class EventsTraversalTransitImpl(
         yieldAll(searchPersonalEvents(innerStars, angles).map { aspectData ->
           val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
           val description = buildString {
-            append("[transit ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
+            append("[outer ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
           }
           AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
         })
@@ -341,7 +341,7 @@ class EventsTraversalTransitImpl(
     return this.sortedBy { it.orb }.joinToString("\n") { aspect: SynastryAspect ->
       buildString {
         append("\t")
-        append("(p) [transit ${aspect.outerPoint.asLocaleString().getTitle(Locale.ENGLISH)}")
+        append("(p) [outer ${aspect.outerPoint.asLocaleString().getTitle(Locale.ENGLISH)}")
         if (includeHour) {
           append(" (H${aspect.outerPointHouse})")
         }
