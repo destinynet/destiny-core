@@ -10,6 +10,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
+import java.time.DateTimeException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -42,14 +43,14 @@ object LocalDateSerializer : KSerializer<LocalDate> {
       }
       // 如果是 JSON 物件 (e.g., { "year": 2025, "month": 7, "day": 22 })
       element is JsonObject -> {
-        val year = element["year"]?.jsonPrimitive?.int
-        val month = element["month"]?.jsonPrimitive?.int
+        val yearMonth = YearMonthSerializer.deserialize(decoder)
+
         val day = element["day"]?.jsonPrimitive?.int
 
-        if (year != null && month != null && day != null) {
+        if (day != null) {
           try {
-            LocalDate.of(year, month, day)
-          } catch (e: Exception) {
+            yearMonth.atDay(day)
+          } catch (e: DateTimeException) {
             throw IllegalStateException("Invalid LocalDate object format: $element", e)
           }
         } else {

@@ -10,6 +10,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
+import java.time.DateTimeException
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -31,7 +32,7 @@ object YearMonthSerializer : KSerializer<YearMonth> {
     val jsonDecoder = decoder as? JsonDecoder
       ?: throw IllegalStateException("This serializer can only be used with JSON format.")
 
-    val element = jsonDecoder.decodeJsonElement()
+    val element: JsonElement = jsonDecoder.decodeJsonElement()
 
     return when {
       // 如果是 JSON 字串 (e.g., "2024-12")
@@ -50,7 +51,7 @@ object YearMonthSerializer : KSerializer<YearMonth> {
         if (year != null && month != null) {
           try {
             YearMonth.of(year, month)
-          } catch (e: Exception) {
+          } catch (e: DateTimeException) {
             throw IllegalStateException("Invalid YearMonth object format: $element", e)
           }
         } else {

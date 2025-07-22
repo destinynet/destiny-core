@@ -10,6 +10,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
+import java.time.DateTimeException
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -51,7 +52,7 @@ object LocalTimeSerializer : KSerializer<LocalTime> {
         if (hour != null && minute != null) {
           try {
             LocalTime.of(hour, minute, second, nano)
-          } catch (e: Exception) {
+          } catch (e: DateTimeException) {
             throw IllegalStateException("Invalid LocalTime object format: $element", e)
           }
         } else {

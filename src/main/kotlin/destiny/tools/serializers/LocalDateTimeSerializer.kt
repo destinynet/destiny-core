@@ -9,7 +9,10 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import java.time.DateTimeException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -42,22 +45,13 @@ object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
       }
       // 如果是 JSON 物件 (e.g., { "year": 2025, "month": 7, "day": 22, "hour": 15, "minute": 30, "second": 45, "nano": 123456789 })
       element is JsonObject -> {
-        val year = element["year"]?.jsonPrimitive?.int
-        val month = element["month"]?.jsonPrimitive?.int
-        val day = element["day"]?.jsonPrimitive?.int
-        val hour = element["hour"]?.jsonPrimitive?.int
-        val minute = element["minute"]?.jsonPrimitive?.int
-        val second = element["second"]?.jsonPrimitive?.int ?: 0 // second 和 nano 可以是可選的
-        val nano = element["nano"]?.jsonPrimitive?.int ?: 0
+        val localDate = LocalDateSerializer.deserialize(decoder)
+        val localTime = LocalTimeSerializer.deserialize(decoder)
 
-        if (year != null && month != null && day != null && hour != null && minute != null) {
-          try {
-            LocalDateTime.of(year, month, day, hour, minute, second, nano)
-          } catch (e: Exception) {
-            throw IllegalStateException("Invalid LocalDateTime object format: $element", e)
-          }
-        } else {
-          throw IllegalStateException("LocalDateTime object must contain 'year', 'month', 'day', 'hour', and 'minute' fields: $element")
+        try {
+          LocalDateTime.of(localDate, localTime)
+        } catch (e: DateTimeException) {
+          throw IllegalStateException("Invalid LocalDateTime object format: $element", e)
         }
       }
 
