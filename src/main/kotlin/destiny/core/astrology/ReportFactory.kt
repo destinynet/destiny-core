@@ -14,6 +14,7 @@ import destiny.core.electional.DayHourService
 import destiny.tools.KotlinLogging
 import jakarta.inject.Named
 import java.time.LocalDate
+import java.time.YearMonth
 
 
 interface IReportFactory {
@@ -35,6 +36,13 @@ interface IReportFactory {
     config: IPersonHoroscopeConfig,
     includeLunarReturn: Boolean
   ): ITimeLineEventsModel
+
+  fun getSmartTimelineEvents(
+    bdnp: IBirthDataNamePlace,
+    grain: BirthDataGrain,
+    viewGmtJulDay: GmtJulDay,
+    eventPoints: List<YearMonth>,
+  )
 }
 
 @Named
@@ -236,6 +244,15 @@ class ReportFactory(
     val returnCharts = sequenceOf(solarReturns, lunarReturns).flatten().sortedBy { it.validFrom }.toList()
 
     return TimeLineEventsModel(natal, grain, fromTime, toTime, events, returnCharts)
+  }
+
+  override fun getSmartTimelineEvents(bdnp: IBirthDataNamePlace, grain: BirthDataGrain, viewGmtJulDay: GmtJulDay, eventPoints: List<YearMonth>) {
+
+    val monthRanges: List<YearMonth> = eventPoints.flatMap { ym ->
+      listOf(ym.minusMonths(1), ym, ym.plusMonths(1))
+    }.distinct()
+
+    TODO("Not yet implemented")
   }
 
   companion object {
