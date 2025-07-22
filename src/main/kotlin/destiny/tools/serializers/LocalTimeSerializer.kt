@@ -9,12 +9,14 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.*
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 
 object LocalTimeSerializer : KSerializer<LocalTime> {
-  private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME
+  private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME // ISO_LOCAL_TIME 格式為 HH:MM:SS.NNNNNNNNN
 
   override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("LocalTime", PrimitiveKind.STRING)
 
@@ -24,8 +26,43 @@ object LocalTimeSerializer : KSerializer<LocalTime> {
   }
 
   override fun deserialize(decoder: Decoder): LocalTime {
-    val string = decoder.decodeString()
-    return LocalTime.parse(string, formatter)
+    // 檢查 decoder 是否為 JsonDecoder，以便訪問底層的 JsonElement
+    val jsonDecoder = decoder as? JsonDecoder
+      ?: throw IllegalStateException("This serializer can only be used with JSON format.")
+
+    val element = jsonDecoder.decodeJsonElement()
+
+    return when {
+      // 如果是 JSON 字串 (e.g., "15:30:45")
+      element is JsonPrimitive && element.isString -> {
+        try {
+          LocalTime.parse(element.content, formatter)
+        } catch (e: DateTimeParseException) {
+          throw IllegalStateException("Invalid LocalTime string format: ${element.content}", e)
+        }
+      }
+      // 如果是 JSON 物件 (e.g., { "hour": 15, "minute": 30, "second": 45, "nano": 123456789 })
+      element is JsonObject -> {
+        val hour = element["hour"]?.jsonPrimitive?.int
+        val minute = element["minute"]?.jsonPrimitive?.int
+        val second = element["second"]?.jsonPrimitive?.int ?: 0 // second 和 nano 可以是可選的
+        val nano = element["nano"]?.jsonPrimitive?.int ?: 0
+
+        if (hour != null && minute != null) {
+          try {
+            LocalTime.of(hour, minute, second, nano)
+          } catch (e: Exception) {
+            throw IllegalStateException("Invalid LocalTime object format: $element", e)
+          }
+        } else {
+          throw IllegalStateException("LocalTime object must contain 'hour' and 'minute' fields: $element")
+        }
+      }
+
+      else                                         -> {
+        throw IllegalStateException("Unsupported LocalTime format. Expected string (ISO_LOCAL_TIME) or object ({hour, minute, second, nano}). Received: $element")
+      }
+    }
   }
 
 }
