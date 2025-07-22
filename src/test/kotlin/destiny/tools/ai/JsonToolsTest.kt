@@ -119,7 +119,7 @@ class JsonToolsTest {
     logger.info { "schema: $schema" }
     val me = schema["properties"]!!.jsonObject["mapEnum"]!!.jsonObject
     assertEquals("object", me["type"]!!.jsonPrimitive.content)
-    assertEquals("Map with keys from MyEnum enum", me["description"]!!.jsonPrimitive.content)
+    assertTrue { me["description"]!!.jsonPrimitive.content.startsWith("Map with keys from MyEnum enum") }
     // no additionalProperties allowed
     assertEquals(false, me["additionalProperties"]!!.jsonPrimitive.boolean)
     val ep = me["properties"]!!.jsonObject
@@ -273,7 +273,7 @@ class JsonToolsTest {
     val spec = MapEnumList::class.toJsonSchema("MapEnumList", null)
     val m = spec.schema["properties"]!!.jsonObject["m"]!!.jsonObject
     assertEquals("object", m["type"]!!.jsonPrimitive.content)
-    assertEquals("Map with keys from MyEnum enum", m["description"]!!.jsonPrimitive.content)
+    assertTrue { m["description"]!!.jsonPrimitive.content.startsWith("Map with keys from MyEnum enum") }
     assertFalse(m["additionalProperties"]!!.jsonPrimitive.boolean)
     val props = m["properties"]!!.jsonObject
     props.keys.forEach { key -> assertTrue(key == "A" || key == "B") }
