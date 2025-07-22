@@ -86,10 +86,18 @@ data class TimeLineEventsModel(
   override val returnCharts: List<IReturnDto> = emptyList()
 ) : ITimeLineEventsModel
 
+
+@Serializable
+data class YearMonthEvent(
+  @Serializable(with = YearMonthSerializer::class)
+  val yearMonth: YearMonth,
+  val event: String
+)
+
 interface ITimeLineWithUserEventsModel : ITimeLineEventsModel {
   val today: LocalDate
   val summary: String
-  val userEvents : Map<YearMonth , String>
+  val userEvents : List<YearMonthEvent>
 }
 
 @Serializable
@@ -98,5 +106,5 @@ data class TimeLineWithUserEventsModel(
   @Serializable(with = LocalDateSerializer::class)
   override val today: LocalDate,
   override val summary: String,
-  override val userEvents: Map<@Serializable(with = YearMonthSerializer::class) YearMonth, String>
+  override val userEvents: List<YearMonthEvent>
 ) : ITimeLineWithUserEventsModel , ITimeLineEventsModel by timeLineEventsModel

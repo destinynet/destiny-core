@@ -233,10 +233,6 @@ class ReportFactory(
       emptySequence()
     }
 
-
-
-
-
     val returnCharts = sequenceOf(solarReturns, lunarReturns).flatten().sortedBy { it.validFrom }.toList()
 
     return TimeLineEventsModel(natal, grain, fromTime, toTime, events, returnCharts)
