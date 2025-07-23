@@ -44,20 +44,7 @@ object LocalTimeSerializer : KSerializer<LocalTime> {
       }
       // 如果是 JSON 物件 (e.g., { "hour": 15, "minute": 30, "second": 45, "nano": 123456789 })
       element is JsonObject -> {
-        val hour = element["hour"]?.jsonPrimitive?.int
-        val minute = element["minute"]?.jsonPrimitive?.int
-        val second = element["second"]?.jsonPrimitive?.int ?: 0 // second 和 nano 可以是可選的
-        val nano = element["nano"]?.jsonPrimitive?.int ?: 0
-
-        if (hour != null && minute != null) {
-          try {
-            LocalTime.of(hour, minute, second, nano)
-          } catch (e: DateTimeException) {
-            throw IllegalStateException("Invalid LocalTime object format: $element", e)
-          }
-        } else {
-          throw IllegalStateException("LocalTime object must contain 'hour' and 'minute' fields: $element")
-        }
+        extractLocalTimeFields(element)
       }
 
       else                                         -> {
@@ -66,4 +53,20 @@ object LocalTimeSerializer : KSerializer<LocalTime> {
     }
   }
 
+  fun extractLocalTimeFields(jsonObject: JsonObject): LocalTime {
+    val hour = jsonObject["hour"]?.jsonPrimitive?.int
+    val minute = jsonObject["minute"]?.jsonPrimitive?.int
+    val second = jsonObject["second"]?.jsonPrimitive?.int ?: 0 // second 和 nano 可以是可選的
+    val nano = jsonObject["nano"]?.jsonPrimitive?.int ?: 0
+
+    if (hour != null && minute != null) {
+      try {
+        return LocalTime.of(hour, minute, second, nano)
+      } catch (e: DateTimeException) {
+        throw IllegalStateException("Invalid LocalTime object format: $jsonObject", e)
+      }
+    } else {
+      throw IllegalStateException("LocalTime object must contain 'hour' and 'minute' fields: $jsonObject")
+    }
+  }
 }

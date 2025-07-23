@@ -45,23 +45,31 @@ object YearMonthSerializer : KSerializer<YearMonth> {
       }
       // 如果是 JSON 物件 (e.g., { "year": 2024, "month": 12 })
       element is JsonObject -> {
-        val year = element["year"]?.jsonPrimitive?.int
-        val month = element["month"]?.jsonPrimitive?.int
-
-        if (year != null && month != null) {
-          try {
-            YearMonth.of(year, month)
-          } catch (e: DateTimeException) {
-            throw IllegalStateException("Invalid YearMonth object format: $element", e)
-          }
-        } else {
-          throw IllegalStateException("YearMonth object must contain 'year' and 'month' fields: $element")
-        }
+        extractYearMonthFields(element)
       }
 
       else                                         -> {
         throw IllegalStateException("Unsupported YearMonth format. Expected string (YYYY-MM) or object ({year, month}). Received: $element")
       }
+    }
+  }
+
+  /**
+   * 從 JsonObject 中提取 'year' 和 'month' 欄位並構建 YearMonth 物件。
+   * 這個方法可以被其他序列化器重用。
+   */
+  fun extractYearMonthFields(jsonObject: JsonObject): YearMonth {
+    val year = jsonObject["year"]?.jsonPrimitive?.int
+    val month = jsonObject["month"]?.jsonPrimitive?.int
+
+    if (year != null && month != null) {
+      try {
+        return YearMonth.of(year, month)
+      } catch (e: DateTimeException) {
+        throw IllegalStateException("Invalid YearMonth object format: $jsonObject", e)
+      }
+    } else {
+      throw IllegalStateException("YearMonth object must contain 'year' and 'month' fields: $jsonObject")
     }
   }
 }

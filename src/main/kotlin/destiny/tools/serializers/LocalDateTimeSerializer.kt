@@ -44,12 +44,12 @@ object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
         }
       }
       // 如果是 JSON 物件 (e.g., { "year": 2025, "month": 7, "day": 22, "hour": 15, "minute": 30, "second": 45, "nano": 123456789 })
-      element is JsonObject -> {
-        val localDate = LocalDateSerializer.deserialize(decoder)
-        val localTime = LocalTimeSerializer.deserialize(decoder)
+      element is JsonObject                        -> {
+        val localDate = LocalDateSerializer.extractLocalDateFields(element)
+        val localTime = LocalTimeSerializer.extractLocalTimeFields(element)
 
         try {
-          LocalDateTime.of(localDate, localTime)
+          return LocalDateTime.of(localDate, localTime)
         } catch (e: DateTimeException) {
           throw IllegalStateException("Invalid LocalDateTime object format: $element", e)
         }

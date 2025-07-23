@@ -42,25 +42,30 @@ object LocalDateSerializer : KSerializer<LocalDate> {
         }
       }
       // 如果是 JSON 物件 (e.g., { "year": 2025, "month": 7, "day": 22 })
-      element is JsonObject -> {
-        val yearMonth = YearMonthSerializer.deserialize(decoder)
-
-        val day = element["day"]?.jsonPrimitive?.int
-
-        if (day != null) {
-          try {
-            yearMonth.atDay(day)
-          } catch (e: DateTimeException) {
-            throw IllegalStateException("Invalid LocalDate object format: $element", e)
-          }
-        } else {
-          throw IllegalStateException("LocalDate object must contain 'year', 'month', and 'day' fields: $element")
-        }
+      element is JsonObject                        -> {
+        extractLocalDateFields(element)
       }
 
       else                                         -> {
         throw IllegalStateException("Unsupported LocalDate format. Expected string (YYYY-MM-DD) or object ({year, month, day}). Received: $element")
       }
+    }
+  }
+
+  fun extractLocalDateFields(jsonObject: JsonObject): LocalDate {
+    // 重用 YearMonthSerializer 中的邏輯來提取 YearMonth 部分
+    val yearMonth = YearMonthSerializer.extractYearMonthFields(jsonObject)
+
+    val day = jsonObject["day"]?.jsonPrimitive?.int
+
+    if (day != null) {
+      try {
+        return yearMonth.atDay(day)
+      } catch (e: DateTimeException) {
+        throw IllegalStateException("Invalid LocalDate object format: $jsonObject", e)
+      }
+    } else {
+      throw IllegalStateException("LocalDate object must contain 'year', 'month', and 'day' fields: $jsonObject")
     }
   }
 }
