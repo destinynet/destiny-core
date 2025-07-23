@@ -126,8 +126,8 @@ class ReportFactory(
     val loc = personModel.location
     logger.debug { "secondaryProgression convergentFrom = ${secondaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
     logger.debug { "secondaryProgression convergentTo   = ${secondaryProgressionConvergentTo.toLmt(loc, julDayResolver)}" }
-    logger.debug { "tertiaryProgression  convergentFrom = ${tertiaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
-    logger.debug { "tertiaryProgression  convergentTo   = ${tertiaryProgressionConvergentTo.toLmt(loc, julDayResolver)}" }
+    logger.trace { "tertiaryProgression  convergentFrom = ${tertiaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
+    logger.trace { "tertiaryProgression  convergentTo   = ${tertiaryProgressionConvergentTo.toLmt(loc, julDayResolver)}" }
 
     val astrologyConfig = AstrologyTraversalConfig(
       aspect = true,
@@ -275,6 +275,9 @@ class ReportFactory(
     val config = PersonHoroscopeConfig()
 
     val mergedRanges: List<YearMonthRange> = eventPoints.groupMergedRanges(1)
+    mergedRanges.forEach {
+      logger.info { "${it.start} to ${it.endInclusive}" }
+    }
 
     val (events: List<ITimeLineEvent>, returnCharts: List<IReturnDto>) = mergedRanges.map { ymr: YearMonthRange ->
       val fromGmt = ymr.fromTime.toGmtJulDay(personModel.location)
