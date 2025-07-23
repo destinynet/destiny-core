@@ -23,24 +23,34 @@ class DtoFactory(
 ) {
 
   fun IHoroscopeModel.toHoroscopeDto(
+    grain: BirthDataGrain,
     rulerImpl: IRuler,
     aspectAffective: IAspectEffective,
     aspectCalculator: IAspectCalculator,
     horoConfig: IHoroscopeConfig,
     includeClassical: Boolean
   ): IHoroscopeDto {
-    val byHouse: List<HouseDto> = houses.map { h ->
-      HouseDto(
-        h.index,
-        h.cusp,
-        with(rulerImpl) {
-          h.cusp.sign.getRulerPoint()!!
-        }, getHousePoints(h.index)
-      )
+    val byHouse: List<HouseDto> = when(grain) {
+      BirthDataGrain.DAY -> emptyList()
+      BirthDataGrain.MINUTE -> houses.map { h ->
+        HouseDto(
+          h.index,
+          h.cusp,
+          with(rulerImpl) {
+            h.cusp.sign.getRulerPoint()!!
+          }, getHousePoints(h.index)
+        )
+      }
     }
 
     val threshold = 0.9
-    val byStar = getByStarMap(threshold, aspectCalculator, rulerImpl)
+
+    val byStar: Map<AstroPoint, Natal.StarPosInfo> = getByStarMap(threshold, aspectCalculator, rulerImpl).filter { (p, _) ->
+      when (grain) {
+        BirthDataGrain.MINUTE -> true
+        BirthDataGrain.DAY    -> p !is Axis
+      }
+    }
 
     val angularConsideringPoints = points.filter { it is Planet || it is FixedStar || it is LunarPoint }
 
@@ -48,35 +58,47 @@ class DtoFactory(
     val startScore = 0.6
     // 從 8度之內起算
     val toleranceOrb = 8.0
-    val axisStars = mapOf(
-      Axis.RISING to 1,
-      Axis.MERIDIAN to 10,
-      Axis.SETTING to 7,
-      Axis.NADIR to 4
-    ).map { (axis, houseNum) ->
-      axis to this.getCuspDegree(houseNum)
-    }.associate { (axis, zDeg) ->
-      axis to angularConsideringPoints
-        .asSequence()
-        .map { p -> p to getZodiacDegree(p) }
-        .filter { (_, pDeg) -> pDeg != null }
-        .map { (p, zDeg) -> p to zDeg!! }
-        .map { (p, pDeg) -> p to pDeg.getAngle(zDeg) }
-        .filter { (_, orb) -> orb < toleranceOrb } // 左右 8 度
-        .map { (p, orb) ->
-          // if 交角 = 8 => 0.6 + 0.4 * ( 8 - 8 ) / 8 = 0.6
-          // if 交角 = 0 => 0.6 + 0.4 * ( 8 - 0 ) / 8 = 1.0
-          val score = (startScore + (1 - startScore) * (toleranceOrb - orb) / toleranceOrb).toScore()
-          AxisStar(p, orb, score)
+
+    val axisStars: Map<Axis, List<AxisStar>> = when(grain) {
+      BirthDataGrain.DAY -> emptyMap()
+      BirthDataGrain.MINUTE -> {
+        mapOf(
+          Axis.RISING to 1,
+          Axis.MERIDIAN to 10,
+          Axis.SETTING to 7,
+          Axis.NADIR to 4
+        ).map { (axis, houseNum) ->
+          axis to this.getCuspDegree(houseNum)
+        }.associate { (axis, zDeg) ->
+          axis to angularConsideringPoints
+            .asSequence()
+            .map { p -> p to getZodiacDegree(p) }
+            .filter { (_, pDeg) -> pDeg != null }
+            .map { (p, zDeg) -> p to zDeg!! }
+            .map { (p, pDeg) -> p to pDeg.getAngle(zDeg) }
+            .filter { (_, orb) -> orb < toleranceOrb } // 左右 8 度
+            .map { (p, orb) ->
+              // if 交角 = 8 => 0.6 + 0.4 * ( 8 - 8 ) / 8 = 0.6
+              // if 交角 = 0 => 0.6 + 0.4 * ( 8 - 0 ) / 8 = 1.0
+              val score = (startScore + (1 - startScore) * (toleranceOrb - orb) / toleranceOrb).toScore()
+              AxisStar(p, orb, score)
+            }
+            .sortedByDescending { it.score }
+            .toList()
         }
-        .sortedByDescending { it.score }
-        .toList()
+      }
     }
 
     val allPlanets = points.filterIsInstance<Planet>().size
-    val houseStarDistribution: Map<HouseType, Natal.HouseStarDistribution> = HouseType.entries.associateWith { houseType ->
-      val starCount = getHousePoints(houseType).filterIsInstance<Planet>().size
-      Natal.HouseStarDistribution(starCount, (starCount.toDouble() * 100.0 / allPlanets))
+
+    val houseStarDistribution: Map<HouseType, Natal.HouseStarDistribution> = when(grain) {
+      BirthDataGrain.DAY -> emptyMap()
+      BirthDataGrain.MINUTE -> {
+        HouseType.entries.associateWith { houseType ->
+          val starCount = getHousePoints(houseType).filterIsInstance<Planet>().size
+          Natal.HouseStarDistribution(starCount, (starCount.toDouble() * 100.0 / allPlanets))
+        }
+      }
     }
 
     val classicalConfig: IClassicalConfig = ClassicalConfig(classicalFactories)
@@ -92,6 +114,31 @@ class DtoFactory(
       emptyList()
     }
 
+    val tightestAspects = getTightAspects(aspectCalculator, threshold).let { aspects ->
+      when(grain) {
+        BirthDataGrain.MINUTE -> aspects
+        BirthDataGrain.DAY -> aspects.filterNot { asp -> asp.points.any { it is Axis} }
+      }
+    }
+
+    val patterns = getPatterns(PatternContext(aspectAffective, aspectCalculator), threshold).let { patterns ->
+      when (grain) {
+        BirthDataGrain.MINUTE -> patterns
+        BirthDataGrain.DAY -> {
+          patterns.filterNot { pattern -> pattern.points.any { it is Axis } }
+        }
+      }
+    }
+
+    val midPoints = getMidPointsWithFocal().filter { it.orb <= 1.0 }.let { midPoints ->
+      when(grain) {
+        BirthDataGrain.MINUTE -> midPoints
+        BirthDataGrain.DAY -> {
+          midPoints.filterNot { midPoint -> midPoint.points.any { it is Axis } }
+        }
+      }
+    }
+
     return HoroscopeDto(
       time as LocalDateTime, location, place,
       signPointsMap.filter { (_, points) -> points.isNotEmpty() },
@@ -100,11 +147,11 @@ class DtoFactory(
       houseStarDistribution,
       elementDistribution(),
       qualityDistribution(),
-      getTightAspects(aspectCalculator, threshold),
-      getPatterns(PatternContext(aspectAffective, aspectCalculator), threshold),
+      tightestAspects,
+      patterns,
       classicalPatterns,
       getGraph(rulerImpl),
-      getMidPointsWithFocal().filter { it.orb <= 1.0 }
+      midPoints,
     )
   }
 
@@ -113,32 +160,17 @@ class DtoFactory(
   }
 
   fun IPersonHoroscopeModel.toPersonHoroscopeDto(
+    grain: BirthDataGrain,
     viewGmt: GmtJulDay,
     rulerImpl: IRuler,
     aspectAffective: IAspectEffective,
     aspectCalculator: IAspectCalculator,
-    includeHouse: Boolean,
     horoConfig: IHoroscopeConfig
   ): IPersonHoroscopeDto {
-    val horoscopeDto: IHoroscopeDto = this.toHoroscopeDto(rulerImpl, aspectAffective, aspectCalculator, horoConfig, true)
+    val horoscopeDto: IHoroscopeDto = this.toHoroscopeDto(grain, rulerImpl, aspectAffective, aspectCalculator, horoConfig, true)
     val age = this.getAge(viewGmt)
 
-    return Natal(gender, age, name, horoscopeDto).let {
-      if (includeHouse) {
-        it
-      } else {
-        // 只有日期，必須把 house/axis 相關資訊抹除
-        it.copy(
-          stars = it.stars.filterNot { (k, _) -> Axis.array.contains(k) },
-          houses = emptyList(),
-          houseStarDistribution = emptyMap(),
-          axisStars = emptyMap(),
-          tightestAspects = it.tightestAspects.filterNot { pattern -> pattern.points.any { p -> Axis.array.contains(p) } },
-          astroPatterns = it.astroPatterns.filterNot { pattern -> pattern.points.any { p -> Axis.array.contains(p) } },
-          midPoints =  it.midPoints.filterNot { pattern -> pattern.points.any { p -> Axis.array.contains(p) } },
-        )
-      }
-    }
+    return Natal(gender, age, name, horoscopeDto)
   }
 
   companion object {

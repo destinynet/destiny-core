@@ -3,12 +3,13 @@
  */
 package destiny.core.astrology
 
-import destiny.core.IBirthDataNamePlace
 import destiny.core.astrology.classical.RulerPtolemyImpl
 import destiny.core.astrology.prediction.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools.toGmtJulDay
+import destiny.core.calendar.chinese.YearMonthRange
+import destiny.core.calendar.chinese.groupMergedRanges
 import destiny.core.calendar.toLmt
 import destiny.core.electional.DayHourService
 import destiny.tools.KotlinLogging
@@ -18,16 +19,19 @@ import java.time.YearMonth
 
 
 interface IReportFactory {
+
+  /** 針對某個時間點分析 */
   fun getTransitSolarArcModel(
-    bdnp: IBirthDataNamePlace,
+    personModel: IPersonHoroscopeModel,
     grain: BirthDataGrain,
     localDate: LocalDate,
     threshold: Double?,
     config: IPersonHoroscopeConfig
   ): TransitSolarArcModel
 
+  /** 某段範圍時間內的事件 */
   fun getTimeLineEvents(
-    bdnp: IBirthDataNamePlace,
+    personModel: IPersonHoroscopeModel,
     grain: BirthDataGrain,
     viewGmtJulDay: GmtJulDay,
     fromTime: GmtJulDay,
@@ -37,12 +41,13 @@ interface IReportFactory {
     includeLunarReturn: Boolean
   ): ITimeLineEventsModel
 
+  /** 根據 [eventPoints] 擷取前後一個月 , 排出事件前後重要星盤 */
   fun getSmartTimelineEvents(
-    bdnp: IBirthDataNamePlace,
+    personModel: IPersonHoroscopeModel,
     grain: BirthDataGrain,
     viewGmtJulDay: GmtJulDay,
     eventPoints: List<YearMonth>,
-  )
+  ): ITimeLineEventsModel
 }
 
 @Named
@@ -60,14 +65,13 @@ class ReportFactory(
   private val starTransitImpl: IStarTransit,
 ) : IReportFactory {
   override fun getTransitSolarArcModel(
-    bdnp: IBirthDataNamePlace,
+    personModel: IPersonHoroscopeModel,
     grain: BirthDataGrain,
     localDate: LocalDate,
     threshold: Double?,
     config: IPersonHoroscopeConfig
   ): TransitSolarArcModel {
-    val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(bdnp, config)
-    val viewGmt = localDate.atTime(12, 0).toGmtJulDay(bdnp.location)
+    val viewGmt = localDate.atTime(12, 0).toGmtJulDay(personModel.location)
 
     val innerConsiderHour = when (grain) {
       BirthDataGrain.DAY    -> false
@@ -75,16 +79,15 @@ class ReportFactory(
     }
 
     val natal: IPersonHoroscopeDto = with(dtoFactory) {
-      model.toPersonHoroscopeDto(viewGmt, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, innerConsiderHour, config)
+      personModel.toPersonHoroscopeDto(grain, viewGmt, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, config)
     }
 
+    val solarArcModel = horoscopeFeature.getSolarArc(personModel, viewGmt, innerConsiderHour, modernAspectCalculator, threshold, config)
 
-    val solarArcModel = horoscopeFeature.getSolarArc(model, viewGmt, innerConsiderHour, modernAspectCalculator, threshold, config)
-
-    val transitModel = horoscopeFeature.getModel(viewGmt, bdnp.location, config)
+    val transitModel = horoscopeFeature.getModel(viewGmt, personModel.location, config)
 
     val laterViewGmt = viewGmt.plus(0.01) // 大約 15 分鐘後
-    val laterTransitModel = horoscopeFeature.getModel(laterViewGmt, bdnp.location, config)
+    val laterTransitModel = horoscopeFeature.getModel(laterViewGmt, personModel.location, config)
 
     // 準備 lambda 函式
     val laterForTransit: ((AstroPoint) -> IZodiacDegree?) = { p -> laterTransitModel.positionMap[p] }
@@ -102,7 +105,7 @@ class ReportFactory(
   }
 
   override fun getTimeLineEvents(
-    bdnp: IBirthDataNamePlace,
+    personModel: IPersonHoroscopeModel,
     grain: BirthDataGrain,
     viewGmtJulDay: GmtJulDay,
     fromTime: GmtJulDay,
@@ -114,13 +117,13 @@ class ReportFactory(
     val progressionSecondary = ProgressionSecondary()
     val progressionTertiary = ProgressionTertiary()
 
-    val secondaryProgressionConvergentFrom = progressionSecondary.getConvergentTime(bdnp.gmtJulDay, fromTime)
-    val secondaryProgressionConvergentTo = progressionSecondary.getConvergentTime(bdnp.gmtJulDay, toTime)
+    val secondaryProgressionConvergentFrom = progressionSecondary.getConvergentTime(personModel.gmtJulDay, fromTime)
+    val secondaryProgressionConvergentTo = progressionSecondary.getConvergentTime(personModel.gmtJulDay, toTime)
 
-    val tertiaryProgressionConvergentFrom = progressionTertiary.getConvergentTime(bdnp.gmtJulDay, fromTime)
-    val tertiaryProgressionConvergentTo = progressionTertiary.getConvergentTime(bdnp.gmtJulDay, toTime)
+    val tertiaryProgressionConvergentFrom = progressionTertiary.getConvergentTime(personModel.gmtJulDay, fromTime)
+    val tertiaryProgressionConvergentTo = progressionTertiary.getConvergentTime(personModel.gmtJulDay, toTime)
 
-    val loc = bdnp.location
+    val loc = personModel.location
     logger.debug { "secondaryProgression convergentFrom = ${secondaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
     logger.debug { "secondaryProgression convergentTo   = ${secondaryProgressionConvergentTo.toLmt(loc, julDayResolver)}" }
     logger.debug { "tertiaryProgression  convergentFrom = ${tertiaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
@@ -146,38 +149,38 @@ class ReportFactory(
     val events = buildSet {
       if (EventSource.SECONDARY in eventSources) {
         addAll(dayHourService.traverseAstrologyEvents(
-          bdnp,
+          personModel,
           secondaryProgressionConvergentFrom,
           secondaryProgressionConvergentTo,
-          bdnp.location,
+          personModel.location,
           includeHour,
           astrologyConfig,
           eventsTraversalTransitImpl
         ).map { eventDto ->
-          val divergentTime = progressionSecondary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
+          val divergentTime = progressionSecondary.getDivergentTime(personModel.gmtJulDay, eventDto.begin)
           TimeLineEvent(EventSource.SECONDARY, eventDto as AstroEventDto, divergentTime)
         })
       }
       if (EventSource.TERTIARY in eventSources) {
         addAll(dayHourService.traverseAstrologyEvents(
-          bdnp,
+          personModel,
           tertiaryProgressionConvergentFrom,
           tertiaryProgressionConvergentTo,
-          bdnp.location,
+          personModel.location,
           includeHour,
           astrologyConfig,
           eventsTraversalTransitImpl
         ).map { eventDto ->
-          val divergentTime = progressionTertiary.getDivergentTime(bdnp.gmtJulDay, eventDto.begin)
+          val divergentTime = progressionTertiary.getDivergentTime(personModel.gmtJulDay, eventDto.begin)
           TimeLineEvent(EventSource.TERTIARY, eventDto as AstroEventDto, divergentTime)
         })
       }
       if (EventSource.SOLAR_ARC in eventSources) {
         addAll(dayHourService.traverseAstrologyEvents(
-          bdnp,
+          personModel,
           fromTime,
           toTime,
-          bdnp.location,
+          personModel.location,
           includeHour,
           astrologyConfig,
           eventsTraversalSolarArcImpl
@@ -187,10 +190,8 @@ class ReportFactory(
       }
     }.sortedBy { it.divergentTime }.toList()
 
-
-    val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(bdnp, config)
     val natal: IPersonHoroscopeDto = with(dtoFactory) {
-      model.toPersonHoroscopeDto(viewGmtJulDay , RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, includeHour, config)
+      personModel.toPersonHoroscopeDto(grain, viewGmtJulDay, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, config)
     }
 
     val solarReturnContext = ReturnContext(Planet.SUN, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, false)
@@ -200,12 +201,30 @@ class ReportFactory(
     val returnChartIncludeClassical = false
 
     val solarReturns = with(solarReturnContext) {
-      generateSequence(model.getReturnDto(fromTime, bdnp.location, aspectEffectiveModern, modernAspectCalculator, config, bdnp.place, threshold, returnChartIncludeClassical)) { returnDto: IReturnDto ->
+      generateSequence(personModel.getReturnDto(
+        grain , fromTime,
+        personModel.location,
+        aspectEffectiveModern,
+        modernAspectCalculator,
+        config,
+        personModel.place,
+        threshold,
+        returnChartIncludeClassical
+      )) { returnDto: IReturnDto ->
         val nextFromTime = if (solarReturnContext.forward)
           returnDto.validTo + 1
         else
           returnDto.validFrom - 1
-        model.getReturnDto(nextFromTime, bdnp.location, aspectEffectiveModern, modernAspectCalculator, config, bdnp.place, threshold, returnChartIncludeClassical)
+        personModel.getReturnDto(
+          grain , nextFromTime,
+          personModel.location,
+          aspectEffectiveModern,
+          modernAspectCalculator,
+          config,
+          personModel.place,
+          threshold,
+          returnChartIncludeClassical
+        )
       }.takeWhile { returnDto ->
         returnDto.validFrom in fromTime..toTime || returnDto.validTo in fromTime..toTime
       }
@@ -217,13 +236,14 @@ class ReportFactory(
 
       with(lunarReturnContext) {
         generateSequence(
-          model.getReturnDto(
+          personModel.getReturnDto(
+            grain,
             fromTime,
-            bdnp.location,
+            personModel.location,
             aspectEffectiveModern,
             modernAspectCalculator,
             config,
-            bdnp.place,
+            personModel.place,
             threshold,
             returnChartIncludeClassical
           )
@@ -232,7 +252,7 @@ class ReportFactory(
             returnDto.validTo + 1
           else
             returnDto.validFrom - 1
-          model.getReturnDto(nextFromTime, bdnp.location, aspectEffectiveModern, modernAspectCalculator, config, bdnp.place, threshold, false)
+          personModel.getReturnDto(grain, nextFromTime, personModel.location, aspectEffectiveModern, modernAspectCalculator, config, personModel.place, threshold, false)
         }.takeWhile { returnDto ->
           returnDto.validFrom in fromTime..toTime || returnDto.validTo in fromTime..toTime
         }
@@ -246,13 +266,35 @@ class ReportFactory(
     return TimeLineEventsModel(natal, grain, fromTime, toTime, events, returnCharts)
   }
 
-  override fun getSmartTimelineEvents(bdnp: IBirthDataNamePlace, grain: BirthDataGrain, viewGmtJulDay: GmtJulDay, eventPoints: List<YearMonth>) {
+  override fun getSmartTimelineEvents(personModel: IPersonHoroscopeModel, grain: BirthDataGrain, viewGmtJulDay: GmtJulDay, eventPoints: List<YearMonth>): ITimeLineEventsModel {
 
-    val monthRanges: List<YearMonth> = eventPoints.flatMap { ym ->
-      listOf(ym.minusMonths(1), ym, ym.plusMonths(1))
-    }.distinct()
+    val eventSources = setOf(
+      EventSource.SECONDARY,
+      EventSource.SOLAR_ARC
+    )
+    val config = PersonHoroscopeConfig()
 
-    TODO("Not yet implemented")
+    val mergedRanges: List<YearMonthRange> = eventPoints.groupMergedRanges(1)
+
+    val (events: List<ITimeLineEvent>, returnCharts: List<IReturnDto>) = mergedRanges.map { ymr: YearMonthRange ->
+      val fromGmt = ymr.fromTime.toGmtJulDay(personModel.location)
+      val toGmt = ymr.toTime.toGmtJulDay(personModel.location)
+      getTimeLineEvents(personModel, grain, viewGmtJulDay, fromGmt, toGmt, eventSources, config, includeLunarReturn = true).let {
+        it.events to it.returnCharts
+      }
+    }.unzip().let { (eventsList, returnChartsList) ->
+      eventsList.flatten() to returnChartsList.flatten()
+    }
+
+    val (from , to) = mergedRanges.let {
+      it.first().fromTime.toGmtJulDay(personModel.location) to it.last().toTime.toGmtJulDay(personModel.location)
+    }
+
+    val natal: IPersonHoroscopeDto = with(dtoFactory) {
+      personModel.toPersonHoroscopeDto(grain, viewGmtJulDay, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, config)
+    }
+
+    return TimeLineEventsModel(natal, grain, from, to, events, returnCharts)
   }
 
   companion object {

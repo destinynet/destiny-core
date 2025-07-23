@@ -34,6 +34,7 @@ interface IReturnContext : Conversable, IDiscrete {
   fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation, nowPlace: String? = null): ReturnModel
 
   fun IHoroscopeModel.getReturnDto(
+    grain: BirthDataGrain,
     nowGmtJulDay: GmtJulDay,
     nowLoc: ILocation,
     aspectEffective: IAspectEffective,
@@ -128,6 +129,7 @@ class ReturnContext(
   }
 
   override fun IHoroscopeModel.getReturnDto(
+    grain: BirthDataGrain,
     nowGmtJulDay: GmtJulDay,
     nowLoc: ILocation,
     aspectEffective: IAspectEffective,
@@ -140,7 +142,7 @@ class ReturnContext(
     val returnModel: ReturnModel = getReturnHoroscope(this, nowGmtJulDay, nowLoc, nowPlace)
 
     val horoscopeDto: IHoroscopeDto = with(dtoFactory) {
-      returnModel.horoscope.toHoroscopeDto(rulerImpl, aspectEffective, aspectCalculator, config, includeClassical)
+      returnModel.horoscope.toHoroscopeDto(grain, rulerImpl, aspectEffective, aspectCalculator, config, includeClassical)
     }.let { it as HoroscopeDto }
 
       // 移除以下 fields，畢竟這在 return chart 參考度不高
@@ -155,7 +157,15 @@ class ReturnContext(
         houses = emptyList()
       )
 
-    val synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold)
+    val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold).let {
+      when (grain) {
+        BirthDataGrain.MINUTE -> it
+        BirthDataGrain.DAY    -> {
+          val aspects = it.aspects.filterNot { it.points.any { it is Axis } }
+          Synastry(aspects, emptyMap())
+        }
+      }
+    }
 
     return when (this@ReturnContext.planet) {
       Planet.SUN  -> ReturnDto(ReturnType.SOLAR, horoscopeDto, synastry, returnModel.validFrom, returnModel.validTo)
