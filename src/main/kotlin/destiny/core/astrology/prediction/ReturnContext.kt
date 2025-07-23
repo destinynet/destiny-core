@@ -161,7 +161,7 @@ class ReturnContext(
       when (grain) {
         BirthDataGrain.MINUTE -> it
         BirthDataGrain.DAY    -> {
-          val aspects = it.aspects.filterNot { it.points.any { it is Axis } }
+          val aspects = it.aspects.filterNot { aspect -> aspect.points.any { it is Axis } }
           Synastry(aspects, emptyMap())
         }
       }
