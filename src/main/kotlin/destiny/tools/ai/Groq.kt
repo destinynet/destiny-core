@@ -16,7 +16,7 @@ class Groq {
   @Serializable
   data class Message(val role: String,
                      val content: String?,
-                     @Transient
+                     //@Transient
                      val reasoning: String? = null,
                      @SerialName("tool_call_id") val toolCallId: String? = null,
                      @SerialName("tool_calls") val toolCalls: List<ToolCall>? = null
