@@ -276,7 +276,7 @@ class ReportFactory(
 
     val mergedRanges: List<YearMonthRange> = eventPoints.groupMergedRanges(1)
     mergedRanges.forEach {
-      logger.info { "${it.start} to ${it.endInclusive}" }
+      logger.info { "YearMonthRange : ${it.start} to ${it.endInclusive}" }
     }
 
     val (events: List<ITimeLineEvent>, returnCharts: List<IReturnDto>) = mergedRanges.map { ymr: YearMonthRange ->
