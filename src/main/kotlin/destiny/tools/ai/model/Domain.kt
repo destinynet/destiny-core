@@ -67,6 +67,12 @@ sealed class Domain(val bdnpGenerated: Boolean) {
     data object ELECTIONAL_YEAR_MONTH : Electional()
     data object ELECTIONAL_DAY_HOUR : Electional()
   }
+
+  /** 連結到個人命盤 */
+  sealed class BirthData : Domain(true) {
+    /** 個人星盤 : 占星 */
+    data object BIRTHDATA_HOROSCOPE : BirthData()
+  }
 }
 
 fun Domain.getTitle(locale: Locale): String {
