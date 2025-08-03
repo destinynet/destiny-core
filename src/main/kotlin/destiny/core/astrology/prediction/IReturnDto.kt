@@ -7,6 +7,7 @@ import destiny.core.astrology.IHoroscopeDto
 import destiny.core.astrology.Synastry
 import destiny.core.calendar.GmtJulDay
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 enum class ReturnType {
@@ -27,6 +28,7 @@ interface IReturnDto {
 data class ReturnDto(
   override val returnType: ReturnType,
   override val horoscope: IHoroscopeDto,
+  @SerialName("synastry_return_to_natal")
   override val synastry: Synastry,
   @Contextual
   override val validFrom: GmtJulDay,
