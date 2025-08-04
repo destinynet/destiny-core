@@ -3,6 +3,8 @@ package destiny.core.astrology
 import destiny.core.astrology.prediction.EventSource
 import destiny.core.astrology.prediction.IReturnDto
 import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.chinese.YearMonthRange
+import destiny.core.calendar.chinese.groupMergedRanges
 import destiny.tools.serializers.LocalDateSerializer
 import destiny.tools.serializers.YearMonthSerializer
 import kotlinx.serialization.Contextual
@@ -94,6 +96,22 @@ data class YearMonthEvent(
   val event: String
 )
 
+fun List<YearMonthEvent>.groupAdjacentEvents(extMonth: Int = 1) : List<List<YearMonthEvent>> {
+  if (this.size < 2) {
+    return listOf(this)
+  }
+
+  val yearMonths = this.map { it.yearMonth }
+
+  val mergedRanges: List<YearMonthRange> = yearMonths.groupMergedRanges(extMonth)
+
+  return mergedRanges.map { range: YearMonthRange ->
+    this.filter { event ->
+      !event.yearMonth.isBefore(range.start) && !event.yearMonth.isAfter(range.endInclusive)
+    }
+  }
+}
+
 interface ITimeLineWithUserEventsModel : ITimeLineEventsModel {
   val today: LocalDate
   val summary: String
@@ -108,3 +126,23 @@ data class TimeLineWithUserEventsModel(
   override val summary: String,
   override val userEvents: List<YearMonthEvent>
 ) : ITimeLineWithUserEventsModel , ITimeLineEventsModel by timeLineEventsModel
+
+@Serializable
+data class EventGroup(
+  @Serializable(with = LocalDateSerializer::class)
+  val fromDate : LocalDate,
+  @Serializable(with = LocalDateSerializer::class)
+  val toDate : LocalDate,
+  val userEvents : List<YearMonthEvent>,
+  val astroEvents : List<@Contextual ITimeLineEvent>,
+  val lunarReturns : List<@Contextual IReturnDto>
+)
+
+@Serializable
+data class MergedUserEventsModel(
+  val natal: IPersonHoroscopeDto,
+  val grain: BirthDataGrain,
+  val summary: String,
+  val eventGroups : List<EventGroup>,
+  val solarReturns : List<@Contextual IReturnDto>
+)
