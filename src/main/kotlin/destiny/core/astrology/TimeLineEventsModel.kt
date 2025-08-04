@@ -129,10 +129,10 @@ data class TimeLineWithUserEventsModel(
 
 @Serializable
 data class EventGroup(
-  @Serializable(with = LocalDateSerializer::class)
-  val fromDate : LocalDate,
-  @Serializable(with = LocalDateSerializer::class)
-  val toDate : LocalDate,
+  @Contextual
+  val fromTime : GmtJulDay,
+  @Contextual
+  val toTime : GmtJulDay,
   val userEvents : List<YearMonthEvent>,
   val astroEvents : List<@Contextual ITimeLineEvent>,
   val lunarReturns : List<@Contextual IReturnDto>
