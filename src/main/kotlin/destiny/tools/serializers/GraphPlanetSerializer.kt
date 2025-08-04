@@ -67,7 +67,7 @@ object GraphPlanetSerializer : KSerializer<Graph<Planet>> {
 
     val terminalsDesc = value.terminals.takeIf { it.isNotEmpty() }
       ?.let { terminals: Set<Planet> ->
-        terminals.joinToString(",", prefix = "Isolated path terminals (which is not connected to a circle) : ") {
+        terminals.joinToString(",", prefix = "final dispositor (path terminal, which is not connected to a circle) : ") {
           it.toString(locale)
         }
       }
