@@ -44,6 +44,46 @@ interface IReturnContext : Conversable, IDiscrete {
     threshold: Double?,
     includeClassical: Boolean
   ): IReturnDto
+
+  fun getRangedReturns(
+    model: IPersonHoroscopeModel, grain: BirthDataGrain,
+    fromTime: GmtJulDay, toTime: GmtJulDay,
+    aspectEffective: IAspectEffective,
+    aspectCalculator: IAspectCalculator,
+    config: IHoroscopeConfig,
+    threshold: Double?,
+    returnChartIncludeClassical: Boolean
+  ): Sequence<IReturnDto> {
+    return generateSequence(
+      model.getReturnDto(
+        grain, fromTime,
+        model.location,
+        aspectEffective,
+        aspectCalculator,
+        config,
+        model.place,
+        threshold,
+        returnChartIncludeClassical
+      )
+    ) { returnDto: IReturnDto ->
+      val nextFromTime = if (forward)
+        returnDto.validTo + 1
+      else
+        returnDto.validFrom - 1
+      model.getReturnDto(
+        grain, nextFromTime,
+        model.location,
+        aspectEffective,
+        aspectCalculator,
+        config,
+        model.place,
+        threshold,
+        returnChartIncludeClassical
+      )
+    }.takeWhile { returnDto ->
+      returnDto.validFrom in fromTime..toTime || returnDto.validTo in fromTime..toTime
+    }.sortedBy { it.validFrom }
+  }
 }
 
 

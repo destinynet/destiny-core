@@ -1,11 +1,20 @@
 package destiny.core.astrology
 
+import destiny.core.Gender
+import destiny.core.IBirthDataNamePlace
 import destiny.core.astrology.prediction.EventSource
 import destiny.core.astrology.prediction.IReturnDto
 import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.ILocation
+import destiny.core.calendar.Lat.Companion.toLat
+import destiny.core.calendar.Lng.Companion.toLng
+import destiny.core.calendar.Location
 import destiny.core.calendar.chinese.YearMonthRange
 import destiny.core.calendar.chinese.groupMergedRanges
+import destiny.tools.ai.model.FormatSpec
+import destiny.tools.serializers.GenderSerializer
 import destiny.tools.serializers.LocalDateSerializer
+import destiny.tools.serializers.LocalTimeSerializer
 import destiny.tools.serializers.YearMonthSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
@@ -17,7 +26,9 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.encodeStructure
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.YearMonth
+import java.time.chrono.ChronoLocalDateTime
 
 
 sealed interface ITimeLineEvent {
@@ -146,3 +157,35 @@ data class MergedUserEventsModel(
   val eventGroups : List<EventGroup>,
   val solarReturns : List<@Contextual IReturnDto>
 )
+
+@Serializable
+data class ExtractedEvents(
+  override val name: String,
+  @Serializable(with = GenderSerializer::class)
+  override val gender: Gender,
+  @Serializable(with = LocalDateSerializer::class) // ISO_DATE
+  val birthDay: LocalDate,
+  @Serializable(with = LocalTimeSerializer::class) // ISO_LOCAL_TIME
+  val hourMinute: LocalTime? = null,
+  val lat: Double, val lng: Double, val tzid: String,
+  override val place: String,
+  val intro: String,
+  val events: List<YearMonthEvent>
+) : IBirthDataNamePlace {
+
+  override val time: ChronoLocalDateTime<*>
+    get() = birthDay.let { birthDay ->
+      if (hourMinute != null) {
+        birthDay.atTime(hourMinute)
+      } else {
+        birthDay.atTime(12, 0)
+      }
+    }
+
+  override val location: ILocation
+    get() = Location(lat.toLat(), lng.toLng(), tzid)
+
+  companion object {
+    val formatSpec = FormatSpec.of<ExtractedEvents>("celebrity_intro", "Celebrity's profile and important life events")
+  }
+}

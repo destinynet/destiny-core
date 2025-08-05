@@ -4,7 +4,10 @@
 package destiny.core.astrology
 
 import destiny.core.astrology.classical.RulerPtolemyImpl
-import destiny.core.astrology.prediction.*
+import destiny.core.astrology.prediction.EventSource
+import destiny.core.astrology.prediction.ProgressionSecondary
+import destiny.core.astrology.prediction.ProgressionTertiary
+import destiny.core.astrology.prediction.ReturnContext
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools.toGmtJulDay
@@ -39,6 +42,8 @@ interface IReportFactory {
     extDays: Int,
   ): ITimeLineEventsModel
 
+  /** 事件自動分群(依據相鄰事件) */
+  fun getMergedUserEventsModel(extractedEvents: ExtractedEvents, viewDay: LocalDate) : MergedUserEventsModel
 }
 
 @Named
@@ -53,6 +58,7 @@ class ReportFactory(
   private val eventsTraversalTransitImpl: IEventsTraversal,
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
+  private val personHoroscopeFeature: IPersonHoroscopeFeature,
 ) : IReportFactory {
   override fun getTransitSolarArcModel(
     personModel: IPersonHoroscopeModel,
@@ -190,30 +196,7 @@ class ReportFactory(
 
     val lunarReturns = if (includeLunarReturn) {
       val lunarReturnContext = ReturnContext(Planet.MOON, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, returnChartIncludeClassical)
-
-      with(lunarReturnContext) {
-        generateSequence(
-          personModel.getReturnDto(
-            grain,
-            fromTime,
-            personModel.location,
-            aspectEffectiveModern,
-            modernAspectCalculator,
-            config,
-            personModel.place,
-            threshold,
-            returnChartIncludeClassical
-          )
-        ) { returnDto: IReturnDto ->
-          val nextFromTime = if (lunarReturnContext.forward)
-            returnDto.validTo + 1
-          else
-            returnDto.validFrom - 1
-          personModel.getReturnDto(grain, nextFromTime, personModel.location, aspectEffectiveModern, modernAspectCalculator, config, personModel.place, threshold, false)
-        }.takeWhile { returnDto ->
-          returnDto.validFrom in fromTime..toTime || returnDto.validTo in fromTime..toTime
-        }
-      }
+      lunarReturnContext.getRangedReturns(personModel, grain, fromTime, toTime, aspectEffectiveModern, modernAspectCalculator, config, threshold, returnChartIncludeClassical)
     } else {
       emptySequence()
     }
@@ -221,6 +204,52 @@ class ReportFactory(
     val returnCharts = lunarReturns.sortedBy { it.validFrom }.toList()
 
     return TimeLineEventsModel(natal, grain, fromTime, toTime, events, returnCharts)
+  }
+
+  /** 事件自動分群(依據相鄰事件) */
+  override fun getMergedUserEventsModel(extractedEvents: ExtractedEvents, viewDay: LocalDate): MergedUserEventsModel {
+    val loc = extractedEvents.location
+
+    val grain = if (extractedEvents.hourMinute != null) BirthDataGrain.MINUTE else BirthDataGrain.DAY
+
+    val viewGmtJulDay = viewDay.atStartOfDay().toGmtJulDay(loc)
+
+    val config = PersonHoroscopeConfig()
+    val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(extractedEvents, config)
+
+    val natal: IPersonHoroscopeDto = with(dtoFactory) {
+      model.toPersonHoroscopeDto(grain, viewGmtJulDay, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, config)
+    }
+
+    val eventSources = setOf(
+      EventSource.SECONDARY,
+      EventSource.SOLAR_ARC
+    )
+
+    val eventGroups: List<EventGroup> = extractedEvents.events.groupAdjacentEvents(extMonth = 1).map { groupedEvent: List<YearMonthEvent> ->
+      val (from, to) = groupedEvent.sortedBy { it.yearMonth }
+        .let { (it.first().yearMonth.atDay(1).atStartOfDay().toGmtJulDay(loc) to it.last().yearMonth.plusMonths(1).atDay(1).atStartOfDay().toGmtJulDay(loc)) }
+      val timeLineEvents: ITimeLineEventsModel = getTimeLineEvents(
+        model, grain, viewGmtJulDay,
+        from, to,
+        eventSources, config,
+        includeLunarReturn = true,
+        extDays = 30 // 前後延伸一個月
+      )
+      EventGroup(from, to, groupedEvent, timeLineEvents.events, timeLineEvents.returnCharts)
+    }
+
+    val threshold = 0.9
+    val returnChartIncludeClassical = false
+
+    val solarReturnContext = ReturnContext(Planet.SUN, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, false)
+
+    val fromTime = eventGroups.first().fromTime
+    val toTime = eventGroups.last().toTime
+
+    val solarReturns = solarReturnContext.getRangedReturns(model, grain, fromTime, toTime, aspectEffectiveModern, modernAspectCalculator, config, threshold, returnChartIncludeClassical).toList()
+
+    return MergedUserEventsModel(natal, grain, extractedEvents.intro, eventGroups, solarReturns)
   }
 
 
