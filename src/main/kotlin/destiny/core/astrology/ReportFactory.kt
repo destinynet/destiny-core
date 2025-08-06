@@ -252,17 +252,19 @@ class ReportFactory(
 
     val past = Past(eventGroups, solarReturns)
 
-    if (futureDuration != null) {
+
+    val future = futureDuration?.let { dur ->
       val futureFromTime = viewDay.atStartOfDay().toGmtJulDay(loc)
-      val futureToTime = viewDay.plus(futureDuration).plusDays(1).atStartOfDay().toGmtJulDay(loc)
+      val futureToTime = viewDay.atStartOfDay().plusDays(1).plus(dur).toGmtJulDay(loc)
       val futureTimeLineEvents = getTimeLineEvents(model, grain, viewGmtJulDay, futureFromTime, futureToTime, eventSources, config, true, 30)
 
-      val futureSolarReturns = solarReturnContext.getRangedReturns(model, grain, futureToTime, futureToTime, aspectEffectiveModern, modernAspectCalculator, config, threshold, returnChartIncludeClassical).toList()
+      val futureSolarReturns =
+        solarReturnContext.getRangedReturns(model, grain, futureToTime, futureToTime, aspectEffectiveModern, modernAspectCalculator, config, threshold, returnChartIncludeClassical)
+          .toList()
       Future(futureToTime, futureToTime, futureTimeLineEvents.events, futureTimeLineEvents.lunarReturns, futureSolarReturns)
     }
 
-
-    return MergedUserEventsModel(natal, grain, extractedEvents.intro, past, viewDay)
+    return MergedUserEventsModel(natal, grain, extractedEvents.intro, past, viewDay, future)
   }
 
 
