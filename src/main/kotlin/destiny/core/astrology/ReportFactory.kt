@@ -15,6 +15,7 @@ import destiny.core.calendar.toLmt
 import destiny.core.electional.DayHourService
 import destiny.tools.KotlinLogging
 import jakarta.inject.Named
+import java.time.Duration
 import java.time.LocalDate
 
 
@@ -43,7 +44,7 @@ interface IReportFactory {
   ): ITimeLineEventsModel
 
   /** 事件自動分群(依據相鄰事件) */
-  fun getMergedUserEventsModel(extractedEvents: ExtractedEvents, viewDay: LocalDate) : MergedUserEventsModel
+  fun getMergedUserEventsModel(extractedEvents: ExtractedEvents, viewDay: LocalDate, futureDuration: Duration?) : MergedUserEventsModel
 }
 
 @Named
@@ -207,7 +208,7 @@ class ReportFactory(
   }
 
   /** 事件自動分群(依據相鄰事件) */
-  override fun getMergedUserEventsModel(extractedEvents: ExtractedEvents, viewDay: LocalDate): MergedUserEventsModel {
+  override fun getMergedUserEventsModel(extractedEvents: ExtractedEvents, viewDay: LocalDate, futureDuration: Duration?): MergedUserEventsModel {
     val loc = extractedEvents.location
 
     val grain = if (extractedEvents.hourMinute != null) BirthDataGrain.MINUTE else BirthDataGrain.DAY
@@ -236,7 +237,7 @@ class ReportFactory(
         includeLunarReturn = true,
         extDays = 30 // 前後延伸一個月
       )
-      EventGroup(from, to, groupedEvent, timeLineEvents.events, timeLineEvents.returnCharts)
+      EventGroup(from, to, groupedEvent, timeLineEvents.events, timeLineEvents.lunarReturns)
     }
 
     val threshold = 0.9
@@ -250,9 +251,18 @@ class ReportFactory(
     val solarReturns = solarReturnContext.getRangedReturns(model, grain, fromTime, toTime, aspectEffectiveModern, modernAspectCalculator, config, threshold, returnChartIncludeClassical).toList()
 
     val past = Past(eventGroups, solarReturns)
-    val today = LocalDate.now()
 
-    return MergedUserEventsModel(natal, grain, extractedEvents.intro, past, today)
+    if (futureDuration != null) {
+      val futureFromTime = viewDay.atStartOfDay().toGmtJulDay(loc)
+      val futureToTime = viewDay.plus(futureDuration).plusDays(1).atStartOfDay().toGmtJulDay(loc)
+      val futureTimeLineEvents = getTimeLineEvents(model, grain, viewGmtJulDay, futureFromTime, futureToTime, eventSources, config, true, 30)
+
+      val futureSolarReturns = solarReturnContext.getRangedReturns(model, grain, futureToTime, futureToTime, aspectEffectiveModern, modernAspectCalculator, config, threshold, returnChartIncludeClassical).toList()
+      Future(futureToTime, futureToTime, futureTimeLineEvents.events, futureTimeLineEvents.lunarReturns, futureSolarReturns)
+    }
+
+
+    return MergedUserEventsModel(natal, grain, extractedEvents.intro, past, viewDay)
   }
 
 
