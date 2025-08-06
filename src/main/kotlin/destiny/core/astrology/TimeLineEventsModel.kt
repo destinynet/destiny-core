@@ -150,12 +150,31 @@ data class EventGroup(
 )
 
 @Serializable
+data class Past(
+  val eventGroups: List<EventGroup>,
+  val solarReturns: List<@Contextual IReturnDto>
+)
+
+@Serializable
+data class Future(
+  @Contextual
+  val fromTime: GmtJulDay,
+  @Contextual
+  val toTime: GmtJulDay,
+  val astroEvents: List<@Contextual ITimeLineEvent>,
+  val lunarReturns: List<@Contextual IReturnDto>,
+  val solarReturns: List<@Contextual IReturnDto>
+)
+
+@Serializable
 data class MergedUserEventsModel(
   val natal: IPersonHoroscopeDto,
   val grain: BirthDataGrain,
   val summary: String,
-  val eventGroups : List<EventGroup>,
-  val solarReturns : List<@Contextual IReturnDto>
+  val past: Past,
+  @Serializable(with = LocalDateSerializer::class)
+  val today : LocalDate,
+  val future : Future? = null,
 )
 
 @Serializable

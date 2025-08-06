@@ -249,7 +249,10 @@ class ReportFactory(
 
     val solarReturns = solarReturnContext.getRangedReturns(model, grain, fromTime, toTime, aspectEffectiveModern, modernAspectCalculator, config, threshold, returnChartIncludeClassical).toList()
 
-    return MergedUserEventsModel(natal, grain, extractedEvents.intro, eventGroups, solarReturns)
+    val past = Past(eventGroups, solarReturns)
+    val today = LocalDate.now()
+
+    return MergedUserEventsModel(natal, grain, extractedEvents.intro, past, today)
   }
 
 
