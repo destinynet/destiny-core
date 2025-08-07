@@ -3,11 +3,9 @@
  */
 package destiny.core.astrology
 
+import destiny.core.astrology.Planet.*
 import destiny.core.astrology.classical.RulerPtolemyImpl
-import destiny.core.astrology.prediction.EventSource
-import destiny.core.astrology.prediction.ProgressionSecondary
-import destiny.core.astrology.prediction.ProgressionTertiary
-import destiny.core.astrology.prediction.ReturnContext
+import destiny.core.astrology.prediction.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools.toGmtJulDay
@@ -38,9 +36,12 @@ interface IReportFactory {
     fromTime: GmtJulDay,
     toTime: GmtJulDay,
     eventSources: Set<EventSource>,
-    config: IPersonHoroscopeConfig,
+    traversalConfig: AstrologyTraversalConfig,
     includeLunarReturn: Boolean,
     extDays: Int,
+    /** 內定以 natal points , 可以額外指定 */
+    outerPoints: Set<AstroPoint> = personModel.points,
+    innerPoints: Set<AstroPoint> = personModel.points,
   ): ITimeLineEventsModel
 
   /** 事件自動分群(依據相鄰事件) */
@@ -108,10 +109,13 @@ class ReportFactory(
     fromTime: GmtJulDay,
     toTime: GmtJulDay,
     eventSources: Set<EventSource>,
-    config: IPersonHoroscopeConfig,
+    traversalConfig: AstrologyTraversalConfig,
     includeLunarReturn: Boolean,
-    extDays: Int
+    extDays: Int,
+    outerPoints: Set<AstroPoint>,
+    innerPoints: Set<AstroPoint>,
   ): ITimeLineEventsModel {
+    val transit = Transit()
     val progressionSecondary = ProgressionSecondary()
     val progressionTertiary = ProgressionTertiary()
 
@@ -127,24 +131,30 @@ class ReportFactory(
     logger.trace { "tertiaryProgression  convergentFrom = ${tertiaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
     logger.trace { "tertiaryProgression  convergentTo   = ${tertiaryProgressionConvergentTo.toLmt(loc, julDayResolver)}" }
 
-    val astrologyConfig = AstrologyTraversalConfig(
-      aspect = true,
-      voc = false,
-      stationary = true,
-      retrograde = false,
-      eclipse = true,
-      lunarPhase = true,
-      includeTransitToNatalAspects = false,
-      signIngress = true,
-      houseIngress = true,
-    )
-
     val includeHour = when (grain) {
       BirthDataGrain.DAY    -> false
       BirthDataGrain.MINUTE -> true
     }
 
     val events = buildSet {
+      if (EventSource.TRANSIT in eventSources) {
+        addAll(
+          dayHourService.traverseAstrologyEvents(
+            personModel,
+            fromTime - extDays,
+            toTime + extDays,
+            personModel.location,
+            includeHour,
+            traversalConfig,
+            outerPoints,
+            innerPoints,
+            eventsTraversalTransitImpl
+          ).map { eventDto ->
+            val divergentTime = transit.getDivergentTime(personModel.gmtJulDay, eventDto.begin)
+            TimeLineEvent(EventSource.TRANSIT, eventDto as AstroEventDto, divergentTime)
+          }
+        )
+      }
       if (EventSource.SECONDARY in eventSources) {
         addAll(dayHourService.traverseAstrologyEvents(
           personModel,
@@ -152,7 +162,9 @@ class ReportFactory(
           secondaryProgressionConvergentTo,
           personModel.location,
           includeHour,
-          astrologyConfig,
+          traversalConfig,
+          outerPoints,
+          innerPoints,
           eventsTraversalTransitImpl
         ).map { eventDto ->
           val divergentTime = progressionSecondary.getDivergentTime(personModel.gmtJulDay, eventDto.begin)
@@ -166,7 +178,9 @@ class ReportFactory(
           tertiaryProgressionConvergentTo,
           personModel.location,
           includeHour,
-          astrologyConfig,
+          traversalConfig,
+          outerPoints,
+          innerPoints,
           eventsTraversalTransitImpl
         ).map { eventDto ->
           val divergentTime = progressionTertiary.getDivergentTime(personModel.gmtJulDay, eventDto.begin)
@@ -180,7 +194,9 @@ class ReportFactory(
           toTime,
           personModel.location,
           includeHour,
-          astrologyConfig,
+          traversalConfig,
+          outerPoints,
+          innerPoints,
           eventsTraversalSolarArcImpl
         ).map { eventDto ->
           TimeLineEvent(EventSource.SOLAR_ARC, eventDto as AstroEventDto, eventDto.begin)
@@ -189,15 +205,15 @@ class ReportFactory(
     }.sortedBy { it.divergentTime }.toList()
 
     val natal: IPersonHoroscopeDto = with(dtoFactory) {
-      personModel.toPersonHoroscopeDto(grain, viewGmtJulDay, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, config)
+      personModel.toPersonHoroscopeDto(grain, viewGmtJulDay, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, traversalConfig.horoscopeConfig)
     }
 
     val threshold = 0.9
     val returnChartIncludeClassical = false
 
     val lunarReturns = if (includeLunarReturn) {
-      val lunarReturnContext = ReturnContext(Planet.MOON, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, returnChartIncludeClassical)
-      lunarReturnContext.getRangedReturns(personModel, grain, fromTime, toTime, aspectEffectiveModern, modernAspectCalculator, config, threshold, returnChartIncludeClassical)
+      val lunarReturnContext = ReturnContext(MOON, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, returnChartIncludeClassical)
+      lunarReturnContext.getRangedReturns(personModel, grain, fromTime, toTime, aspectEffectiveModern, modernAspectCalculator, traversalConfig.horoscopeConfig, threshold, returnChartIncludeClassical)
     } else {
       emptySequence()
     }
@@ -215,16 +231,30 @@ class ReportFactory(
 
     val viewGmtJulDay = viewDay.atStartOfDay().toGmtJulDay(loc)
 
-    val config = PersonHoroscopeConfig()
-    val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(extractedEvents, config)
+    val natalConfig = PersonHoroscopeConfig()
+    val model: IPersonHoroscopeModel = personHoroscopeFeature.getPersonModel(extractedEvents, natalConfig)
 
     val natal: IPersonHoroscopeDto = with(dtoFactory) {
-      model.toPersonHoroscopeDto(grain, viewGmtJulDay, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, config)
+      model.toPersonHoroscopeDto(grain, viewGmtJulDay, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, natalConfig)
     }
 
-    val eventSources = setOf(
+    val shortTermEventSources = setOf(
       EventSource.SECONDARY,
       EventSource.SOLAR_ARC
+    )
+
+    val shortTermConfig = AstrologyTraversalConfig(
+      horoscopeConfig = natalConfig,
+      globalAspect = true,
+      personalAspect = true,
+      voc = false,
+      stationary = true,
+      retrograde = false,
+      eclipse = true,
+      lunarPhase = true,
+      includeTransitToNatalAspects = false,
+      signIngress = true,
+      houseIngress = true,
     )
 
     val eventGroups: List<EventGroup> = extractedEvents.events.groupAdjacentEvents(extMonth = 1).map { groupedEvent: List<YearMonthEvent> ->
@@ -233,7 +263,7 @@ class ReportFactory(
       val timeLineEvents: ITimeLineEventsModel = getTimeLineEvents(
         model, grain, viewGmtJulDay,
         from, to,
-        eventSources, config,
+        shortTermEventSources, shortTermConfig,
         includeLunarReturn = true,
         extDays = 30 // 前後延伸一個月
       )
@@ -243,23 +273,55 @@ class ReportFactory(
     val threshold = 0.9
     val returnChartIncludeClassical = false
 
-    val solarReturnContext = ReturnContext(Planet.SUN, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, false)
+    val solarReturnContext = ReturnContext(SUN, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, false)
 
     val fromTime = eventGroups.first().fromTime
     val toTime = eventGroups.last().toTime
 
-    val solarReturns = solarReturnContext.getRangedReturns(model, grain, fromTime, toTime, aspectEffectiveModern, modernAspectCalculator, config, threshold, returnChartIncludeClassical).toList()
+    val solarReturns = solarReturnContext.getRangedReturns(model, grain, fromTime, toTime, aspectEffectiveModern, modernAspectCalculator, natalConfig, threshold, returnChartIncludeClassical).toList()
 
-    val past = Past(eventGroups, solarReturns)
+    val longTermEventSources = setOf(
+      EventSource.SECONDARY,
+      EventSource.SOLAR_ARC,
+      EventSource.TRANSIT,
+    )
+
+    val outerPoints = setOf(JUPITER, SATURN, URANUS, NEPTUNE, PLUTO)
+    val innerPoints = Axis.values.toSet() + setOf(SUN, MOON, MERCURY, VENUS, MARS)
+
+    val longTermConfig = AstrologyTraversalConfig(
+      horoscopeConfig = natalConfig,
+      globalAspect = false,
+      personalAspect = true,
+      voc = false,
+      stationary = false,
+      retrograde = false,
+      eclipse = true,
+      lunarPhase = false,
+      includeTransitToNatalAspects = false,
+      signIngress = false,
+      houseIngress = false,
+    )
+
+    val longTermTriggers = getTimeLineEvents(
+      model, grain, viewGmtJulDay, fromTime, toTime, longTermEventSources, longTermConfig, includeLunarReturn = false,
+      extDays = 30,
+      outerPoints = outerPoints,
+      innerPoints = innerPoints,
+    ).events
+
+    val pastFrom: GmtJulDay = eventGroups.first().fromTime
+    val pastTo: GmtJulDay = eventGroups.last().toTime
+    val past = Past(eventGroups, solarReturns, longTermTriggers, pastFrom, pastTo)
 
 
     val future = futureDuration?.let { dur ->
       val futureFromTime = viewDay.atStartOfDay().toGmtJulDay(loc)
       val futureToTime = viewDay.atStartOfDay().plusDays(1).plus(dur).toGmtJulDay(loc)
-      val futureTimeLineEvents = getTimeLineEvents(model, grain, viewGmtJulDay, futureFromTime, futureToTime, eventSources, config, true, 30)
+      val futureTimeLineEvents = getTimeLineEvents(model, grain, viewGmtJulDay, futureFromTime, futureToTime, shortTermEventSources, longTermConfig, true, 30)
 
       val futureSolarReturns =
-        solarReturnContext.getRangedReturns(model, grain, futureToTime, futureToTime, aspectEffectiveModern, modernAspectCalculator, config, threshold, returnChartIncludeClassical)
+        solarReturnContext.getRangedReturns(model, grain, futureToTime, futureToTime, aspectEffectiveModern, modernAspectCalculator, natalConfig, threshold, returnChartIncludeClassical)
           .toList()
       Future(futureToTime, futureToTime, futureTimeLineEvents.events, futureTimeLineEvents.lunarReturns, futureSolarReturns)
     }

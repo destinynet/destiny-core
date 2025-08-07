@@ -9,12 +9,14 @@ import destiny.core.calendar.ILocation
 
 class EventsTraversalPrimaryDirectionImpl : IEventsTraversal {
   override fun traverse(
-    inner: IHoroscopeModel,
+    model: IHoroscopeModel,
     fromGmtJulDay: GmtJulDay,
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
     includeHour: Boolean,
-    config: AstrologyTraversalConfig
+    config: AstrologyTraversalConfig,
+    outerPoints: Set<AstroPoint>,
+    innerPoints: Set<AstroPoint>,
   ): Sequence<AstroEventDto> {
     TODO("Not yet implemented")
   }

@@ -205,7 +205,7 @@ class DayHourService(
         yieldAll(searchEwEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, includeHour, it))
       }
       config.astrologyConfig?.also {
-        yieldAll(traverseAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, includeHour, it, eventsTraversalSolarArcImpl, eventsTraversalTransitImpl))
+        yieldAll(traverseAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, includeHour, it, null, null, eventsTraversalSolarArcImpl, eventsTraversalTransitImpl))
       }
     }
   }
@@ -217,11 +217,17 @@ class DayHourService(
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
     includeHour: Boolean,
-    config: AstrologyTraversalConfig,
+    traversalConfig: AstrologyTraversalConfig,
+    /** 如不指定 [outerPoints] (make it null) , 則會從 natal 中取得所有 points */
+    outerPoints: Set<AstroPoint>?,
+    /** 如不指定 [innerPoints] (make it null) , 則會從 natal 中取得所有 points */
+    innerPoints: Set<AstroPoint>?,
     vararg traversals: IEventsTraversal
   ): Sequence<IEventDto> {
-    val inner: IHoroscopeModel = horoscopeFeature.getModel(bdnp.gmtJulDay, loc, config.horoscopeConfig)
-    return traversals.asSequence().flatMap { it.traverse(inner, fromGmtJulDay, toGmtJulDay, loc, includeHour, config) }
+    val model: IHoroscopeModel = horoscopeFeature.getModel(bdnp.gmtJulDay, loc, traversalConfig.horoscopeConfig)
+    val outer = outerPoints?: model.points
+    val inner = innerPoints?: model.points
+    return traversals.asSequence().flatMap { it.traverse(model, fromGmtJulDay, toGmtJulDay, loc, includeHour, traversalConfig, outer, inner) }
   }
 
 

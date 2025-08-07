@@ -10,12 +10,14 @@ import destiny.core.calendar.ILocation
 interface IEventsTraversal {
 
   fun traverse(
-    inner: IHoroscopeModel,
+    model: IHoroscopeModel,
     fromGmtJulDay: GmtJulDay,
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
     includeHour: Boolean,
-    config: AstrologyTraversalConfig
+    config: AstrologyTraversalConfig,
+    outerPoints : Set<AstroPoint> = model.points,
+    innerPoints: Set<AstroPoint> = model.points,
   ): Sequence<AstroEventDto>
 
 }

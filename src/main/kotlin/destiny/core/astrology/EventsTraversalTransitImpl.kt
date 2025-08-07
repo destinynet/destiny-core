@@ -32,20 +32,36 @@ class EventsTraversalTransitImpl(
   private val voidCourseFeature: IVoidCourseFeature,
   private val retrogradeImpl: IRetrograde,
 ) : IEventsTraversal {
+
+  private val Planet.isStationaryPossible: Boolean
+    get() = this != Planet.SUN && this != Planet.MOON
+
   override fun traverse(
-    inner: IHoroscopeModel,
+    model: IHoroscopeModel,
     fromGmtJulDay: GmtJulDay,
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
     includeHour: Boolean,
-    config: AstrologyTraversalConfig
+    config: AstrologyTraversalConfig,
+    outerPoints: Set<AstroPoint>,
+    innerPoints: Set<AstroPoint>,
   ): Sequence<AstroEventDto> {
-    val outerStars = setOf(Planet.SUN, Planet.MOON, Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN)
-    val innerStars = setOf(Planet.SUN, Planet.MOON, Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN)
+
+    // 外圈要考慮的星體 (Transiting Points)
+    val transitingPoints = outerPoints.filterIsInstance<Planet>().toSet()
+
+    val natalPoints = model.points
+      .asSequence()
+      .filter { it in innerPoints }
+      .filter { it is Planet || it is LunarNode || it is Axis }
+      .filter {
+        if (includeHour) true
+        else it !in Axis.values
+      }.filterIsInstance<Planet>().toSet()
 
     val angles = setOf(0.0, 60.0, 120.0, 240.0, 300.0, 90.0, 180.0)
-    val innerStarPosMap: Map<Planet, ZodiacDegree> = innerStars.associateWith { planet ->
-      starPositionImpl.getPosition(planet, inner.gmtJulDay, inner.location).lngDeg
+    val natalPointsPosMap: Map<Planet, ZodiacDegree> = natalPoints.associateWith { planet ->
+      starPositionImpl.getPosition(planet, model.gmtJulDay, model.location).lngDeg
     }
 
 
@@ -55,7 +71,7 @@ class EventsTraversalTransitImpl(
      * [chosenPoints] 外圈的某星 針對內圈 的星體，形成哪些交角
      */
     fun IHoroscopeModel.outerToInner(vararg chosenPoints: AstroPoint): List<SynastryAspect> {
-      return horoscopeFeature.synastry(this, inner, modernAspectCalculator, threshold = null).aspects.filter { aspect ->
+      return horoscopeFeature.synastry(this, model, modernAspectCalculator, threshold = null).aspects.filter { aspect ->
         aspect.outerPoint in chosenPoints && (
           if (includeHour)
             true
@@ -66,10 +82,10 @@ class EventsTraversalTransitImpl(
       }
     }
 
-    fun searchPersonalEvents(outerStars: Set<Planet>, angles: Set<Double>): Sequence<AspectData> {
-      return outerStars.asSequence().flatMap { outer ->
-        innerStars.asSequence().flatMap { inner ->
-          innerStarPosMap[inner]?.let { innerDeg ->
+    fun searchPersonalEvents(transitingPlanets: Set<Planet>, natalPlanets: Set<Planet>, angles: Set<Double>): Sequence<AspectData> {
+      return transitingPlanets.asSequence().flatMap { outer ->
+        natalPlanets.asSequence().flatMap { inner ->
+          natalPointsPosMap[inner]?.let { innerDeg ->
             val degrees = angles.map { it.toZodiacDegree() }.map { it + innerDeg }.toSet()
             starTransitImpl.getRangeTransitGmt(outer, degrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
               val angle: Double = zDeg.getAngle(innerDeg).round()
@@ -83,7 +99,7 @@ class EventsTraversalTransitImpl(
 
 
     val globalAspectEvents = relativeTransitImpl.mutualAspectingEvents(
-      outerStars, angles,
+      transitingPoints, angles,
       fromGmtJulDay, toGmtJulDay
     ).map { aspectData: AspectData ->
       val (outerStar1, outerStar2) = aspectData.points.let { it[0] to it[1] }
@@ -94,19 +110,21 @@ class EventsTraversalTransitImpl(
     }
 
     val vocConfig = VoidCourseConfig(Planet.MOON, vocImpl = VoidCourseImpl.Medieval)
-    val moonVocSeq = voidCourseFeature.getVoidCourses(fromGmtJulDay, toGmtJulDay, loc, relativeTransitImpl, vocConfig)
-      .map { it: Misc.VoidCourseSpan ->
-        val description = buildString {
-          append("${it.planet.asLocaleString().getTitle(Locale.ENGLISH)} Void of Course (空亡). ")
-          append("From ${it.fromPos.sign.getTitle(Locale.ENGLISH)}/${it.fromPos.signDegree.second.truncateToString(2)}° ")
-          append("to ${it.toPos.sign.getTitle(Locale.ENGLISH)}/${it.toPos.signDegree.second.truncateToString(2)}°. ")
+    val moonVocSeq = if (Planet.MOON in transitingPoints) {
+      voidCourseFeature.getVoidCourses(fromGmtJulDay, toGmtJulDay, loc, relativeTransitImpl, vocConfig)
+        .map { it: Misc.VoidCourseSpan ->
+          val description = buildString {
+            append("${it.planet.asLocaleString().getTitle(Locale.ENGLISH)} Void of Course (空亡). ")
+            append("From ${it.fromPos.sign.getTitle(Locale.ENGLISH)}/${it.fromPos.signDegree.second.truncateToString(2)}° ")
+            append("to ${it.toPos.sign.getTitle(Locale.ENGLISH)}/${it.toPos.signDegree.second.truncateToString(2)}°. ")
+          }
+          AstroEventDto(AstroEvent.MoonVoc(description, it), it.begin, it.end, Span.HOURS, Impact.GLOBAL)
         }
-        AstroEventDto(AstroEvent.MoonVoc(description, it), it.begin, it.end, Span.HOURS, Impact.GLOBAL)
-      }
+    } else emptySequence()
 
 
     // 滯留
-    val planetStationaries = sequenceOf(Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN).flatMap { planet ->
+    val planetStationaries = transitingPoints.asSequence().filter { it.isStationaryPossible }.flatMap { planet ->
       retrogradeImpl.getRangeStationaries(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl).map { s: Stationary ->
         val outer = horoscopeFeature.getModel(s.gmtJulDay, loc, config.horoscopeConfig)
         val zodiacDegree = outer.getZodiacDegree(planet)!!
@@ -130,7 +148,7 @@ class EventsTraversalTransitImpl(
     }
 
     // 當日星體逆行
-    val planetRetrogrades = sequenceOf(Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN).flatMap { planet ->
+    val planetRetrogrades = transitingPoints.asSequence().filter { it.isStationaryPossible }.flatMap { planet ->
       retrogradeImpl.getDailyRetrogrades(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl, starTransitImpl).map { (gmtJulDay, progress) ->
         val description = buildString {
           append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} Retrograding (逆行). ")
@@ -187,49 +205,50 @@ class EventsTraversalTransitImpl(
       )
     }
 
-    // 月相
-    val lunarPhases = sequenceOf(
-      0.0 to LunarPhase.NEW,
-      90.0 to LunarPhase.FIRST_QUARTER,
-      180.0 to LunarPhase.FULL,
-      270.0 to LunarPhase.LAST_QUARTER
-    ).flatMap { (angle, phase) ->
-      relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(Planet.MOON, Planet.SUN, fromGmtJulDay, toGmtJulDay, angle).map { gmtJulDay ->
-        val outer = horoscopeFeature.getModel(gmtJulDay, loc, config.horoscopeConfig)
-        val zodiacDegree = outer.getZodiacDegree(Planet.MOON)!!
-        val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(Planet.MOON, Planet.SUN)
-
-        val description = buildString {
-          append("${Planet.MOON.asLocaleString().getTitle(Locale.ENGLISH)} ")
-          append(
-            when (phase) {
-              LunarPhase.NEW           -> "\uD83C\uDF11"
-              LunarPhase.FIRST_QUARTER -> "\uD83C\uDF13"
-              LunarPhase.FULL          -> "\uD83C\uDF15"
-              LunarPhase.LAST_QUARTER  -> "\uD83C\uDF17"
+    // 月相 (只在 SUN 和 MOON 都被選中時計算)
+    val lunarPhases = if (Planet.SUN in transitingPoints && Planet.MOON in transitingPoints) {
+      sequenceOf(
+        0.0 to LunarPhase.NEW,
+        90.0 to LunarPhase.FIRST_QUARTER,
+        180.0 to LunarPhase.FULL,
+        270.0 to LunarPhase.LAST_QUARTER
+      ).flatMap { (angle, phase) ->
+        relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(Planet.MOON, Planet.SUN, fromGmtJulDay, toGmtJulDay, angle).map { gmtJulDay ->
+          val outer = horoscopeFeature.getModel(gmtJulDay, loc, config.horoscopeConfig)
+          val zodiacDegree = outer.getZodiacDegree(Planet.MOON)!!
+          val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(Planet.MOON, Planet.SUN)
+          val description = buildString {
+            append("${Planet.MOON.asLocaleString().getTitle(Locale.ENGLISH)} ")
+            append(
+              when (phase) {
+                LunarPhase.NEW           -> "🌑"
+                LunarPhase.FIRST_QUARTER -> "🌓"
+                LunarPhase.FULL          -> "🌕"
+                LunarPhase.LAST_QUARTER  -> "🌗"
+              }
+            )
+            append(phase.getTitle(Locale.ENGLISH))
+            append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
+            if (transitToNatalAspects.isNotEmpty()) {
+              appendLine()
+              appendLine(transitToNatalAspects.describeAspects(includeHour))
             }
-          )
-          append(phase.getTitle(Locale.ENGLISH))
-          append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
-          if (transitToNatalAspects.isNotEmpty()) {
-            appendLine()
-            appendLine(transitToNatalAspects.describeAspects(includeHour))
           }
+          AstroEventDto(
+            AstroEvent.LunarPhaseEvent(
+              description, phase, zodiacDegree,
+              if (config.includeTransitToNatalAspects) transitToNatalAspects else emptyList()
+            ),
+            gmtJulDay, null,
+            Span.INSTANT, Impact.GLOBAL
+          )
         }
-        AstroEventDto(
-          AstroEvent.LunarPhaseEvent(
-            description, phase, zodiacDegree,
-            if (config.includeTransitToNatalAspects) transitToNatalAspects else emptyList()
-          ),
-          gmtJulDay, null,
-          Span.INSTANT, Impact.GLOBAL
-        )
       }
-    }
+    } else emptySequence()
 
     // 星體換星座
     val signDegrees = (0..<360 step 30).map { it.toDouble().toZodiacDegree() }.toSet()
-    val signIngresses = sequenceOf(Planet.SUN, Planet.MOON, Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN).flatMap { planet ->
+    val signIngresses = transitingPoints.asSequence().flatMap { planet ->
       starTransitImpl.getRangeTransitGmt(planet, signDegrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
 
         val speed = starPositionImpl.getPosition(planet, gmt, loc).speedLng
@@ -254,13 +273,12 @@ class EventsTraversalTransitImpl(
     // 星體換宮位
     val houseIngresses = if (includeHour) {
       // grain 到「時/分」, 宮位可信
-      val cuspDegreeMap: Map<ZodiacDegree, Int> = inner.cuspDegreeMap.reverse()
+      val cuspDegreeMap: Map<ZodiacDegree, Int> = model.cuspDegreeMap.reverse()
       val cuspDegrees = cuspDegreeMap.keys.toSet()
-      sequenceOf(Planet.SUN, Planet.MOON, Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN).flatMap { planet ->
+      transitingPoints.asSequence().flatMap { planet ->
         starTransitImpl.getRangeTransitGmt(planet, cuspDegrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
           // maybe retrograde
           val speed = starPositionImpl.getPosition(planet, gmt, loc).speedLng
-
           val cuspHouseNumber = cuspDegreeMap.getValue(zDeg)
 
           // 根據順行或逆行，決定 old/new house 以及文字描述
@@ -290,12 +308,14 @@ class EventsTraversalTransitImpl(
 
     return sequence {
 
-      if (config.aspect) {
+      if (config.globalAspect) {
         // 全球星體交角
         yieldAll(globalAspectEvents)
+      }
 
+      if (config.personalAspect) {
         // 全球 to 個人 , 交角
-        yieldAll(searchPersonalEvents(innerStars, angles).map { aspectData ->
+        yieldAll(searchPersonalEvents(transitingPoints, natalPoints, angles).map { aspectData ->
           val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
           val description = buildString {
             append("[outer ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")

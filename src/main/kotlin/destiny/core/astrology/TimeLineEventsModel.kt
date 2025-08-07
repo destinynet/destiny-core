@@ -152,7 +152,12 @@ data class EventGroup(
 @Serializable
 data class Past(
   val eventGroups: List<EventGroup>,
-  val solarReturns: List<@Contextual IReturnDto>
+  val solarReturns: List<@Contextual IReturnDto>,
+  val longTermTriggers: List<@Contextual ITimeLineEvent>,
+  @Contextual
+  val fromTime: GmtJulDay,
+  @Contextual
+  val toTime: GmtJulDay
 )
 
 @Serializable

@@ -1,6 +1,5 @@
 package destiny.core.astrology
 
-import com.google.common.collect.Sets
 import destiny.core.asLocaleString
 import destiny.core.astrology.Aspect.Companion.expand
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
@@ -27,28 +26,42 @@ class EventsTraversalSolarArcImpl(
 ) : IEventsTraversal {
 
   override fun traverse(
-    inner: IHoroscopeModel,
+    model: IHoroscopeModel,
     fromGmtJulDay: GmtJulDay,
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
     includeHour: Boolean,
-    config: AstrologyTraversalConfig
+    config: AstrologyTraversalConfig,
+    outerPoints: Set<AstroPoint>,
+    innerPoints: Set<AstroPoint>,
   ): Sequence<AstroEventDto> {
 
     val hConfig = HoroscopeConfig()
 
     val threshold = 0.9
 
-    val fromSolarArc: ISolarArcModel = horoscopeFeature.getSolarArc(inner, fromGmtJulDay, includeHour, modernAspectCalculator, threshold, hConfig)
-    val toSolarArc: ISolarArcModel = horoscopeFeature.getSolarArc(inner, toGmtJulDay, includeHour, modernAspectCalculator, threshold, hConfig)
+    val fromSolarArc: ISolarArcModel = horoscopeFeature.getSolarArc(model, fromGmtJulDay, includeHour, modernAspectCalculator, threshold, hConfig)
+    val toSolarArc: ISolarArcModel = horoscopeFeature.getSolarArc(model, toGmtJulDay, includeHour, modernAspectCalculator, threshold, hConfig)
 
-    val pointsToConsider = inner.points.filter { it is Planet || it is LunarNode || it is Axis }
+    // 內盤要考慮的星體 (Natal Points)
+    val natalPointsToConsider = model.points.filter { it in innerPoints }
+      .filter { it is Planet || it is LunarNode || it is Axis }
       .filter {
         if (includeHour)
           true
         else
           it !in Axis.values
-      }
+      }.toSet()
+
+    // 外圈要考慮的星體 (Solar Arc Points)
+    val saPointsToConsider = outerPoints.filter { it is Planet || it is LunarNode || it is Axis }
+      .filter {
+        if (includeHour)
+          true
+        else
+          it !in Axis.values
+      }.toSet()
+
 
     fun searchPersonalEvents(aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet()): Sequence<AspectData> {
 
@@ -65,58 +78,44 @@ class EventsTraversalSolarArcImpl(
       val degreesMap: Map<Double, Aspect> = aspects.expand()
 
       return sequence {
-        Sets.combinations(pointsToConsider.toSet(), 2).asSequence().map { pair ->
-          val (p1, p2) = pair.toList().let { it[0] to it[1] }
-          p1 to p2
-        }.map {  (p1, p2) -> (p1 to inner.getPosition(p1)) to (p2 to inner.getPosition(p2)) }
-          .filter { (p1AndPos,p2AndPos) ->
-          p1AndPos.second != null && p2AndPos.second != null
-        }.forEach { (p1AndPos, p2AndPos) ->
-          val (p1, natalPos1) = p1AndPos
-          val (p2, natalPos2) = p2AndPos
-            for ((aspectDegree, aspect) in degreesMap) {
-
-              // --- 計算方向 1: SA p1 -> natal p2 ---
-              val sep1_to_2 = natalPos1!!.lngDeg.aheadOf(natalPos2!!.lngDeg)
-              var requiredArc1 = (aspectDegree - sep1_to_2 + 360) % 360
-
-              if (requiredArc1 >= fromSolarArc.degreeMoved && requiredArc1 <= toSolarArc.degreeMoved) {
-                findGmtJulDayForArc(inner, requiredArc1, fromGmtJulDay, toGmtJulDay, hConfig)?.also { eventGmt ->
-                  val pattern = PointAspectPattern(listOf(p1, p2), aspectDegree, null, 0.0)
-                  val aspectData = AspectData(pattern, null, 0.0, null, eventGmt)
-                  yield(aspectData)
-                }
-              }
-
-              // --- 計算方向 2: SA p2 -> natal p1 ---
-              val sep2_to_1 = natalPos2.lngDeg.aheadOf(natalPos1.lngDeg)
-              var requiredArc2 = (aspectDegree - sep2_to_1 + 360) % 360
-
-              if (requiredArc2 >= fromSolarArc.degreeMoved && requiredArc2 <= toSolarArc.degreeMoved) {
-                findGmtJulDayForArc(inner, requiredArc2, fromGmtJulDay, toGmtJulDay, hConfig)?.also { eventGmt ->
-                  val pattern = PointAspectPattern(listOf(p2, p1), aspectDegree, null, 0.0)
-                  val aspectData = AspectData(pattern, null, 0.0, null, eventGmt)
-                  yield(aspectData)
+        // 遍歷所有 (外圈移動星體, 內圈固定星體) 的配對
+        saPointsToConsider.forEach { saPoint ->
+          natalPointsToConsider.forEach { natalPoint ->
+            val saPos = model.getPosition(saPoint)
+            val natalPos = model.getPosition(natalPoint)
+            if (saPos != null && natalPos != null) {
+              for ((aspectDegree, _) in degreesMap) {
+                // --- 計算方向: SA saPoint -> natal natalPoint ---
+                val separation = saPos.lngDeg.aheadOf(natalPos.lngDeg)
+                val requiredArc = (aspectDegree - separation + 360) % 360
+                if (requiredArc >= fromSolarArc.degreeMoved && requiredArc <= toSolarArc.degreeMoved) {
+                  findGmtJulDayForArc(model, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)?.also { eventGmt ->
+                    val pattern = PointAspectPattern(listOf(saPoint, natalPoint), aspectDegree, null, 0.0)
+                    val aspectData = AspectData(pattern, null, 0.0, null, eventGmt)
+                    yield(aspectData)
+                  }
                 }
               }
             }
           }
+        }
       }
     }
 
     // --- SA Sign Ingress ---
+    // 換星座事件只考慮外圈移動的星體
     fun searchSignIngressEvents(): Sequence<AstroEventDto> = sequence {
       val signBoundaries = (0 until 360 step 30).map { it.toDouble().toZodiacDegree() }
 
-      for (p1 in pointsToConsider) {
-        val natalPos1 = inner.getPosition(p1) ?: continue
+      for (p1 in saPointsToConsider) {
+        val natalPos1 = model.getPosition(p1) ?: continue
 
         for (signBoundary in signBoundaries) {
           // 計算要將 p1 推到 signBoundary 所需的弧度
           val requiredArc = (signBoundary.value - natalPos1.lngDeg.value + 360) % 360
 
           if (requiredArc >= fromSolarArc.degreeMoved && requiredArc <= toSolarArc.degreeMoved) {
-            findGmtJulDayForArc(inner, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)?.also { eventGmt ->
+            findGmtJulDayForArc(model, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)?.also { eventGmt ->
 
               // 由於太陽弧通常是順行，這裡直接判斷新舊星座
               val newSign = signBoundary.sign
@@ -130,22 +129,24 @@ class EventsTraversalSolarArcImpl(
       }
     }
 
+    // --- SA House Ingress ---
+    // 換宮位事件也只考慮外圈移動的星體
     fun searchHouseIngressEvents(): Sequence<AstroEventDto> = sequence {
       if (!includeHour) return@sequence // 若無精確出生時間，則無法計算換宮位
 
       // 取得宮位邊界度數，並建立從「度數」反查「宮位數」的 Map
-      val cuspDegreeMap: Map<ZodiacDegree, Int> = inner.cuspDegreeMap.reverse()
+      val cuspDegreeMap: Map<ZodiacDegree, Int> = model.cuspDegreeMap.reverse()
       val cuspBoundaries = cuspDegreeMap.keys
 
-      for (p1 in pointsToConsider) {
-        val natalPos1 = inner.getPosition(p1) ?: continue
+      for (p1 in saPointsToConsider) {
+        val natalPos1 = model.getPosition(p1) ?: continue
 
         for (cuspBoundary in cuspBoundaries) {
           // 計算要將 p1 推到 cuspBoundary 所需的弧度
           val requiredArc = (cuspBoundary.value - natalPos1.lngDeg.value + 360) % 360
 
           if (requiredArc >= fromSolarArc.degreeMoved && requiredArc <= toSolarArc.degreeMoved) {
-            findGmtJulDayForArc(inner, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)?.also { eventGmt ->
+            findGmtJulDayForArc(model, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)?.also { eventGmt ->
 
               // 太陽弧順行，進入新的宮位
               val newHouse = cuspDegreeMap.getValue(cuspBoundary)
@@ -161,15 +162,18 @@ class EventsTraversalSolarArcImpl(
 
     // --- 組合所有事件 ---
     return sequence {
-      // SA to Natal 相位事件
-      val personalAspects = searchPersonalEvents(Aspect.getAspects(Aspect.Importance.HIGH).toSet()).map { aspectData ->
-        val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
-        val description = buildString {
-          append("[SA ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
+      if (config.personalAspect) {
+        // SA to Natal 相位事件
+        val personalAspects = searchPersonalEvents(Aspect.getAspects(Aspect.Importance.HIGH).toSet()).map { aspectData ->
+          val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
+          val description = buildString {
+            append("[SA ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
+          }
+          AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
         }
-        AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
+        yieldAll(personalAspects)
       }
-      yieldAll(personalAspects)
+
 
       if (config.signIngress) {
         // SA 換星座事件
