@@ -282,12 +282,16 @@ class ReportFactory(
         extDays = 30 // 前後延伸一個月
       )
 
-      val shortTermTransitEvents = getTimeLineEvents(model, grain, viewGmtJulDay, from, to,
-                        setOf(EventSource.TRANSIT) , shortTermTransitConfig, false,
-                        extDays = 30 ,
-                        outerPoints = setOf(SUN, MOON, MERCURY, VENUS, MARS)
-                        )
-      val events = (nonTransitEvents.events + shortTermTransitEvents.events).sortedBy { it.divergentTime }
+//      val shortTermTransitEvents = getTimeLineEvents(
+//        model, grain, viewGmtJulDay, from, to,
+//        setOf(EventSource.TRANSIT), shortTermTransitConfig,
+//        includeLunarReturn = false,
+//        extDays = 3,
+//        outerPoints = setOf(SUN, MOON, MERCURY, VENUS, MARS),
+//        innerPoints = setOf(SUN, MOON, MERCURY, VENUS, MARS) + Axis.values,
+//      )
+//      val events = (nonTransitEvents.events + shortTermTransitEvents.events).sortedBy { it.divergentTime }
+      val events = nonTransitEvents.events.sortedBy { it.divergentTime }
 
       EventGroup(from, to, groupedEvent, events, nonTransitEvents.lunarReturns)
     }

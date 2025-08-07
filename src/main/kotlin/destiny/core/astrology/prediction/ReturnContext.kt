@@ -197,11 +197,14 @@ class ReturnContext(
         houses = emptyList()
       )
 
-    val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold).let {
+    val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold).let { synastry: Synastry ->
       when (grain) {
-        BirthDataGrain.MINUTE -> it
+        BirthDataGrain.MINUTE -> synastry
         BirthDataGrain.DAY    -> {
-          val aspects = it.aspects.filterNot { aspect -> aspect.points.any { it is Axis } }
+          val aspects = synastry.aspects.filterNot { aspect -> aspect.points.any { it is Axis } }
+            .map { sa: SynastryAspect ->
+              sa.copy(outerPointHouse = null, innerPointHouse = null)
+            }
           Synastry(aspects, emptyMap())
         }
       }
