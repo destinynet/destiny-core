@@ -329,12 +329,15 @@ class ReportFactory(
       houseIngress = false,
     )
 
-    val longTermTriggers = getTimeLineEvents(
-      model, grain, viewGmtJulDay, fromTime, toTime, longTermEventSources, longTermConfig, includeLunarReturn = false,
-      extDays = 30,
-      outerPoints = outerPoints,
-      innerPoints = innerPoints,
-    ).events
+    val longTermTriggers: List<ITimeLineEvent> = emptyList()
+    // too noisy 先關閉
+//      getTimeLineEvents(
+//        model, grain, viewGmtJulDay, fromTime, toTime, longTermEventSources, longTermConfig,
+//        includeLunarReturn = false,
+//        extDays = 30,
+//        outerPoints = outerPoints,
+//        innerPoints = innerPoints,
+//      ).events
 
     val pastFrom: GmtJulDay = eventGroups.first().fromTime
     val pastTo: GmtJulDay = eventGroups.last().toTime

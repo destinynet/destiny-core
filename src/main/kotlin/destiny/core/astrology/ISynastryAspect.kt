@@ -24,7 +24,7 @@ data class SynastryAspect(
   override val aspect: Aspect,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   override val orb: Double,
-  override val aspectType: IPointAspectPattern.AspectType?,
+  override val aspectType: IPointAspectPattern.AspectType? = null,
   @Serializable(with = ScoreTwoDecimalSerializer::class)
   override val score: Score?
 ) : ISynastryAspect {
