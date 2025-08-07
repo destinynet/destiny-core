@@ -243,9 +243,9 @@ class ReportFactory(
       EventSource.SOLAR_ARC
     )
 
-    val shortTermConfig = AstrologyTraversalConfig(
+    val shortTermNonTransitConfig = AstrologyTraversalConfig(
       horoscopeConfig = natalConfig,
-      globalAspect = true,
+      globalAspect = false,
       personalAspect = true,
       voc = false,
       stationary = true,
@@ -257,17 +257,39 @@ class ReportFactory(
       houseIngress = true,
     )
 
+    val shortTermTransitConfig = AstrologyTraversalConfig(
+      horoscopeConfig = natalConfig,
+      globalAspect = false,
+      personalAspect = true,
+      voc = false,
+      stationary = true,
+      retrograde = false,
+      eclipse = true,
+      lunarPhase = true,
+      includeTransitToNatalAspects = false,
+      signIngress = false,
+      houseIngress = false,
+    )
+
     val eventGroups: List<EventGroup> = extractedEvents.events.groupAdjacentEvents(extMonth = 1).map { groupedEvent: List<YearMonthEvent> ->
       val (from, to) = groupedEvent.sortedBy { it.yearMonth }
         .let { (it.first().yearMonth.atDay(1).atStartOfDay().toGmtJulDay(loc) to it.last().yearMonth.plusMonths(1).atDay(1).atStartOfDay().toGmtJulDay(loc)) }
-      val timeLineEvents: ITimeLineEventsModel = getTimeLineEvents(
+      val nonTransitEvents: ITimeLineEventsModel = getTimeLineEvents(
         model, grain, viewGmtJulDay,
         from, to,
-        shortTermEventSources, shortTermConfig,
+        shortTermEventSources, shortTermNonTransitConfig,
         includeLunarReturn = true,
         extDays = 30 // 前後延伸一個月
       )
-      EventGroup(from, to, groupedEvent, timeLineEvents.events, timeLineEvents.lunarReturns)
+
+      val shortTermTransitEvents = getTimeLineEvents(model, grain, viewGmtJulDay, from, to,
+                        setOf(EventSource.TRANSIT) , shortTermTransitConfig, false,
+                        extDays = 30 ,
+                        outerPoints = setOf(SUN, MOON, MERCURY, VENUS, MARS)
+                        )
+      val events = (nonTransitEvents.events + shortTermTransitEvents.events).sortedBy { it.divergentTime }
+
+      EventGroup(from, to, groupedEvent, events, nonTransitEvents.lunarReturns)
     }
 
     val threshold = 0.9
