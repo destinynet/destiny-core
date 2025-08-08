@@ -38,7 +38,8 @@ interface IReportFactory {
     eventSources: Set<EventSource>,
     traversalConfig: AstrologyTraversalConfig,
     includeLunarReturn: Boolean,
-    extDays: Int,
+    pastExtDays: Int,
+    futureExtDays: Int,
     /** 內定以 natal points , 可以額外指定 */
     outerPoints: Set<AstroPoint> = personModel.points,
     innerPoints: Set<AstroPoint> = personModel.points,
@@ -111,7 +112,8 @@ class ReportFactory(
     eventSources: Set<EventSource>,
     traversalConfig: AstrologyTraversalConfig,
     includeLunarReturn: Boolean,
-    extDays: Int,
+    pastExtDays: Int,
+    futureExtDays: Int,
     outerPoints: Set<AstroPoint>,
     innerPoints: Set<AstroPoint>,
   ): ITimeLineEventsModel {
@@ -119,11 +121,11 @@ class ReportFactory(
     val progressionSecondary = ProgressionSecondary()
     val progressionTertiary = ProgressionTertiary()
 
-    val secondaryProgressionConvergentFrom = progressionSecondary.getConvergentTime(personModel.gmtJulDay, fromTime - extDays)
-    val secondaryProgressionConvergentTo = progressionSecondary.getConvergentTime(personModel.gmtJulDay, toTime + extDays)
+    val secondaryProgressionConvergentFrom = progressionSecondary.getConvergentTime(personModel.gmtJulDay, fromTime - pastExtDays)
+    val secondaryProgressionConvergentTo = progressionSecondary.getConvergentTime(personModel.gmtJulDay, toTime + futureExtDays)
 
-    val tertiaryProgressionConvergentFrom = progressionTertiary.getConvergentTime(personModel.gmtJulDay, fromTime - extDays)
-    val tertiaryProgressionConvergentTo = progressionTertiary.getConvergentTime(personModel.gmtJulDay, toTime + extDays)
+    val tertiaryProgressionConvergentFrom = progressionTertiary.getConvergentTime(personModel.gmtJulDay, fromTime - pastExtDays)
+    val tertiaryProgressionConvergentTo = progressionTertiary.getConvergentTime(personModel.gmtJulDay, toTime + futureExtDays)
 
     val loc = personModel.location
     logger.debug { "secondaryProgression convergentFrom = ${secondaryProgressionConvergentFrom.toLmt(loc, julDayResolver)}" }
@@ -141,8 +143,8 @@ class ReportFactory(
         addAll(
           dayHourService.traverseAstrologyEvents(
             personModel,
-            fromTime - extDays,
-            toTime + extDays,
+            fromTime - pastExtDays,
+            toTime + futureExtDays,
             personModel.location,
             includeHour,
             traversalConfig,
@@ -279,7 +281,8 @@ class ReportFactory(
         from, to,
         shortTermEventSources, shortTermNonTransitConfig,
         includeLunarReturn = true,
-        extDays = 30 // 前後延伸一個月
+        pastExtDays = 30, // 往前延伸一個月
+        futureExtDays = 15 // 往後延伸半個月
       )
 
       val transitEvents = groupedEvent.filterIsInstance<DayEvent>().flatMap { dayEvent ->
@@ -290,7 +293,8 @@ class ReportFactory(
           model, grain, viewGmtJulDay, dayFrom, dayTo,
           setOf(EventSource.TRANSIT), shortTermTransitConfig,
           includeLunarReturn = false,
-          extDays = 3,
+          pastExtDays = 3,
+          futureExtDays = 0,
           outerPoints = setOf(SUN, MERCURY, VENUS, MARS), // exclude MOON
           innerPoints = setOf(SUN, MOON, MERCURY, VENUS, MARS) + Axis.values,
         ).events
@@ -352,7 +356,7 @@ class ReportFactory(
     val future = futureDuration?.let { dur ->
       val futureFromTime = viewDay.atStartOfDay().toGmtJulDay(loc)
       val futureToTime = viewDay.atStartOfDay().plusDays(1).plus(dur).toGmtJulDay(loc)
-      val futureTimeLineEvents = getTimeLineEvents(model, grain, viewGmtJulDay, futureFromTime, futureToTime, shortTermEventSources, longTermConfig, true, 30)
+      val futureTimeLineEvents = getTimeLineEvents(model, grain, viewGmtJulDay, futureFromTime, futureToTime, shortTermEventSources, longTermConfig, true, 30, 15)
 
       val futureSolarReturns =
         solarReturnContext.getRangedReturns(model, grain, futureToTime, futureToTime, aspectEffectiveModern, modernAspectCalculator, natalConfig, threshold, returnChartIncludeClassical)
