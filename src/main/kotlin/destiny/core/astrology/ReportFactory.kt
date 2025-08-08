@@ -271,7 +271,7 @@ class ReportFactory(
       houseIngress = false,
     )
 
-    val eventGroups: List<EventGroup> = extractedEvents.events.groupAdjacentEvents(extMonth = 1).map { groupedEvent: List<YearMonthEvent> ->
+    val eventGroups: List<EventGroup> = extractedEvents.events.groupAdjacentEvents(extMonth = 1).map { groupedEvent: List<AbstractEvent> ->
       val (from, to) = groupedEvent.sortedBy { it.yearMonth }
         .let { (it.first().yearMonth.atDay(1).atStartOfDay().toGmtJulDay(loc) to it.last().yearMonth.plusMonths(1).atDay(1).atStartOfDay().toGmtJulDay(loc)) }
       val nonTransitEvents: ITimeLineEventsModel = getTimeLineEvents(
@@ -282,16 +282,21 @@ class ReportFactory(
         extDays = 30 // 前後延伸一個月
       )
 
-//      val shortTermTransitEvents = getTimeLineEvents(
-//        model, grain, viewGmtJulDay, from, to,
-//        setOf(EventSource.TRANSIT), shortTermTransitConfig,
-//        includeLunarReturn = false,
-//        extDays = 3,
-//        outerPoints = setOf(SUN, MOON, MERCURY, VENUS, MARS),
-//        innerPoints = setOf(SUN, MOON, MERCURY, VENUS, MARS) + Axis.values,
-//      )
-//      val events = (nonTransitEvents.events + shortTermTransitEvents.events).sortedBy { it.divergentTime }
-      val events = nonTransitEvents.events.sortedBy { it.divergentTime }
+      val transitEvents = groupedEvent.filterIsInstance<DayEvent>().flatMap { dayEvent ->
+        val dayFrom = dayEvent.date.atStartOfDay().toGmtJulDay(loc)
+        val dayTo = dayEvent.date.plusDays(1).atStartOfDay().toGmtJulDay(loc)
+
+        getTimeLineEvents(
+          model, grain, viewGmtJulDay, dayFrom, dayTo,
+          setOf(EventSource.TRANSIT), shortTermTransitConfig,
+          includeLunarReturn = false,
+          extDays = 3,
+          outerPoints = setOf(SUN, MERCURY, VENUS, MARS), // exclude MOON
+          innerPoints = setOf(SUN, MOON, MERCURY, VENUS, MARS) + Axis.values,
+        ).events
+      }
+
+      val events = (nonTransitEvents.events + transitEvents).sortedBy { it.divergentTime }
 
       EventGroup(from, to, groupedEvent, events, nonTransitEvents.lunarReturns)
     }

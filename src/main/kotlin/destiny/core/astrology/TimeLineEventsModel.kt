@@ -17,6 +17,7 @@ import destiny.tools.serializers.LocalDateSerializer
 import destiny.tools.serializers.LocalTimeSerializer
 import destiny.tools.serializers.YearMonthSerializer
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -25,6 +26,9 @@ import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.encodeStructure
+import kotlinx.serialization.json.JsonContentPolymorphicSerializer
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
@@ -99,15 +103,40 @@ data class TimeLineEventsModel(
   override val lunarReturns: List<IReturnDto> = emptyList()
 ) : ITimeLineEventsModel
 
+@Serializable(with = AbstractEventSerializer::class)
+sealed class AbstractEvent {
+  abstract val event: String
+  abstract val yearMonth: YearMonth
+}
 
 @Serializable
-data class YearMonthEvent(
+data class MonthEvent(
   @Serializable(with = YearMonthSerializer::class)
-  val yearMonth: YearMonth,
-  val event: String
-)
+  override val yearMonth: YearMonth,
+  override val event: String
+) : AbstractEvent()
 
-fun List<YearMonthEvent>.groupAdjacentEvents(extMonth: Int = 1) : List<List<YearMonthEvent>> {
+@Serializable
+data class DayEvent(
+  @Serializable(with = LocalDateSerializer::class)
+  val date: LocalDate,
+  override val event: String
+) : AbstractEvent() {
+  override val yearMonth: YearMonth
+    get() = YearMonth.from(date)
+}
+
+object AbstractEventSerializer : JsonContentPolymorphicSerializer<AbstractEvent>(AbstractEvent::class) {
+  override fun selectDeserializer(element: JsonElement): DeserializationStrategy<AbstractEvent> {
+    return when {
+      "date" in element.jsonObject      -> DayEvent.serializer()
+      "yearMonth" in element.jsonObject -> MonthEvent.serializer()
+      else                              -> throw Exception("Unknown AbstractEvent type: could not find 'date' or 'yearMonth' in ${element.jsonObject}")
+    }
+  }
+}
+
+fun List<AbstractEvent>.groupAdjacentEvents(extMonth: Int = 1): List<List<AbstractEvent>> {
   if (this.size < 2) {
     return listOf(this)
   }
@@ -126,7 +155,7 @@ fun List<YearMonthEvent>.groupAdjacentEvents(extMonth: Int = 1) : List<List<Year
 interface ITimeLineWithUserEventsModel : ITimeLineEventsModel {
   val today: LocalDate
   val summary: String
-  val userEvents : List<YearMonthEvent>
+  val userEvents : List<AbstractEvent>
 }
 
 @Serializable
@@ -135,7 +164,7 @@ data class TimeLineWithUserEventsModel(
   @Serializable(with = LocalDateSerializer::class)
   override val today: LocalDate,
   override val summary: String,
-  override val userEvents: List<YearMonthEvent>
+  override val userEvents: List<AbstractEvent>
 ) : ITimeLineWithUserEventsModel , ITimeLineEventsModel by timeLineEventsModel
 
 @Serializable
@@ -144,7 +173,7 @@ data class EventGroup(
   val fromTime : GmtJulDay,
   @Contextual
   val toTime : GmtJulDay,
-  val userEvents : List<YearMonthEvent>,
+  val userEvents : List<AbstractEvent>,
   val astroEvents : List<@Contextual ITimeLineEvent>,
   val lunarReturns : List<@Contextual IReturnDto>
 )
@@ -194,7 +223,7 @@ data class ExtractedEvents(
   val lat: Double, val lng: Double, val tzid: String,
   override val place: String,
   val intro: String,
-  val events: List<YearMonthEvent>
+  val events: List<AbstractEvent>
 ) : IBirthDataNamePlace {
 
   override val time: ChronoLocalDateTime<*>

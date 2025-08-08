@@ -17,12 +17,12 @@ import java.time.format.DateTimeParseException
 
 
 object LocalDateSerializer : KSerializer<LocalDate> {
-  private val dateFormatter = DateTimeFormatter.ISO_DATE
+  private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
 
   override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("LocalDate", PrimitiveKind.STRING)
 
   override fun serialize(encoder: Encoder, value: LocalDate) {
-    encoder.encodeString(dateFormatter.format(value))
+    encoder.encodeString(formatter.format(value))
   }
 
   override fun deserialize(decoder: Decoder): LocalDate {
@@ -36,7 +36,7 @@ object LocalDateSerializer : KSerializer<LocalDate> {
       // 如果是 JSON 字串 (e.g., "2025-07-22")
       element is JsonPrimitive && element.isString -> {
         try {
-          LocalDate.parse(element.content, dateFormatter)
+          LocalDate.parse(element.content, formatter)
         } catch (e: DateTimeParseException) {
           throw IllegalStateException("Invalid LocalDate string format: ${element.content}", e)
         }
