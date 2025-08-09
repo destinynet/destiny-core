@@ -339,8 +339,8 @@ class ReportFactory(
       houseIngress = false,
     )
 
-    val longTermTriggers: List<ITimeLineEvent> = emptyList()
-    // too noisy 先關閉
+    val longTermTriggers: List<ITimeLineEvent> = //emptyList()
+    // too noisy
     getTimeLineEvents(
       model, grain, viewGmtJulDay, fromTime, toTime, longTermEventSources, longTermConfig,
       includeLunarReturn = false,
