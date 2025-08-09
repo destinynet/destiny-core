@@ -190,11 +190,11 @@ class ReturnContext(
         // 移除 中點資訊
         midPoints = emptyList(),
         // 移除 星體資訊
-        stars = emptyMap(),
+        //stars = emptyMap(),
         // 移除 星座資訊
-        signs = emptyMap(),
+        //signs = emptyMap(),
         // 移除 宮位資訊
-        houses = emptyList()
+        //houses = emptyList()
       )
 
     val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold).let { synastry: Synastry ->
