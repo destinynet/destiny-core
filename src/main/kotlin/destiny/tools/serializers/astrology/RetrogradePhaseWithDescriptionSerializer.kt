@@ -48,6 +48,7 @@ object RetrogradePhaseWithDescriptionSerializer : KSerializer<RetrogradePhase?> 
     while (true) {
       when (val index = dec.decodeElementIndex(descriptor)) {
         0                            -> state = dec.decodeNullableSerializableElement(descriptor, index, String.serializer())
+        1                            -> dec.decodeStringElement(descriptor, index)
         CompositeDecoder.DECODE_DONE -> break
       }
     }
