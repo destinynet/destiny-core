@@ -1,5 +1,6 @@
 package destiny.core.astrology
 
+import destiny.core.EventType
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
 import destiny.core.astrology.prediction.EventSource
@@ -26,13 +27,13 @@ import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.encodeStructure
-import kotlinx.serialization.json.JsonContentPolymorphicSerializer
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.*
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
 import java.time.chrono.ChronoLocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 
 sealed interface ITimeLineEvent {
@@ -103,9 +104,12 @@ data class TimeLineEventsModel(
   override val lunarReturns: List<IReturnDto> = emptyList()
 ) : ITimeLineEventsModel
 
+
+
 @Serializable(with = AbstractEventSerializer::class)
 sealed class AbstractEvent {
-  abstract val event: String
+  abstract val details: String
+  abstract val eventType: EventType
   abstract val yearMonth: YearMonth
 }
 
@@ -113,25 +117,72 @@ sealed class AbstractEvent {
 data class MonthEvent(
   @Serializable(with = YearMonthSerializer::class)
   override val yearMonth: YearMonth,
-  override val event: String
+  override val eventType: EventType,
+  override val details: String
 ) : AbstractEvent()
 
 @Serializable
 data class DayEvent(
   @Serializable(with = LocalDateSerializer::class)
   val date: LocalDate,
-  override val event: String
+  override val eventType: EventType,
+  override val details: String
 ) : AbstractEvent() {
   override val yearMonth: YearMonth
     get() = YearMonth.from(date)
 }
 
-object AbstractEventSerializer : JsonContentPolymorphicSerializer<AbstractEvent>(AbstractEvent::class) {
-  override fun selectDeserializer(element: JsonElement): DeserializationStrategy<AbstractEvent> {
-    return when {
-      "date" in element.jsonObject      -> DayEvent.serializer()
-      "yearMonth" in element.jsonObject -> MonthEvent.serializer()
-      else                              -> throw Exception("Unknown AbstractEvent type: could not find 'date' or 'yearMonth' in ${element.jsonObject}")
+object AbstractEventSerializer : KSerializer<AbstractEvent> {
+
+  // 定義兩種日期格式
+  private val LOCAL_DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE // YYYY-MM-DD
+  private val YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM")
+
+  // 描述符是固定的，因為我們是手動解析
+  override val descriptor: SerialDescriptor = DayEvent.serializer().descriptor
+
+
+  override fun serialize(encoder: Encoder, value: AbstractEvent) {
+    // 序列化邏輯保持不變
+    when (value) {
+      is DayEvent   -> encoder.encodeSerializableValue(DayEvent.serializer(), value)
+      is MonthEvent -> encoder.encodeSerializableValue(MonthEvent.serializer(), value)
+    }
+  }
+
+  override fun deserialize(decoder: Decoder): AbstractEvent {
+    val jsonDecoder = decoder as? JsonDecoder
+      ?: throw IllegalStateException("This serializer can only be used with JSON format.")
+
+    // 將整個 JSON 物件讀取為 JsonElement
+    val jsonObject = jsonDecoder.decodeJsonElement().jsonObject
+
+    // 提取 "date" 欄位的字串值
+    val dateString = jsonObject["date"]?.jsonPrimitive?.content
+      ?: throw IllegalArgumentException("JSON object must contain a 'date' field.")
+
+    // 核心邏輯：根據字串格式決定如何解析
+    return try {
+      // 嘗試解析為 YYYY-MM-DD
+      LocalDate.parse(dateString, LOCAL_DATE_FORMATTER)
+      // 如果成功，則將整個物件作為 DayEvent 進行反序列化
+      Json.decodeFromJsonElement(DayEvent.serializer(), jsonObject)
+    } catch (e: DateTimeParseException) {
+      try {
+        // 如果解析為 LocalDate 失敗，則嘗試解析為 YYYY-MM
+        YearMonth.parse(dateString, YEAR_MONTH_FORMATTER)
+
+        // 建立一個新的 JsonObject，將 "date" 欄位改名為 "yearMonth"
+        val modifiedJsonObject = JsonObject(jsonObject.toMutableMap().apply {
+          put("yearMonth", JsonPrimitive(dateString))
+          remove("date")
+        })
+
+        // 將修改後的物件作為 MonthEvent 進行反序列化
+        Json.decodeFromJsonElement(MonthEvent.serializer(), modifiedJsonObject)
+      } catch (e2: DateTimeParseException) {
+        throw IllegalArgumentException("Date string '$dateString' is not in a valid format (YYYY-MM-DD or YYYY-MM).", e2)
+      }
     }
   }
 }

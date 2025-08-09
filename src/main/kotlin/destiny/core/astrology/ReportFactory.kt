@@ -288,7 +288,7 @@ class ReportFactory(
       val transitEvents = groupedEvent.filterIsInstance<DayEvent>().flatMap { dayEvent ->
         val dayFrom = dayEvent.date.atStartOfDay().toGmtJulDay(loc)
         val dayTo = dayEvent.date.plusDays(1).atStartOfDay().toGmtJulDay(loc)
-        logger.info { "dayEvent = ${dayEvent.event} , dayFrom = $dayFrom, dayTo = $dayTo" }
+        logger.info { "dayEvent = ${dayEvent.details} , dayFrom = $dayFrom, dayTo = $dayTo" }
 
         getTimeLineEvents(
           model, grain, viewGmtJulDay, dayFrom, dayTo,
