@@ -26,9 +26,9 @@ object GenderSerializer : KSerializer<Gender> {
   override fun deserialize(decoder: Decoder): Gender {
     return decoder.decodeString().let { raw ->
       when (raw.uppercase()) {
-        "M"  -> Gender.男
-        "F"  -> Gender.女
-        else -> throw IllegalArgumentException("Invalid gender value : $raw")
+        "M", "男" -> Gender.男
+        "F", "女" -> Gender.女
+        else      -> throw IllegalArgumentException("Invalid gender value : $raw")
       }
     }
   }
