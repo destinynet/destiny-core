@@ -46,7 +46,7 @@ interface IReportFactory {
   ): ITimeLineEventsModel
 
   /** 事件自動分群(依據相鄰事件) */
-  fun getMergedUserEventsModel(extractedEvents: ExtractedEvents, viewDay: LocalDate, futureDuration: Duration?) : MergedUserEventsModel
+  fun getMergedUserEventsModel(extractedEvents: ExtractedEvents, viewDay: LocalDate, futureDuration: Duration? = null) : MergedUserEventsModel
 }
 
 @Named
@@ -288,12 +288,13 @@ class ReportFactory(
       val transitEvents = groupedEvent.filterIsInstance<DayEvent>().flatMap { dayEvent ->
         val dayFrom = dayEvent.date.atStartOfDay().toGmtJulDay(loc)
         val dayTo = dayEvent.date.plusDays(1).atStartOfDay().toGmtJulDay(loc)
+        logger.info { "dayEvent = ${dayEvent.event} , dayFrom = $dayFrom, dayTo = $dayTo" }
 
         getTimeLineEvents(
           model, grain, viewGmtJulDay, dayFrom, dayTo,
           setOf(EventSource.TRANSIT), shortTermTransitConfig,
           includeLunarReturn = false,
-          pastExtDays = 3,
+          pastExtDays = 4,
           futureExtDays = 0,
           outerPoints = setOf(SUN, MERCURY, VENUS, MARS), // exclude MOON
           innerPoints = setOf(SUN, MOON, MERCURY, VENUS, MARS) + Axis.values,
@@ -340,13 +341,14 @@ class ReportFactory(
 
     val longTermTriggers: List<ITimeLineEvent> = emptyList()
     // too noisy 先關閉
-//      getTimeLineEvents(
-//        model, grain, viewGmtJulDay, fromTime, toTime, longTermEventSources, longTermConfig,
-//        includeLunarReturn = false,
-//        extDays = 30,
-//        outerPoints = outerPoints,
-//        innerPoints = innerPoints,
-//      ).events
+    getTimeLineEvents(
+      model, grain, viewGmtJulDay, fromTime, toTime, longTermEventSources, longTermConfig,
+      includeLunarReturn = false,
+      pastExtDays = 0,
+      futureExtDays = 0,
+      outerPoints = outerPoints,
+      innerPoints = innerPoints,
+    ).events
 
     val pastFrom: GmtJulDay = eventGroups.first().fromTime
     val pastTo: GmtJulDay = eventGroups.last().toTime
