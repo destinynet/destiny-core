@@ -274,8 +274,8 @@ class ReportFactory(
     )
 
     val eventGroups: List<EventGroup> = extractedEvents.events.groupAdjacentEvents(extMonth = 1).map { groupedEvent: List<AbstractEvent> ->
-      val (from, to) = groupedEvent.sortedBy { it.yearMonth }
-        .let { (it.first().yearMonth.atDay(1).atStartOfDay().toGmtJulDay(loc) to it.last().yearMonth.plusMonths(1).atDay(1).atStartOfDay().toGmtJulDay(loc)) }
+      val (from, to) = groupedEvent.sortedBy { it.yearMonth() }
+        .let { (it.first().yearMonth().atDay(1).atStartOfDay().toGmtJulDay(loc) to it.last().yearMonth().plusMonths(1).atDay(1).atStartOfDay().toGmtJulDay(loc)) }
       val nonTransitEvents: ITimeLineEventsModel = getTimeLineEvents(
         model, grain, viewGmtJulDay,
         from, to,

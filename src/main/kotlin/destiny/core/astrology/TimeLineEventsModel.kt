@@ -18,7 +18,6 @@ import destiny.tools.serializers.LocalDateSerializer
 import destiny.tools.serializers.LocalTimeSerializer
 import destiny.tools.serializers.YearMonthSerializer
 import kotlinx.serialization.Contextual
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -27,7 +26,10 @@ import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.encodeStructure
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
@@ -110,16 +112,20 @@ data class TimeLineEventsModel(
 sealed class AbstractEvent {
   abstract val details: String
   abstract val eventType: EventType
-  abstract val yearMonth: YearMonth
+  abstract fun yearMonth() : YearMonth
 }
 
 @Serializable
 data class MonthEvent(
   @Serializable(with = YearMonthSerializer::class)
-  override val yearMonth: YearMonth,
+  val date: YearMonth,
   override val eventType: EventType,
   override val details: String
-) : AbstractEvent()
+) : AbstractEvent() {
+  override fun yearMonth(): YearMonth {
+    return date
+  }
+}
 
 @Serializable
 data class DayEvent(
@@ -128,8 +134,9 @@ data class DayEvent(
   override val eventType: EventType,
   override val details: String
 ) : AbstractEvent() {
-  override val yearMonth: YearMonth
-    get() = YearMonth.from(date)
+  override fun yearMonth(): YearMonth {
+    return YearMonth.from(date)
+  }
 }
 
 object AbstractEventSerializer : KSerializer<AbstractEvent> {
@@ -173,13 +180,13 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
         YearMonth.parse(dateString, YEAR_MONTH_FORMATTER)
 
         // 建立一個新的 JsonObject，將 "date" 欄位改名為 "yearMonth"
-        val modifiedJsonObject = JsonObject(jsonObject.toMutableMap().apply {
-          put("yearMonth", JsonPrimitive(dateString))
-          remove("date")
-        })
+//        val modifiedJsonObject = JsonObject(jsonObject.toMutableMap().apply {
+//          put("yearMonth", JsonPrimitive(dateString))
+//          remove("date")
+//        })
 
         // 將修改後的物件作為 MonthEvent 進行反序列化
-        Json.decodeFromJsonElement(MonthEvent.serializer(), modifiedJsonObject)
+        Json.decodeFromJsonElement(MonthEvent.serializer(), jsonObject)
       } catch (e2: DateTimeParseException) {
         throw IllegalArgumentException("Date string '$dateString' is not in a valid format (YYYY-MM-DD or YYYY-MM).", e2)
       }
@@ -192,13 +199,13 @@ fun List<AbstractEvent>.groupAdjacentEvents(extMonth: Int = 1): List<List<Abstra
     return listOf(this)
   }
 
-  val yearMonths = this.map { it.yearMonth }
+  val yearMonths = this.map { it.yearMonth() }
 
   val mergedRanges: List<YearMonthRange> = yearMonths.groupMergedRanges(extMonth)
 
   return mergedRanges.map { range: YearMonthRange ->
     this.filter { event ->
-      !event.yearMonth.isBefore(range.start) && !event.yearMonth.isAfter(range.endInclusive)
+      !event.yearMonth().isBefore(range.start) && !event.yearMonth().isAfter(range.endInclusive)
     }
   }
 }

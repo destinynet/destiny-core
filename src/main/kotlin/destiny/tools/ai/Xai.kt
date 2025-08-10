@@ -26,6 +26,8 @@ class Xai {
   data class Message(
     val role: String,
     val content: String,
+    @SerialName("reasoning_content")
+    val reasoning: String? = null,
     @SerialName("tool_calls")
     val toolCalls: List<ToolCall>? = null
   )
@@ -60,9 +62,6 @@ class Xai {
 
     @SerialName("top_p")
     val topP: Double? = options?.topP
-
-    @SerialName("frequency_penalty")
-    val frequencyPenalty: Double? = options?.frequencyPenalty
   }
 
 
@@ -85,12 +84,35 @@ class Xai {
         val finishReason: String
       )
 
+      /**
+       * example:
+       * {
+       *    "prompt_tokens":19,
+       *    "completion_tokens":23,
+       *    "total_tokens":245,
+       *    "prompt_tokens_details":{
+       *       "text_tokens":19,
+       *       "audio_tokens":0,
+       *       "image_tokens":0,
+       *       "cached_tokens":3
+       *    },
+       *    "completion_tokens_details":{
+       *       "reasoning_tokens":203,
+       *       "audio_tokens":0,
+       *       "accepted_prediction_tokens":0,
+       *       "rejected_prediction_tokens":0
+       *    },
+       *    "num_sources_used":0
+       * }
+       */
       @Serializable
       data class Usage(
         @SerialName("prompt_tokens")
         val promptTokens : Int,
         @SerialName("completion_tokens")
-        val completionTokens: Int
+        val completionTokens: Int,
+        @SerialName("total_tokens")
+        val totalTokens: Int
       )
     }
   }
