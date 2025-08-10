@@ -322,8 +322,8 @@ class ReportFactory(
       EventSource.TRANSIT,
     )
 
-    val outerPoints = setOf(JUPITER, SATURN, URANUS, NEPTUNE, PLUTO)
-    val innerPoints = Axis.values.toSet() + setOf(SUN, MOON, MERCURY, VENUS, MARS)
+    val longTermOuterPoints = setOf(JUPITER, SATURN, URANUS, NEPTUNE, PLUTO)
+    val longTermInnerPoints = Axis.values.toSet() + setOf(SUN, MOON, MERCURY, VENUS, MARS)
 
     val longTermConfig = AstrologyTraversalConfig(
       horoscopeConfig = natalConfig,
@@ -339,15 +339,13 @@ class ReportFactory(
       houseIngress = false,
     )
 
-    val longTermTriggers: List<ITimeLineEvent> = //emptyList()
-    // too noisy
-    getTimeLineEvents(
+    val longTermTriggers: List<ITimeLineEvent> = getTimeLineEvents(
       model, grain, viewGmtJulDay, fromTime, toTime, longTermEventSources, longTermConfig,
       includeLunarReturn = false,
       pastExtDays = 0,
       futureExtDays = 0,
-      outerPoints = outerPoints,
-      innerPoints = innerPoints,
+      outerPoints = longTermOuterPoints,
+      innerPoints = longTermInnerPoints,
     ).events
 
     val pastFrom: GmtJulDay = eventGroups.first().fromTime
