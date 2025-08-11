@@ -205,6 +205,59 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig, forward: Boolean = true) : ISolarArcModel
 
 
+  fun getFirdariaPeriods(model: IHoroscopeModel, gmtJulDay: GmtJulDay) : Pair<FirdariaMajorPeriod, FirdariaSubPeriod?> {
+    require(gmtJulDay >= model.gmtJulDay) { "Query time must be at or after birth time." }
+
+    val sunHouse = model.getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
+    val diurnal = sunHouse in 7..12
+
+    val fullMajorRulerSequence = getMajorRulers(diurnal)
+    // 副運序列只包含七大行星，順序與主運序列一致
+    val planetarySequence = fullMajorRulerSequence.filterIsInstance<Planet>()
+
+    // 2. 建立一個無限循環的主星序列，以處理 > 75 歲的情況
+    val infiniteRulerSequence = generateSequence(fullMajorRulerSequence) { it }.flatten()
+    val yearDays = 365.25
+
+    // 3. 使用 scan 產生一個主運時期的無限序列
+    // scan 的累加器 (accumulator) 是一個 Pair，儲存 (剛產生出來的主運, 下一個主運的開始時間)
+    val initialAccumulator: Pair<FirdariaMajorPeriod?, GmtJulDay> = null to model.gmtJulDay
+
+    val majorPeriodSequence = infiniteRulerSequence.scan(initialAccumulator) { acc: Pair<FirdariaMajorPeriod?, GmtJulDay>, majorRuler: AstroPoint ->
+      val currentMajorStartTime = acc.second
+      val periodYears = majorRulerYearsMap.getValue(majorRuler)
+      val periodDays = periodYears * yearDays
+      val majorPeriodEndTime = currentMajorStartTime + periodDays
+
+      // 計算副運
+      val subPeriods = if (majorRuler is Planet) {
+        val subPeriodDays = periodDays / 7.0
+        val subRulerStartIndex = planetarySequence.indexOf(majorRuler)
+        (0 until 7).map { i ->
+          val subRuler = planetarySequence[(subRulerStartIndex + i) % 7]
+          val subStartTime = currentMajorStartTime + (subPeriodDays * i)
+          val subEndTime = subStartTime + subPeriodDays
+          FirdariaSubPeriod(subRuler, subStartTime, subEndTime)
+        }
+      } else {
+        emptyList()
+      }
+
+      val majorPeriod = FirdariaMajorPeriod(majorRuler, currentMajorStartTime, majorPeriodEndTime, subPeriods)
+      majorPeriod to majorPeriodEndTime // 回傳新的 Pair 作為下一次的累加器
+    }.drop(1) // 丟掉第一個由初始值產生的無用結果
+      .map { it.first!! } // 只取 FirdariaMajorPeriod
+
+    // 4. 從無限序列中找到第一個包含查詢時間點的主運
+    // 區間是 [startTime, endTime)，所以用 < 判斷
+    val foundMajorPeriod = majorPeriodSequence.first { gmtJulDay < it.endTime }
+
+    // 5. 從找到的主運中，找出對應的副運
+    val foundSubPeriod = foundMajorPeriod.subPeriods.find { gmtJulDay >= it.startTime && gmtJulDay < it.endTime }
+
+    return foundMajorPeriod to foundSubPeriod
+  }
+
 }
 
 data class ProgressionCalcObj(
