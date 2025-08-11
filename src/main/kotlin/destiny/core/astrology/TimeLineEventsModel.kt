@@ -4,6 +4,7 @@ import destiny.core.EventType
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
 import destiny.core.astrology.prediction.EventSource
+import destiny.core.astrology.prediction.Firdaria
 import destiny.core.astrology.prediction.IReturnDto
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -233,7 +234,8 @@ data class EventGroup(
   val toTime : GmtJulDay,
   val userEvents : List<AbstractEvent>,
   val astroEvents : List<@Contextual ITimeLineEvent>,
-  val lunarReturns : List<@Contextual IReturnDto>
+  val lunarReturns : List<@Contextual IReturnDto>,
+  val firdarias: List<Firdaria>
 )
 
 @Serializable
@@ -255,7 +257,8 @@ data class Future(
   val toTime: GmtJulDay,
   val astroEvents: List<@Contextual ITimeLineEvent>,
   val lunarReturns: List<@Contextual IReturnDto>,
-  val solarReturns: List<@Contextual IReturnDto>
+  val solarReturns: List<@Contextual IReturnDto>,
+  val firdariaPeriods: List<Firdaria>,
 )
 
 @Serializable

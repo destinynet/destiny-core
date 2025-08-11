@@ -7,8 +7,18 @@ import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.LunarNode
 import destiny.core.astrology.Planet
 import destiny.core.calendar.GmtJulDay
-import java.io.Serializable
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 
+@Serializable
+data class Firdaria(
+  val majorRuler: AstroPoint,
+  val subRuler: AstroPoint,
+  @Contextual
+  val fromTime: GmtJulDay,
+  @Contextual
+  val toTime: GmtJulDay
+)
 
 interface IFirdariaPeriod {
   /** 此時期的主宰星 */
@@ -25,9 +35,12 @@ interface IFirdariaPeriod {
 /**
  * 法達副運時期 (Sub Period)。
  */
+@Serializable
 data class FirdariaSubPeriod(
   override val ruler: AstroPoint,
+  @Contextual
   override val startTime: GmtJulDay,
+  @Contextual
   override val endTime: GmtJulDay
 ) : IFirdariaPeriod
 
@@ -35,9 +48,12 @@ data class FirdariaSubPeriod(
  * 法達主運時期 (Major Period)。
  * 包含其下的所有副運時期。
  */
+@Serializable
 data class FirdariaMajorPeriod(
   override val ruler: AstroPoint,
+  @Contextual
   override val startTime: GmtJulDay,
+  @Contextual
   override val endTime: GmtJulDay,
   /** 此主運下的所有副運列表 */
   val subPeriods: List<FirdariaSubPeriod>
@@ -53,7 +69,7 @@ data class FirdariaTimeline(
   val diurnal: Boolean,
   /** 完整的主運列表，從出生開始排序 */
   val majorPeriods: List<FirdariaMajorPeriod>
-) : Serializable {
+)  {
 
   /**
    * 方便的查詢功能：根據一個特定時刻，找出當下的主運與副運。
@@ -69,6 +85,46 @@ data class FirdariaTimeline(
 
   fun allPeriods(): List<IFirdariaPeriod> =
     majorPeriods.flatMap { listOf(it) + it.subPeriods }
+
+  fun getPeriodsBetween(from: GmtJulDay, to: GmtJulDay): List<FirdariaMajorPeriod> {
+    // 兩個區間 [A, B] 和 [C, D] 重疊的條件是 A <= D 且 C <= B
+    return majorPeriods.filter { it.startTime <= to && from <= it.endTime }
+  }
+
+  /**
+   * 獲取與指定時間範圍 [from, to] 有重疊的所有法達時段。
+   */
+  fun getPeriods(from: GmtJulDay, to: GmtJulDay): List<Firdaria> {
+    return majorPeriods.flatMap { majorPeriod ->
+      // 判斷：這是一個有子限期的常規行星主限期，還是無子限期的南北焦點主限期？
+
+      // 案例 A: 常規行星主限期 (subPeriods 列表不為空)
+      if (majorPeriod.subPeriods.isNotEmpty()) {
+        majorPeriod.subPeriods
+          .filter { subPeriod ->
+            // 篩選出時間上有重疊的子限期
+            subPeriod.startTime < to && from < subPeriod.endTime
+          }
+          .map { subPeriod ->
+            // 將子限期轉換為 Firdaria 物件
+            Firdaria(majorPeriod.ruler, subPeriod.ruler, subPeriod.startTime, subPeriod.endTime)
+          }
+      }
+      // 案例 B: 南北焦點主限期 (subPeriods 列表為空)
+      else {
+        // 直接判斷這個主限期本身是否與查詢範圍重疊
+        if (majorPeriod.startTime < to && from < majorPeriod.endTime) {
+          // 如果重疊，則創建一個 Firdaria 物件，其 subRuler 就是 majorRuler
+          listOf(
+            // 對於南北交點，子限主星就是它自己
+            Firdaria(majorPeriod.ruler, majorPeriod.ruler, majorPeriod.startTime, majorPeriod.endTime)
+          )
+        } else {
+          emptyList()
+        }
+      }
+    }
+  }
 }
 
 val majorRulerYearsMap: Map<AstroPoint, Int> = mapOf(

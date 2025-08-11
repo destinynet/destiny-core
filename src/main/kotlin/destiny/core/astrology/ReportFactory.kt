@@ -273,6 +273,8 @@ class ReportFactory(
       houseIngress = false,
     )
 
+    val firdariaTimeLine: FirdariaTimeline = with(horoscopeFeature) { model.getFirdariaTimeline(100) }
+
     val eventGroups: List<EventGroup> = extractedEvents.events.groupAdjacentEvents(extMonth = 1).map { groupedEvent: List<AbstractEvent> ->
       val (from, to) = groupedEvent.sortedBy { it.yearMonth() }
         .let { (it.first().yearMonth().atDay(1).atStartOfDay().toGmtJulDay(loc) to it.last().yearMonth().plusMonths(1).atDay(1).atStartOfDay().toGmtJulDay(loc)) }
@@ -303,7 +305,7 @@ class ReportFactory(
 
       val events = (nonTransitEvents.events + transitEvents).sortedBy { it.divergentTime }
 
-      EventGroup(from, to, groupedEvent, events, nonTransitEvents.lunarReturns)
+      EventGroup(from, to, groupedEvent, events, nonTransitEvents.lunarReturns, firdariaTimeLine.getPeriods(from, to))
     }
 
     val threshold = 0.9
@@ -350,8 +352,8 @@ class ReportFactory(
 
     val pastFrom: GmtJulDay = eventGroups.first().fromTime
     val pastTo: GmtJulDay = eventGroups.last().toTime
-    val past = Past(eventGroups, solarReturns, longTermTriggers, pastFrom, pastTo)
 
+    val past = Past(eventGroups, solarReturns, longTermTriggers, pastFrom, pastTo)
 
     val future = futureDuration?.let { dur ->
       val futureFromTime = viewDay.atStartOfDay().toGmtJulDay(loc)
@@ -361,7 +363,9 @@ class ReportFactory(
       val futureSolarReturns =
         solarReturnContext.getRangedReturns(model, grain, futureToTime, futureToTime, aspectEffectiveModern, modernAspectCalculator, natalConfig, threshold, returnChartIncludeClassical)
           .toList()
-      Future(futureToTime, futureToTime, futureTimeLineEvents.events, futureTimeLineEvents.lunarReturns, futureSolarReturns)
+
+      val futureFirdariaPeriods = firdariaTimeLine.getPeriods(futureFromTime, futureToTime)
+      Future(futureToTime, futureToTime, futureTimeLineEvents.events, futureTimeLineEvents.lunarReturns, futureSolarReturns, futureFirdariaPeriods)
     }
 
     return MergedUserEventsModel(natal, grain, extractedEvents.intro, past, viewDay, future)
