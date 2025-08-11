@@ -66,6 +66,9 @@ data class FirdariaTimeline(
       majorPeriod to majorPeriod.subPeriods.find { gmtJulDay in it.startTime..it.endTime }
     }
   }
+
+  fun allPeriods(): List<IFirdariaPeriod> =
+    majorPeriods.flatMap { listOf(it) + it.subPeriods }
 }
 
 val majorRulerYearsMap: Map<AstroPoint, Int> = mapOf(

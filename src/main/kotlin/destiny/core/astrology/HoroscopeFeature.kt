@@ -205,10 +205,53 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig, forward: Boolean = true) : ISolarArcModel
 
 
-  fun getFirdariaPeriods(model: IHoroscopeModel, gmtJulDay: GmtJulDay) : Pair<FirdariaMajorPeriod, FirdariaSubPeriod?> {
-    require(gmtJulDay >= model.gmtJulDay) { "Query time must be at or after birth time." }
+  fun IHoroscopeModel.getFirdariaTimeline(years: Int) : FirdariaTimeline {
+    require(years > 0) { "Years must be positive." }
 
-    val sunHouse = model.getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
+    val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
+    val diurnal = sunHouse in 7..12
+
+    val fullMajorRulerSequence = getMajorRulers(diurnal)
+    val planetarySequence = fullMajorRulerSequence.filterIsInstance<Planet>()
+
+    val infiniteRulerSequence = generateSequence(fullMajorRulerSequence) { it }.flatten()
+    val yearDays = 365.25
+
+    // 展開所有主運直到指定年數
+    val startGmt = gmtJulDay
+    val endGmt = startGmt + years * yearDays
+
+    val majorPeriods = infiniteRulerSequence
+      .runningFold(startGmt to null as FirdariaMajorPeriod?) { (currentStart, _), majorRuler ->
+        val periodYears = majorRulerYearsMap.getValue(majorRuler)
+        val periodDays = periodYears * yearDays
+        val majorEnd = currentStart + periodDays
+
+        val subPeriods = if (majorRuler is Planet) {
+          val subPeriodDays = periodDays / 7.0
+          val subStartIndex = planetarySequence.indexOf(majorRuler)
+          (0 until 7).map { i ->
+            val subRuler = planetarySequence[(subStartIndex + i) % 7]
+            val subStart = currentStart + i * subPeriodDays
+            // 確保最後一個副運的結束時間與主運的結束時間精確吻合
+            val subEnd = if (i == 6) majorEnd else subStart + subPeriodDays
+            FirdariaSubPeriod(subRuler, subStart, subEnd)
+          }
+        } else emptyList()
+
+        majorEnd to FirdariaMajorPeriod(majorRuler, currentStart, majorEnd, subPeriods)
+      }
+      .mapNotNull { it.second }
+      .takeWhile { it.startTime < endGmt }
+      .toList()
+
+    return FirdariaTimeline(diurnal, majorPeriods)
+  }
+
+  fun IHoroscopeModel.getFirdariaPeriods(gmtJulDay: GmtJulDay) : Pair<FirdariaMajorPeriod, FirdariaSubPeriod?> {
+    require(gmtJulDay >= this.gmtJulDay) { "Query time must be at or after birth time." }
+
+    val sunHouse = this.getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
     val diurnal = sunHouse in 7..12
 
     val fullMajorRulerSequence = getMajorRulers(diurnal)
@@ -221,41 +264,39 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
 
     // 3. 使用 scan 產生一個主運時期的無限序列
     // scan 的累加器 (accumulator) 是一個 Pair，儲存 (剛產生出來的主運, 下一個主運的開始時間)
-    val initialAccumulator: Pair<FirdariaMajorPeriod?, GmtJulDay> = null to model.gmtJulDay
+    val initialAcc: Pair<FirdariaMajorPeriod?, GmtJulDay> = null to this.gmtJulDay
 
-    val majorPeriodSequence = infiniteRulerSequence.scan(initialAccumulator) { acc: Pair<FirdariaMajorPeriod?, GmtJulDay>, majorRuler: AstroPoint ->
-      val currentMajorStartTime = acc.second
-      val periodYears = majorRulerYearsMap.getValue(majorRuler)
-      val periodDays = periodYears * yearDays
-      val majorPeriodEndTime = currentMajorStartTime + periodDays
+    val majorPeriodSequence = infiniteRulerSequence
+      .scan(initialAcc) { acc, majorRuler ->
+        val startTime = acc.second
+        val periodYears = majorRulerYearsMap.getValue(majorRuler)
+        val periodDays = periodYears * yearDays
+        val endTime = startTime + periodDays
 
-      // 計算副運
-      val subPeriods = if (majorRuler is Planet) {
-        val subPeriodDays = periodDays / 7.0
-        val subRulerStartIndex = planetarySequence.indexOf(majorRuler)
-        (0 until 7).map { i ->
-          val subRuler = planetarySequence[(subRulerStartIndex + i) % 7]
-          val subStartTime = currentMajorStartTime + (subPeriodDays * i)
-          val subEndTime = subStartTime + subPeriodDays
-          FirdariaSubPeriod(subRuler, subStartTime, subEndTime)
-        }
-      } else {
-        emptyList()
+        val subPeriods = if (majorRuler is Planet) {
+          val subPeriodDays = periodDays / 7.0
+          val subStartIndex = planetarySequence.indexOf(majorRuler)
+          (0 until 7).map { i ->
+            val subStart = startTime + subPeriodDays * i
+            val subEnd = if (i == 6) endTime // 保證最後一段對齊
+            else subStart + subPeriodDays
+            FirdariaSubPeriod(
+              ruler = planetarySequence[(subStartIndex + i) % 7],
+              startTime = subStart,
+              endTime = subEnd
+            )
+          }
+        } else emptyList()
+
+        FirdariaMajorPeriod(majorRuler, startTime, endTime, subPeriods) to endTime
       }
+      .drop(1)
+      .map { it.first!! }
 
-      val majorPeriod = FirdariaMajorPeriod(majorRuler, currentMajorStartTime, majorPeriodEndTime, subPeriods)
-      majorPeriod to majorPeriodEndTime // 回傳新的 Pair 作為下一次的累加器
-    }.drop(1) // 丟掉第一個由初始值產生的無用結果
-      .map { it.first!! } // 只取 FirdariaMajorPeriod
+    val foundMajor = majorPeriodSequence.first { gmtJulDay >= it.startTime && gmtJulDay < it.endTime }
+    val foundSub = foundMajor.subPeriods.find { gmtJulDay >= it.startTime && gmtJulDay < it.endTime }
 
-    // 4. 從無限序列中找到第一個包含查詢時間點的主運
-    // 區間是 [startTime, endTime)，所以用 < 判斷
-    val foundMajorPeriod = majorPeriodSequence.first { gmtJulDay < it.endTime }
-
-    // 5. 從找到的主運中，找出對應的副運
-    val foundSubPeriod = foundMajorPeriod.subPeriods.find { gmtJulDay >= it.startTime && gmtJulDay < it.endTime }
-
-    return foundMajorPeriod to foundSubPeriod
+    return foundMajor to foundSub
   }
 
 }
