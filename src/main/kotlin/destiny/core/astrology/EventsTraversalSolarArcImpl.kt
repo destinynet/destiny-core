@@ -3,7 +3,6 @@ package destiny.core.astrology
 import destiny.core.asLocaleString
 import destiny.core.astrology.Aspect.Companion.expand
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
-import destiny.core.astrology.prediction.ISolarArcModel
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.electional.Impact
@@ -40,8 +39,10 @@ class EventsTraversalSolarArcImpl(
 
     val threshold = 0.9
 
-    val fromSolarArc: ISolarArcModel = horoscopeFeature.getSolarArc(model, fromGmtJulDay, includeHour, modernAspectCalculator, threshold, hConfig)
-    val toSolarArc: ISolarArcModel = horoscopeFeature.getSolarArc(model, toGmtJulDay, includeHour, modernAspectCalculator, threshold, hConfig)
+    val (fromSolarArc, toSolarArc) = with(horoscopeFeature) {
+      model.getSolarArc(fromGmtJulDay, includeHour, modernAspectCalculator, threshold, hConfig) to
+        model.getSolarArc(toGmtJulDay, includeHour, modernAspectCalculator, threshold, hConfig)
+    }
 
     // 內盤要考慮的星體 (Natal Points)
     val natalPointsToConsider = model.points.filter { it in innerPoints }
@@ -205,8 +206,10 @@ class EventsTraversalSolarArcImpl(
     hConfig: HoroscopeConfig
   ): GmtJulDay? {
     // 1. 粗略估算檢查，確保目標弧度在時間範圍內，這是一個重要的初步過濾
-    val arcAtLow = horoscopeFeature.getSolarArc(inner, fromGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
-    val arcAtHigh = horoscopeFeature.getSolarArc(inner, toGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
+    val (arcAtLow, arcAtHigh) = with(horoscopeFeature) {
+      inner.getSolarArc(fromGmt, true, modernAspectCalculator, null, hConfig).degreeMoved to
+        inner.getSolarArc(toGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
+    }
 
     // 檢查 targetArc 是否真的在範圍內
     val tolerance = 0.01
@@ -240,7 +243,7 @@ class EventsTraversalSolarArcImpl(
         break
       }
 
-      val arcAtMid = horoscopeFeature.getSolarArc(inner, midGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
+      val arcAtMid = with(horoscopeFeature) { inner.getSolarArc(midGmt, true, modernAspectCalculator, null, hConfig).degreeMoved }
 
       logger.trace {
         "[$round] currentArc = ${arcAtMid.truncateToString(4)} , targetArc = ${targetArc.truncateToString(4)} , lowGmt = ${lowGmt.value.truncateToString(4)} , highGmt = ${
@@ -261,7 +264,7 @@ class EventsTraversalSolarArcImpl(
     }
 
     // 3. 最終檢查 lowGmt 是否滿足條件且誤差夠小
-    val finalArc = horoscopeFeature.getSolarArc(inner, lowGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
+    val finalArc = with(horoscopeFeature) { inner.getSolarArc(lowGmt, true, modernAspectCalculator, null, hConfig).degreeMoved }
     return if (abs(finalArc - targetArc) < 0.01) { // 容許的最終誤差
       lowGmt
     } else {
@@ -285,8 +288,11 @@ class EventsTraversalSolarArcImpl(
     hConfig: HoroscopeConfig
   ): GmtJulDay? {
     // 粗略估算檢查事件是否可能在範圍內
-    val degreeMovedFrom = horoscopeFeature.getSolarArc(inner, fromGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
-    val degreeMovedTo = horoscopeFeature.getSolarArc(inner, toGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
+    val (degreeMovedFrom, degreeMovedTo) = with(horoscopeFeature) {
+      inner.getSolarArc(fromGmt, true, modernAspectCalculator, null, hConfig).degreeMoved to
+        inner.getSolarArc(toGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
+    }
+
     if (targetArc < degreeMovedFrom || targetArc > degreeMovedTo) {
       logger.trace { "targetArc = $targetArc , but degreeMovedFrom = $degreeMovedFrom , degreeMovedTo = $degreeMovedTo" }
       return null
@@ -301,7 +307,7 @@ class EventsTraversalSolarArcImpl(
 
     while ((high - low) > 0.0001) { // 迭代直到找到足夠精確的時間
       val mid = low + (high - low) / 2
-      val solarArcModel = horoscopeFeature.getSolarArc(inner, mid, true, modernAspectCalculator, null, hConfig)
+      val solarArcModel = with(horoscopeFeature) { inner.getSolarArc(mid, true, modernAspectCalculator, null, hConfig) }
       val currentArc = solarArcModel.degreeMoved
 
       round++
@@ -315,7 +321,7 @@ class EventsTraversalSolarArcImpl(
     }
 
     // 最終檢查 low/high 是否滿足條件且誤差夠小
-    val finalModel = horoscopeFeature.getSolarArc(inner, low, true, modernAspectCalculator, null, hConfig)
+    val finalModel = with(horoscopeFeature) { inner.getSolarArc(low, true, modernAspectCalculator, null, hConfig) }
     return if (abs(finalModel.degreeMoved - targetArc) < 0.01) { // 容許的誤差
       low
     } else {

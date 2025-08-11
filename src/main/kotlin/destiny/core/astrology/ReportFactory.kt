@@ -81,7 +81,7 @@ class ReportFactory(
       personModel.toPersonHoroscopeDto(grain, viewGmt, RulerPtolemyImpl, aspectEffectiveModern, modernAspectCalculator, config)
     }
 
-    val solarArcModel = horoscopeFeature.getSolarArc(personModel, viewGmt, innerConsiderHour, modernAspectCalculator, threshold, config)
+    val solarArcModel = with(horoscopeFeature) { personModel.getSolarArc(viewGmt, innerConsiderHour, modernAspectCalculator, threshold, config) }
 
     val transitModel = horoscopeFeature.getModel(viewGmt, personModel.location, config)
 

@@ -50,7 +50,7 @@ data class FirdariaMajorPeriod(
  */
 data class FirdariaTimeline(
   /** 是否為日生盤 */
-  val isDiurnal: Boolean,
+  val diurnal: Boolean,
   /** 完整的主運列表，從出生開始排序 */
   val majorPeriods: List<FirdariaMajorPeriod>
 ) : Serializable {

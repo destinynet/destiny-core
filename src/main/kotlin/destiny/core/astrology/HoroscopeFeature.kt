@@ -61,25 +61,25 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   /**
    * secondary progression calculation
    */
-  fun getSecondaryProgression(
-    model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
+  fun IHoroscopeModel.getSecondaryProgression(
+    progressionTime: GmtJulDay, aspects: Set<Aspect>,
     aspectCalculator: IAspectCalculator, config: IHoroscopeConfig, forward: Boolean = true
   ): IProgressionModel {
     val progression = ProgressionSecondary(forward)
 
-    return getProgression(progression, model, progressionTime, aspects, aspectCalculator, config)
+    return getProgression(progression, this, progressionTime, aspects, aspectCalculator, config)
   }
 
   /**
    * Tertiary Progression calculation
    */
-  fun getTertiaryProgression(
-    model: IHoroscopeModel, progressionTime: GmtJulDay, aspects: Set<Aspect>,
+  fun IHoroscopeModel.getTertiaryProgression(
+    progressionTime: GmtJulDay, aspects: Set<Aspect>,
     aspectCalculator: IAspectCalculator, config: IHoroscopeConfig, converse: Boolean = false
   ): IProgressionModel {
     val progression = ProgressionTertiary(converse)
 
-    return getProgression(progression, model, progressionTime, aspects, aspectCalculator, config)
+    return getProgression(progression, this, progressionTime, aspects, aspectCalculator, config)
   }
 
   /**
@@ -202,7 +202,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
       .toList()
   }
 
-  fun getSolarArc(model: IHoroscopeModel, viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig, forward: Boolean = true) : ISolarArcModel
+  fun IHoroscopeModel.getSolarArc(viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig, forward: Boolean = true) : ISolarArcModel
 
 
   fun IHoroscopeModel.getFirdariaTimeline(years: Int) : FirdariaTimeline {
@@ -301,7 +301,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
 
 }
 
-data class ProgressionCalcObj(
+private data class ProgressionCalcObj(
   val type: ProgressionType,
   val convergentTime: GmtJulDay,
   val forward: Boolean
@@ -433,8 +433,7 @@ class HoroscopeFeature(
     return performOperation(param)
   }
 
-  override fun getSolarArc(
-    model: IHoroscopeModel,
+  override fun IHoroscopeModel.getSolarArc(
     viewTime: GmtJulDay,
     innerConsiderHour: Boolean,
     aspectCalculator: IAspectCalculator,
@@ -443,24 +442,24 @@ class HoroscopeFeature(
     forward: Boolean
   ): ISolarArcModel {
 
-    require(viewTime >= model.gmtJulDay) { "viewTime should be after model.gmtJulDay" }
+    require(viewTime >= this.gmtJulDay) { "viewTime should be after model.gmtJulDay" }
 
     // 使用 Secondary Progression 來獲得精確的 convergent time
     val progressionSecondary = ProgressionSecondary(forward)
-    val convergentJulDay = progressionSecondary.getConvergentTime(model.gmtJulDay, viewTime)
+    val convergentJulDay = progressionSecondary.getConvergentTime(this.gmtJulDay, viewTime)
 
     // 計算精確的太陽弧度數
     val convergentSunPos: IStarPos = starPositionImpl.getPosition(
-      Planet.SUN, convergentJulDay, model.location,
+      Planet.SUN, convergentJulDay, this.location,
       config.centric, config.coordinate, config.temperature, config.pressure
     )
-    val natalSunPos = model.getPosition(Planet.SUN)!!
+    val natalSunPos = this.getPosition(Planet.SUN)!!
 
     val degreeMoved: Double = convergentSunPos.lngDeg.aheadOf(natalSunPos.lngDeg).let {
       if (!forward) -it else it
     }
 
-    val innerPosMap = model.positionMap.let {
+    val innerPosMap = this.positionMap.let {
       if (innerConsiderHour)
         it
       else
@@ -479,26 +478,26 @@ class HoroscopeFeature(
       convergentJulDay - 0.01
 
 
-    val convergentAndLaterSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, later, model.location, config.centric, config.coordinate, config.temperature, config.pressure)
+    val convergentAndLaterSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, later, this.location, config.centric, config.coordinate, config.temperature, config.pressure)
     // 計算 later 時間點相對於「本命太陽」的「完整弧角」
-    val laterFullSunArc = convergentAndLaterSunPos.lngDeg - model.getPosition(Planet.SUN)!!.lngDeg
+    val laterFullSunArc = convergentAndLaterSunPos.lngDeg - this.getPosition(Planet.SUN)!!.lngDeg
     val laterPosMap = innerPosMap.mapValues { (_, pos) ->
       pos.lngDeg + laterFullSunArc
     }
 
     val laterForP1: ((AstroPoint) -> IZodiacDegree?) = { p -> laterPosMap[p] }
-    val laterForP2: ((AstroPoint) -> IZodiacDegree?) = { p -> model.getZodiacDegree(p) }
+    val laterForP2: ((AstroPoint) -> IZodiacDegree?) = { p -> this.getZodiacDegree(p) }
 
     val synastryAspects = if (innerConsiderHour) {
-      synastryAspectsFine(posMap, model, laterForP1, laterForP2, aspectCalculator, threshold)
+      synastryAspectsFine(posMap, this, laterForP1, laterForP2, aspectCalculator, threshold)
     } else {
       synastryAspectsCoarse(posMap, innerPosMap, laterForP1, laterForP2, aspectCalculator, threshold)
     }
 
-    return SolarArcModel(model.gmtJulDay, innerConsiderHour, viewTime,
+    return SolarArcModel(this.gmtJulDay, innerConsiderHour, viewTime,
                          forward,
                          convergentJulDay, degreeMoved,
-                         model.location, posMap, synastryAspects)
+                         this.location, posMap, synastryAspects)
   }
 
   companion object {
