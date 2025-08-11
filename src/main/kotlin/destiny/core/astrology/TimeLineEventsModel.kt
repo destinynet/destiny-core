@@ -180,12 +180,6 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
         // 如果解析為 LocalDate 失敗，則嘗試解析為 YYYY-MM
         YearMonth.parse(dateString, YEAR_MONTH_FORMATTER)
 
-        // 建立一個新的 JsonObject，將 "date" 欄位改名為 "yearMonth"
-//        val modifiedJsonObject = JsonObject(jsonObject.toMutableMap().apply {
-//          put("yearMonth", JsonPrimitive(dateString))
-//          remove("date")
-//        })
-
         // 將修改後的物件作為 MonthEvent 進行反序列化
         Json.decodeFromJsonElement(MonthEvent.serializer(), jsonObject)
       } catch (e2: DateTimeParseException) {
