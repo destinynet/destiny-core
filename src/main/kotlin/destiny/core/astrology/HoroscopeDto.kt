@@ -107,7 +107,7 @@ data class Natal(
     val signDegree: IZodiacDegree,
     val element: Element,
     val quality: Quality,
-    val house: Int,
+    val house: Int?,
     val motion: Motion? = null,
     @Serializable(with = RetrogradePhaseWithDescriptionSerializer::class)
     val retrogradePhase: RetrogradePhase? = null,

@@ -45,7 +45,7 @@ class DtoFactory(
 
     val threshold = 0.9
 
-    val byStar: Map<AstroPoint, Natal.StarPosInfo> = getByStarMap(threshold, aspectCalculator, rulerImpl).filter { (p, _) ->
+    val byStar: Map<AstroPoint, Natal.StarPosInfo> = getByStarMap(threshold, aspectCalculator, rulerImpl, grain).filter { (p, _) ->
       when (grain) {
         BirthDataGrain.MINUTE -> true
         BirthDataGrain.DAY    -> p !is Axis

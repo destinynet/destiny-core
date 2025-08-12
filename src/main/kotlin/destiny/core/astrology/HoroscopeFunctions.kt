@@ -203,7 +203,7 @@ fun AstroPoint.getAspects(m: IHoroscopeModel, threshold: Double, aspectCalculato
   return m.getTightAspects(aspectCalculator, threshold).filter { it.points.contains(this) }
 }
 
-fun IHoroscopeModel.getByStarMap(threshold: Double, aspectCalculator: IAspectCalculator, rulerImpl: IRuler): Map<AstroPoint, Natal.StarPosInfo> {
+fun IHoroscopeModel.getByStarMap(threshold: Double, aspectCalculator: IAspectCalculator, rulerImpl: IRuler, grain: BirthDataGrain): Map<AstroPoint, Natal.StarPosInfo> {
   return points.associateWith { astroPoint ->
 
     val zodiacSign: ZodiacSign = getZodiacSign(astroPoint)!!
@@ -214,11 +214,16 @@ fun IHoroscopeModel.getByStarMap(threshold: Double, aspectCalculator: IAspectCal
         .let { setOf(it) }
     }
 
+    val house = when(grain) {
+      BirthDataGrain.MINUTE -> getHouse(astroPoint)!!
+      BirthDataGrain.DAY -> null
+    }
+
     Natal.StarPosInfo(
       getZodiacDegree(astroPoint)!!,
       zodiacSign.element,
       zodiacSign.quality,
-      getHouse(astroPoint)!!,
+      house,
       if (astroPoint is Star) {
         getMotion(astroPoint)
       } else {
@@ -228,7 +233,10 @@ fun IHoroscopeModel.getByStarMap(threshold: Double, aspectCalculator: IAspectCal
         getRetrogradePhase(astroPoint)
       } else null,
       if (astroPoint is Planet) {
-        getRulingHouses(astroPoint)
+        when(grain) {
+          BirthDataGrain.MINUTE -> getRulingHouses(astroPoint)
+          BirthDataGrain.DAY -> emptySet()
+        }
       } else emptySet(),
       dispositors,
       astroPoint.getAspects(this, threshold, aspectCalculator)
