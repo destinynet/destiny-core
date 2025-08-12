@@ -365,7 +365,7 @@ class ReportFactory(
           .toList()
 
       val futureFirdariaPeriods = firdariaTimeLine.getPeriods(futureFromTime, futureToTime)
-      Future(futureToTime, futureToTime, futureTimeLineEvents.events, futureTimeLineEvents.lunarReturns, futureSolarReturns, futureFirdariaPeriods)
+      Future(futureFromTime, futureToTime, futureTimeLineEvents.events, futureTimeLineEvents.lunarReturns, futureSolarReturns, futureFirdariaPeriods)
     }
 
     return MergedUserEventsModel(natal, grain, extractedEvents.intro, past, viewDay, future)
