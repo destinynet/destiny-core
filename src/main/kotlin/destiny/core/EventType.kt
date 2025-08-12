@@ -32,8 +32,7 @@ enum class EventType(
 
   // 家庭與家族
   BIRTH_OF_CHILD(FAMILY_AND_RELATIVES, true),             // 生子／收養子女
-  FATHER_DECEASED(FAMILY_AND_RELATIVES, false),           // 父親亡故
-  MOTHER_DECEASED(FAMILY_AND_RELATIVES, false),           // 母親亡故
+  RELATIVE_DECEASED(FAMILY_AND_RELATIVES, true),          // 親人亡故
   FAMILY_CHANGE(FAMILY_AND_RELATIVES, true),              // 家庭關係重大變化
   BEING_ABANDONED_DISOWNED(FAMILY_AND_RELATIVES, false),  // 被遺棄／斷絕關係
   ABANDONING_FAMILY(FAMILY_AND_RELATIVES, true),          // 拋棄家人／子女
