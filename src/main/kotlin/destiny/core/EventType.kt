@@ -80,6 +80,7 @@ enum class EventType(
   FALLING_OUT(REPUTATION_AND_RELATIONSHIPS, true),            // 與摯友／夥伴決裂
   MEET_KEY_MENTOR(REPUTATION_AND_RELATIONSHIPS, true),        // 遇到重要導師
   VIOLENT_OFFENDER(REPUTATION_AND_RELATIONSHIPS, true),       // 暴力行為／加害他人
+  RECONCILIATION(REPUTATION_AND_RELATIONSHIPS, true),         // 和解
 
   // 心靈與宗教
   BAPTISM(SPIRITUAL_AND_RELIGIOUS, false),            // 受洗
