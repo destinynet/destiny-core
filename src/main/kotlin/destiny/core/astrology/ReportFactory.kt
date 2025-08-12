@@ -214,15 +214,13 @@ class ReportFactory(
     val returnChartIncludeClassical = false
 
     val lunarReturns = if (includeLunarReturn) {
-      val lunarReturnContext = ReturnContext(MOON, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, returnChartIncludeClassical)
+      val lunarReturnContext = ReturnContext(MOON, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, forward = true, 0.0, returnChartIncludeClassical)
       lunarReturnContext.getRangedReturns(personModel, grain, fromTime, toTime, aspectEffectiveModern, modernAspectCalculator, traversalConfig.horoscopeConfig, threshold, returnChartIncludeClassical)
     } else {
-      emptySequence()
+      emptyList()
     }
 
-    val returnCharts = lunarReturns.sortedBy { it.validFrom }.toList()
-
-    return TimeLineEventsModel(natal, grain, fromTime, toTime, events, returnCharts)
+    return TimeLineEventsModel(natal, grain, fromTime, toTime, events, lunarReturns)
   }
 
   /** 事件自動分群(依據相鄰事件) */
@@ -311,12 +309,15 @@ class ReportFactory(
     val threshold = 0.9
     val returnChartIncludeClassical = false
 
-    val solarReturnContext = ReturnContext(SUN, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, true, 0.0, false)
+    val solarReturnContext = ReturnContext(SUN, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, forward = true, 0.0, precession = false)
 
-    val fromTime = eventGroups.first().fromTime
-    val toTime = eventGroups.last().toTime
-
-    val solarReturns = solarReturnContext.getRangedReturns(model, grain, fromTime, toTime, aspectEffectiveModern, modernAspectCalculator, natalConfig, threshold, returnChartIncludeClassical).toList()
+    // 太陽返照
+    val solarReturns = solarReturnContext.getReturns(
+      model, grain,
+      eventGroups.map { it.fromTime to it.toTime },
+      aspectEffectiveModern, modernAspectCalculator, natalConfig,
+      threshold, returnChartIncludeClassical
+    )
 
     val longTermEventSources = setOf(
       EventSource.SECONDARY,
@@ -341,6 +342,9 @@ class ReportFactory(
       houseIngress = false,
     )
 
+    val fromTime = eventGroups.first().fromTime
+    val toTime = eventGroups.last().toTime
+
     val longTermTriggers: List<ITimeLineEvent> = getTimeLineEvents(
       model, grain, viewGmtJulDay, fromTime, toTime, longTermEventSources, longTermConfig,
       includeLunarReturn = false,
@@ -361,8 +365,7 @@ class ReportFactory(
       val futureTimeLineEvents = getTimeLineEvents(model, grain, viewGmtJulDay, futureFromTime, futureToTime, shortTermEventSources, longTermConfig, true, 30, 15)
 
       val futureSolarReturns =
-        solarReturnContext.getRangedReturns(model, grain, futureToTime, futureToTime, aspectEffectiveModern, modernAspectCalculator, natalConfig, threshold, returnChartIncludeClassical)
-          .toList()
+        solarReturnContext.getRangedReturns(model, grain, futureFromTime, futureToTime, aspectEffectiveModern, modernAspectCalculator, natalConfig, threshold, returnChartIncludeClassical)
 
       val futureFirdariaPeriods = firdariaTimeLine.getPeriods(futureFromTime, futureToTime)
       Future(futureFromTime, futureToTime, futureTimeLineEvents.events, futureTimeLineEvents.lunarReturns, futureSolarReturns, futureFirdariaPeriods)

@@ -10,6 +10,8 @@ import destiny.core.astrology.classical.RulerPtolemyImpl
 import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.toLmt
 import destiny.tools.KotlinLogging
 import java.io.Serializable
 import kotlin.math.absoluteValue
@@ -53,36 +55,87 @@ interface IReturnContext : Conversable, IDiscrete {
     config: IHoroscopeConfig,
     threshold: Double?,
     returnChartIncludeClassical: Boolean
-  ): Sequence<IReturnDto> {
-    return generateSequence(
-      model.getReturnDto(
-        grain, fromTime,
-        model.location,
-        aspectEffective,
-        aspectCalculator,
-        config,
-        model.place,
-        threshold,
-        returnChartIncludeClassical
-      )
-    ) { returnDto: IReturnDto ->
-      val nextFromTime = if (forward)
-        returnDto.validTo + 1
-      else
-        returnDto.validFrom - 1
-      model.getReturnDto(
-        grain, nextFromTime,
-        model.location,
-        aspectEffective,
-        aspectCalculator,
-        config,
-        model.place,
-        threshold,
-        returnChartIncludeClassical
-      )
-    }.takeWhile { returnDto ->
-      returnDto.validFrom in fromTime..toTime || returnDto.validTo in fromTime..toTime
-    }.sortedBy { it.validFrom }
+  ): List<IReturnDto> {
+    return getReturns(
+      model , grain, listOf(Pair(fromTime, toTime)) , aspectEffective, aspectCalculator, config, threshold, returnChartIncludeClassical
+    )
+  }
+
+  /**
+   * 取得涵蓋多個「不連續」時間區間所需的所有返照圖，高效能，避免重複計算
+   */
+  fun getReturns(
+    model: IPersonHoroscopeModel, grain: BirthDataGrain,
+    periods: List<Pair<GmtJulDay, GmtJulDay>>,
+    aspectEffective: IAspectEffective,
+    aspectCalculator: IAspectCalculator,
+    config: IHoroscopeConfig,
+    threshold: Double?,
+    returnChartIncludeClassical: Boolean
+  ): List<IReturnDto> {
+    if (periods.isEmpty()) {
+      return emptyList()
+    }
+
+    // 確保 periods 按時間順序處理，這對於 fold 邏輯至關重要
+    val sortedPeriods = if (forward) {
+      periods.sortedBy { it.first }
+    } else {
+      periods.sortedByDescending { it.first }
+    }
+
+
+    // 使用 fold 建立 SR 集合。acc (accumulator) 是至今為止找到的所有 SR 的集合。
+    // 我們使用 LinkedHashSet 來保持插入順序並自動處理重複。
+    return sortedPeriods.fold(LinkedHashSet<IReturnDto>()) { acc, (periodFrom, periodTo) ->
+      // 取得累積集合中最後一個 SR。因為 group 已排序且我們用 LinkedHashSet，
+      // acc.lastOrNull() 會是時間上最晚的 SR。
+      var currentSr = if (forward) acc.lastOrNull() else acc.firstOrNull()
+
+      // 如果沒有已知的 SR，或者已知的最晚 SR 沒有涵蓋到當前 group 的起始點，
+      // 我們才需要計算一個新的 SR。
+      val needsNewInitialSr = when {
+        currentSr == null -> true
+        forward           -> periodFrom > currentSr.validTo
+        else              -> periodFrom < currentSr.validTo // converse
+      }
+
+      if (needsNewInitialSr) {
+        currentSr = model.getReturnDto(
+          grain, periodFrom,
+          model.location,
+          aspectEffective, aspectCalculator, config,
+          model.place, threshold, returnChartIncludeClassical
+        )
+      }
+
+      // 從 currentSr 開始，產生一個 SR 序列，直到完全覆蓋當前 group 的時間範圍。
+      generateSequence(currentSr) { previousSr ->
+        val shouldContinue = if (forward) {
+          previousSr.validTo < periodTo
+        } else {
+          previousSr.validTo > periodTo // converse
+        }
+
+        if (!shouldContinue) {
+          null // 如果前一個 SR 已覆蓋 group，則序列結束。
+        } else {
+          // 否則，計算下一個 SR。
+          val nextSrStartTime = if (forward) previousSr.validTo + 1.0 else previousSr.validTo - 1.0
+          model.getReturnDto(
+            grain, nextSrStartTime,
+            model.location,
+            aspectEffective, aspectCalculator, config,
+            model.place, threshold, returnChartIncludeClassical
+          )
+        }
+      }.forEach { sr ->
+        // 將序列中的每個 SR 加入到累積器中。
+        // 如果 sr 已存在，Set 的 add 方法會自動忽略，從而避免重複計算和儲存。
+        acc.add(sr)
+      }
+      acc // 回傳更新後的累積器，用於下一次迭代。
+    }.sortedBy { if (forward) it.validFrom else it.validTo } // 最後，將集合排序並轉為 List。
   }
 }
 
@@ -179,6 +232,7 @@ class ReturnContext(
     threshold: Double?,
     includeClassical: Boolean
   ): IReturnDto {
+    logger.debug { "[$planet] getReturnDto , nowGmtJulDay = $nowGmtJulDay (${nowGmtJulDay.toLmt(this.location, JulDayResolver1582CutoverImpl())})" }
     val returnModel: ReturnModel = getReturnHoroscope(this, nowGmtJulDay, nowLoc, nowPlace)
 
     val horoscopeDto: IHoroscopeDto = with(dtoFactory) {
@@ -211,14 +265,11 @@ class ReturnContext(
     }
 
     return when (this@ReturnContext.planet) {
-      Planet.SUN  -> ReturnDto(ReturnType.SOLAR, horoscopeDto, synastry, returnModel.validFrom, returnModel.validTo)
+      Planet.SUN -> ReturnDto(ReturnType.SOLAR, horoscopeDto, synastry, returnModel.validFrom, returnModel.validTo)
       Planet.MOON -> ReturnDto(ReturnType.LUNAR, horoscopeDto, synastry, returnModel.validFrom, returnModel.validTo)
-      else        -> throw IllegalArgumentException("Unsupported planet: $planet")
+      else -> throw IllegalArgumentException("Unsupported planet: $planet")
     }
   }
-
-
-
 
 
   companion object {
