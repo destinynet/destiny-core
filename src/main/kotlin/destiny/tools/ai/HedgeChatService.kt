@@ -58,7 +58,7 @@ class HedgeChatService(
 
       async(Dispatchers.IO + CoroutineName("ChatCompletion-${providerModel.provider}/${providerModel.model}")) {
         val impl = domainModelService.findImpl(providerModel.provider)
-        impl.typedChatComplete(providerModel.model, messages, config.user, funCalls, config.modelTimeout, currentChatOptions, postProcessors, formatSpec, locale, json)
+        impl.typedChatComplete(providerModel.model, messages, formatSpec, json, locale, currentChatOptions, postProcessors, config.user, funCalls, config.modelTimeout)
       }
     }
 

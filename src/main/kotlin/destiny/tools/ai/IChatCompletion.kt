@@ -48,7 +48,33 @@ interface IChatCompletion {
     return chatComplete(model, messages, user, setOf(funCall), timeout, chatOptions)
   }
 
-  suspend fun <T : Any> typedChatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = 90.seconds, chatOptions: ChatOptions, postProcessors : List<IPostProcessor>, formatSpec: FormatSpec<T>, locale: Locale, json: Json) : Reply<T>?
+  suspend fun <T : Any> typedChatComplete(
+    model: String,
+    messages: List<Msg>,
+    formatSpec: FormatSpec<T>,
+    json: Json,
+    locale: Locale = Locale.getDefault(),
+    chatOptions: ChatOptions = ChatOptions(),
+    postProcessors: List<IPostProcessor> = emptyList(),
+    user: String? = null,
+    funCalls: Set<IFunctionDeclaration> = emptySet(),
+    timeout: Duration = 90.seconds
+  ) : Reply<T>?
+
+  suspend fun <T : Any> typedChatComplete(
+    model: String,
+    message: String,
+    formatSpec: FormatSpec<T>,
+    json: Json,
+    locale: Locale = Locale.getDefault(),
+    chatOptions: ChatOptions = ChatOptions(),
+    postProcessors: List<IPostProcessor> = emptyList(),
+    user: String? = null,
+    funCalls: Set<IFunctionDeclaration> = emptySet(),
+    timeout: Duration = 90.seconds
+  ): Reply<T>? {
+    return typedChatComplete(model, listOf(Msg(Role.USER, message)), formatSpec, json, locale, chatOptions, postProcessors, user, funCalls, timeout)
+  }
 }
 
 abstract class AbstractChatCompletion : IChatCompletion {
@@ -107,14 +133,14 @@ abstract class AbstractChatCompletion : IChatCompletion {
   override suspend fun <T : Any> typedChatComplete(
     model: String,
     messages: List<Msg>,
-    user: String?,
-    funCalls: Set<IFunctionDeclaration>,
-    timeout: Duration,
+    formatSpec: FormatSpec<T>,
+    json: Json,
+    locale: Locale,
     chatOptions: ChatOptions,
     postProcessors: List<IPostProcessor>,
-    formatSpec: FormatSpec<T>,
-    locale: Locale,
-    json: Json
+    user: String?,
+    funCalls: Set<IFunctionDeclaration>,
+    timeout: Duration
   ): Reply<T>? {
 
     return when (val rawReply: Reply<String> = chatComplete(model, messages, user, funCalls, timeout, chatOptions, formatSpec.jsonSchema)) {

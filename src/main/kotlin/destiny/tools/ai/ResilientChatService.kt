@@ -120,7 +120,7 @@ class ResilientChatService(
           temperature = providerModel.temperature ?: chatOptionsTemplate.temperature
         )
 
-        impl.typedChatComplete(providerModel.model, messages, user, funCalls, modelTimeout, currentChatOptions, postProcessors, formatSpec, locale, json)?.let { r ->
+        impl.typedChatComplete(providerModel.model, messages, formatSpec, json, locale, currentChatOptions, postProcessors, user, funCalls, modelTimeout)?.let { r ->
           when (r) {
             is Reply.Normal<*> -> r as Reply.Normal<T>
             else               -> null
