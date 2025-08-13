@@ -14,11 +14,22 @@ interface IChatOrchestrator {
   suspend fun <T: Any> chatComplete(
     formatSpec: FormatSpec<out T>,
     messages: List<Msg>,
-    funCalls: Set<IFunctionDeclaration> = emptySet(),
-    chatOptionsTemplate: ChatOptions, // 提供一個聊天選項模板
     postProcessors: List<IPostProcessor>,
-    locale: Locale
+    locale: Locale = Locale.getDefault(),
+    funCalls: Set<IFunctionDeclaration> = emptySet(),
+    chatOptionsTemplate: ChatOptions = ChatOptions()
   ): Reply.Normal<out T>?
+
+  suspend fun <T : Any> chatComplete(
+    formatSpec: FormatSpec<out T>,
+    message: String,
+    postProcessors: List<IPostProcessor>,
+    locale: Locale = Locale.getDefault(),
+    funCalls: Set<IFunctionDeclaration> = emptySet(),
+    chatOptionsTemplate: ChatOptions = ChatOptions()
+  ): Reply.Normal<out T>? {
+    return chatComplete(formatSpec, listOf(Msg(Role.USER, message)), postProcessors, locale, funCalls, chatOptionsTemplate)
+  }
 
 }
 

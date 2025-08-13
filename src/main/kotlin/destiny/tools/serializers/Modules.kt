@@ -11,9 +11,14 @@ import destiny.core.astrology.prediction.IReturnDto
 import destiny.core.astrology.prediction.ISolarArcModel
 import destiny.core.astrology.prediction.ReturnDto
 import destiny.core.astrology.prediction.SolarArcModel
+import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
+import java.time.ZoneId
 
 fun SerializersModuleBuilder.eclipseModule() {
   polymorphic(IEclipse::class) {
@@ -62,4 +67,23 @@ fun SerializersModuleBuilder.astroTimeLine() {
     subclass(TimeLineWithUserEventsModel::class)
   }
 
+}
+
+
+object JsonProvider {
+  fun getJson(zoneId: ZoneId): Json {
+    val julDayResolver = JulDayResolver1582CutoverImpl()
+    val gmtJulDayLmtSerializer = GmtJulDayLocalDateTimeSerializer(zoneId, julDayResolver)
+    val gmtJulDayDateSerializer = GmtJulDayLocalDateSerializer(zoneId, julDayResolver)
+
+    return Json {
+      prettyPrint = false
+      serializersModule = SerializersModule {
+        contextual(GmtJulDay::class, gmtJulDayLmtSerializer)
+        contextual(ITimeLineEvent::class, ITimeLineEventSerializer(gmtJulDayLmtSerializer, gmtJulDayDateSerializer))
+        astrologyModule()
+        astroTimeLine()
+      }
+    }
+  }
 }

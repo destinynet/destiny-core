@@ -42,10 +42,10 @@ class HedgeChatService(
   override suspend fun <T : Any> chatComplete(
     formatSpec: FormatSpec<out T>,
     messages: List<Msg>,
-    funCalls: Set<IFunctionDeclaration>,
-    chatOptionsTemplate: ChatOptions,
     postProcessors: List<IPostProcessor>,
-    locale: Locale
+    locale: Locale,
+    funCalls: Set<IFunctionDeclaration>,
+    chatOptionsTemplate: ChatOptions
   ): Reply.Normal<out T>? = coroutineScope {
 
     val allModels = setOf(config.preferred) + config.fallbacks
