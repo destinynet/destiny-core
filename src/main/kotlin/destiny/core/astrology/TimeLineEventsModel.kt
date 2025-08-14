@@ -20,6 +20,7 @@ import destiny.tools.serializers.LocalTimeSerializer
 import destiny.tools.serializers.YearMonthSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
@@ -229,7 +230,9 @@ data class EventGroup(
   val userEvents : List<AbstractEvent>,
   val astroEvents : List<@Contextual ITimeLineEvent>,
   val lunarReturns : List<@Contextual IReturnDto>,
-  val firdarias: List<Firdaria>
+  val firdarias: List<Firdaria>,
+  @SerialName("transit_synastry_map")
+  val transits : Map<@Contextual GmtJulDay, Synastry>
 )
 
 @Serializable

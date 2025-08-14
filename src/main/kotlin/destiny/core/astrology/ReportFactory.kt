@@ -273,6 +273,7 @@ class ReportFactory(
 
     val firdariaTimeLine: FirdariaTimeline = with(horoscopeFeature) { model.getFirdariaTimeline(100) }
 
+    val threshold = 0.9
     val eventGroups: List<EventGroup> = extractedEvents.events.groupAdjacentEvents(extMonth = 1).map { groupedEvent: List<AbstractEvent> ->
       val (from, to) = groupedEvent.sortedBy { it.yearMonth() }
         .let { (it.first().yearMonth().atDay(1).atStartOfDay().toGmtJulDay(loc) to it.last().yearMonth().plusMonths(1).atDay(1).atStartOfDay().toGmtJulDay(loc)) }
@@ -285,7 +286,7 @@ class ReportFactory(
         futureExtDays = 15 // 往後延伸半個月
       )
 
-      val transitEvents = groupedEvent.filterIsInstance<DayEvent>().flatMap { dayEvent ->
+      val transitEvents: List<ITimeLineEvent> = groupedEvent.filterIsInstance<DayEvent>().flatMap { dayEvent ->
         val dayFrom = dayEvent.date.atStartOfDay().toGmtJulDay(loc)
         val dayTo = dayEvent.date.plusDays(1).atStartOfDay().toGmtJulDay(loc)
         logger.info { "dayEvent = ${dayEvent.details} , dayFrom = $dayFrom, dayTo = $dayTo" }
@@ -301,12 +302,34 @@ class ReportFactory(
         ).events
       }
 
+      // day-noon synastry
+      val transitSynastry: Map<GmtJulDay, Synastry> = groupedEvent.filterIsInstance<DayEvent>().associate { dayEvent: DayEvent ->
+        val dayNoon = dayEvent.date.atTime(12, 0).toGmtJulDay(loc)
+        val dayNoonModel = horoscopeFeature.getModel(dayNoon, loc, natalConfig)
+        dayNoon to horoscopeFeature.synastry(dayNoonModel, model, modernAspectCalculator, threshold).let { synastry: Synastry ->
+          when(grain) {
+            BirthDataGrain.MINUTE -> synastry
+            BirthDataGrain.DAY -> {
+              synastry.copy(
+                aspects = synastry.aspects.map { synastryAspect: SynastryAspect ->
+                  synastryAspect.copy(
+                    outerPointHouse = null,
+                    innerPointHouse = null,
+                  )
+                },
+                houseOverlayMap = emptyMap()
+              )
+            }
+          }
+        }
+      }
+
+
       val events = (nonTransitEvents.events + transitEvents).sortedBy { it.divergentTime }
 
-      EventGroup(from, to, groupedEvent, events, nonTransitEvents.lunarReturns, firdariaTimeLine.getPeriods(from, to))
+      EventGroup(from, to, groupedEvent, events, nonTransitEvents.lunarReturns, firdariaTimeLine.getPeriods(from, to), transitSynastry)
     }
 
-    val threshold = 0.9
     val returnChartIncludeClassical = false
 
     val solarReturnContext = ReturnContext(SUN, starPositionImpl, starTransitImpl, horoscopeFeature, dtoFactory, forward = true, 0.0, precession = false)
