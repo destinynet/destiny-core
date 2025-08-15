@@ -108,12 +108,17 @@ data class TimeLineEventsModel(
   override val lunarReturns: List<IReturnDto> = emptyList()
 ) : ITimeLineEventsModel
 
-
+enum class EventSentiment {
+  POSITIVE, // 明確是好的
+  NEGATIVE, // 明確是壞的
+  NEUTRAL,  // 中性，沒有強烈好壞
+}
 
 @Serializable(with = AbstractEventSerializer::class)
 sealed class AbstractEvent {
-  abstract val details: String
   abstract val eventType: EventType
+  abstract val details: String
+  abstract val sentiment: EventSentiment?
   abstract fun yearMonth() : YearMonth
 }
 
@@ -122,7 +127,8 @@ data class MonthEvent(
   @Serializable(with = YearMonthSerializer::class)
   val date: YearMonth,
   override val eventType: EventType,
-  override val details: String
+  override val details: String,
+  override val sentiment: EventSentiment? = null,
 ) : AbstractEvent() {
   override fun yearMonth(): YearMonth {
     return date
@@ -134,7 +140,8 @@ data class DayEvent(
   @Serializable(with = LocalDateSerializer::class)
   val date: LocalDate,
   override val eventType: EventType,
-  override val details: String
+  override val details: String,
+  override val sentiment: EventSentiment? = null,
 ) : AbstractEvent() {
   override fun yearMonth(): YearMonth {
     return YearMonth.from(date)
