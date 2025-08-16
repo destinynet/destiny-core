@@ -42,6 +42,10 @@ class AspectEffectiveModern(
 
   /** 兩星交角容許度是多少 , 以及過了容許度的起始分數為多少 (0~1) */
   private fun getOrbAndThresholdScore(p1: AstroPoint, p2: AstroPoint, aspect: Aspect): Pair<Double, Double> {
+    if (p1 is FixedStar || p2 is FixedStar) {
+      // TODO : 恆星的合相容許度則極其狹窄，通常只看 1度到 1.5度 以內。只有像軒轅十四 (Regulus)、畢宿五 (Aldebaran)、心宿二 (Antares)、北落師門 (Fomalhaut) 這四顆古代的「王室之星」，容許度才可能放寬到2度左右。
+      return 1.5 to 0.8
+    }
     //從「考量行星」的交角容許度實作找起
     return aspectOrbsPlanetImpl.getPlanetAspectOrbAndThreshold(p1, p2, aspect)
     // 再從「不考慮行星」的交角容許度尋找

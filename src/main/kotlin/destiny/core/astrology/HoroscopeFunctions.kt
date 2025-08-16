@@ -186,7 +186,8 @@ fun IHoroscopeModel.qualityDistribution(): Map<Quality, Double> {
 /** 特殊格局 */
 fun IHoroscopeModel.getPatterns(patternContext: PatternContext, threshold: Double = 0.8): List<AstroPattern> {
   return patternContext.patterns.asSequence().flatMap { factory ->
-    factory.getPatterns(positionMap, cuspDegreeMap)
+    val nonFixedStarMap = positionMap.filterKeys { p -> p !is FixedStar }
+    factory.getPatterns(nonFixedStarMap, cuspDegreeMap)
   }
     .filter { p -> p.score != null && p.score!!.value >= threshold }
     .sortedByDescending { it.score }

@@ -18,7 +18,7 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
   /** Algol 大陵五  */
   object ALGOL : FixedStar("FixedStar.ALGOL", "FixedStar.ALGOL_ABBR")
 
-  /** Aldebaran 畢宿五  */
+  /** Aldebaran 畢宿五 , 傳統四王星 (Four Royal Stars) */
   object ALDEBARAN : FixedStar("FixedStar.ALDEBARAN", "FixedStar.ALDEBARAN_ABBR")
 
   /** Rigel 參宿七  */
@@ -48,7 +48,7 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
   /** Alphard 星宿一  */
   object ALPHARD : FixedStar("FixedStar.ALPHARD", "FixedStar.ALPHARD_ABBR")
 
-  /** Regulus 軒轅十四  */
+  /** Regulus 軒轅十四 , 傳統四王星 (Four Royal Stars) */
   object REGULUS : FixedStar("FixedStar.REGULUS", "FixedStar.REGULUS_ABBR")
 
   /** Spica 角宿一  */
@@ -57,7 +57,7 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
   /** Arcturus 大角  */
   object ARCTURUS : FixedStar("FixedStar.ARCTURUS", "FixedStar.ARCTURUS_ABBR")
 
-  /** Antares 心宿二  */
+  /** Antares 心宿二 , 傳統四王星 (Four Royal Stars) */
   object ANTARES : FixedStar("FixedStar.ANTARES", "FixedStar.ANTARES_ABBR")
 
   /** Vega 織女星  */
@@ -66,7 +66,7 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
   /** Altair 牛郎星  */
   object ALTAIR : FixedStar("FixedStar.ALTAIR", "FixedStar.ALTAIR_ABBR")
 
-  /** Fomalhaut 北落師門  */
+  /** Fomalhaut 北落師門 , 傳統四王星 (Four Royal Stars) */
   object FOMALHAUT : FixedStar("FixedStar.FOMALHAUT", "FixedStar.FOMALHAUT_ABBR")
 
   /** Deneb 天津四  */

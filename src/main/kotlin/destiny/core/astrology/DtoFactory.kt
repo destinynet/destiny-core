@@ -30,6 +30,15 @@ class DtoFactory(
     horoConfig: IHoroscopeConfig,
     includeClassical: Boolean
   ): IHoroscopeDto {
+    val bySign: Map<ZodiacSign, List<AstroPoint>> =
+      signPointsMap
+        .mapValues { (_ , points) ->
+          points.filterNot { it is FixedStar } // 過濾恆星
+        } // 過濾恆星
+        .filter { (_, points) ->
+          points.isNotEmpty()
+        }
+
     val byHouse: List<HouseDto> = when(grain) {
       BirthDataGrain.DAY -> emptyList()
       BirthDataGrain.MINUTE -> houses.map { h ->
@@ -39,6 +48,7 @@ class DtoFactory(
           with(rulerImpl) {
             h.cusp.sign.getRulerPoint()!!
           }, getHousePoints(h.index)
+            .filterNot { it is FixedStar } // 過濾恆星
         )
       }
     }
@@ -51,6 +61,7 @@ class DtoFactory(
         BirthDataGrain.DAY    -> p !is Axis
       }
     }
+      .filterKeys { it !is FixedStar } // 過濾恆星
 
     val angularConsideringPoints = points.filter { it is Planet || it is FixedStar || it is LunarPoint }
 
@@ -76,7 +87,19 @@ class DtoFactory(
             .filter { (_, pDeg) -> pDeg != null }
             .map { (p, zDeg) -> p to zDeg!! }
             .map { (p, pDeg) -> p to pDeg.getAngle(zDeg) }
-            .filter { (_, orb) -> orb < toleranceOrb } // 左右 8 度
+            .filter { (p: AstroPoint, orb) ->
+              if(p is FixedStar) {
+                // TODO 理想容許度：1.5度 以內
+                //  如果一顆恆星距離軸點在 1.5度 之內，其影響力被認為是明確且強大的，絕對需要納入解盤的考慮。
+                //  可接受容許度：最多 2.5度
+                //  對於特別明亮的一等星，或是像軒轅十四、畢宿五、心宿二、北落師門這四顆「王室之星」(Royal Stars)，容許度可以稍微放寬到 2度，甚至 2.5度。
+                //  超過 2.5度：絕大多數的占星師會認為其影響力已經微乎其微，甚至可以忽略不計。
+                orb < 2.0
+              } else {
+                // 左右 8 度
+                orb < toleranceOrb
+              }
+            }
             .map { (p, orb) ->
               // if 交角 = 8 => 0.6 + 0.4 * ( 8 - 8 ) / 8 = 0.6
               // if 交角 = 0 => 0.6 + 0.4 * ( 8 - 0 ) / 8 = 1.0
@@ -119,9 +142,9 @@ class DtoFactory(
         BirthDataGrain.MINUTE -> aspects
         BirthDataGrain.DAY -> aspects.filterNot { asp -> asp.points.any { it is Axis} }
       }
-    }
+    }.filterNot { pattern -> pattern.points.all { it is FixedStar } }
 
-    val patterns = getPatterns(PatternContext(aspectAffective, aspectCalculator), threshold).let { patterns ->
+    val astroPatterns = getPatterns(PatternContext(aspectAffective, aspectCalculator), threshold).let { patterns ->
       when (grain) {
         BirthDataGrain.MINUTE -> patterns
         BirthDataGrain.DAY -> {
@@ -139,16 +162,17 @@ class DtoFactory(
       }
     }
 
+
+
     return HoroscopeDto(
       time as LocalDateTime, location, place,
-      signPointsMap.filter { (_, points) -> points.isNotEmpty() },
-      byHouse, byStar,
+      bySign, byHouse, byStar,
       axisStars,
       houseStarDistribution,
       elementDistribution(),
       qualityDistribution(),
       tightestAspects,
-      patterns,
+      astroPatterns,
       classicalPatterns,
       getGraph(rulerImpl),
       midPoints,

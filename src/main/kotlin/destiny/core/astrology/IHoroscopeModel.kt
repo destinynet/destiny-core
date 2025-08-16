@@ -311,7 +311,11 @@ interface IHoroscopeModel : ITimeLoc {
       .sortedWith(comparator)
   }
 
-  fun getMidPointsWithFocal(points: Set<AstroPoint> = this.points, orb: Double = 2.0, comparator: Comparator<in IMidPointWithFocal> = MidPointOrbIntenseComparator): List<IMidPointWithFocal> {
+  fun getMidPointsWithFocal(
+    points: Set<AstroPoint> = this.points.filterNot { it is FixedStar }.toSet(),
+    orb: Double = 2.0,
+    comparator: Comparator<in IMidPointWithFocal> = MidPointOrbIntenseComparator
+  ): List<IMidPointWithFocal> {
     return getUnsortedMidPoints(points).flatMap { midpoint ->
       points.filterNot { midpoint.points.contains(it) }  // Exclude points that are already part of the midpoint
         .mapNotNull { focal ->

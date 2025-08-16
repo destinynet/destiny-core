@@ -24,6 +24,12 @@ class AspectCalculatorImpl(
   ): IPointAspectPattern? {
     return aspects
       .intersect(aspectEffectiveImpl.applicableAspects)
+      .let { asps ->
+        if (p1 is FixedStar || p2 is FixedStar) {
+          setOf(Aspect.CONJUNCTION)
+        } else
+          asps
+      }
       .asSequence()
       .map { aspect ->
         aspect to aspectEffectiveImpl.getEffectiveErrorAndScore(p1, p1PosMap.getValue(p1).zDeg.toZodiacDegree(),
