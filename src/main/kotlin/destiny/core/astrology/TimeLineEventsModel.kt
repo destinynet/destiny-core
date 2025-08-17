@@ -265,6 +265,7 @@ data class Future(
   val lunarReturns: List<@Contextual IReturnDto>,
   val solarReturns: List<@Contextual IReturnDto>,
   val firdariaPeriods: List<Firdaria>,
+  val profections: List<Profection>
 )
 
 @Serializable
