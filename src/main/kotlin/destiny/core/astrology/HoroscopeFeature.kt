@@ -253,56 +253,8 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     return FirdariaTimeline(diurnal, majorPeriods)
   }
 
-  /**
-   * 高效計算指定時間範圍內的法達星限時段。
-   * 此方法使用惰性計算，避免預先產生整個時間線，可以處理任意長度的時間範圍。
-   * @param from 開始時間
-   * @param to 結束時間
-   * @return 一個包含所有與指定範圍重疊的 Firdaria 時段的列表。
-   */
-  fun IHoroscopeModel.getRangeFirdaria(from: GmtJulDay, to: GmtJulDay): List<Firdaria> {
-    val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
-    val diurnal = sunHouse in 7..12
 
-    val fullMajorRulerSequence = getMajorRulers(diurnal)
-    val planetarySequence = fullMajorRulerSequence.filterIsInstance<Planet>()
-    val yearDays = 365.25
-
-    // 建立一個無限、惰性的主運序列
-    val majorPeriodSequence = generateSequence(fullMajorRulerSequence) { it }.flatten()
-      .runningFold(
-        // 初始累加器：一個在出生時間點結束的虛擬週期
-        FirdariaMajorPeriod(Planet.SUN, this.gmtJulDay, this.gmtJulDay, emptyList())
-      ) { previousPeriod, currentRuler ->
-        val startTime = previousPeriod.toTime
-        val periodYears = majorRulerYearsMap.getValue(currentRuler)
-        val periodDays = periodYears * yearDays
-        val endTime = startTime + periodDays
-
-        val subPeriods = if (currentRuler is Planet) {
-          val subPeriodDays = periodDays / 7.0
-          val subStartIndex = planetarySequence.indexOf(currentRuler)
-          (0 until 7).map { i ->
-            val subRuler = planetarySequence[(subStartIndex + i) % 7]
-            val subStart = startTime + i * subPeriodDays
-            val subEnd = if (i == 6) endTime else subStart + subPeriodDays
-            FirdariaSubPeriod(subRuler, subStart, subEnd)
-          }
-        } else emptyList()
-
-        FirdariaMajorPeriod(currentRuler, startTime, endTime, subPeriods)
-      }
-      .drop(1) // 丟棄第一個虛擬的初始值
-
-    // 從惰性序列中篩選出與 [from, to] 範圍重疊的時段
-    return majorPeriodSequence
-      .dropWhile { it.toTime < from } // 跳過所有在查詢範圍開始前就已結束的主運
-      .takeWhile { it.fromTime < to } // 截取所有在查詢範圍結束前開始的主運
-      .flatMap { firdariaPeriodOverlapping.invoke(it, from, to) }
-      .toList()
-  }
-
-  fun IHoroscopeModel.getFirdariaPeriods(gmtJulDay: GmtJulDay) : Pair<FirdariaMajorPeriod, FirdariaSubPeriod?> {
+  fun IHoroscopeModel.getFirdariaPeriods(gmtJulDay: GmtJulDay): Pair<FirdariaMajorPeriod, FirdariaSubPeriod?> {
     require(gmtJulDay >= this.gmtJulDay) { "Query time must be at or after birth time." }
 
     val sunHouse = this.getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
@@ -353,7 +305,103 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     return foundMajor to foundSub
   }
 
+  /**
+   * 高效計算指定時間範圍內的法達星限時段。
+   * 此方法使用惰性計算，避免預先產生整個時間線，可以處理任意長度的時間範圍。
+   * @param from 開始時間
+   * @param to 結束時間
+   * @return 一個包含所有與指定範圍重疊的 Firdaria 時段的列表。
+   */
+  fun IHoroscopeModel.getRangeFirdaria(from: GmtJulDay, to: GmtJulDay): List<Firdaria> {
+    val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
+    val diurnal = sunHouse in 7..12
 
+    val fullMajorRulerSequence = getMajorRulers(diurnal)
+    val planetarySequence = fullMajorRulerSequence.filterIsInstance<Planet>()
+    val yearDays = 365.25
+
+    // 建立一個無限、惰性的主運序列
+    val majorPeriodSequence = generateSequence(fullMajorRulerSequence) { it }.flatten()
+      .runningFold(
+        // 初始累加器：一個在出生時間點結束的虛擬週期
+        FirdariaMajorPeriod(Planet.SUN, this.gmtJulDay, this.gmtJulDay, emptyList())
+      ) { previousPeriod, currentRuler ->
+        val startTime = previousPeriod.toTime
+        val periodYears = majorRulerYearsMap.getValue(currentRuler)
+        val periodDays = periodYears * yearDays
+        val endTime = startTime + periodDays
+
+        val subPeriods = if (currentRuler is Planet) {
+          val subPeriodDays = periodDays / 7.0
+          val subStartIndex = planetarySequence.indexOf(currentRuler)
+          (0 until 7).map { i ->
+            val subRuler = planetarySequence[(subStartIndex + i) % 7]
+            val subStart = startTime + i * subPeriodDays
+            val subEnd = if (i == 6) endTime else subStart + subPeriodDays
+            FirdariaSubPeriod(subRuler, subStart, subEnd)
+          }
+        } else emptyList()
+
+        FirdariaMajorPeriod(currentRuler, startTime, endTime, subPeriods)
+      }
+      .drop(1) // 丟棄第一個虛擬的初始值
+
+    // 從惰性序列中篩選出與 [from, to] 範圍重疊的時段
+    return majorPeriodSequence
+      .dropWhile { it.toTime < from } // 跳過所有在查詢範圍開始前就已結束的主運
+      .takeWhile { it.fromTime < to } // 截取所有在查詢範圍結束前開始的主運
+      .flatMap { firdariaPeriodOverlapping.invoke(it, from, to) }
+      .toList()
+  }
+
+
+
+  /**
+   * 根據指定的尺度，高效計算特定時刻的小限法狀態。
+   * @param gmtJulDay 欲查詢的時刻。
+   * @param scale 欲查詢的時間尺度（年、月等）。
+   * @return 一個包含從 YEAR 到指定 scale 的所有小限法狀態的 Map。
+   */
+  fun IHoroscopeModel.getProfection(gmtJulDay: GmtJulDay, scale: Scale): Map<Scale, Profection> {
+    require(gmtJulDay >= this.gmtJulDay) { "Query time must be at or after birth time." }
+    require(this.getHouse(Axis.RISING) == 1) { "Annual Profection requires a chart with a valid Ascendant and house system." }
+
+    val rulerImpl: IRuler = RulerPtolemyImpl
+    val houseCuspSigns = (1..12).associateWith { houseNumber ->
+      this.getCuspDegree(houseNumber).sign
+    }
+    val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
+    val dayNight = if (sunHouse in 7..12) DayNight.DAY else DayNight.NIGHT
+
+    val resultMap = mutableMapOf<Scale, Profection>()
+
+    // --- 年度計算 ---
+    val age = floor((gmtJulDay - this.gmtJulDay) / TROPICAL_YEAR_DAYS).toInt()
+    val annualFromTime = this.gmtJulDay + (age * TROPICAL_YEAR_DAYS)
+    val annualToTime = annualFromTime + TROPICAL_YEAR_DAYS
+
+    val annualProfectedHouse = (age % 12) + 1
+    val annualAscSign = houseCuspSigns.getValue(annualProfectedHouse)
+    val annualLord = with(rulerImpl) {
+      (annualAscSign.getRulerPoint(dayNight) ?: annualAscSign.getRulerPoint()) as Planet
+    }
+    resultMap[Scale.YEAR] = Profection(Scale.YEAR, annualLord, annualAscSign, annualProfectedHouse, annualFromTime, annualToTime)
+    if (scale == Scale.YEAR) return resultMap
+
+    // --- 月度計算 ---
+    val daysIntoYear = gmtJulDay - annualFromTime
+    val monthlyPeriodDuration = TROPICAL_YEAR_DAYS / 12.0
+    val monthIndex = floor(daysIntoYear / monthlyPeriodDuration).toInt()
+    resultMap[Scale.MONTH] = getMonthProfection(annualFromTime, annualProfectedHouse, monthIndex, houseCuspSigns, dayNight)
+    if (scale == Scale.MONTH) return resultMap
+
+    // --- 其他尺度 (待辦) ---
+    when (scale) {
+      Scale.DAY  -> TODO("Daily profection calculation is not yet implemented.")
+      Scale.HOUR -> TODO("Hourly profection calculation is not yet implemented.")
+      else       -> return resultMap // Should not happen if logic is correct
+    }
+  }
 
   /**
    * 根據指定的尺度，高效計算時間範圍內的小限法時段列表。
@@ -423,52 +471,6 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     }
   }
 
-  /**
-   * 根據指定的尺度，高效計算特定時刻的小限法狀態。
-   * @param gmtJulDay 欲查詢的時刻。
-   * @param scale 欲查詢的時間尺度（年、月等）。
-   * @return 一個包含從 YEAR 到指定 scale 的所有小限法狀態的 Map。
-   */
-  fun IHoroscopeModel.getProfection(gmtJulDay: GmtJulDay, scale: Scale): Map<Scale, Profection> {
-    require(gmtJulDay >= this.gmtJulDay) { "Query time must be at or after birth time." }
-    require(this.getHouse(Axis.RISING) == 1) { "Annual Profection requires a chart with a valid Ascendant and house system." }
-
-    val rulerImpl: IRuler = RulerPtolemyImpl
-    val houseCuspSigns = (1..12).associateWith { houseNumber ->
-      this.getCuspDegree(houseNumber).sign
-    }
-    val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
-    val dayNight = if (sunHouse in 7..12) DayNight.DAY else DayNight.NIGHT
-
-    val resultMap = mutableMapOf<Scale, Profection>()
-
-    // --- 年度計算 ---
-    val age = floor((gmtJulDay - this.gmtJulDay) / TROPICAL_YEAR_DAYS).toInt()
-    val annualFromTime = this.gmtJulDay + (age * TROPICAL_YEAR_DAYS)
-    val annualToTime = annualFromTime + TROPICAL_YEAR_DAYS
-
-    val annualProfectedHouse = (age % 12) + 1
-    val annualAscSign = houseCuspSigns.getValue(annualProfectedHouse)
-    val annualLord = with(rulerImpl) {
-      (annualAscSign.getRulerPoint(dayNight) ?: annualAscSign.getRulerPoint()) as Planet
-    }
-    resultMap[Scale.YEAR] = Profection(Scale.YEAR, annualLord, annualAscSign, annualProfectedHouse, annualFromTime, annualToTime)
-    if (scale == Scale.YEAR) return resultMap
-
-    // --- 月度計算 ---
-    val daysIntoYear = gmtJulDay - annualFromTime
-    val monthlyPeriodDuration = TROPICAL_YEAR_DAYS / 12.0
-    val monthIndex = floor(daysIntoYear / monthlyPeriodDuration).toInt()
-    resultMap[Scale.MONTH] = getMonthProfection(annualFromTime, annualProfectedHouse, monthIndex, houseCuspSigns, dayNight)
-    if (scale == Scale.MONTH) return resultMap
-
-    // --- 其他尺度 (待辦) ---
-    when (scale) {
-      Scale.DAY  -> TODO("Daily profection calculation is not yet implemented.")
-      Scale.HOUR -> TODO("Hourly profection calculation is not yet implemented.")
-      else       -> return resultMap // Should not happen if logic is correct
-    }
-  }
 }
 
 private data class ProgressionCalcObj(
