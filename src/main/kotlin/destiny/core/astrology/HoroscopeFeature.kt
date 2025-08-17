@@ -526,7 +526,7 @@ class HoroscopeFeature(
       val annualProfectedHouse = (age % 12) + 1
       val annualAscSign = houseCuspSigns.getValue(annualProfectedHouse)
       val annualLord = with(rulerImpl) {
-        annualAscSign.getRulerPoint(dayNight) as Planet
+        (annualAscSign.getRulerPoint(dayNight)?: annualAscSign.getRulerPoint()) as Planet
       }
 
       // --- 月度計算 ---
@@ -540,7 +540,7 @@ class HoroscopeFeature(
         val monthlyAscSign = houseCuspSigns.getValue(monthlyProfectedHouse)
 
         val monthlyLord = with(rulerImpl) {
-          monthlyAscSign.getRulerPoint(dayNight) as Planet
+          (monthlyAscSign.getRulerPoint(dayNight)?: monthlyAscSign.getRulerPoint()) as Planet
         }
 
         MonthlyProfectionPeriod(
