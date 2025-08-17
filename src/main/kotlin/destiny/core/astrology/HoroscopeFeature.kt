@@ -4,7 +4,9 @@
 package destiny.core.astrology
 
 import com.github.benmanes.caffeine.cache.Caffeine
+import destiny.core.DayNight
 import destiny.core.astrology.Aspect.Importance
+import destiny.core.astrology.Constants.TROPICAL_YEAR_DAYS
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.*
 import destiny.core.astrology.classical.rules.Misc
@@ -299,6 +301,8 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     return foundMajor to foundSub
   }
 
+
+  fun IHoroscopeModel.getProfectionTimeline(years: Int): AnnualProfectionTimeline
 }
 
 private data class ProgressionCalcObj(
@@ -498,6 +502,69 @@ class HoroscopeFeature(
                          forward,
                          convergentJulDay, degreeMoved,
                          this.location, posMap, synastryAspects)
+  }
+
+  override fun IHoroscopeModel.getProfectionTimeline(years: Int): AnnualProfectionTimeline {
+    require(years > 0) { "Years must be positive." }
+    // 小限法必須要有準確的上升點和宮位
+    require(this.getHouse(Axis.RISING) == 1) { "Annual Profection requires a chart with a valid Ascendant and house system." }
+
+    val rulerImpl: IRuler = RulerPtolemyImpl
+    // 取得所有宮首的星座，這是計算的基礎
+    val houseCuspSigns = (1..12).associateWith { houseNumber ->
+      this.getCuspDegree(houseNumber).sign
+    }
+
+    val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
+    val dayNight = if (sunHouse in 7..12) DayNight.DAY else DayNight.NIGHT
+
+    val annualPeriods = (0 until years).map { age ->
+      // --- 年度計算 ---
+      val annualFromTime = this.gmtJulDay + (age * TROPICAL_YEAR_DAYS)
+      val annualToTime = this.gmtJulDay + ((age + 1) * TROPICAL_YEAR_DAYS)
+
+      val annualProfectedHouse = (age % 12) + 1
+      val annualAscSign = houseCuspSigns.getValue(annualProfectedHouse)
+      val annualLord = with(rulerImpl) {
+        annualAscSign.getRulerPoint(dayNight) as Planet
+      }
+
+      // --- 月度計算 ---
+      val monthlyPeriodDuration = TROPICAL_YEAR_DAYS / 12.0
+      val monthlyPeriods = (0 until 12).map { monthIndex ->
+        val monthlyFromTime = annualFromTime + (monthIndex * monthlyPeriodDuration)
+        val monthlyToTime = annualFromTime + ((monthIndex + 1) * monthlyPeriodDuration)
+
+        // 月度小限從年度小限的宮位開始，每個月推進一宮
+        val monthlyProfectedHouse = ((annualProfectedHouse - 1 + monthIndex) % 12) + 1
+        val monthlyAscSign = houseCuspSigns.getValue(monthlyProfectedHouse)
+
+        val monthlyLord = with(rulerImpl) {
+          monthlyAscSign.getRulerPoint(dayNight) as Planet
+        }
+
+        MonthlyProfectionPeriod(
+          monthIndex = monthIndex,
+          profectedHouse = monthlyProfectedHouse,
+          profectedAscendantSign = monthlyAscSign,
+          lordOfMonth = monthlyLord,
+          fromTime = monthlyFromTime,
+          toTime = monthlyToTime
+        )
+      }
+
+      AnnualProfectionPeriod(
+        age = age,
+        profectedHouse = annualProfectedHouse,
+        profectedAscendantSign = annualAscSign,
+        lordOfYear = annualLord,
+        fromTime = annualFromTime,
+        toTime = annualToTime,
+        monthlyPeriods = monthlyPeriods
+      )
+    }
+
+    return AnnualProfectionTimeline(annualPeriods)
   }
 
   companion object {

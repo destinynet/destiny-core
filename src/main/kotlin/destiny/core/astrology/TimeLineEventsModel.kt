@@ -6,6 +6,7 @@ import destiny.core.IBirthDataNamePlace
 import destiny.core.astrology.prediction.EventSource
 import destiny.core.astrology.prediction.Firdaria
 import destiny.core.astrology.prediction.IReturnDto
+import destiny.core.astrology.prediction.Profection
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.Lat.Companion.toLat
@@ -238,6 +239,7 @@ data class EventGroup(
   val astroEvents : List<@Contextual ITimeLineEvent>,
   val lunarReturns : List<@Contextual IReturnDto>,
   val firdarias: List<Firdaria>,
+  val profections: List<Profection>,
   @SerialName("transit_synastry_map")
   val transits : Map<@Contextual GmtJulDay, Synastry>
 )
