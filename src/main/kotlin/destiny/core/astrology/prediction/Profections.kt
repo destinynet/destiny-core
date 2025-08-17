@@ -87,6 +87,28 @@ data class AnnualProfectionPeriod(
   val monthlyPeriods: List<MonthlyProfectionPeriod>
 )
 
+internal val profectionPeriodOverlapping : (AnnualProfectionPeriod, GmtJulDay, GmtJulDay) -> List<Profection> = { annualPeriod , from , to ->
+  // 篩選出與查詢範圍有重疊的「月度」小限
+  annualPeriod.monthlyPeriods
+    .filter { monthlyPeriod ->
+      // 經典的區間重疊條件: A.start < B.end AND B.start < A.end
+      monthlyPeriod.fromTime < to && from < monthlyPeriod.toTime
+    }
+    .map { monthlyPeriod ->
+      // 將年度和月度資訊合併為一個扁平化的 Profection 物件
+      Profection(
+        annualLord = annualPeriod.lordOfYear,
+        annualAscSign = annualPeriod.profectedAscendantSign,
+        annualHouse = annualPeriod.profectedHouse,
+        monthLord = monthlyPeriod.lordOfMonth,
+        monthAscSign = monthlyPeriod.profectedAscendantSign,
+        monthHouse = monthlyPeriod.profectedHouse,
+        fromTime = monthlyPeriod.fromTime,
+        toTime = monthlyPeriod.toTime
+      )
+    }
+}
+
 /**
  * 封裝一個完整的年度小限法時間線模型。
  * 這是計算小限法功能的最終輸出。
@@ -135,26 +157,6 @@ data class AnnualProfectionTimeline(
    * @return 一個包含所有重疊的 Profection 物件的列表。
    */
   fun getPeriods(from: GmtJulDay, to: GmtJulDay): List<Profection> {
-    return periods.flatMap { annualPeriod ->
-      // 篩選出與查詢範圍有重疊的「月度」小限
-      annualPeriod.monthlyPeriods
-        .filter { monthlyPeriod ->
-          // 經典的區間重疊條件: A.start < B.end AND B.start < A.end
-          monthlyPeriod.fromTime < to && from < monthlyPeriod.toTime
-        }
-        .map { monthlyPeriod ->
-          // 將年度和月度資訊合併為一個扁平化的 Profection 物件
-          Profection(
-            annualLord = annualPeriod.lordOfYear,
-            annualAscSign = annualPeriod.profectedAscendantSign,
-            annualHouse = annualPeriod.profectedHouse,
-            monthLord = monthlyPeriod.lordOfMonth,
-            monthAscSign = monthlyPeriod.profectedAscendantSign,
-            monthHouse = monthlyPeriod.profectedHouse,
-            fromTime = monthlyPeriod.fromTime,
-            toTime = monthlyPeriod.toTime
-          )
-        }
-    }
+    return periods.flatMap { profectionPeriodOverlapping.invoke(it, from, to) }
   }
 }
