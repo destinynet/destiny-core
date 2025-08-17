@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import destiny.core.DayNight
+import destiny.core.Scale
 import destiny.core.astrology.Aspect.Importance
 import destiny.core.astrology.Constants.TROPICAL_YEAR_DAYS
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
@@ -259,7 +260,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
    * @param to 結束時間
    * @return 一個包含所有與指定範圍重疊的 Firdaria 時段的列表。
    */
-  fun IHoroscopeModel.getFirdariaRangePeriods(from: GmtJulDay, to: GmtJulDay): List<Firdaria> {
+  fun IHoroscopeModel.getRangeFirdaria(from: GmtJulDay, to: GmtJulDay): List<Firdaria> {
     val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
     val diurnal = sunHouse in 7..12
 
@@ -353,19 +354,92 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   }
 
 
-  fun IHoroscopeModel.getProfectionTimeline(years: Int): AnnualProfectionTimeline
 
   /**
-   * 高效計算指定時間範圍內的小限法時段。
-   * 此方法使用惰性計算，避免預先產生整個時間線，可以處理任意長度的時間範圍。
-   * @param from 開始時間
-   * @param to 結束時間
-   * @return 一個包含所有與指定範圍重疊的 Profection 時段的列表。
+   * 根據指定的尺度，高效計算時間範圍內的小限法時段列表。
+   * @param fromTime 開始時間
+   * @param toTime 結束時間
+   * @param scale 欲查詢的時間尺度（年、月等）。
+   * @return 一個只包含指定 scale 的 Profect 時段的列表。
    */
-  fun IHoroscopeModel.getProfectionRangePeriods(from: GmtJulDay, to: GmtJulDay): List<Profection>
+  fun IHoroscopeModel.getRangeProfections(fromTime: GmtJulDay, toTime: GmtJulDay, scale: Scale): List<Profection> {
+    require(fromTime <= toTime) { "fromTime must be earlier than or equal to toTime." }
+    require(this.getHouse(Axis.RISING) == 1) { "Annual Profection requires a chart with a valid Ascendant and house system." }
 
+    val rulerImpl: IRuler = RulerPtolemyImpl
+    val houseCuspSigns = (1..12).associateWith { houseNumber ->
+      this.getCuspDegree(houseNumber).sign
+    }
+    val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
+    val dayNight = if (sunHouse in 7..12) DayNight.DAY else DayNight.NIGHT
 
-  fun IHoroscopeModel.getProfection(gmtJulDay: GmtJulDay): Profection {
+    // 計算查詢範圍開始時的約略年齡，並往前推一年以確保能捕捉到重疊的區間
+    val startAge = max(0, floor((fromTime - this.gmtJulDay) / TROPICAL_YEAR_DAYS).toInt() - 1)
+
+    // 建立一個從 startAge 開始的無限、惰性年齡序列
+    val annualPeriodSequence = generateSequence(startAge) { it + 1 }
+      .map { age ->
+        val annualFromTime = this.gmtJulDay + (age * TROPICAL_YEAR_DAYS)
+        val annualProfectedHouse = (age % 12) + 1
+        val annualAscSign = houseCuspSigns.getValue(annualProfectedHouse)
+        val annualLord = with(rulerImpl) {
+          (annualAscSign.getRulerPoint(dayNight) ?: annualAscSign.getRulerPoint()) as Planet
+        }
+        // 暫存年度資訊，以便月度計算使用
+        Triple(annualFromTime, annualProfectedHouse, annualLord) to annualAscSign
+      }
+      .takeWhile { (annualInfo, _) ->
+        val (annualFromTime, _, _) = annualInfo
+        annualFromTime < toTime // 當年度週期的開始時間超出查詢範圍時，停止生成
+      }
+
+    return when (scale) {
+      Scale.YEAR  -> {
+        annualPeriodSequence
+          .filter { (annualInfo, _) ->
+            val (annualFromTime, _, _) = annualInfo
+            val annualToTime = annualFromTime + TROPICAL_YEAR_DAYS
+            // 區間重疊檢查
+            annualFromTime < toTime && fromTime < annualToTime
+          }
+          .map { (annualInfo, ascSign) ->
+            val (annualFromTime, house, lord) = annualInfo
+            Profection(Scale.YEAR, lord, ascSign, house, annualFromTime, annualFromTime + TROPICAL_YEAR_DAYS)
+          }.toList()
+      }
+
+      Scale.MONTH -> {
+        annualPeriodSequence
+          .flatMap { (annualInfo, _) ->
+            val (annualFromTime, annualProfectedHouse, _) = annualInfo
+            val monthlyPeriodDuration = TROPICAL_YEAR_DAYS / 12.0
+            (0 until 12).asSequence().map { monthIndex ->
+              val monthlyFromTime = annualFromTime + (monthIndex * monthlyPeriodDuration)
+              val monthlyToTime = monthlyFromTime + monthlyPeriodDuration
+              val house = ((annualProfectedHouse - 1 + monthIndex) % 12) + 1
+              val ascSign = houseCuspSigns.getValue(house)
+              val lord = with(rulerImpl) {
+                (ascSign.getRulerPoint(dayNight) ?: ascSign.getRulerPoint()) as Planet
+              }
+              Profection(Scale.MONTH, lord, ascSign, house, monthlyFromTime, monthlyToTime)
+            }
+          }
+          .filter { it.fromTime < toTime && fromTime < it.toTime } // 區間重疊檢查
+          .toList()
+      }
+
+      Scale.DAY   -> TODO("Daily range profection calculation is not yet implemented.")
+      Scale.HOUR  -> TODO("Hourly range profection calculation is not yet implemented.")
+    }
+  }
+
+  /**
+   * 根據指定的尺度，高效計算特定時刻的小限法狀態。
+   * @param gmtJulDay 欲查詢的時刻。
+   * @param scale 欲查詢的時間尺度（年、月等）。
+   * @return 一個包含從 YEAR 到指定 scale 的所有小限法狀態的 Map。
+   */
+  fun IHoroscopeModel.getProfection(gmtJulDay: GmtJulDay, scale: Scale): Map<Scale, Profection> {
     require(gmtJulDay >= this.gmtJulDay) { "Query time must be at or after birth time." }
     require(this.getHouse(Axis.RISING) == 1) { "Annual Profection requires a chart with a valid Ascendant and house system." }
 
@@ -375,6 +449,8 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     }
     val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
     val dayNight = if (sunHouse in 7..12) DayNight.DAY else DayNight.NIGHT
+
+    val resultMap = mutableMapOf<Scale, Profection>()
 
     // --- 年度計算 ---
     val age = floor((gmtJulDay - this.gmtJulDay) / TROPICAL_YEAR_DAYS).toInt()
@@ -386,6 +462,8 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     val annualLord = with(rulerImpl) {
       (annualAscSign.getRulerPoint(dayNight) ?: annualAscSign.getRulerPoint()) as Planet
     }
+    resultMap[Scale.YEAR] = Profection(Scale.YEAR, annualLord, annualAscSign, annualProfectedHouse, annualFromTime, annualToTime)
+    if (scale == Scale.YEAR) return resultMap
 
     // --- 月度計算 ---
     val daysIntoYear = gmtJulDay - annualFromTime
@@ -400,20 +478,15 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     val monthlyLord = with(rulerImpl) {
       (monthlyAscSign.getRulerPoint(dayNight) ?: monthlyAscSign.getRulerPoint()) as Planet
     }
+    resultMap[Scale.MONTH] = Profection(Scale.MONTH, monthlyLord, monthlyAscSign, monthlyProfectedHouse, monthlyFromTime, monthlyToTime)
+    if (scale == Scale.MONTH) return resultMap
 
-    // --- 合併並回傳 ---
-    return Profection(
-      annualLord = annualLord,
-      annualAscSign = annualAscSign,
-      annualHouse = annualProfectedHouse,
-      annualFromTime = annualFromTime,
-      annualToTime = annualToTime,
-      monthLord = monthlyLord,
-      monthAscSign = monthlyAscSign,
-      monthHouse = monthlyProfectedHouse,
-      monthFromTime = monthlyFromTime,
-      monthToTime = monthlyToTime
-    )
+    // --- 其他尺度 (待辦) ---
+    when (scale) {
+      Scale.DAY  -> TODO("Daily profection calculation is not yet implemented.")
+      Scale.HOUR -> TODO("Hourly profection calculation is not yet implemented.")
+      else       -> return resultMap // Should not happen if logic is correct
+    }
   }
 }
 
@@ -616,128 +689,6 @@ class HoroscopeFeature(
                          this.location, posMap, synastryAspects)
   }
 
-  override fun IHoroscopeModel.getProfectionTimeline(years: Int): AnnualProfectionTimeline {
-    require(years > 0) { "Years must be positive." }
-    // 小限法必須要有準確的上升點和宮位
-    require(this.getHouse(Axis.RISING) == 1) { "Annual Profection requires a chart with a valid Ascendant and house system." }
-
-    val rulerImpl: IRuler = RulerPtolemyImpl
-    // 取得所有宮首的星座，這是計算的基礎
-    val houseCuspSigns = (1..12).associateWith { houseNumber ->
-      this.getCuspDegree(houseNumber).sign
-    }
-
-    val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
-    val dayNight = if (sunHouse in 7..12) DayNight.DAY else DayNight.NIGHT
-
-    val annualPeriods = (0 until years).map { age ->
-      // --- 年度計算 ---
-      val annualFromTime = this.gmtJulDay + (age * TROPICAL_YEAR_DAYS)
-      val annualToTime = this.gmtJulDay + ((age + 1) * TROPICAL_YEAR_DAYS)
-
-      val annualProfectedHouse = (age % 12) + 1
-      val annualAscSign = houseCuspSigns.getValue(annualProfectedHouse)
-      val annualLord = with(rulerImpl) {
-        (annualAscSign.getRulerPoint(dayNight)?: annualAscSign.getRulerPoint()) as Planet
-      }
-
-      // --- 月度計算 ---
-      val monthlyPeriodDuration = TROPICAL_YEAR_DAYS / 12.0
-      val monthlyPeriods = (0 until 12).map { monthIndex ->
-        val monthlyFromTime = annualFromTime + (monthIndex * monthlyPeriodDuration)
-        val monthlyToTime = annualFromTime + ((monthIndex + 1) * monthlyPeriodDuration)
-
-        // 月度小限從年度小限的宮位開始，每個月推進一宮
-        val monthlyProfectedHouse = ((annualProfectedHouse - 1 + monthIndex) % 12) + 1
-        val monthlyAscSign = houseCuspSigns.getValue(monthlyProfectedHouse)
-
-        val monthlyLord = with(rulerImpl) {
-          (monthlyAscSign.getRulerPoint(dayNight)?: monthlyAscSign.getRulerPoint()) as Planet
-        }
-
-        MonthlyProfectionPeriod(
-          monthIndex = monthIndex,
-          profectedHouse = monthlyProfectedHouse,
-          profectedAscendantSign = monthlyAscSign,
-          lordOfMonth = monthlyLord,
-          fromTime = monthlyFromTime,
-          toTime = monthlyToTime
-        )
-      }
-
-      AnnualProfectionPeriod(
-        age = age,
-        profectedHouse = annualProfectedHouse,
-        profectedAscendantSign = annualAscSign,
-        lordOfYear = annualLord,
-        fromTime = annualFromTime,
-        toTime = annualToTime,
-        monthlyPeriods = monthlyPeriods
-      )
-    }
-
-    return AnnualProfectionTimeline(annualPeriods)
-  }
-
-  override fun IHoroscopeModel.getProfectionRangePeriods(from: GmtJulDay, to: GmtJulDay): List<Profection> {
-    require(this.getHouse(Axis.RISING) == 1) { "Annual Profection requires a chart with a valid Ascendant and house system." }
-
-    val rulerImpl: IRuler = RulerPtolemyImpl
-    val houseCuspSigns = (1..12).associateWith { houseNumber ->
-      this.getCuspDegree(houseNumber).sign
-    }
-    val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
-    val dayNight = if (sunHouse in 7..12) DayNight.DAY else DayNight.NIGHT
-
-    // 計算查詢範圍開始時的約略年齡，並往前推一年以確保能捕捉到重疊的區間
-    val startAge = max(0, floor((from - this.gmtJulDay) / TROPICAL_YEAR_DAYS).toInt() - 1)
-
-    // 建立一個從 startAge 開始的無限、惰性年齡序列
-    return generateSequence(startAge) { it + 1 }
-      .map { age ->
-        // --- 年度計算 (與原函式相同) ---
-        val annualFromTime = this.gmtJulDay + (age * TROPICAL_YEAR_DAYS)
-        val annualToTime = annualFromTime + TROPICAL_YEAR_DAYS
-        val annualProfectedHouse = (age % 12) + 1
-        val annualAscSign = houseCuspSigns.getValue(annualProfectedHouse)
-        val annualLord = with(rulerImpl) {
-          (annualAscSign.getRulerPoint(dayNight) ?: annualAscSign.getRulerPoint()) as Planet
-        }
-
-        // --- 月度計算 (與原函式相同) ---
-        val monthlyPeriodDuration = TROPICAL_YEAR_DAYS / 12.0
-        val monthlyPeriods = (0 until 12).map { monthIndex ->
-          val monthlyFromTime = annualFromTime + (monthIndex * monthlyPeriodDuration)
-          val monthlyToTime = annualFromTime + ((monthIndex + 1) * monthlyPeriodDuration)
-          val monthlyProfectedHouse = ((annualProfectedHouse - 1 + monthIndex) % 12) + 1
-          val monthlyAscSign = houseCuspSigns.getValue(monthlyProfectedHouse)
-          val monthlyLord = with(rulerImpl) {
-            (monthlyAscSign.getRulerPoint(dayNight) ?: monthlyAscSign.getRulerPoint()) as Planet
-          }
-          MonthlyProfectionPeriod(
-            monthIndex = monthIndex,
-            profectedHouse = monthlyProfectedHouse,
-            profectedAscendantSign = monthlyAscSign,
-            lordOfMonth = monthlyLord,
-            fromTime = monthlyFromTime,
-            toTime = monthlyToTime
-          )
-        }
-
-        AnnualProfectionPeriod(
-          age = age,
-          profectedHouse = annualProfectedHouse,
-          profectedAscendantSign = annualAscSign,
-          lordOfYear = annualLord,
-          fromTime = annualFromTime,
-          toTime = annualToTime,
-          monthlyPeriods = monthlyPeriods
-        )
-      }
-      .takeWhile { annualPeriod -> annualPeriod.fromTime < to } // 當年度週期的開始時間超出查詢範圍時，停止生成
-      .flatMap { profectionPeriodOverlapping.invoke(it, from, to) }
-      .toList()
-  }
 
   companion object {
     private val progressionCache: com.github.benmanes.caffeine.cache.Cache<ProgressionCalcObj, IProgressionModel> = Caffeine.newBuilder()
