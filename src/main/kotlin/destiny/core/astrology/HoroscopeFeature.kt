@@ -379,6 +379,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     // --- 年度計算 ---
     val age = floor((gmtJulDay - this.gmtJulDay) / TROPICAL_YEAR_DAYS).toInt()
     val annualFromTime = this.gmtJulDay + (age * TROPICAL_YEAR_DAYS)
+    val annualToTime = annualFromTime + TROPICAL_YEAR_DAYS
 
     val annualProfectedHouse = (age % 12) + 1
     val annualAscSign = houseCuspSigns.getValue(annualProfectedHouse)
@@ -405,11 +406,13 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
       annualLord = annualLord,
       annualAscSign = annualAscSign,
       annualHouse = annualProfectedHouse,
+      annualFromTime = annualFromTime,
+      annualToTime = annualToTime,
       monthLord = monthlyLord,
       monthAscSign = monthlyAscSign,
       monthHouse = monthlyProfectedHouse,
-      fromTime = monthlyFromTime,
-      toTime = monthlyToTime
+      monthFromTime = monthlyFromTime,
+      monthToTime = monthlyToTime
     )
   }
 }

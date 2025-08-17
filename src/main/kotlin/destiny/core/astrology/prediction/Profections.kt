@@ -14,13 +14,16 @@ data class Profection(
   val annualLord : Planet,
   val annualAscSign : ZodiacSign,
   val annualHouse : Int,
+  val annualFromTime : GmtJulDay,
+  val annualToTime : GmtJulDay,
+
   val monthLord : Planet,
   val monthAscSign : ZodiacSign,
   val monthHouse : Int,
   @Contextual
-  val fromTime: GmtJulDay,
+  val monthFromTime: GmtJulDay,
   @Contextual
-  val toTime: GmtJulDay
+  val monthToTime: GmtJulDay
 )
 
 /**
@@ -100,11 +103,13 @@ internal val profectionPeriodOverlapping : (AnnualProfectionPeriod, GmtJulDay, G
         annualLord = annualPeriod.lordOfYear,
         annualAscSign = annualPeriod.profectedAscendantSign,
         annualHouse = annualPeriod.profectedHouse,
+        annualFromTime = annualPeriod.fromTime,
+        annualToTime = annualPeriod.toTime,
         monthLord = monthlyPeriod.lordOfMonth,
         monthAscSign = monthlyPeriod.profectedAscendantSign,
         monthHouse = monthlyPeriod.profectedHouse,
-        fromTime = monthlyPeriod.fromTime,
-        toTime = monthlyPeriod.toTime
+        monthFromTime = monthlyPeriod.fromTime,
+        monthToTime = monthlyPeriod.toTime
       )
     }
 }
