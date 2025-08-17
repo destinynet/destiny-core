@@ -4,13 +4,19 @@
  */
 package destiny.core.astrology
 
+import destiny.core.EnumTest
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
 
-class HouseSystemTest {
+class HouseSystemTest : EnumTest() {
+
+  @Test
+  fun testString() {
+    testEnums(HouseSystem::class, false)
+  }
 
   @Test
   fun testHouseSystem() {

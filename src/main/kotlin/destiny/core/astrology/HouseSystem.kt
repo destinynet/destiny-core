@@ -30,6 +30,7 @@ enum class HouseSystem(val nameKey: String) {
   REGIOMONTANUS("HouseSystem.REGIOMONTANUS"),
   CAMPANUS("HouseSystem.CAMPANUS"),
   EQUAL("HouseSystem.EQUAL"),
+  WHOLE_SIGN("HouseSystem.WHOLE_SIGN"), // 整宮制
   VEHLOW_EQUAL("HouseSystem.VEHLOW_EQUAL"),
   AXIAL_ROTATION("HouseSystem.AXIAL_ROTATION"),
   HORIZONTAL("HouseSystem.HORIZONTAL"),
