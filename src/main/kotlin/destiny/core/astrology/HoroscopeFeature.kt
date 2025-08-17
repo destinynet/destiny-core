@@ -367,7 +367,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     require(this.getHouse(Axis.RISING) == 1) { "Annual Profection requires a chart with a valid Ascendant and house system." }
 
     val rulerImpl: IRuler = RulerPtolemyImpl
-    val houseCuspSigns = (1..12).associateWith { houseNumber ->
+    val houseCuspSigns: Map<Int, ZodiacSign> = (1..12).associateWith { houseNumber ->
       this.getCuspDegree(houseNumber).sign
     }
     val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
@@ -412,17 +412,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
         annualPeriodSequence
           .flatMap { (annualInfo, _) ->
             val (annualFromTime, annualProfectedHouse, _) = annualInfo
-            val monthlyPeriodDuration = TROPICAL_YEAR_DAYS / 12.0
-            (0 until 12).asSequence().map { monthIndex ->
-              val monthlyFromTime = annualFromTime + (monthIndex * monthlyPeriodDuration)
-              val monthlyToTime = monthlyFromTime + monthlyPeriodDuration
-              val house = ((annualProfectedHouse - 1 + monthIndex) % 12) + 1
-              val ascSign = houseCuspSigns.getValue(house)
-              val lord = with(rulerImpl) {
-                (ascSign.getRulerPoint(dayNight) ?: ascSign.getRulerPoint()) as Planet
-              }
-              Profection(Scale.MONTH, lord, ascSign, house, monthlyFromTime, monthlyToTime)
-            }
+            (0 until 12).asSequence().map { monthIndex -> getMonthProfection(annualFromTime, annualProfectedHouse, monthIndex, houseCuspSigns, dayNight) }
           }
           .filter { it.fromTime < toTime && fromTime < it.toTime } // 區間重疊檢查
           .toList()
@@ -469,16 +459,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     val daysIntoYear = gmtJulDay - annualFromTime
     val monthlyPeriodDuration = TROPICAL_YEAR_DAYS / 12.0
     val monthIndex = floor(daysIntoYear / monthlyPeriodDuration).toInt()
-
-    val monthlyFromTime = annualFromTime + (monthIndex * monthlyPeriodDuration)
-    val monthlyToTime = monthlyFromTime + monthlyPeriodDuration
-
-    val monthlyProfectedHouse = ((annualProfectedHouse - 1 + monthIndex) % 12) + 1
-    val monthlyAscSign = houseCuspSigns.getValue(monthlyProfectedHouse)
-    val monthlyLord = with(rulerImpl) {
-      (monthlyAscSign.getRulerPoint(dayNight) ?: monthlyAscSign.getRulerPoint()) as Planet
-    }
-    resultMap[Scale.MONTH] = Profection(Scale.MONTH, monthlyLord, monthlyAscSign, monthlyProfectedHouse, monthlyFromTime, monthlyToTime)
+    resultMap[Scale.MONTH] = getMonthProfection(annualFromTime, annualProfectedHouse, monthIndex, houseCuspSigns, dayNight)
     if (scale == Scale.MONTH) return resultMap
 
     // --- 其他尺度 (待辦) ---

@@ -3,9 +3,13 @@
  */
 package destiny.core.astrology.prediction
 
+import destiny.core.DayNight
 import destiny.core.Scale
+import destiny.core.astrology.Constants.TROPICAL_YEAR_DAYS
 import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacSign
+import destiny.core.astrology.classical.IRuler
+import destiny.core.astrology.classical.RulerPtolemyImpl
 import destiny.core.calendar.GmtJulDay
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -21,3 +25,16 @@ data class Profection(
   @Contextual
   val toTime: GmtJulDay
 )
+
+fun getMonthProfection(annualFromTime: GmtJulDay, annualProfectedHouse: Int, monthIndex: Int, houseCuspSigns: Map<Int, ZodiacSign>, dayNight: DayNight): Profection {
+  val monthlyPeriodDuration = TROPICAL_YEAR_DAYS / 12.0
+  val monthlyFromTime = annualFromTime + (monthIndex * monthlyPeriodDuration)
+  val monthlyToTime = monthlyFromTime + monthlyPeriodDuration
+  val house = ((annualProfectedHouse - 1 + monthIndex) % 12) + 1
+  val ascSign = houseCuspSigns.getValue(house)
+  val rulerImpl: IRuler = RulerPtolemyImpl
+  val lord = with(rulerImpl) {
+    (ascSign.getRulerPoint(dayNight) ?: ascSign.getRulerPoint()) as Planet
+  }
+  return Profection(Scale.MONTH, lord, ascSign, house, monthlyFromTime, monthlyToTime)
+}
