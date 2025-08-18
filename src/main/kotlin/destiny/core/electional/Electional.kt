@@ -4,6 +4,7 @@
 package destiny.core.electional
 
 import destiny.core.TimeRange
+import destiny.core.astrology.BirthDataGrain
 import destiny.core.calendar.ILocation
 import destiny.tools.serializers.ILocationSerializer
 import destiny.tools.serializers.LocalDateSerializer
@@ -38,7 +39,7 @@ class Electional {
   interface IDayHourModel : ITraversalModel {
     val topN: Int
     val purpose: ElectionalPurpose
-    val includeHour: Boolean
+    val grain: BirthDataGrain
     val timeRange: TimeRange?
     val notes: String?
   }
@@ -51,7 +52,7 @@ class Electional {
     private val traversal: TraversalModel,
     override val topN: Int,
     override val purpose: ElectionalPurpose,
-    override val includeHour: Boolean,
+    override val grain: BirthDataGrain,
     override val timeRange: TimeRange? = null,
     override val notes: String? = null,
   ) : IDayHourModel, ITraversalModel by traversal

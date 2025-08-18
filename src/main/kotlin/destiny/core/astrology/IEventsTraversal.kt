@@ -14,9 +14,9 @@ interface IEventsTraversal {
     fromGmtJulDay: GmtJulDay,
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
-    includeHour: Boolean,
+    grain: BirthDataGrain,
     config: AstrologyTraversalConfig,
-    outerPoints : Set<AstroPoint> = model.points,
+    outerPoints: Set<AstroPoint> = model.points,
     innerPoints: Set<AstroPoint> = model.points,
   ): Sequence<AstroEventDto>
 

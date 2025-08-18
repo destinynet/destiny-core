@@ -61,7 +61,7 @@ class DayHourService(
   /**
    * @param timeRange : 每日限定時間
    */
-  fun aggregate(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, includeHour: Boolean, timeRange: TimeRange? = null): List<Daily> {
+  fun aggregate(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, grain: BirthDataGrain, timeRange: TimeRange? = null): List<Daily> {
 
     val daySelector: (IEventDto) -> LocalDate = {
       val beginDate = (it.begin.toLmt(bdnp.location, julDayResolver) as LocalDateTime).toLocalDate()
@@ -96,7 +96,7 @@ class DayHourService(
       }
     }
 
-    return traverse(bdnp, model, config, includeHour).groupBy(daySelector).map { (date: LocalDate, events: List<IEventDto>) ->
+    return traverse(bdnp, model, config, grain).groupBy(daySelector).map { (date: LocalDate, events: List<IEventDto>) ->
 
       val allDayEvents = events
         .sortedBy { it.begin } // 確保先來的在前
@@ -141,8 +141,8 @@ class DayHourService(
   }
 
   /** 純文字模式 輸出 */
-  fun text(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, includeHour: Boolean, timeRange: TimeRange? = null): String {
-    return aggregate(bdnp, model, config, includeHour, timeRange).joinToString("\n") { daily ->
+  fun text(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, grain: BirthDataGrain, timeRange: TimeRange? = null): String {
+    return aggregate(bdnp, model, config, grain, timeRange).joinToString("\n") { daily ->
       val date = daily.localDate
       buildString {
         appendLine("$date , ${date.dayOfWeek}")
@@ -187,7 +187,7 @@ class DayHourService(
     }
   }
 
-  fun traverse(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, includeHour: Boolean): Sequence<IEventDto> {
+  fun traverse(bdnp: IBirthDataNamePlace, model: Electional.ITraversalModel, config: Config, grain: BirthDataGrain): Sequence<IEventDto> {
     require(!model.toDate.isBefore(model.fromDate)) { "toDate must be after the fromDate" }
 
     val loc = model.loc ?: bdnp.location
@@ -195,17 +195,17 @@ class DayHourService(
     val fromGmtJulDay = model.fromDate.atTime(0, 0).toGmtJulDay(loc)
     val toGmtJulDay = model.toDate.plusDays(1).atTime(0, 0).toGmtJulDay(loc)
 
-    return traverse(bdnp, loc, fromGmtJulDay, toGmtJulDay, config, includeHour)
+    return traverse(bdnp, loc, fromGmtJulDay, toGmtJulDay, config, grain)
   }
 
-  fun traverse(bdnp: IBirthDataNamePlace, loc: ILocation = bdnp.location, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay, config: Config, includeHour: Boolean): Sequence<IEventDto> {
+  fun traverse(bdnp: IBirthDataNamePlace, loc: ILocation = bdnp.location, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay, config: Config, grain: BirthDataGrain): Sequence<IEventDto> {
 
     return sequence {
       config.ewConfig?.also {
-        yieldAll(searchEwEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, includeHour, it))
+        yieldAll(searchEwEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, grain, it))
       }
       config.astrologyConfig?.also {
-        yieldAll(traverseAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, includeHour, it, null, null, eventsTraversalSolarArcImpl, eventsTraversalTransitImpl))
+        yieldAll(traverseAstrologyEvents(bdnp, fromGmtJulDay, toGmtJulDay, loc, grain, it, null, null, eventsTraversalSolarArcImpl, eventsTraversalTransitImpl))
       }
     }
   }
@@ -216,7 +216,7 @@ class DayHourService(
     fromGmtJulDay: GmtJulDay,
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
-    includeHour: Boolean,
+    grain: BirthDataGrain,
     traversalConfig: AstrologyTraversalConfig,
     /** 如不指定 [outerPoints] (make it null) , 則會從 natal 中取得所有 points */
     outerPoints: Set<AstroPoint>?,
@@ -227,13 +227,13 @@ class DayHourService(
     val model: IHoroscopeModel = horoscopeFeature.getModel(bdnp.gmtJulDay, loc, traversalConfig.horoscopeConfig)
     val outer = outerPoints?: model.points
     val inner = innerPoints?: model.points
-    return traversals.asSequence().flatMap { it.traverse(model, fromGmtJulDay, toGmtJulDay, loc, includeHour, traversalConfig, outer, inner) }
+    return traversals.asSequence().flatMap { it.traverse(model, fromGmtJulDay, toGmtJulDay, loc, grain, traversalConfig, outer, inner) }
   }
 
 
   private val supportedScales = setOf(Scale.DAY, Scale.HOUR)
 
-  private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords, config: EwTraversalConfig, loc: ILocation, includeHour: Boolean): Sequence<IEventDto> {
+  private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords, config: EwTraversalConfig, loc: ILocation, grain: BirthDataGrain): Sequence<IEventDto> {
 
     val globalStemCombined = with(IdentityPatterns.stemCombined) {
       outer.getPatterns().filterIsInstance<IdentityPattern.StemCombined>()
@@ -362,7 +362,7 @@ class DayHourService(
       yieldAll(personalBranchOpposition)
     }
       .filter { it: IEventDto ->
-        if (includeHour)
+        if (grain == BirthDataGrain.MINUTE)
           true
         else {
           when (it.event) {
@@ -381,7 +381,7 @@ class DayHourService(
     fromGmtJulDay: GmtJulDay,
     toGmtJulDay: GmtJulDay,
     loc: ILocation = bdnp.location,
-    includeHour: Boolean,
+    grain: BirthDataGrain,
     config: EwTraversalConfig,
   ): Sequence<IEventDto> {
 
@@ -394,7 +394,7 @@ class DayHourService(
       ewFeature.next(gmtJulDay + 0.01, loc, ewPersonPresentConfig)
     }.takeWhile { (outerEw, gmtJulDay) -> gmtJulDay < toGmtJulDay }
       .flatMap { (outerEw, gmtJulDay) ->
-        matchEwEvents(gmtJulDay, outerEw, personEw, config, loc, includeHour)
+        matchEwEvents(gmtJulDay, outerEw, personEw, config, loc, grain)
       }
   }
 

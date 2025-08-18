@@ -4,6 +4,7 @@
 package destiny.core
 
 import com.jayway.jsonpath.JsonPath
+import destiny.core.astrology.BirthDataGrain
 import destiny.core.calendar.locationOf
 import destiny.core.electional.Electional
 import destiny.core.electional.ElectionalPurpose
@@ -43,7 +44,7 @@ class ElectionalDayHourModelTest {
     val fromDate = LocalDate.of(2025, 6, 1)
     val toDate = LocalDate.of(2025, 6, 5)
     val traversalModel = Electional.TraversalModel(fromDate, toDate, loc)
-    val dayHourModel = Electional.DayHourModel(traversalModel, 3, ElectionalPurpose.DATING, false)
+    val dayHourModel = Electional.DayHourModel(traversalModel, 3, ElectionalPurpose.DATING, BirthDataGrain.DAY)
 
     val model = ElectionalDayHourRequest(inner, dayHourModel)
 
@@ -51,6 +52,7 @@ class ElectionalDayHourModelTest {
       logger.info { "raw json = $rawJson" }
       assertNotNull(JsonPath.read(rawJson , "$.inner"))
       assertNotNull(JsonPath.read(rawJson , "$.dayHourModel"))
+      assertEquals("DAY", JsonPath.read(rawJson , "$.dayHourModel.grain"))
       json.decodeFromString<ElectionalDayHourRequest>(rawJson).also { parsed ->
         assertEquals(parsed, model)
       }

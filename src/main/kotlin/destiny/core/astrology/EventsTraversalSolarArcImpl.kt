@@ -2,6 +2,7 @@ package destiny.core.astrology
 
 import destiny.core.asLocaleString
 import destiny.core.astrology.Aspect.Companion.expand
+import destiny.core.astrology.BirthDataGrain.MINUTE
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -29,7 +30,7 @@ class EventsTraversalSolarArcImpl(
     fromGmtJulDay: GmtJulDay,
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
-    includeHour: Boolean,
+    grain: BirthDataGrain,
     config: AstrologyTraversalConfig,
     outerPoints: Set<AstroPoint>,
     innerPoints: Set<AstroPoint>,
@@ -40,15 +41,15 @@ class EventsTraversalSolarArcImpl(
     val threshold = 0.9
 
     val (fromSolarArc, toSolarArc) = with(horoscopeFeature) {
-      model.getSolarArc(fromGmtJulDay, includeHour, modernAspectCalculator, threshold, hConfig) to
-        model.getSolarArc(toGmtJulDay, includeHour, modernAspectCalculator, threshold, hConfig)
+      model.getSolarArc(fromGmtJulDay, grain, modernAspectCalculator, threshold, hConfig) to
+        model.getSolarArc(toGmtJulDay, grain, modernAspectCalculator, threshold, hConfig)
     }
 
     // 內盤要考慮的星體 (Natal Points)
     val natalPointsToConsider = model.points.filter { it in innerPoints }
       .filter { it is Planet || it is LunarNode || it is Axis }
       .filter {
-        if (includeHour)
+        if (grain == MINUTE)
           true
         else
           it !in Axis.values
@@ -57,7 +58,7 @@ class EventsTraversalSolarArcImpl(
     // 外圈要考慮的星體 (Solar Arc Points)
     val saPointsToConsider = outerPoints.filter { it is Planet || it is LunarNode || it is Axis }
       .filter {
-        if (includeHour)
+        if (grain == MINUTE)
           true
         else
           it !in Axis.values
@@ -133,7 +134,7 @@ class EventsTraversalSolarArcImpl(
     // --- SA House Ingress ---
     // 換宮位事件也只考慮外圈移動的星體
     fun searchHouseIngressEvents(): Sequence<AstroEventDto> = sequence {
-      if (!includeHour) return@sequence // 若無精確出生時間，則無法計算換宮位
+      if (grain != MINUTE) return@sequence // 若無精確出生時間，則無法計算換宮位
 
       // 取得宮位邊界度數，並建立從「度數」反查「宮位數」的 Map
       val cuspDegreeMap: Map<ZodiacDegree, Int> = model.cuspDegreeMap.reverse()
@@ -182,7 +183,7 @@ class EventsTraversalSolarArcImpl(
       }
 
       // SA 換宮位事件
-      if (config.houseIngress && includeHour) {
+      if (config.houseIngress && grain == MINUTE) {
         yieldAll(searchHouseIngressEvents())
       }
     }
@@ -207,8 +208,8 @@ class EventsTraversalSolarArcImpl(
   ): GmtJulDay? {
     // 1. 粗略估算檢查，確保目標弧度在時間範圍內，這是一個重要的初步過濾
     val (arcAtLow, arcAtHigh) = with(horoscopeFeature) {
-      inner.getSolarArc(fromGmt, true, modernAspectCalculator, null, hConfig).degreeMoved to
-        inner.getSolarArc(toGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
+      inner.getSolarArc(fromGmt, MINUTE, modernAspectCalculator, null, hConfig).degreeMoved to
+        inner.getSolarArc(toGmt, MINUTE, modernAspectCalculator, null, hConfig).degreeMoved
     }
 
     // 檢查 targetArc 是否真的在範圍內
@@ -243,7 +244,7 @@ class EventsTraversalSolarArcImpl(
         break
       }
 
-      val arcAtMid = with(horoscopeFeature) { inner.getSolarArc(midGmt, true, modernAspectCalculator, null, hConfig).degreeMoved }
+      val arcAtMid = with(horoscopeFeature) { inner.getSolarArc(midGmt, MINUTE, modernAspectCalculator, null, hConfig).degreeMoved }
 
       logger.trace {
         "[$round] currentArc = ${arcAtMid.truncateToString(4)} , targetArc = ${targetArc.truncateToString(4)} , lowGmt = ${lowGmt.value.truncateToString(4)} , highGmt = ${
@@ -264,7 +265,7 @@ class EventsTraversalSolarArcImpl(
     }
 
     // 3. 最終檢查 lowGmt 是否滿足條件且誤差夠小
-    val finalArc = with(horoscopeFeature) { inner.getSolarArc(lowGmt, true, modernAspectCalculator, null, hConfig).degreeMoved }
+    val finalArc = with(horoscopeFeature) { inner.getSolarArc(lowGmt, MINUTE, modernAspectCalculator, null, hConfig).degreeMoved }
     return if (abs(finalArc - targetArc) < 0.01) { // 容許的最終誤差
       lowGmt
     } else {
@@ -289,8 +290,8 @@ class EventsTraversalSolarArcImpl(
   ): GmtJulDay? {
     // 粗略估算檢查事件是否可能在範圍內
     val (degreeMovedFrom, degreeMovedTo) = with(horoscopeFeature) {
-      inner.getSolarArc(fromGmt, true, modernAspectCalculator, null, hConfig).degreeMoved to
-        inner.getSolarArc(toGmt, true, modernAspectCalculator, null, hConfig).degreeMoved
+      inner.getSolarArc(fromGmt, MINUTE, modernAspectCalculator, null, hConfig).degreeMoved to
+        inner.getSolarArc(toGmt, MINUTE, modernAspectCalculator, null, hConfig).degreeMoved
     }
 
     if (targetArc < degreeMovedFrom || targetArc > degreeMovedTo) {
@@ -307,7 +308,7 @@ class EventsTraversalSolarArcImpl(
 
     while ((high - low) > 0.0001) { // 迭代直到找到足夠精確的時間
       val mid = low + (high - low) / 2
-      val solarArcModel = with(horoscopeFeature) { inner.getSolarArc(mid, true, modernAspectCalculator, null, hConfig) }
+      val solarArcModel = with(horoscopeFeature) { inner.getSolarArc(mid, MINUTE, modernAspectCalculator, null, hConfig) }
       val currentArc = solarArcModel.degreeMoved
 
       round++
@@ -321,7 +322,7 @@ class EventsTraversalSolarArcImpl(
     }
 
     // 最終檢查 low/high 是否滿足條件且誤差夠小
-    val finalModel = with(horoscopeFeature) { inner.getSolarArc(low, true, modernAspectCalculator, null, hConfig) }
+    val finalModel = with(horoscopeFeature) { inner.getSolarArc(low, MINUTE, modernAspectCalculator, null, hConfig) }
     return if (abs(finalModel.degreeMoved - targetArc) < 0.01) { // 容許的誤差
       low
     } else {

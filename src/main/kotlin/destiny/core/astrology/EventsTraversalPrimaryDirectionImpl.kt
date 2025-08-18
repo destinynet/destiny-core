@@ -13,7 +13,7 @@ class EventsTraversalPrimaryDirectionImpl : IEventsTraversal {
     fromGmtJulDay: GmtJulDay,
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
-    includeHour: Boolean,
+    grain: BirthDataGrain,
     config: AstrologyTraversalConfig,
     outerPoints: Set<AstroPoint>,
     innerPoints: Set<AstroPoint>,

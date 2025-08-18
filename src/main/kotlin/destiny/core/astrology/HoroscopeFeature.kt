@@ -7,6 +7,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import destiny.core.DayNight
 import destiny.core.Scale
 import destiny.core.astrology.Aspect.Importance
+import destiny.core.astrology.BirthDataGrain.MINUTE
 import destiny.core.astrology.Constants.TROPICAL_YEAR_DAYS
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.*
@@ -208,7 +209,14 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
       .toList()
   }
 
-  fun IHoroscopeModel.getSolarArc(viewTime: GmtJulDay, innerConsiderHour: Boolean, aspectCalculator: IAspectCalculator, threshold: Double?, config: IHoroscopeConfig, forward: Boolean = true) : ISolarArcModel
+  fun IHoroscopeModel.getSolarArc(
+    viewTime: GmtJulDay,
+    innerGrain: BirthDataGrain,
+    aspectCalculator: IAspectCalculator,
+    threshold: Double?,
+    config: IHoroscopeConfig,
+    forward: Boolean = true
+  ) : ISolarArcModel
 
 
   fun IHoroscopeModel.getFirdariaTimeline(years: Int) : FirdariaTimeline {
@@ -627,7 +635,7 @@ class HoroscopeFeature(
 
   override fun IHoroscopeModel.getSolarArc(
     viewTime: GmtJulDay,
-    innerConsiderHour: Boolean,
+    innerGrain: BirthDataGrain,
     aspectCalculator: IAspectCalculator,
     threshold: Double?,
     config: IHoroscopeConfig,
@@ -652,7 +660,7 @@ class HoroscopeFeature(
     }
 
     val innerPosMap = this.positionMap.let {
-      if (innerConsiderHour)
+      if (innerGrain == MINUTE)
         it
       else
         it.filter { (k, _) -> k !is Axis }
@@ -680,13 +688,13 @@ class HoroscopeFeature(
     val laterForP1: ((AstroPoint) -> IZodiacDegree?) = { p -> laterPosMap[p] }
     val laterForP2: ((AstroPoint) -> IZodiacDegree?) = { p -> this.getZodiacDegree(p) }
 
-    val synastryAspects = if (innerConsiderHour) {
+    val synastryAspects = if (innerGrain == MINUTE) {
       synastryAspectsFine(posMap, this, laterForP1, laterForP2, aspectCalculator, threshold)
     } else {
       synastryAspectsCoarse(posMap, innerPosMap, laterForP1, laterForP2, aspectCalculator, threshold)
     }
 
-    return SolarArcModel(this.gmtJulDay, innerConsiderHour, viewTime,
+    return SolarArcModel(this.gmtJulDay, (innerGrain == MINUTE), viewTime,
                          forward,
                          convergentJulDay, degreeMoved,
                          this.location, posMap, synastryAspects)

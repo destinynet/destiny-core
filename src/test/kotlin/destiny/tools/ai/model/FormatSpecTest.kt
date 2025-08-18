@@ -3,6 +3,7 @@
  */
 package destiny.tools.ai.model
 
+import kotlinx.serialization.SerializationException
 import java.time.LocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -26,14 +27,14 @@ class FormatSpecTest {
   fun nonSerializableClass() {
     class NonSerializableClass(val name: String)
 
-    assertFailsWith<IllegalStateException> {
+    assertFailsWith<SerializationException> {
       FormatSpec.of<NonSerializableClass>("NonSerializable", "Should fail")
     }
   }
 
   @Test
   fun localDateTime() {
-    assertFailsWith<IllegalStateException> {
+    assertFailsWith<SerializationException> {
       FormatSpec.of<LocalDateTime>("DateTime", "This should fail for LocalDateTime")
     }
   }

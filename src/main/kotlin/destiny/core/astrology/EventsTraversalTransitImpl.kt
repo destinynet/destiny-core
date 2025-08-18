@@ -41,7 +41,7 @@ class EventsTraversalTransitImpl(
     fromGmtJulDay: GmtJulDay,
     toGmtJulDay: GmtJulDay,
     loc: ILocation,
-    includeHour: Boolean,
+    grain: BirthDataGrain,
     config: AstrologyTraversalConfig,
     outerPoints: Set<AstroPoint>,
     innerPoints: Set<AstroPoint>,
@@ -55,7 +55,7 @@ class EventsTraversalTransitImpl(
       .filter { it in innerPoints }
       .filter { it is Planet || it is LunarNode || it is Axis }
       .filter {
-        if (includeHour) true
+        if (grain == BirthDataGrain.MINUTE) true
         else it !in Axis.values
       }.filterIsInstance<Planet>().toSet()
 
@@ -73,7 +73,7 @@ class EventsTraversalTransitImpl(
     fun IHoroscopeModel.outerToInner(vararg chosenPoints: AstroPoint): List<SynastryAspect> {
       return horoscopeFeature.synastry(this, model, modernAspectCalculator, threshold = null).aspects.filter { aspect ->
         aspect.outerPoint in chosenPoints && (
-          if (includeHour)
+          if (grain == BirthDataGrain.MINUTE)
             true
           else {
             aspect.innerPoint !in houseRelatedPoints
@@ -135,7 +135,7 @@ class EventsTraversalTransitImpl(
           append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
           if (transitToNatalAspects.isNotEmpty()) {
             appendLine()
-            appendLine(transitToNatalAspects.describeAspects(includeHour))
+            appendLine(transitToNatalAspects.describeAspects(grain))
           }
         }
         AstroEventDto(
@@ -170,7 +170,7 @@ class EventsTraversalTransitImpl(
         append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
         if (transitToNatalAspects.isNotEmpty()) {
           appendLine()
-          appendLine(transitToNatalAspects.describeAspects(includeHour))
+          appendLine(transitToNatalAspects.describeAspects(grain))
         }
       }
       AstroEventDto(
@@ -194,7 +194,7 @@ class EventsTraversalTransitImpl(
         append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
         if (transitToNatalAspects.isNotEmpty()) {
           appendLine()
-          appendLine(transitToNatalAspects.describeAspects(includeHour))
+          appendLine(transitToNatalAspects.describeAspects(grain))
         }
       }
       AstroEventDto(
@@ -231,7 +231,7 @@ class EventsTraversalTransitImpl(
             append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
             if (transitToNatalAspects.isNotEmpty()) {
               appendLine()
-              appendLine(transitToNatalAspects.describeAspects(includeHour))
+              appendLine(transitToNatalAspects.describeAspects(grain))
             }
           }
           AstroEventDto(
@@ -271,7 +271,7 @@ class EventsTraversalTransitImpl(
     }
 
     // 星體換宮位
-    val houseIngresses = if (includeHour) {
+    val houseIngresses = if (grain == BirthDataGrain.MINUTE) {
       // grain 到「時/分」, 宮位可信
       val cuspDegreeMap: Map<ZodiacDegree, Int> = model.cuspDegreeMap.reverse()
       val cuspDegrees = cuspDegreeMap.keys.toSet()
@@ -350,25 +350,25 @@ class EventsTraversalTransitImpl(
         // 星體換星座
         yieldAll(signIngresses)
       }
-      if (config.houseIngress && includeHour) {
+      if (config.houseIngress && grain == BirthDataGrain.MINUTE) {
         // 星體換宮位
         yieldAll(houseIngresses)
       }
     }
   }
 
-  private fun List<SynastryAspect>.describeAspects(includeHour: Boolean): String {
+  private fun List<SynastryAspect>.describeAspects(grain: BirthDataGrain): String {
     return this.sortedBy { it.orb }.joinToString("\n") { aspect: SynastryAspect ->
       buildString {
         append("\t")
         append("(p) [outer ${aspect.outerPoint.asLocaleString().getTitle(Locale.ENGLISH)}")
-        if (includeHour) {
+        if (grain == BirthDataGrain.MINUTE) {
           append(" (H${aspect.outerPointHouse})")
         }
         append("] ")
         append(aspect.aspect)
         append(" [natal ${aspect.innerPoint.asLocaleString().getTitle(Locale.ENGLISH)}")
-        if (includeHour) {
+        if (grain == BirthDataGrain.MINUTE) {
           append(" (H${aspect.innerPointHouse})")
         }
         append("] orb = ${aspect.orb.truncateToString(2)}")
