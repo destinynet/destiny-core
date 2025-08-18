@@ -20,6 +20,7 @@ import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.util.concurrent.TimeUnit
 import javax.cache.Cache
+import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
 
@@ -395,9 +396,14 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     resultMap[Scale.MONTH] = getMonthProfection(annualFromTime, annualProfectedHouse, monthIndex, houseCuspSigns, dayNight)
     if (scale == Scale.MONTH) return resultMap
 
+    // --- 日度計算 ---
+    val monthlyProfection = resultMap.getValue(Scale.MONTH)
+    val daysIntoMonth = floor(gmtJulDay - monthlyProfection.fromTime).toInt()
+    resultMap[Scale.DAY] = getDayProfection(monthlyProfection.fromTime, monthlyProfection.house, daysIntoMonth, houseCuspSigns, dayNight)
+    if (scale == Scale.DAY) return resultMap
+
     // --- 其他尺度 (待辦) ---
     when (scale) {
-      Scale.DAY  -> TODO("Daily profection calculation is not yet implemented.")
       Scale.HOUR -> TODO("Hourly profection calculation is not yet implemented.")
       else       -> return resultMap // Should not happen if logic is correct
     }
@@ -425,7 +431,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     val startAge = max(0, floor((fromTime - this.gmtJulDay) / TROPICAL_YEAR_DAYS).toInt() - 1)
 
     // 建立一個從 startAge 開始的無限、惰性年齡序列
-    val annualPeriodSequence = generateSequence(startAge) { it + 1 }
+    val annualPeriodSequence: Sequence<Pair<Triple<GmtJulDay, Int, Planet>, ZodiacSign>> = generateSequence(startAge) { it + 1 }
       .map { age ->
         val annualFromTime = this.gmtJulDay + (age * TROPICAL_YEAR_DAYS)
         val annualProfectedHouse = (age % 12) + 1
@@ -440,6 +446,16 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
         val (annualFromTime, _, _) = annualInfo
         annualFromTime < toTime // 當年度週期的開始時間超出查詢範圍時，停止生成
       }
+
+    // 從年度序列展開，產生與查詢範圍重疊的月度序列
+    val monthPeriodSequence: Sequence<Profection> = annualPeriodSequence
+      .flatMap { (annualInfo, _) ->
+        val (annualFromTime, annualProfectedHouse, _) = annualInfo
+        (0 until 12).asSequence().map { monthIndex ->
+          getMonthProfection(annualFromTime, annualProfectedHouse, monthIndex, houseCuspSigns, dayNight)
+        }
+      }
+      .filter { it.fromTime < toTime && fromTime < it.toTime } // 區間重疊檢查
 
     return when (scale) {
       Scale.YEAR  -> {
@@ -456,17 +472,21 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
           }.toList()
       }
 
-      Scale.MONTH -> {
-        annualPeriodSequence
-          .flatMap { (annualInfo, _) ->
-            val (annualFromTime, annualProfectedHouse, _) = annualInfo
-            (0 until 12).asSequence().map { monthIndex -> getMonthProfection(annualFromTime, annualProfectedHouse, monthIndex, houseCuspSigns, dayNight) }
+      Scale.MONTH -> { monthPeriodSequence.toList() }
+
+      Scale.DAY -> {
+        monthPeriodSequence
+          .flatMap { monthlyProfection ->
+            // 計算一個月大概有幾天，取整數，以產生足夠的日度小限
+            val monthlyDurationDays = ceil(monthlyProfection.toTime - monthlyProfection.fromTime).toInt()
+            // 產生該月份中每一天的序列
+            (0 until monthlyDurationDays).asSequence().map { dayIndex ->
+              getDayProfection(monthlyProfection.fromTime, monthlyProfection.house, dayIndex, houseCuspSigns, dayNight)
+            }
           }
-          .filter { it.fromTime < toTime && fromTime < it.toTime } // 區間重疊檢查
+          .filter { it.fromTime < toTime && fromTime < it.toTime } // 再次過濾出與查詢範圍重疊的日期
           .toList()
       }
-
-      Scale.DAY   -> TODO("Daily range profection calculation is not yet implemented.")
       Scale.HOUR  -> TODO("Hourly range profection calculation is not yet implemented.")
     }
   }
