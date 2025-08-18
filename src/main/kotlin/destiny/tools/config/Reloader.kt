@@ -72,7 +72,7 @@ class Reloader<T : Any>(
     return try {
       if (externalConfigFile.exists()) {
         val content = externalConfigFile.readText()
-        logger.debug { "loaded external config file: ${externalConfigFile.absolutePath}" }
+        logger.trace { "loaded external config file: ${externalConfigFile.absolutePath}" }
         holder.getConfig()
         parser.parse(content).takeIf { validator.validate(it) }
       } else {
