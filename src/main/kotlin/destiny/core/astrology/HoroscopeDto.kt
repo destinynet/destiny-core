@@ -22,6 +22,7 @@ import java.time.LocalDateTime
  */
 interface IHoroscopeDto {
   val time: LocalDateTime
+  val utc: LocalDateTime
   val location: ILocation
   val place: String?
   val signs: Map<ZodiacSign, List<AstroPoint>>
@@ -43,6 +44,8 @@ interface IHoroscopeDto {
 data class HoroscopeDto(
   @Serializable(with = LocalDateTimeSerializer::class)
   override val time: LocalDateTime,
+  @Serializable(with = LocalDateTimeSerializer::class)
+  override val utc: LocalDateTime,
   @Serializable(with = ILocationSerializer::class)
   override val location: ILocation,
   override val place: String?,
@@ -75,6 +78,8 @@ data class Natal(
   override val name: String?,
   @Serializable(with = LocalDateTimeSerializer::class)
   override val time: LocalDateTime,
+  @Serializable(with = LocalDateTimeSerializer::class)
+  override val utc: LocalDateTime,
   @Serializable(with = ILocationSerializer::class)
   override val location: ILocation,
   override val place: String?,
@@ -95,7 +100,7 @@ data class Natal(
   constructor(gender: Gender, age: Int, name: String?, dto: IHoroscopeDto) :
     this(
       gender, age, name,
-      dto.time, dto.location, dto.place, dto.signs, dto.houses,
+      dto.time, dto.utc, dto.location, dto.place, dto.signs, dto.houses,
       dto.stars, dto.axisStars,
       dto.houseStarDistribution, dto.elementPercentage, dto.qualityPercentage,
       dto.tightestAspects, dto.astroPatterns, dto.classicalAstrologyPatterns, dto.graphPatterns, dto.midPoints

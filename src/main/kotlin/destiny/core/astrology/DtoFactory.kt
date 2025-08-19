@@ -10,10 +10,13 @@ import destiny.core.astrology.classical.rules.IPlanetPattern
 import destiny.core.astrology.classical.rules.IPlanetPatternFactory
 import destiny.core.astrology.classical.rules.PatternTranslator
 import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.toLmt
 import destiny.tools.KotlinLogging
 import destiny.tools.Score.Companion.toScore
 import jakarta.inject.Named
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 
 @Named
@@ -165,7 +168,9 @@ class DtoFactory(
 
 
     return HoroscopeDto(
-      time as LocalDateTime, location, place,
+      time as LocalDateTime,
+      gmtJulDay.toLmt(ZoneId.of("UTC") , JulDayResolver1582CutoverImpl()) as LocalDateTime,
+      location, place,
       bySign, byHouse, byStar,
       axisStars,
       houseStarDistribution,
