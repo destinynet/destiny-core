@@ -123,26 +123,33 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     inner: IHoroscopeModel,
     aspectCalculator: IAspectCalculator,
     threshold: Double?,
+    innerIncludeHouse: Boolean,
     aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
   ): Synastry {
     val posMapOuter = outer.positionMap
 
-    val synastryAspects: List<SynastryAspect> = synastryAspectsFine(
-      outer.positionMap, inner,
-      null, null,
-      aspectCalculator, threshold, aspects)
+    val synastryAspects: List<SynastryAspect> = if (innerIncludeHouse) {
+      synastryAspectsFine(outer.positionMap, inner, null, null, aspectCalculator, threshold, aspects)
+    } else {
+      synastryAspectsCoarse(outer.positionMap, inner.positionMap, null, null, aspectCalculator, threshold, aspects)
+    }
 
     val houseOverlayStars = outer.points.filter { it is Planet || it is FixedStar || it is LunarPoint }
-    val houseOverlayMap = houseOverlayStars.asSequence().map { pOuter: AstroPoint ->
-      posMapOuter[pOuter]?.lngDeg?.let { zDeg ->
-        val pOuterHouse = inner.getHouse(zDeg)
-        val degreeToCusp = inner.getCuspDegree(pOuterHouse).getAngle(zDeg)
-        HouseOverlay(pOuter, pOuterHouse,  degreeToCusp)
-      }
-    }.filterNotNull()
-      .groupBy { it.innerHouse }
-      .mapValues { (_: Int, overlays: List<HouseOverlay>) -> overlays.sortedBy { it.degreeToCusp } }
-      .toMap()
+
+    val houseOverlayMap = if (innerIncludeHouse) {
+      houseOverlayStars.asSequence().map { pOuter: AstroPoint ->
+        posMapOuter[pOuter]?.lngDeg?.let { zDeg ->
+          val pOuterHouse = inner.getHouse(zDeg)
+          val degreeToCusp = inner.getCuspDegree(pOuterHouse).getAngle(zDeg)
+          HouseOverlay(pOuter, pOuterHouse, degreeToCusp)
+        }
+      }.filterNotNull()
+        .groupBy { it.innerHouse }
+        .mapValues { (_: Int, overlays: List<HouseOverlay>) -> overlays.sortedBy { it.degreeToCusp } }
+        .toMap()
+    } else {
+      emptyMap()
+    }
 
     return Synastry(synastryAspects, houseOverlayMap)
   }

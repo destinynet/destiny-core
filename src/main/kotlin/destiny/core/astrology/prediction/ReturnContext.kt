@@ -248,6 +248,8 @@ class ReturnContext(
     logger.debug { "[$planet] getReturnDto , nowGmtJulDay = $nowGmtJulDay (${nowGmtJulDay.toLmt(this.location, JulDayResolver1582CutoverImpl())})" }
     val returnModel: ReturnModel = getReturnHoroscope(this, nowGmtJulDay, nowLoc, nowPlace)
 
+    val innerIncludeHouse = (grain == BirthDataGrain.MINUTE)
+
     val horoscopeDto: IHoroscopeDto = with(dtoFactory) {
       returnModel.horoscope.toHoroscopeDto(grain, rulerImpl, aspectEffective, aspectCalculator, config, includeClassical)
     }.let { it as HoroscopeDto }
@@ -264,7 +266,7 @@ class ReturnContext(
         //houses = emptyList()
       )
 
-    val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold).let { synastry: Synastry ->
+    val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold, innerIncludeHouse).let { synastry: Synastry ->
       when (grain) {
         BirthDataGrain.MINUTE -> synastry
         BirthDataGrain.DAY    -> {
