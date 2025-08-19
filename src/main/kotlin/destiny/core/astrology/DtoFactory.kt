@@ -66,8 +66,6 @@ class DtoFactory(
     }
       .filterKeys { it !is FixedStar } // 過濾恆星
 
-    val angularConsideringPoints = points.filter { it is Planet || it is FixedStar || it is LunarPoint }
-
     // 交角之內 , 都是 0.6 分起跳
     val startScore = 0.6
     // 從 8度之內起算
@@ -76,42 +74,22 @@ class DtoFactory(
     val axisStars: Map<Axis, List<AxisStar>> = when(grain) {
       BirthDataGrain.DAY -> emptyMap()
       BirthDataGrain.MINUTE -> {
-        mapOf(
-          Axis.RISING to 1,
-          Axis.MERIDIAN to 10,
-          Axis.SETTING to 7,
-          Axis.NADIR to 4
-        ).map { (axis, houseNum) ->
-          axis to this.getCuspDegree(houseNum)
-        }.associate { (axis, zDeg) ->
-          axis to angularConsideringPoints
-            .asSequence()
-            .map { p -> p to getZodiacDegree(p) }
-            .filter { (_, pDeg) -> pDeg != null }
-            .map { (p, zDeg) -> p to zDeg!! }
-            .map { (p, pDeg) -> p to pDeg.getAngle(zDeg) }
-            .filter { (p: AstroPoint, orb) ->
-              if(p is FixedStar) {
-                // TODO 理想容許度：1.5度 以內
-                //  如果一顆恆星距離軸點在 1.5度 之內，其影響力被認為是明確且強大的，絕對需要納入解盤的考慮。
-                //  可接受容許度：最多 2.5度
-                //  對於特別明亮的一等星，或是像軒轅十四、畢宿五、心宿二、北落師門這四顆「王室之星」(Royal Stars)，容許度可以稍微放寬到 2度，甚至 2.5度。
-                //  超過 2.5度：絕大多數的占星師會認為其影響力已經微乎其微，甚至可以忽略不計。
-                orb < 2.0
-              } else {
-                // 左右 8 度
-                orb < toleranceOrb
-              }
+        getAxisStars(8.0).map { (axis , starAndOrbs) ->
+          val newStarAndOrbs = starAndOrbs.filter { (star , orb) ->
+            if (star is FixedStar) {
+              orb < 2.0
+            } else {
+              true
             }
-            .map { (p, orb) ->
-              // if 交角 = 8 => 0.6 + 0.4 * ( 8 - 8 ) / 8 = 0.6
-              // if 交角 = 0 => 0.6 + 0.4 * ( 8 - 0 ) / 8 = 1.0
-              val score = (startScore + (1 - startScore) * (toleranceOrb - orb) / toleranceOrb).toScore()
-              AxisStar(p, orb, score)
-            }
-            .sortedByDescending { it.score }
-            .toList()
-        }
+          }
+
+          axis to newStarAndOrbs.map { (star, orb: Double) ->
+            // if 交角 = 8 => 0.6 + 0.4 * ( 8 - 8 ) / 8 = 0.6
+            // if 交角 = 0 => 0.6 + 0.4 * ( 8 - 0 ) / 8 = 1.0
+            val score = (startScore + (1 - startScore) * (toleranceOrb - orb) / toleranceOrb).toScore()
+            AxisStar(star, orb, score)
+          }.sortedByDescending { it.score }
+        }.toMap()
       }
     }
 

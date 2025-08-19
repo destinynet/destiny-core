@@ -347,6 +347,34 @@ interface IHoroscopeModel : ITimeLoc {
     return rulingHouseMap[planet]?: emptySet()
   }
 
+  /**
+   * 傳回四軸附近（左右 [thresholdOrb]) 的星體，以及他們與 Axis 的交角
+   */
+  fun getAxisStars(thresholdOrb : Double) : Map<Axis, List<Pair<AstroPoint , Double>>> {
+    val angularConsideringPoints = points.filter { it is Planet || it is FixedStar || it is LunarPoint }
+
+    return mapOf(
+      Axis.RISING to 1,
+      Axis.MERIDIAN to 10,
+      Axis.SETTING to 7,
+      Axis.NADIR to 4
+    ).map { (axis, houseNum) ->
+      axis to this.getCuspDegree(houseNum)
+    }.associate { (axis, zDeg) ->
+      axis to angularConsideringPoints
+        .asSequence()
+        .map { p -> p to getZodiacDegree(p) }
+        .filter { (_, pDeg) -> pDeg != null }
+        .map { (p, zDeg) -> p to zDeg!! }
+        .map { (p, pDeg) -> p to pDeg.getAngle(zDeg) }
+        .filter { (_: AstroPoint, orb) ->
+          orb < thresholdOrb
+        }
+        .sortedBy { it.second }
+        .toList()
+    }.toMap()
+  }
+
   companion object {
 
     fun getHouse(degree: ZodiacDegree, cuspDegreeMap: Map<Int, ZodiacDegree>): Int {
