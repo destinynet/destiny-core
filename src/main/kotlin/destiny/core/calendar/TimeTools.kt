@@ -114,6 +114,11 @@ object TimeTools {
     return getGmtJulDay(this, zoneId)
   }
 
+  fun ChronoLocalDateTime<*>.toGmtLocaleDateTime(fromZoneId: ZoneId) : ChronoLocalDateTime<*> {
+    val gmtZoned = this.atZone(fromZoneId)
+    return gmtZoned.withZoneSameInstant(GMT).toLocalDateTime()
+  }
+
   /**
    * 承上， date + time 拆開來的版本
    */

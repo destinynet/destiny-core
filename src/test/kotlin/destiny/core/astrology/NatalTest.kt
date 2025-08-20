@@ -11,6 +11,7 @@ import destiny.core.astrology.AstroPattern.Wedge
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.calendar.TimeTools.toGmtJulDay
+import destiny.core.calendar.TimeTools.toGmtLocaleDateTime
 import destiny.core.calendar.locationOf
 import destiny.tools.KotlinLogging
 import destiny.tools.Score.Companion.toScore
@@ -32,9 +33,10 @@ class NatalTest {
   fun testSerialize() {
     val ldt = LocalDateTime.of(2000, 7, 1, 12, 0)
     val loc = locationOf(Locale.TAIWAN)
+    val utc = ldt.toGmtLocaleDateTime(loc.zoneId) as LocalDateTime
 
     val horoscopeDto = HoroscopeDto(
-      ldt, loc, "Taipei", mapOf(
+      ldt, utc, loc, "Taipei", mapOf(
         ARIES to listOf(SUN, MOON),
         LEO to listOf(MARS)
       ),

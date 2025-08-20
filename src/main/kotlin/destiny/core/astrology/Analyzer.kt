@@ -61,6 +61,9 @@ object Analyzer {
     planetSignMap: Map<Planet, ZodiacSign>,
     rulerMap: Map<ZodiacSign, Planet>
   ): Pair<Set<List<Planet>>, Set<Planet>> {
+    // 預先計算反向的守護關係圖，提升查詢效率
+    val rulingSignMap = rulerMap.entries.associate { (sign, planet) -> planet to sign }
+
     val paths = mutableSetOf<List<Planet>>()
     val terminals = mutableSetOf<Planet>()
 
@@ -73,7 +76,7 @@ object Analyzer {
           // Path ends at a circle
           path.add(next)
           paths.add(path.toList())
-        } else if (planetSignMap[next] == rulerMap.entries.find { it.value == next }?.key) {
+        } else if (planetSignMap[next] == rulingSignMap[next]) {
           // Next planet is in its ruling sign
           path.add(next)
           paths.add(path.toList())

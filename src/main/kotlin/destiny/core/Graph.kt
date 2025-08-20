@@ -4,12 +4,13 @@ data class Graph<T>(
   val circles: Set<Circular<T>>,
   val paths: Set<List<T>>,
   val isolated: Set<T>,
-  /* isolated path terminals */
   val terminals: Set<T>
 ) {
-  /** path 的端點，不論是否是 連接上 circle */
+  /**
+   * 中文：傳回所有 `paths` 的終點。這包含了真正的「最終定位星」(`terminals`)，以及路徑終點所連接到的「互容環」中的行星。
+   */
   val pathTerminals : Set<T>
     get() {
-      return paths.map { planets -> planets.last() }.toSet()
+      return paths.map { it.last() }.toSet()
     }
 }

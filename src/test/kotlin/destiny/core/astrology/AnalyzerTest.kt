@@ -8,9 +8,7 @@ import destiny.core.Graph
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.astrology.classical.RulerPtolemyImpl
-import destiny.core.calendar.locationOf
 import destiny.tools.KotlinLogging
-import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -18,7 +16,6 @@ import kotlin.test.assertTrue
 class AnalyzerTest {
 
   val logger = KotlinLogging.logger { }
-  val loc = locationOf(Locale.TAIWAN)
 
   @Test
   fun venus_should_isolated() {
@@ -74,8 +71,6 @@ class AnalyzerTest {
   @Test
   fun three_paths_point_to_one_circle() {
 
-    // val lmt = LocalDateTime.of(2000, 1, 1, 12, 0)
-
     val planetSignMap = mapOf(
       SUN to CAPRICORN,
       MOON to SCORPIO,
@@ -88,8 +83,8 @@ class AnalyzerTest {
 
     verifyMap(planetSignMap) { graphResult ->
       assertEquals(1, graphResult.circles.size)
-      val cList = Circular(mutableListOf(SATURN, VENUS, JUPITER, MARS))
-      assertEquals(cList, graphResult.circles.toList()[0])
+      val expectedCircle = Circular.of(SATURN, VENUS, JUPITER, MARS)
+      assertEquals(setOf(expectedCircle), graphResult.circles)
 
       assertEquals(3, graphResult.paths.size)
       assertEquals(
@@ -111,7 +106,6 @@ class AnalyzerTest {
    */
   @Test
   fun four_paths_point_to_moon_in_circle() {
-    //val lmt = LocalDateTime.of(1976, 7, 8, 17, 10)
     val planetSignMap = mapOf(
       SUN to CANCER,
       MOON to SAGITTARIUS,
@@ -123,7 +117,7 @@ class AnalyzerTest {
     )
     verifyMap(planetSignMap) { graphResult ->
       assertEquals(1, graphResult.circles.size)
-      assertEquals(Circular.of(MOON, JUPITER, VENUS), graphResult.circles.first())
+      assertEquals(setOf(Circular.of(MOON, JUPITER, VENUS)), graphResult.circles)
 
       assertEquals(2, graphResult.paths.size)
       assertEquals(
