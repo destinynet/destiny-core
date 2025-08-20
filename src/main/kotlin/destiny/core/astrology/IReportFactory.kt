@@ -16,6 +16,15 @@ interface IReportFactory {
     config: IPersonHoroscopeConfig
   ): TransitSolarArcModel
 
+  /** 某日期的時間點分析 */
+  fun getDayEventModel(
+    personModel: IPersonHoroscopeModel,
+    grain: BirthDataGrain,
+    localDate: LocalDate,
+    threshold: Double?,
+    config: IPersonHoroscopeConfig
+  ): DayEventModel
+
   /** 某段範圍時間內的事件 */
   fun getTimeLineEvents(
     personModel: IPersonHoroscopeModel,

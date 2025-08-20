@@ -270,6 +270,13 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   }
 
 
+  fun IHoroscopeModel.getFirdaria(gmtJulDay: GmtJulDay): Firdaria {
+    val (majorPeriod, subPeriod) = getFirdariaPeriods(gmtJulDay)
+    val period = subPeriod?:majorPeriod
+
+    return Firdaria(majorPeriod.ruler, period.ruler, period.fromTime, period.toTime)
+  }
+
   fun IHoroscopeModel.getFirdariaPeriods(gmtJulDay: GmtJulDay): Pair<FirdariaMajorPeriod, FirdariaSubPeriod?> {
     require(gmtJulDay >= this.gmtJulDay) { "Query time must be at or after birth time." }
 
