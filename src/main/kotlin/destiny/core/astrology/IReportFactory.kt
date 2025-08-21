@@ -1,6 +1,7 @@
 package destiny.core.astrology
 
-import destiny.core.astrology.prediction.EventSource
+import destiny.core.Scale
+import destiny.core.astrology.prediction.EventSourceConfig
 import destiny.core.calendar.GmtJulDay
 import java.time.Duration
 import java.time.LocalDate
@@ -32,16 +33,14 @@ interface IReportFactory {
     viewGmtJulDay: GmtJulDay,
     fromTime: GmtJulDay,
     toTime: GmtJulDay,
-    eventSources: Set<EventSource>,
+    eventSourceConfigs: Set<EventSourceConfig>,
     traversalConfig: AstrologyTraversalConfig,
     includeLunarReturn: Boolean,
-    pastExtDays: Int,
-    futureExtDays: Int,
     /** 內定以 natal points , 可以額外指定 */
     outerPoints: Set<AstroPoint> = personModel.points,
     innerPoints: Set<AstroPoint> = personModel.points,
   ): ITimeLineEventsModel
 
   /** 事件自動分群(依據相鄰事件) */
-  fun getMergedUserEventsModel(extractedEvents: ExtractedEvents, viewDay: LocalDate, futureDuration: Duration? = null) : MergedUserEventsModel
+  fun getMergedUserEventsModel(extractedEvents: ExtractedEvents, eventScaleConfigs: Map<Scale, Set<EventSourceConfig>>, viewDay: LocalDate, futureDuration: Duration? = null) : MergedUserEventsModel
 }

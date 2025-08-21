@@ -11,3 +11,5 @@ enum class EventSource {
   MINOR,
   SOLAR_ARC,
 }
+
+data class EventSourceConfig(val source: EventSource, val pastExtDays: Int = 0, val futureExtDays: Int = 0)
