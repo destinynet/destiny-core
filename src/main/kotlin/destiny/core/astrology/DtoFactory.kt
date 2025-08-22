@@ -37,7 +37,13 @@ class DtoFactory(
       signPointsMap
         .mapValues { (_ , points) ->
           points.filterNot { it is FixedStar } // 過濾恆星
-        } // 過濾恆星
+            .filter { astroPoint ->
+              when(grain) {
+                BirthDataGrain.MINUTE -> true
+                BirthDataGrain.DAY -> astroPoint !is Axis // 過濾四軸
+              }
+            }
+        }
         .filter { (_, points) ->
           points.isNotEmpty()
         }
@@ -118,12 +124,8 @@ class DtoFactory(
       emptyList()
     }
 
-    val tightestAspects = getTightAspects(aspectCalculator, threshold).let { aspects ->
-      when(grain) {
-        BirthDataGrain.MINUTE -> aspects
-        BirthDataGrain.DAY -> aspects.filterNot { asp -> asp.points.any { it is Axis} }
-      }
-    }.filterNot { pattern -> pattern.points.all { it is FixedStar } }
+    val tightestAspects = getTightAspects(aspectCalculator, threshold, grain)
+      .filterNot { pattern -> pattern.points.all { it is FixedStar } }
 
     val astroPatterns = getPatterns(PatternContext(aspectAffective, aspectCalculator), threshold).let { patterns ->
       when (grain) {
@@ -138,7 +140,10 @@ class DtoFactory(
       when(grain) {
         BirthDataGrain.MINUTE -> midPoints
         BirthDataGrain.DAY -> {
-          midPoints.filterNot { midPoint -> midPoint.points.any { it is Axis } }
+          midPoints.filterNot {
+            midPoint ->
+            midPoint.points.any { it is Axis } || midPoint.focal is Axis
+          }
         }
       }
     }

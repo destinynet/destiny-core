@@ -194,14 +194,21 @@ fun IHoroscopeModel.getPatterns(patternContext: PatternContext, threshold: Doubl
     .toList()
 }
 
-fun IHoroscopeModel.getTightAspects(aspectCalculator: IAspectCalculator, threshold: Double): List<IPointAspectPattern> {
-  return with(aspectCalculator) { getAspectPatterns() }
+fun IHoroscopeModel.getTightAspects(aspectCalculator: IAspectCalculator, threshold: Double, grain: BirthDataGrain): List<IPointAspectPattern> {
+  val points = points.filter {
+    when(grain) {
+      BirthDataGrain.MINUTE -> true
+      BirthDataGrain.DAY -> it !is Axis
+    }
+  }.toSet()
+
+  return with(aspectCalculator) { getAspectPatterns(points) }
     .filter { p -> p.score != null && p.score!!.value >= threshold }
     .sortedByDescending { it.score }
 }
 
-fun AstroPoint.getAspects(m: IHoroscopeModel, threshold: Double, aspectCalculator: IAspectCalculator): List<IPointAspectPattern> {
-  return m.getTightAspects(aspectCalculator, threshold).filter { it.points.contains(this) }
+fun AstroPoint.getAspects(m: IHoroscopeModel, threshold: Double, aspectCalculator: IAspectCalculator, grain: BirthDataGrain): List<IPointAspectPattern> {
+  return m.getTightAspects(aspectCalculator, threshold, grain).filter { it.points.contains(this) }
 }
 
 fun IHoroscopeModel.getByStarMap(threshold: Double, aspectCalculator: IAspectCalculator, rulerImpl: IRuler, grain: BirthDataGrain): Map<AstroPoint, Natal.StarPosInfo> {
@@ -240,7 +247,7 @@ fun IHoroscopeModel.getByStarMap(threshold: Double, aspectCalculator: IAspectCal
         }
       } else emptySet(),
       dispositors,
-      astroPoint.getAspects(this, threshold, aspectCalculator)
+      astroPoint.getAspects(this, threshold, aspectCalculator, grain)
     )
   }
 }
