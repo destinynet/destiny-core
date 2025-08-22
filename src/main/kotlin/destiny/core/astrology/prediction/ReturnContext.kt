@@ -250,7 +250,7 @@ class ReturnContext(
 
     val innerIncludeHouse = (grain == BirthDataGrain.MINUTE)
 
-    val horoscopeDto: IHoroscopeDto = with(dtoFactory) {
+    val returnChart: IHoroscopeDto = with(dtoFactory) {
       returnModel.horoscope.toHoroscopeDto(grain, rulerImpl, aspectEffective, aspectCalculator, config, includeClassical)
     }.let { it as HoroscopeDto }
 
@@ -280,8 +280,8 @@ class ReturnContext(
     }
 
     return when (this@ReturnContext.planet) {
-      Planet.SUN -> ReturnDto(ReturnType.SOLAR, horoscopeDto, synastry, returnModel.validFrom, returnModel.validTo)
-      Planet.MOON -> ReturnDto(ReturnType.LUNAR, horoscopeDto, synastry, returnModel.validFrom, returnModel.validTo)
+      Planet.SUN -> ReturnDto(ReturnType.SOLAR, returnChart, synastry, returnModel.validFrom, returnModel.validTo)
+      Planet.MOON -> ReturnDto(ReturnType.LUNAR, returnChart, synastry, returnModel.validFrom, returnModel.validTo)
       else -> throw IllegalArgumentException("Unsupported planet: $planet")
     }
   }

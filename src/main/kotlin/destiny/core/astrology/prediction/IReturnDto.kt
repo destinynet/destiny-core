@@ -17,7 +17,7 @@ enum class ReturnType {
 
 
 interface IReturnDto {
-  val horoscope: IHoroscopeDto
+  val returnChart: IHoroscopeDto
   val returnType: ReturnType
   val synastry: Synastry
   val validFrom: GmtJulDay
@@ -27,7 +27,7 @@ interface IReturnDto {
 @Serializable
 data class ReturnDto(
   override val returnType: ReturnType,
-  override val horoscope: IHoroscopeDto,
+  override val returnChart: IHoroscopeDto,
   @SerialName("synastry_return_to_natal")
   override val synastry: Synastry,
   @Contextual
