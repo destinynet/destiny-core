@@ -4,6 +4,11 @@
 package destiny.tools
 
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.assertThrows
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
+import kotlin.reflect.KTypeProjection
+import kotlin.reflect.full.createType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -160,6 +165,90 @@ class LanguageToolsKtTest {
 
       // Assert
       assertTrue(result is Cat)
+    }
+  }
+
+  @Nested
+  inner class ToKTypeTest {
+
+    // 輔助用的容器類別，以便透過反射取得各種泛型 Type
+    inner class TypeContainer {
+      @Suppress("unused")
+      lateinit var simpleList: List<String>
+      @Suppress("unused")
+      lateinit var nestedMap: Map<String, List<Int>>
+      @Suppress("unused")
+      lateinit var unboundedWildcardList: List<*>
+      @Suppress("unused")
+      lateinit var upperBoundedWildcardList: List<Number>
+      @Suppress("unused")
+      lateinit var genericArray: Array<List<String>>
+    }
+
+    private fun getGenericType(fieldName: String): Type {
+      return TypeContainer::class.java.getDeclaredField(fieldName).genericType
+    }
+
+    @Test
+    fun `簡單的 Class 應轉換為 non-nullable KType`() {
+      val type: Type = String::class.java
+      val kType = type.toKType()
+      assertEquals(String::class.createType(nullable = false), kType)
+    }
+
+    @Test
+    fun `簡單的參數化型別應正確轉換`() {
+      val type = getGenericType("simpleList") // List<String>
+      val kType = type.toKType()
+      val expectedKType = List::class.createType(
+        arguments = listOf(KTypeProjection.invariant(String::class.createType()))
+      )
+      assertEquals(expectedKType.toString(), kType.toString())
+    }
+
+    @Test
+    fun `巢狀的參數化型別應正確轉換`() {
+      val type = getGenericType("nestedMap") // Map<String, List<Int>>
+      val kType = type.toKType()
+      val expectedKType = Map::class.createType(
+        arguments = listOf(
+          KTypeProjection.invariant(String::class.createType()),
+          KTypeProjection.invariant(
+            List::class.createType(
+              arguments = listOf(KTypeProjection.invariant(Int::class.createType()))
+            )
+          )
+        )
+      )
+      assertEquals(expectedKType.toString(), kType.toString())
+    }
+
+    @Test
+    fun `無邊界萬用字元應轉換為其上界 (Any)`() {
+      val parameterizedType = getGenericType("unboundedWildcardList") as ParameterizedType // List<*>
+      val wildcardType = parameterizedType.actualTypeArguments[0] // ?
+      val kType = wildcardType.toKType()
+      // 對於 '?'，其上界是 Object，對應到 Kotlin 的 Any
+      assertEquals(Any::class.createType(), kType)
+    }
+
+    @Test
+    fun `有上界的萬用字元應轉換為其上界`() {
+      val parameterizedType = getGenericType("upperBoundedWildcardList") as ParameterizedType // List<? extends Number>
+      val wildcardType = parameterizedType.actualTypeArguments[0] // ? extends Number
+      val kType = wildcardType.toKType()
+      assertEquals(Number::class.createType(), kType)
+    }
+
+    @Test
+    fun `不支援的型別 (GenericArrayType) 應拋出例外`() {
+      val type = getGenericType("genericArray") // 在此上下文中，Array<List<String>> 是一個 GenericArrayType
+      assertTrue(type is java.lang.reflect.GenericArrayType, "The type should be GenericArrayType")
+
+      val exception = assertThrows<IllegalArgumentException> {
+        type.toKType()
+      }
+      assertTrue(exception.message!!.startsWith("Unsupported type:"), "例外訊息應表明型別不被支援")
     }
   }
 }

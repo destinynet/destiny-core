@@ -94,22 +94,21 @@ inline fun <reified T : Enum<T>> parseJsonToMap(json: String): Map<T, String> {
 // 將 Java Type 轉換成 Kotlin KType
 fun Type.toKType(): KType {
   return when (this) {
+    is Class<*> -> this.kotlin.createType()
     is ParameterizedType -> {
       val rawClass = this.rawType as Class<*>
       val kClass = rawClass.kotlin
-      val args = this.actualTypeArguments.map {
-        val argKType = when (it) {
-          is ParameterizedType -> it.toKType()
-          is Class<*>          -> it.kotlin.createType()
-          else                 -> throw IllegalArgumentException("Unsupported type argument: $it")
-        }
-        KTypeProjection.invariant(argKType)
-      }
+      val args = this.actualTypeArguments.map { KTypeProjection.invariant(it.toKType()) }
       kClass.createType(args)
     }
-
-    is Class<*>          -> this.kotlin.createType()
-    else                 -> throw IllegalArgumentException("Unsupported type: $this")
+    is java.lang.reflect.WildcardType -> {
+      // An unbounded wildcard '?' has an upper bound of `Object`.
+      // A bounded wildcard '? extends Foo' has an upper bound of `Foo`.
+      // We map to the KType of the upper bound.
+      val upperBound = this.upperBounds.firstOrNull() ?: Any::class.java
+      upperBound.toKType()
+    }
+    else -> throw IllegalArgumentException("Unsupported type: $this of type ${this.javaClass}")
   }
 }
 
