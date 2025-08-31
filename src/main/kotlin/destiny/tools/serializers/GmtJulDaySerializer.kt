@@ -13,9 +13,12 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.double
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
@@ -55,22 +58,19 @@ object GmtJulDaySerializer : KSerializer<GmtJulDay> {
 
   override fun deserialize(decoder: Decoder): GmtJulDay {
 
-    val dec = decoder.beginStructure(descriptor)
-
-    var jd: Double? = null
-
-    loop@ while (true) {
-      when (val index = dec.decodeElementIndex(descriptor)) {
-        0                            -> jd = dec.decodeDoubleElement(descriptor, 0)
-        1                            -> dec.decodeStringElement(descriptor, 1) // 忽略 gmt
-        CompositeDecoder.DECODE_DONE -> break@loop
-        else                         -> throw SerializationException("Unexpected index: $index")
+    return when (val jsonElement = (decoder as JsonDecoder).decodeJsonElement()) {
+      // 處理前端只傳遞 Julian Day 基本型別的情況
+      is kotlinx.serialization.json.JsonPrimitive -> {
+        jsonElement.double.toGmtJulDay()
       }
+      // 處理包含 julDay 和 gmt 的物件型別
+      is kotlinx.serialization.json.JsonObject    -> {
+        val jd = jsonElement.jsonObject["julDay"]?.jsonPrimitive?.double
+        jd?.toGmtJulDay() ?: throw SerializationException("Missing julDay field")
+      }
+      // 拋出例外
+      else                                        -> throw SerializationException("Unexpected JSON format for GmtJulDay")
     }
-
-    dec.endStructure(descriptor)
-
-    return jd?.toGmtJulDay() ?: throw SerializationException("Missing julDay field")
   }
 
 }
