@@ -31,7 +31,7 @@ class NatalTest {
 
   @Test
   fun testSerialize() {
-    val ldt = LocalDateTime.of(2000, 7, 1, 12, 0)
+    val ldt = LocalDateTime.of(2000, 1, 1, 12, 0)
     val loc = locationOf(Locale.TAIWAN)
     val utc = ldt.toGmtLocaleDateTime(loc.zoneId) as LocalDateTime
 

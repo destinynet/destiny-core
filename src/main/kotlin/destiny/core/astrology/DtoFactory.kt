@@ -11,6 +11,7 @@ import destiny.core.astrology.classical.rules.IPlanetPatternFactory
 import destiny.core.astrology.classical.rules.PatternTranslator
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.fixError
 import destiny.core.calendar.toLmt
 import destiny.tools.KotlinLogging
 import destiny.tools.Score.Companion.toScore
@@ -152,7 +153,11 @@ class DtoFactory(
 
     return HoroscopeDto(
       time as LocalDateTime,
-      gmtJulDay.toLmt(ZoneId.of("UTC") , JulDayResolver1582CutoverImpl()) as LocalDateTime,
+      (
+        gmtJulDay.toLmt(
+          ZoneId.of("UTC"),
+          JulDayResolver1582CutoverImpl()
+        ) as LocalDateTime).fixError() as LocalDateTime,
       location, place,
       bySign, byHouse, byStar,
       axisStars,
