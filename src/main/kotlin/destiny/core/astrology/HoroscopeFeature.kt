@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import com.github.benmanes.caffeine.cache.Caffeine
+import com.google.common.collect.Sets
 import destiny.core.DayNight
 import destiny.core.Scale
 import destiny.core.astrology.Aspect.Importance
@@ -513,6 +514,8 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     }
   }
 
+  fun IHoroscopeModel.getHarmonic(n : Int, aspectCalculator: IAspectCalculator) : Harmonic
+
 }
 
 private data class ProgressionCalcObj(
@@ -712,6 +715,29 @@ class HoroscopeFeature(
                          forward,
                          convergentJulDay, degreeMoved,
                          this.location, posMap, synastryAspects)
+  }
+
+  override fun IHoroscopeModel.getHarmonic(n: Int, aspectCalculator: IAspectCalculator): Harmonic {
+    require(n > 0) { "Harmonic number 'n' must be a positive integer." }
+
+    // 計算新的泛音盤星體位置
+    val harmonicStarPosMap = this.positionMap.map { (point,pos) ->
+      point to (pos.zDeg * n).toZodiacDegree()
+    }.toMap()
+
+    // 在新的泛音盤星體位置上，計算行星之間的相位
+    val highImportanceAspects = Aspect.getAspects(Importance.HIGH).toSet()
+
+    // 遍歷所有行星配對來尋找相位
+    val aspects = Sets.combinations(harmonicStarPosMap.keys, 2)
+      .asSequence()
+      .mapNotNull { points ->
+        val (p1, p2) = points.toList()
+        aspectCalculator.getAspectPattern(p1, p2, harmonicStarPosMap, harmonicStarPosMap, null, null, highImportanceAspects)
+      }
+      .toList()
+
+    return Harmonic(n, aspects, harmonicStarPosMap)
   }
 
 
