@@ -35,7 +35,6 @@ interface IReportFactory {
     toTime: GmtJulDay,
     eventSourceConfigs: Set<EventSourceConfig>,
     traversalConfig: AstrologyTraversalConfig,
-    includeLunarReturn: Boolean,
     /** 內定以 natal points , 可以額外指定 */
     outerPoints: Set<AstroPoint> = personModel.points,
     innerPoints: Set<AstroPoint> = personModel.points,
