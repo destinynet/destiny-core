@@ -721,9 +721,9 @@ class HoroscopeFeature(
     require(n > 0) { "Harmonic number 'n' must be a positive integer." }
 
     // 計算新的泛音盤星體位置
-    val harmonicStarPosMap = this.positionMap.map { (point,pos) ->
-      point to (pos.zDeg * n).toZodiacDegree()
-    }.toMap()
+    val harmonicStarPosMap = this.positionMap
+      .filterKeys { it is Planet || it is Axis }
+      .mapValues { (_, pos) -> (pos.zDeg * n).toZodiacDegree() }
 
     // 在新的泛音盤星體位置上，計算行星之間的相位
     val highImportanceAspects = Aspect.getAspects(Importance.HIGH).toSet()

@@ -22,6 +22,7 @@ import java.util.*
 
 @Named
 class DtoFactory(
+  private val horoscopeFeature: IHoroscopeFeature,
   private val classicalFeature: ClassicalFeature,
   private val classicalFactories: List<IPlanetPatternFactory>,
 ) {
@@ -149,6 +150,17 @@ class DtoFactory(
       }
     }
 
+    val harmonics = when (grain) {
+      BirthDataGrain.MINUTE -> {
+        listOf(5, 7, 9).map { n ->
+          with(horoscopeFeature) {
+            this@toHoroscopeDto.getHarmonic(n, aspectCalculator)
+          }
+        }.toList()
+      }
+
+      BirthDataGrain.DAY    -> emptyList()
+    }
 
 
     return HoroscopeDto(
@@ -169,6 +181,7 @@ class DtoFactory(
       classicalPatterns,
       getGraph(rulerImpl),
       midPoints,
+      harmonics
     )
   }
 

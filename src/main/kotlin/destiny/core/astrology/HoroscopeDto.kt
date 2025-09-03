@@ -37,6 +37,7 @@ interface IHoroscopeDto {
   val classicalAstrologyPatterns: List<String>
   val graphPatterns: Graph<Planet>
   val midPoints: List<IMidPointWithFocal>
+  val harmonics: List<Harmonic>
 }
 
 
@@ -61,7 +62,8 @@ data class HoroscopeDto(
   override val classicalAstrologyPatterns: List<String> = emptyList(),
   @Serializable(with = GraphPlanetSerializer::class)
   override val graphPatterns: Graph<Planet>,
-  override val midPoints: List<@Serializable(with = IMidPointWithFocalSerializer::class) IMidPointWithFocal> = emptyList()
+  override val midPoints: List<@Serializable(with = IMidPointWithFocalSerializer::class) IMidPointWithFocal> = emptyList(),
+  override val harmonics: List<Harmonic> = emptyList()
 ) : IHoroscopeDto
 
 interface IPersonHoroscopeDto : IHoroscopeDto, IBirthDataNamePlace
@@ -95,7 +97,8 @@ data class Natal(
   override val classicalAstrologyPatterns: List<String>,
   @Serializable(with = GraphPlanetSerializer::class)
   override val graphPatterns: Graph<Planet>,
-  override val midPoints: List<@Serializable(with = IMidPointWithFocalSerializer::class) IMidPointWithFocal>
+  override val midPoints: List<@Serializable(with = IMidPointWithFocalSerializer::class) IMidPointWithFocal>,
+  override val harmonics: List<Harmonic> = emptyList()
 ) : IPersonHoroscopeDto {
   constructor(gender: Gender, age: Int, name: String?, dto: IHoroscopeDto) :
     this(

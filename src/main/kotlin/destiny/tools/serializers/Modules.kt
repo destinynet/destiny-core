@@ -53,6 +53,9 @@ fun SerializersModuleBuilder.astrologyModule() {
   polymorphic(IPos::class) {
     subclass(StarPosition::class)
   }
+  polymorphic(IPointAspectPattern::class) {
+    subclass(PointAspectPattern::class)
+  }
   eclipseModule()
 }
 

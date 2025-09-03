@@ -4,6 +4,8 @@ import destiny.core.astrology.IPointAspectPattern.AspectType
 import destiny.core.toString
 import destiny.tools.AlignTools
 import destiny.tools.Score
+import destiny.tools.serializers.DoubleTwoDecimalSerializer
+import destiny.tools.serializers.ScoreTwoDecimalSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
 import kotlin.math.abs
@@ -66,9 +68,12 @@ interface IPointAspectPattern : IPointAnglePattern, Comparable<IPointAspectPatte
 @Serializable
 data class PointAspectPattern(
   override val points: List<AstroPoint>,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
   override val angle: Double,
-  override val aspectType: AspectType?,
+  override val aspectType: AspectType? = null,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
   override val orb: Double,
+  @Serializable(with = ScoreTwoDecimalSerializer::class)
   override val score: Score? = null
 ) : IPointAspectPattern {
 
