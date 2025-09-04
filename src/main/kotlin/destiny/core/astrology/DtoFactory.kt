@@ -150,17 +150,21 @@ class DtoFactory(
       }
     }
 
-    val harmonics = when (grain) {
-      BirthDataGrain.MINUTE -> {
-        listOf(5, 7, 9).map { n ->
-          with(horoscopeFeature) {
-            this@toHoroscopeDto.getHarmonic(n, aspectCalculator)
-          }
-        }.toList()
-      }
 
-      BirthDataGrain.DAY    -> emptyList()
-    }
+    val harmonics: Map<Int, Harmonic> = when (grain) {
+      BirthDataGrain.MINUTE -> {
+        listOf(5, 7, 9).associateWith { n ->
+          val aspectAffectiveHarmonic = AspectEffectiveHarmonic(n, aspectAffective)
+
+          @Suppress("UNCHECKED_CAST")
+          val harmonicAspectCalculator = AspectCalculatorImpl(aspectAffectiveHarmonic, positionMap as Map<AstroPoint, IPosition<*>>)
+          with(horoscopeFeature) {
+            this@toHoroscopeDto.getHarmonic(n, harmonicAspectCalculator)
+          }
+        }
+      }
+      BirthDataGrain.DAY    -> emptyMap()
+    }.filter { (_ , harmonic) -> harmonic.aspects.isNotEmpty() }
 
 
     return HoroscopeDto(
