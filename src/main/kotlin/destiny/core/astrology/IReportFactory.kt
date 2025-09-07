@@ -41,5 +41,12 @@ interface IReportFactory {
   ): ITimeLineEventsModel
 
   /** 事件自動分群(依據相鄰事件) */
-  fun getMergedUserEventsModel(extractedEvents: ExtractedEvents, eventScaleConfigs: Map<Scale, Set<EventSourceConfig>>, viewDay: LocalDate, futureDuration: Duration? = null) : MergedUserEventsModel
+  fun getMergedUserEventsModel(
+    extractedEvents: ExtractedEvents,
+    eventScaleConfigs: Map<Scale, Set<EventSourceConfig>>,
+    viewDay: LocalDate,
+    futureDuration: Duration? = null,
+    longTermFromTime: GmtJulDay? = null,
+    longTermToTime: GmtJulDay? = null,
+  ): MergedUserEventsModel
 }
