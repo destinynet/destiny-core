@@ -38,6 +38,7 @@ interface IReportFactory {
     /** 內定以 natal points , 可以額外指定 */
     outerPoints: Set<AstroPoint> = personModel.points,
     innerPoints: Set<AstroPoint> = personModel.points,
+    withLunarReturns : Boolean = true
   ): ITimeLineEventsModel
 
   /** 事件自動分群(依據相鄰事件) */
