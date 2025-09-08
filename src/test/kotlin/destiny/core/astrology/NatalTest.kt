@@ -123,7 +123,8 @@ class NatalTest {
       ),
       listOf(
         MidPointWithFocal(MidPoint(setOf(VENUS, MERCURY), ZodiacDegree.of(ARIES, 10.0), 2), JUPITER, 0.23)
-      )
+      ),
+      emptyMap()
     )
 
     val natal = Natal(Gender.男, 10 , "Kevin" , horoscopeDto)
