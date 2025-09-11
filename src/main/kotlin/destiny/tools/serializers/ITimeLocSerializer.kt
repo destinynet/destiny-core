@@ -24,7 +24,7 @@ import java.util.*
 object ITimeLocSerializer : KSerializer<ITimeLoc> {
 
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ITimeLoc") {
-    element<Long>("time")
+    element<Long>("epochSecond")
     element<ILocation>("loc")
     element<String>("localDateTime", isOptional = true)
   }
