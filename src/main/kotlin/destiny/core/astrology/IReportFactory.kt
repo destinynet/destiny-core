@@ -5,6 +5,7 @@ import destiny.core.astrology.prediction.EventSourceConfig
 import destiny.core.calendar.GmtJulDay
 import java.time.Duration
 import java.time.LocalDate
+import java.time.LocalTime
 
 interface IReportFactory {
 
@@ -17,14 +18,15 @@ interface IReportFactory {
     config: IPersonHoroscopeConfig
   ): TransitSolarArcModel
 
-  /** 某日期的時間點分析 */
-  fun getDayEventModel(
+  /** 某日期(or with 時間) 的時間點分析 */
+  fun getEventModel(
     personModel: IPersonHoroscopeModel,
     grain: BirthDataGrain,
     localDate: LocalDate,
+    localTime: LocalTime?,
     threshold: Double?,
     config: IPersonHoroscopeConfig
-  ): DayEventModel
+  ): EventModel
 
   /** 某段範圍時間內的事件 */
   fun getTimeLineEvents(

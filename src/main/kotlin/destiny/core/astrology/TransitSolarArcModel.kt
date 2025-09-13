@@ -10,8 +10,10 @@ import destiny.core.astrology.prediction.ISolarArcModel
 import destiny.core.astrology.prediction.ITransitModel
 import destiny.core.astrology.prediction.Profection
 import destiny.tools.serializers.LocalDateSerializer
+import destiny.tools.serializers.LocalTimeSerializer
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
+import java.time.LocalTime
 
 
 @Serializable
@@ -27,11 +29,13 @@ data class TransitSolarArcModel(
 
 @Serializable
 @RequestDto
-data class DayEventModel(
+data class EventModel(
   val natal: IPersonHoroscopeDto,
   val grain: BirthDataGrain,
   @Serializable(with = LocalDateSerializer::class)
   val localDate: LocalDate,
+  @Serializable(with = LocalTimeSerializer::class)
+  val localTime: LocalTime?,
   val solarArcModel: ISolarArcModel,
   val transitToSolarArcAspects: List<SynastryAspect>,
   val firdaria : Firdaria,
