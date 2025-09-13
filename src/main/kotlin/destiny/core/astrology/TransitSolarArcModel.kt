@@ -5,12 +5,10 @@ package destiny.core.astrology
 
 import destiny.core.RequestDto
 import destiny.core.Scale
-import destiny.core.astrology.prediction.Firdaria
-import destiny.core.astrology.prediction.ISolarArcModel
-import destiny.core.astrology.prediction.ITransitModel
-import destiny.core.astrology.prediction.Profection
+import destiny.core.astrology.prediction.*
 import destiny.tools.serializers.LocalDateSerializer
 import destiny.tools.serializers.LocalTimeSerializer
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.LocalTime
@@ -38,6 +36,9 @@ data class EventModel(
   val localTime: LocalTime?,
   val solarArcModel: ISolarArcModel,
   val transitToSolarArcAspects: List<SynastryAspect>,
-  val firdaria : Firdaria,
-  val profectionMap: Map<Scale, Profection>
+  val transitToNatalAspects: List<SynastryAspect>,
+  val firdaria: Firdaria,
+  val profectionMap: Map<Scale, Profection>,
+  val surroundingEvents: List<@Contextual ITimeLineEvent>,
+  val surroundingLunarReturns: List<IReturnDto>
 )
