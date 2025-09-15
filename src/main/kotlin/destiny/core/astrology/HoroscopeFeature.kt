@@ -125,14 +125,16 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     aspectCalculator: IAspectCalculator,
     threshold: Double?,
     innerIncludeHouse: Boolean,
-    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
+    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
+    laterForOuter: ((AstroPoint) -> IZodiacDegree?)? = null,
+    laterForInner: ((AstroPoint) -> IZodiacDegree?)? = null
   ): Synastry {
     val posMapOuter = outer.positionMap
 
     val synastryAspects: List<SynastryAspect> = if (innerIncludeHouse) {
-      synastryAspectsFine(outer.positionMap, inner, null, null, aspectCalculator, threshold, aspects)
+      synastryAspectsFine(outer.positionMap, inner, laterForOuter, laterForInner, aspectCalculator, threshold, aspects)
     } else {
-      synastryAspectsCoarse(outer.positionMap, inner.positionMap, null, null, aspectCalculator, threshold, aspects)
+      synastryAspectsCoarse(outer.positionMap, inner.positionMap, laterForOuter, laterForInner, aspectCalculator, threshold, aspects)
     }
 
     val houseOverlayStars = outer.points.filter { it is Planet || it is FixedStar || it is LunarPoint }
@@ -161,14 +163,15 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   fun synastryAspectsFine(
     outer : Map<AstroPoint, IZodiacDegree>,
     inner : IHoroscopeModel,
-    laterForP1: ((AstroPoint) -> IZodiacDegree?)?, laterForP2: ((AstroPoint) -> IZodiacDegree?)?,
+    laterForOuter: ((AstroPoint) -> IZodiacDegree?)?,
+    laterForInner: ((AstroPoint) -> IZodiacDegree?)?,
     aspectCalculator: IAspectCalculator,
     threshold: Double?,
     aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
   ): List<SynastryAspect> {
     return outer.keys.asSequence().flatMap { pOuter -> inner.positionMap.keys.asSequence().map { pInner -> pOuter to pInner } }
       .mapNotNull { (pOuter, pInner) ->
-        aspectCalculator.getAspectPattern(pOuter, pInner, outer, inner.positionMap, laterForP1, laterForP2, aspects)
+        aspectCalculator.getAspectPattern(pOuter, pInner, outer, inner.positionMap, laterForOuter, laterForInner, aspects)
           ?.let { p: IPointAspectPattern ->
             outer[pOuter]?.zDeg?.toZodiacDegree()?.let { zDeg -> inner.getHouse(zDeg) }?.let { pOuterHouse ->
               inner.positionMap[pInner]?.lng?.toZodiacDegree()?.let { zDeg -> inner.getHouse(zDeg) }?.let { pInnerHouse ->
@@ -194,14 +197,15 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   fun synastryAspectsCoarse(
     outer: Map<AstroPoint, IZodiacDegree>,
     inner: Map<AstroPoint, IZodiacDegree>,
-    laterForP1: ((AstroPoint) -> IZodiacDegree?)?, laterForP2: ((AstroPoint) -> IZodiacDegree?)?,
+    laterForOuter: ((AstroPoint) -> IZodiacDegree?)?,
+    laterForInner: ((AstroPoint) -> IZodiacDegree?)?,
     aspectCalculator: IAspectCalculator,
     threshold: Double?,
-    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
+    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
   ): List<SynastryAspect> {
     return outer.keys.asSequence().flatMap { pOuter -> inner.keys.asSequence().map { pInner -> pOuter to pInner } }
       .mapNotNull { (pOuter, pInner) ->
-        aspectCalculator.getAspectPattern(pOuter, pInner, outer, inner, laterForP1, laterForP2, aspects)
+        aspectCalculator.getAspectPattern(pOuter, pInner, outer, inner, laterForOuter, laterForInner, aspects)
           ?.let { p: IPointAspectPattern ->
             SynastryAspect(pOuter, pInner, null, null, p.aspect, p.orb, p.aspectType, p.score)
           }
@@ -631,9 +635,15 @@ class HoroscopeFeature(
           val laterModel = getModel(laterConvergentTime, model.location, config)
           val posMapLater = laterModel.positionMap
 
+          // laterForP1 計算外盤星體在未來的位置
+          val laterForP1: (AstroPoint) -> IZodiacDegree? = { p -> posMapLater[p] }
+
+          // laterForP2 應返回內盤星體「不變」的位置，以作為比較的基準點
+          val laterForP2: (AstroPoint) -> IZodiacDegree? = { p -> posMapInner[p] }
+
           val progressedAspects = config.points.asSequence().flatMap { p1 -> config.points.asSequence().map { p2 -> p1 to p2 } }
             .mapNotNull { (p1, p2) ->
-              aspectCalculator.getAspectPattern(p1, p2, posMapOuter, posMapInner, { posMapLater[p1] }, { posMapInner[p2] }, aspects)
+              aspectCalculator.getAspectPattern(p1, p2, posMapOuter, posMapInner, laterForP1, laterForP2, aspects)
                 ?.let { p: IPointAspectPattern ->
                   val p1House = model.getHouse(posMapOuter[p1]!!.lng.toZodiacDegree())
                   val p2House = model.getHouse(posMapInner[p2]!!.lng.toZodiacDegree())
