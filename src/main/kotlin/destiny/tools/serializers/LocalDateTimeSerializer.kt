@@ -15,16 +15,35 @@ import kotlinx.serialization.json.JsonPrimitive
 import java.time.DateTimeException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
 import java.time.format.DateTimeParseException
+import java.time.temporal.ChronoField
 
 
 object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
-  private val dateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME // ISO_DATE_TIME 格式為 YYYY-MM-DDTHH:MM:SS.NNNNNNNNN
+  // 序列化時使用標準格式
+  private val serializeFormatter = DateTimeFormatter.ISO_DATE_TIME
+
+  // 反序列化時使用更有彈性的格式，允許秒和毫秒是可選的
+  private val deserializeFormatter = DateTimeFormatterBuilder()
+    .append(DateTimeFormatter.ISO_LOCAL_DATE)
+    .appendLiteral('T')
+    .appendValue(ChronoField.HOUR_OF_DAY, 2)
+    .appendLiteral(':')
+    .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+    .optionalStart()
+    .appendLiteral(':')
+    .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
+    .optionalStart()
+    .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
+    .optionalEnd()
+    .optionalEnd()
+    .toFormatter()
 
   override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("LocalDateTime", PrimitiveKind.STRING)
 
   override fun serialize(encoder: Encoder, value: LocalDateTime) {
-    encoder.encodeString(dateTimeFormatter.format(value))
+    encoder.encodeString(serializeFormatter.format(value))
   }
 
   override fun deserialize(decoder: Decoder): LocalDateTime {
@@ -38,7 +57,7 @@ object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
       // 如果是 JSON 字串 (e.g., "2024-07-22T15:30:45")
       element is JsonPrimitive && element.isString -> {
         try {
-          LocalDateTime.parse(element.content, dateTimeFormatter)
+          LocalDateTime.parse(element.content, deserializeFormatter)
         } catch (e: DateTimeParseException) {
           throw IllegalStateException("Invalid LocalDateTime string format: ${element.content}", e)
         }

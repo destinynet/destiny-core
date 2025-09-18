@@ -1,6 +1,7 @@
 package destiny.core
 
 import destiny.core.EventCategory.*
+import kotlinx.serialization.Serializable
 
 
 enum class EventCategory {
@@ -18,6 +19,7 @@ enum class EventCategory {
  * 定義所有可選的具體生命事件。
  * @param category 事件所屬的類別
  */
+@Serializable
 enum class EventType(
   val category: EventCategory
 ) {
