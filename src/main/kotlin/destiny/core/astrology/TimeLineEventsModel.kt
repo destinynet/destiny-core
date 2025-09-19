@@ -15,10 +15,7 @@ import destiny.core.calendar.Location
 import destiny.core.calendar.chinese.YearMonthRange
 import destiny.core.calendar.chinese.groupMergedRanges
 import destiny.tools.ai.model.FormatSpec
-import destiny.tools.serializers.GenderSerializer
-import destiny.tools.serializers.LocalDateSerializer
-import destiny.tools.serializers.LocalTimeSerializer
-import destiny.tools.serializers.YearMonthSerializer
+import destiny.tools.serializers.*
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
@@ -34,10 +31,12 @@ import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
 import java.time.chrono.ChronoLocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
 import java.time.format.DateTimeParseException
 
 
@@ -109,6 +108,7 @@ data class TimeLineEventsModel(
   override val lunarReturns: List<IReturnDto> = emptyList()
 ) : ITimeLineEventsModel
 
+@Serializable
 enum class EventSentiment {
   POSITIVE, // 明確是好的
   NEGATIVE, // 明確是壞的
@@ -149,21 +149,52 @@ data class DayEvent(
   }
 }
 
+@Serializable
+data class MinuteEvent(
+  @Serializable(with = LocalDateTimeSerializer::class)
+  val date: LocalDateTime,
+  override val eventType: EventType,
+  override val details: String,
+  override val sentiment: EventSentiment? = null,
+) : AbstractEvent() {
+  override fun yearMonth(): YearMonth {
+    return YearMonth.from(date)
+  }
+}
+
 object AbstractEventSerializer : KSerializer<AbstractEvent> {
 
-  // 定義兩種日期格式
+  // 定義三種日期格式，從最詳細到最不詳細
+  private val LOCAL_DATE_TIME_FORMATTER = DateTimeFormatterBuilder()
+    .append(DateTimeFormatter.ISO_LOCAL_DATE)
+    .appendLiteral('T')
+    .appendValue(java.time.temporal.ChronoField.HOUR_OF_DAY, 2)
+    .appendLiteral(':')
+    .appendValue(java.time.temporal.ChronoField.MINUTE_OF_HOUR, 2)
+    .optionalStart()
+    .appendLiteral(':')
+    .appendValue(java.time.temporal.ChronoField.SECOND_OF_MINUTE, 2)
+    .optionalStart()
+    .appendFraction(java.time.temporal.ChronoField.NANO_OF_SECOND, 0, 9, true)
+    .optionalEnd()
+    .optionalEnd()
+    .toFormatter()
   private val LOCAL_DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE // YYYY-MM-DD
   private val YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM")
 
-  // 描述符是固定的，因為我們是手動解析
-  override val descriptor: SerialDescriptor = DayEvent.serializer().descriptor
-
+  override val descriptor: SerialDescriptor = buildClassSerialDescriptor("AbstractEvent") {
+    element<String>("date")
+    element("eventType", EventType.serializer().descriptor)
+    element<String>("details")
+    element("sentiment", EventSentiment.serializer().descriptor, isOptional = true)
+  }
 
   override fun serialize(encoder: Encoder, value: AbstractEvent) {
     // 序列化邏輯保持不變
     when (value) {
-      is DayEvent   -> encoder.encodeSerializableValue(DayEvent.serializer(), value)
       is MonthEvent -> encoder.encodeSerializableValue(MonthEvent.serializer(), value)
+      is DayEvent   -> encoder.encodeSerializableValue(DayEvent.serializer(), value)
+      is MinuteEvent -> encoder.encodeSerializableValue(MinuteEvent.serializer(), value)
     }
   }
 
@@ -178,21 +209,27 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
     val dateString = jsonObject["date"]?.jsonPrimitive?.content
       ?: throw IllegalArgumentException("JSON object must contain a 'date' field.")
 
-    // 核心邏輯：根據字串格式決定如何解析
+    // 核心邏輯：根據字串格式決定如何解析。從最詳細的格式開始嘗試。
     return try {
-      // 嘗試解析為 YYYY-MM-DD
-      LocalDate.parse(dateString, LOCAL_DATE_FORMATTER)
-      // 如果成功，則將整個物件作為 DayEvent 進行反序列化
-      Json.decodeFromJsonElement(DayEvent.serializer(), jsonObject)
+      // 1. 嘗試解析為 LocalDateTime (e.g., YYYY-MM-DDTHH:MM:SS or YYYY-MM-DDTHH:MM)
+      LocalDateTime.parse(dateString, LOCAL_DATE_TIME_FORMATTER)
+      // 如果成功，則將整個物件作為 MinuteEvent 進行反序列化
+      Json.decodeFromJsonElement(MinuteEvent.serializer(), jsonObject)
     } catch (e: DateTimeParseException) {
       try {
-        // 如果解析為 LocalDate 失敗，則嘗試解析為 YYYY-MM
-        YearMonth.parse(dateString, YEAR_MONTH_FORMATTER)
-
-        // 將修改後的物件作為 MonthEvent 進行反序列化
-        Json.decodeFromJsonElement(MonthEvent.serializer(), jsonObject)
+        // 2. 嘗試解析為 LocalDate (e.g., YYYY-MM-DD)
+        LocalDate.parse(dateString, LOCAL_DATE_FORMATTER)
+        // 如果成功，則將整個物件作為 DayEvent 進行反序列化
+        Json.decodeFromJsonElement(DayEvent.serializer(), jsonObject)
       } catch (e2: DateTimeParseException) {
-        throw IllegalArgumentException("Date string '$dateString' is not in a valid format (YYYY-MM-DD or YYYY-MM).", e2)
+        try {
+          // 3. 嘗試解析為 YearMonth (e.g., YYYY-MM)
+          YearMonth.parse(dateString, YEAR_MONTH_FORMATTER)
+          // 如果成功，則將整個物件作為 MonthEvent 進行反序列化
+          Json.decodeFromJsonElement(MonthEvent.serializer(), jsonObject)
+        } catch (e3: DateTimeParseException) {
+          throw IllegalArgumentException("Date string '$dateString' is not in a valid format (YYYY-MM-DD'T'HH:mm[:ss], YYYY-MM-DD, or YYYY-MM).", e3)
+        }
       }
     }
   }
