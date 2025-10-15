@@ -55,7 +55,7 @@ data class EventModel(
   val solarArcModel: ISolarArcModel,
   val transitToSolarArcAspects: List<SynastryAspect>,
   val transitToSecondaryAspects: List<SynastryAspect>,
-  val firdaria: Firdaria,
+  val firdaria: Firdaria?,
   val profectionMap: Map<Scale, Profection>,
   val surroundingEvents: List<@Contextual ITimeLineEvent>,
   val surroundingLunarReturns: List<IReturnDto>,
