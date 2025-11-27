@@ -41,6 +41,9 @@ fun SerializersModuleBuilder.astrologyModule() {
   polymorphic(IPersonHoroscopeDto::class) {
     subclass(Natal::class)
   }
+  polymorphic(IReturnDto::class) {
+    subclass(ReturnDto::class)
+  }
   polymorphic(ISynastryAspect::class) {
     subclass(SynastryAspect::class)
   }
