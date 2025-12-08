@@ -13,6 +13,7 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.CacheGrain
 import destiny.tools.DestinyMarker
+import destiny.tools.KotlinLogging
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import javax.cache.Cache
@@ -96,16 +97,22 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
     val dayStem = eightWords.day.stem
     // 五星 + 南北交點
     val stars: List<Star> = listOf(*Planet.classicalArray, *LunarNode.trueArray)
-    val starPosMap: Map<AstroPoint, PositionWithBranch> = stars.associateWith { p: AstroPoint ->
+    val starPosMap: Map<AstroPoint, PositionWithBranch> = stars.mapNotNull { p: AstroPoint ->
       val pos: IPos = starPositionImpl.getPosition(p as Star, lmt, loc, Centric.GEO, Coordinate.ECLIPTIC)
+
+      // 檢查是否為 NaN，如果是就跳過此星體
+      if (pos.lng.isNaN()) {
+        logger.warn { "Star $p has NaN longitude at $lmt (location: $loc), skipping" }
+        return@mapNotNull null
+      }
 
       val hourImpl = HourHouseImpl(houseCuspImpl, starPositionImpl, p)
       val hourBranch = hourImpl.getHour(lmt, loc)
 
       val hourStem = StemBranchUtils.getHourStem(dayStem, hourBranch)
       val hour = StemBranch[hourStem, hourBranch]
-      PositionWithBranch(pos, hour)
-    }
+      p to PositionWithBranch(pos, hour)
+    }.toMap()
 
 
     val houseMap = houseCuspFeature.getModel(lmt, loc, config.houseConfig)
@@ -148,5 +155,6 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
 
   companion object {
     const val CACHE_EIGHTWORDS_CONTEXT_FEATURE = "ewContextFeatureCache"
+    private val logger = KotlinLogging.logger { }
   }
 }
