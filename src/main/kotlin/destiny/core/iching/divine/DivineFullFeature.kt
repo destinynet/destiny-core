@@ -6,7 +6,10 @@ package destiny.core.iching.divine
 import destiny.core.Gender
 import destiny.core.calendar.*
 import destiny.core.calendar.TimeTools.toGmtJulDay
-import destiny.core.calendar.eightwords.*
+import destiny.core.calendar.eightwords.EightWordsFeature
+import destiny.core.calendar.eightwords.EightWordsNullable
+import destiny.core.calendar.eightwords.IEightWordsConfig
+import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.iching.HexagramTextContext
 import destiny.core.iching.IHexagramText
 import destiny.core.iching.contentProviders.*
@@ -27,13 +30,12 @@ data class DivineFullConfig(val traditionalConfig: DivineTraditionalConfig = Div
                             val question: String? = null,
                             val approach: DivineApproach? = null): java.io.Serializable
 
-context(IEightWordsConfig)
 @DestinyMarker
-class DivineFullConfigBuilder : Builder<DivineFullConfig> {
+class DivineFullConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<DivineFullConfig> {
 
   var traditionalConfig = DivineTraditionalConfig()
   fun tradConfig(block : DivineTraditionalConfigBuilder.() -> Unit = {}) {
-    traditionalConfig = DivineTraditionalConfigBuilder.divineTraditionalConfig(block)
+    traditionalConfig = with(iEwConfig) { DivineTraditionalConfigBuilder.divineTraditionalConfig(block) }
   }
 
   var eightWordsNullable: IEightWordsNullable = EightWordsNullable.empty()
@@ -47,9 +49,9 @@ class DivineFullConfigBuilder : Builder<DivineFullConfig> {
   }
 
   companion object {
-    context(IEightWordsConfig)
+    context(config : IEightWordsConfig)
     fun divineFullConfig(block : DivineFullConfigBuilder.() -> Unit = {}) : DivineFullConfig {
-      return DivineFullConfigBuilder().apply(block).build()
+      return DivineFullConfigBuilder(config).apply(block).build()
     }
   }
 }

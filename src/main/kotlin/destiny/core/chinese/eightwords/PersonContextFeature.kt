@@ -31,18 +31,17 @@ data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContext
                                   @Serializable(with = LocaleSerializer::class)
                                   val locale : Locale = Locale.getDefault()): IEightWordsPersonConfig , IEightWordsContextConfig by eightwordsContextConfig
 
-context(IEightWordsContextConfig)
 @DestinyMarker
-class PersonConfigBuilder : Builder<EightWordsPersonConfig> {
+class PersonConfigBuilder(val iEwConfig : IEightWordsContextConfig) : Builder<EightWordsPersonConfig> {
 
   var fortuneLargeConfig: FortuneLargeConfig = FortuneLargeConfig()
   fun fortuneLarge(block: FortuneLargeConfigBuilder.() -> Unit = {}) {
-    this.fortuneLargeConfig = FortuneLargeConfigBuilder.fortuneLarge(block)
+    this.fortuneLargeConfig = with(iEwConfig) { FortuneLargeConfigBuilder.fortuneLarge(block) }
   }
 
   var fortuneSmallConfig: FortuneSmallConfig = FortuneSmallConfig()
   fun fortuneSmall(block: FortuneSmallConfigBuilder.() -> Unit = {}) {
-    this.fortuneSmallConfig = FortuneSmallConfigBuilder.fortuneSmall(block)
+    this.fortuneSmallConfig = with(iEwConfig) { FortuneSmallConfigBuilder.fortuneSmall(block) }
   }
 
   var ewContextScore: EwContextScore = EwContextScore.OctaDivide316
@@ -50,13 +49,13 @@ class PersonConfigBuilder : Builder<EightWordsPersonConfig> {
   var locale: Locale = Locale.getDefault()
 
   override fun build(): EightWordsPersonConfig {
-    return EightWordsPersonConfig(ewContextConfig, fortuneLargeConfig, fortuneSmallConfig, ewContextScore, locale)
+    return EightWordsPersonConfig(iEwConfig.ewContextConfig, fortuneLargeConfig, fortuneSmallConfig, ewContextScore, locale)
   }
 
   companion object {
-    context(IEightWordsContextConfig)
+    context(config: IEightWordsContextConfig)
     fun ewPersonConfig(block: PersonConfigBuilder.() -> Unit = {}) : EightWordsPersonConfig {
-      return PersonConfigBuilder().apply(block).build()
+      return PersonConfigBuilder(config).apply(block).build()
     }
   }
 }

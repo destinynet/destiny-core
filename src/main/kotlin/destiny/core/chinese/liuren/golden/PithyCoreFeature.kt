@@ -9,15 +9,18 @@ import destiny.core.astrology.DayNightFeature
 import destiny.core.astrology.DayNightImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.eightwords.*
+import destiny.core.calendar.eightwords.EightWordsConfig
+import destiny.core.calendar.eightwords.EightWordsFeature
+import destiny.core.calendar.eightwords.IEightWords
+import destiny.core.calendar.eightwords.IEightWordsConfig
 import destiny.core.chinese.*
 import destiny.core.chinese.liuren.*
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.KotlinLogging
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import destiny.tools.KotlinLogging
 
 @Serializable
 data class PithyConfig(val direction: Branch = Branch.子,
@@ -30,9 +33,8 @@ data class PithyConfig(val direction: Branch = Branch.子,
                        val generalStemBranch : GeneralStemBranch = GeneralStemBranch.Pithy
                        ) : java.io.Serializable
 
-context(IEightWordsConfig)
 @DestinyMarker
-class PithyConfigBuilder : Builder<PithyConfig> {
+class PithyConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<PithyConfig> {
 
   var direction: Branch = Branch.子
 
@@ -49,13 +51,13 @@ class PithyConfigBuilder : Builder<PithyConfig> {
   var generalStemBranch : GeneralStemBranch = GeneralStemBranch.Pithy
 
   override fun build(): PithyConfig {
-    return PithyConfig(direction, ewConfig, monthMaster, clockwise, dayNightConfig, tianyi, generalSeq, generalStemBranch)
+    return PithyConfig(direction, iEwConfig.ewConfig, monthMaster, clockwise, dayNightConfig, tianyi, generalSeq, generalStemBranch)
   }
 
   companion object {
-    context(IEightWordsConfig)
+    context(config: IEightWordsConfig)
     fun pithyConfig(block : PithyConfigBuilder.() -> Unit = {}) : PithyConfig {
-      return PithyConfigBuilder().apply(block).build()
+      return PithyConfigBuilder(config).apply(block).build()
     }
   }
 }

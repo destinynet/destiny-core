@@ -25,9 +25,8 @@ data class PersonPresentConfig(val personContextConfig: EightWordsPersonConfig =
                                override var viewGmt: GmtJulDay = GmtJulDay.nowCeilingToNoon()) : IPersonPresentConfig,
                                                                                                  IEightWordsPersonConfig by personContextConfig
 
-context(IEightWordsPersonConfig)
 @DestinyMarker
-class PersonPresentConfigBuilder : Builder<PersonPresentConfig> {
+class PersonPresentConfigBuilder(val config: IEightWordsPersonConfig) : Builder<PersonPresentConfig> {
 
   /**
    * 內定讓 viewGmt 取整數 GmtJulDay+1 (明日) , 因此，接連兩次 ewPersonPresent{} , 應該會出現相同的 config 物件
@@ -36,13 +35,13 @@ class PersonPresentConfigBuilder : Builder<PersonPresentConfig> {
   var viewGmt: GmtJulDay = GmtJulDay.nowCeilingToNoon()
 
   override fun build(): PersonPresentConfig {
-    return PersonPresentConfig(ewPersonConfig, viewGmt)
+    return PersonPresentConfig(config.ewPersonConfig, viewGmt)
   }
 
   companion object {
-    context(IEightWordsPersonConfig)
+    context(config: IEightWordsPersonConfig)
     fun ewPersonPresent(block: PersonPresentConfigBuilder.() -> Unit = {}) : PersonPresentConfig {
-      return PersonPresentConfigBuilder().apply(block).build()
+      return PersonPresentConfigBuilder(config).apply(block).build()
     }
   }
 }

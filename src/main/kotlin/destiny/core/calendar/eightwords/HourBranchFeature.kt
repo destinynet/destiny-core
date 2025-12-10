@@ -35,20 +35,19 @@ data class HourBranchConfig(
   override var hourImpl : HourImpl = HourImpl.TST,
   override val transConfig: TransConfig = TransConfig()): IHourBranchConfig , ITransConfig by transConfig
 
-context(ITransConfig)
 @DestinyMarker
-class HourBranchConfigBuilder : Builder<HourBranchConfig> {
+class HourBranchConfigBuilder(val iTransConfig: ITransConfig) : Builder<HourBranchConfig> {
 
   var hourImpl = HourImpl.TST
 
   override fun build(): HourBranchConfig {
-    return HourBranchConfig(hourImpl, transConfig)
+    return HourBranchConfig(hourImpl, iTransConfig.transConfig)
   }
 
   companion object {
-    context(ITransConfig)
+    context(config: ITransConfig)
     fun hourBranchConfig(block : HourBranchConfigBuilder.() -> Unit = {}) : HourBranchConfig {
-      return HourBranchConfigBuilder().apply(block).build()
+      return HourBranchConfigBuilder(config).apply(block).build()
     }
   }
 }

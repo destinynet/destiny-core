@@ -298,9 +298,8 @@ data class ZiweiConfig(
   override var locale: Locale = Locale.TRADITIONAL_CHINESE
 ) : IZiweiConfig , IEightWordsConfig by ewConfig
 
-context(IEightWordsConfig)
 @DestinyMarker
-class ZiweiConfigBuilder : Builder<ZiweiConfig> {
+class ZiweiConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<ZiweiConfig> {
 
   private val defaultConfig: IZiweiConfig = ZiweiConfig()
 
@@ -374,7 +373,9 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
 
 
   fun dayNightConfig(block: DayNightConfigBuilder.() -> Unit = {}) {
-    this.dayNightConfig = DayNightConfigBuilder.dayNight(block)
+    this.dayNightConfig = with(iEwConfig) {
+      DayNightConfigBuilder.dayNight(block)
+    }
   }
 
   var chineseDateImpl: ChineseDateImpl = defaultConfig.chineseDateImpl
@@ -406,7 +407,7 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
       bigRange,
       sectionAgeType,
       ageNotes,
-      ewConfig,
+      iEwConfig.ewConfig,
       dayNightConfig,
       chineseDateImpl,
       purpleFixedBranch,
@@ -415,9 +416,9 @@ class ZiweiConfigBuilder : Builder<ZiweiConfig> {
   }
 
   companion object {
-    context(IEightWordsConfig)
+    context(ctx: IEightWordsConfig)
     fun ziweiConfig(block: ZiweiConfigBuilder.() -> Unit = {}): ZiweiConfig {
-      return ZiweiConfigBuilder().apply(block).build()
+      return ZiweiConfigBuilder(ctx).apply(block).build()
     }
   }
 }

@@ -38,9 +38,8 @@ data class LunarStationConfig(
   override val ewConfig: EightWordsConfig = EightWordsConfig(),
 ) : ILunarStationConfig, IEightWordsConfig by ewConfig
 
-context(IEightWordsConfig)
 @DestinyMarker
-class LunarStationConfigBuilder : Builder<LunarStationConfig> {
+class LunarStationConfigBuilder(val iEwConfig: IEightWordsConfig) : Builder<LunarStationConfig> {
   var yearType: YearType = YearType.YEAR_SOLAR
   var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564
   var monthlyImpl: MonthlyImpl = MonthlyImpl.AoHead
@@ -48,13 +47,13 @@ class LunarStationConfigBuilder : Builder<LunarStationConfig> {
   var hourlyImpl: HourlyImpl = HourlyImpl.Fixed
 
   override fun build(): LunarStationConfig {
-    return LunarStationConfig(yearType, yearEpoch, monthlyImpl, monthAlgo, hourlyImpl, ewConfig)
+    return LunarStationConfig(yearType, yearEpoch, monthlyImpl, monthAlgo, hourlyImpl, iEwConfig.ewConfig)
   }
 
   companion object {
-    context(IEightWordsConfig)
+    context(config: IEightWordsConfig)
     fun lunarStation(block: LunarStationConfigBuilder.() -> Unit = {}): LunarStationConfig {
-      return LunarStationConfigBuilder().apply(block).build()
+      return LunarStationConfigBuilder(config).apply(block).build()
     }
   }
 }

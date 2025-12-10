@@ -11,12 +11,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ClassicalConfig(override var factories: List<IPlanetPatternFactory>) : IClassicalConfig
 
-context(ClassicalPatternContext)
 @DestinyMarker
-class ClassicalConfigBuilder : Builder<ClassicalConfig> {
+class ClassicalConfigBuilder(val ctx: ClassicalPatternContext) : Builder<ClassicalConfig> {
 
   var factories: MutableList<IPlanetPatternFactory> = buildList {
-    addAll(essentialDignities)
+    addAll(ctx.essentialDignities)
   }.toMutableList()
 
   override fun build(): ClassicalConfig {
@@ -24,9 +23,9 @@ class ClassicalConfigBuilder : Builder<ClassicalConfig> {
   }
 
   companion object {
-    context(ClassicalPatternContext)
+    context(ctx: ClassicalPatternContext)
     fun classical(block: ClassicalConfigBuilder.() -> Unit = {}): ClassicalConfig {
-      return ClassicalConfigBuilder().apply(block).build()
+      return ClassicalConfigBuilder(ctx).apply(block).build()
     }
   }
 }

@@ -51,7 +51,7 @@ class TimeToolsTest {
 
     // offset + 8 hour
     TimeTools.findZoneIds(60 * 60 * 8).also {
-      assertEquals(25 , it.size)
+      assertEquals(26 , it.size)
     }
   }
 

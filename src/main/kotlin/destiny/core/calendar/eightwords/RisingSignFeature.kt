@@ -27,9 +27,8 @@ data class RisingSignConfig(
   override var risingSignImpl: RisingSignImpl = RisingSignImpl.HouseCusp
 ): IRisingSignConfig , IHouseConfig by houseConfig
 
-context(IHouseConfig)
 @DestinyMarker
-class RisingSignConfigBuilder : Builder<RisingSignConfig> {
+class RisingSignConfigBuilder(val iHouseConfig : IHouseConfig) : Builder<RisingSignConfig> {
 
   var risingSignImpl: RisingSignImpl = RisingSignImpl.HouseCusp
 
@@ -50,13 +49,13 @@ class RisingSignConfigBuilder : Builder<RisingSignConfig> {
   }
 
   override fun build(): RisingSignConfig {
-    return RisingSignConfig(houseConfig, tradChineseRisingSignConfig, risingSignImpl)
+    return RisingSignConfig(iHouseConfig.houseConfig, tradChineseRisingSignConfig, risingSignImpl)
   }
 
   companion object {
-    context(IHouseConfig)
+    context(config : IHouseConfig)
     fun risingSign(block: RisingSignConfigBuilder.() -> Unit = {}): RisingSignConfig {
-      return RisingSignConfigBuilder().apply(block).build()
+      return RisingSignConfigBuilder(config).apply(block).build()
     }
   }
 }

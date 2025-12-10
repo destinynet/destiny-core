@@ -25,20 +25,19 @@ data class DayNightConfig(override val dayNightImpl : DayNightImpl = DayNightImp
                           /** for [DayNightImpl.StarPos] and [DayNightImpl.Half] */
                           override val transConfig: TransConfig = TransConfig()): IDayNightConfig,
                                                                                   ITransConfig by transConfig
-context(ITransConfig)
 @DestinyMarker
-class DayNightConfigBuilder : Builder<DayNightConfig> {
+class DayNightConfigBuilder(val config : ITransConfig) : Builder<DayNightConfig> {
 
   var dayNightImpl : DayNightImpl = DayNightImpl.StarPos
 
   override fun build(): DayNightConfig {
-    return DayNightConfig(dayNightImpl, transConfig)
+    return DayNightConfig(dayNightImpl, config.transConfig)
   }
 
   companion object {
-    context(ITransConfig)
+    context(config: ITransConfig)
     fun dayNight(block : DayNightConfigBuilder.() -> Unit = {}) : DayNightConfig {
-      return DayNightConfigBuilder().apply(block).build()
+      return DayNightConfigBuilder(config).apply(block).build()
     }
   }
 }

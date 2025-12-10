@@ -9,11 +9,7 @@ import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
-import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.CacheGrain
-import destiny.tools.DestinyMarker
-import destiny.tools.KotlinLogging
+import destiny.tools.*
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import javax.cache.Cache
@@ -28,9 +24,8 @@ data class EightWordsContextConfig(
   //override var houseConfig : HouseConfig = HouseConfig(HouseSystem.MERIDIAN, Coordinate.ECLIPTIC),
 ): IEightWordsContextConfig , IEightWordsConfig by eightWordsConfig , IRisingSignConfig by risingSignConfig
 
-context(IEightWordsConfig, IRisingSignConfig)
 @DestinyMarker
-class EightWordsContextConfigBuilder : Builder<EightWordsContextConfig> {
+class EightWordsContextConfigBuilder(val iEwConfig : IEightWordsConfig, val iRsConfig : IRisingSignConfig) : Builder<EightWordsContextConfig> {
 
   private var zodiacSignConfig: ZodiacSignConfig = ZodiacSignConfig()
   fun zodiacSign(block : ZodiacSignBuilder.() -> Unit = {}) {
@@ -40,13 +35,13 @@ class EightWordsContextConfigBuilder : Builder<EightWordsContextConfig> {
   var place : String? = null
 
   override fun build(): EightWordsContextConfig {
-    return EightWordsContextConfig(ewConfig, risingSignConfig, zodiacSignConfig, place)
+    return EightWordsContextConfig(iEwConfig.ewConfig, iRsConfig.risingSignConfig, zodiacSignConfig, place)
   }
 
   companion object {
-    context(IEightWordsConfig, IRisingSignConfig)
+    context(ewConfig: IEightWordsConfig, rsConfig: IRisingSignConfig)
     fun ewContext(block : EightWordsContextConfigBuilder.() -> Unit = {}) : EightWordsContextConfig {
-      return EightWordsContextConfigBuilder().apply(block).build()
+      return EightWordsContextConfigBuilder(ewConfig, rsConfig).apply(block).build()
     }
   }
 }

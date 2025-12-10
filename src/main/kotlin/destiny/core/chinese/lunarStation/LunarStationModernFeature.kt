@@ -27,22 +27,21 @@ data class LunarStationModernConfig(
   override var specifiedGmtJulDay: GmtJulDay? = null,
   override var description: String? = null): ILunarStationModernConfig, ILunarStationConfig by lunarStationConfig
 
-context(ILunarStationConfig)
 @DestinyMarker
-class LunarStationModernConfigBuilder : Builder<LunarStationModernConfig> {
+class LunarStationModernConfigBuilder(val config : ILunarStationConfig) : Builder<LunarStationModernConfig> {
 
   var method: IModernContextModel.Method = IModernContextModel.Method.NOW
   var specifiedGmtJulDay: GmtJulDay? = null
   var description: String? = null
 
   override fun build(): LunarStationModernConfig {
-    return LunarStationModernConfig(lunarStationConfig, method, specifiedGmtJulDay, description)
+    return LunarStationModernConfig(config.lunarStationConfig, method, specifiedGmtJulDay, description)
   }
 
   companion object {
-    context(ILunarStationConfig)
+    context(config : ILunarStationConfig)
     fun lunarStationModern(block: LunarStationModernConfigBuilder.() -> Unit = {}): LunarStationModernConfig {
-      return LunarStationModernConfigBuilder().apply(block).build()
+      return LunarStationModernConfigBuilder(config).apply(block).build()
     }
   }
 }

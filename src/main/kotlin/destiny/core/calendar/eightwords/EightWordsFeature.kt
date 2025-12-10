@@ -3,7 +3,10 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.calendar.*
+import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
+import destiny.core.calendar.TimeTools
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import destiny.tools.*
@@ -19,18 +22,17 @@ data class EightWordsConfig(
   override val dayHourConfig: DayHourConfig = DayHourConfig()
 ) : IEightWordsConfig, IYearMonthConfig by yearMonthConfig, IDayHourConfig by dayHourConfig
 
-context(IYearMonthConfig, IDayHourConfig)
 @DestinyMarker
-class EightWordsConfigBuilder : Builder<EightWordsConfig> {
+class EightWordsConfigBuilder(val ymConfig : IYearMonthConfig, val dhConfig: IDayHourConfig) : Builder<EightWordsConfig> {
 
   override fun build(): EightWordsConfig {
-    return EightWordsConfig(yearMonthConfig, dayHourConfig)
+    return EightWordsConfig(ymConfig.yearMonthConfig, dhConfig.dayHourConfig)
   }
 
   companion object {
-    context(IYearMonthConfig, IDayHourConfig)
+    context(ymConfig : IYearMonthConfig, dhConfig : IDayHourConfig)
     fun ewConfig(block: EightWordsConfigBuilder.() -> Unit = {}): EightWordsConfig {
-      return EightWordsConfigBuilder().apply(block).build()
+      return EightWordsConfigBuilder(ymConfig, dhConfig).apply(block).build()
     }
   }
 }

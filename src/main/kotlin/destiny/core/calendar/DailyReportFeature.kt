@@ -4,7 +4,8 @@
 package destiny.core.calendar
 
 import destiny.core.astrology.*
-import destiny.core.astrology.Planet.*
+import destiny.core.astrology.Planet.MOON
+import destiny.core.astrology.Planet.SUN
 import destiny.core.astrology.classical.IVoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseFeature
@@ -14,17 +15,15 @@ import destiny.core.astrology.eclipse.SolarType
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.IHourBranchFeature
 import destiny.core.chinese.Branch
-import destiny.core.chinese.lunarStation.*
+import destiny.core.chinese.lunarStation.ILunarStationConfig
+import destiny.core.chinese.lunarStation.LunarStationConfig
+import destiny.core.chinese.lunarStation.LunarStationFeature
 import destiny.core.toString
-import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.CacheGrain
-import destiny.tools.DestinyMarker
+import destiny.tools.*
 import destiny.tools.location.ReverseGeocodingService
 import destiny.tools.serializers.LocaleSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import destiny.tools.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
@@ -46,20 +45,19 @@ data class DailyReportConfig(
   @Serializable(with = LocaleSerializer::class)
   override var locale: Locale = Locale.TAIWAN) : IDailyReportConfig, ILunarStationConfig by lunarStationConfig , IVoidCourseConfig by vocConfig
 
-context(ILunarStationConfig, IVoidCourseConfig)
 @DestinyMarker
-class DailyReportConfigBuilder : Builder<DailyReportConfig> {
+class DailyReportConfigBuilder(val iLunarConfig: ILunarStationConfig, val iVocConfig: IVoidCourseConfig) : Builder<DailyReportConfig> {
 
   var locale : Locale = Locale.TAIWAN
 
   override fun build(): DailyReportConfig {
-    return DailyReportConfig(lunarStationConfig, vocConfig, locale)
+    return DailyReportConfig(iLunarConfig.lunarStationConfig, iVocConfig.vocConfig, locale)
   }
 
   companion object {
-    context(ILunarStationConfig, IVoidCourseConfig)
+    context(lunarConfig: ILunarStationConfig, vocConfig: IVoidCourseConfig)
     fun dailyReport(block: DailyReportConfigBuilder.() -> Unit = {}): DailyReportConfig {
-      return DailyReportConfigBuilder().apply(block).build()
+      return DailyReportConfigBuilder(lunarConfig, vocConfig).apply(block).build()
     }
   }
 }
@@ -80,11 +78,8 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
 
   override val key: String = "dailyReport"
 
-  override val defaultConfig: DailyReportConfig = with(LunarStationConfig()) {
-    with(VoidCourseConfig()) {
-      DailyReportConfigBuilder().build()
-    }
-  }
+  override val defaultConfig: DailyReportConfig = DailyReportConfigBuilder(LunarStationConfig(), VoidCourseConfig()).build()
+
 
   @Suppress("UNCHECKED_CAST")
   override val lmtCache: Cache<LmtCacheKey<DailyReportConfig>, List<TimeDesc>>

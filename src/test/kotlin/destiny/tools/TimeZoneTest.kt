@@ -79,7 +79,8 @@ class TimeZoneTest {
   fun test_TimeZone_to_ZoneId_incompatibilities() {
     assertEquals("America/Los_Angeles", TimeZone.getTimeZone("PST").toZoneId().toString())
 
-    assertEquals("-05:00", TimeZone.getTimeZone("EST").toZoneId().toString())
+    // 本來是 "-5:00" , 換 JDK 就變成 "America/Panama"
+    assertEquals("America/Panama", TimeZone.getTimeZone("EST").toZoneId().toString())
   }
 
 

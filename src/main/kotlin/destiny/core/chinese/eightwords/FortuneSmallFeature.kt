@@ -36,9 +36,8 @@ data class FortuneSmallConfig(val impl: Impl = Impl.Hour,
   }
 }
 
-context(IEightWordsConfig)
 @DestinyMarker
-class FortuneSmallConfigBuilder : Builder<FortuneSmallConfig> {
+class FortuneSmallConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<FortuneSmallConfig> {
   var impl: FortuneSmallConfig.Impl = FortuneSmallConfig.Impl.Hour
   var count: Int = 120
 
@@ -48,13 +47,13 @@ class FortuneSmallConfigBuilder : Builder<FortuneSmallConfig> {
   }
 
   override fun build(): FortuneSmallConfig {
-    return FortuneSmallConfig(impl, count, intAgeNotes, ewConfig)
+    return FortuneSmallConfig(impl, count, intAgeNotes, iEwConfig.ewConfig)
   }
 
   companion object {
-    context(IEightWordsConfig)
+    context(config: IEightWordsConfig)
     fun fortuneSmall(block: FortuneSmallConfigBuilder.() -> Unit = {}) : FortuneSmallConfig {
-      return FortuneSmallConfigBuilder().apply(block).build()
+      return FortuneSmallConfigBuilder(config).apply(block).build()
     }
   }
 }

@@ -14,7 +14,7 @@ import java.util.*
 /** 將 [ICombinedFull] 包裝成 HTML */
 object CombinedFullColorCanvasWrapper {
 
-  context(ILineNameDecoratorService)
+  context(service : ILineNameDecoratorService)
   fun render(plate: ICombinedFull): String {
 
     // 13 x 74 , 只剩下起卦方式還沒填
@@ -72,7 +72,7 @@ object CombinedFullColorCanvasWrapper {
   } // render
 }
 
-context(ILineNameDecoratorService)
+context(decorator : ILineNameDecoratorService)
 private fun appendHexagramText(colorCanvas: ColorCanvas, hex: IHexagram, text: IHexagramText) {
   colorCanvas.run {
     text.run {
@@ -92,7 +92,7 @@ private fun appendHexagramText(colorCanvas: ColorCanvas, hex: IHexagram, text: I
 
 
       (6 downTo 1).forEach { lineIndex ->
-        val lineName = getName(hex, lineIndex, Locale.TAIWAN)
+        val lineName = decorator.getName(hex, lineIndex, Locale.TAIWAN)
         appendLine(lineName + "：" + getLineFromOne(lineIndex).expression, "00F", null, " ", null, null)
         appendLine("象曰：" + getLineFromOne(lineIndex).image, "green", null, " ", null, null)
       }

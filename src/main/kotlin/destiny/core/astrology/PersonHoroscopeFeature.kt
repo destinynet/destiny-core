@@ -10,7 +10,10 @@ import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Axis.RISING
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.tools.*
+import destiny.tools.AbstractCachedPersonFeature
+import destiny.tools.Builder
+import destiny.tools.DestinyMarker
+import destiny.tools.PersonFeature
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
@@ -21,18 +24,17 @@ data class PersonHoroscopeConfig(
   override val horoscopeConfig: HoroscopeConfig = HoroscopeConfig(),
 ) : IPersonHoroscopeConfig, IHoroscopeConfig by horoscopeConfig
 
-context(IHoroscopeConfig)
 @DestinyMarker
-class PersonHoroscopeConfigBuilder : Builder<PersonHoroscopeConfig> {
+class PersonHoroscopeConfigBuilder(val config : IHoroscopeConfig) : Builder<PersonHoroscopeConfig> {
 
   override fun build(): PersonHoroscopeConfig {
-    return PersonHoroscopeConfig(horoscopeConfig)
+    return PersonHoroscopeConfig(config.horoscopeConfig)
   }
 
   companion object {
-    context(IHoroscopeConfig)
+    context(config: IHoroscopeConfig)
     fun personHoroscope(block: PersonHoroscopeConfigBuilder.() -> Unit = {}): PersonHoroscopeConfig {
-      return PersonHoroscopeConfigBuilder().apply(block).build()
+      return PersonHoroscopeConfigBuilder(config).apply(block).build()
     }
   }
 }

@@ -35,9 +35,8 @@ data class FortuneLargeConfig(val impl: FortuneLargeImpl = FortuneLargeImpl.Defa
                               val intAgeNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
                               val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
 
-context(IEightWordsConfig)
 @DestinyMarker
-class FortuneLargeConfigBuilder : Builder<FortuneLargeConfig> {
+class FortuneLargeConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<FortuneLargeConfig> {
 
   var impl: FortuneLargeImpl = FortuneLargeImpl.DefaultSpan
 
@@ -49,13 +48,13 @@ class FortuneLargeConfigBuilder : Builder<FortuneLargeConfig> {
   }
 
   override fun build(): FortuneLargeConfig {
-    return FortuneLargeConfig(impl, span, intAgeNotes, ewConfig)
+    return FortuneLargeConfig(impl, span, intAgeNotes, iEwConfig.ewConfig)
   }
 
   companion object {
-    context(IEightWordsConfig)
+    context(config: IEightWordsConfig)
     fun fortuneLarge(block: FortuneLargeConfigBuilder.() -> Unit = {}) : FortuneLargeConfig {
-      return FortuneLargeConfigBuilder().apply(block).build()
+      return FortuneLargeConfigBuilder(config).apply(block).build()
     }
   }
 }

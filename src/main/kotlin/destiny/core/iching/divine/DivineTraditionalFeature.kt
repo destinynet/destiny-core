@@ -38,9 +38,8 @@ data class DivineTraditionalConfig(@Serializable(with = IHexagramSerializer::cla
                                    @Serializable(with = LocaleSerializer::class)
                                    val locale: Locale = Locale.TAIWAN,
                                    val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
-context(IEightWordsConfig)
 @DestinyMarker
-class DivineTraditionalConfigBuilder : Builder<DivineTraditionalConfig> {
+class DivineTraditionalConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<DivineTraditionalConfig> {
 
   var src: IHexagram = Hexagram.乾
 
@@ -57,13 +56,13 @@ class DivineTraditionalConfigBuilder : Builder<DivineTraditionalConfig> {
   var locale: Locale = Locale.TAIWAN
 
   override fun build(): DivineTraditionalConfig {
-    return DivineTraditionalConfig(src, dst, settings, hiddenEnergy, tianyi, yangBlade, locale, ewConfig)
+    return DivineTraditionalConfig(src, dst, settings, hiddenEnergy, tianyi, yangBlade, locale, iEwConfig.ewConfig)
   }
 
   companion object {
-    context(IEightWordsConfig)
+    context(config : IEightWordsConfig)
     fun divineTraditionalConfig(block: DivineTraditionalConfigBuilder.() -> Unit = {}) : DivineTraditionalConfig {
-      return DivineTraditionalConfigBuilder().apply(block).build()
+      return DivineTraditionalConfigBuilder(config).apply(block).build()
     }
   }
 }

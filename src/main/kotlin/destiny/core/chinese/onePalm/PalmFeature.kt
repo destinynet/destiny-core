@@ -36,9 +36,8 @@ data class PalmConfig(
   val clockwiseHouse: Boolean = true
 ) : java.io.Serializable
 
-context(IEightWordsConfig , IRisingSignConfig)
 @DestinyMarker
-class PalmConfigBuilder : Builder<PalmConfig> {
+class PalmConfigBuilder(val iEwConfig : IEightWordsConfig , val iRsConfig : IRisingSignConfig) : Builder<PalmConfig> {
 
   var positiveImpl: PositiveImpl = PositiveImpl.Gender
 
@@ -49,13 +48,13 @@ class PalmConfigBuilder : Builder<PalmConfig> {
   var clockwiseHouse: Boolean = true
 
   override fun build(): PalmConfig {
-    return PalmConfig(ewConfig, positiveImpl, monthAlgo, risingSignConfig, trueRisingSign, clockwiseHouse)
+    return PalmConfig(iEwConfig.ewConfig, positiveImpl, monthAlgo, iRsConfig.risingSignConfig, trueRisingSign, clockwiseHouse)
   }
 
   companion object {
-    context(IEightWordsConfig, IRisingSignConfig)
+    context(ewConfig : IEightWordsConfig, rsConfig : IRisingSignConfig)
     fun palmConfig(block: PalmConfigBuilder.() -> Unit = {}): PalmConfig {
-      return PalmConfigBuilder().apply(block).build()
+      return PalmConfigBuilder(ewConfig, rsConfig).apply(block).build()
     }
   }
 }
