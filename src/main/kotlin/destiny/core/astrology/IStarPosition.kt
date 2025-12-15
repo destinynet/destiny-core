@@ -23,6 +23,39 @@ interface IStarPosition<out T : IStarPos> {
 
   fun getPositions(stars: Iterable<Star>, gmtJulDay: GmtJulDay, centric: Centric, coordinate: Coordinate): Map<Star, T>
 
+  // ============================================================
+  // New API with CalculationOptions - facilitates gradual migration
+  // ============================================================
+
+  /**
+   * Calculate star position with explicit calculation options.
+   *
+   * The [options] parameter overrides calculation types embedded in certain Star objects:
+   * - For [LunarNode]: options.nodeType overrides star.nodeType (TRUE/MEAN)
+   * - For [LunarApsis]: options.apsisType overrides star.meanOscu (OSCU/MEAN)
+   * - For other stars: options has no effect
+   *
+   * This design allows gradual migration from the old API where calculation type is embedded in Star.
+   *
+   * Example:
+   * ```
+   * // Old API - calculation type embedded in Star
+   * getPosition(LunarNode.NORTH_TRUE, gmtJulDay, centric, coordinate)
+   *
+   * // New API - calculation type in options (overrides Star's embedded type)
+   * calculate(LunarNode.NORTH_TRUE, gmtJulDay, centric, coordinate, CalculationOptions(nodeType = MEAN))
+   * // Result: uses MEAN calculation despite NORTH_TRUE being passed
+   * ```
+   */
+  fun calculate(star: Star, gmtJulDay: GmtJulDay, centric: Centric, coordinate: Coordinate, options: CalculationOptions = CalculationOptions.DEFAULT): T
+
+  /**
+   * Calculate positions for multiple stars with explicit calculation options.
+   *
+   * @see calculate for details on how options override Star's embedded calculation types
+   */
+  fun calculateAll(stars: Iterable<Star>, gmtJulDay: GmtJulDay, centric: Centric, coordinate: Coordinate, options: CalculationOptions = CalculationOptions.DEFAULT): Map<Star, T>
+
   /** 同樣是求 Position , 但多傳入地點、溫度、壓力 等資料 , 在此直接 discard 掉  */
   fun getPosition(star: Star,
                   gmtJulDay: GmtJulDay,
