@@ -16,9 +16,10 @@ interface IHoroscopeConfig : java.io.Serializable {
   var vocImpl: VoidCourseImpl
   var place: String?
   val relocations : Map<AstroPoint, Double>
+  val starTypeOptions: StarTypeOptions
 
   val horoscopeConfig: HoroscopeConfig
-    get() = HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, place)
+    get() = HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, place, relocations, starTypeOptions)
 }
 
 interface IClassicalConfig : java.io.Serializable {

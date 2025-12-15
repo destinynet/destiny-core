@@ -23,7 +23,7 @@ class TradChineseRisingSignFeature(private val starPositionImpl: IStarPosition<*
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: TradChineseRisingSignConfig): ZodiacSign {
     // 太陽星座
-    val sunSign = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lngDeg.sign
+    val sunSign = starPositionImpl.calculate(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lngDeg.sign
 
     // 時支
 

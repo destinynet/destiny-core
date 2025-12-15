@@ -26,7 +26,8 @@ internal class HoroscopeConfigTest : AbstractConfigTest<HoroscopeConfig>() {
     relocations = mapOf(
       Planet.MOON to 60.0,
       Asteroid.CERES to 120.0
-    )
+    ),
+    starTypeOptions = StarTypeOptions.PRECISE
   )
 
   override val configByFunction: HoroscopeConfig = horoscope {
@@ -42,6 +43,7 @@ internal class HoroscopeConfigTest : AbstractConfigTest<HoroscopeConfig>() {
       Planet.MOON to 60.0,
       Asteroid.CERES to 120.0
     )
+    starTypeOptions = StarTypeOptions.PRECISE
   }
 
   override val assertion: (String) -> Unit = { raw: String ->
@@ -66,6 +68,10 @@ internal class HoroscopeConfigTest : AbstractConfigTest<HoroscopeConfig>() {
           "relocations": {
               "Planet.MOON": 60.0,
               "Asteroid.CERES": 120.0
+          },
+          "starTypeOptions": {
+            "nodeType": "TRUE",
+            "apsisType": "OSCU"
           }
       }
     """.trimIndent())

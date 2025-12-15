@@ -23,7 +23,7 @@ class DailyHexagramCongenitalImpl(val starTransitImpl: IStarTransit,
                                   private val starPosImpl: IStarPosition<*>) : IDailyHexagram, Serializable {
 
   override fun getHexagram(gmtJulDay: GmtJulDay): Pair<Hexagram, Pair<GmtJulDay, GmtJulDay>> {
-    val lng = starPosImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lng
+    val lng = starPosImpl.calculate(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lng
     // 冬至點為起點 , 計算太陽領先冬至點 幾度
     val aheadDegrees = (lng - 270).let {
       if (it < 0)

@@ -59,7 +59,7 @@ class MonthMasterFeature(private val starPositionImpl: IStarPosition<*>,
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: MonthMasterConfig): Branch {
     return when (config.impl) {
-      Impl.SunSign  -> starPositionImpl.getPosition(Planet.SUN, gmtJulDay, loc, Centric.GEO, Coordinate.ECLIPTIC).sign.branch
+      Impl.SunSign  -> starPositionImpl.calculate(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).sign.branch
       Impl.Combined -> yearMonthFeature.getModel(gmtJulDay, loc, YearMonthConfig(monthConfig = config.monthConfig)).branch.combined
     }
   }

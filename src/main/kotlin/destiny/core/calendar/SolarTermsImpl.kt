@@ -30,7 +30,7 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
    */
   override fun getSolarTerms(gmtJulDay: GmtJulDay): SolarTerms {
     // Step 1: Calculate the Longitude of SUN
-    val sp = starPositionImpl.getPosition(SUN, gmtJulDay, Centric.GEO, ECLIPTIC)
+    val sp = starPositionImpl.calculate(SUN, gmtJulDay, Centric.GEO, ECLIPTIC)
     // Step 2
     var index = (sp.lng / 15).toInt() + 3
     if (index >= 24)

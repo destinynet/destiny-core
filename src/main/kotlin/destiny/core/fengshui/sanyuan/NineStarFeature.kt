@@ -69,7 +69,7 @@ class NineStarFeature(private val sanYuanImpl: ISanYuan,
     val gmtJulDay = lmt.toGmtJulDay(loc)
     val yuan = sanYuanImpl.getYuan(lmt, loc)
     val eightWords: IEightWords = ewFeature.getModel(lmt, loc, config.ewConfig)
-    val zodiacDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lng
+    val zodiacDegree = starPositionImpl.calculate(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lng
 
     return config.scales.map { scale ->
       when (scale) {

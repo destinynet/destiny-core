@@ -37,7 +37,8 @@ data class HoroscopeConfig(
   override var pressure: Double = 1013.25,
   override var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval,
   override var place: String? = null,
-  override val relocations: Map<AstroPoint, Double> = emptyMap()
+  override val relocations: Map<AstroPoint, Double> = emptyMap(),
+  override val starTypeOptions: StarTypeOptions = StarTypeOptions.DEFAULT
 ) : IHoroscopeConfig
 
 
@@ -52,9 +53,10 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
   var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval
   var place: String? = null
   var relocations: Map<AstroPoint, Double> = emptyMap()
+  var starTypeOptions: StarTypeOptions = StarTypeOptions.DEFAULT
 
   override fun build(): HoroscopeConfig {
-    return HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, place, relocations)
+    return HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, place, relocations, starTypeOptions)
   }
 
   companion object {
@@ -551,7 +553,7 @@ class HoroscopeFeature(
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IHoroscopeConfig): IHoroscopeModel {
     val positionMap: Map<AstroPoint, IPosWithAzimuth> = config.points.map { point ->
-      point to pointPosFuncMap[point]?.getPosition(gmtJulDay, loc, config.centric, config.coordinate, config.temperature, config.pressure)
+      point to pointPosFuncMap[point]?.getPosition(gmtJulDay, loc, config.centric, config.coordinate, config.temperature, config.pressure, config.starTypeOptions)
     }.filter { (_, v) -> v != null }
       .associate { (point, pos) ->
         point to (pos!! as IPosWithAzimuth).let {
@@ -676,9 +678,9 @@ class HoroscopeFeature(
     val convergentJulDay = progressionSecondary.getConvergentTime(this.gmtJulDay, viewTime)
 
     // 計算精確的太陽弧度數
-    val convergentSunPos: IStarPos = starPositionImpl.getPosition(
+    val convergentSunPos: IStarPos = starPositionImpl.calculateWithAzimuth(
       Planet.SUN, convergentJulDay, this.location,
-      config.centric, config.coordinate, config.temperature, config.pressure
+      config.centric, config.coordinate, config.temperature, config.pressure, config.starTypeOptions
     )
     val natalSunPos = this.getPosition(Planet.SUN)!!
 
@@ -705,7 +707,7 @@ class HoroscopeFeature(
       convergentJulDay - 0.01
 
 
-    val convergentAndLaterSunPos: IStarPos = starPositionImpl.getPosition(Planet.SUN, later, this.location, config.centric, config.coordinate, config.temperature, config.pressure)
+    val convergentAndLaterSunPos: IStarPos = starPositionImpl.calculateWithAzimuth(Planet.SUN, later, this.location, config.centric, config.coordinate, config.temperature, config.pressure, config.starTypeOptions)
     // 計算 later 時間點相對於「本命太陽」的「完整弧角」
     val laterFullSunArc = convergentAndLaterSunPos.lngDeg - this.getPosition(Planet.SUN)!!.lngDeg
     val laterPosMap = innerPosMap.mapValues { (_, pos) ->

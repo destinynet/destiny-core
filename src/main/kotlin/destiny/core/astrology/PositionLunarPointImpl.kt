@@ -14,7 +14,8 @@ open class PositionLunarPointImpl(val starPositionImpl: IStarPosition<*>, lunarP
                            centric: Centric,
                            coordinate: Coordinate,
                            temperature: Double,
-                           pressure: Double): IPos {
-    return starPositionImpl.getPosition(point, gmtJulDay, loc, centric, coordinate , temperature, pressure)
+                           pressure: Double,
+                           starTypeOptions: StarTypeOptions): IPos {
+    return starPositionImpl.calculateWithAzimuth(point, gmtJulDay, loc, centric, coordinate, temperature, pressure, starTypeOptions)
   }
 }

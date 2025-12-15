@@ -18,7 +18,9 @@ data class AzimuthConfig(@Serializable(with = StarSerializer::class)
                          val coordinate: Coordinate = Coordinate.ECLIPTIC,
                          val geoAlt: Double = 0.0,
                          val temperature: Double = 0.0,
-                         val pressure: Double = 1013.25): java.io.Serializable
+                         val pressure: Double = 1013.25,
+                         val starTypeOptions: StarTypeOptions = StarTypeOptions.DEFAULT
+                         ): java.io.Serializable
 
 @DestinyMarker
 class AzimuthConfigBuilder : Builder<AzimuthConfig> {
@@ -28,9 +30,10 @@ class AzimuthConfigBuilder : Builder<AzimuthConfig> {
   var geoAlt: Double = 0.0
   var temperature: Double = 0.0
   var pressure: Double = 1013.25
+  var starTypeOptions: StarTypeOptions = StarTypeOptions.DEFAULT
 
   override fun build(): AzimuthConfig {
-    return AzimuthConfig(star, coordinate, geoAlt, temperature, pressure)
+    return AzimuthConfig(star, coordinate, geoAlt, temperature, pressure, starTypeOptions)
   }
 
   companion object {
@@ -49,7 +52,7 @@ class AzimuthFeature(val starPositionImpl: IStarPosition<IStarPos>,
   override val defaultConfig: AzimuthConfig = AzimuthConfig()
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: AzimuthConfig): StarPosWithAzimuth {
-    val pos: IStarPos = starPositionImpl.getPosition(config.star, gmtJulDay, loc, Centric.GEO, config.coordinate, config.temperature, config.pressure)
+    val pos: IStarPos = starPositionImpl.calculateWithAzimuth(config.star, gmtJulDay, loc, Centric.GEO, config.coordinate, config.temperature, config.pressure, config.starTypeOptions)
     val azimuth = with(azimuthImpl) {
       pos.getAzimuth(config.coordinate, gmtJulDay, loc, config.temperature, config.pressure)
     }

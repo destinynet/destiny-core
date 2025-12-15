@@ -17,14 +17,15 @@ interface IPosition<out T : AstroPoint> {
                   centric: Centric = Centric.GEO,
                   coordinate: Coordinate = Coordinate.ECLIPTIC,
                   temperature: Double = 0.0,
-                  pressure: Double = 1013.25): IPos
+                  pressure: Double = 1013.25,
+                  starTypeOptions: StarTypeOptions = StarTypeOptions.DEFAULT): IPos
 
 
   fun getPosition(lmt: ChronoLocalDateTime<*>,
                   loc: ILocation,
                   centric: Centric = Centric.GEO,
                   coordinate: Coordinate = Coordinate.ECLIPTIC): IPos {
-    return getPosition(lmt.toGmtJulDay(loc), loc, centric, coordinate, 0.0, 1013.25)
+    return getPosition(lmt.toGmtJulDay(loc), loc, centric, coordinate, starTypeOptions = StarTypeOptions.DEFAULT)
   }
 
 

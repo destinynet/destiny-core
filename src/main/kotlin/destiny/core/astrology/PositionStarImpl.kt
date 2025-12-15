@@ -8,13 +8,16 @@ import destiny.core.calendar.ILocation
 
 abstract class PositionStarImpl(val starPositionImpl: IStarPosition<*>, star: Star) : AbstractPositionImpl<Star>(star) {
 
-  override fun getPosition(gmtJulDay: GmtJulDay,
-                           loc: ILocation,
-                           centric: Centric,
-                           coordinate: Coordinate,
-                           temperature: Double,
-                           pressure: Double): IPos {
-    return starPositionImpl.getPosition(point, gmtJulDay, loc, centric, coordinate , temperature, pressure)
+  override fun getPosition(
+    gmtJulDay: GmtJulDay,
+    loc: ILocation,
+    centric: Centric,
+    coordinate: Coordinate,
+    temperature: Double,
+    pressure: Double,
+    starTypeOptions: StarTypeOptions
+  ): IPos {
+    return starPositionImpl.calculateWithAzimuth(point, gmtJulDay, loc, centric, coordinate, temperature, pressure, starTypeOptions)
   }
 
 }

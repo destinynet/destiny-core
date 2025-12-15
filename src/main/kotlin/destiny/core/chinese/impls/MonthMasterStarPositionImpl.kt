@@ -21,7 +21,7 @@ class MonthMasterStarPositionImpl(private val starPositionImpl: IStarPosition<*>
                                                                                     Serializable {
 
   override fun getBranch(gmtJulDay: GmtJulDay, loc: ILocation): Branch {
-    val pos = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, loc, Centric.GEO, Coordinate.ECLIPTIC)
+    val pos = starPositionImpl.calculate(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC)
     return pos.sign.branch
   }
 }

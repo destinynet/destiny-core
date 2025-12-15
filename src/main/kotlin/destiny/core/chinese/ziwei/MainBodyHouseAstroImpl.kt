@@ -28,7 +28,7 @@ class MainBodyHouseAstroImpl(private val risingSignImpl: IRisingSign,
   override fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<Branch, Branch , Int?> {
     val gmtJulday = lmt.toGmtJulDay(loc)
     val mainHouse = risingSignImpl.getRisingSign(gmtJulday, loc, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
-    val moonPos = starPositionImpl.getPosition(Planet.MOON, lmt, loc, Centric.GEO, Coordinate.ECLIPTIC)
+    val moonPos = starPositionImpl.calculate(Planet.MOON, gmtJulday, Centric.GEO, Coordinate.ECLIPTIC)
 
     val zodiacSign = moonPos.lngDeg.sign
 

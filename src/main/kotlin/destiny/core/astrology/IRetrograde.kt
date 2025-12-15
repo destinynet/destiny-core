@@ -101,9 +101,7 @@ interface IRetrograde {
         1.0                // 1 天
       )
 
-      intervals
-        .asSequence()
-        .mapNotNull { interval ->
+      intervals.firstNotNullOfOrNull { interval ->
           val prior = nextStationary - interval
           val after = nextStationary + interval
 
@@ -119,7 +117,7 @@ interface IRetrograde {
               else                                   -> null  // 速度變化不符合預期模式
             }
           }
-        }.firstOrNull()
+        }
         .also { result ->
           // 如果所有間隔都無法得到明確結果，記錄錯誤
           if (result == null) {

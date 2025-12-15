@@ -16,7 +16,7 @@ package destiny.core.astrology
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CalculationOptions(
+data class StarTypeOptions(
   /**
    * Calculation type for LunarNode (TRUE or MEAN).
    * TRUE node has more accurate instantaneous position but can produce NaN in edge cases.
@@ -36,11 +36,11 @@ data class CalculationOptions(
      * Default options using MEAN for both node and apsis calculations.
      * This is the recommended default for numerical stability.
      */
-    val DEFAULT = CalculationOptions()
+    val DEFAULT = StarTypeOptions()
 
     /**
      * Options using TRUE/OSCU for more accurate but potentially unstable calculations.
      */
-    val PRECISE = CalculationOptions(nodeType = NodeType.TRUE, apsisType = MeanOscu.OSCU)
+    val PRECISE = StarTypeOptions(nodeType = NodeType.TRUE, apsisType = MeanOscu.OSCU)
   }
 }

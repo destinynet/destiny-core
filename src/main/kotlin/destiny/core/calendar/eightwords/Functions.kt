@@ -51,11 +51,9 @@ fun getYear(
   val gmtSecondsOffsetInt = gmtSecondsOffset.toInt()
   val gmtNanoOffset = ((gmtSecondsOffset - gmtSecondsOffsetInt) * 1000000000).toInt()
 
-  val gmt =
-    lmt.minus(gmtSecondsOffsetInt.toLong(), ChronoUnit.SECONDS).minus(gmtNanoOffset.toLong(), ChronoUnit.NANOS)
+  val gmt = lmt.minus(gmtSecondsOffsetInt.toLong(), ChronoUnit.SECONDS).minus(gmtNanoOffset.toLong(), ChronoUnit.NANOS)
 
-
-  val solarLngDeg = starPositionImpl.getPosition(Planet.SUN, gmt, Centric.GEO, Coordinate.ECLIPTIC).lng
+  val solarLngDeg = starPositionImpl.calculate(Planet.SUN, TimeTools.getGmtJulDay(gmt), Centric.GEO, Coordinate.ECLIPTIC).lng
   if (solarLngDeg < 180)
   //立春(0)過後，到秋分之間(180)，確定不會換年
     resultStemBranch = StemBranch[index]
@@ -70,7 +68,7 @@ fun getYear(
       .minus(gmtSecondsOffsetInt.toLong(), ChronoUnit.SECONDS)
 
     val degreeOfStartOfYear =
-      starPositionImpl.getPosition(Planet.SUN, startOfYear, Centric.GEO, Coordinate.ECLIPTIC).lng
+      starPositionImpl.calculate(Planet.SUN, TimeTools.getGmtJulDay(startOfYear), Centric.GEO, Coordinate.ECLIPTIC).lng
 
     if (changeYearDegree >= degreeOfStartOfYear) {
       resultStemBranch = if (solarLngDeg >= changeYearDegree)
@@ -144,7 +142,7 @@ fun getMonth(
       /**
        * 如果 hemisphereBy == DECLINATION (赤緯) , 就必須計算 太陽在「赤緯」的度數
        */
-      val solarEquatorialDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.EQUATORIAL).lat
+      val solarEquatorialDegree = starPositionImpl.calculate(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.EQUATORIAL).lat
 
       if (solarEquatorialDegree >= 0) {
         //如果太陽在赤北緯
@@ -204,7 +202,7 @@ private fun getMonthStem(
 
   if (changeYearDegree != 315.0) {
 
-    val sunDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lng
+    val sunDegree = starPositionImpl.calculate(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lng
 
     if (changeYearDegree < 315) {
       logger.debug("換年點在立春前 , changeYearDegree < 315 , value = {}", changeYearDegree)

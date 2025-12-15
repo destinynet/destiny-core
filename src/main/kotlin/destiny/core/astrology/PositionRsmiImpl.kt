@@ -10,7 +10,7 @@ open class PositionRsmiImpl(private val axis: Axis,
                             private val azimuthImpl: IAzimuthCalculator,
                             private val houseCuspImpl: IHouseCusp) : AbstractPositionImpl<Axis>(axis) {
 
-  override fun getPosition(gmtJulDay: GmtJulDay, loc: ILocation, centric: Centric, coordinate: Coordinate, temperature: Double, pressure: Double): IPos {
+  override fun getPosition(gmtJulDay: GmtJulDay, loc: ILocation, centric: Centric, coordinate: Coordinate, temperature: Double, pressure: Double, starTypeOptions: StarTypeOptions): IPos {
     return houseCuspImpl.getHouseCuspMap(gmtJulDay , loc , HouseSystem.PLACIDUS , coordinate).let { map: Map<Int, ZodiacDegree> ->
       val pos = when(axis) {
         Axis.RISING -> Pos(map.getValue(1).value , 0.0)

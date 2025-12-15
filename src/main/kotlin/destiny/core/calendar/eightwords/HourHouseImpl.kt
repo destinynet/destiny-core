@@ -32,7 +32,7 @@ class HourHouseImpl(val houseCuspImpl: IHouseCusp,
 
   override fun getHour(gmtJulDay: GmtJulDay, loc: ILocation, config: IHourBranchConfig): Branch {
 
-    val lng = starPositionImpl.getPosition(star, gmtJulDay, loc, Centric.GEO, Coordinate.ECLIPTIC).lngDeg
+    val lng = starPositionImpl.calculate(star, gmtJulDay, loc, Centric.GEO, Coordinate.ECLIPTIC, StarTypeOptions.DEFAULT).lngDeg
     logger.trace("lng = {}", lng)
 
     val houseMap = houseCuspImpl.getHouseCuspMap(gmtJulDay, loc, houseSystem, Coordinate.ECLIPTIC)
