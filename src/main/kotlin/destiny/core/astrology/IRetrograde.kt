@@ -75,7 +75,7 @@ interface IRetrograde {
 
   /**
    * 下次停滯的時間為何時 (GMT)
-   * [star] : 支援 [Planet] 以及 月亮的 [LunarNode.NORTH_TRUE] / [LunarNode.SOUTH_TRUE]
+   * [star] : 支援 [Planet] 以及 月亮的 [NodeType.TRUE] 以及 [MeanOscu.OSCU] 支援可能停滯
    */
   fun getNextStationary(star: Star, fromGmt: GmtJulDay, forward: Boolean): GmtJulDay
 
@@ -84,7 +84,8 @@ interface IRetrograde {
    */
   private fun getNextStationaryPos(star: Star, fromGmt: GmtJulDay, forward: Boolean, starPositionImpl: IStarPosition<*>): Pair<GmtJulDay, IPos> {
     return getNextStationary(star, fromGmt, forward).let { gmtJulDay ->
-      gmtJulDay to starPositionImpl.getPosition(star, gmtJulDay, GEO, ECLIPTIC)
+      // only PRECISE will be stationary
+      gmtJulDay to starPositionImpl.calculate(star, gmtJulDay, GEO, ECLIPTIC, StarTypeOptions.PRECISE)
     }
   }
 
@@ -105,8 +106,8 @@ interface IRetrograde {
           val prior = nextStationary - interval
           val after = nextStationary + interval
 
-          val pos1 = starPositionImpl.getPosition(star, prior, GEO, ECLIPTIC)
-          val pos2 = starPositionImpl.getPosition(star, after, GEO, ECLIPTIC)
+          val pos1 = starPositionImpl.calculate(star, prior, GEO, ECLIPTIC, StarTypeOptions.PRECISE)
+          val pos2 = starPositionImpl.calculate(star, after, GEO, ECLIPTIC, StarTypeOptions.PRECISE)
 
           if (pos1.speedLng == pos2.speedLng) {
             null
@@ -138,12 +139,12 @@ interface IRetrograde {
    */
   fun getNextStationary(star: Star, fromGmt: GmtJulDay, forward: Boolean, starPositionImpl: IStarPosition<*>): Stationary {
     val nextStationary: GmtJulDay = getNextStationary(star, fromGmt, forward)
-    val pos = starPositionImpl.getPosition(star, nextStationary, GEO, ECLIPTIC)
+    val pos = starPositionImpl.getPosition(star, nextStationary, GEO, ECLIPTIC, StarTypeOptions.PRECISE)
     // 分別取 滯留前、後 來比對
     val prior = nextStationary - 1 / 1440.0
     val after = nextStationary + 1 / 1440.0
-    val pos1 = starPositionImpl.getPosition(star, prior, GEO, ECLIPTIC)
-    val pos2 = starPositionImpl.getPosition(star, after, GEO, ECLIPTIC)
+    val pos1 = starPositionImpl.getPosition(star, prior, GEO, ECLIPTIC, StarTypeOptions.PRECISE)
+    val pos2 = starPositionImpl.getPosition(star, after, GEO, ECLIPTIC, StarTypeOptions.PRECISE)
 
     val type = if (pos1.speedLng > 0 && pos2.speedLng < 0)
       DIRECT_TO_RETROGRADE
@@ -236,7 +237,7 @@ interface IRetrograde {
             // 順推
             val (prevReturningGmt, prevReturningPos) = getNextStationaryPos(star, fromGmt, false, starPositionImpl)
             val (prevRetroGmt, prevRetroPos) = getNextStationaryPos(star, prevReturningGmt - 1, false, starPositionImpl)
-            val leftGmt = transit.getNextTransitGmt(star, prevRetroPos.lngDeg, prevReturningGmt, true, ECLIPTIC)
+            val leftGmt = transit.getNextTransitGmt(star, prevRetroPos.lngDeg, prevReturningGmt, true, ECLIPTIC, StarTypeOptions.PRECISE)
             if (leftGmt > fromGmt) {
               // 處理 returning 到 leaving 的範圍
               retrogradingGmt = prevRetroGmt
@@ -277,7 +278,7 @@ interface IRetrograde {
             // 逆推
             val (nextRetrogradeGmt, nextRetrogradePos) = getNextStationaryPos(star, fromGmt, true, starPositionImpl)
             val (nextReturnGmt, nextReturnPos) = getNextStationaryPos(star, nextRetrogradeGmt + 1, true, starPositionImpl)
-            val prepareGmt = transit.getNextTransitGmt(star, nextReturnPos.lngDeg, nextRetrogradeGmt, false, ECLIPTIC)
+            val prepareGmt = transit.getNextTransitGmt(star, nextReturnPos.lngDeg, nextRetrogradeGmt, false, ECLIPTIC, StarTypeOptions.PRECISE)
             if (fromGmt > prepareGmt) {
               // 處理 preparing 到 retrograde 的範圍
               retrogradingGmt = nextRetrogradeGmt
@@ -297,11 +298,11 @@ interface IRetrograde {
         }
       }
 
-      val preparingGmt = transit.getNextTransitGmt(star, returningPos.lngDeg, retrogradingGmt, false, ECLIPTIC)
-      val preparingPos = starPositionImpl.getPosition(star, preparingGmt, GEO, ECLIPTIC)
+      val preparingGmt = transit.getNextTransitGmt(star, returningPos.lngDeg, retrogradingGmt, false, ECLIPTIC, StarTypeOptions.PRECISE)
+      val preparingPos = starPositionImpl.getPosition(star, preparingGmt, GEO, ECLIPTIC, StarTypeOptions.PRECISE)
 
-      val leavingGmt = transit.getNextTransitGmt(star, retrogradingPos.lngDeg, returningGmt, true, ECLIPTIC)
-      val leavingPos = starPositionImpl.getPosition(star, leavingGmt, GEO, ECLIPTIC)
+      val leavingGmt = transit.getNextTransitGmt(star, retrogradingPos.lngDeg, returningGmt, true, ECLIPTIC, StarTypeOptions.PRECISE)
+      val leavingPos = starPositionImpl.getPosition(star, leavingGmt, GEO, ECLIPTIC, StarTypeOptions.PRECISE)
 
       RetrogradeCycle(star, preparingGmt, preparingPos, retrogradingGmt, retrogradingPos, returningGmt, returningPos, leavingGmt, leavingPos)
     }

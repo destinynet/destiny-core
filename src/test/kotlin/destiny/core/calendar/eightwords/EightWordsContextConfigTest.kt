@@ -10,8 +10,9 @@ import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
 import destiny.core.calendar.eightwords.RisingSignConfigBuilder.Companion.risingSign
 import destiny.core.calendar.eightwords.YearConfigBuilder.Companion.yearConfig
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlin.test.assertEquals
 
 internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContextConfig>() {
   override val serializer: KSerializer<EightWordsContextConfig> = EightWordsContextConfig.serializer()
@@ -34,7 +35,7 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
           TradChineseRisingSignConfig(HourImpl.LMT),
           RisingSignImpl.TradChinese
         ),
-        ZodiacSignConfig(Planet.SUN),
+        ZodiacSignConfig(Planet.SUN, StarTypeOptions.PRECISE),
         "台北市"
       )
     }
@@ -107,27 +108,71 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
         with(risingSignConfig) {
           ewContext {
             place = "台北市"
+            zodiacSign {
+              star = Planet.SUN
+              starTypeOptions = StarTypeOptions.PRECISE
+            }
           }
         }
       }
     }
 
   override val assertion = { raw: String ->
-    assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
-    assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
-    assertFalse(raw.contains(""""southernHemisphereOpposition":\s*false""".toRegex()))
 
-    assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))
-    assertTrue(raw.contains(""""monthImpl":\s*"SunSign"""".toRegex()))
-
-    assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
-    assertFalse(raw.contains(""""changeDayAfterZi":\s*true""".toRegex()))
-
-    assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))
-    assertTrue(raw.contains(""""hourImpl":\s*"LMT"""".toRegex()))
-
-    assertTrue(raw.contains(""""tradChineseRisingSignConfig""".toRegex()))
-
-    assertTrue(raw.contains(""""place":\s*"台北市"""".toRegex()))
+    val actual = Json.decodeFromString<JsonElement>(raw)
+    val expected = Json.decodeFromString<JsonElement>("""
+      {
+         "eightWordsConfig":{
+            "yearMonthConfig":{
+               "yearConfig":{
+                  "changeYearDegree":270.0
+               },
+               "monthConfig":{
+                  "southernHemisphereOpposition":true,
+                  "hemisphereBy":"DECLINATION",
+                  "monthImpl":"SunSign"
+               }
+            },
+            "dayHourConfig":{
+               "dayConfig":{
+                  "changeDayAfterZi":false,
+                  "midnight":"CLOCK0"
+               },
+               "hourBranchConfig":{
+                  "hourImpl":"LMT",
+                  "transConfig":{
+                     "discCenter":true,
+                     "refraction":false,
+                     "temperature":23.0,
+                     "pressure":1000.0,
+                     "starTypeOptions":{
+                        "nodeType":"MEAN",
+                        "apsisType":"MEAN"
+                     }
+                  }
+               }
+            }
+         },
+         "risingSignConfig":{
+            "houseConfig":{
+               "houseSystem":"EQUAL",
+               "coordinate":"SIDEREAL"
+            },
+            "tradChineseRisingSignConfig":{
+               "hourImpl":"LMT"
+            },
+            "risingSignImpl":"TradChinese"
+         },
+         "zodiacSignConfig":{
+            "star":"Planet.SUN",
+            "starTypeOptions":{
+               "nodeType":"TRUE",
+               "apsisType":"OSCU"
+            }
+         },
+         "place":"台北市"
+      }
+    """.trimIndent())
+    assertEquals(expected, actual)
   }
 }

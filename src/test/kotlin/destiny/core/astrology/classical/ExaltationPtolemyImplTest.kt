@@ -23,14 +23,14 @@ class ExaltationPtolemyImplTest {
 
       assertSame(SUN, ARIES.getExaltPoint())
       assertSame(MOON, TAURUS.getExaltPoint())
-      assertSame(LunarNode.NORTH_TRUE, GEMINI.getExaltPoint())
+      assertSame(LunarNode.NORTH, GEMINI.getExaltPoint())
       assertSame(JUPITER, CANCER.getExaltPoint())
       assertNull(LEO.getExaltPoint())
       assertSame(MERCURY, VIRGO.getExaltPoint())
       assertSame(SATURN, LIBRA.getExaltPoint())
       assertNull(SCORPIO.getExaltPoint())
 
-      assertSame(LunarNode.SOUTH_TRUE, SAGITTARIUS.getExaltPoint())
+      assertSame(LunarNode.SOUTH, SAGITTARIUS.getExaltPoint())
       assertSame(MARS, CAPRICORN.getExaltPoint())
       assertNull(AQUARIUS.getExaltPoint())
       assertSame(VENUS, PISCES.getExaltPoint())
@@ -43,13 +43,11 @@ class ExaltationPtolemyImplTest {
     with(exaltImpl) {
       assertSame(ARIES, SUN.getExaltSign())
       assertSame(TAURUS, MOON.getExaltSign())
-      assertSame(GEMINI, LunarNode.NORTH_TRUE.getExaltSign())
-      assertSame(GEMINI, LunarNode.NORTH_MEAN.getExaltSign())
+      assertSame(GEMINI, LunarNode.NORTH.getExaltSign())
       assertSame(CANCER, JUPITER.getExaltSign())
       assertSame(VIRGO, MERCURY.getExaltSign())
       assertSame(LIBRA, SATURN.getExaltSign())
-      assertSame(SAGITTARIUS, LunarNode.SOUTH_TRUE.getExaltSign())
-      assertSame(SAGITTARIUS, LunarNode.SOUTH_MEAN.getExaltSign())
+      assertSame(SAGITTARIUS, LunarNode.SOUTH.getExaltSign())
       assertSame(CAPRICORN, MARS.getExaltSign())
       assertSame(PISCES, VENUS.getExaltSign())
     }

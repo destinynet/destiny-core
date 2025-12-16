@@ -37,8 +37,8 @@ class DailyHexagramCongenitalImpl(val starTransitImpl: IStarTransit,
     val hexStartDegree = (270 + steps * GAP).let { if (it >= 360) it - 360 else it }.toZodiacDegree()
     val hexEndDegree = (270 + (steps + 1) * GAP).let { if (it >= 360) it - 360 else it }.toZodiacDegree()
 
-    val hexStart = starTransitImpl.getNextTransitGmt(Planet.SUN, hexStartDegree, gmtJulDay, false, Coordinate.ECLIPTIC)
-    val hexEnd = starTransitImpl.getNextTransitGmt(Planet.SUN, hexEndDegree, gmtJulDay, true, Coordinate.ECLIPTIC)
+    val hexStart = starTransitImpl.getNextTransitGmt(Planet.SUN, hexStartDegree, gmtJulDay, false, Coordinate.ECLIPTIC, StarTypeOptions.MEAN)
+    val hexEnd = starTransitImpl.getNextTransitGmt(Planet.SUN, hexEndDegree, gmtJulDay, true, Coordinate.ECLIPTIC, StarTypeOptions.MEAN)
 
 
     val hex = Hexagram.復.next(steps)
@@ -74,16 +74,16 @@ class DailyHexagramCongenitalImpl(val starTransitImpl: IStarTransit,
       val startDeg = (degreeRange.first + steps * GAP).let { if (it >= 360) (it - 360) else it }.toZodiacDegree()
       val endDeg = (degreeRange.first + (steps + 1) * GAP).let { if (it >= 360) (it - 360) else it }.toZodiacDegree()
       logger.trace("startDeg = {} , endDeg = {}" , startDeg , endDeg)
-      val hexStart = starTransitImpl.getNextTransitGmt(Planet.SUN, startDeg, timeRange.first + 0.1, true, Coordinate.ECLIPTIC)
-      val hexEnd = starTransitImpl.getNextTransitGmt(Planet.SUN, endDeg, timeRange.second + 0.1, true, Coordinate.ECLIPTIC)
+      val hexStart = starTransitImpl.getNextTransitGmt(Planet.SUN, startDeg, timeRange.first + 0.1, true, Coordinate.ECLIPTIC, StarTypeOptions.MEAN)
+      val hexEnd = starTransitImpl.getNextTransitGmt(Planet.SUN, endDeg, timeRange.second + 0.1, true, Coordinate.ECLIPTIC, StarTypeOptions.MEAN)
       hexStart to hexEnd
     } else {
       // 逆推
 
       val startDeg = (degreeRange.first - steps * GAP).let { if (it < 0) it + 360 else it }.toZodiacDegree()
       val endDeg = (degreeRange.first + (steps - 1) * GAP).let { if (it < 0) it + 360 else it }.toZodiacDegree()
-      val hexStart = starTransitImpl.getNextTransitGmt(Planet.SUN, startDeg, timeRange.first - 0.1, false, Coordinate.ECLIPTIC)
-      val hexEnd = starTransitImpl.getNextTransitGmt(Planet.SUN, endDeg, timeRange.second - 0.1, false, Coordinate.ECLIPTIC)
+      val hexStart = starTransitImpl.getNextTransitGmt(Planet.SUN, startDeg, timeRange.first - 0.1, false, Coordinate.ECLIPTIC, StarTypeOptions.MEAN)
+      val hexEnd = starTransitImpl.getNextTransitGmt(Planet.SUN, endDeg, timeRange.second - 0.1, false, Coordinate.ECLIPTIC, StarTypeOptions.MEAN)
       hexStart to hexEnd
     }
   }

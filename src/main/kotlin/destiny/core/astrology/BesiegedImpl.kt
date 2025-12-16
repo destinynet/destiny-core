@@ -29,7 +29,7 @@ class BesiegedImpl(private val relativeTransitImpl: IRelativeTransit) : IBesiege
     val priorAngleData = otherPlanets.asSequence()
       .filter { it !== planet }
       .map { eachOther ->
-        relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, eachOther, gmtJulDay, angles, false)
+        relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, eachOther, gmtJulDay, angles, false, StarTypeOptions.MEAN)
           ?.let { (gmt, angle) ->
             AngleData(planet, eachOther, angle, gmt)
           }
@@ -54,7 +54,7 @@ class BesiegedImpl(private val relativeTransitImpl: IRelativeTransit) : IBesiege
 //          seqOfPlanets
 //      }
       .map { eachOther ->
-        relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, eachOther, gmtJulDay, angles, true)
+        relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, eachOther, gmtJulDay, angles, true, StarTypeOptions.MEAN)
           ?.let { (gmt, angle) ->
             AngleData(planet, eachOther, angle, gmt)
           }

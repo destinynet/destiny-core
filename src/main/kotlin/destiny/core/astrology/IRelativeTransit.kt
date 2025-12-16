@@ -27,7 +27,8 @@ interface IRelativeTransit {
     relativeStar: Star,
     angle: Double,
     gmtJulDay: GmtJulDay,
-    isForward: Boolean
+    isForward: Boolean,
+    options: StarTypeOptions
   ): GmtJulDay?
 
 
@@ -40,11 +41,12 @@ interface IRelativeTransit {
     relativeStar: Star,
     fromJulDay: GmtJulDay,
     toJulDay: GmtJulDay,
-    angle: Double
+    angle: Double,
+    options: StarTypeOptions
   ): Sequence<GmtJulDay> {
 
-    return generateSequence(getRelativeTransit(transitStar, relativeStar, angle, fromJulDay, true)) {
-      getRelativeTransit(transitStar, relativeStar, angle, it + 0.000001, true)
+    return generateSequence(getRelativeTransit(transitStar, relativeStar, angle, fromJulDay, true, options)) {
+      getRelativeTransit(transitStar, relativeStar, angle, it + 0.000001, true, options)
     }.takeWhile { it < toJulDay }
 
   }
@@ -62,7 +64,8 @@ interface IRelativeTransit {
     relativeStar: Star,
     fromGmtJulDay: GmtJulDay,
     angles: Set<Double>,
-    forward: Boolean
+    forward: Boolean,
+    options: StarTypeOptions
   ): Pair<GmtJulDay, Double>? {
     /**
      * 相交 270 度也算 90 度
@@ -80,7 +83,7 @@ interface IRelativeTransit {
       .toList()
 
     return realAngles.mapNotNull { angle ->
-      getRelativeTransit(transitStar, relativeStar, angle, fromGmtJulDay, forward)?.let { resultGmtJulDay ->
+      getRelativeTransit(transitStar, relativeStar, angle, fromGmtJulDay, forward, options)?.let { resultGmtJulDay ->
         resultGmtJulDay to angle
       }
     }
@@ -103,10 +106,10 @@ interface IRelativeTransit {
   /**
    * 找尋下一個與 [transitStar] 形成交角的資料
    */
-  fun getNearestRelativeTransitGmtJulDay(transitStar: Star, relativeStars: Set<Star>, fromGmtJulDay: GmtJulDay, aspects: Set<Aspect>, forward: Boolean): IAspectData? {
+  fun getNearestRelativeTransitGmtJulDay(transitStar: Star, relativeStars: Set<Star>, fromGmtJulDay: GmtJulDay, aspects: Set<Aspect>, forward: Boolean, options: StarTypeOptions): IAspectData? {
 
     return relativeStars.filter { it != transitStar }.mapNotNull { eachOther ->
-      getNearestRelativeTransitGmtJulDay(transitStar, eachOther, fromGmtJulDay, aspects.map { it.degree }.toSet(), forward)
+      getNearestRelativeTransitGmtJulDay(transitStar, eachOther, fromGmtJulDay, aspects.map { it.degree }.toSet(), forward, options)
         ?.let { (gmt, deg) -> Triple(eachOther, gmt, deg) }
     }.map { (other, gmt, deg) -> AspectData.of(transitStar, other, Aspect.getAspect(deg)!!, 0.0, 0.0.toScore(), null, gmt) }
       .let { list ->
@@ -126,7 +129,7 @@ interface IRelativeTransit {
    * @param toGmtJulDay 結束搜索的 GMT Julian Day (不包含此時刻)。
    * @return 一個 AspectData 的序列，依時間排序。AspectData 包含形成交角的星曜對和發生時間。
    */
-  fun mutualAspectingEvents(stars: Set<Star>, anglesInput: Set<Double>, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay): Sequence<AspectData> {
+  fun mutualAspectingEvents(stars: Set<Star>, anglesInput: Set<Double>, fromGmtJulDay: GmtJulDay, toGmtJulDay: GmtJulDay, options: StarTypeOptions): Sequence<AspectData> {
 
     data class AspectEventCandidate(
       val star1: Star,
@@ -167,7 +170,7 @@ interface IRelativeTransit {
 
       for (angle in effectiveAngles) {
         // 呼叫已有的核心方法
-        val firstOccurrenceTime = getRelativeTransit(s1, s2, angle, fromGmtJulDay, true)
+        val firstOccurrenceTime = getRelativeTransit(s1, s2, angle, fromGmtJulDay, true, options)
         if (firstOccurrenceTime != null && firstOccurrenceTime < toGmtJulDay) {
           priorityQueue.add(AspectEventCandidate(s1, s2, angle, firstOccurrenceTime))
         }
@@ -186,7 +189,8 @@ interface IRelativeTransit {
           earliestEvent.star2,
           earliestEvent.angleUsed,
           nextSearchTime,
-          true
+          true,
+          options
         )
 
         if (nextOccurrenceTime != null && nextOccurrenceTime < toGmtJulDay) {

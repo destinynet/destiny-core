@@ -359,10 +359,8 @@ abstract class AbstractPtolemy : Serializable {
       , MARS to 298.0  // 火星在丑宮 28度 exalted.
       , JUPITER to 105.0  // 木星在未宮 15度 exalted.
       , SATURN to 201.0  // 土星在辰宮 21度 exalted.
-      , LunarNode.NORTH_TRUE to 63.0  //北交點在 申宮 03度 exalted.
-      , LunarNode.NORTH_MEAN to 63.0  //北交點在 申宮 03度 exalted.
-      , LunarNode.SOUTH_TRUE to 243.0  //南交點在 寅宮 03度 exalted.
-      , LunarNode.SOUTH_MEAN to 243.0  //南交點在 寅宮 03度 exalted.
+      , LunarNode.NORTH to 63.0  //北交點在 申宮 03度 exalted.
+      , LunarNode.SOUTH to 243.0  //南交點在 寅宮 03度 exalted.
     )
 
     /** 不考量「日、夜」的 ruler */

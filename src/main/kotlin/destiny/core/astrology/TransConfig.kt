@@ -13,7 +13,8 @@ import kotlinx.serialization.Serializable
 data class TransConfig(override var discCenter: Boolean = false,
                        override var refraction: Boolean = true,
                        override var temperature: Double = 0.0,
-                       override var pressure: Double = 1013.25): ITransConfig
+                       override var pressure: Double = 1013.25,
+                       override var starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN): ITransConfig
 
 @DestinyMarker
 class TransConfigBuilder : Builder<TransConfig> {
@@ -22,9 +23,10 @@ class TransConfigBuilder : Builder<TransConfig> {
   var refraction: Boolean = true
   var temperature: Double = 0.0
   var pressure: Double = 1013.25
+  var starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN
 
   override fun build(): TransConfig {
-    return TransConfig(discCenter, refraction, temperature, pressure)
+    return TransConfig(discCenter, refraction, temperature, pressure, starTypeOptions)
   }
 
   companion object {

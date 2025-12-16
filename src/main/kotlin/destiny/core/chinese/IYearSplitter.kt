@@ -5,6 +5,7 @@ package destiny.core.chinese
 
 import destiny.core.astrology.IZodiacSign
 import destiny.core.astrology.Planet
+import destiny.core.astrology.StarTypeOptions
 import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.calendar.ILocation
@@ -37,7 +38,7 @@ class YearSplitterSignImpl(private val zodiacSignImpl: IZodiacSign) : IYearSplit
   }
 
   override fun getYinYang(lmt: ChronoLocalDateTime<*>, location: ILocation): YinYang {
-    val sign = zodiacSignImpl.getSignsBetween(Planet.SUN, lmt, location).current.first
+    val sign = zodiacSignImpl.getSignsBetween(Planet.SUN, lmt, location, StarTypeOptions.MEAN).current.first
     return getYinYang(sign)
   }
 

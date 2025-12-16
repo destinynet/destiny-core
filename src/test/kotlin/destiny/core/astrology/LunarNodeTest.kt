@@ -35,16 +35,11 @@ class LunarNodeTest {
 
   @Test
   fun testToStringLocale() {
-    assertEquals("北交點" , LunarNode.NORTH_MEAN.toString(Locale.TAIWAN))
-    assertEquals("北交點" , LunarNode.NORTH_TRUE.toString(Locale.TAIWAN))
+    assertEquals("北交點" , LunarNode.NORTH.toString(Locale.TAIWAN))
+    assertEquals("北交点" , LunarNode.NORTH.toString(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("North" , LunarNode.NORTH.toString(Locale.ENGLISH))
 
-    assertEquals("北交点" , LunarNode.NORTH_MEAN.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("北交点" , LunarNode.NORTH_TRUE.toString(Locale.SIMPLIFIED_CHINESE))
-
-    assertEquals("North" , LunarNode.NORTH_MEAN.toString(Locale.ENGLISH))
-    assertEquals("North" , LunarNode.NORTH_TRUE.toString(Locale.ENGLISH))
-
-    for (each in LunarNode.meanArray) {
+    for (each in LunarNode.values) {
       assertNotNull(each.toString(Locale.TAIWAN))
       assertNotNull(each.toString(Locale.SIMPLIFIED_CHINESE))
       assertNotNull(each.toString(Locale.ENGLISH))
@@ -52,18 +47,15 @@ class LunarNodeTest {
     }
 
 
-    val set = LunarNode.meanArray.map { it.toString(Locale.TAIWAN) }.toSet()
+    val set = LunarNode.values.map { it.toString(Locale.TAIWAN) }.toSet()
     assertTrue(set.contains("北交點"))
     assertTrue(set.contains("南交點"))
   }
 
   @Test
   fun testEquals() {
-    assertSame(LunarNode.NORTH_MEAN, LunarNode.of(News.NorthSouth.NORTH, NodeType.MEAN))
-    assertSame(LunarNode.NORTH_TRUE, LunarNode.of(News.NorthSouth.NORTH, NodeType.TRUE))
-
-    assertSame(LunarNode.SOUTH_MEAN, LunarNode.of(News.NorthSouth.SOUTH, NodeType.MEAN))
-    assertSame(LunarNode.SOUTH_TRUE, LunarNode.of(News.NorthSouth.SOUTH, NodeType.TRUE))
+    assertSame(LunarNode.NORTH, LunarNode.of(News.NorthSouth.NORTH))
+    assertSame(LunarNode.SOUTH, LunarNode.of(News.NorthSouth.SOUTH))
   }
 
   @Test

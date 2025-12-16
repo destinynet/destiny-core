@@ -161,7 +161,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
       180.0 to LunarPhase.FULL,
       270.0 to LunarPhase.LAST_QUARTER
     ).flatMap { (deg, phase) ->
-      relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(MOON, SUN, fromGmt, toGmt, deg)
+      relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(MOON, SUN, fromGmt, toGmt, deg, config.starTypeOptions)
         .filter { day -> day in fromGmt .. toGmt }
         .map { TimeDesc.TypeSunMoon(it, phase) }
     }

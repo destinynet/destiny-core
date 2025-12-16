@@ -19,8 +19,8 @@ enum class DiceStar(val star: Star, val unicode: Char = star.unicode!!) {
   URANUS(Planet.URANUS),
   NEPTUNE(Planet.NEPTUNE),
   PLUTO(Planet.PLUTO),
-  NORTH(LunarNode.NORTH_MEAN),
-  SOUTH(LunarNode.SOUTH_MEAN),
+  NORTH(LunarNode.NORTH),
+  SOUTH(LunarNode.SOUTH),
 }
 
 

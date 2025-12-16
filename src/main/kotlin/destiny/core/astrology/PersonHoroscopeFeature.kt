@@ -118,7 +118,7 @@ class PersonHoroscopeFeature(
       addAll(Planet.values)
       add(RISING)
       add(Axis.MERIDIAN)
-      add(LunarNode.NORTH_TRUE)
+      add(LunarNode.NORTH)
     }
     val midPointOrb = 2.0
 

@@ -31,6 +31,8 @@ interface IReturnContext : Conversable, IDiscrete {
   /** 是否消除歲差， false = 不計算歲差  */
   val precession: Boolean
 
+  val starTypeOptions: StarTypeOptions
+
   /** 對外主要的 method , 取得 return 盤  */
   fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation, nowPlace: String? = null): ReturnModel
 
@@ -157,7 +159,8 @@ class ReturnContext(
   /** 交角 , 通常是 0 , 代表回歸到原始度數  */
   override val orb: Double = 0.0,
   /** 是否消除歲差，內定是不計算歲差  */
-  override val precession: Boolean = false
+  override val precession: Boolean = false,
+  override val starTypeOptions: StarTypeOptions
 ) : IReturnContext, Serializable {
 
   override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation, nowPlace: String?): ReturnModel {
@@ -182,17 +185,17 @@ class ReturnContext(
   override fun getConvergentTime(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): GmtJulDay {
     val coordinate = if (precession) Coordinate.SIDEREAL else Coordinate.ECLIPTIC
     // 先計算出生盤中，該星體的黃道位置
-    val natalPlanetDegree: ZodiacDegree = starPosImpl.getPosition(planet, natalGmtJulDay, Centric.GEO, coordinate).lngDeg
+    val natalPlanetDegree: ZodiacDegree = starPosImpl.getPosition(planet, natalGmtJulDay, Centric.GEO, coordinate, starTypeOptions).lngDeg
 
     val delta = 0.001
 
     return if (forward) {
       // 從現在時刻 順推 , 取得 planet 回歸到 natal 度數(plus orb) 的時刻
-      starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay + delta, false, coordinate) //false 代表逆推，往before算
+      starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay + delta, false, coordinate, starTypeOptions) //false 代表逆推，往before算
     } else {
       // 逆推
       // 1. 先找到 nowGmtJulDay 當下所屬的「順行」返照盤的起始時間
-      val currentForwardReturnStart = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay, false, coordinate)
+      val currentForwardReturnStart = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay, false, coordinate, starTypeOptions)
 
       // 2. 計算該返照盤相對於本命盤的年齡差距 (duration)
       val ageDuration = currentForwardReturnStart - natalGmtJulDay
@@ -201,25 +204,25 @@ class ReturnContext(
       val converseSearchBaseGmt = natalGmtJulDay - ageDuration
 
       // 4. 從此基準點往前找，即可找到正確的逆行返照時間點
-      starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), converseSearchBaseGmt + delta, false, coordinate)
+      starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), converseSearchBaseGmt + delta, false, coordinate, starTypeOptions)
     }
   }
 
   override fun getConvergentPeriod(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): Pair<GmtJulDay, GmtJulDay> {
     val coordinate = if (precession) Coordinate.SIDEREAL else Coordinate.ECLIPTIC
     // 先計算出生盤中，該星體的黃道位置
-    val natalPlanetDegree: ZodiacDegree = starPosImpl.getPosition(planet, natalGmtJulDay, Centric.GEO, coordinate).lngDeg
+    val natalPlanetDegree: ZodiacDegree = starPosImpl.getPosition(planet, natalGmtJulDay, Centric.GEO, coordinate, starTypeOptions).lngDeg
     val delta = 0.1
 
     // 再從現在的時刻，往前(prior , before) 推 , 取得 planet 與 natal planet 呈現 orb 的時刻
     return if (forward) {
       // 順推
-      val from = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay, false, coordinate)
-      val to = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay, true, coordinate)
+      val from = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay, false, coordinate, starTypeOptions)
+      val to = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay, true, coordinate, starTypeOptions)
       from to to
     } else {
       // 1. 先找到 nowGmtJulDay 當下所屬的「順行」返照盤的起始時間
-      val currentForwardReturnStart = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay , false, coordinate)
+      val currentForwardReturnStart = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay , false, coordinate, starTypeOptions)
       // 2. 計算該返照盤相對於本命盤的年齡差距 (duration)
       val ageDuration = currentForwardReturnStart - natalGmtJulDay
       // 3. 從本命時間往前推此 duration，得到逆行返照的搜尋基準點
@@ -227,8 +230,8 @@ class ReturnContext(
 
       // 4. 從此基準點分別往「未來」和「過去」找，以確定週期的兩端
       //   注意：逆行返照的 from (有效期的結束) 時間會比 to (有效期的開始) 晚
-      val from = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), converseSearchBaseGmt - delta, true, coordinate)
-      val to = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), converseSearchBaseGmt - delta, false, coordinate)
+      val from = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), converseSearchBaseGmt - delta, true, coordinate, starTypeOptions)
+      val to = starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), converseSearchBaseGmt - delta, false, coordinate, starTypeOptions)
 
       from to to
     }

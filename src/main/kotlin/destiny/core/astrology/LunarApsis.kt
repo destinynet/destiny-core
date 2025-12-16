@@ -22,44 +22,26 @@ enum class MeanOscu {
 @Serializable(with = LunarApsisSerializer::class)
 sealed class LunarApsis(nameKey: String, abbrKey: String,
                         /** 只會用到 PERIHELION , APHELION  */
-                        val apsis: Apsis, val meanOscu: MeanOscu) : LunarPoint(nameKey, abbrKey, Star::class.qualifiedName!!), Comparable<LunarApsis> {
+                        val apsis: Apsis
+) : LunarPoint(nameKey, abbrKey, Star::class.qualifiedName!!), Comparable<LunarApsis> {
 
   /**
-   * 平均遠地點 , 月孛 , 水之餘 , Black Moon , Lilith，計算方法，以下兩者結果相同 :
+   * 遠地點 , 月孛 , 水之餘 , Black Moon , Lilith，計算方法，以下兩者結果相同 :
    * <pre>
    * ApsisImpl.getPosition(Planet.MOON , Apsis.APHELION , gmt, Coordinate.ECLIPTIC , NodeType.MEAN);
    * StarPositionImpl.getPosition(LunarApsis.APOGEE_MEAN, gmt);
    * </pre>
    */
-  object APOGEE_MEAN : LunarApsis("LunarApsis.APOGEE", "LunarApsis.APOGEE_ABBR", APHELION, MeanOscu.MEAN)
+  object APOGEE : LunarApsis("LunarApsis.APOGEE", "LunarApsis.APOGEE_ABBR", APHELION)
 
   /**
-   * 真實遠地點 , 月孛 , 水之餘 , Black Moon , Lilith，計算方法，以下兩者結果相同 :
-   * <pre>
-   * ApsisImpl.getPosition(Planet.MOON , Apsis.APHELION , gmt, Coordinate.ECLIPTIC , NodeType.TRUE);
-   * StarPositionImpl.getPosition(LunarApsis.APOGEE_OSCU, gmt);
-   * </pre>
-   */
-  object APOGEE_OSCU : LunarApsis("LunarApsis.APOGEE", "LunarApsis.APOGEE_ABBR", APHELION, MeanOscu.OSCU)
-
-  /**
-   * 平均近地點，計算方法，以下兩者結果相同 :
+   * 近地點，計算方法，以下兩者結果相同 :
    * <pre>
    * ApsisImpl.getPosition(Planet.MOON , Apsis.PERIHELION , gmt, Coordinate.ECLIPTIC , NodeType.MEAN);
    * StarPositionImpl.getPosition(LunarApsis.PERIGEE_MEAN , gmt);
    * </pre>
    */
-  object PERIGEE_MEAN : LunarApsis("LunarApsis.PERIGEE", "LunarApsis.PERIGEE_ABBR", PERIHELION, MeanOscu.MEAN)
-
-  /**
-   * 真實近地點，計算方法，以下兩者結果相同 :
-   * <pre>
-   * ApsisImpl.getPosition(Planet.MOON , Apsis.PERIHELION , gmt, Coordinate.ECLIPTIC , NodeType.TRUE);
-   * StarPositionImpl.getPosition(LunarApsis.PERIGEE_OSCU , gmt);
-   * </pre>
-   */
-  object PERIGEE_OSCU : LunarApsis("LunarApsis.PERIGEE", "LunarApsis.PERIGEE_ABBR", PERIHELION, MeanOscu.OSCU)
-
+  object PERIGEE : LunarApsis("LunarApsis.PERIGEE", "LunarApsis.PERIGEE_ABBR", PERIHELION)
 
   override fun compareTo(other: LunarApsis): Int {
     if (this == other)
@@ -71,12 +53,7 @@ sealed class LunarApsis(nameKey: String, abbrKey: String,
 
     override val type: KClass<out Point> = LunarApsis::class
 
-    val trueArray by lazy { arrayOf(APOGEE_OSCU, PERIGEE_OSCU) }
-    val meanArray by lazy { arrayOf(APOGEE_MEAN, PERIGEE_MEAN) }
-    val trueList by lazy { listOf(*trueArray) }
-    val meanList by lazy { listOf(*meanArray) }
-
-    override val values by lazy { meanArray }
+    override val values by lazy { arrayOf(APOGEE, PERIGEE) }
 
     override fun fromString(value: String, locale: Locale) : LunarApsis? {
       return values.firstOrNull { it::class.simpleName == value }

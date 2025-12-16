@@ -11,7 +11,7 @@ import kotlin.test.assertTrue
 internal class AzimuthConfigTest : AbstractConfigTest<AzimuthConfig>() {
   override val serializer: KSerializer<AzimuthConfig> = AzimuthConfig.serializer()
 
-  override val configByConstructor: AzimuthConfig = AzimuthConfig(Planet.MOON, Coordinate.SIDEREAL , 100.0 , 23.0 , 1000.0, StarTypeOptions.DEFAULT)
+  override val configByConstructor: AzimuthConfig = AzimuthConfig(Planet.MOON, Coordinate.SIDEREAL , 100.0 , 23.0 , 1000.0, StarTypeOptions.MEAN)
 
   override val configByFunction: AzimuthConfig = azimuth {
     star = Planet.MOON
@@ -19,7 +19,7 @@ internal class AzimuthConfigTest : AbstractConfigTest<AzimuthConfig>() {
     geoAlt = 100.0
     temperature = 23.0
     pressure = 1000.0
-    starTypeOptions = StarTypeOptions.DEFAULT
+    starTypeOptions = StarTypeOptions.MEAN
   }
 
   override val assertion: (String) -> Unit = { raw ->

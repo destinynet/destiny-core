@@ -61,7 +61,7 @@ class EventsTraversalTransitImpl(
 
     val angles = setOf(0.0, 60.0, 120.0, 240.0, 300.0, 90.0, 180.0)
     val natalPointsPosMap: Map<Planet, ZodiacDegree> = natalPoints.associateWith { planet ->
-      starPositionImpl.calculate(planet, model.gmtJulDay, model.location, config.horoscopeConfig.centric, config.horoscopeConfig.coordinate , config.horoscopeConfig.starTypeOptions).lngDeg
+      starPositionImpl.calculate(planet, model.gmtJulDay, config.horoscopeConfig.centric, config.horoscopeConfig.coordinate , config.horoscopeConfig.starTypeOptions).lngDeg
     }
 
 
@@ -91,7 +91,7 @@ class EventsTraversalTransitImpl(
         natalPlanets.asSequence().flatMap { inner ->
           natalPointsPosMap[inner]?.let { innerDeg ->
             val degrees = angles.map { it.toZodiacDegree() }.map { it + innerDeg }.toSet()
-            starTransitImpl.getRangeTransitGmt(outer, degrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
+            starTransitImpl.getRangeTransitGmt(outer, degrees, fromGmtJulDay, toGmtJulDay, options = config.horoscopeConfig.starTypeOptions).map { (zDeg, gmt) ->
               val angle: Double = zDeg.getAngle(innerDeg).round()
               val pattern = PointAspectPattern(listOf(outer, inner), angle, null, 0.0)
               AspectData(pattern, null, 0.0, null, gmt)
@@ -104,7 +104,7 @@ class EventsTraversalTransitImpl(
 
     val globalAspectEvents = relativeTransitImpl.mutualAspectingEvents(
       transitingPoints, angles,
-      fromGmtJulDay, toGmtJulDay
+      fromGmtJulDay, toGmtJulDay, config.horoscopeConfig.starTypeOptions
     ).map { aspectData: AspectData ->
       val (outerStar1, outerStar2) = aspectData.points.let { it[0] to it[1] }
       val description = buildString {
@@ -217,7 +217,7 @@ class EventsTraversalTransitImpl(
         180.0 to LunarPhase.FULL,
         270.0 to LunarPhase.LAST_QUARTER
       ).flatMap { (angle, phase) ->
-        relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(Planet.MOON, Planet.SUN, fromGmtJulDay, toGmtJulDay, angle).map { gmtJulDay ->
+        relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(Planet.MOON, Planet.SUN, fromGmtJulDay, toGmtJulDay, angle, config.horoscopeConfig.starTypeOptions).map { gmtJulDay ->
           val outer = horoscopeFeature.getModel(gmtJulDay, loc, config.horoscopeConfig)
           val zodiacDegree = outer.getZodiacDegree(Planet.MOON)!!
           val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(Planet.MOON, Planet.SUN)
@@ -253,9 +253,9 @@ class EventsTraversalTransitImpl(
     // 星體換星座
     val signDegrees = (0..<360 step 30).map { it.toDouble().toZodiacDegree() }.toSet()
     val signIngresses = transitingPoints.asSequence().flatMap { planet ->
-      starTransitImpl.getRangeTransitGmt(planet, signDegrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
+      starTransitImpl.getRangeTransitGmt(planet, signDegrees, fromGmtJulDay, toGmtJulDay, options = config.horoscopeConfig.starTypeOptions).map { (zDeg, gmt) ->
 
-        val speed = starPositionImpl.calculate(planet, gmt, loc, config.horoscopeConfig.centric, config.horoscopeConfig.coordinate , config.horoscopeConfig.starTypeOptions).speedLng
+        val speed = starPositionImpl.calculate(planet, gmt, config.horoscopeConfig.centric, config.horoscopeConfig.coordinate , config.horoscopeConfig.starTypeOptions).speedLng
         val (oldSign, newSign, eventType) = if (speed >= 0) {
           // 順行：進入 zDeg.sign，來自前一個星座
           Triple(zDeg.sign.prev, zDeg.sign, "Ingresses (enters)")
@@ -280,9 +280,9 @@ class EventsTraversalTransitImpl(
       val cuspDegreeMap: Map<ZodiacDegree, Int> = model.cuspDegreeMap.reverse()
       val cuspDegrees = cuspDegreeMap.keys.toSet()
       transitingPoints.asSequence().flatMap { planet ->
-        starTransitImpl.getRangeTransitGmt(planet, cuspDegrees, fromGmtJulDay, toGmtJulDay, true, Coordinate.ECLIPTIC).map { (zDeg, gmt) ->
+        starTransitImpl.getRangeTransitGmt(planet, cuspDegrees, fromGmtJulDay, toGmtJulDay, options = config.horoscopeConfig.starTypeOptions).map { (zDeg, gmt) ->
           // maybe retrograde
-          val speed = starPositionImpl.calculate(planet, gmt, loc, config.horoscopeConfig.centric, config.horoscopeConfig.coordinate , config.horoscopeConfig.starTypeOptions).speedLng
+          val speed = starPositionImpl.calculate(planet, gmt, config.horoscopeConfig.centric, config.horoscopeConfig.coordinate , config.horoscopeConfig.starTypeOptions).speedLng
           val cuspHouseNumber = cuspDegreeMap.getValue(zDeg)
 
           // 根據順行或逆行，決定 old/new house 以及文字描述

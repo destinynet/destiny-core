@@ -63,7 +63,8 @@ class RefranationImpl(private val aspectCalculator: IAspectCalculator,
           otherPoint as Star,
           applyingAspect.degree,
           horoscope.gmtJulDay,
-          true
+          true,
+          StarTypeOptions.MEAN
         )?.let { perfectAspectGmt1 ->
           if (applyingAspect.degree == 0.0 || applyingAspect.degree == 180.0) {
             // 衝/合 只會有一個時刻，不用算「補角」
@@ -72,7 +73,7 @@ class RefranationImpl(private val aspectCalculator: IAspectCalculator,
             // 額外計算 「補角」（360-degree）的時刻
             relativeTransitImpl.getRelativeTransit(
               planet, otherPoint, 360 - applyingAspect.degree,
-              horoscope.gmtJulDay, true
+              horoscope.gmtJulDay, true, StarTypeOptions.MEAN
             )!!.let { perfectAspectGmt2 ->
               if (perfectAspectGmt1 > perfectAspectGmt2)
                 perfectAspectGmt2

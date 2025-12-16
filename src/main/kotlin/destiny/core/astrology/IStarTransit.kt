@@ -16,21 +16,29 @@ import destiny.core.calendar.GmtJulDay
  */
 interface IStarTransit {
 
-  fun getNextTransitGmt(star: Star, degrees: Set<ZodiacDegree>, fromGmt: GmtJulDay, forward: Boolean = true, coordinate: Coordinate = Coordinate.ECLIPTIC): Pair<ZodiacDegree, GmtJulDay>
+  fun getNextTransitsGmt(star: Star, degrees: Set<ZodiacDegree>, fromGmt: GmtJulDay, forward: Boolean = true, coordinate: Coordinate = Coordinate.ECLIPTIC, options: StarTypeOptions): Pair<ZodiacDegree, GmtJulDay>
 
   /**
    * 傳回 GMT Julian Day 時刻
    */
-  fun getNextTransitGmt(star: Star, degree: ZodiacDegree, fromGmt: GmtJulDay, forward: Boolean = true, coordinate: Coordinate = Coordinate.ECLIPTIC): GmtJulDay {
-    return getNextTransitGmt(star, setOf(degree), fromGmt, forward, coordinate).second
+  fun getNextTransitGmt(star: Star, degree: ZodiacDegree, fromGmt: GmtJulDay, forward: Boolean = true, coordinate: Coordinate = Coordinate.ECLIPTIC, options: StarTypeOptions): GmtJulDay {
+    return getNextTransitsGmt(star, setOf(degree), fromGmt, forward, coordinate, options).second
   }
 
   /**
    * 某段時間之內， 此 [star] 與 行經這些 黃道度數 [degrees] 的時刻
    */
-  fun getRangeTransitGmt(star: Star, degrees: Set<ZodiacDegree>, fromGmt: GmtJulDay, toGmtJulDay: GmtJulDay, forward: Boolean = true, coordinate: Coordinate = Coordinate.ECLIPTIC): Sequence<Pair<ZodiacDegree, GmtJulDay>> {
-    return generateSequence(getNextTransitGmt(star, degrees, fromGmt, forward, coordinate)) { (_ , gmt) ->
-      getNextTransitGmt(star, degrees, gmt+ 0.001, forward, coordinate)
+  fun getRangeTransitGmt(
+    star: Star,
+    degrees: Set<ZodiacDegree>,
+    fromGmt: GmtJulDay,
+    toGmtJulDay: GmtJulDay,
+    forward: Boolean = true,
+    coordinate: Coordinate = Coordinate.ECLIPTIC,
+    options: StarTypeOptions
+  ): Sequence<Pair<ZodiacDegree, GmtJulDay>> {
+    return generateSequence(getNextTransitsGmt(star, degrees, fromGmt, forward, coordinate, options)) { (_ , gmt) ->
+      getNextTransitsGmt(star, degrees, gmt+ 0.001, forward, coordinate, options)
     }.takeWhile { (_,gmt) -> gmt < toGmtJulDay }
   }
 

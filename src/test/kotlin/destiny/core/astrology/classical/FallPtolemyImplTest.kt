@@ -21,13 +21,13 @@ class FallPtolemyImplTest {
     with(fallImpl) {
       assertSame(SATURN, ARIES.getFallPoint())
       assertNull(TAURUS.getFallPoint())
-      assertSame(LunarNode.SOUTH_TRUE, GEMINI.getFallPoint())
+      assertSame(LunarNode.SOUTH, GEMINI.getFallPoint())
       assertSame(MARS, CANCER.getFallPoint())
       assertNull(LEO.getFallPoint())
       assertSame(VENUS, VIRGO.getFallPoint())
       assertSame(SUN, LIBRA.getFallPoint())
       assertSame(MOON, SCORPIO.getFallPoint())
-      assertSame(LunarNode.NORTH_TRUE, SAGITTARIUS.getFallPoint())
+      assertSame(LunarNode.NORTH, SAGITTARIUS.getFallPoint())
       assertSame(JUPITER, CAPRICORN.getFallPoint())
       assertNull(AQUARIUS.getFallPoint())
       assertSame(MERCURY, PISCES.getFallPoint())
@@ -40,14 +40,12 @@ class FallPtolemyImplTest {
   fun getSign() {
     with(fallImpl) {
       assertSame(ARIES, SATURN.getFallingSign())
-      assertSame(GEMINI, LunarNode.SOUTH_TRUE.getFallingSign())
-      assertSame(GEMINI, LunarNode.SOUTH_TRUE.getFallingSign())
+      assertSame(GEMINI, LunarNode.SOUTH.getFallingSign())
       assertSame(CANCER, MARS.getFallingSign())
       assertSame(VIRGO, VENUS.getFallingSign())
       assertSame(LIBRA, SUN.getFallingSign())
       assertSame(SCORPIO, MOON.getFallingSign())
-      assertSame(SAGITTARIUS, LunarNode.NORTH_TRUE.getFallingSign())
-      assertSame(SAGITTARIUS, LunarNode.NORTH_MEAN.getFallingSign())
+      assertSame(SAGITTARIUS, LunarNode.NORTH.getFallingSign())
       assertSame(CAPRICORN, JUPITER.getFallingSign())
       assertSame(PISCES, MERCURY.getFallingSign())
     }

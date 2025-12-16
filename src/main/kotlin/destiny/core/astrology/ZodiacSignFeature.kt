@@ -13,14 +13,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ZodiacSignConfig(@Serializable(with = StarSerializer::class)
-                            val star: Star = Planet.SUN): java.io.Serializable
+                            val star: Star = Planet.SUN,
+                            val starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN): java.io.Serializable
 
 class ZodiacSignBuilder : Builder<ZodiacSignConfig> {
 
   var star: Star = Planet.SUN
+  var starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN
 
   override fun build(): ZodiacSignConfig {
-    return ZodiacSignConfig(star)
+    return ZodiacSignConfig(star, starTypeOptions)
   }
 
   companion object {
@@ -38,6 +40,6 @@ class ZodiacSignFeature(private val zodiacSignImpl : IZodiacSign) : AbstractCach
   override val defaultConfig: ZodiacSignConfig = ZodiacSignConfig()
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: ZodiacSignConfig): ZodiacSignModel {
-    return zodiacSignImpl.getSignsBetween(config.star, gmtJulDay)
+    return zodiacSignImpl.getSignsBetween(config.star, gmtJulDay, config.starTypeOptions)
   }
 }

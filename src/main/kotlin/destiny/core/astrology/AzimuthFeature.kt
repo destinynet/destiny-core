@@ -19,7 +19,7 @@ data class AzimuthConfig(@Serializable(with = StarSerializer::class)
                          val geoAlt: Double = 0.0,
                          val temperature: Double = 0.0,
                          val pressure: Double = 1013.25,
-                         val starTypeOptions: StarTypeOptions = StarTypeOptions.DEFAULT
+                         val starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN
                          ): java.io.Serializable
 
 @DestinyMarker
@@ -30,7 +30,7 @@ class AzimuthConfigBuilder : Builder<AzimuthConfig> {
   var geoAlt: Double = 0.0
   var temperature: Double = 0.0
   var pressure: Double = 1013.25
-  var starTypeOptions: StarTypeOptions = StarTypeOptions.DEFAULT
+  var starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN
 
   override fun build(): AzimuthConfig {
     return AzimuthConfig(star, coordinate, geoAlt, temperature, pressure, starTypeOptions)
@@ -45,17 +45,12 @@ class AzimuthConfigBuilder : Builder<AzimuthConfig> {
 
 
 @Named
-class AzimuthFeature(val starPositionImpl: IStarPosition<IStarPos>,
-                     private val azimuthImpl: IAzimuthCalculator) : AbstractCachedFeature<AzimuthConfig, StarPosWithAzimuth>() {
+class AzimuthFeature(val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator) : AbstractCachedFeature<AzimuthConfig, IStarPositionWithAzimuth>() {
   override val key: String = "azimuth"
 
   override val defaultConfig: AzimuthConfig = AzimuthConfig()
 
-  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: AzimuthConfig): StarPosWithAzimuth {
-    val pos: IStarPos = starPositionImpl.calculateWithAzimuth(config.star, gmtJulDay, loc, Centric.GEO, config.coordinate, config.temperature, config.pressure, config.starTypeOptions)
-    val azimuth = with(azimuthImpl) {
-      pos.getAzimuth(config.coordinate, gmtJulDay, loc, config.temperature, config.pressure)
-    }
-    return StarPosWithAzimuth(pos, azimuth)
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: AzimuthConfig): IStarPositionWithAzimuth {
+    return starPositionWithAzimuthImpl.getPositionWithAzimuth(config.star, gmtJulDay, loc, Centric.GEO, config.coordinate, config.temperature, config.pressure, config.starTypeOptions)
   }
 }

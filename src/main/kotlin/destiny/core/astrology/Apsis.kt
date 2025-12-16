@@ -22,9 +22,9 @@ fun Apsis.getTitle(locale: Locale): String {
  * 橢圓軌道的四個點：近點（Perihelion/Perigee）、遠點（Aphelion/Apogee），上升點（Ascending/North Node），下降點（Descending/South Node）
  */
 enum class Apsis(val nameKey: String) {
-  /** 近點  */
+  /** 近點 , perigee */
   PERIHELION("Apsis.PERIHELION"),
-  /** 遠點  */
+  /** 遠點 , apogee */
   APHELION("Apsis.APHELION"),
   /** 北交點/上升點  */
   ASCENDING("Apsis.ASCENDING"),

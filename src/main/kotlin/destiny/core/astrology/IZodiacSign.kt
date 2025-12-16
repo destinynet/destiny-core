@@ -20,14 +20,14 @@ interface IZodiacSign {
    * 畫過 之前(目前)的星座 於何時
    * 即將到未來的星座 於何時
    */
-  fun getSignsBetween(star: Star, gmtJulDay: GmtJulDay): ZodiacSignModel
+  fun getSignsBetween(star: Star, gmtJulDay: GmtJulDay, options: StarTypeOptions): ZodiacSignModel
 
-  fun getSign(star: Star, gmtJulDay: GmtJulDay): ZodiacSign {
-    return getSignsBetween(star, gmtJulDay).current.first
+  fun getSign(star: Star, gmtJulDay: GmtJulDay, options: StarTypeOptions): ZodiacSign {
+    return getSignsBetween(star, gmtJulDay, options).current.first
   }
 
-  fun getSignsBetween(star: Star, lmt: ChronoLocalDateTime<*>, location: ILocation): ZodiacSignModel {
-    return getSignsBetween(star, lmt.toGmtJulDay(location))
+  fun getSignsBetween(star: Star, lmt: ChronoLocalDateTime<*>, location: ILocation, options: StarTypeOptions): ZodiacSignModel {
+    return getSignsBetween(star, lmt.toGmtJulDay(location), options)
   }
 }
 

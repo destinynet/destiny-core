@@ -91,9 +91,9 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
     // 日干
     val dayStem = eightWords.day.stem
     // 五星 + 南北交點
-    val stars: List<Star> = listOf(*Planet.classicalArray, *LunarNode.meanArray)
+    val stars: List<Star> = listOf(*Planet.classicalArray, *LunarNode.values)
     val starPosMap: Map<AstroPoint, PositionWithBranch> = stars.mapNotNull { p: AstroPoint ->
-      val pos: IPos = starPositionImpl.calculate(p as Star, lmt.toGmtJulDay(loc), Centric.GEO, Coordinate.ECLIPTIC, StarTypeOptions.DEFAULT)
+      val pos: IPos = starPositionImpl.calculate(p as Star, lmt.toGmtJulDay(loc), Centric.GEO, Coordinate.ECLIPTIC, StarTypeOptions.MEAN)
 
       // 檢查是否為 NaN，如果是就跳過此星體
       if (pos.lng.isNaN()) {

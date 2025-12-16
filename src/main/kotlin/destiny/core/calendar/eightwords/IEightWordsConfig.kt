@@ -6,6 +6,7 @@ package destiny.core.calendar.eightwords
 import destiny.core.IPresentConfig
 import destiny.core.astrology.DayNightConfig
 import destiny.core.astrology.DayNightImpl
+import destiny.core.astrology.StarTypeOptions
 import destiny.core.astrology.TransConfig
 import destiny.core.astrology.ZodiacSignConfig
 import destiny.core.chinese.eightwords.*
@@ -46,9 +47,10 @@ interface ITransConfig : Serializable {
   var refraction: Boolean
   var temperature: Double
   var pressure: Double
+  var starTypeOptions: StarTypeOptions
 
   val transConfig: TransConfig
-    get() = TransConfig(discCenter, refraction, temperature, pressure)
+    get() = TransConfig(discCenter, refraction, temperature, pressure, starTypeOptions)
 }
 
 interface IDayNightConfig : ITransConfig {

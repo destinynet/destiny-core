@@ -248,7 +248,7 @@ class ZiweiFeature(
          *  利用月亮星座，計算身宮 */
         val gmtJulDay = lmt.toGmtJulDay(loc)
         val mainHouse = risingSignImpl.getRisingSign(gmtJulDay, loc, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
-        val moonPos = starPositionImpl.calculateWithAzimuth(Planet.MOON, lmt.toGmtJulDay(loc) , loc, Centric.GEO, Coordinate.ECLIPTIC)
+        val moonPos = starPositionImpl.calculate(Planet.MOON, lmt.toGmtJulDay(loc) , Centric.GEO, Coordinate.ECLIPTIC)
 
         val zodiacSign = moonPos.lngDeg.sign
 

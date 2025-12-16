@@ -393,7 +393,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   val partileConjNorthNode = object : IPlanetPatternFactory {
 
     /** 內定採用 [NodeType.MEAN] */
-    val north: LunarNode = LunarNode.of(News.NorthSouth.NORTH, NodeType.MEAN)
+    val north: LunarNode = LunarNode.of(News.NorthSouth.NORTH)
 
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
@@ -839,7 +839,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   val partileConjSouthNode = object : IPlanetPatternFactory {
 
     /** 內定採用 [NodeType.MEAN]  */
-    val south = LunarNode.of(News.NorthSouth.SOUTH, NodeType.MEAN)
+    val south = LunarNode.of(News.NorthSouth.SOUTH)
 
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 

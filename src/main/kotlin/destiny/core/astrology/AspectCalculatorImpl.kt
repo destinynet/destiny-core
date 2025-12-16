@@ -68,8 +68,8 @@ class AspectCalculatorImpl(
         // 8.64 seconds
         val later = this.gmtJulDay.plus(0.0001)
 
-        val laterForP1: ((AstroPoint) -> IZodiacDegree?) = { p -> pointPosFuncMap[p]?.getPosition(later, location, starTypeOptions = StarTypeOptions.DEFAULT) }
-        val laterForP2: ((AstroPoint) -> IZodiacDegree?) = { p -> pointPosFuncMap[p]?.getPosition(later, location, starTypeOptions = StarTypeOptions.DEFAULT) }
+        val laterForP1: ((AstroPoint) -> IZodiacDegree?) = { p -> pointPosFuncMap[p]?.getPosition(later, location, starTypeOptions = StarTypeOptions.MEAN) }
+        val laterForP2: ((AstroPoint) -> IZodiacDegree?) = { p -> pointPosFuncMap[p]?.getPosition(later, location, starTypeOptions = StarTypeOptions.MEAN) }
 
         getAspectPattern(p1, p2, posMap, posMap, laterForP1, laterForP2, aspects)
       }

@@ -597,7 +597,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
     val earthNumber = getEarthNumber(ew)
     val earthSymbol = getEarthSymbol(ew, gender, yuan)
 
-    val sign = zodiacSignImpl.getSign(Planet.SUN, gmtJulDay)
+    val sign = zodiacSignImpl.getSign(Planet.SUN, gmtJulDay, config.eightWordsConfig.starTypeOptions)
     val yearHalfYinYang: IYinYang = yearSplitterImpl.getYinYang(sign)
 
     // 當年立春時刻

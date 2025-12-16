@@ -107,7 +107,7 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
         is Debility.Combustion ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet))
         is Debility.Sunbeam ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet))
         is Debility.Partile_Conj_Mars_Saturn ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.marsOrSaturn, CONJUNCTION))
-        is Debility.Partile_Conj_South_Node -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, LunarNode.SOUTH_MEAN, CONJUNCTION))
+        is Debility.Partile_Conj_South_Node -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, LunarNode.SOUTH, CONJUNCTION))
         is Debility.Besieged_Mars_Saturn ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet, MARS, SATURN))
         is Debility.Partile_Oppo_Mars_Saturn ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.marsOrSaturn, OPPOSITION))
         is Debility.Partile_Square_Mars_Saturn ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.marsOrSaturn, SQUARE))

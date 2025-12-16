@@ -122,12 +122,12 @@ val majorRulerYearsMap: Map<AstroPoint, Int> = mapOf(
   Planet.SATURN to 11,
   Planet.JUPITER to 12,
   Planet.MARS to 7,
-  LunarNode.NORTH_TRUE to 3,
-  LunarNode.SOUTH_TRUE to 2
+  LunarNode.NORTH to 3,
+  LunarNode.SOUTH to 2
 )
 
 fun getMajorRulers(diurnal: Boolean): List<AstroPoint> = if (diurnal) {
-  listOf(Planet.SUN, Planet.VENUS, Planet.MERCURY, Planet.MOON, Planet.SATURN, Planet.JUPITER, Planet.MARS, LunarNode.NORTH_TRUE, LunarNode.SOUTH_TRUE)
+  listOf(Planet.SUN, Planet.VENUS, Planet.MERCURY, Planet.MOON, Planet.SATURN, Planet.JUPITER, Planet.MARS, LunarNode.NORTH, LunarNode.SOUTH)
 } else {
-  listOf(Planet.MOON, Planet.SATURN, Planet.JUPITER, Planet.MARS, Planet.SUN, Planet.VENUS, Planet.MERCURY, LunarNode.NORTH_TRUE, LunarNode.SOUTH_TRUE)
+  listOf(Planet.MOON, Planet.SATURN, Planet.JUPITER, Planet.MARS, Planet.SUN, Planet.VENUS, Planet.MERCURY, LunarNode.NORTH, LunarNode.SOUTH)
 }

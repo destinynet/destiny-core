@@ -156,7 +156,7 @@ class PatternTranslatorKtTest {
       assertEquals("木星 與 金星 形成 partile 合" , it.twDesc)
     }
 
-    Partile_Conj_North_Node(MERCURY , LunarNode.NORTH_MEAN).also {
+    Partile_Conj_North_Node(MERCURY , LunarNode.NORTH).also {
       assertEquals("與北交合相" , it.title)
       assertEquals("水星 與 北交點 形成 partile 合" , it.twDesc)
     }

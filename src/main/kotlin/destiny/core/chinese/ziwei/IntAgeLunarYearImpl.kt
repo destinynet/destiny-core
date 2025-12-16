@@ -7,6 +7,7 @@ import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.astrology.IRelativeTransit
 import destiny.core.astrology.Planet
+import destiny.core.astrology.StarTypeOptions
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -92,7 +93,7 @@ class IntAgeLunarYearImpl(private val ageType: AgeType,
 
     val next1YearJan2Gmt = TimeTools.getGmtJulDay(next1YearJan2Time)
 
-    return relativeTransitImpl.getRelativeTransit(Planet.MOON, Planet.SUN, 0.0, next1YearJan2Gmt, false)
+    return relativeTransitImpl.getRelativeTransit(Planet.MOON, Planet.SUN, 0.0, next1YearJan2Gmt, false, StarTypeOptions.MEAN)
       ?: throw RuntimeException("Cannot get Sun/Moon Conj since julDay = $next1YearJan2Gmt")
   }
 
