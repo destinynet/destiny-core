@@ -18,7 +18,7 @@ class GoogleMapsUrlBuilderTest {
     val s = builder.getUrl(location.lat.value, location.lng.value)
     logger.info("{}", s)
 
-    logger.info("{}", builder.getUrl(locationOf(Locale("zh", "HK"))))
+    logger.info("{}", builder.getUrl(locationOf(Locale.of("zh", "HK"))))
     logger.info("{}", builder.getUrl(locationOf(Locale.US)))
   }
 

@@ -4,7 +4,7 @@
 package destiny.core.chinese
 
 import destiny.core.EnumTest
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 
 internal class YangBladeTest : EnumTest() {

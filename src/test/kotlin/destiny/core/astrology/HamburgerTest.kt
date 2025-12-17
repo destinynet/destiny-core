@@ -31,10 +31,10 @@ class HamburgerTest : AbstractPointTest(Hamburger::class) {
     Hamburger.values.forEach {
       assertNotNull(it)
     }
-    assertEquals("Zeus", Hamburger.ZEUS.toString(Locale("zh", "TW")))
+    assertEquals("Zeus", Hamburger.ZEUS.toString(Locale.of("zh", "TW")))
     //assertEquals("Ze", Hamburger.ZEUS.getAbbreviation(Locale("zh", "TW")))
 
-    val locale = Locale("en")
+    val locale = Locale.of("en")
     assertEquals("Zeus", Hamburger.ZEUS.toString(locale))
     assertEquals("Ze", Hamburger.ZEUS.getAbbreviation(locale))
   }

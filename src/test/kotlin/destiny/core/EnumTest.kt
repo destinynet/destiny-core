@@ -7,10 +7,10 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.elementNames
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
-import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
+import kotlin.test.Test
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
