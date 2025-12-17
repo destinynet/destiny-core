@@ -33,7 +33,7 @@ import kotlin.math.abs
 class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
                            private val solarTermsImpl: ISolarTerms,
                            private val fortuneDirectionFeature: IFortuneDirectionFeature,
-                           @Named("intAge8wImpl")
+                           @param:Named("intAge8wImpl")
                            private val intAgeImpl: IIntAge,
                            ageNoteImplMap: Map<IntAgeNote, IIntAgeNote>,
                            private val starTransitImpl: IStarTransit) : AbstractFortuneLargeImpl(ageNoteImplMap) {

@@ -33,6 +33,7 @@ interface IPointAspectPattern : IPointAnglePattern, Comparable<IPointAspectPatte
     SEPARATING
   }
 
+  @Suppress("UNCHECKED_CAST")
   override fun compareTo(other: IPointAspectPattern): Int {
     val (thisP0, thisP1) = points.iterator()
       .let {

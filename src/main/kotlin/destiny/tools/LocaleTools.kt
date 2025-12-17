@@ -16,9 +16,9 @@ object LocaleTools {
       .map { it.substringBefore('#') }
 
     return when (parts.size) {
-      1    -> Locale(parts[0])
-      2    -> Locale(parts[0], parts[1])
-      else -> Locale(parts[0], parts[1], parts[2])
+      1    -> Locale.of(parts[0])
+      2    -> Locale.of(parts[0], parts[1])
+      else -> Locale.of(parts[0], parts[1], parts[2])
     }
   }
 
@@ -33,7 +33,7 @@ object LocaleTools {
         ?.trim()
 
       primaryLang?.let { Locale.forLanguageTag(it) }
-    } catch (e: Exception) {
+    } catch (_: Exception) {
       null
     }
   }
@@ -56,8 +56,8 @@ object LocaleTools {
     // 將欲搜尋的 locale 展開
     val expandedLocales = listOf(
       locale // 第一項
-      , Locale(locale.language, locale.country)  // 第二項
-      , Locale(locale.language) // 第三項
+      , Locale.of(locale.language, locale.country)  // 第二項
+      , Locale.of(locale.language) // 第三項
     )
 
     expandedLocales

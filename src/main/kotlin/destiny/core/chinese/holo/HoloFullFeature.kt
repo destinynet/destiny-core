@@ -44,6 +44,7 @@ class HoloFullFeature(private val holoFeature: HoloFeature,
   private lateinit var holoFullCache: Cache<LmtCacheKey<*>, Pair<*, *>>
 
   override val lmtPersonCache: Cache<LmtCacheKey<HoloFullConfig>, Pair<IPoemHolo, List<HoloFullHexagram>>>
+    @Suppress("UNCHECKED_CAST")
     get() {
       return holoFullCache as Cache<LmtCacheKey<HoloFullConfig> , Pair<IPoemHolo, List<HoloFullHexagram>>>
     }

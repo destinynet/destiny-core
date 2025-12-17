@@ -62,7 +62,7 @@ class PersonConfigBuilder(val iEwConfig : IEightWordsContextConfig) : Builder<Ei
 
 @Named
 class PersonContextFeature(private val eightWordsContextFeature: EightWordsContextFeature,
-                           @Named("intAge8wImpl")
+                           @param:Named("intAge8wImpl")
                            private val intAgeImpl: IIntAge,
                            private val fortuneLargeFeature: IFortuneLargeFeature,
                            private val fortuneSmallFeature: FortuneSmallFeature,

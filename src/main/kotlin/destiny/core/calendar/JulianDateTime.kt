@@ -80,7 +80,7 @@ class JulianDateTime private constructor(private val date: JulianDate, private v
    * see [LocalDateTime.with]
    */
   private fun with(newDate: JulianDate, newTime: LocalTime): JulianDateTime {
-    return if (date === newDate && time === newTime) {
+    return if (date == newDate && time == newTime) {
       this
     } else JulianDateTime(newDate, newTime)
   }

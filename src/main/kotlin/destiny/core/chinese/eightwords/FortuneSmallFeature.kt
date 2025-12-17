@@ -70,7 +70,7 @@ interface IFortuneSmall {
 class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
                           private val ageNoteImplMap: Map<IntAgeNote , IIntAgeNote>,
                           private val fortuneDirectionFeature: IFortuneDirectionFeature,
-                          @Named("intAge8wImpl")
+                          @param:Named("intAge8wImpl")
                           private val intAgeImpl: IIntAge) : AbstractCachedPersonFeature<FortuneSmallConfig, List<FortuneData>>() {
   override val key: String = "fortuneSmall"
 

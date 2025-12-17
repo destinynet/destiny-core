@@ -188,6 +188,7 @@ class PalmMetaDescFeature(private val palmMetaFeature : PersonFeature<PalmConfig
   override val defaultConfig: PalmConfig = palmMetaFeature.defaultConfig
 
   override val lmtPersonCache: Cache<LmtCacheKey<PalmConfig>, IPalmMetaModelDesc>
+    @Suppress("UNCHECKED_CAST")
     get() = palmMetaDescCache as Cache<LmtCacheKey<PalmConfig>, IPalmMetaModelDesc>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: PalmConfig): IPalmMetaModelDesc {

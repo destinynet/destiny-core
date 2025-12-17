@@ -24,8 +24,8 @@ import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
-import jakarta.inject.Named
 import destiny.tools.KotlinLogging
+import jakarta.inject.Named
 import java.time.chrono.ChronoLocalDateTime
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
@@ -41,7 +41,7 @@ import kotlin.math.abs
 @Named
 class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFeature,
                                      private val fortuneDirectionFeature: IFortuneDirectionFeature,
-                                     @Named("intAge8wImpl")
+                                     @param:Named("intAge8wImpl")
                                      private val intAgeImpl: IIntAge,
                                      ageNoteImplMap: Map<IntAgeNote , IIntAgeNote>,
                                      private val solarTermsImpl: ISolarTerms,

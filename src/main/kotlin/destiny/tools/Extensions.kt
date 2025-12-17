@@ -18,7 +18,7 @@ inline fun <T, R : Any> Iterable<T>.firstNotNullResult(crossinline transform: (T
 }
 
 inline fun <T, R : Any> Sequence<T>.firstNotNullResult(crossinline transform: (T) -> R?): R? {
-  return this.mapNotNull { transform(it) }.firstOrNull()
+  return this.firstNotNullOfOrNull { transform(it) }
 }
 
 /**
@@ -310,7 +310,6 @@ fun JsonElement.toMap(): Map<String, Any> {
         }
         is JsonObject    -> jsonElement.toMap()
         is JsonArray     -> jsonElement.map { it.toMap() }
-        else             -> null
       }
     }.filter { (_, v) -> v != null }
       .mapValues { (_, v) -> v!! }

@@ -172,7 +172,7 @@ interface IZiweiFeature : PersonFeature<IZiweiConfig, IPlate> {
 @Named
 class ZiweiFeature(
   private val julDayResolver: JulDayResolver,
-  @Named("houseCuspImpl")
+  @param:Named("houseCuspImpl")
   private val risingSignImpl: IRisingSign,
   private val starPositionImpl: IStarPosition<*>,
   private val chineseDateFeature: IChineseDateFeature,
@@ -193,10 +193,10 @@ class ZiweiFeature(
   private val flowHourImplMap: Map<FlowHour, IFlowHour>,
   private val dayNightFeature: DayNightFeature,
 
-  @Named("intVageZiweiImpl")
+  @param:Named("intVageZiweiImpl")
   private val intVageImpl: IIntAge,
 
-  @Named("intRageZiweiImpl")
+  @param:Named("intRageZiweiImpl")
   private val intRageImpl: IIntAge,
 
   private val purpleRelocationMutator : IHouseMutator
@@ -207,6 +207,7 @@ class ZiweiFeature(
   private lateinit var ziweiCache: Cache<LmtCacheKey<*>, IPlate>
 
   override val lmtPersonCache: Cache<LmtCacheKey<IZiweiConfig>, IPlate>
+    @Suppress("UNCHECKED_CAST")
     get() = ziweiCache as Cache<LmtCacheKey<IZiweiConfig>, IPlate>
 
   override val defaultConfig: IZiweiConfig = ZiweiConfig()
