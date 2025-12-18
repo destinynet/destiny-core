@@ -23,35 +23,7 @@ object AnyComplexSerializer : KSerializer<Any> {
 
   override fun serialize(encoder: Encoder, value: Any) {
     val jsonEncoder = encoder as JsonEncoder
-    val element = when (value) {
-      is Int -> JsonPrimitive(value)
-      is Long -> JsonPrimitive(value)
-      is Double -> JsonPrimitive(value)
-      is Float -> JsonPrimitive(value)
-      is String -> JsonPrimitive(value)
-      is Boolean -> JsonPrimitive(value)
-      is LocalDateTime -> JsonPrimitive(value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-      is Map<*, *> -> {
-        buildJsonObject {
-          value.forEach { (k, v) ->
-            if (k is String && v != null) {
-              put(k, serializeValue(v))
-            }
-          }
-        }
-      }
-      is List<*> -> {
-        buildJsonArray {
-          value.forEach { item ->
-            if (item != null) {
-              add(serializeValue(item))
-            }
-          }
-        }
-      }
-      else -> JsonPrimitive(value.toString())
-    }
-    jsonEncoder.encodeJsonElement(element)
+    jsonEncoder.encodeJsonElement(serializeValue(value))
   }
 
   private fun serializeValue(value: Any): JsonElement = when (value) {
@@ -102,7 +74,6 @@ object AnyComplexSerializer : KSerializer<Any> {
       }
       is JsonObject -> element.mapValues { (_, value) -> deserializeJsonElement(value) }
       is JsonArray -> element.map { deserializeJsonElement(it) }
-      else -> element.toString()
     }
   }
 }
