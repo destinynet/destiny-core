@@ -16,7 +16,8 @@ interface IChatOrchestrator {
     postProcessors: List<IPostProcessor>,
     locale: Locale = Locale.getDefault(),
     funCalls: Set<IFunctionDeclaration> = emptySet(),
-    chatOptionsTemplate: ChatOptions = ChatOptions()
+    chatOptionsTemplate: ChatOptions = ChatOptions(),
+    providerImpl : (Provider) -> IChatCompletion
   ): Reply.Normal<out T>?
 
   suspend fun <T : Any> chatComplete(
@@ -25,9 +26,10 @@ interface IChatOrchestrator {
     postProcessors: List<IPostProcessor>,
     locale: Locale = Locale.getDefault(),
     funCalls: Set<IFunctionDeclaration> = emptySet(),
-    chatOptionsTemplate: ChatOptions = ChatOptions()
+    chatOptionsTemplate: ChatOptions = ChatOptions(),
+    providerImpl: (Provider) -> IChatCompletion
   ): Reply.Normal<out T>? {
-    return chatComplete(formatSpec, listOf(Msg(Role.USER, message)), postProcessors, locale, funCalls, chatOptionsTemplate)
+    return chatComplete(formatSpec, listOf(Msg(Role.USER, message)), postProcessors, locale, funCalls, chatOptionsTemplate, providerImpl)
   }
 
 }

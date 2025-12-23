@@ -4,7 +4,6 @@
 package destiny.tools.ai
 
 import destiny.tools.KotlinLogging
-import destiny.tools.ai.ResilientChatService.ResilientConfig
 import destiny.tools.ai.model.FormatSpec
 import destiny.tools.suspendFirstNotNullResult
 import kotlinx.coroutines.delay
@@ -29,11 +28,9 @@ import kotlin.time.Duration.Companion.seconds
  * 與 [HedgeChatService] 不同（後者通過並行請求優先考慮低延遲），
  * 此服務優先考慮**最終的成功率**，即使可能需要更長的處理時間。
  *
- * @property domainModelService 用於根據提供者查找具體聊天完成實現的服務。
  * @property config 控制重試行為（例如，總嘗試次數、循環間延遲）的配置。
  */
 class ResilientChatService(
-  private val domainModelService: IDomainModelService,
   private val config: ResilientConfig
 ) : IChatOrchestrator {
 
@@ -61,7 +58,8 @@ class ResilientChatService(
     postProcessors: List<IPostProcessor>,
     locale: Locale,
     funCalls: Set<IFunctionDeclaration>,
-    chatOptionsTemplate: ChatOptions
+    chatOptionsTemplate: ChatOptions,
+    providerImpl: (Provider) -> IChatCompletion
   ): Reply.Normal<T>? {
     val providerModels = config.providerModels
 
@@ -76,7 +74,7 @@ class ResilientChatService(
     while (attemptsLeft > 0) {
 
       logger.info { "Starting a new attempt loop (attempts left: $attemptsLeft), shuffled models: ${shuffledModels.map { it.model }}" }
-      val successfulResultDto: Reply.Normal<out T>? = process(formatSpec, shuffledModels, messages, config.user, funCalls, chatOptionsTemplate, config.modelTimeout, postProcessors, locale)
+      val successfulResultDto: Reply.Normal<out T>? = process(formatSpec, shuffledModels, messages, config.user, funCalls, chatOptionsTemplate, config.modelTimeout, postProcessors, locale, providerImpl)
 
       if (successfulResultDto != null) {
         logger.info { "Successfully obtained result from ${successfulResultDto.provider}/${successfulResultDto.model} within the loop." }
@@ -111,11 +109,12 @@ class ResilientChatService(
     modelTimeout: Duration,
     postProcessors: List<IPostProcessor>,
     locale: Locale,
+    providerImpl: (Provider) -> IChatCompletion
   ): Reply.Normal<T>? {
     return providerModels.suspendFirstNotNullResult { providerModel ->
       logger.debug { "Attempting model (suspend loop): ${providerModel.provider}/${providerModel.model}" }
       try {
-        val impl: IChatCompletion = domainModelService.findImpl(providerModel.provider)
+        val impl = providerImpl.invoke(providerModel.provider)
         val currentChatOptions = chatOptionsTemplate.copy(
           temperature = providerModel.temperature ?: chatOptionsTemplate.temperature
         )

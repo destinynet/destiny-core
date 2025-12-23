@@ -14,7 +14,6 @@ import kotlin.time.Duration
 
 
 class HedgeChatService(
-  private val domainModelService: IDomainModelService,
   private val config: HedgeConfig,
 ) : IChatOrchestrator {
 
@@ -45,7 +44,8 @@ class HedgeChatService(
     postProcessors: List<IPostProcessor>,
     locale: Locale,
     funCalls: Set<IFunctionDeclaration>,
-    chatOptionsTemplate: ChatOptions
+    chatOptionsTemplate: ChatOptions,
+    providerImpl: (Provider) -> IChatCompletion
   ): Reply.Normal<out T>? = coroutineScope {
 
     val allModels = setOf(config.preferred) + config.fallbacks
@@ -57,7 +57,7 @@ class HedgeChatService(
       )
 
       async(Dispatchers.IO + CoroutineName("ChatCompletion-${providerModel.provider}/${providerModel.model}")) {
-        val impl = domainModelService.findImpl(providerModel.provider)
+        val impl = providerImpl.invoke(providerModel.provider)
         impl.typedChatComplete(providerModel.model, messages, formatSpec, json, locale, currentChatOptions, postProcessors, config.user, funCalls, config.modelTimeout)
       }
     }
