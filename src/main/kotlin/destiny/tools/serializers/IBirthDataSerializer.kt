@@ -34,7 +34,7 @@ object IBirthDataSerializer : KSerializer<IBirthData> {
 
   override fun deserialize(decoder: Decoder): IBirthData {
     var timeLoc: ITimeLoc = TimeLoc(LocalDateTime.now(), locationOf(Locale.TAIWAN))
-    var gender = Gender.男
+    var gender = Gender.M
 
     decoder.decodeStructure(descriptor) {
       while (true) {
@@ -44,7 +44,7 @@ object IBirthDataSerializer : KSerializer<IBirthData> {
             decodeSerializableElement(descriptor, 1, GenderSerializer)
           } catch (e: Exception) {
             logger.warn { "GENDER_NOT_FOUND , default to MALE" }
-            Gender.男
+            Gender.M
           }
 
           CompositeDecoder.DECODE_DONE -> break

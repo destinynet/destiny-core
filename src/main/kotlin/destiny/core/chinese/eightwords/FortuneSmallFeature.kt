@@ -145,13 +145,13 @@ class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
     override val impl: FortuneSmallConfig.Impl = FortuneSmallConfig.Impl.Star
 
     override fun getFortuneDataList(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IIntAgeNote>, config: EightWordsConfig): List<FortuneData> {
-      var sb = if (gender == Gender.男) 丙寅.prev else 壬申.next
+      var sb = if (gender == Gender.M) 丙寅.prev else 壬申.next
 
       return intAgeImpl.getRangesMap(gender , gmtJulDay , loc , 1 , count).map { (age , pair) ->
         val (from , to) = pair
         val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
         val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
-        sb = if (gender == Gender.男) sb.next else sb.prev
+        sb = if (gender == Gender.M) sb.next else sb.prev
         FortuneData(sb , from , to , age , age+1 , startFortuneAgeNotes , endFortuneAgeNotes)
       }.toList()
     }
@@ -174,19 +174,19 @@ class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
     override fun getFortuneDataList(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IIntAgeNote>, config: EightWordsConfig): List<FortuneData> {
       val eightWords = eightWordsFeature.getModel(gmtJulDay, loc, config)
       var sb = when (eightWords.day.cycle) {
-        StemBranchCycle.甲子 -> if (gender == Gender.男) 丙寅.prev else 壬申.next
-        StemBranchCycle.甲戌 -> if (gender == Gender.男) 丙子.prev else 壬午.next
-        StemBranchCycle.甲申 -> if (gender == Gender.男) 丙戌.prev else 壬辰.next
-        StemBranchCycle.甲午 -> if (gender == Gender.男) 丙申.prev else 壬寅.next
-        StemBranchCycle.甲辰 -> if (gender == Gender.男) 丙午.prev else 壬子.next
-        StemBranchCycle.甲寅 -> if (gender == Gender.男) 丙辰.prev else 壬戌.next
+        StemBranchCycle.甲子 -> if (gender == Gender.M) 丙寅.prev else 壬申.next
+        StemBranchCycle.甲戌 -> if (gender == Gender.M) 丙子.prev else 壬午.next
+        StemBranchCycle.甲申 -> if (gender == Gender.M) 丙戌.prev else 壬辰.next
+        StemBranchCycle.甲午 -> if (gender == Gender.M) 丙申.prev else 壬寅.next
+        StemBranchCycle.甲辰 -> if (gender == Gender.M) 丙午.prev else 壬子.next
+        StemBranchCycle.甲寅 -> if (gender == Gender.M) 丙辰.prev else 壬戌.next
       }
 
       return intAgeImpl.getRangesMap(gender , gmtJulDay , loc , 1 , count).map { (age , pair) ->
         val (from , to) = pair
         val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
         val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
-        sb = if (gender == Gender.男) sb.next else sb.prev
+        sb = if (gender == Gender.M) sb.next else sb.prev
         FortuneData(sb , from , to , age , age+1 , startFortuneAgeNotes , endFortuneAgeNotes)
       }.toList()
     }

@@ -14,6 +14,6 @@ class PositiveGenderImpl : IPositive,
                            Serializable {
 
   override fun isPositive(gender: Gender, yearBranch: Branch): Boolean {
-    return gender === Gender.男
+    return gender === Gender.M
   }
 }

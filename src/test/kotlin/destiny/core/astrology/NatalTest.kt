@@ -127,7 +127,7 @@ class NatalTest {
       emptyMap()
     )
 
-    val natal = Natal(Gender.男, 10 , "Kevin" , horoscopeDto)
+    val natal = Natal(Gender.M, 10, "Kevin", horoscopeDto)
 
     json.encodeToString(natal).also { rawJson ->
       logger.info { rawJson }

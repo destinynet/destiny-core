@@ -39,7 +39,7 @@ class ElectionalDayHourModelTest {
   @Test
   fun testSerializeDeserialize() {
     val loc = locationOf(Locale.TAIWAN)
-    val inner = BirthDataNamePlace(Gender.男, LocalDateTime.of(1990, 1, 1, 12, 0), loc, "小明", "台北市")
+    val inner = BirthDataNamePlace(Gender.M, LocalDateTime.of(1990, 1, 1, 12, 0), loc, "小明", "台北市")
 
     val fromDate = LocalDate.of(2025, 6, 1)
     val toDate = LocalDate.of(2025, 6, 5)

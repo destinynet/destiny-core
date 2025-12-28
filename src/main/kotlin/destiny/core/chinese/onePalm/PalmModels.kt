@@ -76,7 +76,7 @@ interface IPalmModel {
    * @param count : 要算多少組大運
    */
   fun getMajorFortunes(count: Int): Map<Int, Branch> {
-    val positive = if (gender === Gender.男) 1 else -1
+    val positive = if (gender === Gender.M) 1 else -1
 
     return (1..count)
       .map { i -> (i - 1) * 10 + 1 to Branch[month.index + (i - 1) * positive] }
@@ -88,7 +88,7 @@ interface IPalmModel {
    * @param age 虛歲 , 從 1 開始
    */
   fun getMinorFortunes(age: Int): Branch {
-    val positive = if (gender === Gender.男) 1 else -1
+    val positive = if (gender === Gender.M) 1 else -1
     return Branch[day.index + (age - 1) * positive]
   }
 

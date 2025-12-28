@@ -66,7 +66,7 @@ sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name
       val gender = tuple3.second
       val steps = tuple3.third
 
-      if (yearStem.booleanValue && gender === Gender.男 || !yearStem.booleanValue && gender === Gender.女) {
+      if (yearStem.booleanValue && gender === Gender.M || !yearStem.booleanValue && gender === Gender.F) {
         // 陽男 陰女 順行
         branch.next(steps - 1)
       } else {

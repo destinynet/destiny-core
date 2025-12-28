@@ -19,13 +19,13 @@ class IHazardFactoryTest {
     val ew = EightWords("甲午", "甲子", "甲子", "甲寅")
 
     // p千日關A (象吉通書) : 甲年 , 午時 , 不符合
-    assertFalse(h千日關.test(ew, Gender.男, Book.象吉通書))
+    assertFalse(h千日關.test(ew, Gender.M, Book.象吉通書))
 
     // p千日關B (鰲頭通書) : 甲年 , 午時 , 不符合
-    assertFalse(h千日關.test(ew, Gender.男, Book.鰲頭通書))
+    assertFalse(h千日關.test(ew, Gender.M, Book.鰲頭通書))
 
     // p千日關C (黃曆解秘) : 凡午年寅、申、巳、亥時生人，犯此忌三歲上高落低之患。 , 符合
-    assertTrue(h千日關.test(ew, Gender.男, Book.黃曆解秘))
+    assertTrue(h千日關.test(ew, Gender.M, Book.黃曆解秘))
   }
 
 
@@ -36,11 +36,11 @@ class IHazardFactoryTest {
     // p千日關A (象吉通書) : 甲年 , 午時 , 不符合
     // p千日關B (鰲頭通書) : 甲年 , 午時 , 不符合
     // p千日關C (黃曆解秘) : 凡午年寅、申、巳、亥時生人，犯此忌三歲上高落低之患。 , 符合
-    assertTrue(h千日關.test(ew1, Gender.男))
+    assertTrue(h千日關.test(ew1, Gender.M))
 
     // p千日關A,B,C 都不符合
     val ew2 = EightWords("甲午", "甲子", "甲子", "甲辰")
-    assertFalse(h千日關.test(ew2, Gender.男))
+    assertFalse(h千日關.test(ew2, Gender.M))
   }
 
   @Nested
@@ -55,27 +55,27 @@ class IHazardFactoryTest {
     @Test
     fun bookWithinMatch() {
       val ew = EightWords("甲午", "甲寅", "甲子", "甲辰")
-      assertTrue(h百日關.testBook(ew, Gender.男, Book.象吉通書)!!)
-      assertTrue(h百日關.testBook(ew, Gender.男, Book.鰲頭通書)!!)
-      assertTrue(h百日關.testBook(ew, Gender.男, Book.星平會海)!!)
-      assertTrue(h百日關.testBook(ew, Gender.男, Book.生育禮俗)!!)
-      assertTrue(h百日關.testBook(ew, Gender.男, Book.黃曆解秘)!!)
+      assertTrue(h百日關.testBook(ew, Gender.M, Book.象吉通書)!!)
+      assertTrue(h百日關.testBook(ew, Gender.M, Book.鰲頭通書)!!)
+      assertTrue(h百日關.testBook(ew, Gender.M, Book.星平會海)!!)
+      assertTrue(h百日關.testBook(ew, Gender.M, Book.生育禮俗)!!)
+      assertTrue(h百日關.testBook(ew, Gender.M, Book.黃曆解秘)!!)
     }
 
     @Test
     fun bookWithinUnMatch() {
       val ew = EightWords("甲午", "甲寅", "甲子", "甲子")
-      assertFalse(h百日關.testBook(ew, Gender.男, Book.象吉通書)!!)
-      assertFalse(h百日關.testBook(ew, Gender.男, Book.鰲頭通書)!!)
-      assertFalse(h百日關.testBook(ew, Gender.男, Book.星平會海)!!)
-      assertFalse(h百日關.testBook(ew, Gender.男, Book.生育禮俗)!!)
-      assertFalse(h百日關.testBook(ew, Gender.男, Book.黃曆解秘)!!)
+      assertFalse(h百日關.testBook(ew, Gender.M, Book.象吉通書)!!)
+      assertFalse(h百日關.testBook(ew, Gender.M, Book.鰲頭通書)!!)
+      assertFalse(h百日關.testBook(ew, Gender.M, Book.星平會海)!!)
+      assertFalse(h百日關.testBook(ew, Gender.M, Book.生育禮俗)!!)
+      assertFalse(h百日關.testBook(ew, Gender.M, Book.黃曆解秘)!!)
     }
 
     @Test
     fun bookWithout() {
       val ew = EightWords("甲午", "甲寅", "甲子", "甲辰")
-      assertNull(h百日關.testBook(ew, Gender.男, Book.小兒關煞圖))
+      assertNull(h百日關.testBook(ew, Gender.M, Book.小兒關煞圖))
     }
   }
 

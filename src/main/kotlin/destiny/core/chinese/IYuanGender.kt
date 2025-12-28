@@ -4,8 +4,8 @@
 package destiny.core.chinese
 
 import destiny.core.Gender
-import destiny.core.Gender.女
-import destiny.core.Gender.男
+import destiny.core.Gender.F
+import destiny.core.Gender.M
 import destiny.core.calendar.chinese.Yuan
 import destiny.core.iching.Symbol
 import java.io.Serializable
@@ -21,16 +21,16 @@ class YuanGenderImpl : IYuanGender, Serializable {
   override fun getSymbol(gender: Gender, yuan: Yuan, yinYang: IYinYang) : Symbol {
     return when (yuan) {
       Yuan.UP -> when (gender) {
-        男 -> Symbol.艮
-        女 -> Symbol.坤
+        M -> Symbol.艮
+        F -> Symbol.坤
       }
-      Yuan.MID -> if (gender === 女 && yinYang.booleanValue || gender === 男 && !yinYang.booleanValue)
+      Yuan.MID -> if (gender === F && yinYang.booleanValue || gender === M && !yinYang.booleanValue)
         Symbol.坤
       else
         Symbol.艮
       Yuan.LOW -> when (gender) {
-        男 -> Symbol.離
-        女 -> Symbol.兌
+        M -> Symbol.離
+        F -> Symbol.兌
       }
     }
   }

@@ -4,8 +4,8 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
-import destiny.core.Gender.女
-import destiny.core.Gender.男
+import destiny.core.Gender.F
+import destiny.core.Gender.M
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.chinese.*
@@ -466,7 +466,7 @@ sealed class StarMinor(nameKey: String, type: Type) : ZStar(nameKey, ZStar::clas
 
     /** 天傷 : 兩種算法，第 2 種 : 陽男陰女順行，安天傷於交友宮 (亦即：遷移宮地支-1)  */
     val fun天傷_陽順陰逆 = { 遷移宮地支 : Branch , 年干 : Stem , gender : Gender ->
-      if (年干.booleanValue && gender === 男 || !年干.booleanValue && gender === 女) {
+      if (年干.booleanValue && gender === M || !年干.booleanValue && gender === F) {
         遷移宮地支.prev(1)
       } else {
         遷移宮地支.next(1)
@@ -475,7 +475,7 @@ sealed class StarMinor(nameKey: String, type: Type) : ZStar(nameKey, ZStar::clas
 
     /** 天使 : 兩種算法，第 2 種 : 陽男陰女順行，安天使於疾厄宮 (亦即：遷移宮地支+1)  */
     val fun天使_陽順陰逆 = { 遷移宮地支 : Branch , 年干 : Stem , gender : Gender ->
-      if (年干.booleanValue && gender === 男 || !年干.booleanValue && gender === 女) {
+      if (年干.booleanValue && gender === M || !年干.booleanValue && gender === F) {
         遷移宮地支.next(1)
       } else {
         遷移宮地支.prev(1)

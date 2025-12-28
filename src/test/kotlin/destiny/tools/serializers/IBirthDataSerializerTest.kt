@@ -8,9 +8,9 @@ import destiny.core.Gender
 import destiny.core.ITimeLoc
 import destiny.core.TimeLoc
 import destiny.core.calendar.locationOf
+import destiny.tools.KotlinLogging
 import destiny.tools.serializers.Assertions.assertBirthDataEquals
 import kotlinx.serialization.json.Json
-import destiny.tools.KotlinLogging
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.Test
@@ -26,7 +26,7 @@ class IBirthDataSerializerTest {
   @Test
   fun testSerializeDeserialize() {
     val timeLoc: ITimeLoc = TimeLoc(LocalDateTime.of(2023, 10, 24, 21, 40), locationOf(Locale.TAIWAN))
-    val gender = Gender.女
+    val gender = Gender.F
     val birthData = BirthData(timeLoc, gender)
 
     val serialized = json.encodeToString(IBirthDataSerializer, birthData)

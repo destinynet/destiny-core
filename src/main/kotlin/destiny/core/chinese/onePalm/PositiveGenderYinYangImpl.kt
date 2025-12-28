@@ -21,7 +21,7 @@ class PositiveGenderYinYangImpl : IPositive,
                                   Serializable {
 
   override fun isPositive(gender: Gender, yearBranch: Branch): Boolean {
-    return gender === Gender.男 && yearBranch.index % 2 == 0 || gender === Gender.女 && yearBranch.index % 2 == 1
+    return gender === Gender.M && yearBranch.index % 2 == 0 || gender === Gender.F && yearBranch.index % 2 == 1
   }
 
 }

@@ -78,8 +78,8 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
   /** 沒帶入節氣資料 */
   fun getPalmWithoutSolarTerms(gender: Gender, yearBranch: Branch, leap: Boolean, monthNum: Int, dayNum: Int, hourBranch: Branch, config: PalmConfig): IPalmModel {
     val positive = when (config.positiveImpl) {
-      PositiveImpl.Gender        -> gender == Gender.男
-      PositiveImpl.GenderYinYang -> gender === Gender.男 && yearBranch.index % 2 == 0 || gender === Gender.女 && yearBranch.index % 2 == 1
+      PositiveImpl.Gender        -> gender == Gender.M
+      PositiveImpl.GenderYinYang -> gender === Gender.M && yearBranch.index % 2 == 0 || gender === Gender.F && yearBranch.index % 2 == 1
     }
 
     val positiveValue = if (positive) 1 else -1
@@ -109,8 +109,8 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
     val ew = eightWordsFeature.getModel(lmt, loc)
 
     val positive = when (config.positiveImpl) {
-      PositiveImpl.Gender        -> gender == Gender.男
-      PositiveImpl.GenderYinYang -> gender === Gender.男 && ew.year.branch.index % 2 == 0 || gender === Gender.女 && ew.year.branch.index % 2 == 1
+      PositiveImpl.Gender        -> gender == Gender.M
+      PositiveImpl.GenderYinYang -> gender === Gender.M && ew.year.branch.index % 2 == 0 || gender === Gender.F && ew.year.branch.index % 2 == 1
     }
 
     val positiveValue = if (positive) 1 else -1

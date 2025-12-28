@@ -4,8 +4,8 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.AbstractPointTest
-import destiny.core.Gender.女
-import destiny.core.Gender.男
+import destiny.core.Gender.F
+import destiny.core.Gender.M
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.YinYang.陰
@@ -54,10 +54,10 @@ class StarLongevityTest : AbstractPointTest(StarLongevity::class) {
 
   @Test
   fun testRun() {
-    assertSame(申, fun長生.invoke(水, 男, 陽))
-    assertSame(戌, fun沐浴.invoke(木, 男, 陰))
-    assertSame(未, fun冠帶.invoke(金, 女, 陰))
-    assertSame(午, fun胎.invoke(土, 女, 陰))
-    assertSame(卯, fun養.invoke(火, 男, 陰))
+    assertSame(申, fun長生.invoke(水, M, 陽))
+    assertSame(戌, fun沐浴.invoke(木, M, 陰))
+    assertSame(未, fun冠帶.invoke(金, F, 陰))
+    assertSame(午, fun胎.invoke(土, F, 陰))
+    assertSame(卯, fun養.invoke(火, M, 陰))
   }
 }

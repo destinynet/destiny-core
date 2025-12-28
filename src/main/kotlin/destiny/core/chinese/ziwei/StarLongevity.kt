@@ -70,7 +70,7 @@ sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.n
       val head = func.invoke(fiveElement)
 
       val steps = list.indexOf(star)
-      if (gender === Gender.男 && yinYang.booleanValue || gender === Gender.女 && !yinYang.booleanValue) {
+      if (gender === Gender.M && yinYang.booleanValue || gender === Gender.F && !yinYang.booleanValue) {
         // 陽男 陰女 順行
         head.next(steps)
       } else {

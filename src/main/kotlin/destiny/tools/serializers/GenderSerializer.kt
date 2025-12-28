@@ -17,8 +17,8 @@ object GenderSerializer : KSerializer<Gender> {
 
   override fun serialize(encoder: Encoder, value: Gender) {
     val result = when (value) {
-      Gender.男 -> "M"
-      Gender.女 -> "F"
+      Gender.M -> "M"
+      Gender.F -> "F"
     }
     encoder.encodeString(result)
   }
@@ -26,8 +26,8 @@ object GenderSerializer : KSerializer<Gender> {
   override fun deserialize(decoder: Decoder): Gender {
     return decoder.decodeString().let { raw ->
       when (raw.uppercase()) {
-        "M", "男" -> Gender.男
-        "F", "女" -> Gender.女
+        "M", "男" -> Gender.M
+        "F", "女" -> Gender.F
         else      -> throw IllegalArgumentException("Invalid gender value : $raw")
       }
     }

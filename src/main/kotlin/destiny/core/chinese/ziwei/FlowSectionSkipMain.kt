@@ -18,7 +18,7 @@ class FlowSectionSkipMain : IFlowSection,
                             Serializable {
 
   override fun getAgeRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int> {
-    val steps: Int = if (yinYang.booleanValue && gender === Gender.男 || !yinYang.booleanValue && gender === Gender.女) {
+    val steps: Int = if (yinYang.booleanValue && gender === Gender.M || !yinYang.booleanValue && gender === Gender.F) {
       // 陽男陰女順行
       houseSeqImpl.getAheadOf(命宮.prev(1, houseSeqImpl), house)
     } else {

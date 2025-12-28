@@ -13,6 +13,7 @@ import destiny.core.calendar.chinese.Yuan
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.holo.IHoloFeature.Companion.threeKingHexagrams
 import destiny.core.fengshui.sanyuan.ISanYuan
 import destiny.core.iching.*
 import destiny.core.iching.Symbol.*
@@ -20,13 +21,9 @@ import destiny.core.iching.contentProviders.IHexNameFull
 import destiny.core.iching.divine.DivineTraditionalConfig
 import destiny.core.iching.divine.ISettingsOfStemBranch
 import destiny.core.iching.divine.SettingsOfStemBranch
-import destiny.tools.AbstractCachedPersonFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
-import destiny.tools.PersonFeature
+import destiny.tools.*
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
-import destiny.tools.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 
 @Serializable
@@ -85,7 +82,7 @@ interface IHoloFeature : PersonFeature<HoloConfig, IHolo> {
     val heavenSymbol = getHeavenSymbol(ew, gender, yuan)
     val earthSymbol = getEarthSymbol(ew, gender, yuan)
 
-    return if ((gender == Gender.男 && ew.year.stem.booleanValue) || (gender == Gender.女 && !ew.year.stem.booleanValue)) {
+    return if ((gender == Gender.M && ew.year.stem.booleanValue) || (gender == Gender.F && !ew.year.stem.booleanValue)) {
       Hexagram.of(heavenSymbol, earthSymbol)
     } else {
       Hexagram.of(earthSymbol, heavenSymbol)
@@ -119,7 +116,7 @@ interface IHoloFeature : PersonFeature<HoloConfig, IHolo> {
         0 -> {
           // 六陰爻
           when (gender) {
-            Gender.男 -> {
+            Gender.M -> {
               if (yearHalfYinYang.booleanValue) {
                 // 前半年
                 listOf(1, 2, 3, 1, 2, 3)[hour.index]
@@ -128,7 +125,7 @@ interface IHoloFeature : PersonFeature<HoloConfig, IHolo> {
                 listOf(6, 5, 4, 6, 5, 4)[hour.index]
               }
             }
-            Gender.女 -> {
+            Gender.F -> {
               listOf(1, 2, 3, 1, 2, 3)[hour.index]
             }
           }
@@ -152,10 +149,10 @@ interface IHoloFeature : PersonFeature<HoloConfig, IHolo> {
         else -> {
           // 六陽爻
           when (gender) {
-            Gender.男 -> {
+            Gender.M -> {
               listOf(1, 2, 3, 1, 2, 3)[hour.index]
             }
-            Gender.女 -> {
+            Gender.F -> {
               if (yearHalfYinYang.booleanValue) {
                 // 前半年
                 listOf(6, 5, 4, 6, 5, 4)[hour.index]
@@ -173,10 +170,10 @@ interface IHoloFeature : PersonFeature<HoloConfig, IHolo> {
         0 -> {
           // 六陽爻
           when (gender) {
-            Gender.男 -> {
+            Gender.M -> {
               listOf(4, 5, 6, 4, 5, 6)[hour.index - 6]
             }
-            Gender.女 -> {
+            Gender.F -> {
               if (yearHalfYinYang.booleanValue) {
                 // 前半年
                 listOf(3, 2, 1, 3, 2, 1)[hour.index - 6]
@@ -206,7 +203,7 @@ interface IHoloFeature : PersonFeature<HoloConfig, IHolo> {
         else -> {
           // 六陰爻
           when (gender) {
-            Gender.男 -> {
+            Gender.M -> {
               if (yearHalfYinYang.booleanValue) {
                 // 前半年
                 listOf(4, 5, 6, 4, 5, 6)[hour.index - 6]
@@ -215,7 +212,7 @@ interface IHoloFeature : PersonFeature<HoloConfig, IHolo> {
                 listOf(3, 2, 1, 3, 2, 1)[hour.index - 6]
               }
             }
-            Gender.女 -> {
+            Gender.F -> {
               listOf(4, 5, 6, 4, 5, 6)[hour.index - 6]
             }
           }

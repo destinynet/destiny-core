@@ -23,7 +23,7 @@ class FortuneDirectionFeature(private val eightWordsFeature: EightWordsFeature) 
 
     val eightWords = eightWordsFeature.getModel(gmtJulDay, loc, config)
 
-    return gender === Gender.男 && eightWords.year.stem.booleanValue
-      || gender === Gender.女 && !eightWords.year.stem.booleanValue
+    return gender === Gender.M && eightWords.year.stem.booleanValue
+      || gender === Gender.F && !eightWords.year.stem.booleanValue
   }
 }

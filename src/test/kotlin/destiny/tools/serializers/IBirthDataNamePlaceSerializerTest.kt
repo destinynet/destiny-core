@@ -23,7 +23,7 @@ class IBirthDataNamePlaceSerializerTest {
   @Test
   fun withFullData() {
     val timeLoc: ITimeLoc = TimeLoc(LocalDateTime.of(2023, 10, 24, 21, 40), locationOf(Locale.TAIWAN))
-    val gender = Gender.女
+    val gender = Gender.F
     val birthData = BirthData(timeLoc, gender)
     val name = "許功蓋"
     val place = "台北市"
@@ -39,7 +39,7 @@ class IBirthDataNamePlaceSerializerTest {
   @Test
   fun withNullFields() {
     val timeLoc: ITimeLoc = TimeLoc(LocalDateTime.of(2023, 10, 24, 21, 40), locationOf(Locale.TAIWAN))
-    val gender = Gender.女
+    val gender = Gender.F
     val birthData = BirthData(timeLoc, gender)
     val name = null
     val place = null

@@ -30,8 +30,8 @@ class SynastryModelTest {
   @Test
   fun testSerializeDeserialize() {
     val loc = locationOf(Locale.TAIWAN)
-    val inner = BirthDataNamePlace(Gender.男, LocalDateTime.of(1990, 1, 1, 12, 0), loc, "小明", "台北市")
-    val outer = BirthDataNamePlace(Gender.女, LocalDateTime.of(1994, 7, 1, 12, 0), loc, "小花", "台北市")
+    val inner = BirthDataNamePlace(Gender.M, LocalDateTime.of(1990, 1, 1, 12, 0), loc, "小明", "台北市")
+    val outer = BirthDataNamePlace(Gender.F, LocalDateTime.of(1994, 7, 1, 12, 0), loc, "小花", "台北市")
 
     val request = SynastryModel(inner, outer, SynastryGrain.INNER_FULL_OUTER_DATE, Domain.Bdnp.HOROSCOPE, SynastryRelationship.LOVE)
 

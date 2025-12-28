@@ -34,7 +34,7 @@ object IBirthDataNamePlaceSerializer : KSerializer<IBirthDataNamePlace> {
   }
 
   override fun deserialize(decoder: Decoder): IBirthDataNamePlace {
-    var birthData: IBirthData = BirthData(LocalDateTime.now(), locationOf(Locale.TAIWAN), Gender.男)
+    var birthData: IBirthData = BirthData(LocalDateTime.now(), locationOf(Locale.TAIWAN), Gender.M)
     var name: String? = null
     var place: String? = null
 

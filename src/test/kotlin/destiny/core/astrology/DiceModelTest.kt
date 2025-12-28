@@ -16,7 +16,7 @@ class DiceModelTest {
 
   @Test
   fun testSerialization() {
-    val model = DiceModel(DiceStar.JUPITER, ZodiacSign.TAURUS, 2, Gender.女, "詢問事業")
+    val model = DiceModel(DiceStar.JUPITER, ZodiacSign.TAURUS, 2, Gender.F, "詢問事業")
     Json.encodeToString(model).also { raw ->
       val actual = Json.decodeFromString<JsonElement>(raw)
       val expected = Json.decodeFromString<JsonElement>(
@@ -25,7 +25,7 @@ class DiceModelTest {
           "star": "JUPITER",
           "sign": "TAURUS",
           "house": 2,
-          "gender": "女",
+          "gender": "F",
           "question": "詢問事業"
         }
       """.trimIndent()

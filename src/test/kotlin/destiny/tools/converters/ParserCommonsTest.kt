@@ -14,10 +14,10 @@ class ParserCommonsTest {
   fun parseEnum() {
     ParserCommons.run {
 
-      assertSame(Gender.男, parseEnum("gender", Gender::class.java, mapOf("gender" to "男"), Gender.男))
-      assertSame(Gender.男, parseEnum("gender", Gender::class.java, emptyMap(), Gender.男))
-      assertSame(Gender.女, parseEnum("gender", Gender::class.java, emptyMap(), Gender.女))
-      assertSame(Gender.女, parseEnum("gender", Gender::class.java, mapOf("gender" to "X"), Gender.女))
+      assertSame(Gender.M, parseEnum("gender", Gender::class.java, mapOf("gender" to "男"), Gender.M))
+      assertSame(Gender.M, parseEnum("gender", Gender::class.java, emptyMap(), Gender.M))
+      assertSame(Gender.F, parseEnum("gender", Gender::class.java, emptyMap(), Gender.F))
+      assertSame(Gender.F, parseEnum("gender", Gender::class.java, mapOf("gender" to "X"), Gender.F))
 
       assertSame(Direction.R2L, parseEnum("dir", Direction::class.java, emptyMap(), Direction.R2L))
 

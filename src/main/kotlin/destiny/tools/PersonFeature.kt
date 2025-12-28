@@ -30,10 +30,10 @@ interface PersonFeature<out Config : Any, Model> : Feature<Config, Model> {
   }
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: @UnsafeVariance Config): Model {
-    return getPersonModel(gmtJulDay, loc, Gender.男, null, null, config)
+    return getPersonModel(gmtJulDay, loc, Gender.M, null, null, config)
   }
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: @UnsafeVariance Config): Model {
-    return getPersonModel(lmt, loc, Gender.男, null, null , config)
+    return getPersonModel(lmt, loc, Gender.M, null, null, config)
   }
 }

@@ -4,7 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
-import destiny.core.Gender.男
+import destiny.core.Gender.M
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 
@@ -37,7 +37,7 @@ interface ISmallRange {
      */
     fun getRanges(house: Branch, birthYear: Branch, gender: Gender): List<Int> {
       val start = getStartingHouse(birthYear)
-      val steps = if (gender === 男) house.getAheadOf(start) else start.getAheadOf(house)
+      val steps = if (gender === M) house.getAheadOf(start) else start.getAheadOf(house)
 
       val startAge = 1 + steps
 

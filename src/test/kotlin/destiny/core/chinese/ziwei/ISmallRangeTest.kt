@@ -15,7 +15,7 @@ class ISmallRangeTest {
 
   @Test
   fun getRanges() {
-    logger.info("{}", ISmallRange.getRanges(Branch.申, 酉, Gender.男))
+    logger.info("{}", ISmallRange.getRanges(Branch.申, 酉, Gender.M))
   }
 
 }
