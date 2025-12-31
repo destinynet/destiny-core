@@ -151,7 +151,7 @@ interface IRetrograde {
     else if (pos1.speedLng < 0 && pos2.speedLng > 0)
       RETROGRADE_TO_DIRECT
     else
-      throw RuntimeException("Error , 滯留前 speed = " + pos1.speedLng + " , 滯留後 speed = " + pos2.speedLng)
+      throw RuntimeException("Error , star = $star , fromGmt = $fromGmt , forward = $forward , 滯留前 speed = ${pos1.speedLng} , 滯留後 speed = ${pos2.speedLng}")
 
     return Stationary(nextStationary, star, type, pos)
   }
