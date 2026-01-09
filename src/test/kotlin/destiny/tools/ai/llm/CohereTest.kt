@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2024-10-14.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
 import destiny.tools.KotlinLogging
 import kotlinx.serialization.json.Json

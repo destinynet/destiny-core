@@ -1,8 +1,9 @@
 /**
  * Created by smallufo on 2025-05-12.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
+import destiny.tools.ai.ChatOptions
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient

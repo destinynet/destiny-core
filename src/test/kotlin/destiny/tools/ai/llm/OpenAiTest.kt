@@ -1,12 +1,13 @@
 /**
  * Created by smallufo on 2024-10-14.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
 import com.jayway.jsonpath.JsonPath
 import destiny.tools.KotlinLogging
-import destiny.tools.ai.OpenAi.Response.NormalResponse
+import destiny.tools.ai.llm.OpenAi.Response.NormalResponse
 import destiny.tools.ai.model.SynastryReply
+import destiny.tools.ai.toJsonSchema
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested
 import kotlin.test.*
@@ -31,7 +32,7 @@ class OpenAiTest {
     fun text() {
       val chatModel = OpenAi.ChatModel(
         listOf(OpenAi.Message("user", "test message", null, null, emptyList())),
-        null, "gpt-4o", OpenAi.OpenAiOptions(0.9 , null, null), null, emptyList(), null
+        null, "gpt-4o", OpenAi.OpenAiOptions(0.9, null, null), null, emptyList(), null
       )
       json.encodeToString(chatModel).also { raw ->
         logger.info { raw }

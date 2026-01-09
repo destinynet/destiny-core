@@ -1,13 +1,14 @@
 /**
  * Created by smallufo on 2023-12-30.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
 import com.jayway.jsonpath.JsonPath
 import destiny.tools.KotlinLogging
+import destiny.tools.ai.InputSchema
 import destiny.tools.ai.InputSchema.Property
-import destiny.tools.ai.OpenAi.FunctionDeclaration
-import destiny.tools.ai.OpenAi.FunctionDeclaration.Function
+import destiny.tools.ai.llm.OpenAi.FunctionDeclaration
+import destiny.tools.ai.llm.OpenAi.FunctionDeclaration.Function
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test

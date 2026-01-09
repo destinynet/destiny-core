@@ -1,7 +1,4 @@
-/**
- * Created by smallufo on 2024-10-14.
- */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
 import destiny.tools.KotlinLogging
 import kotlinx.serialization.json.Json
@@ -11,6 +8,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
+/**
+ * Created by smallufo on 2024-10-14.
+ */
 class ClaudeTest {
 
   val json = Json {

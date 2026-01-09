@@ -12,9 +12,9 @@ import java.util.*
 
 
 @Serializable(with = DomainSerializer::class)
-sealed class Domain(val bdnpGenerated: Boolean) {
+sealed class Domain {
 
-  sealed class Bdnp : Domain(true) {
+  sealed class Bdnp : Domain() {
     /** 八字 */
     data object EW : Bdnp()
 
@@ -27,31 +27,31 @@ sealed class Domain(val bdnpGenerated: Boolean) {
 
 
   /** 易經隨機起卦 */
-  data object ICHING_RAND : Domain(false)
+  data object ICHING_RAND : Domain()
 
   /** 塔羅占卜 */
-  data object TAROT : Domain(false)
+  data object TAROT : Domain()
 
   /** 籤詩 */
-  data object CHANCE : Domain(false)
+  data object CHANCE : Domain()
 
   /** 風水 , 地圖空拍版 */
-  data object FENGSHUI_AERIAL : Domain(false)
+  data object FENGSHUI_AERIAL : Domain()
 
   /** 占星骰子 */
-  sealed class AstroDice : Domain(false) {
+  sealed class AstroDice : Domain() {
     data object ASTRO_DICE_SIMPLE : AstroDice()
     data object ASTRO_DICE_ADVANCED : AstroDice()
   }
 
   /** 紫微占卜 */
-  data object ZIWEI_DIVINE : Domain(false)
+  data object ZIWEI_DIVINE : Domain()
 
   /** 卜卦占星 */
-  data object HORARY : Domain(false)
+  data object HORARY : Domain()
 
   /** 運勢 */
-  sealed class Period : Domain(true) {
+  sealed class Period : Domain() {
     /** 占星每日運勢 */
     data object DAILY_HOROSCOPE : Period()
 
@@ -60,16 +60,16 @@ sealed class Domain(val bdnpGenerated: Boolean) {
   }
 
   /** 合盤 */
-  data object SYNASTRY : Domain(true)
+  data object SYNASTRY : Domain()
 
   /** 擇日 */
-  sealed class Electional : Domain(false) {
+  sealed class Electional : Domain() {
     data object ELECTIONAL_YEAR_MONTH : Electional()
     data object ELECTIONAL_DAY_HOUR : Electional()
   }
 
   /** 連結到個人命盤 */
-  sealed class BirthData : Domain(true) {
+  sealed class BirthData : Domain() {
     /** 個人星盤 : 占星 */
     data object BIRTHDATA_HOROSCOPE : BirthData()
   }

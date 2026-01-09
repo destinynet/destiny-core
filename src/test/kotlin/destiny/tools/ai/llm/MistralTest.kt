@@ -1,11 +1,12 @@
 /**
  * Created by smallufo on 2025-04-04.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
 import com.jayway.jsonpath.JsonPath
 import destiny.tools.KotlinLogging
 import destiny.tools.ai.model.BirthDataReply
+import destiny.tools.ai.toJsonSchema
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test

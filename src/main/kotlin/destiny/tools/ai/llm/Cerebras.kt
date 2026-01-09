@@ -1,9 +1,9 @@
 /**
  * Created by smallufo on 2025-05-16.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
-import destiny.tools.ai.OpenAi.FunctionDeclaration
+import destiny.tools.ai.ChatOptions
 import kotlinx.serialization.*
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
@@ -67,7 +67,7 @@ class Cerebras {
     val model: String,
     @Transient
     val options: CerebrasOptions? = null,
-    val tools: List<FunctionDeclaration>? = null,
+    val tools: List<OpenAi.FunctionDeclaration>? = null,
   ) {
     val temperature: Double? = options?.temperature
 

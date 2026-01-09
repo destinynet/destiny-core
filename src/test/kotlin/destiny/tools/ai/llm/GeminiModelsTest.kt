@@ -1,13 +1,13 @@
 /**
  * Created by smallufo on 2023-12-31.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
 import destiny.tools.KotlinLogging
-import destiny.tools.ai.Gemini.Content.Part.FunctionCall
-import destiny.tools.ai.Gemini.FunctionDeclaration
-import destiny.tools.ai.Gemini.FunctionDeclaration.Parameters
-import destiny.tools.ai.Gemini.FunctionDeclaration.Parameters.Argument
+import destiny.tools.ai.llm.Gemini.Content.Part.FunctionCall
+import destiny.tools.ai.llm.Gemini.FunctionDeclaration
+import destiny.tools.ai.llm.Gemini.FunctionDeclaration.Parameters
+import destiny.tools.ai.llm.Gemini.FunctionDeclaration.Parameters.Argument
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive

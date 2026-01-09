@@ -1,5 +1,9 @@
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
+import destiny.tools.ai.ChatOptions
+import destiny.tools.ai.IFunctionDeclaration
+import destiny.tools.ai.InputSchema
+import destiny.tools.ai.JsonSchemaSpec
 import destiny.tools.ai.model.ResponseFormat
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
@@ -128,4 +132,18 @@ class OpenAi {
       ResponseFormat.TextResponse
     }
   }
+}
+
+fun IFunctionDeclaration.toOpenAi(): OpenAi.FunctionDeclaration {
+  return OpenAi.FunctionDeclaration(
+    "function",
+    OpenAi.FunctionDeclaration.Function(
+      this.name, this.description,
+      InputSchema(
+        "object",
+        this.parameters.associate { p -> p.name to InputSchema.Property(p.type, p.description, null) },
+        this.parameters.filter { it.required }.map { it.name }.toList()
+      )
+    )
+  )
 }

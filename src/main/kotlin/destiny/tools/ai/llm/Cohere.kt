@@ -1,8 +1,11 @@
 /**
  * Created by smallufo on 2024-10-14.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
+import destiny.tools.ai.ChatOptions
+import destiny.tools.ai.IFunctionDeclaration
+import destiny.tools.ai.InputSchema
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -92,4 +95,24 @@ class Cohere {
     @Serializable
     data class Function(val name: String, val description: String, val parameters: InputSchema)
   }
+}
+
+fun IFunctionDeclaration.toCohere(): Cohere.ToolFunction {
+  return Cohere.ToolFunction(
+    "function",
+    Cohere.ToolFunction.Function(
+      this.name,
+      this.description,
+      InputSchema(
+        "object",
+        this.parameters.associate { p ->
+          p.name to InputSchema.Property(
+            p.type,
+            p.description
+          )
+        },
+        this.parameters.filter { it.required }.map { it.name }
+      )
+    )
+  )
 }

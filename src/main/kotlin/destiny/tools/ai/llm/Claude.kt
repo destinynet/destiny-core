@@ -1,8 +1,11 @@
 /**
  * Created by smallufo on 2024-08-24.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
+import destiny.tools.ai.ChatOptions
+import destiny.tools.ai.IFunctionDeclaration
+import destiny.tools.ai.InputSchema
 import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
@@ -147,5 +150,21 @@ class Claude {
 
   @Serializable
   data class Function(val name: String, val description: String, @SerialName("input_schema") val inputSchema: InputSchema)
+}
 
+fun IFunctionDeclaration.toClaude(): Claude.Function {
+  return Claude.Function(
+    this.name,
+    this.description,
+    InputSchema(
+      "object",
+      this.parameters.associate { p ->
+        p.name to InputSchema.Property(
+          p.type,
+          p.description
+        )
+      },
+      this.parameters.filter { it.required }.map { it.name }
+    )
+  )
 }

@@ -1,8 +1,11 @@
 /**
  * Created by smallufo on 2024-11-06.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
+import destiny.tools.ai.ChatOptions
+import destiny.tools.ai.IFunctionDeclaration
+import destiny.tools.ai.InputSchema
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -133,4 +136,23 @@ class Xai {
 
   @Serializable
   data class Function(val name: String, val description: String, val parameters: InputSchema)
+}
+
+fun IFunctionDeclaration.toXai(): Xai.ToolFunction {
+  return Xai.ToolFunction(
+    Xai.Function(
+      this.name,
+      this.description,
+      InputSchema(
+        "object",
+        this.parameters.associate { p ->
+          p.name to InputSchema.Property(
+            p.type,
+            p.description
+          )
+        },
+        this.parameters.filter { it.required }.map { it.name }
+      )
+    )
+  )
 }

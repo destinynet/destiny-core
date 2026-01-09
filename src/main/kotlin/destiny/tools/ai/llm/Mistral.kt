@@ -1,9 +1,12 @@
 /**
  * Created by smallufo on 2025-01-01.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
-import destiny.tools.ai.OpenAi.FunctionDeclaration
+import destiny.tools.ai.ChatOptions
+import destiny.tools.ai.IFunctionDeclaration
+import destiny.tools.ai.JsonSchemaSpec
+import destiny.tools.ai.llm.OpenAi.FunctionDeclaration
 import destiny.tools.ai.model.ResponseFormat
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
@@ -43,7 +46,7 @@ class Mistral {
     val maxTokens: Int = 4096,
     @Transient
     val jsonSchemaSpec: JsonSchemaSpec? = null,
-    val tools: List<FunctionDeclaration>? = null,
+    val tools: List<OpenAi.FunctionDeclaration>? = null,
   ) {
 
     val temperature: Double? = options?.temperature
@@ -84,6 +87,8 @@ class Mistral {
       }
     }
   }
+}
 
-
+fun IFunctionDeclaration.toMistral(): FunctionDeclaration {
+  return this.toOpenAi()
 }

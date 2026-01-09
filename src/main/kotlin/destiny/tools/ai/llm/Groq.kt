@@ -1,10 +1,10 @@
 /**
  * Created by smallufo on 2025-01-01.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
-import destiny.tools.ai.OpenAi.FunctionDeclaration
-import destiny.tools.ai.OpenAi.Message.ToolCall
+import destiny.tools.ai.ChatOptions
+import destiny.tools.ai.JsonSchemaSpec
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -19,7 +19,7 @@ class Groq {
                      //@Transient
                      val reasoning: String? = null,
                      @SerialName("tool_call_id") val toolCallId: String? = null,
-                     @SerialName("tool_calls") val toolCalls: List<ToolCall>? = null
+                     @SerialName("tool_calls") val toolCalls: List<OpenAi.Message.ToolCall>? = null
   )
 
   @Serializable
@@ -75,7 +75,7 @@ class Groq {
     val user: String?,
     @Transient
     val options: GroqOptions? = null,
-    val tools: List<FunctionDeclaration>? = null,
+    val tools: List<OpenAi.FunctionDeclaration>? = null,
     @SerialName("max_completion_tokens")
     val maxCompletionTokens: Int? = null,
 

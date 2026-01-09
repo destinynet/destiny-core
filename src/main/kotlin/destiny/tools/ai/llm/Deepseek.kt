@@ -1,8 +1,11 @@
 /**
  * Created by smallufo on 2024-12-26.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
+import destiny.tools.ai.ChatOptions
+import destiny.tools.ai.IFunctionDeclaration
+import destiny.tools.ai.JsonSchemaSpec
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -113,5 +116,8 @@ class Deepseek {
       ResponseFormat.JsonObject
     }
   }
+}
 
+fun IFunctionDeclaration.toDeepseek(): OpenAi.FunctionDeclaration {
+  return this.toOpenAi()
 }

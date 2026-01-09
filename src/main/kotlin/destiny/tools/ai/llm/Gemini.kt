@@ -1,8 +1,9 @@
 /**
  * Created by smallufo on 2023-12-31.
  */
-package destiny.tools.ai
+package destiny.tools.ai.llm
 
+import destiny.tools.ai.IFunctionDeclaration
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
@@ -161,4 +162,14 @@ class Gemini {
   }
 }
 
-
+fun IFunctionDeclaration.toGemini(): Gemini.FunctionDeclaration {
+  return Gemini.FunctionDeclaration(
+    this.name,
+    this.description,
+    Gemini.FunctionDeclaration.Parameters(
+      "object",
+      this.parameters.associate { p -> p.name to Gemini.FunctionDeclaration.Parameters.Argument(p.type, p.description) },
+      this.parameters.filter { it.required }.map { it.name }.toList()
+    )
+  )
+}
