@@ -36,6 +36,20 @@ fun KType.toJsonSchemaType(): String {
 
 private val logger = KotlinLogging.logger { }
 
+/**
+ * 取得 enum 值的序列化名稱，優先使用 @SerialName 註解的值
+ */
+@PublishedApi
+internal fun getEnumSerialName(enumClass: KClass<*>, enumValue: Any): String {
+  return try {
+    // 嘗試取得該 enum 常數對應的 field，檢查是否有 @SerialName 註解
+    val field = enumClass.java.getField(enumValue.toString())
+    field.getAnnotation(SerialName::class.java)?.value ?: enumValue.toString()
+  } catch (e: Exception) {
+    enumValue.toString()
+  }
+}
+
 fun <T : Any> KClass<T>.toJsonSchema(name: String, description: String? = null): JsonSchemaSpec {
   val kType = this.starProjectedType
 
@@ -111,14 +125,17 @@ inline fun <reified K : Enum<K>, reified V> toEnumMapJsonSchema(
 
     putJsonObject("properties") {
       keyClass.java.enumConstants.forEach { enumVal ->
-        putJsonObject(enumVal.name) {
+        val serialName = getEnumSerialName(keyClass, enumVal)
+        putJsonObject(serialName) {
           put("type", valueType.toJsonSchemaType())
         }
       }
     }
 
     putJsonArray("required") {
-      keyClass.java.enumConstants.forEach { add(JsonPrimitive(it.name)) }
+      keyClass.java.enumConstants.forEach { enumVal ->
+        add(JsonPrimitive(getEnumSerialName(keyClass, enumVal)))
+      }
     }
 
     put("additionalProperties", JsonPrimitive(false))
@@ -200,7 +217,8 @@ private fun JsonObjectBuilder.handleMapType(mapType: KType, visited: MutableSet<
     put("additionalProperties", JsonPrimitive(false))
     putJsonObject("properties") {
       enumValues.forEach { enumValue ->
-        putJsonObject(enumValue.toString()) {
+        val serialName = getEnumSerialName(enumClass, enumValue)
+        putJsonObject(serialName) {
           addValueTypeSchema(valueType, visited)
         }
       }
@@ -265,8 +283,8 @@ private fun JsonObjectBuilder.handleEnumType(enumClass: KClass<*>) {
   put("type", "string")
   put("description", "Enum of ${enumClass.simpleName}")
   putJsonArray("enum") {
-    enumClass.java.enumConstants.forEach {
-      add(JsonPrimitive(it.toString()))
+    enumClass.java.enumConstants.forEach { enumValue ->
+      add(JsonPrimitive(getEnumSerialName(enumClass, enumValue)))
     }
   }
 }

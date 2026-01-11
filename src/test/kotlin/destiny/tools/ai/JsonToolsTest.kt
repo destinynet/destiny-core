@@ -1,6 +1,7 @@
 package destiny.tools.ai
 
 import destiny.tools.KotlinLogging
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -19,6 +20,13 @@ class JsonToolsTest {
   data class Foo(val id: Int, val name: String)
 
   enum class MyEnum { A, B }
+
+  // Enum with @SerialName annotations
+  enum class Status {
+    @SerialName("active") ACTIVE,
+    @SerialName("inactive") INACTIVE,
+    @SerialName("pending_review") PENDING_REVIEW
+  }
 
   @JvmInline
   value class UserId(val value: String)
@@ -156,6 +164,50 @@ class JsonToolsTest {
       assertEquals(setOf("A", "B"), enums)
       val req = spec.schema["required"]!!.jsonArray.map { it.jsonPrimitive.content }.toSet()
       assertEquals(setOf("status"), req)
+    }
+
+    @Test
+    fun `enum property with SerialName should use serialized names`() {
+      data class HasStatus(val status: Status)
+      val spec = HasStatus::class.toJsonSchema("HasStatus", null)
+      val prop = spec.schema["properties"]!!.jsonObject["status"]!!.jsonObject
+      logger.info { "Enum with @SerialName schema: $prop" }
+      assertEquals("string", prop["type"]!!.jsonPrimitive.content)
+      val enums = prop["enum"]!!.jsonArray.map { it.jsonPrimitive.content }.toSet()
+      // Should use @SerialName values, not enum constant names
+      assertEquals(setOf("active", "inactive", "pending_review"), enums)
+    }
+
+    @Test
+    fun `map with SerialName enum keys should use serialized names`() {
+      data class MapWithSerialNameEnum(val statusMap: Map<Status, String>)
+      val spec = MapWithSerialNameEnum::class.toJsonSchema("MapWithSerialNameEnum", null)
+      val schema = spec.schema
+      logger.info { "Map with @SerialName enum keys: $schema" }
+      val statusMap = schema["properties"]!!.jsonObject["statusMap"]!!.jsonObject
+      val props = statusMap["properties"]!!.jsonObject
+      // Should use @SerialName values as keys
+      assertTrue(props.containsKey("active"), "Should have 'active' key")
+      assertTrue(props.containsKey("inactive"), "Should have 'inactive' key")
+      assertTrue(props.containsKey("pending_review"), "Should have 'pending_review' key")
+      assertFalse(props.containsKey("ACTIVE"), "Should NOT have 'ACTIVE' key")
+      assertFalse(props.containsKey("INACTIVE"), "Should NOT have 'INACTIVE' key")
+    }
+
+    @Test
+    fun `toEnumMapJsonSchema with SerialName enum should use serialized names`() {
+      val spec = toEnumMapJsonSchema<Status, Int>("statusMap", "Status scores")
+      val schema = spec.schema
+      logger.info { "toEnumMapJsonSchema with @SerialName: $schema" }
+      val props = schema["properties"]!!.jsonObject
+      // Should use @SerialName values as keys
+      assertTrue(props.containsKey("active"), "Should have 'active' key")
+      assertTrue(props.containsKey("inactive"), "Should have 'inactive' key")
+      assertTrue(props.containsKey("pending_review"), "Should have 'pending_review' key")
+      assertFalse(props.containsKey("ACTIVE"), "Should NOT have 'ACTIVE' key")
+      // Required should also use serialized names
+      val req = schema["required"]!!.jsonArray.map { it.jsonPrimitive.content }.toSet()
+      assertEquals(setOf("active", "inactive", "pending_review"), req)
     }
 
     @Test
