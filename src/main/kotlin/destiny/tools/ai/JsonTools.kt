@@ -22,9 +22,13 @@ fun KType.toJsonSchemaType(): String {
     this.isSubtypeOf(typeOf<Boolean>())                                         -> "boolean"
     this.isSubtypeOf(typeOf<List<*>>()) || this.isSubtypeOf(typeOf<Array<*>>()) -> "array"
     this.isSubtypeOf(typeOf<Map<*, *>>())                                       -> "object"
-    this.isSubtypeOf(typeOf<java.util.Date>()) ||
-      this.isSubtypeOf(typeOf<java.time.LocalDate>()) ||
-      this.isSubtypeOf(typeOf<java.time.LocalDateTime>())                       -> "string"
+    // Date/Time types
+    this.isSubtypeOf(typeOf<java.time.LocalDate>())                             -> "string"
+    this.isSubtypeOf(typeOf<java.time.LocalDateTime>())                         -> "string"
+    this.isSubtypeOf(typeOf<java.time.ZonedDateTime>())                         -> "string"
+    this.isSubtypeOf(typeOf<java.time.OffsetDateTime>())                        -> "string"
+    this.isSubtypeOf(typeOf<java.time.Instant>())                               -> "string"
+    this.isSubtypeOf(typeOf<java.util.Date>())                                  -> "string"
 
     this.isSubtypeOf(typeOf<java.math.BigInteger>()) ||
       this.isSubtypeOf(typeOf<java.math.BigDecimal>())                          -> "string"
@@ -32,6 +36,30 @@ fun KType.toJsonSchemaType(): String {
     this.isSubtypeOf(typeOf<Enum<*>>())                                         -> "string"
     else                                                                        -> "object"
   }
+}
+
+/**
+ * 取得 JSON Schema 的 format 欄位值 (用於日期/時間類型)
+ * @return format 字串，若非日期類型則回傳 null
+ */
+fun KType.toJsonSchemaFormat(): String? {
+  return when {
+    this.isSubtypeOf(typeOf<java.time.LocalDate>())      -> "date"
+    this.isSubtypeOf(typeOf<java.time.LocalDateTime>())  -> "date-time"
+    this.isSubtypeOf(typeOf<java.time.ZonedDateTime>())  -> "date-time"
+    this.isSubtypeOf(typeOf<java.time.OffsetDateTime>()) -> "date-time"
+    this.isSubtypeOf(typeOf<java.time.Instant>())        -> "date-time"
+    this.isSubtypeOf(typeOf<java.util.Date>())           -> "date-time"
+    else                                                 -> null
+  }
+}
+
+/**
+ * 在 JsonObjectBuilder 中加入 type 和 format (如果有的話)
+ */
+private fun JsonObjectBuilder.putTypeAndFormat(kType: KType) {
+  put("type", kType.toJsonSchemaType())
+  kType.toJsonSchemaFormat()?.let { put("format", it) }
 }
 
 private val logger = KotlinLogging.logger { }
@@ -128,6 +156,7 @@ inline fun <reified K : Enum<K>, reified V> toEnumMapJsonSchema(
         val serialName = getEnumSerialName(keyClass, enumVal)
         putJsonObject(serialName) {
           put("type", valueType.toJsonSchemaType())
+          valueType.toJsonSchemaFormat()?.let { put("format", it) }
         }
       }
     }
@@ -178,9 +207,9 @@ private fun JsonObjectBuilder.processClassProperties(kClass: KClass<*>, visited:
         else if (propertyType.toJsonSchemaType() == "object" && propertyType.classifier is KClass<*>) {
           handleObjectType(propertyType.classifier as KClass<*>, visited)
         }
-        // Handle primitive types
+        // Handle primitive types (including date/time with format)
         else {
-          put("type", propertyType.toJsonSchemaType())
+          putTypeAndFormat(propertyType)
         }
       }
     }
@@ -240,7 +269,7 @@ private fun JsonObjectBuilder.addValueTypeSchema(valueType: KType?, visited: Mut
         handleObjectType(valueType.classifier as KClass<*>, visited)
 
       else                                                                                  ->
-        put("type", valueType.toJsonSchemaType())
+        putTypeAndFormat(valueType)
     }
   } else {
     put("type", "string")
@@ -271,8 +300,8 @@ private fun JsonObjectBuilder.handleCollectionType(collectionType: KType, visite
           addRequiredFields(elementClass)
         }
       } else {
-        // Simple type
-        put("type", elementType.toJsonSchemaType())
+        // Simple type (including date/time with format)
+        putTypeAndFormat(elementType)
       }
     }
   }

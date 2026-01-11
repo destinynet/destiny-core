@@ -81,19 +81,128 @@ class JsonToolsTest {
     }
 
     @Test
-    fun `date and big types map to string`() {
-      data class DateHolder(
-        val date: java.util.Date,
-        val ld: java.time.LocalDate,
-        val ldt: java.time.LocalDateTime,
+    fun `big types map to string without format`() {
+      data class BigHolder(
         val bi: java.math.BigInteger,
         val bd: java.math.BigDecimal
       )
-      val spec = DateHolder::class.toJsonSchema("DateHolder", null)
+      val spec = BigHolder::class.toJsonSchema("BigHolder", null)
       val props = spec.schema["properties"]!!.jsonObject
-      listOf("date", "ld", "ldt", "bi", "bd").forEach { name ->
+      listOf("bi", "bd").forEach { name ->
         assertEquals("string", props[name]!!.jsonObject["type"]!!.jsonPrimitive.content)
+        assertFalse(props[name]!!.jsonObject.containsKey("format"), "$name should not have format")
       }
+    }
+  }
+
+  @Nested
+  inner class DateTimeFormatTest {
+
+    @Test
+    fun `LocalDate should have format date`() {
+      data class LocalDateHolder(val date: java.time.LocalDate)
+      val spec = LocalDateHolder::class.toJsonSchema("LocalDateHolder", null)
+      val prop = spec.schema["properties"]!!.jsonObject["date"]!!.jsonObject
+      logger.info { "LocalDate schema: $prop" }
+      assertEquals("string", prop["type"]!!.jsonPrimitive.content)
+      assertEquals("date", prop["format"]!!.jsonPrimitive.content)
+    }
+
+    @Test
+    fun `LocalDateTime should have format date-time`() {
+      data class LocalDateTimeHolder(val dateTime: java.time.LocalDateTime)
+      val spec = LocalDateTimeHolder::class.toJsonSchema("LocalDateTimeHolder", null)
+      val prop = spec.schema["properties"]!!.jsonObject["dateTime"]!!.jsonObject
+      logger.info { "LocalDateTime schema: $prop" }
+      assertEquals("string", prop["type"]!!.jsonPrimitive.content)
+      assertEquals("date-time", prop["format"]!!.jsonPrimitive.content)
+    }
+
+    @Test
+    fun `ZonedDateTime should have format date-time`() {
+      data class ZonedDateTimeHolder(val zonedDateTime: java.time.ZonedDateTime)
+      val spec = ZonedDateTimeHolder::class.toJsonSchema("ZonedDateTimeHolder", null)
+      val prop = spec.schema["properties"]!!.jsonObject["zonedDateTime"]!!.jsonObject
+      logger.info { "ZonedDateTime schema: $prop" }
+      assertEquals("string", prop["type"]!!.jsonPrimitive.content)
+      assertEquals("date-time", prop["format"]!!.jsonPrimitive.content)
+    }
+
+    @Test
+    fun `OffsetDateTime should have format date-time`() {
+      data class OffsetDateTimeHolder(val offsetDateTime: java.time.OffsetDateTime)
+      val spec = OffsetDateTimeHolder::class.toJsonSchema("OffsetDateTimeHolder", null)
+      val prop = spec.schema["properties"]!!.jsonObject["offsetDateTime"]!!.jsonObject
+      logger.info { "OffsetDateTime schema: $prop" }
+      assertEquals("string", prop["type"]!!.jsonPrimitive.content)
+      assertEquals("date-time", prop["format"]!!.jsonPrimitive.content)
+    }
+
+    @Test
+    fun `Instant should have format date-time`() {
+      data class InstantHolder(val instant: java.time.Instant)
+      val spec = InstantHolder::class.toJsonSchema("InstantHolder", null)
+      val prop = spec.schema["properties"]!!.jsonObject["instant"]!!.jsonObject
+      logger.info { "Instant schema: $prop" }
+      assertEquals("string", prop["type"]!!.jsonPrimitive.content)
+      assertEquals("date-time", prop["format"]!!.jsonPrimitive.content)
+    }
+
+    @Test
+    fun `java util Date should have format date-time`() {
+      data class UtilDateHolder(val date: java.util.Date)
+      val spec = UtilDateHolder::class.toJsonSchema("UtilDateHolder", null)
+      val prop = spec.schema["properties"]!!.jsonObject["date"]!!.jsonObject
+      logger.info { "java.util.Date schema: $prop" }
+      assertEquals("string", prop["type"]!!.jsonPrimitive.content)
+      assertEquals("date-time", prop["format"]!!.jsonPrimitive.content)
+    }
+
+    @Test
+    fun `all date time types in one class`() {
+      data class AllDateTimeTypes(
+        val localDate: java.time.LocalDate,
+        val localDateTime: java.time.LocalDateTime,
+        val zonedDateTime: java.time.ZonedDateTime,
+        val offsetDateTime: java.time.OffsetDateTime,
+        val instant: java.time.Instant,
+        val utilDate: java.util.Date
+      )
+      val spec = AllDateTimeTypes::class.toJsonSchema("AllDateTimeTypes", null)
+      val props = spec.schema["properties"]!!.jsonObject
+      logger.info { "All date/time types schema: ${spec.schema}" }
+
+      // LocalDate -> format: date
+      assertEquals("date", props["localDate"]!!.jsonObject["format"]!!.jsonPrimitive.content)
+
+      // All others -> format: date-time
+      listOf("localDateTime", "zonedDateTime", "offsetDateTime", "instant", "utilDate").forEach { name ->
+        assertEquals("date-time", props[name]!!.jsonObject["format"]!!.jsonPrimitive.content,
+          "$name should have format date-time")
+      }
+    }
+
+    @Test
+    fun `date in list should have format`() {
+      data class DateListHolder(val dates: List<java.time.LocalDate>)
+      val spec = DateListHolder::class.toJsonSchema("DateListHolder", null)
+      val datesSchema = spec.schema["properties"]!!.jsonObject["dates"]!!.jsonObject
+      logger.info { "List<LocalDate> schema: $datesSchema" }
+      assertEquals("array", datesSchema["type"]!!.jsonPrimitive.content)
+      val items = datesSchema["items"]!!.jsonObject
+      assertEquals("string", items["type"]!!.jsonPrimitive.content)
+      assertEquals("date", items["format"]!!.jsonPrimitive.content)
+    }
+
+    @Test
+    fun `date in map value should have format`() {
+      data class DateMapHolder(val dateMap: Map<String, java.time.LocalDateTime>)
+      val spec = DateMapHolder::class.toJsonSchema("DateMapHolder", null)
+      val mapSchema = spec.schema["properties"]!!.jsonObject["dateMap"]!!.jsonObject
+      logger.info { "Map<String, LocalDateTime> schema: $mapSchema" }
+      val additionalProps = mapSchema["additionalProperties"]!!.jsonObject
+      assertEquals("string", additionalProps["type"]!!.jsonPrimitive.content)
+      assertEquals("date-time", additionalProps["format"]!!.jsonPrimitive.content)
     }
   }
 
