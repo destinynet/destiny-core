@@ -59,10 +59,12 @@ fun <T : Any> KClass<T>.toJsonSchema(name: String, description: String? = null):
 
 
   // 否則當作複合型別（如 data class）處理
+  // 使用 visited set 追蹤遞迴路徑，偵測循環參照
+  val visited = mutableSetOf<KClass<*>>()
   val schema = buildJsonObject {
     put("type", "object")
     putJsonObject("properties") {
-      processClassProperties(this@toJsonSchema)
+      processClassProperties(this@toJsonSchema, visited)
     }
     addRequiredFields(this@toJsonSchema)
     description?.let { put("description", it) }
@@ -126,38 +128,48 @@ inline fun <reified K : Enum<K>, reified V> toEnumMapJsonSchema(
 }
 
 // Extension function to process class properties recursively
-private fun JsonObjectBuilder.processClassProperties(kClass: KClass<*>) {
+private fun JsonObjectBuilder.processClassProperties(kClass: KClass<*>, visited: MutableSet<KClass<*>>) {
+  // 加入 visited set，如果已存在表示循環參照
+  if (!visited.add(kClass)) {
+    logger.warn { "Detected circular reference at ${kClass.qualifiedName}, using \$ref placeholder" }
+    return
+  }
 
-  kClass.memberProperties.forEach { property ->
-    val propName = property.findAnnotation<SerialName>()?.value ?: property.name
-    putJsonObject(propName) {
-      val propertyType = property.returnType
+  try {
+    kClass.memberProperties.forEach { property ->
+      val propName = property.findAnnotation<SerialName>()?.value ?: property.name
+      putJsonObject(propName) {
+        val propertyType = property.returnType
 
-      val classifier = propertyType.classifier
-      // 防禦性處理 generic / star-projection
-      if (classifier !is KClass<*>) return@putJsonObject
+        val classifier = propertyType.classifier
+        // 防禦性處理 generic / star-projection
+        if (classifier !is KClass<*>) return@putJsonObject
 
-      // Handle Map types
-      if (propertyType.isSubtypeOf(typeOf<Map<*, *>>())) {
-        handleMapType(propertyType)
-      }
-      // Handle List/Array types
-      else if (propertyType.isSubtypeOf(typeOf<List<*>>()) || propertyType.isSubtypeOf(typeOf<Array<*>>())) {
-        handleCollectionType(propertyType)
-      }
-      // Handle Enum types
-      else if (propertyType.classifier is KClass<*> && (propertyType.classifier as KClass<*>).java.isEnum) {
-        handleEnumType(propertyType.classifier as KClass<*>)
-      }
-      // Handle nested object types
-      else if (propertyType.toJsonSchemaType() == "object" && propertyType.classifier is KClass<*>) {
-        handleObjectType(propertyType.classifier as KClass<*>)
-      }
-      // Handle primitive types
-      else {
-        put("type", propertyType.toJsonSchemaType())
+        // Handle Map types
+        if (propertyType.isSubtypeOf(typeOf<Map<*, *>>())) {
+          handleMapType(propertyType, visited)
+        }
+        // Handle List/Array types
+        else if (propertyType.isSubtypeOf(typeOf<List<*>>()) || propertyType.isSubtypeOf(typeOf<Array<*>>())) {
+          handleCollectionType(propertyType, visited)
+        }
+        // Handle Enum types
+        else if (propertyType.classifier is KClass<*> && (propertyType.classifier as KClass<*>).java.isEnum) {
+          handleEnumType(propertyType.classifier as KClass<*>)
+        }
+        // Handle nested object types
+        else if (propertyType.toJsonSchemaType() == "object" && propertyType.classifier is KClass<*>) {
+          handleObjectType(propertyType.classifier as KClass<*>, visited)
+        }
+        // Handle primitive types
+        else {
+          put("type", propertyType.toJsonSchemaType())
+        }
       }
     }
+  } finally {
+    // 離開時從 visited 移除，允許同一類別在不同分支出現
+    visited.remove(kClass)
   }
 }
 
@@ -175,7 +187,7 @@ private fun JsonObjectBuilder.addRequiredFields(kClass: KClass<*>) {
 }
 
 // Handle Map type properties, including nested collections and objects
-private fun JsonObjectBuilder.handleMapType(mapType: KType) {
+private fun JsonObjectBuilder.handleMapType(mapType: KType, visited: MutableSet<KClass<*>>) {
   put("type", "object")
   val keyType = mapType.arguments.getOrNull(0)?.type
   val valueType = mapType.arguments.getOrNull(1)?.type
@@ -189,25 +201,25 @@ private fun JsonObjectBuilder.handleMapType(mapType: KType) {
     putJsonObject("properties") {
       enumValues.forEach { enumValue ->
         putJsonObject(enumValue.toString()) {
-          addValueTypeSchema(valueType)
+          addValueTypeSchema(valueType, visited)
         }
       }
     }
   } else {
     putJsonObject("additionalProperties") {
-      addValueTypeSchema(valueType)
+      addValueTypeSchema(valueType, visited)
     }
   }
 }
 
-private fun JsonObjectBuilder.addValueTypeSchema(valueType: KType?) {
+private fun JsonObjectBuilder.addValueTypeSchema(valueType: KType?, visited: MutableSet<KClass<*>>) {
   if (valueType != null) {
     when {
       valueType.isSubtypeOf(typeOf<List<*>>()) || valueType.isSubtypeOf(typeOf<Array<*>>()) ->
-        handleCollectionType(valueType)
+        handleCollectionType(valueType, visited)
 
       valueType.toJsonSchemaType() == "object" && valueType.classifier is KClass<*>         ->
-        handleObjectType(valueType.classifier as KClass<*>)
+        handleObjectType(valueType.classifier as KClass<*>, visited)
 
       else                                                                                  ->
         put("type", valueType.toJsonSchemaType())
@@ -218,7 +230,7 @@ private fun JsonObjectBuilder.addValueTypeSchema(valueType: KType?) {
 }
 
 // Handle Collection type properties (List, Array)
-private fun JsonObjectBuilder.handleCollectionType(collectionType: KType) {
+private fun JsonObjectBuilder.handleCollectionType(collectionType: KType, visited: MutableSet<KClass<*>>) {
   put("type", "array")
 
   // Add items schema based on the collection element type
@@ -226,14 +238,20 @@ private fun JsonObjectBuilder.handleCollectionType(collectionType: KType) {
   if (elementType != null) {
     putJsonObject("items") {
       if (elementType.toJsonSchemaType() == "object" && elementType.classifier is KClass<*>) {
-        // It's a list of objects, detail the object structure
         val elementClass = elementType.classifier as KClass<*>
-        put("type", "object")
-        putJsonObject("properties") {
-          processClassProperties(elementClass)
+        // 檢查是否循環參照
+        if (elementClass in visited) {
+          put("\$ref", "#/definitions/${elementClass.simpleName}")
+          put("description", "Circular reference to ${elementClass.simpleName}")
+        } else {
+          // It's a list of objects, detail the object structure
+          put("type", "object")
+          putJsonObject("properties") {
+            processClassProperties(elementClass, visited)
+          }
+          // Add required fields for the item class
+          addRequiredFields(elementClass)
         }
-        // Add required fields for the item class
-        addRequiredFields(elementClass as KClass<*>)
       } else {
         // Simple type
         put("type", elementType.toJsonSchemaType())
@@ -254,10 +272,17 @@ private fun JsonObjectBuilder.handleEnumType(enumClass: KClass<*>) {
 }
 
 // Handle Object type properties
-private fun JsonObjectBuilder.handleObjectType(objectClass: KClass<*>) {
+private fun JsonObjectBuilder.handleObjectType(objectClass: KClass<*>, visited: MutableSet<KClass<*>>) {
+  // 檢查是否循環參照
+  if (objectClass in visited) {
+    put("\$ref", "#/definitions/${objectClass.simpleName}")
+    put("description", "Circular reference to ${objectClass.simpleName}")
+    return
+  }
+
   put("type", "object")
   putJsonObject("properties") {
-    processClassProperties(objectClass)
+    processClassProperties(objectClass, visited)
   }
   // Add required fields for the nested object
   addRequiredFields(objectClass)
