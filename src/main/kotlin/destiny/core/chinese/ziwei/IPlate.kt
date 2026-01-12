@@ -164,9 +164,9 @@ interface IPlate : Serializable {
 
   /** 某時刻，是幾歲 */
   fun getAge(gmtJulDay: GmtJulDay, ageType: AgeType): Int? {
-    return getAgeMap(ageType)?.asSequence()?.filter { (_: Int, range: Pair<GmtJulDay, GmtJulDay>) ->
+    return getAgeMap(ageType)?.asSequence()?.firstOrNull { (_: Int, range: Pair<GmtJulDay, GmtJulDay>) ->
       gmtJulDay in range.first..range.second
-    }?.firstOrNull()?.key
+    }?.key
   }
 
   /** 取得這些星體所在宮位的地支 */

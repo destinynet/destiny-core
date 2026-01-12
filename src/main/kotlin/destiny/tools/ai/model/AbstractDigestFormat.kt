@@ -32,8 +32,7 @@ abstract class AbstractDigestFormat<M, D : Any>(
     }
 
     val string = buildString {
-      append(digestWithoutFormat(model, locale))
-      appendLine()
+      appendLine(digestWithoutFormat(model, locale))
 
       structurePromptingJson?.also {
         appendLine(it)
