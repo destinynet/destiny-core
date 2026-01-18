@@ -39,12 +39,12 @@ data class ParallelOutput<T : SegmentOutput>(
 
 /**
  * 失敗的項目資訊
+ *
+ * 注意：Retry 邏輯由底層 IChatOrchestrator 處理，此處僅記錄最終失敗結果
  */
 data class FailedItem(
   /** 項目索引 */
   val index: Int,
   /** 錯誤資訊 */
-  val error: Throwable,
-  /** 嘗試次數 */
-  val attempts: Int
+  val error: Throwable
 )

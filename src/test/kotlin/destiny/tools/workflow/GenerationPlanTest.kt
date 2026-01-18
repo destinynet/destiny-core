@@ -673,8 +673,7 @@ class GenerationPlanTest {
     val engine = DefaultExecutionEngine(
       orchestrator = mockOrchestrator,
       postProcessors = emptyList(),
-      providerImpl = { throw UnsupportedOperationException() },
-      maxRetries = 1  // 只重試一次，確保失敗
+      providerImpl = { throw UnsupportedOperationException() }
     )
 
     val result = engine.execute(plan)
@@ -685,120 +684,7 @@ class GenerationPlanTest {
     assertEquals(1, failedCount)
   }
 
-  @Test
-  fun `test AiSegment retry on failure`() = runBlocking {
-    val AI_STEP = SegmentId("ai-step")
-    val attemptCount = AtomicInteger(0)
-
-    val formatSpec = FormatSpec.of<TestAiOutput>("TestOutput", "Test AI output")
-
-    val plan = GenerationPlan(
-      planId = "test-retry",
-      name = "Retry Test",
-      segments = listOf(
-        Segment.AiSegment(
-          id = AI_STEP,
-          inputBuilder = { TestInput("test") },
-          promptBuilder = { _, _ -> "test prompt" },
-          formatSpec = formatSpec
-        )
-      ),
-      assembler = { ctx -> ctx.get<TestAiOutput>(AI_STEP).message }
-    )
-
-    // Mock: 前兩次失敗，第三次成功
-    val mockOrchestrator = object : IChatOrchestrator {
-      override suspend fun <T : Any> chatComplete(
-        formatSpec: FormatSpec<out T>,
-        messages: List<Msg>,
-        postProcessors: List<IPostProcessor>,
-        locale: Locale,
-        funCalls: Set<IFunctionDeclaration>,
-        chatOptionsTemplate: ChatOptions,
-        providerImpl: (Provider) -> IChatCompletion
-      ): Reply.Normal<out T> {
-        val attempt = attemptCount.incrementAndGet()
-        if (attempt < 3) {
-          throw RuntimeException("Simulated failure on attempt $attempt")
-        }
-        @Suppress("UNCHECKED_CAST")
-        return Reply.Normal(
-          content = TestAiOutput("Success after retries", attempt) as T,
-          think = null,
-          provider = Provider.CLAUDE,
-          model = "test-model"
-        )
-      }
-    }
-
-    val engine = DefaultExecutionEngine(
-      orchestrator = mockOrchestrator,
-      postProcessors = emptyList(),
-      providerImpl = { throw UnsupportedOperationException() },
-      maxRetries = 3,
-      retryDelayMs = 10  // 短延遲加速測試
-    )
-
-    val result = engine.execute(plan)
-
-    assertTrue(result.isSuccess())
-    assertEquals("Success after retries", result.getOrThrow())
-    assertEquals(3, attemptCount.get())
-  }
-
-  @Test
-  fun `test AiSegment fails after max retries`() = runBlocking {
-    val AI_STEP = SegmentId("ai-step")
-    val attemptCount = AtomicInteger(0)
-
-    val formatSpec = FormatSpec.of<TestAiOutput>("TestOutput", "Test AI output")
-
-    val plan = GenerationPlan(
-      planId = "test-max-retries",
-      name = "Max Retries Test",
-      segments = listOf(
-        Segment.AiSegment(
-          id = AI_STEP,
-          inputBuilder = { TestInput("test") },
-          promptBuilder = { _, _ -> "test prompt" },
-          formatSpec = formatSpec
-        )
-      ),
-      assembler = { ctx -> ctx.get<TestAiOutput>(AI_STEP).message }
-    )
-
-    // Mock: 永遠失敗
-    val mockOrchestrator = object : IChatOrchestrator {
-      override suspend fun <T : Any> chatComplete(
-        formatSpec: FormatSpec<out T>,
-        messages: List<Msg>,
-        postProcessors: List<IPostProcessor>,
-        locale: Locale,
-        funCalls: Set<IFunctionDeclaration>,
-        chatOptionsTemplate: ChatOptions,
-        providerImpl: (Provider) -> IChatCompletion
-      ): Reply.Normal<out T> {
-        attemptCount.incrementAndGet()
-        throw RuntimeException("Always fails")
-      }
-    }
-
-    val engine = DefaultExecutionEngine(
-      orchestrator = mockOrchestrator,
-      postProcessors = emptyList(),
-      providerImpl = { throw UnsupportedOperationException() },
-      maxRetries = 3,
-      retryDelayMs = 10
-    )
-
-    val result = engine.execute(plan)
-
-    assertTrue(result.isFailed())
-    assertEquals(3, attemptCount.get())
-
-    val failed = result as ExecutionResult.Failed
-    assertEquals(AI_STEP, failed.failedSegment)
-  }
+  // Note: Retry 測試已移除，因為 retry 機制由底層 IChatOrchestrator (如 ResilientChatService) 處理
 
   @Test
   fun `test mixed segments - static, compute, ai, parallel`() = runBlocking {

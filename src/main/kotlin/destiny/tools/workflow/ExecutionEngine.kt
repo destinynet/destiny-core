@@ -37,8 +37,7 @@ interface ExecutionEngine {
 interface ExecutionProgressListener {
   fun onSegmentStarted(id: SegmentId)
   fun onSegmentCompleted(id: SegmentId, durationMs: Long)
-  fun onSegmentFailed(id: SegmentId, error: Throwable, willRetry: Boolean)
-  fun onSegmentRetrying(id: SegmentId, attempt: Int, maxAttempts: Int)
+  fun onSegmentFailed(id: SegmentId, error: Throwable)
 }
 
 /**
@@ -49,19 +48,18 @@ interface ExecutionProgressListener {
  * - PostProcessor 處理（JSON 提取、中文處理等）
  * - 自動反序列化為目標類型
  *
- * @param orchestrator AI 聊天編排器
+ * 注意：Retry 機制由底層 IChatOrchestrator (如 ResilientChatService) 處理，
+ * 此引擎專注於 DAG 執行、並行控制與進度追蹤。
+ *
+ * @param orchestrator AI 聊天編排器（負責 retry 與 failover）
  * @param postProcessors 後處理器列表（JSON 提取、中文處理等）
  * @param providerImpl 提供者實作函數，用於取得特定 Provider 的 IChatCompletion
- * @param maxRetries 最大重試次數
- * @param retryDelayMs 重試延遲（毫秒）
  * @param progressListener 執行進度監聽器（可選）
  */
 class DefaultExecutionEngine(
   private val orchestrator: IChatOrchestrator,
   private val postProcessors: List<IPostProcessor>,
   private val providerImpl: (Provider) -> IChatCompletion,
-  private val maxRetries: Int = 3,
-  private val retryDelayMs: Long = 1000,
   private val progressListener: ExecutionProgressListener? = null
 ) : ExecutionEngine {
 
@@ -175,7 +173,7 @@ class DefaultExecutionEngine(
         logger.debug { "Segment ${segment.id} completed" }
       }
     } catch (e: Exception) {
-      progressListener?.onSegmentFailed(segment.id, e, false)
+      progressListener?.onSegmentFailed(segment.id, e)
       throw SegmentExecutionException(segment.id, e)
     }
   }
@@ -192,33 +190,17 @@ class DefaultExecutionEngine(
     val formatSpec = segment.formatSpec
       ?: throw IllegalStateException("Segment ${segment.id} must have formatSpec for DefaultExecutionEngine")
 
-    var lastError: Exception? = null
-    repeat(maxRetries) { attempt ->
-      try {
-        progressListener?.onSegmentRetrying(segment.id, attempt + 1, maxRetries)
+    val reply = orchestrator.chatComplete(
+      formatSpec = formatSpec,
+      message = prompt,
+      postProcessors = postProcessors,
+      locale = locale,
+      funCalls = emptySet(),
+      chatOptionsTemplate = ChatOptions(),
+      providerImpl = providerImpl
+    ) ?: throw IllegalStateException("Orchestrator returned null for segment ${segment.id}")
 
-        val reply = orchestrator.chatComplete(
-          formatSpec = formatSpec,
-          message = prompt,
-          postProcessors = postProcessors,
-          locale = locale,
-          funCalls = emptySet(),
-          chatOptionsTemplate = ChatOptions(),
-          providerImpl = providerImpl
-        ) ?: throw IllegalStateException("Orchestrator returned null for segment ${segment.id}")
-
-        return reply.content as SegmentOutput
-
-      } catch (e: Exception) {
-        lastError = e
-        logger.warn { "Segment ${segment.id} attempt ${attempt + 1} failed: ${e.message}" }
-        if (attempt < maxRetries - 1) {
-          delay(retryDelayMs * (attempt + 1))
-        }
-      }
-    }
-
-    throw lastError ?: IllegalStateException("Unexpected state in executeAiSegment")
+    return reply.content as SegmentOutput
   }
 
   @Suppress("UNCHECKED_CAST")
@@ -235,32 +217,24 @@ class DefaultExecutionEngine(
 
     val results = items.mapIndexed { index, item ->
       async {
-        var lastError: Throwable? = null
-        repeat(maxRetries) { attempt ->
-          try {
-            val input = segment.itemInputBuilder(item, context)
-            val prompt = segment.promptBuilder(input, context)
+        try {
+          val input = segment.itemInputBuilder(item, context)
+          val prompt = segment.promptBuilder(input, context)
 
-            val reply = orchestrator.chatComplete(
-              formatSpec = formatSpec,
-              message = prompt,
-              postProcessors = postProcessors,
-              locale = locale,
-              funCalls = emptySet(),
-              chatOptionsTemplate = ChatOptions(),
-              providerImpl = providerImpl
-            ) ?: throw IllegalStateException("Orchestrator returned null for parallel item $index")
+          val reply = orchestrator.chatComplete(
+            formatSpec = formatSpec,
+            message = prompt,
+            postProcessors = postProcessors,
+            locale = locale,
+            funCalls = emptySet(),
+            chatOptionsTemplate = ChatOptions(),
+            providerImpl = providerImpl
+          ) ?: throw IllegalStateException("Orchestrator returned null for parallel item $index")
 
-            return@async Result.success(reply.content as SegmentOutput)
-
-          } catch (e: Exception) {
-            lastError = e
-            if (attempt < maxRetries - 1) {
-              delay(retryDelayMs * (attempt + 1))
-            }
-          }
+          Result.success(reply.content as SegmentOutput)
+        } catch (e: Exception) {
+          Result.failure<SegmentOutput>(e)
         }
-        Result.failure<SegmentOutput>(lastError!!)
       }
     }.awaitAll()
 
@@ -268,7 +242,7 @@ class DefaultExecutionEngine(
     val failed = results.mapIndexedNotNull { index, result ->
       if (result.isFailure) {
         val cause = result.exceptionOrNull()
-        FailedItem(index, cause ?: Exception("Unknown error"), maxRetries)
+        FailedItem(index, cause ?: Exception("Unknown error"))
       } else null
     }
 
