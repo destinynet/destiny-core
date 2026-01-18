@@ -3,6 +3,7 @@
  */
 package destiny.tools.ai
 
+import destiny.tools.workflow.SegmentOutput
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -18,7 +19,7 @@ import kotlinx.serialization.serializer
 
 
 @Serializable
-data class ListContainer<T>(val array: List<T>)
+data class ListContainer<T>(val array: List<T>) : SegmentOutput
 
 inline fun <reified T> listContainerSerializer(): KSerializer<ListContainer<T>> {
   return ListContainerSerializer(serializer<T>())
