@@ -8,6 +8,7 @@ package destiny.tools.workflow
 import destiny.tools.KotlinLogging
 import destiny.tools.ai.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.supervisorScope
 import java.util.*
 import kotlin.time.measureTimedValue
 
@@ -70,7 +71,7 @@ class DefaultExecutionEngine(
     plan: GenerationPlan<R>,
     locale: Locale,
     initialContext: Map<SegmentId, SegmentOutput>
-  ): ExecutionResult<R> = coroutineScope {
+  ): ExecutionResult<R> = supervisorScope {
     val startTime = System.currentTimeMillis()
     val context = MutableSegmentContext()
     val segmentDurations = mutableMapOf<SegmentId, Long>()
@@ -259,7 +260,7 @@ class DefaultExecutionEngine(
             }
           }
         }
-        Result.failure<SegmentOutput>(FailedItem(index, lastError!!, maxRetries) as Throwable)
+        Result.failure<SegmentOutput>(lastError!!)
       }
     }.awaitAll()
 
@@ -267,8 +268,7 @@ class DefaultExecutionEngine(
     val failed = results.mapIndexedNotNull { index, result ->
       if (result.isFailure) {
         val cause = result.exceptionOrNull()
-        if (cause is FailedItem) cause
-        else FailedItem(index, cause ?: Exception("Unknown error"), maxRetries)
+        FailedItem(index, cause ?: Exception("Unknown error"), maxRetries)
       } else null
     }
 
