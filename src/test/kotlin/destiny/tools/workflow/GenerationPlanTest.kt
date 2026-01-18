@@ -320,7 +320,7 @@ class GenerationPlanTest {
   @Test
   fun `test ParallelOutput`() {
     val successful = listOf(StringOutput("a"), StringOutput("b"))
-    val failed = listOf(FailedItem(2, RuntimeException("error"), 3))
+    val failed = listOf(FailedItem(2, RuntimeException("error")))
 
     val output = ParallelOutput(successful, failed)
 
