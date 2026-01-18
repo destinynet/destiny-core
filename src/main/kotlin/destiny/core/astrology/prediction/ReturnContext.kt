@@ -8,10 +8,7 @@ import destiny.core.astrology.*
 import destiny.core.astrology.classical.IRuler
 import destiny.core.astrology.classical.RulerPtolemyImpl
 import destiny.core.astrology.classical.VoidCourseImpl
-import destiny.core.calendar.GmtJulDay
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import destiny.core.calendar.toLmt
+import destiny.core.calendar.*
 import destiny.tools.KotlinLogging
 import java.io.Serializable
 
@@ -248,7 +245,7 @@ class ReturnContext(
     threshold: Double?,
     includeClassical: Boolean
   ): IReturnDto {
-    logger.debug { "[$planet] getReturnDto , nowGmtJulDay = $nowGmtJulDay (${nowGmtJulDay.toLmt(this.location, JulDayResolver1582CutoverImpl())})" }
+    logger.debug { "[$planet] getReturnDto , nowGmtJulDay = $nowGmtJulDay (${nowGmtJulDay.toLmt(this.location, JulDayResolver1582CutoverImpl()).fixError()})" }
     val returnModel: ReturnModel = getReturnHoroscope(this, nowGmtJulDay, nowLoc, nowPlace)
 
     val innerIncludeHouse = (grain == BirthDataGrain.MINUTE)
