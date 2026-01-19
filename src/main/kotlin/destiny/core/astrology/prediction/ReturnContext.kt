@@ -248,8 +248,6 @@ class ReturnContext(
     logger.debug { "[$planet] getReturnDto , nowGmtJulDay = $nowGmtJulDay (${nowGmtJulDay.toLmt(this.location, JulDayResolver1582CutoverImpl()).fixError()})" }
     val returnModel: ReturnModel = getReturnHoroscope(this, nowGmtJulDay, nowLoc, nowPlace)
 
-    val innerIncludeHouse = (grain == BirthDataGrain.MINUTE)
-
     val returnChart: IHoroscopeDto = with(dtoFactory) {
       returnModel.horoscope.toHoroscopeDto(grain, rulerImpl, aspectEffective, aspectCalculator, config, includeClassical)
     }.let { it as HoroscopeDto }
@@ -266,16 +264,15 @@ class ReturnContext(
         //houses = emptyList()
       )
 
-    val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold, innerIncludeHouse).let { synastry: Synastry ->
-      when (grain) {
-        BirthDataGrain.MINUTE -> synastry
-        BirthDataGrain.DAY    -> {
-          val aspects = synastry.aspects.filterNot { aspect -> aspect.points.any { it is Axis } }
-            .map { sa: SynastryAspect ->
-              sa.copy(outerPointHouse = null, innerPointHouse = null)
-            }
-          Synastry(aspects, emptyMap())
-        }
+    val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold, grain.includeAxis).let { synastry: Synastry ->
+      if (grain.includeAxis) {
+        synastry
+      } else {
+        val aspects = synastry.aspects.filterNot { aspect -> aspect.points.any { it is Axis } }
+          .map { sa: SynastryAspect ->
+            sa.copy(outerPointHouse = null, innerPointHouse = null)
+          }
+        Synastry(aspects, emptyMap())
       }
     }
 

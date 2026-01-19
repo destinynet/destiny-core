@@ -72,12 +72,11 @@ class EventsTraversalTransitImpl(
      * [chosenPoints] 外圈的某星 針對內圈 的星體，形成哪些交角
      */
     fun IHoroscopeModel.outerToInner(vararg chosenPoints: AstroPoint): List<SynastryAspect> {
-      val innerIncludeHouse = (grain == BirthDataGrain.MINUTE)
       return horoscopeFeature.synastry(this, model, modernAspectCalculator,
                                        threshold = null,
-                                       innerIncludeHouse = innerIncludeHouse).aspects.filter { aspect: SynastryAspect ->
+                                       innerIncludeAxis = grain.includeAxis).aspects.filter { aspect: SynastryAspect ->
         aspect.outerPoint in chosenPoints && (
-          if (grain == BirthDataGrain.MINUTE)
+          if (grain.includeAxis)
             true
           else {
             aspect.innerPoint !in houseRelatedPoints

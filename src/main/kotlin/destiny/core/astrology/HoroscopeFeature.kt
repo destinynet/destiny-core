@@ -121,36 +121,40 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     config: IHoroscopeConfig
   ): IProgressionModel
 
+  /**
+   * 計算兩個星盤之間的合盤相位與宮位落入
+   * @param innerIncludeAxis 內盤是否包含 Axis 點 (ASC/MC)，通常由 grain.includeAxis 決定
+   */
   fun synastry(
     outer: IHoroscopeModel,
     inner: IHoroscopeModel,
     aspectCalculator: IAspectCalculator,
     threshold: Double?,
-    innerIncludeHouse: Boolean,
+    innerIncludeAxis: Boolean,
     aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
     laterForOuter: ((AstroPoint) -> IZodiacDegree?)? = null,
     laterForInner: ((AstroPoint) -> IZodiacDegree?)? = null
   ): Synastry {
     val posMapOuter = outer.positionMap
 
-    val synastryAspects: List<SynastryAspect> = if (innerIncludeHouse) {
+    val synastryAspects: List<SynastryAspect> = if (innerIncludeAxis) {
       synastryAspectsFine(outer.positionMap, inner, laterForOuter, laterForInner, aspectCalculator, threshold, aspects)
     } else {
-      // 當 inner 不含宮位資訊時，過濾掉 Axis 點，因為沒有精確出生時間時 Axis 沒有意義
+      // 當 inner 不含 Axis 時，過濾掉 Axis 點，因為沒有精確出生時間時 Axis 沒有意義
       val filteredInnerMap = inner.positionMap.filterKeys { it !is Axis }
       synastryAspectsCoarse(outer.positionMap, filteredInnerMap, laterForOuter, laterForInner, aspectCalculator, threshold, aspects)
     }
 
     val houseOverlayStars = outer.points.filter { it is Planet || it is FixedStar || it is LunarPoint }
 
-    val houseOverlayMap = if (innerIncludeHouse) {
-      houseOverlayStars.asSequence().map { pOuter: AstroPoint ->
+    val houseOverlayMap = if (innerIncludeAxis) {
+      houseOverlayStars.asSequence().mapNotNull { pOuter: AstroPoint ->
         posMapOuter[pOuter]?.lngDeg?.let { zDeg ->
           val pOuterHouse = inner.getHouse(zDeg)
           val degreeToCusp = inner.getCuspDegree(pOuterHouse).getAngle(zDeg)
           HouseOverlay(pOuter, pOuterHouse, degreeToCusp)
         }
-      }.filterNotNull()
+      }
         .groupBy { it.innerHouse }
         .mapValues { (_: Int, overlays: List<HouseOverlay>) -> overlays.sortedBy { it.degreeToCusp } }
         .toMap()
