@@ -136,7 +136,9 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     val synastryAspects: List<SynastryAspect> = if (innerIncludeHouse) {
       synastryAspectsFine(outer.positionMap, inner, laterForOuter, laterForInner, aspectCalculator, threshold, aspects)
     } else {
-      synastryAspectsCoarse(outer.positionMap, inner.positionMap, laterForOuter, laterForInner, aspectCalculator, threshold, aspects)
+      // 當 inner 不含宮位資訊時，過濾掉 Axis 點，因為沒有精確出生時間時 Axis 沒有意義
+      val filteredInnerMap = inner.positionMap.filterKeys { it !is Axis }
+      synastryAspectsCoarse(outer.positionMap, filteredInnerMap, laterForOuter, laterForInner, aspectCalculator, threshold, aspects)
     }
 
     val houseOverlayStars = outer.points.filter { it is Planet || it is FixedStar || it is LunarPoint }
