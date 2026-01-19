@@ -38,7 +38,7 @@ class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans) : IPlanetary
     return riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, RISING, loc, transConfig)?.let { nextRising ->
       riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, SETTING, loc, transConfig)?.let { nextSetting ->
 
-        return if (nextRising < nextSetting) {
+        if (nextRising < nextSetting) {
           // 目前是黑夜
           // 先計算「接近上一個中午」的時刻，這裡不用算得很精準
           val nearPrevMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, MERIDIAN, loc, transConfig)!! - 1 // 記得減一
