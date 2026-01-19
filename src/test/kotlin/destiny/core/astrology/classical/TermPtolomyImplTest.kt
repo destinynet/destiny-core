@@ -7,6 +7,7 @@ import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 class TermPtolomyImplTest {
@@ -107,5 +108,39 @@ class TermPtolomyImplTest {
     }
 
 
+  }
+
+  @Test
+  fun getTermBound() {
+    // Aries 0-6: Jupiter, 6-14: Venus, 14-21: Mercury, 21-26: Mars, 26-30: Saturn
+    impl.getTermBound(0.0.toZodiacDegree()).also { bound ->
+      assertSame(JUPITER, bound.ruler)
+      assertEquals(0.0, bound.fromDegree.value)
+      assertEquals(6.0, bound.toDegree.value)
+    }
+
+    impl.getTermBound(5.99.toZodiacDegree()).also { bound ->
+      assertSame(JUPITER, bound.ruler)
+      assertEquals(0.0, bound.fromDegree.value)
+      assertEquals(6.0, bound.toDegree.value)
+    }
+
+    impl.getTermBound(6.0.toZodiacDegree()).also { bound ->
+      assertSame(VENUS, bound.ruler)
+      assertEquals(6.0, bound.fromDegree.value)
+      assertEquals(14.0, bound.toDegree.value)
+    }
+
+    impl.getTermBound(26.0.toZodiacDegree()).also { bound ->
+      assertSame(SATURN, bound.ruler)
+      assertEquals(26.0, bound.fromDegree.value)
+      assertEquals(30.0, bound.toDegree.value)
+    }
+
+    // Pisces last term
+    impl.getTermBound(358.0.toZodiacDegree()).also { bound ->
+      assertSame(SATURN, bound.ruler)
+      assertEquals(356.0, bound.fromDegree.value)
+    }
   }
 }

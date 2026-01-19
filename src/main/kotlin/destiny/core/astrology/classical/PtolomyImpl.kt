@@ -173,6 +173,26 @@ object TermPtolomyImpl : ITerm, Serializable {
     return getPoint((this.degree + degree).toZodiacDegree())
   }
 
+  override fun getTermBound(degree: ZodiacDegree): TermBound {
+    val signIndex = degree.value.toInt() / 30
+    val signStartDegree = signIndex * 30.0
+
+    // Find the term index within this sign (0..4)
+    val termIndex = (0..4).first { i ->
+      degree.value < termPointDegrees[signIndex * 5 + i].degree
+    }
+
+    val toDegree = termPointDegrees[signIndex * 5 + termIndex].degree.toZodiacDegree()
+    val fromDegree = if (termIndex == 0) {
+      signStartDegree.toZodiacDegree()
+    } else {
+      termPointDegrees[signIndex * 5 + termIndex - 1].degree.toZodiacDegree()
+    }
+    val ruler = termPointDegrees[signIndex * 5 + termIndex].point
+
+    return TermBound(ruler, fromDegree, toDegree)
+  }
+
   /**
    * Terms , +2
    * Ptolemy's Table , 以五分法

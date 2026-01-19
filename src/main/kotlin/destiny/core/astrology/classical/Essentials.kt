@@ -78,6 +78,18 @@ interface ITriplicity {
 }
 
 
+/**
+ * Term/Bound 的邊界資訊
+ * @param ruler 該 Term 的主星
+ * @param fromDegree 起始度數 (含)
+ * @param toDegree 結束度數 (不含)
+ */
+data class TermBound(
+  val ruler: AstroPoint,
+  val fromDegree: ZodiacDegree,
+  val toDegree: ZodiacDegree
+)
+
 /** Term , +2 */
 interface ITerm {
 
@@ -86,6 +98,9 @@ interface ITerm {
 
   /** 取得某星座某度，其 Terms 是哪顆星 , 0<=degree<30  */
   fun ZodiacSign.getTermPoint(degree: Double): AstroPoint
+
+  /** 取得某度數所在 Term 的完整邊界資訊 */
+  fun getTermBound(degree: ZodiacDegree): TermBound
 }
 
 /** Face (十度區 , Decans ) , +1 */
