@@ -25,7 +25,11 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
     val name: String?,
     val place: String?,
     val config: Config
-  ) : java.io.Serializable
+  ) : java.io.Serializable {
+    companion object {
+      private const val serialVersionUID: Long = 1L
+    }
+  }
 
   open val gmtPersonCache: Cache<GmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
@@ -57,7 +61,11 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
     val name: String?,
     val place: String?,
     val config: Config
-  ) : java.io.Serializable
+  ) : java.io.Serializable {
+    companion object {
+      private const val serialVersionUID: Long = 1L
+    }
+  }
 
   open var lmtCacheGrain: CacheGrain? = null
 

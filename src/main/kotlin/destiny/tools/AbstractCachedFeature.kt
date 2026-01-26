@@ -19,7 +19,11 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
     val gmtJulDay: GmtJulDay,
     val loc: ILocation,
     val config: Config
-  ) : java.io.Serializable
+  ) : java.io.Serializable {
+    companion object {
+      private const val serialVersionUID: Long = 1L
+    }
+  }
 
   open val gmtCache: Cache<GmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
@@ -46,7 +50,11 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
     val lmt: ChronoLocalDateTime<*>,
     val loc: ILocation,
     val config: Config
-  ) : java.io.Serializable
+  ) : java.io.Serializable {
+    companion object {
+      private const val serialVersionUID: Long = 1L
+    }
+  }
 
   open var lmtCacheGrain: CacheGrain? = null
 

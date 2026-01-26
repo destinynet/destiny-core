@@ -159,7 +159,7 @@ data class Location(override val lat: Lat,
                     override val lng: Lng,
                     override val tzid: String? = null,
                     override val minuteOffset: Int? = null,
-                    override val altitudeMeter: Double? = null) : ILocation {
+                    override val altitudeMeter: Double? = null) : ILocation, Serializable {
 
   /**
    * 最詳盡的 constructor
@@ -214,6 +214,7 @@ data class Location(override val lat: Lat,
 
 
   companion object {
+    private const val serialVersionUID: Long = 1L
 
     fun of(lat: Double, lng: Double, tzid: String? = null, minuteOffset: Int? = null, altitudeMeter: Double? = null) : Location {
       return Location(lat.toLat(), lng.toLng(), tzid, minuteOffset, altitudeMeter)
