@@ -11,7 +11,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TradChineseRisingSignConfig(
   val hourImpl: HourImpl = HourImpl.TST
-): java.io.Serializable
+): java.io.Serializable {
+  companion object {
+    private const val serialVersionUID: Long = 1L
+  }
+}
 
 @Named
 class TradChineseRisingSignFeature(private val starPositionImpl: IStarPosition<*>,
