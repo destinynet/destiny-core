@@ -146,7 +146,9 @@ value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree 
   companion object {
 
     fun Number.toZodiacDegree(): ZodiacDegree {
-      return ZodiacDegree(this.toDouble().normalize())
+      val doubleValue = this.toDouble()
+      require(!doubleValue.isNaN()) { "Cannot convert NaN to ZodiacDegree" }
+      return ZodiacDegree(doubleValue.normalize())
     }
 
     fun of(sign: ZodiacSign, degree: Double): ZodiacDegree {

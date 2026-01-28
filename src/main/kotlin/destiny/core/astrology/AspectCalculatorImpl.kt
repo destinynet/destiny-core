@@ -40,8 +40,8 @@ class AspectCalculatorImpl(
         val error = errorAndScore.first
         val score = errorAndScore.second
 
-        laterForP1?.invoke(p1)?.zDeg?.let { deg1Next ->
-          laterForP2?.invoke(p2)?.zDeg?.let { deg2Next ->
+        laterForP1?.invoke(p1)?.zDeg?.takeIf { !it.isNaN() }?.let { deg1Next ->
+          laterForP2?.invoke(p2)?.zDeg?.takeIf { !it.isNaN() }?.let { deg2Next ->
             val planetsAngleNext = deg1Next.toZodiacDegree().getAngle(deg2Next)
             val errorNext = abs(planetsAngleNext - aspect.degree)
             val type = if (errorNext <= error) APPLYING else SEPARATING
