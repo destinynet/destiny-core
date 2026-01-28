@@ -22,7 +22,7 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
     val config: Config
   ) : java.io.Serializable {
     companion object {
-      private const val serialVersionUID: Long = 1L
+      private const val serialVersionUID: Long = 7384629517263849152L
     }
   }
 
@@ -53,7 +53,7 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
     val config: Config
   ) : java.io.Serializable {
     companion object {
-      private const val serialVersionUID: Long = 1L
+      private const val serialVersionUID: Long = 2951847362019485736L
     }
   }
 
