@@ -6,12 +6,14 @@ package destiny.tools
 import destiny.core.Gender
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.fixError
 import destiny.tools.AbstractCachedFeature.Companion.grainDay
 import destiny.tools.AbstractCachedFeature.Companion.grainHour
 import destiny.tools.AbstractCachedFeature.Companion.grainMinute
 import destiny.tools.AbstractCachedFeature.Companion.grainSecond
+import destiny.tools.AbstractCachedFeature.Companion.toLocation
 import java.time.chrono.ChronoLocalDateTime
 import javax.cache.Cache
 
@@ -20,7 +22,7 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
 
   data class GmtCacheKey<Config>(
     val gmtJulDay: GmtJulDay,
-    val loc: ILocation,
+    val loc: Location,  // 使用具體類別避免序列化問題
     val gender: Gender,
     val name: String?,
     val place: String?,
@@ -36,7 +38,7 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
 
   override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: @UnsafeVariance Config): Model {
     return gmtPersonCache?.let { cache ->
-      val cacheKey = GmtCacheKey(gmtJulDay, loc, gender, name, place, config)
+      val cacheKey = GmtCacheKey(gmtJulDay, loc.toLocation(), gender, name, place, config)
       cache[cacheKey]?.also {
         logger.trace { "GMT cache hit" }
       }?: run {
@@ -56,7 +58,7 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
 
   data class LmtCacheKey<Config>(
     val lmt: ChronoLocalDateTime<*>,
-    val loc: ILocation,
+    val loc: Location,  // 使用具體類別避免序列化問題
     val gender: Gender,
     val name: String?,
     val place: String?,
@@ -87,7 +89,7 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
         }
       } ?: errorFixedLmt
 
-      val cacheKey = LmtCacheKey(newLmt, loc, gender, name, place, config)
+      val cacheKey = LmtCacheKey(newLmt, loc.toLocation(), gender, name, place, config)
       cache[cacheKey]?.also {
         logger.trace { "LMT cache hit" }
       }?: run {

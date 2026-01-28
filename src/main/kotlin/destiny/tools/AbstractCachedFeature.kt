@@ -5,6 +5,7 @@ package destiny.tools
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.fixError
 import java.time.chrono.ChronoLocalDate
@@ -17,7 +18,7 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
 
   data class GmtCacheKey<Config>(
     val gmtJulDay: GmtJulDay,
-    val loc: ILocation,
+    val loc: Location,  // 使用具體類別避免序列化問題
     val config: Config
   ) : java.io.Serializable {
     companion object {
@@ -30,7 +31,7 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: @UnsafeVariance Config): Model {
     return gmtCache?.let { cache ->
-      val cacheKey = GmtCacheKey(gmtJulDay, loc, config)
+      val cacheKey = GmtCacheKey(gmtJulDay, loc.toLocation(), config)
       cache[cacheKey]?.also {
         logger.trace { "GMT cache hit" }
       } ?: run {
@@ -48,7 +49,7 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
 
   data class LmtCacheKey<Config>(
     val lmt: ChronoLocalDateTime<*>,
-    val loc: ILocation,
+    val loc: Location,  // 使用具體類別避免序列化問題
     val config: Config
   ) : java.io.Serializable {
     companion object {
@@ -77,7 +78,7 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
       } ?: errorFixedLmt
 
 
-      val cacheKey = LmtCacheKey(newLmt, loc, config)
+      val cacheKey = LmtCacheKey(newLmt, loc.toLocation(), config)
       cache[cacheKey]?.also {
         logger.trace { "LMT cache hit" }
       } ?: run {
@@ -97,6 +98,11 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
   companion object {
     private val logger = KotlinLogging.logger { }
 
+    /** 將 ILocation 轉換為 Location，避免序列化問題 */
+    fun ILocation.toLocation(): Location = when (this) {
+      is Location -> this
+      else -> Location(lat, lng, tzid, minuteOffset, altitudeMeter)
+    }
 
     fun ChronoLocalDateTime<*>.grainSecond(): ChronoLocalDateTime<out ChronoLocalDate> {
       return this.with(ChronoField.MICRO_OF_SECOND, 0)
