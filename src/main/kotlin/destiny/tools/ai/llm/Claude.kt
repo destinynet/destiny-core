@@ -100,7 +100,7 @@ class Claude {
     val model: String,
 
     @SerialName("max_tokens")
-    val maxTokens: Int = 4096,
+    val maxTokens: Int = 8192,
 
     @SerialName("metadata")
     val metadata: MetaData? = null,

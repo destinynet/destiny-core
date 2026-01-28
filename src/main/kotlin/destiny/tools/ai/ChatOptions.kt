@@ -32,6 +32,13 @@ value class FrequencyPenalty(val value: Double) {
   }
 }
 
+@JvmInline
+value class MaxTokens(val value: Int) {
+  init {
+    require(value >= 1) { "maxTokens must be >= 1" }
+  }
+}
+
 data class ChatOptions(
   val temperature: Temperature? = null,
   /**
@@ -46,4 +53,10 @@ data class ChatOptions(
   val topK: TopK? = null,
 
   val frequencyPenalty: FrequencyPenalty? = null,
+
+  /**
+   * 最大輸出 tokens 數
+   * 預設 null 表示使用各 provider 的預設值
+   */
+  val maxTokens: MaxTokens? = null,
 )
