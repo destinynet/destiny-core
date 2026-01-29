@@ -36,6 +36,20 @@ class Claude {
     data class ToolResult(@SerialName("tool_use_id") val toolUseId: String, val content: String) : Content() {
       override val contentType: String = "tool_result"
     }
+
+    @Serializable
+    @SerialName("image")
+    data class Image(
+      override val contentType: String = "image",
+      val source: ImageSource
+    ) : Content() {
+      @Serializable
+      data class ImageSource(
+        val type: String,
+        @SerialName("media_type") val mediaType: String,
+        val data: String
+      )
+    }
   }
 
   @Serializable(with = ClaudeMessageSerializer::class)
