@@ -7,6 +7,11 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 
 @Serializable
-data class JsonSchemaSpec(val name: String, val description: String?, val schema: JsonObject)
+data class JsonSchemaSpec(
+  /**
+   * pattern '^[a-zA-Z0-9_-]+$'
+   */
+  val name: String,
+  val description: String?, val schema: JsonObject)
 
 

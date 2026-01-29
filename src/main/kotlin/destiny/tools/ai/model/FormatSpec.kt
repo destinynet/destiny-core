@@ -19,11 +19,15 @@ interface FormatSpec<T : Any> {
   val kClass: KClass<T>
 
   companion object {
+    /**
+     * title pattern '^[a-zA-Z0-9_-]+$'
+     */
     inline fun <reified T : Any> of(
       title: String,
       description: String
     ): FormatSpec<T> {
       require(T::class != Unit::class) { "Unit type is not allowed" }
+      require(title.matches(Regex("^[a-zA-Z0-9_-]+$"))) { $$"title must match pattern '^[a-zA-Z0-9_-]+$', but was: '$$title'" }
 
       val kType = typeOf<T>()
 
