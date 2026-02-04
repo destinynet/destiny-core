@@ -31,7 +31,7 @@ class OpenAiTest {
     @Test
     fun text() {
       val chatModel = OpenAi.ChatModel(
-        listOf(OpenAi.Message("user", "test message", null, null, emptyList())),
+        listOf(OpenAi.Message.TextContent("user", "test message")),
         null, "gpt-4o", OpenAi.OpenAiOptions(0.9, null, null), null, emptyList(), null
       )
       json.encodeToString(chatModel).also { raw ->
@@ -43,7 +43,7 @@ class OpenAiTest {
     @Test
     fun jsonSchema() {
       val chatModel = OpenAi.ChatModel(
-        listOf(OpenAi.Message("user", "test message", null, null, emptyList())),
+        listOf(OpenAi.Message.TextContent("user", "test message")),
         null, "gpt-4o", OpenAi.OpenAiOptions(0.9, null, null), null, emptyList(), SynastryReply::class.toJsonSchema("SynastryReply", "reply of a synastry chart")
       )
       json.encodeToString(chatModel).also { raw ->
@@ -111,15 +111,14 @@ class OpenAiTest {
 
       json.decodeFromString<NormalResponse>(raw).also { result: NormalResponse ->
         assertEquals(1 , result.choices.size)
-        result.choices[0].message.also { message ->
-          assertNull(message.content)
-          message.toolCalls.also {
-            assertNotNull(it)
-            assertEquals(2 , it.size)
-            it.forEach { toolCall: OpenAi.Message.ToolCall ->
-              assertEquals("get_horoscope_forecast_year", toolCall.function.name)
-              assertTrue { toolCall.function.arguments.isNotBlank() }
-            }
+        val message = result.choices[0].message as OpenAi.Message.TextContent
+        assertNull(message.content)
+        message.toolCalls.also {
+          assertNotNull(it)
+          assertEquals(2 , it.size)
+          it.forEach { toolCall: OpenAi.Message.ToolCall ->
+            assertEquals("get_horoscope_forecast_year", toolCall.function.name)
+            assertTrue { toolCall.function.arguments.isNotBlank() }
           }
         }
       }
