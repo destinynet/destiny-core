@@ -30,8 +30,8 @@ object ITimeLocSerializer : KSerializer<ITimeLoc> {
   }
 
   override fun serialize(encoder: Encoder, value: ITimeLoc) {
-    val zoneId = ZoneId.systemDefault()
     val ldt = value.time as LocalDateTime
+    val zoneId = value.location.tzid?.let { ZoneId.of(it) } ?: ZoneId.systemDefault()
     val epochSec = ldt.atZone(zoneId).toEpochSecond()
     encoder.encodeStructure(descriptor) {
       encodeLongElement(descriptor, 0, epochSec)
@@ -41,22 +41,25 @@ object ITimeLocSerializer : KSerializer<ITimeLoc> {
   }
 
   override fun deserialize(decoder: Decoder): ITimeLoc {
-    val zoneId = ZoneId.systemDefault()
-    var time = LocalDateTime.now()
+    var epochSec: Long? = null
+    var localDateTimeStr: String? = null
     var loc: ILocation = locationOf(Locale.TAIWAN)
     decoder.decodeStructure(descriptor) {
       loop@ while (true) {
         when (decodeElementIndex(descriptor)) {
-          0    -> time = run {
-            val epochSec = decodeLongElement(descriptor, 0)
-            LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSec), zoneId)
-          }
-
+          0    -> epochSec = decodeLongElement(descriptor, 0)
           1    -> loc = decodeSerializableElement(descriptor, 1, ILocationSerializer)
-          2    -> decodeStringElement(descriptor, 2) // localDateTime , do nothing
+          2    -> localDateTimeStr = decodeStringElement(descriptor, 2)
           else -> break@loop
         }
       }
+    }
+    // 優先使用 localDateTime（source of truth），fallback 到 epochSecond + location timezone
+    val time = if (localDateTimeStr != null) {
+      LocalDateTime.parse(localDateTimeStr)
+    } else {
+      val zoneId = loc.tzid?.let { ZoneId.of(it) } ?: ZoneId.systemDefault()
+      LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSec!!), zoneId)
     }
     return TimeLoc(time, loc)
   }
