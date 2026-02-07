@@ -5,22 +5,83 @@ package destiny.tools.ai.llm
 
 import destiny.tools.ai.ChatOptions
 import destiny.tools.ai.JsonSchemaSpec
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
-import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.*
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.*
 
 
 class Groq {
 
-  @Serializable
-  data class Message(val role: String,
-                     val content: String?,
-                     //@Transient
-                     val reasoning: String? = null,
-                     @SerialName("tool_call_id") val toolCallId: String? = null,
-                     @SerialName("tool_calls") val toolCalls: List<OpenAi.Message.ToolCall>? = null
-  )
+  @Serializable(with = GroqMessageSerializer::class)
+  sealed class Message {
+    abstract val role: String
+
+    data class TextContent(
+      override val role: String,
+      val content: String?,
+      val reasoning: String? = null,
+      val toolCallId: String? = null,
+      val toolCalls: List<OpenAi.Message.ToolCall>? = null
+    ) : Message()
+
+    data class ChunkContent(
+      override val role: String,
+      val content: List<OpenAi.ContentChunk>
+    ) : Message()
+  }
+
+  object GroqMessageSerializer : KSerializer<Message> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("GroqMessage") {
+      element<String>("role")
+      element<JsonElement>("content")
+      element<String>("reasoning", isOptional = true)
+      element<String>("tool_call_id", isOptional = true)
+      element<JsonElement>("tool_calls", isOptional = true)
+    }
+
+    override fun serialize(encoder: Encoder, value: Message) {
+      require(encoder is JsonEncoder)
+      val json = encoder.json
+      val jsonElement = when (value) {
+        is Message.TextContent  -> buildJsonObject {
+          put("role", value.role)
+          value.content?.let { put("content", it) }
+          value.reasoning?.let { put("reasoning", it) }
+          value.toolCallId?.let { put("tool_call_id", it) }
+          value.toolCalls?.let { put("tool_calls", json.encodeToJsonElement(it)) }
+        }
+        is Message.ChunkContent -> buildJsonObject {
+          put("role", value.role)
+          put("content", json.encodeToJsonElement(value.content))
+        }
+      }
+      encoder.encodeJsonElement(jsonElement)
+    }
+
+    override fun deserialize(decoder: Decoder): Message {
+      require(decoder is JsonDecoder)
+      val json = decoder.json
+      val jsonObject = decoder.decodeJsonElement().jsonObject
+      val role = jsonObject["role"]!!.jsonPrimitive.content
+      val content = jsonObject["content"]?.let {
+        when {
+          it is JsonNull      -> null
+          it is JsonPrimitive -> it.content
+          else                -> null
+        }
+      }
+      val reasoning = jsonObject["reasoning"]?.jsonPrimitive?.contentOrNull
+      val toolCallId = jsonObject["tool_call_id"]?.jsonPrimitive?.contentOrNull
+      val toolCalls = jsonObject["tool_calls"]?.let {
+        if (it is JsonNull) null else json.decodeFromJsonElement<List<OpenAi.Message.ToolCall>>(it)
+      }
+      return Message.TextContent(role, content, reasoning, toolCallId, toolCalls)
+    }
+  }
 
   @Serializable
   data class Response(val id: String, val model: String, val choices: List<Choice>, val usage: Usage) {
