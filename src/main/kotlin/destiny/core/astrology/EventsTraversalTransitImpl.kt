@@ -103,8 +103,11 @@ class EventsTraversalTransitImpl(
     }
 
 
+    // Global (sky-to-sky) aspects: only between Planets; LunarNodes are excluded because
+    // North/South Node map to the same SwissEph body (True Node), causing TCPlanetPlanet to throw,
+    // and their mutual 180° opposition is a constant, not a meaningful event.
     val globalAspectEvents = relativeTransitImpl.mutualAspectingEvents(
-      transitingStars, angles,
+      transitingStars.filterIsInstance<Planet>().toSet(), angles,
       fromGmtJulDay, toGmtJulDay, config.horoscopeConfig.starTypeOptions
     ).map { aspectData: AspectData ->
       val (outerStar1, outerStar2) = aspectData.points.let { it[0] to it[1] }
