@@ -38,8 +38,8 @@ interface IReportFactory {
     eventSourceConfigs: Set<EventSourceConfig>,
     traversalConfig: AstrologyTraversalConfig,
     /** 內定以 natal points , 可以額外指定 */
-    outerPoints: Set<AstroPoint> = personModel.points,
-    innerPoints: Set<AstroPoint> = personModel.points,
+    transitingPoints: Set<AstroPoint> = personModel.points,
+    natalTargetPoints: Set<AstroPoint> = personModel.points,
     withLunarReturns : Boolean = true
   ): ITimeLineEventsModel
 

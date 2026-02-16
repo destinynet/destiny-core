@@ -16,8 +16,8 @@ interface IEventsTraversal {
     loc: ILocation,
     grain: BirthDataGrain,
     config: AstrologyTraversalConfig,
-    outerPoints: Set<AstroPoint> = model.points,
-    innerPoints: Set<AstroPoint> = model.points,
+    transitingPoints: Set<AstroPoint> = model.points,
+    natalTargetPoints: Set<AstroPoint> = model.points,
   ): Sequence<AstroEventDto>
 
 }

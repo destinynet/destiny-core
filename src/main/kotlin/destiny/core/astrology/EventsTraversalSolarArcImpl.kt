@@ -32,8 +32,8 @@ class EventsTraversalSolarArcImpl(
     loc: ILocation,
     grain: BirthDataGrain,
     config: AstrologyTraversalConfig,
-    outerPoints: Set<AstroPoint>,
-    innerPoints: Set<AstroPoint>,
+    transitingPoints: Set<AstroPoint>,
+    natalTargetPoints: Set<AstroPoint>,
   ): Sequence<AstroEventDto> {
 
     val hConfig = HoroscopeConfig()
@@ -46,7 +46,7 @@ class EventsTraversalSolarArcImpl(
     }
 
     // 內盤要考慮的星體 (Natal Points)
-    val natalPointsToConsider = model.points.filter { it in innerPoints }
+    val natalPointsToConsider = model.points.filter { it in natalTargetPoints }
       .filter { it is Planet || it is LunarNode || it is Axis }
       .filter {
         if (grain == MINUTE)
@@ -56,7 +56,7 @@ class EventsTraversalSolarArcImpl(
       }.toSet()
 
     // 外圈要考慮的星體 (Solar Arc Points)
-    val saPointsToConsider = outerPoints.filter { it is Planet || it is LunarNode || it is Axis }
+    val saPointsToConsider = transitingPoints.filter { it is Planet || it is LunarNode || it is Axis }
       .filter {
         if (grain == MINUTE)
           true

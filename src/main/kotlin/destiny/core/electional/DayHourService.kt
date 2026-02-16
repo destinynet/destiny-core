@@ -218,15 +218,15 @@ class DayHourService(
     loc: ILocation,
     grain: BirthDataGrain,
     traversalConfig: AstrologyTraversalConfig,
-    /** 如不指定 [outerPoints] (make it null) , 則會從 natal 中取得所有 points */
-    outerPoints: Set<AstroPoint>?,
-    /** 如不指定 [innerPoints] (make it null) , 則會從 natal 中取得所有 points */
-    innerPoints: Set<AstroPoint>?,
+    /** 如不指定 [transitingPoints] (make it null) , 則會從 natal 中取得所有 points */
+    transitingPoints: Set<AstroPoint>?,
+    /** 如不指定 [natalTargetPoints] (make it null) , 則會從 natal 中取得所有 points */
+    natalTargetPoints: Set<AstroPoint>?,
     vararg traversals: IEventsTraversal
   ): Sequence<IEventDto> {
     val model: IHoroscopeModel = horoscopeFeature.getModel(bdnp.gmtJulDay, loc, traversalConfig.horoscopeConfig)
-    val outer = outerPoints?: model.points
-    val inner = innerPoints?: model.points
+    val outer = transitingPoints ?: model.points
+    val inner = natalTargetPoints ?: model.points
     return traversals.asSequence().flatMap { it.traverse(model, fromGmtJulDay, toGmtJulDay, loc, grain, traversalConfig, outer, inner) }
   }
 

@@ -15,8 +15,8 @@ class EventsTraversalPrimaryDirectionImpl : IEventsTraversal {
     loc: ILocation,
     grain: BirthDataGrain,
     config: AstrologyTraversalConfig,
-    outerPoints: Set<AstroPoint>,
-    innerPoints: Set<AstroPoint>,
+    transitingPoints: Set<AstroPoint>,
+    natalTargetPoints: Set<AstroPoint>,
   ): Sequence<AstroEventDto> {
     TODO("Not yet implemented")
   }
