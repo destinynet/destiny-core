@@ -366,7 +366,7 @@ class EventsTraversalTransitImpl(
     return this.sortedBy { it.orb }.joinToString("\n") { aspect: SynastryAspect ->
       buildString {
         append("\t")
-        append("(p) [outer ${aspect.outerPoint.asLocaleString().getTitle(Locale.ENGLISH)}")
+        append("(p) [transiting ${aspect.outerPoint.asLocaleString().getTitle(Locale.ENGLISH)}")
         if (grain == BirthDataGrain.MINUTE) {
           append(" (H${aspect.outerPointHouse})")
         }
