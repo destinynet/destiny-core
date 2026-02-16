@@ -116,7 +116,7 @@ data class Natal(
     val signDegree: IZodiacDegree,
     val element: Element,
     val quality: Quality,
-    val house: Int?,
+    override val house: Int?,
     val motion: Motion? = null,
     @Serializable(with = RetrogradePhaseWithDescriptionSerializer::class)
     val retrogradePhase: RetrogradePhase? = null,
@@ -124,7 +124,11 @@ data class Natal(
     /** 定位星資訊 */
     val dispositors: Set<Planet>,
     val astroAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern> = emptyList()
-  )
+  ) : IStarSummary {
+    override val sign: ZodiacSign get() = signDegree.sign
+    override val degree: Double get() = signDegree.signDegree.second
+    override val isRetrograde: Boolean get() = motion == Motion.RETROGRADE
+  }
 
   @Serializable
   data class HouseStarDistribution(val starCount: Int,
