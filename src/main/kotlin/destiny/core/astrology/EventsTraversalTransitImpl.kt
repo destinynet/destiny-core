@@ -141,9 +141,11 @@ class EventsTraversalTransitImpl(
         val description = buildString {
           append("${s.star.asLocaleString().getTitle(Locale.ENGLISH)} Stationary (滯留). ${s.type.getTitle(Locale.ENGLISH)}")
           append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
-          if (transitToNatalAspects.isNotEmpty()) {
-            appendLine()
-            appendLine(transitToNatalAspects.describeAspects(grain))
+          if (config.includeTransitToNatalAspects) {
+            if (transitToNatalAspects.isNotEmpty()) {
+              appendLine()
+              appendLine(transitToNatalAspects.describeAspects(grain))
+            }
           }
         }
         AstroEventDto(
@@ -176,9 +178,11 @@ class EventsTraversalTransitImpl(
         append("Solar Eclipse (日食). ")
         append("Type = ${eclipse.solarType.getTitle(Locale.ENGLISH)}")
         append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
-        if (transitToNatalAspects.isNotEmpty()) {
-          appendLine()
-          appendLine(transitToNatalAspects.describeAspects(grain))
+        if (config.includeTransitToNatalAspects) {
+          if (transitToNatalAspects.isNotEmpty()) {
+            appendLine()
+            appendLine(transitToNatalAspects.describeAspects(grain))
+          }
         }
       }
       AstroEventDto(
@@ -200,9 +204,11 @@ class EventsTraversalTransitImpl(
         append("Lunar Eclipse (月食). ")
         append("Type = ${eclipse.lunarType.getTitle(Locale.ENGLISH)}")
         append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
-        if (transitToNatalAspects.isNotEmpty()) {
-          appendLine()
-          appendLine(transitToNatalAspects.describeAspects(grain))
+        if (config.includeTransitToNatalAspects) {
+          if (transitToNatalAspects.isNotEmpty()) {
+            appendLine()
+            appendLine(transitToNatalAspects.describeAspects(grain))
+          }
         }
       }
       AstroEventDto(

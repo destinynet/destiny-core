@@ -26,6 +26,6 @@ data class AstrologyTraversalConfig(
   val signIngress: Boolean = true,
   /** 星體換宮位 */
   val houseIngress: Boolean = true,
-  val outerStars: Set<AstroPoint> = horoscopeConfig.points,
-  val innerStars: Set<AstroPoint> = horoscopeConfig.points
+//  val outerStars: Set<AstroPoint> = horoscopeConfig.points,
+//  val innerStars: Set<AstroPoint> = horoscopeConfig.points
 )
