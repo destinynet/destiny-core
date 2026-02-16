@@ -94,7 +94,7 @@ interface ITimeLineEventsModel {
   val fromTime: GmtJulDay
   val toTime: GmtJulDay
   val events: List<ITimeLineEvent>
-  val lunarReturns : List<IReturnDto>
+  val lunarReturns : List<ReturnCoverageDto>
   val annualProfections : List<Profection>
   val monthProfections : List<Profection>
   val firdarias: List<Firdaria>
@@ -110,7 +110,7 @@ data class TimeLineEventsModel(
   @Contextual
   override val toTime: GmtJulDay,
   override val events: List<@Contextual ITimeLineEvent>,
-  override val lunarReturns: List<IReturnDto> = emptyList(),
+  override val lunarReturns: List<ReturnCoverageDto> = emptyList(),
   override val annualProfections: List<Profection> = emptyList(),
   override val monthProfections: List<Profection> = emptyList(),
   override val firdarias: List<Firdaria> = emptyList(),
@@ -283,7 +283,7 @@ data class EventGroup(
   val toTime : GmtJulDay,
   val userEvents : List<AbstractEvent>,
   val astroEvents : List<@Contextual ITimeLineEvent>,
-  val lunarReturns : List<@Contextual IReturnDto>,
+  val lunarReturns : List<ReturnCoverageDto>,
   val firdarias: List<Firdaria>,
   val profections: List<Profection>,
   @SerialName("transit_synastry_map")
@@ -308,7 +308,7 @@ data class Future(
   @Contextual
   val toTime: GmtJulDay,
   val astroEvents: List<@Contextual ITimeLineEvent>,
-  val lunarReturns: List<@Contextual IReturnDto>,
+  val lunarReturns: List<ReturnCoverageDto>,
   val solarReturns: List<@Contextual IReturnDto>,
   val firdariaPeriods: List<Firdaria>,
   val profections: List<Profection>

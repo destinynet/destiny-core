@@ -58,7 +58,7 @@ data class EventModel(
   val firdaria: Firdaria?,
   val profectionMap: Map<Scale, Profection>,
   val surroundingEvents: List<@Contextual ITimeLineEvent>,
-  val surroundingLunarReturns: List<IReturnDto>,
+  val surroundingLunarReturns: List<ReturnCoverageDto>,
   @SerialName("transit")
   val transit: ProgressionDto,
   @SerialName("secondary_progression")
