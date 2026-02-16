@@ -112,7 +112,7 @@ class EventsTraversalTransitImpl(
     ).map { aspectData: AspectData ->
       val (outerStar1, outerStar2) = aspectData.points.let { it[0] to it[1] }
       val description = buildString {
-        append("[outer ${outerStar1.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [outer ${outerStar2.asLocaleString().getTitle(Locale.ENGLISH)}]")
+        append("[transiting ${outerStar1.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [transiting ${outerStar2.asLocaleString().getTitle(Locale.ENGLISH)}]")
       }
       AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.GLOBAL)
     }
@@ -243,9 +243,11 @@ class EventsTraversalTransitImpl(
             )
             append(phase.getTitle(Locale.ENGLISH))
             append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
-            if (transitToNatalAspects.isNotEmpty()) {
-              appendLine()
-              appendLine(transitToNatalAspects.describeAspects(grain))
+            if (config.includeTransitToNatalAspects) {
+              if (transitToNatalAspects.isNotEmpty()) {
+                appendLine()
+                appendLine(transitToNatalAspects.describeAspects(grain))
+              }
             }
           }
           AstroEventDto(
@@ -332,7 +334,7 @@ class EventsTraversalTransitImpl(
         yieldAll(searchPersonalEvents(transitingStars, natalPoints, angles).map { aspectData ->
           val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
           val description = buildString {
-            append("[outer ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
+            append("[transiting ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
           }
           AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
         })

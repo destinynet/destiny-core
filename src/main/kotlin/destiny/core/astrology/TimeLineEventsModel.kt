@@ -94,6 +94,9 @@ interface ITimeLineEventsModel {
   val toTime: GmtJulDay
   val events: List<ITimeLineEvent>
   val lunarReturns : List<IReturnDto>
+  val annualProfections : List<Profection>
+  val monthProfections : List<Profection>
+  val firdarias: List<Firdaria>
 }
 
 @Serializable
@@ -105,7 +108,10 @@ data class TimeLineEventsModel(
   @Contextual
   override val toTime: GmtJulDay,
   override val events: List<@Contextual ITimeLineEvent>,
-  override val lunarReturns: List<IReturnDto> = emptyList()
+  override val lunarReturns: List<IReturnDto> = emptyList(),
+  override val annualProfections: List<Profection> = emptyList(),
+  override val monthProfections: List<Profection> = emptyList(),
+  override val firdarias: List<Firdaria>
 ) : ITimeLineEventsModel
 
 @Serializable
