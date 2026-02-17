@@ -265,10 +265,13 @@ class ReturnContext(
       )
 
     val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold, grain.includeAxis).let { synastry: Synastry ->
+      // SR Sun conjunct natal Sun / LR Moon conjunct natal Moon 是定義本身，永遠排除
+      val filtered = synastry.aspects.filterNot { aspect -> aspect.points.all { it == this@ReturnContext.planet } }
       if (grain.includeAxis) {
-        synastry
+        Synastry(filtered, synastry.houseOverlayMap)
       } else {
-        val aspects = synastry.aspects.filterNot { aspect -> aspect.points.any { it is Axis } }
+        val aspects = filtered
+          .filterNot { aspect -> aspect.points.any { it is Axis } }
           .map { sa: SynastryAspect ->
             sa.copy(outerPointHouse = null, innerPointHouse = null)
           }
