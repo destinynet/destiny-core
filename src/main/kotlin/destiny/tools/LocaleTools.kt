@@ -23,19 +23,34 @@ object LocaleTools {
   }
 
 
-  fun parseAcceptLanguageHeader(acceptLanguage: String): Locale? {
+  fun parseAcceptLanguageHeader(acceptLanguage: String?, default: Locale = Locale.TRADITIONAL_CHINESE): Locale {
+    if (acceptLanguage.isNullOrBlank()) return default
     return try {
-      // 提取第一個權重最高的語言標籤
       val primaryLang = acceptLanguage.split(',')
         .firstOrNull()
         ?.split(';')
         ?.firstOrNull()
         ?.trim()
-
-      primaryLang?.let { Locale.forLanguageTag(it) }
+      primaryLang?.let { Locale.forLanguageTag(it) } ?: default
     } catch (_: Exception) {
-      null
+      default
     }
+  }
+
+  /**
+   * Converts a Locale to a priority-ordered list of locale strings for DB queries.
+   * e.g. Locale("zh", "TW") → ["zh", "zh_TW"]
+   * e.g. Locale("en") → ["en"]
+   */
+  fun buildLocaleList(locale: Locale): List<String> {
+    val locales = mutableListOf(locale.language)
+    if (locale.country.isNotEmpty()) {
+      val underscore = "${locale.language}_${locale.country}"
+      if (underscore != locale.language) {
+        locales.add(underscore)
+      }
+    }
+    return locales
   }
 
   /**

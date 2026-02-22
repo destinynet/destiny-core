@@ -10,6 +10,54 @@ class LocaleToolsTest {
 
   val logger = KotlinLogging.logger {  }
 
+  // ========== parseAcceptLanguageHeader tests ==========
+
+  @Test
+  fun `parseAcceptLanguageHeader with null`() {
+    assertEquals(Locale.TRADITIONAL_CHINESE, LocaleTools.parseAcceptLanguageHeader(null))
+  }
+
+  @Test
+  fun `parseAcceptLanguageHeader with blank`() {
+    assertEquals(Locale.TRADITIONAL_CHINESE, LocaleTools.parseAcceptLanguageHeader(""))
+    assertEquals(Locale.TRADITIONAL_CHINESE, LocaleTools.parseAcceptLanguageHeader("  "))
+  }
+
+  @Test
+  fun `parseAcceptLanguageHeader with simple locale`() {
+    assertEquals(Locale.of("en"), LocaleTools.parseAcceptLanguageHeader("en"))
+  }
+
+  @Test
+  fun `parseAcceptLanguageHeader with quality factors`() {
+    assertEquals(Locale.of("zh", "TW"), LocaleTools.parseAcceptLanguageHeader("zh-TW,zh;q=0.9,en;q=0.8"))
+  }
+
+  @Test
+  fun `parseAcceptLanguageHeader with custom default`() {
+    assertEquals(Locale.ENGLISH, LocaleTools.parseAcceptLanguageHeader(null, Locale.ENGLISH))
+    assertEquals(Locale.ENGLISH, LocaleTools.parseAcceptLanguageHeader("", Locale.ENGLISH))
+  }
+
+  // ========== buildLocaleList tests ==========
+
+  @Test
+  fun `buildLocaleList with language only`() {
+    assertEquals(listOf("en"), LocaleTools.buildLocaleList(Locale.of("en")))
+  }
+
+  @Test
+  fun `buildLocaleList with language and country`() {
+    assertEquals(listOf("zh", "zh_TW"), LocaleTools.buildLocaleList(Locale.of("zh", "TW")))
+  }
+
+  @Test
+  fun `buildLocaleList with japanese`() {
+    assertEquals(listOf("ja", "ja_JP"), LocaleTools.buildLocaleList(Locale.of("ja", "JP")))
+  }
+
+  // ========== getLocale tests ==========
+
   @Test
   fun getLocale() {
 
