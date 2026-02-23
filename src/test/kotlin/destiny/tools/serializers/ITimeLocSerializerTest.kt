@@ -17,6 +17,7 @@ import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class ITimeLocSerializerTest {
 
@@ -80,6 +81,25 @@ class ITimeLocSerializerTest {
     // 驗證 roundtrip
     val deserialized = json.decodeFromString(ITimeLocSerializer, serialized)
     assertTimeLocEquals(timeLoc, deserialized)
+  }
+
+  /** localDateTime 缺失時，應從 epochSecond + location timezone 反推 */
+  @Test
+  fun `deserialize without localDateTime should fallback to epochSecond`() {
+    // epochSecond 0 = UTC 1970-01-01 00:00 = Taipei 1970-01-01 08:00
+    val jsonStr = """{"epochSecond":0,"loc":{"lat":25.03903,"lng":121.517668,"tzid":"Asia/Taipei"}}"""
+    val deserialized = json.decodeFromString(ITimeLocSerializer, jsonStr)
+    assertEquals(LocalDateTime.of(1970, 1, 1, 8, 0), deserialized.time)
+    assertEquals("Asia/Taipei", deserialized.location.tzid)
+  }
+
+  /** epochSecond 和 localDateTime 都缺失時，應拋出 IllegalStateException */
+  @Test
+  fun `deserialize with only loc should throw error`() {
+    val jsonStr = """{"loc":{"lat":25.03903,"lng":121.517668,"tzid":"Asia/Taipei"}}"""
+    assertFailsWith<IllegalStateException> {
+      json.decodeFromString(ITimeLocSerializer, jsonStr)
+    }
   }
 
 }

@@ -55,11 +55,13 @@ object ITimeLocSerializer : KSerializer<ITimeLoc> {
       }
     }
     // 優先使用 localDateTime（source of truth），fallback 到 epochSecond + location timezone
-    val time = if (localDateTimeStr != null) {
-      LocalDateTime.parse(localDateTimeStr)
-    } else {
-      val zoneId = loc.tzid?.let { ZoneId.of(it) } ?: ZoneId.systemDefault()
-      LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSec!!), zoneId)
+    val time = when {
+      localDateTimeStr != null -> LocalDateTime.parse(localDateTimeStr)
+      epochSec != null         -> {
+        val zoneId = loc.tzid?.let { ZoneId.of(it) } ?: ZoneId.systemDefault()
+        LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSec), zoneId)
+      }
+      else                     -> error("ITimeLoc deserialization failed: both 'localDateTime' and 'epochSecond' are missing")
     }
     return TimeLoc(time, loc)
   }
