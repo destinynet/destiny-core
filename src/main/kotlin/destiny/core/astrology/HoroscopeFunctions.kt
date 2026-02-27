@@ -204,6 +204,7 @@ fun IHoroscopeModel.getTightAspects(aspectCalculator: IAspectCalculator, thresho
 
   return with(aspectCalculator) { getAspectPatterns(points) }
     .filter { p -> p.score != null && p.score!!.value >= threshold }
+    .filterNot { pattern -> pattern.points.contains(Arabic.Fortune) && pattern.aspect != Aspect.CONJUNCTION }
     .sortedByDescending { it.score }
 }
 
