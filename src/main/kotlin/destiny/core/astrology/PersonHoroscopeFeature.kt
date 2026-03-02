@@ -120,6 +120,9 @@ class PersonHoroscopeFeature(
       add(Axis.MERIDIAN)
       add(LunarNode.NORTH)
     }
+      .filter { modelInner.points.contains(it) }
+      .filter { modelOuter.points.contains(it) }
+      .toSet()
     val midPointOrb = 2.0
 
     val synastryMidpointAspects = setOf(CONJUNCTION, SEMISQUARE, SQUARE, SESQUIQUADRATE, OPPOSITION)
