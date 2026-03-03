@@ -60,6 +60,7 @@ class DefaultExecutionEngine(
   private val orchestrator: IChatOrchestrator,
   private val postProcessors: List<IPostProcessor>,
   private val providerImpl: (Provider) -> IChatCompletion,
+  private val chatOptionsTemplate: ChatOptions = ChatOptions(),
   private val progressListener: ExecutionProgressListener? = null
 ) : ExecutionEngine {
 
@@ -196,7 +197,7 @@ class DefaultExecutionEngine(
       postProcessors = postProcessors,
       locale = locale,
       funCalls = emptySet(),
-      chatOptionsTemplate = ChatOptions(),
+      chatOptionsTemplate = chatOptionsTemplate,
       providerImpl = providerImpl
     ) ?: throw IllegalStateException("Orchestrator returned null for segment ${segment.id}")
 
@@ -227,7 +228,7 @@ class DefaultExecutionEngine(
             postProcessors = postProcessors,
             locale = locale,
             funCalls = emptySet(),
-            chatOptionsTemplate = ChatOptions(),
+            chatOptionsTemplate = chatOptionsTemplate,
             providerImpl = providerImpl
           ) ?: throw IllegalStateException("Orchestrator returned null for parallel item $index")
 
