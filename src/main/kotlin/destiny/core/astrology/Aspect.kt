@@ -78,6 +78,19 @@ enum class Aspect(
   /** 180 , 沖  */
   OPPOSITION("Aspect.OPPOSITION", 180.0, HIGH);
 
+  /**
+   * 此相位在 360° 圓上的所有等價角度。
+   * 例如 TRINE(120°) → [120.0, 240.0]，SQUARE(90°) → [90.0, 270.0]。
+   * CONJUNCTION(0°) → [0.0]。
+   */
+  val mirrorAngles: Set<Double> by lazy {
+    if (degree == 0.0) setOf(0.0)
+    else {
+      val count = (360 / gcd(360.0, degree)).roundToInt()
+      (1 until count).map { i -> (i * degree) % 360 }.filter { Aspect.getAspect(it) == this }.toSet()
+    }
+  }
+
   /** 重要度 : HIGH , MEDIUM , LOW  */
   enum class Importance {
     HIGH,

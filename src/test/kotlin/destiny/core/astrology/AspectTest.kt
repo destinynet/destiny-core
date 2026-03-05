@@ -153,10 +153,7 @@ class AspectTest : EnumTest() {
       assertEquals(expectedDegrees, expanded.keys.toSet())
 
       expectedDegrees.forEach {
-        assertTrue(
-          expanded[it]?.contains(Aspect.SQUARE) == true,
-          "Expected SQUARE to appear at $it"
-        )
+        assertEquals(expanded[it]?.contains(Aspect.SQUARE), true, "Expected SQUARE to appear at $it")
       }
     }
 
@@ -214,6 +211,91 @@ class AspectTest : EnumTest() {
     Aspect.getAspects(Aspect.Importance.HIGH).toSet().expand().forEach { (deg, aspect) ->
       println("$deg -> $aspect")
 
+    }
+  }
+
+  @Nested
+  inner class MirrorAnglesTest {
+
+    @Test
+    fun `CONJUNCTION has single angle 0`() {
+      assertEquals(setOf(0.0), Aspect.CONJUNCTION.mirrorAngles)
+    }
+
+    @Test
+    fun `OPPOSITION has single angle 180`() {
+      assertEquals(setOf(180.0), Aspect.OPPOSITION.mirrorAngles)
+    }
+
+    @Test
+    fun `SQUARE has both 90 and 270`() {
+      assertEquals(setOf(90.0, 270.0), Aspect.SQUARE.mirrorAngles)
+    }
+
+    @Test
+    fun `TRINE has both 120 and 240`() {
+      assertEquals(setOf(120.0, 240.0), Aspect.TRINE.mirrorAngles)
+    }
+
+    @Test
+    fun `SEXTILE has both 60 and 300`() {
+      assertEquals(setOf(60.0, 300.0), Aspect.SEXTILE.mirrorAngles)
+    }
+
+    @Test
+    fun `SEMISEXTILE has 30 and 330`() {
+      assertEquals(setOf(30.0, 330.0), Aspect.SEMISEXTILE.mirrorAngles)
+    }
+
+    @Test
+    fun `SEMISQUARE has 45 and 315`() {
+      assertEquals(setOf(45.0, 315.0), Aspect.SEMISQUARE.mirrorAngles)
+    }
+
+    @Test
+    fun `SESQUIQUADRATE has 135 and 225`() {
+      assertEquals(setOf(135.0, 225.0), Aspect.SESQUIQUADRATE.mirrorAngles)
+    }
+
+    @Test
+    fun `QUINCUNX has 150 and 210`() {
+      assertEquals(setOf(150.0, 210.0), Aspect.QUINCUNX.mirrorAngles)
+    }
+
+    @Test
+    fun `QUINTILE has 72 and 288`() {
+      assertEquals(setOf(72.0, 288.0), Aspect.QUINTILE.mirrorAngles)
+    }
+
+    @Test
+    fun `BIQUINTILE has 144 and 216`() {
+      assertEquals(setOf(144.0, 216.0), Aspect.BIQUINTILE.mirrorAngles)
+    }
+
+    @Test
+    fun `all mirrorAngles map back to the original aspect`() {
+      Aspect.entries.forEach { aspect ->
+        aspect.mirrorAngles.forEach { angle ->
+          assertEquals(aspect, Aspect.getAspect(angle),
+            "${aspect.name}.mirrorAngles contains $angle but getAspect($angle) returns ${Aspect.getAspect(angle)}")
+        }
+      }
+    }
+
+    @Test
+    fun `mirrorAngles are always in range 0 to 360 exclusive`() {
+      Aspect.entries.forEach { aspect ->
+        aspect.mirrorAngles.forEach { angle ->
+          assertTrue(angle >= 0.0 && angle < 360.0,
+            "${aspect.name} has out-of-range angle $angle")
+        }
+      }
+    }
+
+    @Test
+    fun `major aspects union covers all expected angles`() {
+      val majorAngles = Aspect.getAspects(Aspect.Importance.HIGH).flatMap { it.mirrorAngles }.toSet()
+      assertEquals(setOf(0.0, 60.0, 90.0, 120.0, 180.0, 240.0, 270.0, 300.0), majorAngles)
     }
   }
 

@@ -60,7 +60,8 @@ class EventsTraversalTransitImpl(
         else it !in Axis.values
       }.toSet()
 
-    val angles = setOf(0.0, 60.0, 120.0, 240.0, 300.0, 90.0, 180.0)
+    // 從 config.aspectTypes 推導所有等價角度（用於 global aspects）
+    val defaultAngles: Set<Double> = config.aspectTypes.flatMap { it.mirrorAngles }.toSet()
     // Use model.getPosition() to support all AstroPoint types (Planet, LunarNode, Axis)
     val natalPointsPosMap: Map<AstroPoint, ZodiacDegree> = natalPoints.mapNotNull { point ->
       model.getPosition(point)?.let { point to it.lngDeg }
@@ -87,11 +88,20 @@ class EventsTraversalTransitImpl(
       }
     }
 
-    fun searchPersonalEvents(transitingStars: Set<Star>, natalPoints: Set<AstroPoint>, angles: Set<Double>): Sequence<AspectData> {
+    /**
+     * 搜尋 personal aspects（外圈 transit to 本命星體）。
+     * 透過 [AstrologyTraversalConfig.effectiveAngles] 實現 per-planet 的相位規則過濾，
+     * 在計算前就跳過不需要的角度組合。
+     */
+    fun searchPersonalEvents(transitingStars: Set<Star>, natalPoints: Set<AstroPoint>): Sequence<AspectData> {
       return transitingStars.asSequence().flatMap { outer ->
+        val outerPlanet = outer as? Planet
         natalPoints.asSequence().flatMap { inner ->
           natalPointsPosMap[inner]?.let { innerDeg ->
-            val degrees = angles.map { it.toZodiacDegree() }.map { it + innerDeg }.toSet()
+            // 透過 aspectFilterRules 決定此 outer-inner 組合允許的角度
+            val effectiveAngles = if (outerPlanet != null) config.effectiveAngles(outerPlanet, inner) else defaultAngles
+            if (effectiveAngles.isEmpty()) return@flatMap emptySequence()
+            val degrees = effectiveAngles.map { it.toZodiacDegree() }.map { it + innerDeg }.toSet()
             starTransitImpl.getRangeTransitGmt(outer, degrees, fromGmtJulDay, toGmtJulDay, options = config.horoscopeConfig.starTypeOptions).map { (zDeg, gmt) ->
               val angle: Double = zDeg.getAngle(innerDeg).round()
               val pattern = PointAspectPattern(listOf(outer, inner), angle, null, 0.0)
@@ -107,7 +117,7 @@ class EventsTraversalTransitImpl(
     // North/South Node map to the same SwissEph body (True Node), causing TCPlanetPlanet to throw,
     // and their mutual 180° opposition is a constant, not a meaningful event.
     val globalAspectEvents = relativeTransitImpl.mutualAspectingEvents(
-      transitingStars.filterIsInstance<Planet>().toSet(), angles,
+      transitingStars.filterIsInstance<Planet>().toSet(), defaultAngles,
       fromGmtJulDay, toGmtJulDay, config.horoscopeConfig.starTypeOptions
     ).map { aspectData: AspectData ->
       val (outerStar1, outerStar2) = aspectData.points.let { it[0] to it[1] }
@@ -131,8 +141,8 @@ class EventsTraversalTransitImpl(
     } else emptySequence()
 
 
-    // 滯留
-    val planetStationaries = transitingStars.filterIsInstance<Planet>().asSequence().filter { it.isStationaryPossible }.flatMap { planet ->
+    // 滯留（由 config.stationaryPlanets 獨立控制，不依賴 transitingStars）
+    val planetStationaries = config.stationaryPlanets.asSequence().filter { it.isStationaryPossible }.flatMap { planet ->
       retrogradeImpl.getRangeStationaries(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl).map { s: Stationary ->
         val outer = horoscopeFeature.getModel(s.gmtJulDay, loc, config.horoscopeConfig)
         val zodiacDegree = outer.getZodiacDegree(planet)!!
@@ -331,7 +341,7 @@ class EventsTraversalTransitImpl(
 
       if (config.personalAspect) {
         // 全球 to 個人 , 交角
-        yieldAll(searchPersonalEvents(transitingStars, natalPoints, angles).map { aspectData ->
+        yieldAll(searchPersonalEvents(transitingStars, natalPoints).map { aspectData ->
           val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
           val description = buildString {
             append("[transiting ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
@@ -344,8 +354,8 @@ class EventsTraversalTransitImpl(
         // 月亮空亡
         yieldAll(moonVocSeq)
       }
-      if (config.stationary) {
-        // 內行星滯留
+      if (config.stationaryPlanets.isNotEmpty()) {
+        // 行星滯留（由 config.stationaryPlanets 控制）
         yieldAll(planetStationaries)
       }
       if (config.retrograde) {
