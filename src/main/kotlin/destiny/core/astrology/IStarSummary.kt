@@ -28,7 +28,9 @@ data class StarSummary(
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   override val degree: Double,
   override val house: Int,
-  override val isRetrograde: Boolean = false
+  override val isRetrograde: Boolean = false,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val declination: Double? = null,
 ) : IStarSummary {
   companion object {
     fun from(starPosInfo: StarPosInfo): StarSummary {
@@ -36,7 +38,8 @@ data class StarSummary(
         sign = starPosInfo.sign,
         degree = starPosInfo.degree,
         house = starPosInfo.house ?: 1,
-        isRetrograde = starPosInfo.isRetrograde
+        isRetrograde = starPosInfo.isRetrograde,
+        declination = starPosInfo.declination,
       )
     }
   }
