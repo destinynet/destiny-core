@@ -54,6 +54,9 @@ data class AstrologyTraversalConfig(
   val houseIngress: Boolean = true,
   /** 星體進入/離開 Out of Bounds (赤緯超過 ±23.44°) */
   val oobIngress: Boolean = false,
+  /** 計算 OOB 進出的行星集合。空集合 = 不計算（即使 oobIngress=true）。
+   *  OOB 常見於內行星（Mercury, Venus, Mars），獨立於 [transitingPlanets]。 */
+  val oobPlanets: Set<Planet> = allOobCapable,
   /** 計算 transit aspect 的行星集合（外圈行星）。用於指定哪些行星作為過運星體。 */
   val transitingPlanets: Set<Planet> = outerPlanets,
 ) {
@@ -82,6 +85,9 @@ data class AstrologyTraversalConfig(
 
     val outerPlanets: Set<Planet> = setOf(JUPITER, SATURN, URANUS, NEPTUNE, PLUTO)
 
+    /** 容易 OOB 的行星（Mercury, Venus, Mars）— Sun/Moon 排除 */
+    val allOobCapable: Set<Planet> = setOf(MERCURY, VENUS, MARS)
+
     /** 主要相位：合、衝、刑、三合、六合 */
     val majorAspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
 
@@ -100,6 +106,7 @@ data class AstrologyTraversalConfig(
       signIngress = false,
       houseIngress = false,
       transitingPlanets = outerPlanets,
+      oobIngress = true
     )
 
     /**

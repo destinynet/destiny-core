@@ -296,15 +296,15 @@ class EventsTraversalTransitImpl(
       }
     }
 
-    // 星體進入/離開 OOB
-    val oobIngresses = transitingStars.filterIsInstance<Planet>().asSequence().flatMap { planet ->
+    // 星體進入/離開 OOB（使用獨立的 oobPlanets 集合，不受 transitingStars 限制）
+    val oobIngresses = config.oobPlanets.asSequence().flatMap { planet ->
       val stepDays = if (planet == Planet.MOON) 0.25 else 1.0
       OobCrossingFinder.findCrossings(
         starPositionImpl, planet, fromGmtJulDay, toGmtJulDay,
         options = config.horoscopeConfig.starTypeOptions,
         stepDays = stepDays
       ).map { crossing ->
-        val direction = if (crossing.entering) "enters OOB" else "returns in-bounds"
+        val direction = if (crossing.entering) "enters OOB" else "returns OOB"
         val description = buildString {
           append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} $direction. ")
           append("Declination = ${crossing.declination.truncateToString(2)}°")
