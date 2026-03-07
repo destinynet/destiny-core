@@ -89,4 +89,17 @@ sealed class AstroEvent : IAggregatedEvent {
     val newHouse: Int,
   ) : AstroEvent()
 
+  /** 星體進入或離開 Out of Bounds (赤緯超過 ±obliquity) */
+  @Serializable
+  @SerialName("Astro.OobIngress")
+  data class OobIngress(
+    override val description: String,
+    val star: Star,
+    /** true = entering OOB, false = leaving OOB */
+    val entering: Boolean,
+    /** declination at crossing moment (positive or negative) */
+    @Serializable(with = DoubleTwoDecimalSerializer::class)
+    val declination: Double,
+  ) : AstroEvent()
+
 }

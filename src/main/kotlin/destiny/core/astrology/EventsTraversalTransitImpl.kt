@@ -296,6 +296,26 @@ class EventsTraversalTransitImpl(
       }
     }
 
+    // 星體進入/離開 OOB
+    val oobIngresses = transitingStars.filterIsInstance<Planet>().asSequence().flatMap { planet ->
+      val stepDays = if (planet == Planet.MOON) 0.25 else 1.0
+      OobCrossingFinder.findCrossings(
+        starPositionImpl, planet, fromGmtJulDay, toGmtJulDay,
+        options = config.horoscopeConfig.starTypeOptions,
+        stepDays = stepDays
+      ).map { crossing ->
+        val direction = if (crossing.entering) "enters OOB" else "returns in-bounds"
+        val description = buildString {
+          append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} $direction. ")
+          append("Declination = ${crossing.declination.truncateToString(2)}°")
+        }
+        AstroEventDto(
+          AstroEvent.OobIngress(description, planet, crossing.entering, crossing.declination),
+          crossing.gmtJulDay, null, Span.INSTANT, Impact.GLOBAL
+        )
+      }
+    }
+
     // 星體換宮位
     val houseIngresses = if (grain == BirthDataGrain.MINUTE) {
       // grain 到「時/分」, 宮位可信
@@ -379,6 +399,10 @@ class EventsTraversalTransitImpl(
       if (config.houseIngress && grain == BirthDataGrain.MINUTE) {
         // 星體換宮位
         yieldAll(houseIngresses)
+      }
+      if (config.oobIngress) {
+        // 星體進入/離開 OOB
+        yieldAll(oobIngresses)
       }
     }
   }

@@ -52,6 +52,8 @@ data class AstrologyTraversalConfig(
   val signIngress: Boolean = true,
   /** 星體換宮位 */
   val houseIngress: Boolean = true,
+  /** 星體進入/離開 Out of Bounds (赤緯超過 ±23.44°) */
+  val oobIngress: Boolean = false,
   /** 計算 transit aspect 的行星集合（外圈行星）。用於指定哪些行星作為過運星體。 */
   val transitingPlanets: Set<Planet> = outerPlanets,
 ) {
