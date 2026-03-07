@@ -299,7 +299,21 @@ class EventsTraversalTransitImpl(
     // 星體進入/離開 OOB（使用獨立的 oobPlanets 集合，不受 transitingStars 限制）
     val oobIngresses = config.oobPlanets.asSequence().flatMap { planet ->
       val stepDays = if (planet == Planet.MOON) 0.25 else 1.0
-      OobCrossingFinder.findCrossings(
+
+      // 檢查 range 開始時是否已在 OOB，如果是則插入初始狀態事件
+      val initialDecl = starPositionImpl.calculate(planet, fromGmtJulDay, Centric.GEO, Coordinate.EQUATORIAL, config.horoscopeConfig.starTypeOptions).lat
+      val initialOobEvent = if (kotlin.math.abs(initialDecl) > OobCrossingFinder.OBLIQUITY) {
+        val description = buildString {
+          append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} is OOB at range start. ")
+          append("Declination = ${initialDecl.truncateToString(2)}°")
+        }
+        sequenceOf(AstroEventDto(
+          AstroEvent.OobIngress(description, planet, true, initialDecl),
+          fromGmtJulDay, null, Span.INSTANT, Impact.GLOBAL
+        ))
+      } else emptySequence()
+
+      val crossings = OobCrossingFinder.findCrossings(
         starPositionImpl, planet, fromGmtJulDay, toGmtJulDay,
         options = config.horoscopeConfig.starTypeOptions,
         stepDays = stepDays
@@ -314,6 +328,8 @@ class EventsTraversalTransitImpl(
           crossing.gmtJulDay, null, Span.INSTANT, Impact.GLOBAL
         )
       }
+
+      initialOobEvent + crossings
     }
 
     // 星體換宮位
