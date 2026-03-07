@@ -25,6 +25,7 @@ class DtoFactory(
   private val horoscopeFeature: IHoroscopeFeature,
   private val classicalFeature: ClassicalFeature,
   private val classicalFactories: List<IPlanetPatternFactory>,
+  private val starPositionImpl: IStarPosition<*>,
 ) {
 
   fun IHoroscopeModel.toHoroscopeDto(
@@ -66,7 +67,15 @@ class DtoFactory(
 
     val threshold = 0.9
 
-    val byStar: Map<AstroPoint, Natal.StarPosInfo> = getByStarMap(threshold, aspectCalculator, rulerImpl, grain).filter { (p, _) ->
+    val declinationMap: Map<AstroPoint, Double> = points
+      .filterIsInstance<Star>()
+      .mapNotNull { star ->
+        runCatching {
+          star to starPositionImpl.calculate(star, gmtJulDay, centric, Coordinate.EQUATORIAL, horoConfig.starTypeOptions).lat
+        }.getOrNull()
+      }.toMap()
+
+    val byStar: Map<AstroPoint, Natal.StarPosInfo> = getByStarMap(threshold, aspectCalculator, rulerImpl, grain, declinationMap).filter { (p, _) ->
       when (grain) {
         BirthDataGrain.MINUTE -> true
         BirthDataGrain.DAY    -> p !is Axis

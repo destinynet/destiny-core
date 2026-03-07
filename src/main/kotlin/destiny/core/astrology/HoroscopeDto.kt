@@ -123,11 +123,22 @@ data class Natal(
     val rulingHouses : Set<RulingHouse> = emptySet(),
     /** 定位星資訊 */
     val dispositors: Set<Planet>,
-    val astroAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern> = emptyList()
+    val astroAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern> = emptyList(),
+    /** 赤緯 (degrees)，由赤道座標系計算 */
+    @Serializable(with = DoubleTwoDecimalSerializer::class)
+    val declination: Double? = null,
   ) : IStarSummary {
     override val sign: ZodiacSign get() = signDegree.sign
     override val degree: Double get() = signDegree.signDegree.second
     override val isRetrograde: Boolean get() = motion == Motion.RETROGRADE
+
+    /** 是否 Out of Bounds（赤緯超過黃赤交角 ±23.44°） */
+    val isOob: Boolean get() = declination != null && kotlin.math.abs(declination) > OBLIQUITY
+
+    companion object {
+      /** 黃赤交角近似值（度） */
+      const val OBLIQUITY = 23.44
+    }
   }
 
   @Serializable
