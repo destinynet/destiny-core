@@ -100,6 +100,8 @@ sealed class AstroEvent : IAggregatedEvent {
     /** declination at crossing moment (positive or negative) */
     @Serializable(with = DoubleTwoDecimalSerializer::class)
     val declination: Double,
+    /** 此時刻過運星體與本命星體形成的赤緯相位（parallel / contra-parallel） */
+    val natalParallels: List<DeclinationAspect> = emptyList(),
   ) : AstroEvent()
 
 }

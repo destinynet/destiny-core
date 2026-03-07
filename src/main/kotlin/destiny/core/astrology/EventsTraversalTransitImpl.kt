@@ -296,6 +296,39 @@ class EventsTraversalTransitImpl(
       }
     }
 
+    // 本命星體赤緯表（用於 OOB 事件的 parallel/contra-parallel 計算）
+    val natalDeclinations: Map<AstroPoint, Double> = natalPoints.mapNotNull { point ->
+      (point as? Star)?.let { star ->
+        runCatching {
+          star to starPositionImpl.calculate(star, model.gmtJulDay, Centric.GEO, Coordinate.EQUATORIAL, config.horoscopeConfig.starTypeOptions).lat
+        }.getOrNull()
+      }
+    }.toMap()
+
+    fun findNatalParallels(transitPlanet: Star, transitDecl: Double): List<DeclinationAspect> {
+      return natalDeclinations.mapNotNull { (natalPoint, natalDecl) ->
+        DeclinationAspect.calculate(transitPlanet, natalPoint, transitDecl, natalDecl)
+      }.sortedBy { it.orb }
+    }
+
+    fun List<DeclinationAspect>.describeParallels(grain: BirthDataGrain): String {
+      return joinToString("\n") { da ->
+        val typeLabel = when (da.type) {
+          DeclinationAspectType.PARALLEL -> "Parallel"
+          DeclinationAspectType.CONTRA_PARALLEL -> "Contra-parallel"
+        }
+        buildString {
+          append("\t(p) [transiting ${da.transitPoint.asLocaleString().getTitle(Locale.ENGLISH)}]")
+          append(" $typeLabel")
+          append(" [natal ${da.natalPoint.asLocaleString().getTitle(Locale.ENGLISH)}")
+          if (grain == BirthDataGrain.MINUTE) {
+            model.getHouse(da.natalPoint)?.let { append(" (H$it)") }
+          }
+          append("] decl ${da.natalDeclination.truncateToString(2)}° orb = ${da.orb.truncateToString(2)}")
+        }
+      }
+    }
+
     // 星體進入/離開 OOB（使用獨立的 oobPlanets 集合，不受 transitingStars 限制）
     val oobIngresses = config.oobPlanets.asSequence().flatMap { planet ->
       val stepDays = if (planet == Planet.MOON) 0.25 else 1.0
@@ -303,12 +336,18 @@ class EventsTraversalTransitImpl(
       // 檢查 range 開始時是否已在 OOB，如果是則插入初始狀態事件
       val initialDecl = starPositionImpl.calculate(planet, fromGmtJulDay, Centric.GEO, Coordinate.EQUATORIAL, config.horoscopeConfig.starTypeOptions).lat
       val initialOobEvent = if (kotlin.math.abs(initialDecl) > OobCrossingFinder.OBLIQUITY) {
+        val parallels = findNatalParallels(planet, initialDecl)
         val description = buildString {
           append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} is OOB at range start. ")
           append("Declination = ${initialDecl.truncateToString(2)}°")
+          if (config.includeTransitToNatalAspects && parallels.isNotEmpty()) {
+            appendLine()
+            appendLine(parallels.describeParallels(grain))
+          }
         }
         sequenceOf(AstroEventDto(
-          AstroEvent.OobIngress(description, planet, true, initialDecl),
+          AstroEvent.OobIngress(description, planet, true, initialDecl,
+            if (config.includeTransitToNatalAspects) parallels else emptyList()),
           fromGmtJulDay, null, Span.INSTANT, Impact.GLOBAL
         ))
       } else emptySequence()
@@ -318,13 +357,19 @@ class EventsTraversalTransitImpl(
         options = config.horoscopeConfig.starTypeOptions,
         stepDays = stepDays
       ).map { crossing ->
+        val parallels = findNatalParallels(planet, crossing.declination)
         val direction = if (crossing.entering) "enters OOB" else "returns OOB"
         val description = buildString {
           append("${planet.asLocaleString().getTitle(Locale.ENGLISH)} $direction. ")
           append("Declination = ${crossing.declination.truncateToString(2)}°")
+          if (config.includeTransitToNatalAspects && parallels.isNotEmpty()) {
+            appendLine()
+            appendLine(parallels.describeParallels(grain))
+          }
         }
         AstroEventDto(
-          AstroEvent.OobIngress(description, planet, crossing.entering, crossing.declination),
+          AstroEvent.OobIngress(description, planet, crossing.entering, crossing.declination,
+            if (config.includeTransitToNatalAspects) parallels else emptyList()),
           crossing.gmtJulDay, null, Span.INSTANT, Impact.GLOBAL
         )
       }
