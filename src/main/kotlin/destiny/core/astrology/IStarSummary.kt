@@ -16,6 +16,7 @@ interface IStarSummary {
   val degree: Double
   val house: Int?
   val isRetrograde: Boolean
+  val declination: Double?
 }
 
 /**
@@ -30,7 +31,7 @@ data class StarSummary(
   override val house: Int,
   override val isRetrograde: Boolean = false,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
-  val declination: Double? = null,
+  override val declination: Double? = null,
 ) : IStarSummary {
   companion object {
     fun from(starPosInfo: StarPosInfo): StarSummary {

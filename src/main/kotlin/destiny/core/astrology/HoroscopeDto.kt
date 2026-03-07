@@ -126,7 +126,7 @@ data class Natal(
     val astroAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern> = emptyList(),
     /** 赤緯 (degrees)，由赤道座標系計算 */
     @Serializable(with = DoubleTwoDecimalSerializer::class)
-    val declination: Double? = null,
+    override val declination: Double? = null,
   ) : IStarSummary {
     override val sign: ZodiacSign get() = signDegree.sign
     override val degree: Double get() = signDegree.signDegree.second
