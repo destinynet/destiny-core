@@ -5,6 +5,7 @@
  */
 package destiny.tools.workflow
 
+import destiny.tools.ai.IFunctionDeclaration
 import destiny.tools.ai.model.FormatSpec
 import kotlin.reflect.KClass
 
@@ -46,7 +47,8 @@ sealed class Segment {
     val promptBuilder: (input: SegmentInput, context: SegmentContext) -> String,
     val formatSpec: FormatSpec<O>? = null,
     val outputParser: ((rawOutput: String) -> O)? = null,
-    val expectedOutputType: KClass<out SegmentOutput>? = null
+    val expectedOutputType: KClass<out SegmentOutput>? = null,
+    val funCalls: Set<IFunctionDeclaration> = emptySet()
   ) : Segment() {
     init {
       require(formatSpec != null || outputParser != null) {

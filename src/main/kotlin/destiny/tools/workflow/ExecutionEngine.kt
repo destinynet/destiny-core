@@ -196,7 +196,7 @@ class DefaultExecutionEngine(
       message = prompt,
       postProcessors = postProcessors,
       locale = locale,
-      funCalls = emptySet(),
+      funCalls = segment.funCalls,
       chatOptionsTemplate = chatOptionsTemplate,
       providerImpl = providerImpl
     ) ?: throw IllegalStateException("Orchestrator returned null for segment ${segment.id}")
