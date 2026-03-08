@@ -119,10 +119,16 @@ class ResilientChatService(
           temperature = providerModel.temperature ?: chatOptionsTemplate.temperature
         )
 
-        impl.typedChatComplete(providerModel.model, messages, formatSpec, json, locale, currentChatOptions, postProcessors, user, funCalls, modelTimeout)?.let { r ->
-          when (r) {
-            is Reply.Normal<*> -> r as Reply.Normal<T>
-            else               -> null
+        val reply = impl.typedChatComplete(providerModel.model, messages, formatSpec, json, locale, currentChatOptions, postProcessors, user, funCalls, modelTimeout)
+        when (reply) {
+          is Reply.Normal<*> -> reply as Reply.Normal<T>
+          is Reply.Error -> {
+            logger.warn { "Chat completion returned error for ${providerModel.provider}/${providerModel.model}: $reply" }
+            null
+          }
+          null -> {
+            logger.warn { "Chat completion returned null for ${providerModel.provider}/${providerModel.model}" }
+            null
           }
         }
       } catch (e: Exception) {
