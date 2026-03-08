@@ -12,7 +12,10 @@ import kotlinx.serialization.Serializable
 
 enum class ReturnType {
   SOLAR,
-  LUNAR
+  LUNAR,
+  MARS,
+  JUPITER,
+  SATURN,
 }
 
 

@@ -279,11 +279,15 @@ class ReturnContext(
       }
     }
 
-    return when (this@ReturnContext.planet) {
-      Planet.SUN -> ReturnDto(ReturnType.SOLAR, returnChart, synastry, returnModel.validFrom, returnModel.validTo)
-      Planet.MOON -> ReturnDto(ReturnType.LUNAR, returnChart, synastry, returnModel.validFrom, returnModel.validTo)
+    val returnType = when (this@ReturnContext.planet) {
+      Planet.SUN -> ReturnType.SOLAR
+      Planet.MOON -> ReturnType.LUNAR
+      Planet.MARS -> ReturnType.MARS
+      Planet.JUPITER -> ReturnType.JUPITER
+      Planet.SATURN -> ReturnType.SATURN
       else -> throw IllegalArgumentException("Unsupported planet: $planet")
     }
+    return ReturnDto(returnType, returnChart, synastry, returnModel.validFrom, returnModel.validTo)
   }
 
 
