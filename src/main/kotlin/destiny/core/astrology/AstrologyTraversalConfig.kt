@@ -59,6 +59,8 @@ data class AstrologyTraversalConfig(
   val oobPlanets: Set<Planet> = allOobCapable,
   /** 計算 transit aspect 的行星集合（外圈行星）。用於指定哪些行星作為過運星體。 */
   val transitingPlanets: Set<Planet> = outerPlanets,
+  /** 計算 secondary progression 的行星集合。用於指定哪些行星作為進運星體。 */
+  val secondaryProgressionPlanets: Set<Planet> = Planet.values.toSet()
 ) {
 
   /**
