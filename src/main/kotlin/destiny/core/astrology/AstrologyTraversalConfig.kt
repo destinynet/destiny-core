@@ -19,6 +19,29 @@ data class AspectFilterRule(
 )
 
 
+/**
+ * Progression（推運）專用的遍歷設定。
+ * 與 Transit 不同，SP/TP 的 convergent time window 很短，
+ * 需要包含所有行星（尤其 Moon/Sun）才能偵測到有意義的事件。
+ *
+ * @param planets 用於計算推運相位的行星集合（outer ring）。預設包含所有行星。
+ * @param stationaryPlanets 計算哪些推運行星的滯留事件。
+ *   SP 窗口約 1-2 天，Mercury/Venus 可能在此期間轉向（station）。
+ * @param eclipse 是否偵測推運窗口內的日蝕/月蝕。
+ *   出生後數十天內若有蝕相，反推至真實年齡是極為特殊的事件。
+ * @param signIngress 是否偵測推運行星換座。
+ *   SP Moon 換座約每 2.5 年一次，SP Sun 換座約每 30 年一次 — 都是重大定時指標。
+ * @param houseIngress 是否偵測推運行星換宮。
+ *   SP Moon 換宮標誌生活重心的轉移。需要精確出生時間（[BirthDataGrain.MINUTE]）。
+ */
+data class ProgressionConfig(
+  val planets: Set<Planet> = Planet.values.toSet(),
+  val stationaryPlanets: Set<Planet> = setOf(MERCURY, VENUS, MARS),
+  val eclipse: Boolean = true,
+  val signIngress: Boolean = true,
+  val houseIngress: Boolean = true,
+)
+
 data class AstrologyTraversalConfig(
   /** 占星盤的設定 */
   val horoscopeConfig: IHoroscopeConfig = HoroscopeConfig(),
@@ -59,8 +82,10 @@ data class AstrologyTraversalConfig(
   val oobPlanets: Set<Planet> = allOobCapable,
   /** 計算 transit aspect 的行星集合（外圈行星）。用於指定哪些行星作為過運星體。 */
   val transitingPlanets: Set<Planet> = outerPlanets,
-  /** 計算 secondary progression 的行星集合。用於指定哪些行星作為進運星體。 */
-  val secondaryProgressionPlanets: Set<Planet> = Planet.values.toSet()
+  /** Secondary Progression 遍歷設定 */
+  val secondaryProgressionConfig: ProgressionConfig = ProgressionConfig(),
+  /** Tertiary Progression 遍歷設定 */
+  val tertiaryProgressionConfig: ProgressionConfig = ProgressionConfig(),
 ) {
 
   /**
