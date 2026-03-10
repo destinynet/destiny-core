@@ -8,17 +8,17 @@
  */
 package destiny.core.astrology.prediction
 
-import destiny.core.astrology.Planet.*
+import destiny.core.astrology.Planet.SATURN
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.calendar.GmtJulDay
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class ZodiacalReleasingTest {
 
@@ -45,18 +45,14 @@ class ZodiacalReleasingTest {
   private fun assertTaiwanDate(expected: LocalDate, actual: GmtJulDay, tolerance: Long = 1) {
     val taiwanDate = actual.toUtcLocalDateTime().toTaiwan().toLocalDate()
     val daysDiff = ChronoUnit.DAYS.between(expected, taiwanDate)
-    assertTrue(kotlin.math.abs(daysDiff) <= tolerance) {
-      "Expected ~$expected but got $taiwanDate (diff: $daysDiff days)"
-    }
+    assertTrue { kotlin.math.abs(daysDiff) <= tolerance }
   }
 
   /** Assert that the datetime (in Taiwan time) matches expected, with hour-level tolerance */
   private fun assertTaiwanDateTime(expected: LocalDateTime, actual: GmtJulDay, toleranceHours: Long = 1) {
     val taiwanDateTime = actual.toUtcLocalDateTime().toTaiwan()
     val hoursDiff = ChronoUnit.HOURS.between(expected, taiwanDateTime)
-    assertTrue(kotlin.math.abs(hoursDiff) <= toleranceHours) {
-      "Expected ~$expected but got $taiwanDateTime (diff: $hoursDiff hours)"
-    }
+    assertTrue { kotlin.math.abs(hoursDiff) <= toleranceHours }
   }
 
   @Test
@@ -98,7 +94,7 @@ class ZodiacalReleasingTest {
 
   @Test
   fun `L2 periods within L1 Capricorn`() {
-    // L1 Capricorn: 27 years × 360 days = 9720 days
+    // L1 apricorn: 27 years × 360 days = 9720 days
     val l1Duration = 27.0 * EGYPTIAN_YEAR_DAYS
     val l2 = generateSubPeriods(CAPRICORN, birthTime, l1Duration, 2)
 
