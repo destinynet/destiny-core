@@ -8,6 +8,7 @@ import destiny.core.astrology.prediction.Firdaria
 import destiny.core.astrology.prediction.IReturnDto
 import destiny.core.astrology.prediction.Profection
 import destiny.core.astrology.prediction.ReturnCoverageDto
+import destiny.core.astrology.prediction.ZodiacalReleasing
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.Lat.Companion.toLat
@@ -99,6 +100,7 @@ interface ITimeLineEventsModel {
   val monthProfections : List<Profection>
   val firdarias: List<Firdaria>
   val solarReturns: List<ReturnCoverageDto>
+  val zodiacalReleasings: List<ZodiacalReleasing>
 }
 
 @Serializable
@@ -115,6 +117,7 @@ data class TimeLineEventsModel(
   override val monthProfections: List<Profection> = emptyList(),
   override val firdarias: List<Firdaria> = emptyList(),
   override val solarReturns: List<ReturnCoverageDto> = emptyList(),
+  override val zodiacalReleasings: List<ZodiacalReleasing> = emptyList(),
 ) : ITimeLineEventsModel
 
 @Serializable
