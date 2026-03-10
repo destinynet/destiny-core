@@ -322,4 +322,134 @@ class ZodiacalReleasingTest {
 
     assertEquals(6, l4.size)
   }
+
+  // ===== L1 Pisces (Mar 8, 2026 – Jan 4, 2038, 12 years, Ruler: Jupiter) =====
+  // L1 Pisces starts after Cap(27yr) + Aqu(30yr) = 57 Egyptian years from birth
+  private val l1PisStart = GmtJulDay(birthTime.value + (27 + 30) * EGYPTIAN_YEAR_DAYS)
+
+  @Test
+  fun `L3 periods within L2 Pisces under L1 Pisces`() {
+    // L2 Pisces is the first sub-period of L1 Pisces, starts at same time
+    // L2 Pisces duration = 12 × 30 = 360 days
+    val l2PisDuration = 12.0 * EGYPTIAN_MONTH_DAYS // 360 days
+    val l3 = generateSubPeriods(PISCES, l1PisStart, l2PisDuration, 3)
+
+    // L3 Pis: 12 × 2.5 = 30 days, starts Mar 8, 2026 00:00 TW
+    assertEquals(PISCES, l3[0].sign)
+    assertEquals(30.0, l3[0].toTime.value - l3[0].fromTime.value, 0.01)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 3, 8, 0, 0), l3[0].fromTime)
+
+    // L3 Ari: 15 × 2.5 = 37.5 days, starts Apr 7, 2026 00:00 TW
+    assertEquals(ARIES, l3[1].sign)
+    assertEquals(37.5, l3[1].toTime.value - l3[1].fromTime.value, 0.01)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 4, 7, 0, 0), l3[1].fromTime)
+
+    // L3 Tau: 8 × 2.5 = 20 days, starts May 14, 2026 12:00 TW
+    assertEquals(TAURUS, l3[2].sign)
+    assertEquals(20.0, l3[2].toTime.value - l3[2].fromTime.value, 0.01)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 5, 14, 12, 0), l3[2].fromTime)
+
+    // L3 Gem: 20 × 2.5 = 50 days, starts Jun 3, 2026 12:00 TW
+    assertEquals(GEMINI, l3[3].sign)
+    assertEquals(50.0, l3[3].toTime.value - l3[3].fromTime.value, 0.01)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 6, 3, 12, 0), l3[3].fromTime)
+
+    // L3 Can: 25 × 2.5 = 62.5 days, starts Jul 23, 2026 12:00 TW
+    assertEquals(CANCER, l3[4].sign)
+    assertEquals(62.5, l3[4].toTime.value - l3[4].fromTime.value, 0.01)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 7, 23, 12, 0), l3[4].fromTime)
+
+    // L3 Leo: 19 × 2.5 = 47.5 days, starts Sep 24, 2026 00:00 TW
+    assertEquals(LEO, l3[5].sign)
+    assertEquals(47.5, l3[5].toTime.value - l3[5].fromTime.value, 0.01)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 9, 24, 0, 0), l3[5].fromTime)
+
+    // L3 Vir: 20 × 2.5 = 50 days, starts Nov 10, 2026 12:00 TW
+    assertEquals(VIRGO, l3[6].sign)
+    assertEquals(50.0, l3[6].toTime.value - l3[6].fromTime.value, 0.01)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 11, 10, 12, 0), l3[6].fromTime)
+
+    // L3 Lib: 8 × 2.5 = 20 days, starts Dec 30, 2026 12:00 TW
+    assertEquals(LIBRA, l3[7].sign)
+    assertEquals(20.0, l3[7].toTime.value - l3[7].fromTime.value, 0.01)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 12, 30, 12, 0), l3[7].fromTime)
+
+    // L3 Sco: 15 × 2.5 = 37.5 days, starts Jan 19, 2027 12:00 TW
+    assertEquals(SCORPIO, l3[8].sign)
+    assertEquals(37.5, l3[8].toTime.value - l3[8].fromTime.value, 0.01)
+    assertTaiwanDateTime(LocalDateTime.of(2027, 1, 19, 12, 0), l3[8].fromTime)
+
+    // L3 Sag: starts Feb 26, 2027 00:00 TW, truncated (only 5 days of 30)
+    // Accumulated: 30+37.5+20+50+62.5+47.5+50+20+37.5 = 355, remaining = 5
+    assertEquals(SAGITTARIUS, l3[9].sign)
+    assertTaiwanDateTime(LocalDateTime.of(2027, 2, 26, 0, 0), l3[9].fromTime)
+    val sagDuration = l3[9].toTime.value - l3[9].fromTime.value
+    assertEquals(5.0, sagDuration, 0.01)
+
+    assertEquals(10, l3.size) // 10 signs fit within 360 days (no LB)
+  }
+
+  @Test
+  fun `L4 periods within L3 Pisces under L2 Pisces under L1 Pisces`() {
+    // L3 Pisces starts at same time as L2 Pisces (= L1 Pisces start)
+    // L3 Pisces duration = 12 × 2.5 = 30 days
+    val l3PisDuration = 12.0 * levelUnitDays(3) // 30 days
+    val l4 = generateSubPeriods(PISCES, l1PisStart, l3PisDuration, 4)
+
+    val l4Unit = levelUnitDays(4) // 5/24 days per year
+
+    // L4 Pis: 12 × 5h = 60h = 2.5 days, starts Mar 8, 2026 00:00 TW
+    assertEquals(PISCES, l4[0].sign)
+    assertEquals(12 * l4Unit, l4[0].toTime.value - l4[0].fromTime.value, 0.001)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 3, 8, 0, 0), l4[0].fromTime)
+
+    // L4 Ari: 15 × 5h = 75h = 3.125 days, starts Mar 10, 2026 12:00 TW
+    assertEquals(ARIES, l4[1].sign)
+    assertEquals(15 * l4Unit, l4[1].toTime.value - l4[1].fromTime.value, 0.001)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 3, 10, 12, 0), l4[1].fromTime)
+
+    // L4 Tau: 8 × 5h = 40h = 1.667 days, starts Mar 13, 2026 15:00 TW
+    assertEquals(TAURUS, l4[2].sign)
+    assertEquals(8 * l4Unit, l4[2].toTime.value - l4[2].fromTime.value, 0.001)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 3, 13, 15, 0), l4[2].fromTime)
+
+    // L4 Gem: 20 × 5h = 100h = 4.167 days, starts Mar 15, 2026 07:00 TW
+    assertEquals(GEMINI, l4[3].sign)
+    assertEquals(20 * l4Unit, l4[3].toTime.value - l4[3].fromTime.value, 0.001)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 3, 15, 7, 0), l4[3].fromTime)
+
+    // L4 Can: 25 × 5h = 125h = 5.208 days, starts Mar 19, 2026 11:00 TW
+    assertEquals(CANCER, l4[4].sign)
+    assertEquals(25 * l4Unit, l4[4].toTime.value - l4[4].fromTime.value, 0.001)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 3, 19, 11, 0), l4[4].fromTime)
+
+    // L4 Leo: 19 × 5h = 95h = 3.958 days, starts Mar 24, 2026 16:00 TW
+    assertEquals(LEO, l4[5].sign)
+    assertEquals(19 * l4Unit, l4[5].toTime.value - l4[5].fromTime.value, 0.001)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 3, 24, 16, 0), l4[5].fromTime)
+
+    // L4 Vir: 20 × 5h = 100h = 4.167 days, starts Mar 28, 2026 15:00 TW
+    assertEquals(VIRGO, l4[6].sign)
+    assertEquals(20 * l4Unit, l4[6].toTime.value - l4[6].fromTime.value, 0.001)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 3, 28, 15, 0), l4[6].fromTime)
+
+    // L4 Lib: 8 × 5h = 40h = 1.667 days, starts Apr 1, 2026 19:00 TW
+    assertEquals(LIBRA, l4[7].sign)
+    assertEquals(8 * l4Unit, l4[7].toTime.value - l4[7].fromTime.value, 0.001)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 4, 1, 19, 0), l4[7].fromTime)
+
+    // L4 Sco: 15 × 5h = 3.125 days, starts Apr 3, 2026 11:00 TW
+    assertEquals(SCORPIO, l4[8].sign)
+    assertEquals(15 * l4Unit, l4[8].toTime.value - l4[8].fromTime.value, 0.001)
+    assertTaiwanDateTime(LocalDateTime.of(2026, 4, 3, 11, 0), l4[8].fromTime)
+
+    // L4 Sag: truncated (remaining ~0.417 days out of 2.5)
+    // Accumulated: (12+15+8+20+25+19+20+8+15) × 5/24 = 142 × 5/24 = 29.583 days
+    // Remaining: 30 - 29.583 = 0.417 days
+    assertEquals(SAGITTARIUS, l4[9].sign)
+    val sagDuration = l4[9].toTime.value - l4[9].fromTime.value
+    assertEquals(30.0 - 142 * l4Unit, sagDuration, 0.01)
+
+    assertEquals(10, l4.size) // 10 signs fit within 30 days (no LB)
+  }
 }
