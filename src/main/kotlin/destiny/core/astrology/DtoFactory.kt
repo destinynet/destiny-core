@@ -65,7 +65,7 @@ class DtoFactory(
       }
     }
 
-    val threshold = 0.9
+    val threshold = 0.8
 
     val declinationMap: Map<AstroPoint, Double> = points
       .filterIsInstance<Star>()

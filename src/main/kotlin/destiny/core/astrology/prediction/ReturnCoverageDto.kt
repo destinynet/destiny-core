@@ -9,21 +9,10 @@
  */
 package destiny.core.astrology.prediction
 
-import destiny.core.astrology.Axis
-import destiny.core.astrology.IStarSummary
-import destiny.core.astrology.Natal.StarPosInfo
-import destiny.core.astrology.Planet
-import destiny.core.astrology.StarSummary
-import destiny.core.astrology.Synastry
-import destiny.core.astrology.SynastryAspect
-import destiny.core.astrology.ZodiacSign
+import destiny.core.astrology.*
 import destiny.core.calendar.GmtJulDay
-import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-
-
-
 
 
 // ── Shared extraction utilities ─────────────────────────────────────────────
@@ -79,13 +68,13 @@ data class ReturnCoverageDto(
      * @param dto             Original return DTO (heavy, with full IHoroscopeDto)
      * @param fromGmt         Search range start
      * @param toGmt           Search range end
-     * @param scoreThreshold  Only include aspects with score >= threshold (default 0.95)
+     * @param scoreThreshold  Only include aspects with score >= threshold (default 0.90)
      */
     fun from(
       dto: IReturnDto,
       fromGmt: GmtJulDay,
       toGmt: GmtJulDay,
-      scoreThreshold: Double = 0.95
+      scoreThreshold: Double = 0.90
     ): ReturnCoverageDto {
       val chart = dto.returnChart
       val asc = chart.stars[Axis.RISING]
