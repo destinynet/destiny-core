@@ -42,6 +42,12 @@ data class ProgressionConfig(
   val houseIngress: Boolean = true,
 )
 
+data class SolarArcConfig(
+  val transitingPoints: Set<AstroPoint> = Planet.values.toSet() + LunarNode.values.toSet() + Axis.MERIDIAN + Axis.RISING,
+  val applyingOrb: Double = 2.0,
+  val separatingOrb: Double = 1.0,
+)
+
 data class AstrologyTraversalConfig(
   /** 占星盤的設定 */
   val horoscopeConfig: IHoroscopeConfig = HoroscopeConfig(),
@@ -86,6 +92,8 @@ data class AstrologyTraversalConfig(
   val secondaryProgressionConfig: ProgressionConfig = ProgressionConfig(),
   /** Tertiary Progression 遍歷設定 */
   val tertiaryProgressionConfig: ProgressionConfig = ProgressionConfig(),
+  /** SolarArc 遍歷設定 */
+  val solarArcConfig: SolarArcConfig = SolarArcConfig(),
 ) {
 
   /**

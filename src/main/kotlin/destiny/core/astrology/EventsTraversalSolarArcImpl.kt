@@ -3,6 +3,7 @@ package destiny.core.astrology
 import destiny.core.asLocaleString
 import destiny.core.astrology.Aspect.Companion.expand
 import destiny.core.astrology.BirthDataGrain.MINUTE
+import destiny.core.astrology.IPointAspectPattern.AspectType
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -56,7 +57,11 @@ class EventsTraversalSolarArcImpl(
       }.toSet()
 
     // 外圈要考慮的星體 (Solar Arc Points)
-    val saPointsToConsider = transitingPoints.filter { it is Planet || it is LunarNode || it is Axis }
+    // Solar Arc 將所有行星推進相同度數，不應受限於 caller 傳入的 transitingPoints（通常只有外行星）。
+    // SA 使用 SolarArcConfig.transitingPoints（預設包含所有行星+軸點），而非 caller 的 transitingPoints。
+    val saPointsToConsider = config.solarArcConfig.transitingPoints
+      .filter { it is Planet || it is LunarNode || it is Axis }
+      .filter { model.points.contains(it) }
       .filter {
         if (grain == MINUTE)
           true
@@ -91,9 +96,26 @@ class EventsTraversalSolarArcImpl(
                 val separation = saPos.lngDeg.aheadOf(natalPos.lngDeg)
                 val requiredArc = (aspectDegree - separation + 360) % 360
                 if (requiredArc >= fromSolarArc.degreeMoved && requiredArc <= toSolarArc.degreeMoved) {
+                  // Exact: SA aspect perfects within the time range
                   findGmtJulDayForArc(model, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)?.also { eventGmt ->
                     val pattern = PointAspectPattern(listOf(saPoint, natalPoint), aspectDegree, null, 0.0)
                     val aspectData = AspectData(pattern, null, 0.0, null, eventGmt)
+                    yield(aspectData)
+                  }
+                } else {
+                  // Applying: aspect hasn't perfected yet, check if within orb at end of range
+                  val applyingOrb = requiredArc - toSolarArc.degreeMoved
+                  if (applyingOrb > 0 && applyingOrb <= config.solarArcConfig.applyingOrb) {
+                    val pattern = PointAspectPattern(listOf(saPoint, natalPoint), aspectDegree, AspectType.APPLYING, applyingOrb)
+                    val aspectData = AspectData(pattern, AspectType.APPLYING, applyingOrb, null, toGmtJulDay)
+                    yield(aspectData)
+                  }
+
+                  // Separating: aspect perfected just before range start, check if still within orb
+                  val separatingOrb = fromSolarArc.degreeMoved - requiredArc
+                  if (separatingOrb > 0 && separatingOrb <= config.solarArcConfig.separatingOrb) {
+                    val pattern = PointAspectPattern(listOf(saPoint, natalPoint), aspectDegree, AspectType.SEPARATING, separatingOrb)
+                    val aspectData = AspectData(pattern, AspectType.SEPARATING, separatingOrb, null, fromGmtJulDay)
                     yield(aspectData)
                   }
                 }
@@ -170,6 +192,11 @@ class EventsTraversalSolarArcImpl(
           val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
           val description = buildString {
             append("[SA ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
+            when (aspectData.aspectType) {
+              AspectType.APPLYING -> append(" (applying, orb ${aspectData.orb.truncateToString(2)}°)")
+              AspectType.SEPARATING -> append(" (separating, orb ${aspectData.orb.truncateToString(2)}°)")
+              else -> {}
+            }
           }
           AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
         }
