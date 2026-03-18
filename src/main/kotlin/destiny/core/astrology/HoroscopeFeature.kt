@@ -394,7 +394,7 @@ class HoroscopeFeature(
     forward: Boolean
   ): ISolarArcModel {
 
-    require(viewTime >= this.gmtJulDay) { "viewTime should be after model.gmtJulDay" }
+    require(viewTime >= this.gmtJulDay) { "viewTime ($viewTime) should be after model.gmtJulDay (${this.gmtJulDay})" }
 
     // 使用 Secondary Progression 來獲得精確的 convergent time
     val progressionSecondary = ProgressionSecondary(forward)

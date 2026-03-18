@@ -41,6 +41,12 @@ class EventsTraversalSolarArcImpl(
 
     val threshold = 0.9
 
+    // Guard: ensure both time bounds are after birth time
+    if (fromGmtJulDay < model.gmtJulDay || toGmtJulDay < model.gmtJulDay) {
+      logger.error { "Solar Arc time range invalid: fromGmtJulDay=$fromGmtJulDay, toGmtJulDay=$toGmtJulDay, model.gmtJulDay=${model.gmtJulDay}" }
+      return emptySequence()
+    }
+
     val (fromSolarArc, toSolarArc) = with(horoscopeFeature) {
       model.getSolarArc(fromGmtJulDay, grain, modernAspectCalculator, threshold, hConfig) to
         model.getSolarArc(toGmtJulDay, grain, modernAspectCalculator, threshold, hConfig)
