@@ -34,7 +34,7 @@ class ClaudeTest {
           "id": "msg_01UbxrHrc72srjNVFeDpFzaz",
           "type": "message",
           "role": "assistant",
-          "model": "claude-3-haiku-20240307",
+          "model": "claude-3-TEST-MODEL",
           "content": [
             {
               "type": "text",
@@ -81,7 +81,7 @@ class ClaudeTest {
         "id": "msg_01NMLtxgG1B4MG6JYEwEwJkY",
         "type": "message",
         "role": "assistant",
-        "model": "claude-3-haiku-20240307",
+        "model": "claude-3-TEST-MODEL",
         "content": [
           {
             "type": "text",

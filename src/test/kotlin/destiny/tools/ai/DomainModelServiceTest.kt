@@ -19,7 +19,7 @@ class DomainModelServiceTest {
   fun setup() {
     val map = mapOf(
       DomainLanguage(Domain.Bdnp.HOROSCOPE, "zh") to listOf(
-        ProviderModel(Provider.CLAUDE, "claude-3-haiku-20240307", Temperature(0.9))
+        ProviderModel(Provider.CLAUDE, "claude-haiku-4-5", Temperature(0.9))
       ),
       DomainLanguage(Domain.Bdnp.EW, null) to listOf(
         ProviderModel(Provider.OPENAI, "gpt-4", Temperature(0.8)),
@@ -27,7 +27,7 @@ class DomainModelServiceTest {
       ),
       DomainLanguage(Domain.Bdnp.ZIWEI, "en") to listOf(
         ProviderModel(Provider.OPENAI, "gpt-4", Temperature(0.7)),
-        ProviderModel(Provider.CLAUDE, "claude-3-haiku-20240307", Temperature(0.7))
+        ProviderModel(Provider.CLAUDE, "claude-haiku-4-5", Temperature(0.7))
       )
     )
     val holder = Holder(map)
@@ -41,7 +41,7 @@ class DomainModelServiceTest {
     fun `matching domain and language`() {
       service.getProviderModels(Domain.Bdnp.ZIWEI, "en").also { pms ->
         assertTrue { pms.map { pm -> pm.provider }.toSet() == setOf(Provider.OPENAI, Provider.CLAUDE) }
-        assertTrue { pms.map { pm -> pm.model }.toSet() == setOf("gpt-4", "claude-3-haiku-20240307") }
+        assertTrue { pms.map { pm -> pm.model }.toSet() == setOf("gpt-4", "claude-haiku-4-5") }
       }
     }
 
@@ -49,7 +49,7 @@ class DomainModelServiceTest {
     fun `matching domain but no language`() {
       service.getProviderModels(Domain.Bdnp.ZIWEI, null).also { pms ->
         assertTrue { pms.map { pm -> pm.provider }.toSet() == setOf(Provider.OPENAI, Provider.CLAUDE) }
-        assertTrue { pms.map { pm -> pm.model }.toSet() == setOf("gpt-4", "claude-3-haiku-20240307") }
+        assertTrue { pms.map { pm -> pm.model }.toSet() == setOf("gpt-4", "claude-haiku-4-5") }
       }
 
       service.getProviderModels(Domain.Bdnp.EW, null).also { pms ->
@@ -62,7 +62,7 @@ class DomainModelServiceTest {
     fun `matching domain but different language`() {
       service.getProviderModels(Domain.Bdnp.ZIWEI, "fr").also { pms ->
         assertTrue { pms.map { pm -> pm.provider }.toSet() == setOf(Provider.OPENAI, Provider.CLAUDE) }
-        assertTrue { pms.map { pm -> pm.model }.toSet() == setOf("gpt-4", "claude-3-haiku-20240307") }
+        assertTrue { pms.map { pm -> pm.model }.toSet() == setOf("gpt-4", "claude-haiku-4-5") }
       }
     }
 
@@ -70,7 +70,7 @@ class DomainModelServiceTest {
     fun otherDomain() {
       service.getProviderModels(Domain.TAROT).also { pms ->
         assertTrue { pms.map { pm -> pm.provider }.toSet() == setOf(Provider.OPENAI, Provider.CLAUDE, Provider.GEMINI) }
-        assertTrue { pms.map { pm -> pm.model }.toSet() == setOf("gpt-4", "claude-3-haiku-20240307", "gemini-pro") }
+        assertTrue { pms.map { pm -> pm.model }.toSet() == setOf("gpt-4", "claude-haiku-4-5", "gemini-pro") }
       }
     }
   }
@@ -82,7 +82,7 @@ class DomainModelServiceTest {
     fun `matching domain and language`() {
       val result = service.getProviderModel(Domain.Bdnp.HOROSCOPE, "zh")
       assertEquals(Provider.CLAUDE, result.provider)
-      assertEquals("claude-3-haiku-20240307", result.model)
+      assertEquals("claude-haiku-4-5", result.model)
       assertEquals(Temperature(0.9), result.temperature)
     }
 
@@ -98,7 +98,7 @@ class DomainModelServiceTest {
     fun `matching domain but different language`() {
       val result = service.getProviderModel(Domain.Bdnp.ZIWEI, "fr")
       assertTrue(result.provider in listOf(Provider.OPENAI, Provider.CLAUDE))
-      assertTrue(result.model in listOf("gpt-4", "claude-3-haiku-20240307"))
+      assertTrue(result.model in listOf("gpt-4", "claude-haiku-4-5"))
       assertEquals(Temperature(0.7), result.temperature)
     }
 
@@ -106,7 +106,7 @@ class DomainModelServiceTest {
     fun otherDomain() {
       val result = service.getProviderModel(Domain.TAROT)
       assertTrue(result.provider in listOf(Provider.OPENAI, Provider.CLAUDE, Provider.GEMINI))
-      assertTrue(result.model in listOf("claude-3-haiku-20240307", "gpt-4", "gemini-pro"))
+      assertTrue(result.model in listOf("claude-haiku-4-5", "gpt-4", "gemini-pro"))
     }
 
   }
