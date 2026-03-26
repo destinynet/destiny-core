@@ -16,4 +16,5 @@ enum class Provider {
   DEEPSEEK,
   TOGETHER,
   CEREBRAS,
+  XIAOMI,
 }
