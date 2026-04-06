@@ -35,12 +35,13 @@ sealed class Domain {
   /** 籤詩 */
   data object CHANCE : Domain()
 
-  /** 風水 , 地圖空拍版 */
+  /** 風水 , 地圖空拍版 , TODO : 還沒上線 */
   data object FENGSHUI_AERIAL : Domain()
 
   /** 占星骰子 */
   sealed class AstroDice : Domain() {
     data object ASTRO_DICE_SIMPLE : AstroDice()
+    /** TODO : 還沒上線 */
     data object ASTRO_DICE_ADVANCED : AstroDice()
   }
 
@@ -55,7 +56,7 @@ sealed class Domain {
     /** 占星每日運勢 */
     data object DAILY_HOROSCOPE : Period()
 
-    /** 占星每月運勢 */
+    /** 占星每月運勢 . TODO : 還沒上線 */
     data object MONTHLY_HOROSCOPE : Period()
   }
 
@@ -64,6 +65,7 @@ sealed class Domain {
 
   /** 擇日 */
   sealed class Electional : Domain() {
+    /** TODO : 還沒上線 */
     data object ELECTIONAL_YEAR_MONTH : Electional()
     data object ELECTIONAL_DAY_HOUR : Electional()
   }
