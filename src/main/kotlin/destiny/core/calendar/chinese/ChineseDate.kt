@@ -8,6 +8,7 @@ package destiny.core.calendar.chinese
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.tools.ChineseStringTools.digitToChinese
+import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
 
 /**
@@ -65,6 +66,7 @@ interface IChineseDateHourModel : IChineseDateModel {
 }
 
 
+@KSerializable
 data class ChineseDate(
   /** 第幾輪  */
   override val cycle: Int?,

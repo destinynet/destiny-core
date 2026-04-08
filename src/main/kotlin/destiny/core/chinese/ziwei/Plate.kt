@@ -11,11 +11,15 @@ import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
+import destiny.tools.serializers.ChronoLocalDateTimeSerializer
+import destiny.tools.serializers.ILocationSerializer
+import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 
 /** 排盤結果 , 作為 DTO  */
+@KSerializable
 open class Plate (
 
   /** 名稱  */
@@ -25,6 +29,7 @@ open class Plate (
   override val chineseDate: ChineseDate,
 
   /** 出生資料 , 陽曆 , 精確到「分、秒」  */
+  @KSerializable(with = ChronoLocalDateTimeSerializer::class)
   override val localDateTime: ChronoLocalDateTime<*>?,
 
   /** 出生年的干支 (可能是節氣、也可能是陰曆) */
@@ -37,6 +42,7 @@ open class Plate (
   override val hour: Branch,
 
   /** 出生地點  */
+  @KSerializable(with = ILocationSerializer::class)
   override val location: ILocation?,
 
   /** 地點名稱  */

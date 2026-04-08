@@ -5,11 +5,13 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
+import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
 
 /**
  * 命盤中，一個宮位所包含的所有資訊
  */
+@KSerializable
 data class HouseData(
 
   /** 宮位名稱 (本命盤就本命盤的宮位 , 大限盤就大限盤的宮位... 以下類推) */
