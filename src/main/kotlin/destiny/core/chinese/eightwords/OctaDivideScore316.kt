@@ -67,7 +67,7 @@ class OctaDivideScore316 : AbstractOctaDivideScore() {
       val proportion = (gmtJulDay - solarTermsTimePos.prevMajor.begin) /
         (solarTermsTimePos.nextMajor.begin - solarTermsTimePos.prevMajor.begin)
 
-      logger.debug { "proportion = $proportion" }
+      logger.trace { "proportion = $proportion" }
 
       // 司令天干
       val masterStem: Stem = hiddenStems.getHiddenStems(monthBranch).let { stems ->
