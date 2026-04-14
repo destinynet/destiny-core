@@ -4,6 +4,12 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.IBirthDataNamePlace
+import destiny.tools.serializers.IBirthDataNamePlaceSerializer
+import kotlinx.serialization.Serializable
 
-data class ZiweiDivine(override val divineBdnp: IBirthDataNamePlace,
-                       override val question: String) : IBdnpDivine
+@Serializable
+data class ZiweiDivine(
+  @Serializable(with = IBirthDataNamePlaceSerializer::class)
+  override val divineBdnp: IBirthDataNamePlace,
+  override val question: String
+) : IBdnpDivine
