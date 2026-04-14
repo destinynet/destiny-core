@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import destiny.tools.Score
 import destiny.tools.serializers.astrology.AstroPatternSerializers.*
+import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
 import java.util.*
 
@@ -13,14 +14,14 @@ import java.util.*
  *
  * http://goodvibeastrology.com/aspect-patterns/
  */
-@kotlinx.serialization.Serializable
+@KSerializable
 data class PointSignHouse(
   val point: AstroPoint,
   val sign: ZodiacSign,
   val house: Int
 )
 
-@kotlinx.serialization.Serializable(with = AstroPatternSerializer::class)
+@KSerializable(with = AstroPatternSerializer::class)
 sealed class AstroPattern(
   open val points: Set<AstroPoint> = emptySet(),
   open val score: Score? = null
@@ -29,7 +30,7 @@ sealed class AstroPattern(
   /**
    * [GrandTrine] : 大三角
    */
-  @kotlinx.serialization.Serializable(with = GrandTrineSerializer::class)
+  @KSerializable(with = GrandTrineSerializer::class)
   data class GrandTrine(override val points: Set<AstroPoint>, val element: Element, override val score: Score? = null) : AstroPattern() {
     init {
       require(points.size == 3) {
@@ -55,7 +56,7 @@ sealed class AstroPattern(
   /**
    * [Kite] : 風箏
    */
-  @kotlinx.serialization.Serializable(with = KiteSerializer::class)
+  @KSerializable(with = KiteSerializer::class)
   data class Kite(val head: PointSignHouse, val wings: Set<AstroPoint>, val tail: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     init {
       require(wings.size == 2) {
@@ -86,7 +87,7 @@ sealed class AstroPattern(
   /**
    * [TSquared] : 三刑會沖
    */
-  @kotlinx.serialization.Serializable(with = TSquaredSerializer::class)
+  @KSerializable(with = TSquaredSerializer::class)
   data class TSquared(val oppoPoints: Set<AstroPoint>, val squared: PointSignHouse, override val score: Score? = null) : AstroPattern() {
 
     init {
@@ -117,7 +118,7 @@ sealed class AstroPattern(
    * [Yod] : 上帝之指 , Finger of God
    * 60 , 150 , 150
    * */
-  @kotlinx.serialization.Serializable(with = YodSerializer::class)
+  @KSerializable(with = YodSerializer::class)
   data class Yod(val bottoms: Set<AstroPoint>, val apex: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     init {
       require(bottoms.size == 2) {
@@ -147,7 +148,7 @@ sealed class AstroPattern(
    * [Boomerang] : 回力鏢
    * [Yod] + 對沖點 (與雙翼形成 30度)
    * */
-  @kotlinx.serialization.Serializable(with = BoomerangSerializer::class)
+  @KSerializable(with = BoomerangSerializer::class)
   data class Boomerang(val yod: Yod, val oppoPoint: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     override val points: Set<AstroPoint>
       get() = yod.points.plus(oppoPoint.point)
@@ -170,7 +171,7 @@ sealed class AstroPattern(
   /**
    * [GoldenYod] : 黃金指 72 , 144 , 144
    * */
-  @kotlinx.serialization.Serializable(with = GoldenYodSerializer::class)
+  @KSerializable(with = GoldenYodSerializer::class)
   data class GoldenYod(val bottoms: Set<AstroPoint>, val pointer: PointSignHouse, override val score: Score? = null) : AstroPattern() {
     init {
       require(bottoms.size == 2) {
@@ -200,7 +201,7 @@ sealed class AstroPattern(
   /**
    * [GrandCross] : 大十字
    */
-  @kotlinx.serialization.Serializable(with = GrandCrossSerializer::class)
+  @KSerializable(with = GrandCrossSerializer::class)
   data class GrandCross(override val points: Set<AstroPoint>, val quality: Quality, override val score: Score? = null) : AstroPattern() {
     init {
       require(points.size == 4) {
@@ -225,7 +226,7 @@ sealed class AstroPattern(
   /**
    * [DoubleT] : 兩組 三刑會沖 (但未形成 [GrandCross]大十字 )
    */
-  @kotlinx.serialization.Serializable(with = DoubleTSerializer::class)
+  @KSerializable(with = DoubleTSerializer::class)
   data class DoubleT(val tSquares: Set<TSquared>, override val score: Score? = null) : AstroPattern() {
     init {
       require(tSquares.size == 2) {
@@ -251,7 +252,7 @@ sealed class AstroPattern(
   /**
    * [Hexagon] : 六芒星 (兩組 [GrandTrine]大三角 , 彼此交角60度 )
    */
-  @kotlinx.serialization.Serializable(with = HexagonSerializer::class)
+  @KSerializable(with = HexagonSerializer::class)
   data class Hexagon(val grandTrines: Set<GrandTrine>, override val score: Score? = null) : AstroPattern() {
 
     init {
@@ -286,7 +287,7 @@ sealed class AstroPattern(
    * [Wedge] : 楔子
    * 180 沖 , 逢 第三顆星 , 以 60/120 介入，緩和局勢
    */
-  @kotlinx.serialization.Serializable(with = WedgeSerializer::class)
+  @KSerializable(with = WedgeSerializer::class)
   data class Wedge(val oppoPoints: Set<AstroPoint>, val mediator: PointSignHouse, override val score: Score? = null) : AstroPattern() {
 
     init {
@@ -318,7 +319,7 @@ sealed class AstroPattern(
    * 兩組 [Wedge] 對沖，兩個60度，兩個120度，這也會形成壓力，但是彼此間又可以釋放壓力，非常詭異
    * @param points 總共4顆星
    */
-  @kotlinx.serialization.Serializable(with = MysticRectangleSerializer::class)
+  @KSerializable(with = MysticRectangleSerializer::class)
   data class MysticRectangle(val oppoGroups: Set<Set<AstroPoint>>, override val score: Score? = null) : AstroPattern() {
 
     init {
@@ -346,7 +347,7 @@ sealed class AstroPattern(
    * [Pentagram] : 五芒星 五個 [GoldenYod]
    * @param points 總共5顆星
    * */
-  @kotlinx.serialization.Serializable(with = PentagramSerializer::class)
+  @KSerializable(with = PentagramSerializer::class)
   data class Pentagram(override val points: Set<AstroPoint>, override val score: Score? = null) : AstroPattern() {
 
     init {
@@ -370,7 +371,7 @@ sealed class AstroPattern(
   /**
    * [StelliumSign] : 聚集星座 (至少四顆星)
    */
-  @kotlinx.serialization.Serializable(with = StelliumSignSerializer::class)
+  @KSerializable(with = StelliumSignSerializer::class)
   data class StelliumSign(override val points: Set<AstroPoint>, val sign: ZodiacSign, override val score: Score? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
@@ -390,7 +391,7 @@ sealed class AstroPattern(
   /**
    * [StelliumHouse] : 聚集宮位 (至少四顆星)
    */
-  @kotlinx.serialization.Serializable(with = StelliumHouseSerializer::class)
+  @KSerializable(with = StelliumHouseSerializer::class)
   data class StelliumHouse(override val points: Set<AstroPoint>, val house: Int, override val score: Score? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
@@ -411,7 +412,7 @@ sealed class AstroPattern(
    * [Confrontation] 對峙
    * 兩組 三顆星以上的合相星群 彼此對沖
    */
-  @kotlinx.serialization.Serializable(with = ConfrontationSerializer::class)
+  @KSerializable(with = ConfrontationSerializer::class)
   data class Confrontation(val clusters: Set<Set<AstroPoint>>, override val score: Score? = null) : AstroPattern() {
     override val points: Set<AstroPoint>
       get() = clusters.flatten().toSet()

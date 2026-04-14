@@ -3,9 +3,10 @@
  */
 package destiny.tools
 
+import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
 
-@kotlinx.serialization.Serializable
+@KSerializable
 @JvmInline
 value class Score(val value: Double) : Comparable<Score>, Serializable {
   init {

@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.Gender
 import destiny.core.ITimeLoc
+import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
 
 
@@ -32,7 +33,7 @@ interface IDiceModel : Serializable {
   val question: String?
 }
 
-@kotlinx.serialization.Serializable
+@KSerializable
 data class DiceModel(override val star: DiceStar,
                      override val sign: ZodiacSign,
                      override val house: Int,

@@ -13,6 +13,8 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.SixAnimal
 import destiny.core.chinese.StemBranch
 import destiny.core.iching.*
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
 import java.util.*
 
@@ -33,8 +35,9 @@ data class Meta(override val settings: SettingsOfStemBranch,
 /**
  * 卜一個卦的最基本資料結構：本卦、變卦
  */
-data class Combined(override val src: IHexagram,
-                    override val dst: IHexagram) : ICombined, Serializable
+@KSerializable
+data class Combined(@Contextual override val src: IHexagram,
+                    @Contextual override val dst: IHexagram) : ICombined, Serializable
 
 
 /** 單一卦象，卦名、世爻應爻、六親等資訊 */

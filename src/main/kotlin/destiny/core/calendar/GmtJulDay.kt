@@ -6,6 +6,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
 import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -20,7 +21,7 @@ import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 @JvmInline
-@kotlinx.serialization.Serializable(with = GmtJulDaySerializer::class)
+@KSerializable(with = GmtJulDaySerializer::class)
 value class GmtJulDay(val value: Double) : Comparable<GmtJulDay>, Serializable {
 
   /**

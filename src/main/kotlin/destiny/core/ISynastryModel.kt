@@ -3,6 +3,7 @@ package destiny.core
 import destiny.tools.ai.model.Domain
 import destiny.tools.ai.model.DomainSerializer
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
 
 enum class SynastryGrain {
@@ -28,14 +29,14 @@ interface ISynastryModel : Serializable {
   val relationship: SynastryRelationship
 }
 
-@kotlinx.serialization.Serializable
+@KSerializable
 data class SynastryModel(
   @Contextual
   override val inner: IBirthDataNamePlace,
   @Contextual
   override val outer: IBirthDataNamePlace,
   override val grain: SynastryGrain,
-  @kotlinx.serialization.Serializable(with = DomainSerializer::class)
+  @KSerializable(with = DomainSerializer::class)
   override val domainBdnp: Domain.Bdnp,
   override val relationship: SynastryRelationship
 ) : ISynastryModel

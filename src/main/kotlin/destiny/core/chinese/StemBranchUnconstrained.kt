@@ -5,12 +5,13 @@ package destiny.core.chinese
 
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
+import kotlinx.serialization.Serializable as KSerializable
 
 
 /**
  * 120柱干支組合，沒有 陰陽限制
  */
-@kotlinx.serialization.Serializable
+@KSerializable
 enum class StemBranchUnconstrained(override val stem: Stem,
                                    override val branch: Branch) : IStemBranch {
   甲子(甲, 子),

@@ -7,6 +7,7 @@ import destiny.core.Scale
 import destiny.core.chinese.*
 import destiny.tools.ChineseStringTools
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
 
 /**
@@ -94,7 +95,7 @@ interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
   }
 }
 
-@kotlinx.serialization.Serializable
+@KSerializable
 data class EightWordsNullable(override val year: IStemBranchOptional,
                               override val month: IStemBranchOptional,
                               override val day: IStemBranchOptional,
@@ -184,7 +185,7 @@ data class EightWordsNullable(override val year: IStemBranchOptional,
  * 2006-06-12 將此 class 繼承 [EightWordsNullable]
  * 2018-04-01 起， 將此 class 與 [EightWordsNullable] 拆離繼承關係
  */
-@kotlinx.serialization.Serializable
+@KSerializable
 @SerialName("EightWords")
 data class EightWords(override val year: StemBranch,
                       override val month: IStemBranch,

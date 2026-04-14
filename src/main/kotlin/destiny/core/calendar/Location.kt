@@ -11,6 +11,7 @@ import destiny.core.News.NorthSouth.SOUTH
 import destiny.core.calendar.Lat.Companion.toLat
 import destiny.core.calendar.Lng.Companion.toLng
 import destiny.tools.LocaleTools
+import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
 import java.time.Instant
 import java.time.ZoneId
@@ -19,7 +20,7 @@ import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 @JvmInline
-@kotlinx.serialization.Serializable
+@KSerializable
 value class Lat(val value: Double) : Serializable {
   init {
     require(value.absoluteValue <= 90)
@@ -46,7 +47,7 @@ value class Lat(val value: Double) : Serializable {
 
 
 @JvmInline
-@kotlinx.serialization.Serializable
+@KSerializable
 value class Lng(val value: Double) : Serializable {
   init {
     require(value.absoluteValue <= 180)
@@ -154,7 +155,7 @@ interface IPlace {
   val place: String
 }
 
-@kotlinx.serialization.Serializable
+@KSerializable
 data class Location(override val lat: Lat,
                     override val lng: Lng,
                     override val tzid: String? = null,

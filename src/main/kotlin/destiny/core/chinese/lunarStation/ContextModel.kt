@@ -7,6 +7,7 @@ import destiny.core.IBirthDataNamePlace
 import destiny.core.Scale
 import destiny.core.astrology.LunarStation
 import destiny.core.calendar.eightwords.IEightWords
+import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
 import java.time.LocalDateTime
 
@@ -51,7 +52,7 @@ interface IContextModel : Serializable {
 
 }
 
-@kotlinx.serialization.Serializable
+@KSerializable
 data class ContextModel(override val eightwords: IEightWords,
                         override val year: LunarStation,
                         override val month: LunarStation,

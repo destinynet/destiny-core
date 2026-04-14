@@ -6,6 +6,7 @@ package destiny.core.astrology
 import destiny.tools.CircleTools.aheadOf
 import destiny.tools.CircleTools.normalize
 import destiny.tools.getTitle
+import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
 import java.util.*
 
@@ -30,7 +31,7 @@ interface IZodiacDegree : Comparable<IZodiacDegree>, Serializable {
 }
 
 /** 黃道帶度數 */
-@kotlinx.serialization.Serializable
+@KSerializable
 @JvmInline
 value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree {
   init {
