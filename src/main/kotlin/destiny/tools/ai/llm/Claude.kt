@@ -17,6 +17,30 @@ import kotlinx.serialization.json.*
 
 class Claude {
 
+  /**
+   * Anthropic prompt caching 控制 —— 放在 `text` content block 或 top-level `system` block 上，
+   * 標記該 block 為可快取。
+   *
+   * `type = "ephemeral"` 是目前 Anthropic 支援的唯一 cache type（5 分鐘 TTL）。
+   * cached block 在同一 user 後續 request 的 input tokens 計費打 1 折。
+   *
+   * API doc: https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
+   */
+  @Serializable
+  data class CacheControl(val type: String = "ephemeral")
+
+  /**
+   * 頂層 `system` 欄位用的 text block（支援 cache_control）。
+   * 與 messages[] 裡的 `Content.Text` 型別雷同，但 system 是獨立頂層欄位、不帶 role。
+   */
+  @Serializable
+  data class SystemTextBlock(
+    val type: String = "text",
+    val text: String,
+    @SerialName("cache_control")
+    val cacheControl: CacheControl? = null,
+  )
+
   @OptIn(ExperimentalSerializationApi::class)
   @Serializable
   @JsonClassDiscriminator("type")
@@ -25,7 +49,12 @@ class Claude {
 
     @Serializable
     @SerialName("text")
-    data class Text(override val contentType: String = "text", val text: String) : Content()
+    data class Text(
+      override val contentType: String = "text",
+      val text: String,
+      @SerialName("cache_control")
+      val cacheControl: CacheControl? = null,
+    ) : Content()
 
     @Serializable
     @SerialName("tool_use")
@@ -122,7 +151,14 @@ class Claude {
     @Transient
     val options: ClaudeOptions? = null,
 
-    val tools: List<Function>? = null
+    val tools: List<Function>? = null,
+
+    /**
+     * Top-level system prompt — Anthropic-native。
+     * 通常放不變的背景（user profile / natal data / 指令），搭配 `cache_control = ephemeral`
+     * 讓後續 turn 打 1 折。null 或空 list 就不送 `system` 欄位。
+     */
+    val system: List<SystemTextBlock>? = null,
   ) {
 
     val temperature: Double? = options?.temperature

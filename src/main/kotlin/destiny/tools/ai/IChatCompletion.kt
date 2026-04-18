@@ -19,7 +19,11 @@ sealed class Reply<out T> {
                        val invokedFunCalls: List<FunCall> = emptyList(),
                        val inputTokens: Int? = null,
                        val outputTokens: Int? = null,
-                       val duration: Duration? = null) : Reply<T>()
+                       val duration: Duration? = null,
+                       /** Prompt caching metrics（Anthropic 等支援的 provider） */
+                       val cacheCreationTokens: Int? = null,
+                       /** Prompt caching 命中的 input token 數（計費 10x 便宜） */
+                       val cacheReadTokens: Int? = null) : Reply<T>()
 
   sealed class Error : Reply<Nothing>() {
 
