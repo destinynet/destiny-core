@@ -18,16 +18,23 @@ import kotlinx.serialization.json.*
 class Claude {
 
   /**
-   * Anthropic prompt caching 控制 —— 放在 `text` content block 或 top-level `system` block 上，
+   * Anthropic prompt caching 控制 —— 放在 `text` content block 或 top-level `system` block 上,
    * 標記該 block 為可快取。
    *
-   * `type = "ephemeral"` 是目前 Anthropic 支援的唯一 cache type（5 分鐘 TTL）。
+   * - `type = "ephemeral"` 是目前 Anthropic 唯一支援的 cache type（5 分鐘 TTL 預設；
+   *   可透過 `ttl = "1h"` + beta header 使用 1 小時 TTL）。
+   * - `ttl` 可選 `"5m"`（預設）或 `"1h"`（beta，需 header `anthropic-beta:
+   *   extended-cache-ttl-2025-04-11`）。
+   *
    * cached block 在同一 user 後續 request 的 input tokens 計費打 1 折。
    *
    * API doc: https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
    */
   @Serializable
-  data class CacheControl(val type: String = "ephemeral")
+  data class CacheControl(
+    val type: String = "ephemeral",
+    @SerialName("ttl") val ttl: String? = null,
+  )
 
   /**
    * 頂層 `system` 欄位用的 text block（支援 cache_control）。
