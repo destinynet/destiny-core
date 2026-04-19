@@ -193,7 +193,9 @@ abstract class AbstractChatCompletion : IChatCompletion {
           invokedFunCalls = rawReply.invokedFunCalls,
           inputTokens = rawReply.inputTokens,
           outputTokens = rawReply.outputTokens,
-          duration = rawReply.duration
+          duration = rawReply.duration,
+          cacheCreationTokens = rawReply.cacheCreationTokens,
+          cacheReadTokens = rawReply.cacheReadTokens,
         )
       }
 
