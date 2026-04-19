@@ -91,7 +91,12 @@ abstract class AbstractChatCompletion : IChatCompletion {
     val finalMsgs = messages.fold(mutableListOf<Msg>()) { acc, msg ->
       if (acc.isNotEmpty()) {
         val lastMsg = acc.last()
-        if (lastMsg.role == msg.role) {
+        // 不合併 SYSTEM 訊息 —— 因為每則可能有不同的 [Msg.cacheable] 策略
+        // （Anthropic prompt caching 要穩定的 block 單獨 cache、不穩定的另一 block 不 cache），
+        // 合併會讓 cache_control boundary 錯位、cache key 失配。
+        val sameRoleNonSystem = lastMsg.role == msg.role && msg.role != Role.SYSTEM
+        val sameCacheable = lastMsg.cacheable == msg.cacheable
+        if (sameRoleNonSystem && sameCacheable) {
           if (lastMsg.stringContents == msg.stringContents) {
             // Drop the duplicate message
             logger.warn { "DROP_DUPLICATED  : ${msg.stringContents}" }
