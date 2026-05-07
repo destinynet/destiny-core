@@ -730,7 +730,35 @@ val p雙祿朝垣 = object : PatternMultipleImpl() {
 
 /**
  * 化權、化碌、化科在命宮的三方四正，謂之三奇加會格，主其文才蓋世，出將入相。
- * (一定是：命宮、官祿、財帛)
+ * (一般指：化祿、化權、化科 三星 全部落在 命宮、財帛、官祿、遷移 四宮之內)
+ */
+val p三奇嘉會_寬鬆 = object : PatternSingleImpl() {
+
+  override fun getSingle(it: IPlate, pContext: ZPatternContext): ZPattern? {
+
+    val good3: Set<T4Value> = setOf(T4Value.祿, T4Value.權, T4Value.科)
+
+    val 三化所在: Set<Branch> = good3.map { t4Value ->
+      it.getTransFourHouseOf(t4Value).stemBranch.branch
+    }.toSet()
+
+    return if (it.三方四正().containsAll(三化所在)) {
+      三奇嘉會
+    } else {
+      null
+    }
+  }
+}
+
+/**
+ * (《正宗》最嚴格版)
+ * 化祿、化權、化科 三星 **各佔** 命宮、財帛、官祿 三合一宮 (每宮恰一個，不重複)，
+ * 且 化忌 **不入** 三方四正，方為正格。
+ *
+ * 古註：「12 宮中三奇各佔一宮，氣象勢大；若命、財、官 三宮各佔一化，
+ *        即每隔四宮位就有一奇，故流年運行時，四年即會出現一次好運臨身。」
+ *
+ * 命中率約 1% — 視為頂格。
  */
 val p三奇嘉會 = object : PatternSingleImpl() {
 
@@ -738,16 +766,19 @@ val p三奇嘉會 = object : PatternSingleImpl() {
 
     val good3: Set<T4Value> = setOf(T4Value.祿, T4Value.權, T4Value.科)
 
-    return it.三方四正().all { branch ->
-      val a: Set<T4Value?> = it.getHouseDataOf(branch).stars.map { star ->
-        it.transFours[star]?.get(FlowType.MAIN)
-      }.toSet()
-      a.any { value: T4Value? -> good3.contains(value) }
-    }.let {
-      if (it)
-        三奇嘉會
-      else
-        null
+    val 三化所在: Set<Branch> = good3.map { t4Value ->
+      it.getTransFourHouseOf(t4Value).stemBranch.branch
+    }.toSet()
+
+    val 化忌位: Branch = it.getTransFourHouseOf(忌).stemBranch.branch
+
+    return if (
+      三化所在 == it.三方() &&            // 三化恰好分佔 命/財/官 三合 (各一個)
+      化忌位 !in it.三方四正()             // 化忌不入三方四正 (避免破格)
+    ) {
+      三奇嘉會
+    } else {
+      null
     }
   }
 }
