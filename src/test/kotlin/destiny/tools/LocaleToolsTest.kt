@@ -42,18 +42,28 @@ class LocaleToolsTest {
   // ========== buildLocaleList tests ==========
 
   @Test
-  fun `buildLocaleList with language only`() {
-    assertEquals(listOf("en"), LocaleTools.buildLocaleList(Locale.of("en")))
+  fun `buildLocaleList with english falls back to zh`() {
+    assertEquals(listOf("en", "zh"), LocaleTools.buildLocaleList(Locale.of("en")))
   }
 
   @Test
-  fun `buildLocaleList with language and country`() {
-    assertEquals(listOf("zh", "zh_TW"), LocaleTools.buildLocaleList(Locale.of("zh", "TW")))
+  fun `buildLocaleList with zh_TW includes country variant then en`() {
+    assertEquals(listOf("zh", "zh_TW", "en"), LocaleTools.buildLocaleList(Locale.of("zh", "TW")))
   }
 
   @Test
-  fun `buildLocaleList with japanese`() {
-    assertEquals(listOf("ja", "ja_JP"), LocaleTools.buildLocaleList(Locale.of("ja", "JP")))
+  fun `buildLocaleList with japanese falls back to zh then en`() {
+    assertEquals(listOf("ja", "ja_JP", "zh", "en"), LocaleTools.buildLocaleList(Locale.of("ja", "JP")))
+  }
+
+  @Test
+  fun `buildLocaleList with korean falls back to en then zh`() {
+    assertEquals(listOf("ko", "en", "zh"), LocaleTools.buildLocaleList(Locale.of("ko")))
+  }
+
+  @Test
+  fun `buildLocaleList with unknown language has no fallback`() {
+    assertEquals(listOf("fr"), LocaleTools.buildLocaleList(Locale.of("fr")))
   }
 
   // ========== getLocale tests ==========

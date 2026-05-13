@@ -39,18 +39,34 @@ object LocaleTools {
 
   /**
    * Converts a Locale to a priority-ordered list of locale strings for DB queries.
-   * e.g. Locale("zh", "TW") → ["zh", "zh_TW"]
-   * e.g. Locale("en") → ["en"]
+   *
+   * Order: primary language → country variant → cross-language fallbacks.
+   *
+   * e.g. Locale("en")       → ["en", "zh"]
+   * e.g. Locale("zh", "TW") → ["zh", "zh_TW", "en"]
+   * e.g. Locale("ja", "JP") → ["ja", "ja_JP", "zh", "en"]
+   * e.g. Locale("ko")       → ["ko", "en", "zh"]
+   * e.g. Locale("fr")       → ["fr"]
    */
   fun buildLocaleList(locale: Locale): List<String> {
-    val locales = mutableListOf(locale.language)
-    if (locale.country.isNotEmpty()) {
-      val underscore = "${locale.language}_${locale.country}"
-      if (underscore != locale.language) {
-        locales.add(underscore)
-      }
+    val lang = locale.language
+    val country = locale.country
+
+    val primary = mutableListOf(lang)
+    if (country.isNotEmpty()) {
+      val variant = "${lang}_${country}"
+      if (variant != lang) primary.add(variant)
     }
-    return locales
+
+    val fallback = when (lang) {
+      "en" -> listOf("zh")
+      "zh" -> listOf("en")
+      "ja" -> listOf("zh", "en")
+      "ko" -> listOf("en", "zh")
+      else -> emptyList()
+    }
+
+    return primary + fallback
   }
 
   /**
