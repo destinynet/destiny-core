@@ -15,7 +15,7 @@ class Gemini {
   data class Content(val role: String, val parts: List<Part>?) {
     @Serializable
     data class Part(
-      val text: String?,
+      val text: String? = null,
       @SerialName("inline_data") val inlineData: InlineData? = null,
       val functionCall: FunctionCall? = null,
       val functionResponse: FunctionResponse? = null,
@@ -24,7 +24,13 @@ class Gemini {
        * 要把帶 functionCall 的同一個 Part 原樣送回去（包含此欄位）。2.x 為 null，沒影響。
        * https://ai.google.dev/gemini-api/docs/thought-signatures
        */
-      val thoughtSignature: String? = null
+      val thoughtSignature: String? = null,
+      /**
+       * thinking model 的 thought summary part flag：true 表示這個 part 是模型的思考摘要
+       * （不是最終回答）。需要在 GenerationConfig.thinkingConfig.includeThoughts=true 才會回傳。
+       * https://ai.google.dev/gemini-api/docs/thinking
+       */
+      val thought: Boolean? = null
     ) {
       @Serializable
       data class InlineData(val mimeType: String, val data: String)
@@ -98,8 +104,17 @@ class Gemini {
        * Default for gemini-pro-vision: 32
        * Default for gemini-pro: none
        */
-      val topK: Int? = null
-    )
+      val topK: Int? = null,
+      /**
+       * thinking model 才有用：true 時模型會回傳 thought summary parts（part.thought=true）。
+       * 非 thinking model 會直接 ignore。
+       * https://ai.google.dev/gemini-api/docs/thinking
+       */
+      val thinkingConfig: ThinkingConfig? = null
+    ) {
+      @Serializable
+      data class ThinkingConfig(val includeThoughts: Boolean = true)
+    }
 
 
   }
