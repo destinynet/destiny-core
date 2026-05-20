@@ -18,7 +18,13 @@ class Gemini {
       val text: String?,
       @SerialName("inline_data") val inlineData: InlineData? = null,
       val functionCall: FunctionCall? = null,
-      val functionResponse: FunctionResponse? = null
+      val functionResponse: FunctionResponse? = null,
+      /**
+       * Gemini 3.x function-calling 必須的 opaque token：model 回傳時帶上，下一輪 request
+       * 要把帶 functionCall 的同一個 Part 原樣送回去（包含此欄位）。2.x 為 null，沒影響。
+       * https://ai.google.dev/gemini-api/docs/thought-signatures
+       */
+      val thoughtSignature: String? = null
     ) {
       @Serializable
       data class InlineData(val mimeType: String, val data: String)
