@@ -11,6 +11,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -24,6 +25,12 @@ import kotlin.time.Duration.Companion.seconds
  *
  * 如果一輪循環中的所有模型都失敗了，服務將在延遲一段時間後開始新一輪的嘗試，
  * 直到達到配置的最大嘗試次數 ([maxTotalAttempts])。
+ *
+ * **基於 [Reply.Error] 的 marker interface 進行錯誤分類**：
+ * - [Reply.Error.InvalidApiKey] —— 永久排除該 provider，不再於後續 loop 嘗試
+ * - [Reply.Error.RateLimited] —— 收集 `retryAfter` hint；下一輪 loop 至少等到
+ *   max(delayBetweenModelLoops, 本 loop 看到的最長 retryAfter) 才開始
+ * - 其他 [Reply.Error] —— 紀錄並移到下一個 model（這個 model 下輪可再試）
  *
  * 與 [HedgeChatService] 不同（後者通過並行請求優先考慮低延遲），
  * 此服務優先考慮**最終的成功率**，即使可能需要更長的處理時間。
@@ -68,74 +75,99 @@ class ResilientChatService(
       return null
     }
 
-    val shuffledModels: List<ProviderModel> = providerModels.shuffled()
+    // 跨 loop 共享的狀態：API key 無效的 provider 整個 session 都不再嘗試
+    val disabledProviders = mutableSetOf<Provider>()
 
     var attemptsLeft = config.maxTotalAttempts
     while (attemptsLeft > 0) {
+      val candidates: List<ProviderModel> = providerModels
+        .filter { it.provider !in disabledProviders }
+        .shuffled()
 
-      logger.info { "Starting a new attempt loop (attempts left: $attemptsLeft), shuffled models: ${shuffledModels.map { it.model }}" }
-      val successfulResultDto: Reply.Normal<out T>? = process(formatSpec, shuffledModels, messages, config.user, funCalls, chatOptionsTemplate, config.modelTimeout, postProcessors, locale, providerImpl)
-
-      if (successfulResultDto != null) {
-        logger.info { "Successfully obtained result from ${successfulResultDto.provider}/${successfulResultDto.model} within the loop." }
-        return successfulResultDto as Reply.Normal<T>
-
+      if (candidates.isEmpty()) {
+        logger.error { "All providers disabled (invalid API keys or similar); aborting after ${config.maxTotalAttempts - attemptsLeft} loops." }
+        return null
       }
 
-      // 如果一輪循環後都沒有成功
+      logger.info { "Starting attempt loop (attemptsLeft=$attemptsLeft), candidates: ${candidates.map { "${it.provider}/${it.model}" }}" }
+
+      // 收集本 loop 內看到的 RateLimited.retryAfter，用來計算下一 loop 的最小等待時間
+      var maxRetryAfter: Duration = ZERO
+
+      val result: Reply.Normal<T>? = candidates.suspendFirstNotNullResult { providerModel ->
+        logger.debug { "Attempting ${providerModel.provider}/${providerModel.model}" }
+        try {
+          val impl = providerImpl.invoke(providerModel.provider)
+          val currentChatOptions = chatOptionsTemplate.copy(
+            temperature = providerModel.temperature ?: chatOptionsTemplate.temperature
+          )
+
+          val reply = impl.typedChatComplete(
+            providerModel.model, messages, formatSpec, json, locale,
+            currentChatOptions, postProcessors, config.user, funCalls, config.modelTimeout
+          )
+
+          when (reply) {
+            is Reply.Normal<*> -> reply as Reply.Normal<T>
+
+            is Reply.Error.InvalidApiKey -> {
+              // session-permanent：剩下的 loop 都不要再試這個 provider
+              logger.warn { "InvalidApiKey on ${reply.provider}; disabling provider for the rest of this call" }
+              disabledProviders += reply.provider
+              null
+            }
+
+            is Reply.Error.RateLimited -> {
+              reply.retryAfter?.let { hint ->
+                if (hint > maxRetryAfter) maxRetryAfter = hint
+              }
+              logger.warn { "Retryable[RateLimited] on ${providerModel.provider}/${providerModel.model}, retryAfter=${reply.retryAfter}, msg=${reply.message}" }
+              null
+            }
+
+            is Reply.Error.Retryable -> {
+              logger.warn { "Retryable on ${providerModel.provider}/${providerModel.model}: $reply" }
+              null
+            }
+
+            is Reply.Error.Terminal -> {
+              logger.warn { "Terminal on ${providerModel.provider}/${providerModel.model}: $reply" }
+              null
+            }
+
+            is Reply.Error -> {
+              // 安全網：未來新增的 leaf 沒實作 Retryable/Terminal marker 時也能 fall through
+              logger.warn { "Unclassified error on ${providerModel.provider}/${providerModel.model}: $reply" }
+              null
+            }
+
+            null -> {
+              logger.warn { "typedChatComplete returned null for ${providerModel.provider}/${providerModel.model}" }
+              null
+            }
+          }
+        } catch (e: Exception) {
+          logger.error(e) { "Exception during chat completion with ${providerModel.provider}/${providerModel.model}" }
+          null
+        }
+      }
+
+      if (result != null) {
+        logger.info { "Success on ${result.provider}/${result.model} (attemptsLeft=$attemptsLeft)" }
+        return result
+      }
+
       attemptsLeft--
       if (attemptsLeft > 0) {
-        logger.info { "All models in the current loop failed. Retrying after ${config.delayBetweenModelLoops} delay. Attempts left: $attemptsLeft" }
-        delay(config.delayBetweenModelLoops)
+        // 若本 loop 有 model 給了 retryAfter hint，至少等到那麼久後再開新一輪
+        val backoff = maxOf(config.delayBetweenModelLoops, maxRetryAfter)
+        logger.info { "All candidates failed this loop. Sleeping $backoff before next loop (attemptsLeft=$attemptsLeft, maxRetryAfter=$maxRetryAfter)" }
+        delay(backoff)
       }
-    } // end of while loop (attemptsLeft)
+    }
 
-    logger.error { "All attempts to get a resilient chat completion failed after ${config.maxTotalAttempts} loops." }
+    logger.error { "All ${config.maxTotalAttempts} attempt loops exhausted." }
     return null
-  }
-
-  /**
-   * 處理一輪（打亂後的）模型列表的嘗試。
-   * 它使用 suspendFirstNotNullResult 依次嘗試每個模型，直到找到第一個成功的結果。
-   * （假設此函數是 private inline fun <reified T>）
-   */
-  suspend fun <T: Any> process(
-    formatSpec: FormatSpec<T>,
-    providerModels: List<ProviderModel>,
-    messages: List<Msg>,
-    user: String? = null,
-    funCalls: Set<IFunctionDeclaration> = emptySet(),
-    chatOptionsTemplate: ChatOptions, // 提供一個聊天選項模板
-    modelTimeout: Duration,
-    postProcessors: List<IPostProcessor>,
-    locale: Locale,
-    providerImpl: (Provider) -> IChatCompletion
-  ): Reply.Normal<T>? {
-    return providerModels.suspendFirstNotNullResult { providerModel ->
-      logger.debug { "Attempting model (suspend loop): ${providerModel.provider}/${providerModel.model}" }
-      try {
-        val impl = providerImpl.invoke(providerModel.provider)
-        val currentChatOptions = chatOptionsTemplate.copy(
-          temperature = providerModel.temperature ?: chatOptionsTemplate.temperature
-        )
-
-        val reply = impl.typedChatComplete(providerModel.model, messages, formatSpec, json, locale, currentChatOptions, postProcessors, user, funCalls, modelTimeout)
-        when (reply) {
-          is Reply.Normal<*> -> reply as Reply.Normal<T>
-          is Reply.Error -> {
-            logger.warn { "Chat completion returned error for ${providerModel.provider}/${providerModel.model}: $reply" }
-            null
-          }
-          null -> {
-            logger.warn { "Chat completion returned null for ${providerModel.provider}/${providerModel.model}" }
-            null
-          }
-        }
-      } catch (e: Exception) {
-        logger.error(e) { "Exception during chat completion with ${providerModel.provider}/${providerModel.model}" }
-        null // 發生異常，此模型嘗試失敗
-      }
-    } // end of suspendFirstNotNullResult's transform lambda
   }
 
 
