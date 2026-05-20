@@ -27,17 +27,62 @@ sealed class Reply<out T> {
 
   sealed class Error : Reply<Nothing>() {
 
-    data class TooLong(val message: String, override val provider: Provider) : Error()
+    /**
+     * Marker：orchestrator 可安全地對同一個 (provider, model) 重試。
+     * 通常是 transient 狀態（server overload, rate limit）。
+     */
+    sealed interface Retryable
+
+    /**
+     * Marker：orchestrator 不應對同一輸入再 retry 同一 model。
+     * 改 input、換 model 或換 provider 才有救。
+     */
+    sealed interface Terminal
+
+    /** Input/context 太長 —— 改 input 才能解。 */
+    data class TooLong(val message: String, override val provider: Provider) : Error(), Terminal
 
     data class DeserializationFailure(val errorMessage: String,
                                       val originalContent: String,
                                       override val provider: Provider,
-                                      val model: String) : Error()
+                                      val model: String) : Error(), Terminal
 
-    data class InvalidApiKey(override val provider: Provider) : Error()
-    data class Busy(override val provider: Provider) : Error()
-    data class Unknown(val message: String, override val provider: Provider) : Error()
+    data class InvalidApiKey(override val provider: Provider) : Error(), Terminal
 
+    /** 籠統的 transient 錯誤（server overloaded / 未分類的 5xx 等）—— 可 retry。 */
+    data class Busy(override val provider: Provider) : Error(), Retryable
+
+    /** 預設視為 Terminal —— 未知狀況保守處理，不重試。 */
+    data class Unknown(val message: String, override val provider: Provider) : Error(), Terminal
+
+    /**
+     * 明確的 rate limit（429 / quota per minute）。
+     * @param retryAfter 若 provider 在 response header 給了 Retry-After 即帶入，否則 null。
+     */
+    data class RateLimited(
+      override val provider: Provider,
+      val retryAfter: Duration? = null,
+      val message: String = ""
+    ) : Error(), Retryable
+
+    /**
+     * 輸出觸頂 max_tokens（finishReason = "length" / "max_tokens"）；
+     * 內容部分產生但被截斷。同樣 input 重 retry 不會有救，要換 model 或加大 max_tokens。
+     */
+    data class MaxTokensReached(
+      override val provider: Provider,
+      val partialContent: String? = null
+    ) : Error(), Terminal
+
+    /**
+     * Function-call loop 沒在 [maxDepth] 內收斂。
+     * 通常是 model 卡在重複呼叫同一個 function、或 function 回的結果讓 model 無法決斷。
+     */
+    data class FunctionCallLoopExceeded(
+      override val provider: Provider,
+      val model: String,
+      val maxDepth: Int
+    ) : Error(), Terminal
   }
 }
 
@@ -46,10 +91,10 @@ interface IChatCompletion {
 
   val provider: Provider
 
-  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = 90.seconds, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec? = null) : Reply<String>
+  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCalls: Set<IFunctionDeclaration> = emptySet(), timeout: Duration = 90.seconds, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec? = null, maxFunctionCallDepth: Int = DEFAULT_MAX_FUNCTION_CALL_DEPTH) : Reply<String>
 
-  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = 90.seconds, chatOptions: ChatOptions) : Reply<String> {
-    return chatComplete(model, messages, user, setOf(funCall), timeout, chatOptions)
+  suspend fun chatComplete(model: String, messages: List<Msg>, user: String? = null, funCall: IFunctionDeclaration, timeout: Duration = 90.seconds, chatOptions: ChatOptions, maxFunctionCallDepth: Int = DEFAULT_MAX_FUNCTION_CALL_DEPTH) : Reply<String> {
+    return chatComplete(model, messages, user, setOf(funCall), timeout, chatOptions, maxFunctionCallDepth = maxFunctionCallDepth)
   }
 
   suspend fun <T : Any> typedChatComplete(
@@ -62,7 +107,8 @@ interface IChatCompletion {
     postProcessors: List<IPostProcessor> = emptyList(),
     user: String? = null,
     funCalls: Set<IFunctionDeclaration> = emptySet(),
-    timeout: Duration = 90.seconds
+    timeout: Duration = 90.seconds,
+    maxFunctionCallDepth: Int = DEFAULT_MAX_FUNCTION_CALL_DEPTH
   ) : Reply<T>?
 
   suspend fun <T : Any> typedChatComplete(
@@ -75,17 +121,26 @@ interface IChatCompletion {
     postProcessors: List<IPostProcessor> = emptyList(),
     user: String? = null,
     funCalls: Set<IFunctionDeclaration> = emptySet(),
-    timeout: Duration = 90.seconds
+    timeout: Duration = 90.seconds,
+    maxFunctionCallDepth: Int = DEFAULT_MAX_FUNCTION_CALL_DEPTH
   ): Reply<T>? {
-    return typedChatComplete(model, listOf(Msg(Role.USER, message)), formatSpec, json, locale, chatOptions, postProcessors, user, funCalls, timeout)
+    return typedChatComplete(model, listOf(Msg(Role.USER, message)), formatSpec, json, locale, chatOptions, postProcessors, user, funCalls, timeout, maxFunctionCallDepth)
+  }
+
+  companion object {
+    /**
+     * Function-call loop 預設最大遞迴深度。一輪 = 一次 model→function→model 的交換。
+     * 超過會回傳 [Reply.Error.FunctionCallLoopExceeded]，避免 model 卡在重複呼叫 / stack overflow / 燒 token。
+     */
+    const val DEFAULT_MAX_FUNCTION_CALL_DEPTH = 10
   }
 }
 
 abstract class AbstractChatCompletion : IChatCompletion {
 
-  abstract suspend fun doChatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec? = null): Reply<String>
+  abstract suspend fun doChatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec? = null, maxFunctionCallDepth: Int = IChatCompletion.DEFAULT_MAX_FUNCTION_CALL_DEPTH): Reply<String>
 
-  override suspend fun chatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec?): Reply<String> {
+  override suspend fun chatComplete(model: String, messages: List<Msg>, user: String?, funCalls: Set<IFunctionDeclaration>, timeout: Duration, chatOptions: ChatOptions, jsonSchema: JsonSchemaSpec?, maxFunctionCallDepth: Int): Reply<String> {
     val filteredFunCalls = funCalls.filter { it.applied(messages) }.toSet()
 
     val finalMsgs = messages.fold(mutableListOf<Msg>()) { acc, msg ->
@@ -135,7 +190,7 @@ abstract class AbstractChatCompletion : IChatCompletion {
       )
     }
 
-    return doChatComplete(model, finalMsgs, user, filteredFunCalls, timeout, chatOptions, jsonSchema)
+    return doChatComplete(model, finalMsgs, user, filteredFunCalls, timeout, chatOptions, jsonSchema, maxFunctionCallDepth)
   }
 
   @Suppress("UNCHECKED_CAST")
@@ -149,10 +204,11 @@ abstract class AbstractChatCompletion : IChatCompletion {
     postProcessors: List<IPostProcessor>,
     user: String?,
     funCalls: Set<IFunctionDeclaration>,
-    timeout: Duration
+    timeout: Duration,
+    maxFunctionCallDepth: Int
   ): Reply<T>? {
 
-    return when (val rawReply: Reply<String> = chatComplete(model, messages, user, funCalls, timeout, chatOptions, formatSpec.jsonSchema)) {
+    return when (val rawReply: Reply<String> = chatComplete(model, messages, user, funCalls, timeout, chatOptions, formatSpec.jsonSchema, maxFunctionCallDepth)) {
       is Reply.Normal<String> -> {
         val processedString = postProcessors.fold(rawReply.content) { currentContent, postProcessor ->
           val (nextContent, _) = postProcessor.process(currentContent, locale)
