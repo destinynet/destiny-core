@@ -49,6 +49,13 @@ class Reka {
     @SerialName("use_search_engine")
     val useSearchEngine: Boolean? = false,
     val stream: Boolean = false,
+    /**
+     * Reka 預設 max_tokens = 1024，大型 JSON schema 會被截斷成 finish_reason = "length"。
+     * 不送 → reka default；送了會被 reka 用來限制 output。
+     * https://docs.reka.ai/chat/api-reference/create
+     */
+    @SerialName("max_tokens")
+    val maxTokens: Int? = null,
   ) {
 
     val temperature: Double? = options?.temperature
