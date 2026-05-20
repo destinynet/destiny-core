@@ -66,11 +66,12 @@ sealed class Reply<out T> {
     ) : Error(), Retryable
 
     /**
-     * 輸出觸頂 max_tokens（finishReason = "length" / "max_tokens"）；
+     * 輸出觸頂 max_tokens（finishReason = "length" / "max_tokens" / "MAX_TOKENS"）；
      * 內容部分產生但被截斷。同樣 input 重 retry 不會有救，要換 model 或加大 max_tokens。
      */
     data class MaxTokensReached(
       override val provider: Provider,
+      val model: String,
       val partialContent: String? = null
     ) : Error(), Terminal
 

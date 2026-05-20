@@ -12,6 +12,7 @@ import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 
 
 class Groq {
@@ -83,20 +84,36 @@ class Groq {
     }
   }
 
-  @Serializable
-  data class Response(val id: String, val model: String, val choices: List<Choice>, val usage: Usage) {
-    @Serializable
-    data class Choice(val index: Int,
-                      val message: Message,
-                      @SerialName("finish_reason") val finishReason: String)
+  @Serializable(with = ResponseSerializer::class)
+  sealed class Response {
 
     @Serializable
-    data class Usage(
-      @SerialName("prompt_tokens")
-      val promptTokens: Int,
-      @SerialName("completion_tokens")
-      val completionTokens: Int,
-    )
+    data class NormalResponse(val id: String, val model: String, val choices: List<Choice>, val usage: Usage) : Response() {
+      @Serializable
+      data class Choice(val index: Int,
+                        val message: Message,
+                        @SerialName("finish_reason") val finishReason: String)
+
+      @Serializable
+      data class Usage(
+        @SerialName("prompt_tokens")
+        val promptTokens: Int,
+        @SerialName("completion_tokens")
+        val completionTokens: Int,
+      )
+    }
+
+    @Serializable
+    data class ErrorResponse(val error: OpenAi.Response.ErrorResponse.Error) : Response()
+  }
+
+  object ResponseSerializer : JsonContentPolymorphicSerializer<Response>(Response::class) {
+    override fun selectDeserializer(element: JsonElement): DeserializationStrategy<Response> {
+      return when {
+        element.jsonObject.containsKey("error") -> Response.ErrorResponse.serializer()
+        else                                    -> Response.NormalResponse.serializer()
+      }
+    }
   }
 
   @Serializable
