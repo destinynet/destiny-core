@@ -28,32 +28,34 @@ sealed class Reply<out T> {
   sealed class Error : Reply<Nothing>() {
 
     /**
-     * Marker：orchestrator 可安全地對同一個 (provider, model) 重試。
+     * orchestrator 可安全地對同一個 (provider, model) 重試。
      * 通常是 transient 狀態（server overload, rate limit）。
+     *
+     * 用 sealed class 而非 sealed interface，讓 Kotlin 單一繼承強制 [Retryable] / [Terminal] 互斥。
      */
-    sealed interface Retryable
+    sealed class Retryable : Error()
 
     /**
-     * Marker：orchestrator 不應對同一輸入再 retry 同一 model。
+     * orchestrator 不應對同一輸入再 retry 同一 model。
      * 改 input、換 model 或換 provider 才有救。
      */
-    sealed interface Terminal
+    sealed class Terminal : Error()
 
     /** Input/context 太長 —— 改 input 才能解。 */
-    data class TooLong(val message: String, override val provider: Provider) : Error(), Terminal
+    data class TooLong(val message: String, override val provider: Provider) : Terminal()
 
     data class DeserializationFailure(val errorMessage: String,
                                       val originalContent: String,
                                       override val provider: Provider,
-                                      val model: String) : Error(), Terminal
+                                      val model: String) : Terminal()
 
-    data class InvalidApiKey(override val provider: Provider) : Error(), Terminal
+    data class InvalidApiKey(override val provider: Provider) : Terminal()
 
     /** 籠統的 transient 錯誤（server overloaded / 未分類的 5xx 等）—— 可 retry。 */
-    data class Busy(override val provider: Provider) : Error(), Retryable
+    data class Busy(override val provider: Provider) : Retryable()
 
     /** 預設視為 Terminal —— 未知狀況保守處理，不重試。 */
-    data class Unknown(val message: String, override val provider: Provider) : Error(), Terminal
+    data class Unknown(val message: String, override val provider: Provider) : Terminal()
 
     /**
      * 明確的 rate limit（429 / quota per minute）。
@@ -63,7 +65,7 @@ sealed class Reply<out T> {
       override val provider: Provider,
       val retryAfter: Duration? = null,
       val message: String = ""
-    ) : Error(), Retryable
+    ) : Retryable()
 
     /**
      * 輸出觸頂 max_tokens（finishReason = "length" / "max_tokens" / "MAX_TOKENS"）；
@@ -73,7 +75,7 @@ sealed class Reply<out T> {
       override val provider: Provider,
       val model: String,
       val partialContent: String? = null
-    ) : Error(), Terminal
+    ) : Terminal()
 
     /**
      * Function-call loop 沒在 [maxDepth] 內收斂。
@@ -83,7 +85,7 @@ sealed class Reply<out T> {
       override val provider: Provider,
       val model: String,
       val maxDepth: Int
-    ) : Error(), Terminal
+    ) : Terminal()
   }
 }
 
