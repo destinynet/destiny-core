@@ -9,13 +9,14 @@ import destiny.tools.ai.JsonSchemaSpec
 import destiny.tools.ai.llm.OpenAi.FunctionDeclaration
 import destiny.tools.ai.model.ResponseFormat
 import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
 
 
+/**
+ * Mistral chat schema —— wire shape 與 OpenAI 一致（無 `reasoning`），直接複用
+ * [OpenAi.Message] / [OpenAi.ContentChunk] / [OpenAi.Message.ToolCall]，不再保留
+ * 自家 Message sealed class。
+ */
 class Mistral {
 
   data class MistralOptions(
@@ -37,87 +38,9 @@ class Mistral {
     }
   }
 
-  @OptIn(ExperimentalSerializationApi::class)
-  @Serializable
-  @JsonClassDiscriminator("type")
-  sealed class ContentChunk {
-    @Serializable
-    @SerialName("text")
-    data class TextChunk(val text: String) : ContentChunk()
-
-    @Serializable
-    @SerialName("image_url")
-    data class ImageURLChunk(@SerialName("image_url") val imageUrl: ImageUrl) : ContentChunk() {
-      @Serializable
-      data class ImageUrl(val url: String)
-    }
-  }
-
-  @Serializable(with = MistralMessageSerializer::class)
-  sealed class Message {
-    abstract val role: String
-
-    data class TextContent(
-      override val role: String,
-      val content: String?,
-      val toolCallId: String? = null,
-      val toolCalls: List<ToolCall>? = null
-    ) : Message()
-
-    data class ChunkContent(
-      override val role: String,
-      val content: List<ContentChunk>
-    ) : Message()
-
-    @Serializable
-    data class ToolCall(val id: String, val type: String = "function", val function: ToolCallFunction) {
-      @Serializable
-      data class ToolCallFunction(val name: String, val arguments: String)
-    }
-  }
-
-  object MistralMessageSerializer : KSerializer<Message> {
-    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Mistral.Message")
-
-    override fun serialize(encoder: Encoder, value: Message) {
-      val jsonEncoder = encoder as JsonEncoder
-      val json = jsonEncoder.json
-      val element = when (value) {
-        is Message.TextContent -> buildJsonObject {
-          put("role", value.role)
-          if (value.content != null) {
-            put("content", value.content)
-          }
-          value.toolCallId?.let { put("tool_call_id", it) }
-          value.toolCalls?.let { toolCalls ->
-            put("tool_calls", json.encodeToJsonElement(toolCalls))
-          }
-        }
-
-        is Message.ChunkContent -> buildJsonObject {
-          put("role", value.role)
-          put("content", json.encodeToJsonElement(value.content))
-        }
-      }
-      jsonEncoder.encodeJsonElement(element)
-    }
-
-    override fun deserialize(decoder: Decoder): Message {
-      val jsonDecoder = decoder as JsonDecoder
-      val obj = jsonDecoder.decodeJsonElement().jsonObject
-      val role = obj["role"]!!.jsonPrimitive.content
-      val content = obj["content"]?.jsonPrimitive?.contentOrNull
-      val toolCallId = obj["tool_call_id"]?.jsonPrimitive?.contentOrNull
-      val toolCalls = obj["tool_calls"]?.takeIf { it !is JsonNull }?.let { element ->
-        jsonDecoder.json.decodeFromJsonElement<List<Message.ToolCall>>(element)
-      }
-      return Message.TextContent(role, content, toolCallId, toolCalls)
-    }
-  }
-
   @Serializable
   data class Choice(
-    val message: Message,
+    val message: OpenAi.Message,
     val index: Int,
     val logprobs: Int? = null,
     @SerialName("finish_reason") val finishReason: String?
@@ -133,7 +56,7 @@ class Mistral {
   @Serializable
   data class ChatModel(
     val model: String,
-    val messages: List<Message>,
+    val messages: List<OpenAi.Message>,
     @Transient
     val options: MistralOptions? = null,
     @SerialName("max_tokens")
