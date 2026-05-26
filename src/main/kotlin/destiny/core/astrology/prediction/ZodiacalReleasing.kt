@@ -211,3 +211,31 @@ fun generateZodiacalReleasing(
 
   return allPeriods.sortedWith(compareBy({ it.fromTime }, { it.level }))
 }
+
+/**
+ * Whole-sign "house" distance (1..12) from [lotSign] to [periodSign],
+ * counting [lotSign] itself as 1.
+ */
+fun signHouseFrom(lotSign: ZodiacSign, periodSign: ZodiacSign): Int =
+  ((periodSign.index - lotSign.index + 12) % 12) + 1
+
+/**
+ * Angularity of a Zodiacal Releasing period's sign relative to the Lot it was released from.
+ *
+ * Hellenistic doctrine (Valens / Brennan): periods angular to the releasing Lot are
+ * "advancing" — prominent / high-engagement; the 10th sign from the Lot marks the life PEAK
+ * for that Lot's topic; cadent periods are declining.
+ */
+enum class ZrAngularity { PEAK, ANGULAR, SUCCEDENT, CADENT }
+
+fun zrAngularity(lotSign: ZodiacSign, periodSign: ZodiacSign): ZrAngularity =
+  when (signHouseFrom(lotSign, periodSign)) {
+    10          -> ZrAngularity.PEAK
+    1, 4, 7     -> ZrAngularity.ANGULAR
+    2, 5, 8, 11 -> ZrAngularity.SUCCEDENT
+    else        -> ZrAngularity.CADENT // 3, 6, 9, 12
+  }
+
+/** Classify this period's angularity relative to the Lot's sign [lotSign] it released from. */
+fun ZodiacalReleasing.angularityFrom(lotSign: ZodiacSign): ZrAngularity =
+  zrAngularity(lotSign, this.sign)
