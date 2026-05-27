@@ -6,6 +6,7 @@ package destiny.tools.ai
 import destiny.tools.KotlinLogging
 import destiny.tools.ai.model.FormatSpec
 import destiny.tools.suspendFirstNotNullResult
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -146,6 +147,9 @@ class ResilientChatService(
               null
             }
           }
+        } catch (e: CancellationException) {
+          // coroutine 取消必須往上拋，不可吞成「換下一家」的信號
+          throw e
         } catch (e: Exception) {
           logger.error(e) { "Exception during chat completion with ${providerModel.provider}/${providerModel.model}" }
           null
