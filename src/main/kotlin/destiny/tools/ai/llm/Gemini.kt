@@ -85,7 +85,15 @@ class Gemini {
     val tools: List<Tool>? = null,
     @SerialName("generationConfig")
     val config: GenerationConfig,
-    val safetySettings: List<SafetySetting>? = null // Often used
+    val safetySettings: List<SafetySetting>? = null, // Often used
+    /**
+     * 頂層 system prompt。穩定（cacheable）的 SYSTEM 訊息抽到這裡，model 會當系統指令處理，
+     * 且穩定 prefix 有利於 Gemini 隱式快取（2.5 系列預設開啟）。null 時不序列化，行為與既往一致。
+     * wire format 為 `system_instruction: { parts: [...] }`（無 role）。
+     * https://ai.google.dev/gemini-api/docs/text-generation#system-instructions
+     */
+    @SerialName("system_instruction")
+    val systemInstruction: SystemInstruction? = null
   ) {
     @Serializable
     data class GenerationConfig(
@@ -126,6 +134,12 @@ class Gemini {
 
 
   }
+
+  /**
+   * 頂層 system_instruction。Gemini 只吃 `parts`（不帶 role），故獨立於 [Content]。
+   */
+  @Serializable
+  data class SystemInstruction(val parts: List<Content.Part>)
 
   @Serializable
   data class SafetySetting(
