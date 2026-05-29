@@ -18,6 +18,7 @@ import destiny.core.astrology.Aspect
 import destiny.core.astrology.Arabic
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.AstrologyTraversalConfig
+import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import destiny.tools.serializers.LocalDateSerializer
 import destiny.tools.serializers.YearMonthSerializer
 import kotlinx.serialization.Serializable
@@ -101,12 +102,12 @@ data class InstantHit(
   val target: HitTarget,
   /** 相位(調和/刑剋)—— 交給上層判好壞,引擎不判。非相位事件為 null。 */
   val aspect: Aspect? = null,
-  val orb: Double = 0.0,
+  @Serializable(with = DoubleTwoDecimalSerializer::class) val orb: Double = 0.0,
   val applying: Boolean = false,
   /** 行運星在該位置的必然尊貴。**不進量級**,純當特徵交給上層。 */
   val dignityScore: Int? = null,
   /** 0..1 中性量級。 */
-  val rawStrength: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class) val rawStrength: Double,
 )
 
 /**
@@ -118,7 +119,7 @@ data class PeriodHit(
   val source: PeriodSource,
   /** e.g. "profected 7th house", "year-lord Venus is significator", "ZR-Eros peak (L2)" */
   val reason: String,
-  val multiplier: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class) val multiplier: Double,
 )
 
 /**
@@ -134,7 +135,7 @@ data class PeriodHit(
 data class YearMonthWindow(
   @Serializable(with = YearMonthSerializer::class) val from: YearMonth,
   @Serializable(with = YearMonthSerializer::class) val to: YearMonth,
-  val strength: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class) val strength: Double,
   /** 點層貢獻者(top 數個)。 */
   val instantHits: List<InstantHit>,
   /** 段層貢獻者(被點亮的期間)。 */
