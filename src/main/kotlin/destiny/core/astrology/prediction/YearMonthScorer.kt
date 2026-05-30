@@ -297,7 +297,12 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
       val distinctTargets = hits.map { it.target }.distinct().size
       val periodHits = periodHitsAt(key)
       val base = aggregateOr(hits.map { it.rawStrength.value })
-      val periodMultiplier = periodHits.fold(1.0) { acc, g -> acc * g.multiplier }
+      // 同一 PeriodSource 內只取最強乘數(去同技法重複計數),跨源相乘後 cap 上限。
+      val periodMultiplier = periodHits
+        .groupBy { it.source }
+        .values
+        .fold(1.0) { acc, perSource -> acc * perSource.maxOf { it.multiplier } }
+        .coerceAtMost(config.maxPeriodMultiplier)
       val confluence = if (distinctTargets >= 2) config.confluenceBonus else 1.0
       val (from, to) = bucketRange(key, grain)
       val window = YearMonthWindow(

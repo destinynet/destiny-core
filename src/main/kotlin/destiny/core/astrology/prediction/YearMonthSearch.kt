@@ -245,6 +245,12 @@ data class YearMonthScoringConfig(
   /** AND/confluence:同桶 ≥2 個不同 significator 同時啟動時的加成。 */
   val confluenceBonus: Double = 1.25,
   /**
+   * 段層乘數的**總上限**(防 background 蓋過 foreground)。
+   * 同一 [PeriodSource] 內只取最強的一個乘數(去掉同技法重複計數,如 profected-house × year-lord),
+   * 跨源相乘後再 coerce 至此上限。避免「小限主題年 / 滯留季」靠段層疊乘把實際事件月擠下榜。
+   */
+  val maxPeriodMultiplier: Double = 2.0,
+  /**
    * **落宮通道**(無相位 orb)的固定強度 ∈ [0,1]。滯留 = 最強訊號 → 此處給高值。
    * 注意:這是 **salience(多響)**,非 valence(好壞);好壞仍由上層判。
    */

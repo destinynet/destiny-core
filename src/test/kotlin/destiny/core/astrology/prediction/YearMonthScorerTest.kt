@@ -452,6 +452,35 @@ internal class YearMonthScorerTest {
     }
 
     @Test
+    fun periodMultiplier_sameSourceTakesMaxNotProduct() {
+      val ym = YearMonth.of(2026, 3)
+      val timed = listOf(TimedInstantHit(ym, instant(venusTarget, 0.5)))
+      // 同源兩個 PROFECTION(profected-house 1.5 + year-lord 1.3)應只取最強 1.5,而非 1.5×1.3
+      val periods: (YearMonth) -> List<PeriodHit> = {
+        listOf(PeriodHit(PeriodSource.PROFECTION, "house", 1.5), PeriodHit(PeriodSource.PROFECTION, "lord", 1.3))
+      }
+      val w = scorer.buildWindows(timed, SearchGrain.MONTH, Combine.OR, periods).single()
+      assertEquals(0.75, w.strength, tol)   // 0.5 × 1.5(非 0.5 × 1.95)
+    }
+
+    @Test
+    fun periodMultiplier_cappedAcrossSources() {
+      val ym = YearMonth.of(2026, 3)
+      val timed = listOf(TimedInstantHit(ym, instant(venusTarget, 0.5)))
+      // 跨源:PROFECTION 1.5 × SR 1.3 × FIRDARIA 1.3 = 2.535 → cap 至 maxPeriodMultiplier(預設 2.0)
+      val periods: (YearMonth) -> List<PeriodHit> = {
+        listOf(
+          PeriodHit(PeriodSource.PROFECTION, "house", 1.5),
+          PeriodHit(PeriodSource.PROFECTION, "lord", 1.3),
+          PeriodHit(PeriodSource.SOLAR_RETURN, "sr", 1.3),
+          PeriodHit(PeriodSource.FIRDARIA, "fir", 1.3),
+        )
+      }
+      val w = scorer.buildWindows(timed, SearchGrain.MONTH, Combine.OR, periods).single()
+      assertEquals(1.0, w.strength, tol)    // 0.5 × min(2.535, 2.0) = 0.5 × 2.0
+    }
+
+    @Test
     fun mergesAdjacentMonths() {
       val timed = listOf(
         TimedInstantHit(YearMonth.of(2026, 3), instant(venusTarget, 0.4)),
