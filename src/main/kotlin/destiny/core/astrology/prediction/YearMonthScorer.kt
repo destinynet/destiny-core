@@ -329,24 +329,54 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     SearchGrain.YEAR  -> YearMonth.of(key.year, 1) to YearMonth.of(key.year, 12)
   }
 
-  /** 把嚴格相鄰(間隔 1 個月)的單月 window 併成一段;strength 取段內峰值。 */
+  /**
+   * 相鄰月份合併:先切出「無間隔」的連續月份段(run),再於各段內**依谷值(local minimum)再切**,
+   * 讓每個「波峰(bump)」各成一個 window(strength = 段內峰值)。
+   *
+   * 訊號變密(每月都有命中)時,單純「相鄰即併」會把一長串月份黏成一個多年大窗、失去解析度
+   * (見 docs/yearmonth-signal-recall.md §6.4)。依谷值切峰後,每個高峰自成一窗,再由 topN 取最強者。
+   */
   private fun mergeAdjacentMonths(windows: List<YearMonthWindow>): List<YearMonthWindow> {
     if (windows.size < 2) return windows
     val sorted = windows.sortedBy { it.from }
-    val groups = mutableListOf<MutableList<YearMonthWindow>>()
+    // 1. 切成無間隔的連續月份段(run)
+    val runs = mutableListOf<MutableList<YearMonthWindow>>()
     for (w in sorted) {
-      val last = groups.lastOrNull()?.last()
-      if (last != null && last.to.plusMonths(1) == w.from) groups.last() += w
-      else groups += mutableListOf(w)
+      val last = runs.lastOrNull()?.last()
+      if (last != null && last.to.plusMonths(1) == w.from) runs.last() += w
+      else runs += mutableListOf(w)
     }
-    return groups.map { group ->
-      YearMonthWindow(
-        from = group.first().from,
-        to = group.last().to,
-        strength = group.maxOf { it.strength },
-        instantHits = group.flatMap { it.instantHits }.sortedByDescending { it.rawStrength }.take(5),
-        periodHits = group.flatMap { it.periodHits }.distinct(),
-      )
+    // 2. 每個 run 內依谷值再切成 bump,各 bump 併成一個 window
+    return runs.flatMap { run -> segmentAtValleys(run) }.map { combineWindows(it) }
+  }
+
+  /** 在 run 內找嚴格谷值(strength 同時低於前後鄰月)當切點,讓每個波峰各成一段(谷值月歸入前一段)。 */
+  private fun segmentAtValleys(run: List<YearMonthWindow>): List<List<YearMonthWindow>> {
+    if (run.size < 3) return listOf(run)
+    val segments = mutableListOf<MutableList<YearMonthWindow>>()
+    var cur = mutableListOf(run[0])
+    for (i in 1 until run.size) {
+      cur += run[i]
+      val isValley = i < run.size - 1 &&
+        run[i].strength < run[i - 1].strength &&
+        run[i].strength < run[i + 1].strength
+      if (isValley) {
+        segments += cur
+        cur = mutableListOf()
+      }
     }
+    if (cur.isNotEmpty()) segments += cur
+    return segments
+  }
+
+  /** 把一段(連續且同屬一個波峰的)單月 window 併成一個;strength 取峰值。 */
+  private fun combineWindows(group: List<YearMonthWindow>): YearMonthWindow {
+    return YearMonthWindow(
+      from = group.first().from,
+      to = group.last().to,
+      strength = group.maxOf { it.strength },
+      instantHits = group.flatMap { it.instantHits }.sortedByDescending { it.rawStrength }.take(5),
+      periodHits = group.flatMap { it.periodHits }.distinct(),
+    )
   }
 }

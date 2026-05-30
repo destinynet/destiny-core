@@ -437,6 +437,32 @@ internal class YearMonthScorerTest {
     }
 
     @Test
+    fun splitsContiguousRunAtValleyIntoSeparatePeaks() {
+      // 連續 5 個月、strengths 形成兩個波峰(谷在第 3 月)→ 不該黏成一段,而是切成兩個 window。
+      val strengths = listOf(0.5, 0.8, 0.3, 0.7, 0.4)
+      val timed = strengths.mapIndexed { i, s -> TimedInstantHit(YearMonth.of(2026, i + 1), instant(venusTarget, s)) }
+      val windows = scorer.buildWindows(timed, SearchGrain.MONTH, Combine.OR, noPeriods).sortedBy { it.from }
+      assertEquals(2, windows.size, "valley at month 3 should split the run into two bumps")
+      assertEquals(YearMonth.of(2026, 1), windows[0].from)
+      assertEquals(YearMonth.of(2026, 3), windows[0].to)     // 谷值月歸入前一個 bump
+      assertEquals(0.8, windows[0].strength, tol)
+      assertEquals(YearMonth.of(2026, 4), windows[1].from)
+      assertEquals(YearMonth.of(2026, 5), windows[1].to)
+      assertEquals(0.7, windows[1].strength, tol)
+    }
+
+    @Test
+    fun singleBumpRunStaysOneWindow() {
+      // 單一波峰(升-峰-降,無內部谷值)→ 仍是一個 window。
+      val strengths = listOf(0.3, 0.6, 0.9, 0.5, 0.2)
+      val timed = strengths.mapIndexed { i, s -> TimedInstantHit(YearMonth.of(2026, i + 1), instant(venusTarget, s)) }
+      val w = scorer.buildWindows(timed, SearchGrain.MONTH, Combine.OR, noPeriods).single()
+      assertEquals(YearMonth.of(2026, 1), w.from)
+      assertEquals(YearMonth.of(2026, 5), w.to)
+      assertEquals(0.9, w.strength, tol)
+    }
+
+    @Test
     fun nonAdjacentMonthsStaySeparate() {
       val timed = listOf(
         TimedInstantHit(YearMonth.of(2026, 1), instant(venusTarget, 0.4)),
