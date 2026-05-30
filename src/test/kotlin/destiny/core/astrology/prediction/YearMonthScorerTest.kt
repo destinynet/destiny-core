@@ -74,6 +74,33 @@ internal class YearMonthScorerTest {
       val tr = scorer.rawStrength(EventSource.TRANSIT, Aspect.TRINE, 1.0, true)
       assertTrue(sa > tr)
     }
+
+    @Test
+    fun aspectWeightsTuneHardVsSoftPerLens() {
+      val hard = YearMonthScorer(YearMonthScoringConfig(aspectWeights = AspectWeights.HARD))
+      val soft = YearMonthScorer(YearMonthScoringConfig(aspectWeights = AspectWeights.SOFT))
+      // 同一相位跨 lens 比較,隔離 aspectWeight 效果(其餘參數相同):
+      // 硬相位(square)在 HARD lens 比 SOFT lens 高
+      assertTrue(
+        hard.rawStrength(EventSource.TRANSIT, Aspect.SQUARE, 0.0, true) >
+          soft.rawStrength(EventSource.TRANSIT, Aspect.SQUARE, 0.0, true)
+      )
+      // 軟相位(trine)在 SOFT lens 比 HARD lens 高
+      assertTrue(
+        soft.rawStrength(EventSource.TRANSIT, Aspect.TRINE, 0.0, true) >
+          hard.rawStrength(EventSource.TRANSIT, Aspect.TRINE, 0.0, true)
+      )
+      // 預設(空 map)中性:硬相位不被壓低(= HARD 的 square),軟相位也不被壓低(> HARD 的 trine)
+      val neutral = scorer
+      assertEquals(
+        hard.rawStrength(EventSource.TRANSIT, Aspect.SQUARE, 0.0, true).value,
+        neutral.rawStrength(EventSource.TRANSIT, Aspect.SQUARE, 0.0, true).value, tol
+      )
+      assertTrue(
+        neutral.rawStrength(EventSource.TRANSIT, Aspect.TRINE, 0.0, true) >
+          hard.rawStrength(EventSource.TRANSIT, Aspect.TRINE, 0.0, true)
+      )
+    }
   }
 
   @Nested

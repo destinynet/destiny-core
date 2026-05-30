@@ -40,7 +40,9 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     val maxOrb = config.maxOrbs[aspect] ?: config.defaultMaxOrb
     val orbFactor = (1.0 - orb / maxOrb).coerceIn(0.0, 1.0)
     val applyingFactor = if (applying) config.applyingFactor else config.separatingFactor
-    return (sourceWeight * importanceWeight * orbFactor * applyingFactor).coerceIn(0.0, 1.0).toScore()
+    // 相位偏好(human lens 第三 dial);空 map / 查無 → 1.0(中性,不偏硬軟)。
+    val aspectWeight = config.aspectWeights[aspect] ?: 1.0
+    return (sourceWeight * importanceWeight * orbFactor * applyingFactor * aspectWeight).coerceIn(0.0, 1.0).toScore()
   }
 
   /** 機率式 OR:`1 - ∏(1 - hᵢ)`。多重證言疊加、飽和 ≤1,避免線性爆衝。 */

@@ -249,7 +249,37 @@ data class YearMonthScoringConfig(
    * 注意:這是 **salience(多響)**,非 valence(好壞);好壞仍由上層判。
    */
   val stationInHouseStrength: Score = 0.9.toScore(),
+  /**
+   * 各相位的「強度偏好」權重 —— human lens 的第三個 dial(除 significators / targetHouses 外)。
+   *
+   * **引擎保持中性,不預設硬軟偏好**:預設空 map → 查無一律當 1.0(全相位等權)。
+   * 由 client 依搜尋意圖填(僅作用於**相位通道**,不影響滯留落宮的 [stationInHouseStrength]):
+   *  - 危機/事件類(血光、車禍、被害):偏硬相位(square/opp/conj)→ 見 [AspectWeights.HARD]
+   *  - 和諧/流暢類(romantic love、貴人):偏軟相位(trine/sextile)→ 見 [AspectWeights.SOFT]
+   *
+   * 為何中性:硬相位「更激烈/更易出事」是 intensity,不是 valence;但「危機要硬、戀愛要軟」
+   * 本身就是**搜尋意圖**而非普世真理,故做成可調 dial 而非寫死(避免戀愛搜尋永遠輸給刑沖)。
+   */
+  val aspectWeights: Map<Aspect, Double> = emptyMap(),
 )
+
+/**
+ * 常見搜尋意圖的相位權重預設(human lens 的一部分;引擎本身中性)。
+ * 未來併入完整 intent profile(significators + targetHouses + aspectWeights),可置於 companion 或 DB。
+ */
+object AspectWeights {
+  /** 危機/事件類(血光、車禍、被害…):動態硬相位高、流暢軟相位低。 */
+  val HARD: Map<Aspect, Double> = mapOf(
+    Aspect.CONJUNCTION to 1.0, Aspect.OPPOSITION to 1.0, Aspect.SQUARE to 1.0,
+    Aspect.TRINE to 0.5, Aspect.SEXTILE to 0.5,
+  )
+
+  /** 和諧/流暢類(romantic love、貴人運…):軟相位與合相高、刑沖低。 */
+  val SOFT: Map<Aspect, Double> = mapOf(
+    Aspect.CONJUNCTION to 1.0, Aspect.TRINE to 1.0, Aspect.SEXTILE to 1.0,
+    Aspect.SQUARE to 0.5, Aspect.OPPOSITION to 0.5,
+  )
+}
 
 /**
  * 搜尋的**運算/覆蓋控制**(與「問什麼」的 [YearMonthSearchRequest] 分離;有預設,通常由 app 設定)。
