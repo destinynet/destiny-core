@@ -15,8 +15,12 @@ import destiny.core.astrology.AstroEvent
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.ITimeLineEvent
 import destiny.core.astrology.IPointAspectPattern
+import destiny.core.astrology.IZodiacDegree
+import destiny.core.astrology.SynastryAspect
 import destiny.core.astrology.ZodiacSign
 import destiny.core.toString
+import destiny.tools.Score
+import destiny.tools.Score.Companion.toScore
 import java.time.YearMonth
 import java.util.Locale
 
@@ -30,13 +34,13 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
    * `sourceWeight × importanceWeight × orbFactor × applyingFactor`。
    * dignity 不進量級(維持中性,留給上層當特徵)。stationBonus Phase 1 視為 1.0。
    */
-  fun rawStrength(source: EventSource, aspect: Aspect, orb: Double, applying: Boolean): Double {
-    val sourceWeight = config.sourceWeights[source] ?: return 0.0
+  fun rawStrength(source: EventSource, aspect: Aspect, orb: Double, applying: Boolean): Score {
+    val sourceWeight = config.sourceWeights[source] ?: return 0.0.toScore()
     val importanceWeight = config.importanceWeights[aspect.importance] ?: 0.0
     val maxOrb = config.maxOrbs[aspect] ?: config.defaultMaxOrb
     val orbFactor = (1.0 - orb / maxOrb).coerceIn(0.0, 1.0)
     val applyingFactor = if (applying) config.applyingFactor else config.separatingFactor
-    return sourceWeight * importanceWeight * orbFactor * applyingFactor
+    return (sourceWeight * importanceWeight * orbFactor * applyingFactor).coerceIn(0.0, 1.0).toScore()
   }
 
   /** 機率式 OR:`1 - ∏(1 - hᵢ)`。多重證言疊加、飽和 ≤1,避免線性爆衝。 */
@@ -45,24 +49,79 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
   }
 
   /**
-   * 從單一 [ITimeLineEvent] 抽出點層 hit(若該事件命中主題)。Phase 1 只處理 [AstroEvent.AspectEvent]。
-   * 命中條件:該相位的本命端(points[1])∈ significators / targetLots / 目標宮宮主。
-   * @param houseRulers 本命「宮主星 → 它所主的目標宮」對照(由 service 從 Natal 解出)。
-   * @return 命中則回傳 [InstantHit](含算好的 rawStrength);否則 null。
+   * 從單一 [ITimeLineEvent] 抽出點層 hit(可 0..n 筆)。處理三種事件 × 兩條通道
+   * (見 docs/yearmonth-signal-recall.md §5.0a):
+   *  - [AstroEvent.AspectEvent] → 相位通道 → 0..1 筆 [InstantHit.AstroPointHit]。
+   *  - [AstroEvent.Eclipse] → 對本命的每個相位接觸各 1 筆 [InstantHit.EclipseHit](相位通道)。
+   *  - [AstroEvent.PlanetStationary] → 相位通道(每接觸 1 筆 [InstantHit.StationHit])
+   *    **+ 落宮通道**(滯留 `zodiacDegree` 落在 target house → 一定觸發,`contact=null`)。
+   *
+   * @param houseRulers 本命「宮主星 → 它所主的目標宮」對照(相位通道的 [HitTarget.House] 用)。
+   * @param targetHouses 落宮通道的目標宮(由 request 給)。
+   * @param houseOf 度數 → 本命宮(service 由 Natal 宮頭注入;scorer 純函式不自算)。
+   * @param rulerOfHouse 宮 → 宮主(落宮通道組 [HitTarget.House] 用)。
    */
-  fun extractHit(
+  fun extractHits(
     event: ITimeLineEvent,
     significators: Set<AstroPoint>,
     targetLots: Set<Arabic>,
     houseRulers: Map<AstroPoint, Int>,
-  ): InstantHit? {
-    val astro = event.astro
-    if (astro !is AstroEvent.AspectEvent) return null   // Phase 1: 只處理相位事件
+    targetHouses: Set<Int> = emptySet(),
+    houseOf: (IZodiacDegree) -> Int? = { null },
+    rulerOfHouse: Map<Int, AstroPoint> = emptyMap(),
+  ): List<InstantHit> {
+    return when (val astro = event.astro) {
+      is AstroEvent.AspectEvent -> listOfNotNull(
+        aspectEventHit(event.source, astro, significators, targetLots, houseRulers)
+      )
+
+      is AstroEvent.Eclipse -> astro.transitToNatalAspects.mapNotNull { syn ->
+        synContact(event.source, syn, significators, targetLots, houseRulers)?.let { c ->
+          InstantHit.EclipseHit(event.source, c.target, c.transiting, c.contact, c.rawStrength, astro.eclipse)
+        }
+      }
+
+      is AstroEvent.PlanetStationary -> buildList {
+        // 相位通道:滯留星對本命 significator/lot/宮主 成相位
+        astro.transitToNatalAspects.forEach { syn ->
+          synContact(event.source, syn, significators, targetLots, houseRulers)?.let { c ->
+            add(InstantHit.StationHit(event.source, c.target, c.transiting, c.contact, c.rawStrength, astro.stationary, astro.zodiacDegree))
+          }
+        }
+        // 落宮通道:滯留落在 target house → 一定觸發(無相位,最強訊號)
+        houseOf(astro.zodiacDegree)?.takeIf { it in targetHouses }?.let { h ->
+          val ruler = rulerOfHouse[h] ?: astro.stationary.star
+          add(
+            InstantHit.StationHit(
+              source = event.source,
+              target = HitTarget.House(h, ruler),
+              transiting = astro.stationary.star,
+              contact = null,
+              rawStrength = config.stationInHouseStrength,
+              stationary = astro.stationary,
+              zodiacDegree = astro.zodiacDegree,
+            )
+          )
+        }
+      }
+
+      else -> emptyList()
+    }
+  }
+
+  /** 相位通道命中的中間結果(transiting / target / contact / rawStrength)。 */
+  private data class ContactHit(val transiting: AstroPoint, val target: HitTarget, val contact: AspectContact, val rawStrength: Score)
+
+  /** [AstroEvent.AspectEvent] → 相位通道(points 順序穩健:以「哪端落在 target 集合」判 natal 端)。 */
+  private fun aspectEventHit(
+    source: EventSource,
+    astro: AstroEvent.AspectEvent,
+    significators: Set<AstroPoint>,
+    targetLots: Set<Arabic>,
+    houseRulers: Map<AstroPoint, Int>,
+  ): InstantHit.AstroPointHit? {
     val ad = astro.aspectData
     if (ad.points.size != 2) return null
-
-    // 慣例上 points[0]=transiting、points[1]=natal(見 EventsTraversalTransitImpl),
-    // 但對 AspectData.of() 的排序路徑保持穩健:以「哪一端落在 target 集合」判定 natal 端。
     val p0 = ad.points[0]
     val p1 = ad.points[1]
     val (transiting, target) = when {
@@ -72,17 +131,31 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
         p1 to classifyTarget(p0, significators, targetLots, houseRulers)!!
       else -> return null
     }
-
     val applying = ad.aspectType == IPointAspectPattern.AspectType.APPLYING
-    return InstantHit(
-      source = event.source,
-      transiting = transiting,
+    return InstantHit.AstroPointHit(
+      source = source,
       target = target,
-      aspect = ad.aspect,
-      orb = ad.orb,
-      applying = applying,
-      dignityScore = null,
-      rawStrength = rawStrength(event.source, ad.aspect, ad.orb, applying),
+      transiting = transiting,
+      contact = AspectContact(ad.aspect, ad.orb, applying),
+      rawStrength = rawStrength(source, ad.aspect, ad.orb, applying),
+    )
+  }
+
+  /** [SynastryAspect](食/滯留對本命)→ 相位通道。慣例:innerPoint=本命端、outerPoint=行運端。 */
+  private fun synContact(
+    source: EventSource,
+    syn: SynastryAspect,
+    significators: Set<AstroPoint>,
+    targetLots: Set<Arabic>,
+    houseRulers: Map<AstroPoint, Int>,
+  ): ContactHit? {
+    val target = classifyTarget(syn.innerPoint, significators, targetLots, houseRulers) ?: return null
+    val applying = syn.aspectType == IPointAspectPattern.AspectType.APPLYING
+    return ContactHit(
+      transiting = syn.outerPoint,
+      target = target,
+      contact = AspectContact(syn.aspect, syn.orb, applying),
+      rawStrength = rawStrength(source, syn.aspect, syn.orb, applying),
     )
   }
 
@@ -221,7 +294,7 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     val perBucket: List<Pair<Int, YearMonthWindow>> = buckets.map { (key, hits) ->
       val distinctTargets = hits.map { it.target }.distinct().size
       val periodHits = periodHitsAt(key)
-      val base = aggregateOr(hits.map { it.rawStrength })
+      val base = aggregateOr(hits.map { it.rawStrength.value })
       val periodMultiplier = periodHits.fold(1.0) { acc, g -> acc * g.multiplier }
       val confluence = if (distinctTargets >= 2) config.confluenceBonus else 1.0
       val (from, to) = bucketRange(key, grain)

@@ -13,14 +13,21 @@ import destiny.core.astrology.AstroEventDto
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.ITimeLineEvent
 import destiny.core.astrology.IPointAspectPattern.AspectType
+import destiny.core.astrology.IZodiacDegree
 import destiny.core.astrology.Planet
 import destiny.core.astrology.PointAspectPattern
+import destiny.core.astrology.Pos
+import destiny.core.astrology.Stationary
+import destiny.core.astrology.StationaryType
 import destiny.core.astrology.SynastryAspect
 import destiny.core.astrology.TimeLineEvent
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign
+import destiny.core.astrology.eclipse.AbstractSolarEclipse
 import destiny.core.calendar.GmtJulDay
 import destiny.core.electional.Impact
 import destiny.core.electional.Span
+import destiny.tools.Score.Companion.toScore
 import org.junit.jupiter.api.Nested
 import java.time.YearMonth
 import kotlin.test.Test
@@ -44,7 +51,7 @@ internal class YearMonthScorerTest {
       val tight = scorer.rawStrength(EventSource.TRANSIT, Aspect.TRINE, orb = 0.5, applying = true)
       val loose = scorer.rawStrength(EventSource.TRANSIT, Aspect.TRINE, orb = 6.0, applying = true)
       assertTrue(tight > loose, "tighter orb should score higher: $tight vs $loose")
-      assertTrue(tight in 0.0..1.0)
+      assertTrue(tight.value in 0.0..1.0)
     }
 
     @Test
@@ -96,7 +103,7 @@ internal class YearMonthScorerTest {
   }
 
   @Nested
-  inner class ExtractHit {
+  inner class ExtractHits {
 
     /** 造一個「行運 transiting [aspect] 本命 natal」的 AspectEvent。points 順序 = [transiting, natal]。 */
     private fun aspectEvent(
@@ -114,43 +121,122 @@ internal class YearMonthScorerTest {
       return TimeLineEvent(source, dto, dummyGmt)
     }
 
+    /** outer = 行運/食/滯留端, inner = 本命端(慣例同 transitToNatalAspects)。 */
+    private fun syn(outer: AstroPoint, inner: AstroPoint, aspect: Aspect, orb: Double = 1.0) =
+      SynastryAspect(outer, inner, null, null, aspect, orb, AspectType.APPLYING, null)
+
+    private fun eclipseEvent(toNatal: List<SynastryAspect>): ITimeLineEvent {
+      val eclipse = AbstractSolarEclipse.SolarEclipsePartial(dummyGmt, dummyGmt, dummyGmt)
+      val dto = AstroEventDto(AstroEvent.Eclipse("eclipse", eclipse, toNatal), dummyGmt, null, Span.INSTANT, Impact.PERSONAL)
+      return TimeLineEvent(EventSource.TRANSIT, dto, dummyGmt)
+    }
+
+    /** @param degree 滯留的黃道度數(用來測落宮通道)。 */
+    private fun stationEvent(toNatal: List<SynastryAspect>, degree: Double = 285.0): ITimeLineEvent {
+      val stationary = Stationary(dummyGmt, Planet.JUPITER, StationaryType.RETROGRADE_TO_DIRECT, Pos(degree, 0.0))
+      val dto = AstroEventDto(
+        AstroEvent.PlanetStationary("station", stationary, degree.toZodiacDegree(), toNatal),
+        dummyGmt, null, Span.DAY, Impact.PERSONAL
+      )
+      return TimeLineEvent(EventSource.TRANSIT, dto, dummyGmt)
+    }
+
     @Test
     fun significatorMatch() {
       val e = aspectEvent(EventSource.TRANSIT, Planet.JUPITER, Planet.VENUS, Aspect.TRINE, 1.0, true)
-      val hit = scorer.extractHit(e, setOf(Planet.VENUS), emptySet(), emptyMap())
-      assertEquals(HitTarget.Significator(Planet.VENUS), hit?.target)
-      assertEquals(Planet.JUPITER, hit?.transiting)
-      assertEquals(Aspect.TRINE, hit?.aspect)
-      assertTrue((hit?.rawStrength ?: 0.0) > 0.0)
+      val hit = scorer.extractHits(e, setOf(Planet.VENUS), emptySet(), emptyMap()).single()
+      assertTrue(hit is InstantHit.AstroPointHit)
+      assertEquals(HitTarget.Significator(Planet.VENUS), hit.target)
+      assertEquals(Planet.JUPITER, hit.transiting)
+      assertEquals(Aspect.TRINE, hit.contact?.aspect)
+      assertTrue(hit.rawStrength.value > 0.0)
     }
 
     @Test
     fun lotMatch() {
       val e = aspectEvent(EventSource.TRANSIT, Planet.SATURN, Arabic.Eros, Aspect.CONJUNCTION, 0.5, true)
-      val hit = scorer.extractHit(e, emptySet(), setOf(Arabic.Eros), emptyMap())
-      assertEquals(HitTarget.Lot(Arabic.Eros), hit?.target)
+      val hit = scorer.extractHits(e, emptySet(), setOf(Arabic.Eros), emptyMap()).single()
+      assertEquals(HitTarget.Lot(Arabic.Eros), hit.target)
     }
 
     @Test
     fun houseRulerMatch() {
       val e = aspectEvent(EventSource.TRANSIT, Planet.JUPITER, Planet.MARS, Aspect.SQUARE, 2.0, false)
-      val hit = scorer.extractHit(e, emptySet(), emptySet(), mapOf<AstroPoint, Int>(Planet.MARS to 7))
-      assertEquals(HitTarget.House(7, Planet.MARS), hit?.target)
+      val hit = scorer.extractHits(e, emptySet(), emptySet(), mapOf<AstroPoint, Int>(Planet.MARS to 7)).single()
+      assertEquals(HitTarget.House(7, Planet.MARS), hit.target)
     }
 
     @Test
-    fun noTargetMatch_isNull() {
+    fun noTargetMatch_isEmpty() {
       val e = aspectEvent(EventSource.TRANSIT, Planet.JUPITER, Planet.MERCURY, Aspect.TRINE, 1.0, true)
-      assertNull(scorer.extractHit(e, setOf(Planet.VENUS), emptySet(), emptyMap()))
+      assertTrue(scorer.extractHits(e, setOf(Planet.VENUS), emptySet(), emptyMap()).isEmpty())
     }
 
     @Test
-    fun nonAspectEvent_isNull() {
+    fun nonHandledEvent_isEmpty() {
       val dto = AstroEventDto(
         AstroEvent.PlanetRetrograde("retro", Planet.MARS, 0.5), dummyGmt, null, Span.DAY, Impact.PERSONAL
       )
       val e = TimeLineEvent(EventSource.TRANSIT, dto, dummyGmt)
-      assertNull(scorer.extractHit(e, setOf(Planet.MARS), emptySet(), emptyMap()))
+      assertTrue(scorer.extractHits(e, setOf(Planet.MARS), emptySet(), emptyMap()).isEmpty())
+    }
+
+    // ---- 日食:相位通道 ----
+    @Test
+    fun eclipse_aspectChannel_hitsNatalSignificator() {
+      // 日食(發光體 Sun)opp 本命 ASC(以 Planet.MARS 代表 significator)
+      val e = eclipseEvent(listOf(syn(Planet.SUN, Planet.MARS, Aspect.OPPOSITION, 1.3)))
+      val hits = scorer.extractHits(e, setOf(Planet.MARS), emptySet(), emptyMap())
+      val hit = hits.single()
+      assertTrue(hit is InstantHit.EclipseHit, "expected EclipseHit, got ${hit::class.simpleName}")
+      assertEquals(HitTarget.Significator(Planet.MARS), hit.target)
+      assertEquals(Planet.SUN, hit.transiting)
+      assertEquals(Aspect.OPPOSITION, hit.contact?.aspect)
+    }
+
+    @Test
+    fun eclipse_noNatalContact_isEmpty() {
+      val e = eclipseEvent(listOf(syn(Planet.SUN, Planet.MERCURY, Aspect.OPPOSITION)))
+      assertTrue(scorer.extractHits(e, setOf(Planet.MARS), emptySet(), emptyMap()).isEmpty())
+    }
+
+    // ---- 滯留:相位通道 ----
+    @Test
+    fun station_aspectChannel_hitsNatalSignificator() {
+      val e = stationEvent(listOf(syn(Planet.JUPITER, Planet.MARS, Aspect.SQUARE, 0.5)))
+      val hits = scorer.extractHits(e, setOf(Planet.MARS), emptySet(), emptyMap())
+      val hit = hits.single { it.contact != null }
+      assertTrue(hit is InstantHit.StationHit)
+      assertEquals(HitTarget.Significator(Planet.MARS), hit.target)
+      assertEquals(Aspect.SQUARE, hit.contact?.aspect)
+    }
+
+    // ---- 滯留:落宮通道(無相位也一定觸發)----
+    @Test
+    fun station_houseChannel_firesEvenWithoutAspect() {
+      // 滯留落於 285° → houseOf 對應到第 8 宮(target);無 transitToNatalAspects
+      val e = stationEvent(emptyList(), degree = 285.0)
+      val houseOf: (IZodiacDegree) -> Int? = { 8 }
+      val hits = scorer.extractHits(
+        e, emptySet(), emptySet(), emptyMap(),
+        targetHouses = setOf(8), houseOf = houseOf, rulerOfHouse = mapOf(8 to Planet.SATURN),
+      )
+      val hit = hits.single()
+      assertTrue(hit is InstantHit.StationHit)
+      assertEquals(HitTarget.House(8, Planet.SATURN), hit.target)
+      assertNull(hit.contact, "house-placement hit has no aspect contact")
+      assertEquals(scorer.config.stationInHouseStrength, hit.rawStrength)   // 落宮通道 = 最強常數
+    }
+
+    @Test
+    fun station_houseChannel_notInTargetHouses_isEmpty() {
+      val e = stationEvent(emptyList(), degree = 285.0)
+      val houseOf: (IZodiacDegree) -> Int? = { 8 }
+      val hits = scorer.extractHits(
+        e, emptySet(), emptySet(), emptyMap(),
+        targetHouses = setOf(7), houseOf = houseOf, rulerOfHouse = mapOf(7 to Planet.SATURN),
+      )
+      assertTrue(hits.isEmpty(), "station fell in H8 but only H7 was targeted")
     }
   }
 
@@ -308,7 +394,7 @@ internal class YearMonthScorerTest {
     private val marsTarget = HitTarget.Significator(Planet.MARS)
 
     private fun instant(target: HitTarget, rawStrength: Double, source: EventSource = EventSource.TRANSIT) =
-      InstantHit(source, Planet.JUPITER, target, Aspect.TRINE, 1.0, true, null, rawStrength)
+      InstantHit.AstroPointHit(source, target, Planet.JUPITER, AspectContact(Aspect.TRINE, 1.0, true), rawStrength.toScore())
 
     @Test
     fun empty_isEmpty() {

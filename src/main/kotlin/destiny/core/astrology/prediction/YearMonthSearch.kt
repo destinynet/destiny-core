@@ -18,9 +18,17 @@ import destiny.core.astrology.Aspect
 import destiny.core.astrology.Arabic
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.AstrologyTraversalConfig
+import destiny.core.astrology.IZodiacDegree
+import destiny.core.astrology.Stationary
+import destiny.core.astrology.eclipse.IEclipse
+import destiny.tools.Score
+import destiny.tools.Score.Companion.toScore
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
+import destiny.tools.serializers.IZodiacDegreeSerializer
 import destiny.tools.serializers.LocalDateSerializer
+import destiny.tools.serializers.ScoreTwoDecimalSerializer
 import destiny.tools.serializers.YearMonthSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.YearMonth
@@ -92,23 +100,75 @@ sealed class HitTarget {
 }
 
 /**
- * 點層 hit:在某一**刻**打中主題(中性)。只給強度與原始特徵,好壞交給上層判。
- * `aspect` / `dignityScore` / `applying` 等原始特徵原樣呈現,引擎不替它們下吉凶結論。
+ * 相位接觸幾何(命中是「經由相位」時才有)。`orb` 是度數(非 0..1),用 DoubleTwoDecimal。
+ * 交給上層判好壞,引擎不判。
  */
 @Serializable
-data class InstantHit(
-  val source: EventSource,
-  val transiting: AstroPoint,
-  val target: HitTarget,
-  /** 相位(調和/刑剋)—— 交給上層判好壞,引擎不判。非相位事件為 null。 */
-  val aspect: Aspect? = null,
-  @Serializable(with = DoubleTwoDecimalSerializer::class) val orb: Double = 0.0,
+data class AspectContact(
+  val aspect: Aspect,
+  @Serializable(with = DoubleTwoDecimalSerializer::class) val orb: Double,
   val applying: Boolean = false,
-  /** 行運星在該位置的必然尊貴。**不進量級**,純當特徵交給上層。 */
-  val dignityScore: Int? = null,
-  /** 0..1 中性量級。 */
-  @Serializable(with = DoubleTwoDecimalSerializer::class) val rawStrength: Double,
 )
+
+/**
+ * 點層 hit:在某一**刻**打中主題(中性)。只給強度與原始特徵,好壞交給上層判。
+ *
+ * **兩條觸發通道**(見 docs/yearmonth-signal-recall.md §5.0a):
+ *  - **相位通道**:某天體對 target 成相位 → `contact != null`。
+ *  - **落宮通道**:事件(如滯留)落在某本命宮 → `contact == null`,target 為 [HitTarget.House]。
+ *
+ * 事件**種類**做成型別層級(與 [AstroEvent] 對稱),讓 [EclipseHit]/[StationHit] 帶各自的 rich 資料;
+ * `source`([EventSource])保持「透過哪個推運法觀測」,不被食/滯留污染。
+ */
+@Serializable
+sealed class InstantHit {
+  abstract val source: EventSource
+  abstract val target: HitTarget
+  /** 負責的天體:行運星 / 食的發光體 / 滯留星 —— 一定有。 */
+  abstract val transiting: AstroPoint
+  /** 相位接觸;**null = 經宮位落點觸發(無相位)**。 */
+  abstract val contact: AspectContact?
+  /** 中性量級 ∈ [0,1](per-hit salience,聚合用)。離開 [0,1] 的是 [YearMonthWindow.strength]。 */
+  abstract val rawStrength: Score
+
+  /** 一般推運點對本命星成相位。 */
+  @Serializable
+  @SerialName("astroPoint")
+  data class AstroPointHit(
+    override val source: EventSource,
+    override val target: HitTarget,
+    override val transiting: AstroPoint,
+    override val contact: AspectContact,
+    @Serializable(with = ScoreTwoDecimalSerializer::class) override val rawStrength: Score,
+    /** 行運星在該位置的必然尊貴。**不進量級**,純當特徵交給上層。 */
+    val dignityScore: Int? = null,
+  ) : InstantHit()
+
+  /** 日月食對本命的接觸。`eclipse` 帶 SOLAR/LUNAR · TOTAL/PARTIAL/ANNULAR · magnitude 等 rich 資料。 */
+  @Serializable
+  @SerialName("eclipse")
+  data class EclipseHit(
+    override val source: EventSource,
+    override val target: HitTarget,
+    override val transiting: AstroPoint,
+    override val contact: AspectContact?,
+    @Serializable(with = ScoreTwoDecimalSerializer::class) override val rawStrength: Score,
+    val eclipse: IEclipse,
+  ) : InstantHit()
+
+  /** 行星滯留(最強訊號)。`stationary` 帶順逆轉向,`zodiacDegree` 帶度數。 */
+  @Serializable
+  @SerialName("station")
+  data class StationHit(
+    override val source: EventSource,
+    override val target: HitTarget,
+    override val transiting: AstroPoint,
+    override val contact: AspectContact?,
+    @Serializable(with = ScoreTwoDecimalSerializer::class) override val rawStrength: Score,
+    val stationary: Stationary,
+    @Serializable(with = IZodiacDegreeSerializer::class) val zodiacDegree: IZodiacDegree,
+  ) : InstantHit()
+}
 
 /**
  * 段層 hit:在一整**段**期間打中主題(profection / ZR / firdaria / return)。
@@ -184,6 +244,11 @@ data class YearMonthScoringConfig(
   val profectionLordMultiplier: Double = 1.3,
   /** AND/confluence:同桶 ≥2 個不同 significator 同時啟動時的加成。 */
   val confluenceBonus: Double = 1.25,
+  /**
+   * **落宮通道**(無相位 orb)的固定強度 ∈ [0,1]。滯留 = 最強訊號 → 此處給高值。
+   * 注意:這是 **salience(多響)**,非 valence(好壞);好壞仍由上層判。
+   */
+  val stationInHouseStrength: Score = 0.9.toScore(),
 )
 
 /**
