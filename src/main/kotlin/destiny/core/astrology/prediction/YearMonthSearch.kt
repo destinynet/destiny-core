@@ -20,6 +20,7 @@ import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.AstrologyTraversalConfig
 import destiny.core.astrology.IZodiacDegree
 import destiny.core.astrology.Stationary
+import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.eclipse.IEclipse
 import destiny.core.astrology.eclipse.LunarType
 import destiny.core.astrology.eclipse.SolarType
@@ -170,7 +171,35 @@ sealed class InstantHit {
     val stationary: Stationary,
     @Serializable(with = IZodiacDegreeSerializer::class) val zodiacDegree: IZodiacDegree,
   ) : InstantHit()
+
+  /**
+   * 換座 / 換宮(ingress):推運星進入新星座或新本命宮。**無相位 → `contact` 一律 null**(落點通道)。
+   *  - [IngressKind.HOUSE]:`astroPoint` 進入 target house([newHouse] ∈ request.targetHouses)→ target 為 [HitTarget.House]。
+   *  - [IngressKind.SIGN] :`astroPoint`(本身是 significator)換座 → target 為 [HitTarget.Significator]。
+   *
+   * cadence(見 docs §7):transit ingress(外行星)月級、solar-arc ingress 年級;
+   * 強度依 source 縮放(SA > SECONDARY > TRANSIT),故 SA 換宮這種年級深刻標記自然較重。
+   */
+  @Serializable
+  @SerialName("ingress")
+  data class IngressHit(
+    override val source: EventSource,
+    override val target: HitTarget,
+    override val transiting: AstroPoint,
+    override val contact: AspectContact?,
+    @Serializable(with = ScoreTwoDecimalSerializer::class) override val rawStrength: Score,
+    val kind: IngressKind,
+    /** 換座:舊→新星座(換宮時為 null)。 */
+    val oldSign: ZodiacSign? = null,
+    val newSign: ZodiacSign? = null,
+    /** 換宮:舊→新本命宮(換座時為 null)。 */
+    val oldHouse: Int? = null,
+    val newHouse: Int? = null,
+  ) : InstantHit()
 }
+
+/** ingress 種類:換座 vs 換宮。 */
+enum class IngressKind { SIGN, HOUSE }
 
 /**
  * 段層 hit:在一整**段**期間打中主題(profection / ZR / firdaria / return)。
@@ -275,6 +304,14 @@ data class YearMonthScoringConfig(
     LunarType.PENUMBRA to 0.4,
   ),
   /**
+   * 換宮 ingress(推運星進入 target house)的中性基礎強度 ∈ [0,1]。
+   * 實際 rawStrength = 此值 × `sourceWeights[source]`(故 SA 換宮 > transit 換宮,對齊 cadence)。
+   * ingress = 真實但短暫的「宮位啟動」,弱於滯留落宮([stationInHouseStrength])。salience,非 valence。
+   */
+  val houseIngressStrength: Score = 0.6.toScore(),
+  /** significator 換座 ingress 的中性基礎強度 ∈ [0,1];實際值同樣 × `sourceWeights[source]`。 */
+  val signIngressStrength: Score = 0.5.toScore(),
+  /**
    * 各相位的「強度偏好」權重 —— human lens 的第三個 dial(除 significators / targetHouses 外)。
    *
    * **引擎保持中性,不預設硬軟偏好**:預設空 map → 查無一律當 1.0(全相位等權)。
@@ -330,8 +367,16 @@ data class YearMonthSearchConfig(
   val topN: Int = 12,
   /** ZR 釋放的最大層數(L1..Ln)。 */
   val zrMaxLevel: Int = 2,
-  /** 底層 transit/aspect 計算設定(預設僅外行星行運)。 */
-  val traversalConfig: AstrologyTraversalConfig = AstrologyTraversalConfig.YEARLY_FORECAST,
+  /**
+   * 底層 transit/aspect 計算設定(預設僅外行星行運)。
+   * A1:在 [AstrologyTraversalConfig.YEARLY_FORECAST] 上開啟 `signIngress` / `houseIngress`,
+   * 讓「換座 / 換宮」訊號浮現。因 transitingPlanets 僅外行星(無月亮/內行星),ingress 稀疏不洪泛;
+   * scorer 端再以 significator / targetHouse 成員資格收斂。
+   */
+  val traversalConfig: AstrologyTraversalConfig = AstrologyTraversalConfig.YEARLY_FORECAST.copy(
+    signIngress = true,
+    houseIngress = true,
+  ),
   /** 計分權重(可校準)。收進此 config → `search` 可逐次帶不同權重,直接支援 backtest 校準。 */
   val scoring: YearMonthScoringConfig = YearMonthScoringConfig(),
 ) {

@@ -297,6 +297,69 @@ internal class YearMonthScorerTest {
       )
       assertTrue(hits.isEmpty(), "station fell in H8 but only H7 was targeted")
     }
+
+    // ---- A1:換座 / 換宮 ingress(落點通道,contact=null;membership-gated)----
+    private fun signIngressEvent(point: AstroPoint, old: ZodiacSign, new: ZodiacSign, source: EventSource = EventSource.TRANSIT): ITimeLineEvent {
+      val dto = AstroEventDto(AstroEvent.SignIngress("sign", point, old, new), dummyGmt, null, Span.INSTANT, Impact.GLOBAL)
+      return TimeLineEvent(source, dto, dummyGmt)
+    }
+
+    private fun houseIngressEvent(point: AstroPoint, old: Int, new: Int, source: EventSource = EventSource.TRANSIT): ITimeLineEvent {
+      val dto = AstroEventDto(AstroEvent.HouseIngress("house", point, old, new), dummyGmt, null, Span.INSTANT, Impact.PERSONAL)
+      return TimeLineEvent(source, dto, dummyGmt)
+    }
+
+    @Test
+    fun houseIngress_intoTargetHouse_fires() {
+      // 木星進入本命第 7 宮(target)→ 落點通道,target = House(7, 宮主 Venus)
+      val e = houseIngressEvent(Planet.JUPITER, old = 6, new = 7)
+      val hit = scorer.extractHits(
+        e, emptySet(), emptySet(), emptyMap(), targetHouses = setOf(7), rulerOfHouse = mapOf(7 to Planet.VENUS),
+      ).single() as InstantHit.IngressHit
+      assertEquals(IngressKind.HOUSE, hit.kind)
+      assertEquals(HitTarget.House(7, Planet.VENUS), hit.target)
+      assertEquals(Planet.JUPITER, hit.transiting)
+      assertNull(hit.contact, "ingress has no aspect contact")
+      assertEquals(7, hit.newHouse)
+      assertTrue(hit.rawStrength.value > 0.0)
+    }
+
+    @Test
+    fun houseIngress_notTargetHouse_isEmpty() {
+      val e = houseIngressEvent(Planet.JUPITER, old = 5, new = 6)
+      val hits = scorer.extractHits(e, emptySet(), emptySet(), emptyMap(), targetHouses = setOf(7), rulerOfHouse = mapOf(7 to Planet.VENUS))
+      assertTrue(hits.isEmpty(), "entered H6 but only H7 targeted")
+    }
+
+    @Test
+    fun signIngress_significatorChangesSign_fires() {
+      val e = signIngressEvent(Planet.VENUS, ZodiacSign.ARIES, ZodiacSign.TAURUS)
+      val hit = scorer.extractHits(e, setOf(Planet.VENUS), emptySet(), emptyMap()).single() as InstantHit.IngressHit
+      assertEquals(IngressKind.SIGN, hit.kind)
+      assertEquals(HitTarget.Significator(Planet.VENUS), hit.target)
+      assertNull(hit.contact)
+      assertEquals(ZodiacSign.TAURUS, hit.newSign)
+    }
+
+    @Test
+    fun signIngress_nonSignificator_isEmpty() {
+      val e = signIngressEvent(Planet.MERCURY, ZodiacSign.ARIES, ZodiacSign.TAURUS)
+      assertTrue(scorer.extractHits(e, setOf(Planet.VENUS), emptySet(), emptyMap()).isEmpty())
+    }
+
+    @Test
+    fun ingress_solarArcStrongerThanTransit() {
+      // 同一換宮,SA(年級深刻)強度應 > transit(月級表層),因 rawStrength × sourceWeights[source]
+      val tr = scorer.extractHits(
+        houseIngressEvent(Planet.JUPITER, 6, 7, EventSource.TRANSIT),
+        emptySet(), emptySet(), emptyMap(), targetHouses = setOf(7), rulerOfHouse = mapOf(7 to Planet.VENUS),
+      ).single()
+      val sa = scorer.extractHits(
+        houseIngressEvent(Planet.JUPITER, 6, 7, EventSource.SOLAR_ARC),
+        emptySet(), emptySet(), emptyMap(), targetHouses = setOf(7), rulerOfHouse = mapOf(7 to Planet.VENUS),
+      ).single()
+      assertTrue(sa.rawStrength > tr.rawStrength, "SA ingress should outweigh transit: ${sa.rawStrength} vs ${tr.rawStrength}")
+    }
   }
 
   @Nested

@@ -115,9 +115,48 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
         }
       }
 
+      // A1:換座 ingress —— 僅當換座的星本身是 significator(其相位轉折)。落點通道,contact=null。
+      is AstroEvent.SignIngress ->
+        if (astro.astroPoint in significators)
+          listOf(
+            InstantHit.IngressHit(
+              source = event.source,
+              target = HitTarget.Significator(astro.astroPoint),
+              transiting = astro.astroPoint,
+              contact = null,
+              rawStrength = ingressStrength(event.source, config.signIngressStrength),
+              kind = IngressKind.SIGN,
+              oldSign = astro.oldSign,
+              newSign = astro.newSign,
+            )
+          )
+        else emptyList()
+
+      // A1:換宮 ingress —— 進入 target house 即觸發(topic 啟動)。newHouse 由 traversal 對本命宮頭算好。
+      is AstroEvent.HouseIngress ->
+        if (astro.newHouse in targetHouses) {
+          val ruler = rulerOfHouse[astro.newHouse] ?: astro.astroPoint
+          listOf(
+            InstantHit.IngressHit(
+              source = event.source,
+              target = HitTarget.House(astro.newHouse, ruler),
+              transiting = astro.astroPoint,
+              contact = null,
+              rawStrength = ingressStrength(event.source, config.houseIngressStrength),
+              kind = IngressKind.HOUSE,
+              oldHouse = astro.oldHouse,
+              newHouse = astro.newHouse,
+            )
+          )
+        } else emptyList()
+
       else -> emptyList()
     }
   }
+
+  /** ingress 強度 = 基礎常數 × `sourceWeights[source]`(SA > SECONDARY > TRANSIT,對齊 cadence)。 */
+  private fun ingressStrength(source: EventSource, base: Score): Score =
+    (base.value * (config.sourceWeights[source] ?: 0.0)).toScore()
 
   /** 相位通道命中的中間結果(transiting / target / contact / rawStrength)。 */
   private data class ContactHit(val transiting: AstroPoint, val target: HitTarget, val contact: AspectContact, val rawStrength: Score)
