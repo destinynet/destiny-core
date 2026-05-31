@@ -257,6 +257,32 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
   }
 
   /**
+   * 月小限(A2):年內逐月推進的宮位。**僅 grain==MONTH 才接線**(YEAR 時逐月變化會塌進同 bucket)。
+   * 與年小限正交、用獨立的 [PeriodSource.MONTHLY_PROFECTION],故兩者可疊乘(讓目標月浮出同年其他月)。
+   *  - 月小限宮 ∈ targetHouses → 一個 [PeriodHit]
+   *  - month-lord ∈ significators → 一個 [PeriodHit]
+   */
+  fun monthlyProfectionPeriodHits(
+    profection: Profection,
+    targetHouses: Set<Int>,
+    significators: Set<AstroPoint>,
+  ): List<PeriodHit> {
+    val multiplier = config.periodMultipliers[PeriodSource.MONTHLY_PROFECTION] ?: return emptyList()
+    val out = mutableListOf<PeriodHit>()
+    if (profection.house in targetHouses) {
+      out += PeriodHit(PeriodSource.MONTHLY_PROFECTION, "monthly-profected ${profection.house}th house", multiplier)
+    }
+    if (profection.lord in significators) {
+      out += PeriodHit(
+        PeriodSource.MONTHLY_PROFECTION,
+        "month-lord ${profection.lord.toString(Locale.ENGLISH)} is significator",
+        multiplier,
+      )
+    }
+    return out
+  }
+
+  /**
    * 評估某個回歸盤([ReturnCoverageDto])是否點亮段層(Phase 2:SOLAR_RETURN / LUNAR_RETURN)。
    * 為避免單一回歸盤把乘數疊到爆,**至多回傳一個 [PeriodHit]**;命中優先序:
    *  A. significator 回歸行星落入 target house(houseOverlay)—— 行星與宮位都切題,最強

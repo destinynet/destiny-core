@@ -44,7 +44,8 @@ import java.time.YearMonth
  * (`[fromTime, toTime]`),在整段期間內持續生效。
  */
 enum class PeriodSource {
-  PROFECTION,           // 小限:每年(或每月)推進的「被啟動宮位」
+  PROFECTION,           // 年小限:每年推進的「被啟動宮位」(整個 profection 年生效)
+  MONTHLY_PROFECTION,   // 月小限:年內逐月推進的宮位(僅 grain==MONTH 才算;與年小限正交,可疊乘)
   ZODIACAL_RELEASING,   // 黃道釋放:L1~L4 各為一段
   FIRDARIA,             // 法達:major / minor period
   SOLAR_RETURN,         // 太陽回歸:回歸盤統管整年(houseOverlay)
@@ -266,6 +267,7 @@ data class YearMonthScoringConfig(
   /** 各段層 [PeriodHit] 的乘數(落在啟動期間內的 [InstantHit] 才乘)。 */
   val periodMultipliers: Map<PeriodSource, Double> = mapOf(
     PeriodSource.PROFECTION to 1.5,
+    PeriodSource.MONTHLY_PROFECTION to 1.3,   // 年內逐月細化;與年小限(不同源)疊乘讓目標月浮出同年其他月
     PeriodSource.ZODIACAL_RELEASING to 1.4,
     PeriodSource.FIRDARIA to 1.3,
     PeriodSource.SOLAR_RETURN to 1.3,

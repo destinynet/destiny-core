@@ -398,6 +398,34 @@ internal class YearMonthScorerTest {
   }
 
   @Nested
+  inner class MonthlyProfectionPeriod {
+
+    private fun monthly(house: Int, lord: Planet) =
+      Profection(Scale.MONTH, lord, ZodiacSign.ARIES, house, dummyGmt, dummyGmt + 30)
+
+    @Test
+    fun houseMatch_emitsMonthlySourceHit() {
+      val hits = scorer.monthlyProfectionPeriodHits(monthly(8, Planet.SATURN), setOf(8), emptySet())
+      assertEquals(1, hits.size)
+      assertEquals(PeriodSource.MONTHLY_PROFECTION, hits[0].source)
+      assertTrue(hits[0].multiplier > 1.0)
+    }
+
+    @Test
+    fun lordIsSignificator_emitsMonthlySourceHit() {
+      val hits = scorer.monthlyProfectionPeriodHits(monthly(3, Planet.VENUS), emptySet(), setOf(Planet.VENUS))
+      assertEquals(1, hits.size)
+      assertEquals(PeriodSource.MONTHLY_PROFECTION, hits[0].source)
+      assertTrue(hits[0].reason.contains("Venus"), "stable English name expected: ${hits[0].reason}")
+    }
+
+    @Test
+    fun neither_emitsEmpty() {
+      assertTrue(scorer.monthlyProfectionPeriodHits(monthly(3, Planet.SATURN), setOf(7), setOf(Planet.VENUS)).isEmpty())
+    }
+  }
+
+  @Nested
   inner class ReturnPeriod {
 
     private fun returnDto(
@@ -556,6 +584,21 @@ internal class YearMonthScorerTest {
       }
       val w = scorer.buildWindows(timed, SearchGrain.MONTH, Combine.OR, periods).single()
       assertEquals(0.75, w.strength, tol)   // 0.5 × 1.5(非 0.5 × 1.95)
+    }
+
+    @Test
+    fun monthlyProfectionStacksWithAnnual_distinctSources() {
+      val ym = YearMonth.of(2026, 3)
+      val timed = listOf(TimedInstantHit(ym, instant(venusTarget, 0.5)))
+      // 年小限(PROFECTION 1.5)與月小限(MONTHLY_PROFECTION 1.3)為不同源 → 疊乘 1.95(< cap 2.0)
+      val periods: (YearMonth) -> List<PeriodHit> = {
+        listOf(
+          PeriodHit(PeriodSource.PROFECTION, "annual 8th", 1.5),
+          PeriodHit(PeriodSource.MONTHLY_PROFECTION, "monthly 8th", 1.3),
+        )
+      }
+      val w = scorer.buildWindows(timed, SearchGrain.MONTH, Combine.OR, periods).single()
+      assertEquals(0.975, w.strength, tol)   // 0.5 × (1.5 × 1.3)
     }
 
     @Test
