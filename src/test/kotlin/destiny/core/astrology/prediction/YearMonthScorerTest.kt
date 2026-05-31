@@ -23,7 +23,9 @@ import destiny.core.astrology.SynastryAspect
 import destiny.core.astrology.TimeLineEvent
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign
+import destiny.core.astrology.eclipse.AbstractLunarEclipse
 import destiny.core.astrology.eclipse.AbstractSolarEclipse
+import destiny.core.astrology.eclipse.IEclipse
 import destiny.core.calendar.GmtJulDay
 import destiny.core.electional.Impact
 import destiny.core.electional.Span
@@ -152,11 +154,20 @@ internal class YearMonthScorerTest {
     private fun syn(outer: AstroPoint, inner: AstroPoint, aspect: Aspect, orb: Double = 1.0) =
       SynastryAspect(outer, inner, null, null, aspect, orb, AspectType.APPLYING, null)
 
-    private fun eclipseEvent(toNatal: List<SynastryAspect>): ITimeLineEvent {
-      val eclipse = AbstractSolarEclipse.SolarEclipsePartial(dummyGmt, dummyGmt, dummyGmt)
+    private fun eclipseEvent(
+      toNatal: List<SynastryAspect>,
+      eclipse: IEclipse = AbstractSolarEclipse.SolarEclipsePartial(dummyGmt, dummyGmt, dummyGmt),
+    ): ITimeLineEvent {
       val dto = AstroEventDto(AstroEvent.Eclipse("eclipse", eclipse, toNatal), dummyGmt, null, Span.INSTANT, Impact.PERSONAL)
       return TimeLineEvent(EventSource.TRANSIT, dto, dummyGmt)
     }
+
+    private val partialSolar = AbstractSolarEclipse.SolarEclipsePartial(dummyGmt, dummyGmt, dummyGmt)
+    private val totalSolar = AbstractSolarEclipse.SolarEclipseTotal(partialSolar, dummyGmt, dummyGmt)
+    private val penumbraLunar = AbstractLunarEclipse.LunarEclipsePenumbra(dummyGmt, dummyGmt, dummyGmt)
+    private val totalLunar = AbstractLunarEclipse.LunarEclipseTotal(
+      AbstractLunarEclipse.LunarEclipsePartial(penumbraLunar, dummyGmt, dummyGmt), dummyGmt, dummyGmt,
+    )
 
     /** @param degree 滯留的黃道度數(用來測落宮通道)。 */
     private fun stationEvent(toNatal: List<SynastryAspect>, degree: Double = 285.0): ITimeLineEvent {
@@ -225,6 +236,27 @@ internal class YearMonthScorerTest {
     fun eclipse_noNatalContact_isEmpty() {
       val e = eclipseEvent(listOf(syn(Planet.SUN, Planet.MERCURY, Aspect.OPPOSITION)))
       assertTrue(scorer.extractHits(e, setOf(Planet.MARS), emptySet(), emptyMap()).isEmpty())
+    }
+
+    // ---- B1:食的型別 salience 因子(全食 > 偏食 > 半影);中性響度,非吉凶 ----
+    @Test
+    fun eclipse_totalSolarScoresHigherThanPartial() {
+      val contact = listOf(syn(Planet.SUN, Planet.MARS, Aspect.OPPOSITION, 1.0))
+      val total = scorer.extractHits(eclipseEvent(contact, totalSolar), setOf(Planet.MARS), emptySet(), emptyMap()).single()
+      val partial = scorer.extractHits(eclipseEvent(contact, partialSolar), setOf(Planet.MARS), emptySet(), emptyMap()).single()
+      assertTrue(
+        total.rawStrength > partial.rawStrength,
+        "total eclipse should be more salient than partial: ${total.rawStrength} vs ${partial.rawStrength}",
+      )
+      assertTrue(total.rawStrength.value <= 1.0, "type factor must keep rawStrength in Score range")
+    }
+
+    @Test
+    fun eclipse_penumbralLunarIsWeakerThanTotalLunar() {
+      val contact = listOf(syn(Planet.MOON, Planet.MARS, Aspect.OPPOSITION, 1.0))
+      val total = scorer.extractHits(eclipseEvent(contact, totalLunar), setOf(Planet.MARS), emptySet(), emptyMap()).single()
+      val penumbra = scorer.extractHits(eclipseEvent(contact, penumbraLunar), setOf(Planet.MARS), emptySet(), emptyMap()).single()
+      assertTrue(total.rawStrength > penumbra.rawStrength, "${total.rawStrength} vs ${penumbra.rawStrength}")
     }
 
     // ---- 滯留:相位通道 ----

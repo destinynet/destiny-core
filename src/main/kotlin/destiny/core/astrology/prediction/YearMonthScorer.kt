@@ -18,6 +18,9 @@ import destiny.core.astrology.IPointAspectPattern
 import destiny.core.astrology.IZodiacDegree
 import destiny.core.astrology.SynastryAspect
 import destiny.core.astrology.ZodiacSign
+import destiny.core.astrology.eclipse.IEclipse
+import destiny.core.astrology.eclipse.ILunarEclipse
+import destiny.core.astrology.eclipse.ISolarEclipse
 import destiny.core.toString
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
@@ -77,9 +80,14 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
         aspectEventHit(event.source, astro, significators, targetLots, houseRulers)
       )
 
-      is AstroEvent.Eclipse -> astro.transitToNatalAspects.mapNotNull { syn ->
-        synContact(event.source, syn, significators, targetLots, houseRulers)?.let { c ->
-          InstantHit.EclipseHit(event.source, c.target, c.transiting, c.contact, c.rawStrength, astro.eclipse)
+      is AstroEvent.Eclipse -> {
+        // B1:食型別 salience 因子(全食 > 偏食 > 半影),乘進相位通道 rawStrength(≤1,Score 仍合法)。
+        val typeFactor = eclipseTypeFactor(astro.eclipse)
+        astro.transitToNatalAspects.mapNotNull { syn ->
+          synContact(event.source, syn, significators, targetLots, houseRulers)?.let { c ->
+            val scaled = (c.rawStrength.value * typeFactor).toScore()
+            InstantHit.EclipseHit(event.source, c.target, c.transiting, c.contact, scaled, astro.eclipse)
+          }
         }
       }
 
@@ -141,6 +149,13 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
       contact = AspectContact(ad.aspect, ad.orb, applying),
       rawStrength = rawStrength(source, ad.aspect, ad.orb, applying),
     )
+  }
+
+  /** 食的型別 salience 因子(全食/環食 > 偏食 > 半影);非食或查無 → 1.0。中性響度,不判吉凶。 */
+  private fun eclipseTypeFactor(eclipse: IEclipse): Double = when (eclipse) {
+    is ISolarEclipse -> config.solarEclipseFactor[eclipse.solarType] ?: 1.0
+    is ILunarEclipse -> config.lunarEclipseFactor[eclipse.lunarType] ?: 1.0
+    else             -> 1.0
   }
 
   /** [SynastryAspect](食/滯留對本命)→ 相位通道。慣例:innerPoint=本命端、outerPoint=行運端。 */

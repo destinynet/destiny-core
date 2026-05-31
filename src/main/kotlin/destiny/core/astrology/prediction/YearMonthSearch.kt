@@ -21,6 +21,8 @@ import destiny.core.astrology.AstrologyTraversalConfig
 import destiny.core.astrology.IZodiacDegree
 import destiny.core.astrology.Stationary
 import destiny.core.astrology.eclipse.IEclipse
+import destiny.core.astrology.eclipse.LunarType
+import destiny.core.astrology.eclipse.SolarType
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
@@ -255,6 +257,23 @@ data class YearMonthScoringConfig(
    * 注意:這是 **salience(多響)**,非 valence(好壞);好壞仍由上層判。
    */
   val stationInHouseStrength: Score = 0.9.toScore(),
+  /**
+   * 日食「型別」的中性響度因子(salience,非 valence):全食/環食影響最深、偏食次之、半影最淺。
+   * 乘進 [InstantHit.EclipseHit] 相位通道的 rawStrength(乘數 ≤1,故 Score 仍 ∈ [0,1]);查無 → 1.0。
+   * 這是 salience 先驗(如同 [sourceWeights] 對推運法的先驗),**不判好壞**——全食 ≠ 凶,只是「更響」。
+   */
+  val solarEclipseFactor: Map<SolarType, Double> = mapOf(
+    SolarType.TOTAL to 1.0,
+    SolarType.HYBRID to 1.0,
+    SolarType.ANNULAR to 0.9,
+    SolarType.PARTIAL to 0.7,
+  ),
+  /** 月食「型別」的中性響度因子:全食 > 偏食 > 半影。語意同 [solarEclipseFactor]。 */
+  val lunarEclipseFactor: Map<LunarType, Double> = mapOf(
+    LunarType.TOTAL to 1.0,
+    LunarType.PARTIAL to 0.7,
+    LunarType.PENUMBRA to 0.4,
+  ),
   /**
    * 各相位的「強度偏好」權重 —— human lens 的第三個 dial(除 significators / targetHouses 外)。
    *
