@@ -106,6 +106,34 @@ internal class YearMonthScorerTest {
   }
 
   @Nested
+  inner class ConfigPresets {
+
+    @Test
+    fun yearly_dropsSubYearTechniques() {
+      val c = YearMonthSearchConfig.YEARLY
+      assertEquals(
+        setOf(PeriodSource.PROFECTION, PeriodSource.SOLAR_RETURN, PeriodSource.FIRDARIA, PeriodSource.ZODIACAL_RELEASING),
+        c.periodSources,
+      )
+      assertTrue(PeriodSource.MONTHLY_PROFECTION !in c.periodSources, "月小限應砍掉")
+      assertTrue(PeriodSource.LUNAR_RETURN !in c.periodSources, "月亮回歸應砍掉")
+      assertTrue(!c.withLunarReturns)
+      assertEquals(2, c.zrMaxLevel)
+    }
+
+    @Test
+    fun transitsOnly_jupiterTrineConj_noPeriodLayer() {
+      val c = YearMonthSearchConfig.transitsOnly(setOf(Planet.JUPITER), setOf(Aspect.TRINE, Aspect.CONJUNCTION))
+      assertTrue(c.periodSources.isEmpty(), "極簡:無段層")
+      assertEquals(setOf(EventSource.TRANSIT), c.eventSourceConfigs.map { it.source }.toSet())
+      assertEquals(setOf(Planet.JUPITER), c.traversalConfig.transitingPlanets)
+      assertEquals(setOf(Aspect.TRINE, Aspect.CONJUNCTION), c.traversalConfig.aspectTypes)
+      assertTrue(!c.traversalConfig.eclipse && !c.traversalConfig.signIngress && !c.traversalConfig.houseIngress)
+      assertTrue(c.traversalConfig.stationaryPlanets.isEmpty())
+    }
+  }
+
+  @Nested
   inner class AggregateOr {
 
     @Test

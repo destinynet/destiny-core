@@ -74,7 +74,7 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
 
   /**
    * 從單一 [ITimeLineEvent] 抽出點層 hit(可 0..n 筆)。處理三種事件 × 兩條通道
-   * (見 docs/yearmonth-signal-recall.md §5.0a):
+   * (見 docs/timing-search-design.md §2.1（雙通道）):
    *  - [AstroEvent.AspectEvent] → 相位通道 → 0..1 筆 [InstantHit.AstroPointHit]。
    *  - [AstroEvent.Eclipse] → 對本命的每個相位接觸各 1 筆 [InstantHit.EclipseHit](相位通道)。
    *  - [AstroEvent.PlanetStationary] → 相位通道(每接觸 1 筆 [InstantHit.StationHit])
@@ -440,7 +440,7 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
    * 讓每個「波峰(bump)」各成一個 window(strength = 段內峰值)。
    *
    * 訊號變密(每月都有命中)時,單純「相鄰即併」會把一長串月份黏成一個多年大窗、失去解析度
-   * (見 docs/yearmonth-signal-recall.md §6.4)。依谷值切峰後,每個高峰自成一窗,再由 topN 取最強者。
+   * (見 docs/timing-search-design.md §4（谷值切峰）)。依谷值切峰後,每個高峰自成一窗,再由 topN 取最強者。
    */
   private fun mergeAdjacentMonths(windows: List<YearMonthWindow>): List<YearMonthWindow> {
     if (windows.size < 2) return windows

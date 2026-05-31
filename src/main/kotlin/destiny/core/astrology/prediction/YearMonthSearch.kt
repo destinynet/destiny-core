@@ -19,6 +19,7 @@ import destiny.core.astrology.Arabic
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.AstrologyTraversalConfig
 import destiny.core.astrology.IZodiacDegree
+import destiny.core.astrology.Planet
 import destiny.core.astrology.Stationary
 import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.eclipse.IEclipse
@@ -62,7 +63,7 @@ enum class Combine {
  * 桶內把多個 [InstantHit.rawStrength] 聚合成 base 的方法。
  *
  * 問題:預設 [PROBABILISTIC_OR](`1-∏(1-h)`)在 hit 一多就**飽和≈1.0**,使各桶(尤其 YEAR grain)幾乎同分、
- * 失去辨識度(見 docs §7(c) SBF boom/bust 案例)。以下三者為**非飽和**替代,保留「越多/越強 → 越高」的辨識度:
+ * 失去辨識度(見 docs/timing-search-design.md §8)。以下三者為**非飽和**替代,保留「越多/越強 → 越高」的辨識度:
  *  - [MAX]:取單一最強 hit。最簡單、不隨數量飽和;但忽略「多重佐證」。
  *  - [TOP_K_SUM]:取最強 k 個之和(k = [YearMonthScoringConfig.aggregationTopK])。獎勵佐證、又抗噪(只算前 k)。
  *  - [LOG_SUM]:`ln(1 + Σh)`。全部納入但邊際遞減,溫和成長、永不硬飽和。
@@ -128,7 +129,7 @@ data class AspectContact(
 /**
  * 點層 hit:在某一**刻**打中主題(中性)。只給強度與原始特徵,好壞交給上層判。
  *
- * **兩條觸發通道**(見 docs/yearmonth-signal-recall.md §5.0a):
+ * **兩條觸發通道**(見 docs/timing-search-design.md §2.1（雙通道）):
  *  - **相位通道**:某天體對 target 成相位 → `contact != null`。
  *  - **落宮通道**:事件(如滯留)落在某本命宮 → `contact == null`,target 為 [HitTarget.House]。
  *
@@ -189,7 +190,7 @@ sealed class InstantHit {
    *  - [IngressKind.HOUSE]:`astroPoint` 進入 target house([newHouse] ∈ request.targetHouses)→ target 為 [HitTarget.House]。
    *  - [IngressKind.SIGN] :`astroPoint`(本身是 significator)換座 → target 為 [HitTarget.Significator]。
    *
-   * cadence(見 docs §7):transit ingress(外行星)月級、solar-arc ingress 年級;
+   * cadence(見 docs/timing-search-design.md §6):transit ingress(外行星)月級、solar-arc ingress 年級;
    * 強度依 source 縮放(SA > SECONDARY > TRANSIT),故 SA 換宮這種年級深刻標記自然較重。
    */
   @Serializable
@@ -338,7 +339,7 @@ data class YearMonthScoringConfig(
   val aspectWeights: Map<Aspect, Double> = emptyMap(),
   /**
    * 桶內聚合法。**預設 [AggregationMethod.PROBABILISTIC_OR]**(維持既有行為、零回歸);
-   * 改用非飽和聚合(MAX / TOP_K_SUM / LOG_SUM)可解 YEAR-grain / 密訊號的飽和(見 docs §7(c))。
+   * 改用非飽和聚合(MAX / TOP_K_SUM / LOG_SUM)可解密訊號飽和(見 docs/timing-search-design.md §8)。
    */
   val aggregation: AggregationMethod = AggregationMethod.PROBABILISTIC_OR,
   /** [AggregationMethod.TOP_K_SUM] 取最強的前幾個 hit。 */
@@ -405,4 +406,44 @@ data class YearMonthSearchConfig(
 
   /** 該段層是否要(計算並)評估。 */
   fun evaluates(source: PeriodSource): Boolean = source in periodSources
+
+  companion object {
+    /**
+     * **grain==YEAR 專用預設**:只算「年級」技法,砍掉 sub-year 的東西。
+     *  - 段層只留 [PeriodSource.PROFECTION](年小限)/ [PeriodSource.SOLAR_RETURN] / [PeriodSource.FIRDARIA]
+     *    / [PeriodSource.ZODIACAL_RELEASING](L1+L2,`zrMaxLevel=2`);**去掉 MONTHLY_PROFECTION + LUNAR_RETURN**。
+     *  - 點層維持預設 TRANSIT(外行星,含食/滯留/ingress)+ SOLAR_ARC + SECONDARY(皆年級);TERTIARY/MINOR 本就不在。
+     *
+     * 注意:省的主要是 LUNAR_RETURN(一月一盤)+ ZR 不挖 L3/L4;instant 側 traversal 與 grain 無關,幾乎不省。
+     */
+    val YEARLY = YearMonthSearchConfig(
+      periodSources = setOf(
+        PeriodSource.PROFECTION, PeriodSource.SOLAR_RETURN,
+        PeriodSource.FIRDARIA, PeriodSource.ZODIACAL_RELEASING,
+      ),
+      zrMaxLevel = 2,
+    )
+
+    /**
+     * **極簡占星師預設**:只算「某幾顆行運星對 significators 的某幾種相位」,**完全不碰**小限/回歸/firdaria/ZR、
+     * 也不算食/滯留/換座換宮。e.g. `transitsOnly(setOf(Planet.JUPITER), setOf(Aspect.TRINE, Aspect.CONJUNCTION))`
+     * 配 `request.significators = [ASC, MC]` → 只回「木星 trine/conj 本命 ASC/MC」的高分年/月。
+     *
+     * @param planets 要當行運星的行星集合(縮到 [JUPITER] 即只看木星)。
+     * @param aspects 要計算的相位(縮到 trine/conj 即只看調和;預設主要相位)。
+     */
+    fun transitsOnly(
+      planets: Set<Planet>,
+      aspects: Set<Aspect> = AstrologyTraversalConfig.majorAspects,
+    ): YearMonthSearchConfig = YearMonthSearchConfig(
+      eventSourceConfigs = setOf(EventSourceConfig(EventSource.TRANSIT, 0, 0)),
+      periodSources = emptySet(),
+      traversalConfig = AstrologyTraversalConfig.YEARLY_FORECAST.copy(
+        transitingPlanets = planets,
+        stationaryPlanets = emptySet(),
+        eclipse = false, signIngress = false, houseIngress = false, oobIngress = false,
+        aspectTypes = aspects,
+      ),
+    )
+  }
 }
