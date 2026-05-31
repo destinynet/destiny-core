@@ -132,6 +132,55 @@ internal class YearMonthScorerTest {
   }
 
   @Nested
+  inner class AggregationMethods {
+
+    @Test
+    fun max_takesStrongest() {
+      assertEquals(0.9, scorer.aggregateMax(listOf(0.5, 0.9, 0.3)), tol)
+      assertEquals(0.0, scorer.aggregateMax(emptyList()), tol)
+    }
+
+    @Test
+    fun topKSum_sumsTopK() {
+      // 取最強 3 個:0.9 + 0.8 + 0.7
+      assertEquals(2.4, scorer.aggregateTopKSum(listOf(0.5, 0.7, 0.8, 0.9, 0.3), 3), tol)
+      // 少於 k → 全加
+      assertEquals(1.4, scorer.aggregateTopKSum(listOf(0.9, 0.5), 3), tol)
+      assertEquals(0.0, scorer.aggregateTopKSum(emptyList(), 3), tol)
+    }
+
+    @Test
+    fun logSum_dampedSum() {
+      assertEquals(kotlin.math.ln(1.0 + 1.9), scorer.aggregateLogSum(listOf(0.9, 0.5, 0.5)), tol)
+      assertEquals(0.0, scorer.aggregateLogSum(emptyList()), tol)
+    }
+
+    @Test
+    fun nonSaturating_keepDiscriminationWhereOrSaturates() {
+      val three = listOf(0.9, 0.9, 0.9)
+      val ten = List(10) { 0.9 }
+      // 機率式 OR:3 與 10 個 hit 都飽和到 ~1.0 → 幾乎無法分辨
+      assertTrue(scorer.aggregateOr(ten) > 0.99)
+      assertTrue(scorer.aggregateOr(ten) - scorer.aggregateOr(three) < 0.001, "OR 已飽和、辨識度盡失")
+      // 三種非飽和聚合都能分辨「更多 hit」:
+      assertEquals(0.9, scorer.aggregateMax(ten), tol)                                  // MAX 不隨數量變(穩定但不獎勵佐證)
+      assertEquals(2.7, scorer.aggregateTopKSum(ten, 3), tol)                            // top-3 = 2.7
+      assertTrue(scorer.aggregateLogSum(ten) - scorer.aggregateLogSum(three) > 0.5,     // LOG_SUM 隨數量成長
+        "log-sum 應隨 hit 數成長以保留辨識度")
+    }
+
+    @Test
+    fun aggregate_dispatchesByConfig() {
+      val s = listOf(0.9, 0.9, 0.9)
+      fun scorerWith(m: AggregationMethod) = YearMonthScorer(YearMonthScoringConfig(aggregation = m))
+      assertEquals(scorer.aggregateOr(s), scorerWith(AggregationMethod.PROBABILISTIC_OR).aggregate(s), tol)
+      assertEquals(0.9, scorerWith(AggregationMethod.MAX).aggregate(s), tol)
+      assertEquals(2.7, scorerWith(AggregationMethod.TOP_K_SUM).aggregate(s), tol)
+      assertEquals(kotlin.math.ln(1.0 + 2.7), scorerWith(AggregationMethod.LOG_SUM).aggregate(s), tol)
+    }
+  }
+
+  @Nested
   inner class ExtractHits {
 
     /** 造一個「行運 transiting [aspect] 本命 natal」的 AspectEvent。points 順序 = [transiting, natal]。 */
@@ -616,6 +665,19 @@ internal class YearMonthScorerTest {
       }
       val w = scorer.buildWindows(timed, SearchGrain.MONTH, Combine.OR, periods).single()
       assertEquals(1.0, w.strength, tol)    // 0.5 × min(2.535, 2.0) = 0.5 × 2.0
+    }
+
+    @Test
+    fun buildWindows_honorsAggregationMethod() {
+      val ym = YearMonth.of(2026, 3)
+      val timed = List(3) { TimedInstantHit(ym, instant(venusTarget, 0.5)) }
+      // 預設 OR:1-(1-0.5)^3 = 0.875
+      val or = scorer.buildWindows(timed, SearchGrain.MONTH, Combine.OR, noPeriods).single()
+      assertEquals(0.875, or.strength, tol)
+      // MAX:三個 0.5 → base 0.5(無 period/confluence)
+      val maxScorer = YearMonthScorer(YearMonthScoringConfig(aggregation = AggregationMethod.MAX))
+      val mx = maxScorer.buildWindows(timed, SearchGrain.MONTH, Combine.OR, noPeriods).single()
+      assertEquals(0.5, mx.strength, tol)
     }
 
     @Test

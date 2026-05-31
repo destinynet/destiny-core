@@ -58,6 +58,17 @@ enum class Combine {
   OR,   // 任一 significator 命中即收錄
 }
 
+/**
+ * 桶內把多個 [InstantHit.rawStrength] 聚合成 base 的方法。
+ *
+ * 問題:預設 [PROBABILISTIC_OR](`1-∏(1-h)`)在 hit 一多就**飽和≈1.0**,使各桶(尤其 YEAR grain)幾乎同分、
+ * 失去辨識度(見 docs §7(c) SBF boom/bust 案例)。以下三者為**非飽和**替代,保留「越多/越強 → 越高」的辨識度:
+ *  - [MAX]:取單一最強 hit。最簡單、不隨數量飽和;但忽略「多重佐證」。
+ *  - [TOP_K_SUM]:取最強 k 個之和(k = [YearMonthScoringConfig.aggregationTopK])。獎勵佐證、又抗噪(只算前 k)。
+ *  - [LOG_SUM]:`ln(1 + Σh)`。全部納入但邊際遞減,溫和成長、永不硬飽和。
+ */
+enum class AggregationMethod { PROBABILISTIC_OR, MAX, TOP_K_SUM, LOG_SUM }
+
 /** 搜尋粒度。封頂 MONTH;DAY/HOUR 屬擇日,交棒給既有 [destiny.core.electional.DayHourService]。 */
 enum class SearchGrain {
   YEAR,
@@ -325,6 +336,13 @@ data class YearMonthScoringConfig(
    * 本身就是**搜尋意圖**而非普世真理,故做成可調 dial 而非寫死(避免戀愛搜尋永遠輸給刑沖)。
    */
   val aspectWeights: Map<Aspect, Double> = emptyMap(),
+  /**
+   * 桶內聚合法。**預設 [AggregationMethod.PROBABILISTIC_OR]**(維持既有行為、零回歸);
+   * 改用非飽和聚合(MAX / TOP_K_SUM / LOG_SUM)可解 YEAR-grain / 密訊號的飽和(見 docs §7(c))。
+   */
+  val aggregation: AggregationMethod = AggregationMethod.PROBABILISTIC_OR,
+  /** [AggregationMethod.TOP_K_SUM] 取最強的前幾個 hit。 */
+  val aggregationTopK: Int = 3,
 )
 
 /**

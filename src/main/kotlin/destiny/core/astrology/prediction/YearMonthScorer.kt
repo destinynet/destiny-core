@@ -24,6 +24,7 @@ import destiny.core.astrology.eclipse.ISolarEclipse
 import destiny.core.toString
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
+import kotlin.math.ln
 import java.time.YearMonth
 import java.util.Locale
 
@@ -51,6 +52,24 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
   /** 機率式 OR:`1 - ∏(1 - hᵢ)`。多重證言疊加、飽和 ≤1,避免線性爆衝。 */
   fun aggregateOr(strengths: List<Double>): Double {
     return 1.0 - strengths.fold(1.0) { acc, h -> acc * (1.0 - h.coerceIn(0.0, 1.0)) }
+  }
+
+  /** 非飽和:取單一最強 hit(空 → 0)。 */
+  fun aggregateMax(strengths: List<Double>): Double = strengths.maxOrNull() ?: 0.0
+
+  /** 非飽和:取最強 k 個之和(獎勵佐證、抗噪;不足 k 則全加)。 */
+  fun aggregateTopKSum(strengths: List<Double>, k: Int): Double =
+    strengths.sortedDescending().take(k).sum()
+
+  /** 非飽和:`ln(1 + Σh)`(全部納入、邊際遞減、永不硬飽和;空 → ln(1)=0)。 */
+  fun aggregateLogSum(strengths: List<Double>): Double = ln(1.0 + strengths.sum())
+
+  /** 依 [YearMonthScoringConfig.aggregation] 派發聚合法。預設 PROBABILISTIC_OR(零回歸)。 */
+  fun aggregate(strengths: List<Double>): Double = when (config.aggregation) {
+    AggregationMethod.PROBABILISTIC_OR -> aggregateOr(strengths)
+    AggregationMethod.MAX              -> aggregateMax(strengths)
+    AggregationMethod.TOP_K_SUM        -> aggregateTopKSum(strengths, config.aggregationTopK)
+    AggregationMethod.LOG_SUM          -> aggregateLogSum(strengths)
   }
 
   /**
@@ -376,7 +395,7 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     val perBucket: List<Pair<Int, YearMonthWindow>> = buckets.map { (key, hits) ->
       val distinctTargets = hits.map { it.target }.distinct().size
       val periodHits = periodHitsAt(key)
-      val base = aggregateOr(hits.map { it.rawStrength.value })
+      val base = aggregate(hits.map { it.rawStrength.value })
       // 同一 PeriodSource 內只取最強乘數(去同技法重複計數),跨源相乘後 cap 上限。
       val periodMultiplier = periodHits
         .groupBy { it.source }
