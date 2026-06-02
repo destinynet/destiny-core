@@ -235,30 +235,31 @@ class DayHourService(
 
   private fun matchEwEvents(gmtJulDay: GmtJulDay, outer: IEightWords, inner: IEightWords, config: EwTraversalConfig, loc: ILocation, grain: BirthDataGrain): Sequence<IEventDto> {
 
+    // outer / begin(gmtJulDay) / end(null) 在所有格局都相同,只有 event / span / impact 變動
+    fun EwEvent.dto(span: Span, impact: Impact) = EwEventDto(this, outer, gmtJulDay, span = span, impact = impact)
+
     val globalStemCombined = with(IdentityPatterns.stemCombined) {
       outer.getPatterns().filterIsInstance<IdentityPattern.StemCombined>()
         .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
-        .toStemCombinedDtos().map {
-          EwEventDto(it, outer, gmtJulDay, null, it.natalStems.findSpanByStems(), Impact.GLOBAL)
-        }
+        .toStemCombinedDtos().map { it.dto(it.natalStems.findSpanByStems(), Impact.GLOBAL) }
     }
 
     val globalBranchCombined = with(IdentityPatterns.branchCombined) {
       outer.getPatterns().filterIsInstance<IdentityPattern.BranchCombined>()
         .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
-        .toBranchCombinedDtos().map { EwEventDto(it, outer, gmtJulDay, null, it.natalBranches.findSpanByBranches(), Impact.GLOBAL) }
+        .toBranchCombinedDtos().map { it.dto(it.natalBranches.findSpanByBranches(), Impact.GLOBAL) }
     }
 
     val globalTrilogy = with(IdentityPatterns.trilogy) {
       outer.getPatterns().filterIsInstance<IdentityPattern.Trilogy>()
         .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
-        .toTrilogyDtos().map { EwEventDto(it, outer, gmtJulDay, null, it.natalBranches.findSpanByBranches(), Impact.GLOBAL) }
+        .toTrilogyDtos().map { it.dto(it.natalBranches.findSpanByBranches(), Impact.GLOBAL) }
     }
 
     val globalBranchOpposition = with(IdentityPatterns.branchOpposition) {
       outer.getPatterns().filterIsInstance<IdentityPattern.BranchOpposition>()
         .filter { p -> p.pillars.map { it.first }.any { s -> s in supportedScales } }
-        .toBranchOppositionDtos().map { EwEventDto(it, outer, gmtJulDay, null, it.natalBranches.findSpanByBranches(), Impact.GLOBAL) }
+        .toBranchOppositionDtos().map { it.dto(it.natalBranches.findSpanByBranches(), Impact.GLOBAL) }
     }
 
     val globalStemRooted = with(IdentityPatterns.stemRooted) {
@@ -269,7 +270,7 @@ class DayHourService(
             event.natalStems.maxBy { it.pillars.max() }.pillars.max(),
             event.natalBranches.maxBy { it.pillars.max() }.pillars.max()
           ).max().toSpan()
-          EwEventDto(event, outer, gmtJulDay, null, span, Impact.GLOBAL)
+          event.dto(span, Impact.GLOBAL)
         }
     }
 
@@ -280,8 +281,7 @@ class DayHourService(
           p.pillars.contains(Scale.DAY)
         }
         .toAuspiciousDto()?.let { event ->
-          val span = event.pillars.filter { it.value.isNotEmpty() }.keys.max().toSpan()
-          EwEventDto(event, outer, gmtJulDay, null, span, Impact.GLOBAL)
+          event.dto(event.pillars.filter { it.value.isNotEmpty() }.keys.max().toSpan(), Impact.GLOBAL)
         }
     }
 
@@ -292,35 +292,32 @@ class DayHourService(
           p.pillars.contains(Scale.DAY)
         }
         .toInauspiciousDto()?.let { event ->
-          val span = event.pillars.filter { it.value.isNotEmpty() }.keys.max().toSpan()
-          EwEventDto(event, outer, gmtJulDay, null, span, Impact.GLOBAL)
+          event.dto(event.pillars.filter { it.value.isNotEmpty() }.keys.max().toSpan(), Impact.GLOBAL)
         }
     }
 
     val personalAffecting = with(affecting) {
       inner.getPatterns(outer.day, outer.hour).map { pattern ->
         pattern as FlowPattern.Affecting
-      }.toAffectingDtos().map {
-        EwEventDto(it, outer, gmtJulDay, null, it.flowScales.max().toSpan(), Impact.PERSONAL)
-      }
+      }.toAffectingDtos().map { it.dto(it.flowScales.max().toSpan(), Impact.PERSONAL) }
     }
 
     val personalStemCombined = with(stemCombined) {
       inner.getPatterns(outer.day, outer.hour).map { pattern ->
         pattern as FlowPattern.StemCombined
-      }.toStemCombinedDtos().map { EwEventDto(it, outer, gmtJulDay, null, it.flowStems.scales.max().toSpan() , Impact.PERSONAL) }
+      }.toStemCombinedDtos().map { it.dto(it.flowStems.scales.max().toSpan(), Impact.PERSONAL) }
     }
 
     val personalBranchCombined = with(branchCombined) {
       inner.getPatterns(outer.day, outer.hour).map { pattern ->
         pattern as FlowPattern.BranchCombined
-      }.toBranchCombinedDtos().map { EwEventDto(it, outer, gmtJulDay, null, it.flowBranches.scales.max().toSpan(), Impact.PERSONAL) }
+      }.toBranchCombinedDtos().map { it.dto(it.flowBranches.scales.max().toSpan(), Impact.PERSONAL) }
     }
 
     val personalTrilogyToFlow = with(trilogyToFlow) {
       inner.getPatterns(outer.day, outer.hour).map { pattern ->
         pattern as FlowPattern.TrilogyToFlow
-      }.toTrilogyToFlowDtos().map { EwEventDto(it, outer, gmtJulDay, null, it.flowBranches.scales.max().toSpan(), Impact.PERSONAL) }
+      }.toTrilogyToFlowDtos().map { it.dto(it.flowBranches.scales.max().toSpan(), Impact.PERSONAL) }
     }
 
     val personalToFlowTrilogy = with(toFlowTrilogy) {
@@ -334,13 +331,13 @@ class DayHourService(
         val flowScales = pattern.flows.map { it.first }
         flowScales.any { it == FlowScale.DAY || it == FlowScale.HOUR }
       }.toToFlowTrilogyDtos()
-        .map { event -> EwEventDto(event, outer, gmtJulDay, null, event.flowBranches.maxBy { it.scales.max() }.scales.max().toSpan(), Impact.PERSONAL) }
+        .map { event -> event.dto(event.flowBranches.maxBy { it.scales.max() }.scales.max().toSpan(), Impact.PERSONAL) }
     }
 
     val personalBranchOpposition = with(branchOpposition) {
       inner.getPatterns(outer.day, outer.hour).map { pattern ->
         pattern as FlowPattern.BranchOpposition
-      }.toBranchOppositionDtos().map { EwEventDto(it, outer, gmtJulDay, null, it.flowBranches.scales.max().toSpan() , Impact.PERSONAL) }
+      }.toBranchOppositionDtos().map { it.dto(it.flowBranches.scales.max().toSpan(), Impact.PERSONAL) }
     }
 
     return sequence {
@@ -391,7 +388,7 @@ class DayHourService(
     val fromEw: IEightWords = ewFeature.getModel(fromGmtJulDay, loc, ewPersonPresentConfig)
 
     return generateSequence(fromEw to fromGmtJulDay) { (outerEw, gmtJulDay) ->
-      ewFeature.next(gmtJulDay + 0.01, loc, ewPersonPresentConfig)
+      ewFeature.next(gmtJulDay + PILLAR_STEP_EPSILON, loc, ewPersonPresentConfig)
     }.takeWhile { (outerEw, gmtJulDay) -> gmtJulDay < toGmtJulDay }
       .flatMap { (outerEw, gmtJulDay) ->
         matchEwEvents(gmtJulDay, outerEw, personEw, config, loc, grain)
@@ -412,6 +409,13 @@ class DayHourService(
 
     private const val NOT_SUPPORTED = "not supported"
     private const val IMPOSSIBLE_FLOW_SCALE = "impossible flowScale"
+
+    /**
+     * 推進到「下一個柱(時辰)邊界」前,先跨過當前邊界用的微小 epsilon。
+     * 單位為 Julian Day,0.01 JD ≈ 14.4 分鐘,小於一個時辰(2 小時),
+     * 足以讓 [destiny.core.calendar.eightwords.EightWordsFeature.next] 不會卡在當前邊界、又不會略過下一柱。
+     */
+    private const val PILLAR_STEP_EPSILON = 0.01
 
     fun Set<NatalStems>.findSpanByStems(): Span {
       return this.maxBy { it.pillars.max() }.pillars.max().toSpan()
