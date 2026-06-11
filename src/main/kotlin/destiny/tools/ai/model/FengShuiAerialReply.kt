@@ -3,6 +3,7 @@
  */
 package destiny.tools.ai.model
 
+import destiny.core.FengShuiDomain
 import kotlinx.serialization.Serializable
 
 

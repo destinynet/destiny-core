@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2024-07-01.
  */
-package destiny.tools.ai.model
+package destiny.core
 
 import kotlin.reflect.KClass
 

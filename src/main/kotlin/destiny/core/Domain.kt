@@ -1,4 +1,4 @@
-package destiny.tools.ai.model
+package destiny.core
 
 import destiny.tools.converters.MapConverter
 import kotlinx.serialization.KSerializer

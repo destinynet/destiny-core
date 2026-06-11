@@ -3,6 +3,7 @@
  */
 package destiny.tools.ai.model
 
+import destiny.core.BirthDataDomain
 import destiny.core.EnumTest
 import destiny.tools.parseJsonToMap
 import org.junit.jupiter.api.Nested

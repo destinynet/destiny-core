@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2024-07-20.
  */
-package destiny.tools.ai.model
+package destiny.core
 
 
 enum class BirthDataDomain {

@@ -3,7 +3,7 @@
  */
 package destiny.tools.ai
 
-import destiny.tools.ai.model.Domain
+import destiny.core.Domain
 import destiny.tools.config.Holder
 import jakarta.inject.Named
 import kotlinx.serialization.Contextual

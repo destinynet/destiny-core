@@ -1,4 +1,4 @@
-package destiny.tools.ai.model
+package destiny.core
 
 enum class FengShuiDomain {
   ENVIRONMENT,

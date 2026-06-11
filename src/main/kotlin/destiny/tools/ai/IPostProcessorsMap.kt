@@ -1,7 +1,7 @@
 package destiny.tools.ai
 
 import destiny.tools.KotlinLogging
-import destiny.tools.ai.model.Domain
+import destiny.core.Domain
 import java.util.*
 
 interface IPostProcessorsMap {

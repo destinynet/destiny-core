@@ -3,7 +3,7 @@
  */
 package destiny.tools.ai
 
-import destiny.tools.ai.model.Domain
+import destiny.core.Domain
 import destiny.tools.config.Holder
 import org.junit.jupiter.api.Nested
 import kotlin.test.BeforeTest
