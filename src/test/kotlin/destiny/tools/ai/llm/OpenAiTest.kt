@@ -6,7 +6,7 @@ package destiny.tools.ai.llm
 import com.jayway.jsonpath.JsonPath
 import destiny.tools.KotlinLogging
 import destiny.tools.ai.llm.OpenAi.Response.NormalResponse
-import destiny.tools.ai.model.SynastryReply
+import destiny.core.ai.reply.SynastryReply
 import destiny.tools.ai.toJsonSchema
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested

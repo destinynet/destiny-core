@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2024-07-26.
  */
-package destiny.tools.ai.model
+package destiny.core.ai.reply
 
 import destiny.tools.KotlinLogging
 import destiny.tools.getTitle

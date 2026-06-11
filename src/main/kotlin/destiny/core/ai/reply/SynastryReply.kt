@@ -1,9 +1,12 @@
 /**
  * Created by smallufo on 2024-12-09.
  */
-package destiny.tools.ai.model
+package destiny.core.ai.reply
 
 import destiny.core.SynastryDomain
+import destiny.tools.ai.model.FollowUp
+import destiny.tools.ai.model.FormatSpec
+import destiny.tools.ai.model.IFollowUps
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

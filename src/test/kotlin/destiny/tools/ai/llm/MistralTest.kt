@@ -5,7 +5,7 @@ package destiny.tools.ai.llm
 
 import com.jayway.jsonpath.JsonPath
 import destiny.tools.KotlinLogging
-import destiny.tools.ai.model.BirthDataReply
+import destiny.core.ai.reply.BirthDataReply
 import destiny.tools.ai.toJsonSchema
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested

@@ -1,9 +1,10 @@
 /**
  * Created by smallufo on 2025-01-13.
  */
-package destiny.tools.ai.model
+package destiny.core.ai.reply
 
 import destiny.core.FengShuiDomain
+import destiny.tools.ai.model.FormatSpec
 import kotlinx.serialization.Serializable
 
 

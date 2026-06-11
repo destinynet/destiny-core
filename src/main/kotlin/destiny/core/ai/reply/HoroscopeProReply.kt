@@ -1,11 +1,12 @@
 /**
  * Created by smallufo on 2024-12-26.
  */
-package destiny.tools.ai.model
+package destiny.core.ai.reply
 
 import destiny.core.astrology.AstroPattern
 import destiny.core.astrology.IMidPointWithFocal
 import destiny.core.astrology.IPointAspectPattern
+import destiny.tools.ai.model.Advice
 import kotlinx.serialization.Serializable
 
 
