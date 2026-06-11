@@ -16,7 +16,6 @@ import destiny.core.calendar.Lng.Companion.toLng
 import destiny.core.calendar.Location
 import destiny.core.calendar.chinese.YearMonthRange
 import destiny.core.calendar.chinese.groupMergedRanges
-import destiny.tools.ai.model.FormatSpec
 import destiny.tools.serializers.*
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
@@ -354,8 +353,4 @@ data class ExtractedEvents(
 
   override val location: ILocation
     get() = Location(lat.toLat(), lng.toLng(), tzid)
-
-  companion object {
-    val formatSpec = FormatSpec.of<ExtractedEvents>("celebrity_intro", "Celebrity's profile and important life events")
-  }
 }
