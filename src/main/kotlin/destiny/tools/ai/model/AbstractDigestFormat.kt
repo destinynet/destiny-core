@@ -8,7 +8,7 @@ import java.util.*
 
 /**
  * [M] : 輸入的 Model object , 例如 [IBirthDataNamePlace]
- * [D] : 預期輸出的 Model , 例如 [BirthDataReply]
+ * [D] : 預期輸出的 Model (LLM 結構化回覆 schema)
  */
 abstract class AbstractDigestFormat<M, D : Any>(
   val formatSpec: FormatSpec<D>
