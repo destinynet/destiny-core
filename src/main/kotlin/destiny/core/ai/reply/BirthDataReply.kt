@@ -4,9 +4,9 @@
 package destiny.core.ai.reply
 
 import destiny.core.BirthDataDomain
-import destiny.tools.ai.model.FollowUp
+import destiny.core.ai.FollowUp
 import destiny.tools.ai.model.FormatSpec
-import destiny.tools.ai.model.IFollowUps
+import destiny.core.ai.IFollowUps
 import kotlinx.serialization.Serializable
 
 

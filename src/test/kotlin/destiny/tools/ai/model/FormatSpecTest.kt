@@ -3,6 +3,7 @@
  */
 package destiny.tools.ai.model
 
+import destiny.core.ai.Advice
 import kotlinx.serialization.SerializationException
 import java.time.LocalDateTime
 import kotlin.test.Test

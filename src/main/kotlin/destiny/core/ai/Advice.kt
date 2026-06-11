@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2024-12-25.
  */
-package destiny.tools.ai.model
+package destiny.core.ai
 
 import destiny.tools.ai.IProviderModel
 import destiny.tools.ai.Provider

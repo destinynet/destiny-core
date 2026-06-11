@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2025-04-04.
  */
-package destiny.tools.ai.model
+package destiny.core.ai
 
 
 interface IFollowUps {

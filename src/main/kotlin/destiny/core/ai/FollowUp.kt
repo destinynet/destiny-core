@@ -1,4 +1,4 @@
-package destiny.tools.ai.model
+package destiny.core.ai
 
 import kotlinx.serialization.Serializable
 
