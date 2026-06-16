@@ -1,7 +1,7 @@
 package destiny.core
 
-import destiny.core.Domain
-import destiny.core.DomainSerializer
+import destiny.tools.ai.model.Domain
+import destiny.tools.ai.model.DomainSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable

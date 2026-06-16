@@ -4,7 +4,6 @@
 package destiny.tools.ai.model
 
 import destiny.core.EnumTest
-import destiny.core.FengShuiDomain
 import destiny.tools.KotlinLogging
 import destiny.tools.parseJsonToMap
 import org.junit.jupiter.api.Nested

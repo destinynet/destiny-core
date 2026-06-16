@@ -1,9 +1,8 @@
+package destiny.tools.ai.model
+
 /**
  * Created by smallufo on 2024-07-20.
  */
-package destiny.core
-
-
 enum class BirthDataDomain {
   GENERAL,
   LOVE,
@@ -18,4 +17,3 @@ enum class BirthDataDomain {
   VISION,
   SECRET,
 }
-

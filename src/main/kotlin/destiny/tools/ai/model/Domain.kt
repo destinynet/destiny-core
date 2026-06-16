@@ -1,5 +1,6 @@
-package destiny.core
+package destiny.tools.ai.model
 
+import destiny.core.DomainObjectFinder
 import destiny.tools.converters.MapConverter
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable

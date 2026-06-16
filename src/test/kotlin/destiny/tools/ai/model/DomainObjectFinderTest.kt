@@ -1,11 +1,12 @@
-/**
- * Created by smallufo on 2024-07-01.
- */
-package destiny.core
+package destiny.tools.ai.model
 
+import destiny.core.DomainObjectFinder
 import kotlin.test.Test
 import kotlin.test.assertSame
 
+/**
+ * Created by smallufo on 2024-07-01.
+ */
 class DomainObjectFinderTest {
 
   @Test

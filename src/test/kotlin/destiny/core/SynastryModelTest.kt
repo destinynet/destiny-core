@@ -5,7 +5,7 @@ package destiny.core
 
 import destiny.core.calendar.locationOf
 import destiny.tools.KotlinLogging
-import destiny.core.Domain
+import destiny.tools.ai.model.Domain
 import destiny.tools.serializers.IBirthDataNamePlaceSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule

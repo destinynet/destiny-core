@@ -3,6 +3,7 @@
  */
 package destiny.core
 
+import destiny.tools.ai.model.Domain
 import kotlin.reflect.KClass
 
 
