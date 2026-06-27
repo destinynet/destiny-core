@@ -6,6 +6,8 @@ package destiny.core.astrology
 import destiny.core.astrology.classical.ClassicalConfig
 import destiny.core.astrology.classical.ClassicalFeature
 import destiny.core.astrology.classical.IRuler
+import destiny.core.astrology.classical.rules.AccidentalDignity
+import destiny.core.astrology.classical.rules.Debility
 import destiny.core.astrology.classical.rules.IPlanetPattern
 import destiny.core.astrology.classical.rules.IPlanetPatternFactory
 import destiny.core.astrology.classical.rules.PatternTranslator
@@ -127,9 +129,16 @@ class DtoFactory(
 
     val classicalPatterns  = if (includeClassical) {
       classicalFeature.getModel(gmtJulDay, location, cfg).flatMap { (_, list: List<IPlanetPattern>) ->
-        list.map {
-          PatternTranslator.getDescriptor(it).getDescription(Locale.ENGLISH)
-        }
+        list
+          .filterNot { pattern ->
+            // 沒有出生時辰 (grain = DAY) 時，得時/不得時 (Hayz / Out of Sect) 依賴晝夜與星體
+            // 在地平面上下，以正午 placeholder 推算不可採信，故濾除。
+            grain == BirthDataGrain.DAY &&
+              (pattern is AccidentalDignity.Hayz || pattern is Debility.Out_of_Sect)
+          }
+          .map {
+            PatternTranslator.getDescriptor(it).getDescription(Locale.ENGLISH)
+          }
       }
     } else {
       emptyList()
