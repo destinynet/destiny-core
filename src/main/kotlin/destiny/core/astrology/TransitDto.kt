@@ -19,6 +19,7 @@ import java.time.LocalTime
 @Serializable
 data class TransitDto(
   val natal: Natal,
+  val grain: BirthDataGrain,
   @Serializable(with = LocalDateSerializer::class)
   val localDate: LocalDate,
   val aspects: List<SynastryAspect>
