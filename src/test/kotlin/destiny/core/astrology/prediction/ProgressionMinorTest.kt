@@ -33,8 +33,8 @@ internal class ProgressionMinorTest {
       logger.info { "convergentJulDay = $convergentJulDay" }
       val convergentLmt = TimeTools.getLmtFromGmt(convergentJulDay, loc, julDayResolver)
       logger.info { "convergentLmt = $convergentLmt" }
-      // 大約 300 個月
-      //assertEquals(natalLmt.toLocalDate().plusDays(300), convergentLmt.toLocalDate())
+      // MP「一月一年」: 22.57 年人生 → 出生後約 22.57 個恆星月 ≈ 616 天
+      assertEquals(natalLmt.toLocalDate().plusDays(616), convergentLmt.toLocalDate())
 
       progression.getDivergentTime(natalGmtJulDay, convergentJulDay).also { divergentJulDay: GmtJulDay ->
         logger.info { "divergentJulDay = $divergentJulDay" }
