@@ -10,6 +10,7 @@ enum class EventSource {
   TERTIARY,
   MINOR,
   SOLAR_ARC,
+  PRIMARY_DIRECTION,
 }
 
 data class EventSourceConfig(val source: EventSource, val pastExtDays: Int = 0, val futureExtDays: Int = 0)
