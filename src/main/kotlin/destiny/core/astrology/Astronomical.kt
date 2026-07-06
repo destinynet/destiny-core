@@ -93,6 +93,27 @@ object Astronomical : IObliquityCalculator {
   }
 
   /**
+   * Right ascension (degrees, `[0,360)`) of the ecliptic point at ecliptic
+   * longitude [lng] with zero latitude, i.e. `eclipticToEquatorial(lng, 0, ε).ra`.
+   */
+  fun eclipticLongitudeToRA(lng: Double, obliquity: Double): Double =
+    eclipticToEquatorial(lng, 0.0, obliquity).rightAscension
+
+  /**
+   * Inverse of [eclipticLongitudeToRA]: the ecliptic longitude (degrees, `[0,360)`)
+   * of the point **on the ecliptic** (β = 0) whose right ascension is [ra].
+   *
+   * From `tan α = tan λ · cos ε`  ⇒  `λ = atan2(sin α, cos α · cos ε)`.
+   * Used by zodiacal (no-latitude) primary directions to project an RA back to the zodiac.
+   */
+  fun raToEclipticLongitude(ra: Double, obliquity: Double): Double {
+    val a = Math.toRadians(ra)
+    val e = Math.toRadians(obliquity)
+    val lng = atan2(sin(a), cos(a) * cos(e))
+    return ((Math.toDegrees(lng) % 360.0) + 360.0) % 360.0
+  }
+
+  /**
    * Hour angle in hours `[-12, +12]`, positive = west of local meridian.
    *
    * @param lstHours Local sidereal time in hours

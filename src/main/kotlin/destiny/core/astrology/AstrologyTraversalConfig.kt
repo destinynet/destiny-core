@@ -2,6 +2,9 @@ package destiny.core.astrology
 
 import destiny.core.astrology.Aspect.Importance
 import destiny.core.astrology.Planet.*
+import destiny.core.astrology.prediction.ITimeKey
+import destiny.core.astrology.prediction.PrimaryDirectionMethod
+import destiny.core.astrology.prediction.PtolemyKey
 import kotlinx.serialization.Serializable
 
 
@@ -46,6 +49,25 @@ data class SolarArcConfig(
   val transitingPoints: Set<AstroPoint> = Planet.values.toSet() + LunarNode.values.toSet() + Axis.MERIDIAN + Axis.RISING,
   val applyingOrb: Double = 2.0,
   val separatingOrb: Double = 1.0,
+)
+
+/**
+ * 主限法 (Primary Direction) 遍歷設定。
+ *
+ * @param significators 主示星 (固定的本命點，事件的「當事人」)，通常是 Asc / MC / 日 / 月。
+ * @param promissors    承諾星 (被推進、象徵事件的星體)，通常是傳統七政。
+ * @param aspects       計算哪些相位。
+ * @param method        量法 (預設黃道-赤經法)。
+ * @param forward       順推 (true) 或逆推 (false)。
+ * @param timeKey       時間鑰匙 (arc↔年)。
+ */
+data class PrimaryDirectionConfig(
+  val significators: Set<AstroPoint> = setOf(Axis.RISING, Axis.MERIDIAN, SUN, MOON),
+  val promissors: Set<AstroPoint> = Planet.classicalSet,
+  val aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
+  val method: PrimaryDirectionMethod = PrimaryDirectionMethod.Zodiacal(),
+  val forward: Boolean = true,
+  val timeKey: ITimeKey = PtolemyKey,
 )
 
 data class AstrologyTraversalConfig(
@@ -94,6 +116,8 @@ data class AstrologyTraversalConfig(
   val tertiaryProgressionConfig: ProgressionConfig = ProgressionConfig(),
   /** SolarArc 遍歷設定 */
   val solarArcConfig: SolarArcConfig = SolarArcConfig(),
+  /** Primary Direction 遍歷設定 */
+  val primaryDirectionConfig: PrimaryDirectionConfig = PrimaryDirectionConfig(),
 ) {
 
   /**

@@ -25,6 +25,9 @@ sealed interface IPrimaryDirectionModel : ITransitModel {
   /** 本次計算所使用的「時間鑰匙」(例如，托勒密之鑰) */
   val timeKey: ITimeKey
 
+  /** 是否順推 (true) 或逆推 (false)，同 [Conversable] 慣例 */
+  val forward: Boolean
+
   /**
    * 根據 viewGmtJulDay 與 natalGmtJulDay 的時間差，以及 timeKey，所計算出的推進弧角。
    * 這個弧角通常是在赤道座標系統上的度數。
@@ -46,6 +49,7 @@ data class PrimaryDirectionModel(
   override val natalGmtJulDay: GmtJulDay,
   override val viewGmtJulDay: GmtJulDay,
   override val timeKey: ITimeKey,
+  override val forward: Boolean = true,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   override val directionArc: Double,
   override val positionMap: Map<AstroPoint, @Serializable(with = IZodiacDegreeTwoDecimalSerializer::class) IZodiacDegree>,
