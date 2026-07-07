@@ -101,37 +101,45 @@ open class PlateWithSection(p : IPlate ,
                        override val flowSection: StemBranch,
                        override val branchHouseMap: Map<Branch, House>,
                        houseDataSet: Set<HouseData>,
-                       transFours: Map<ZStar, Map<FlowType, T4Value>>
+                       transFours: Map<ZStar, Map<FlowType, T4Value>>,
+                       extraFlows: Map<FlowType, StemBranch> = emptyMap()
                        ) : Plate(p.name , p.chineseDate, p.localDateTime, p.year, p.finalMonthNumForMonthStars, p.hour, p.location, p.place, p.dayNight, p.gender,
                                  p.bodyHouse , p.mainStar, p.bodyStar, p.fiveElement, p.state, houseDataSet, transFours,
-                                 p.flowBranchMap, p.starStrengthMap, p.notes, p.vageMap, p.rageMap,p.summaries), IPlateSection, Serializable
+                                 p.flowBranchMap + (FlowType.SECTION to flowSection) + extraFlows, p.starStrengthMap, p.notes, p.vageMap, p.rageMap,p.summaries), IPlateSection, Serializable
 
 /** 流年盤 */
 open class PlateWithYear(p: IPlateSection,
                     override val flowYear: StemBranch,
                     branchHouseMap: Map<Branch, House>,
                     houseDataSet: Set<HouseData>,
-                    transFours: Map<ZStar, Map<FlowType, T4Value>>
-                    ) : PlateWithSection(p, p.flowSection, branchHouseMap, houseDataSet, transFours) , IPlateYear, Serializable
+                    transFours: Map<ZStar, Map<FlowType, T4Value>>,
+                    extraFlows: Map<FlowType, StemBranch> = emptyMap()
+                    ) : PlateWithSection(p, p.flowSection, branchHouseMap, houseDataSet, transFours,
+                                         mapOf(FlowType.YEAR to flowYear) + extraFlows) , IPlateYear, Serializable
 
 /** 流月盤 */
 open class PlateWithMonth(p : IPlateYear,
                           override val flowMonth: StemBranch,
                           branchHouseMap: Map<Branch, House>,
                           houseDataSet: Set<HouseData>,
-                          transFours: Map<ZStar, Map<FlowType, T4Value>>
-                          ) : PlateWithYear(p, p.flowYear, branchHouseMap, houseDataSet, transFours), IPlateMonth, Serializable
+                          transFours: Map<ZStar, Map<FlowType, T4Value>>,
+                          extraFlows: Map<FlowType, StemBranch> = emptyMap()
+                          ) : PlateWithYear(p, p.flowYear, branchHouseMap, houseDataSet, transFours,
+                                            mapOf(FlowType.MONTH to flowMonth) + extraFlows), IPlateMonth, Serializable
 
 /** 流日盤 */
 open class PlateWithDay(p: IPlateMonth,
                         override val flowDay: StemBranch,
                         branchHouseMap: Map<Branch, House>,
                         houseDataSet: Set<HouseData>,
-                        transFours: Map<ZStar, Map<FlowType, T4Value>>) : PlateWithMonth(p, p.flowMonth, branchHouseMap, houseDataSet, transFours), IPlateDay, Serializable
+                        transFours: Map<ZStar, Map<FlowType, T4Value>>,
+                        extraFlows: Map<FlowType, StemBranch> = emptyMap()) : PlateWithMonth(p, p.flowMonth, branchHouseMap, houseDataSet, transFours,
+                                                                                             mapOf(FlowType.DAY to flowDay) + extraFlows), IPlateDay, Serializable
 
 /** 流時盤 */
 class PlateWithHour(p : IPlateDay,
                     override val flowHour: StemBranch,
                     branchHouseMap: Map<Branch, House>,
                     houseDataSet: Set<HouseData>,
-                    transFours: Map<ZStar, Map<FlowType, T4Value>>) : PlateWithDay(p, p.flowDay, branchHouseMap, houseDataSet, transFours), IPlateHour, Serializable
+                    transFours: Map<ZStar, Map<FlowType, T4Value>>) : PlateWithDay(p, p.flowDay, branchHouseMap, houseDataSet, transFours,
+                                                                                   mapOf(FlowType.HOUR to flowHour)), IPlateHour, Serializable
