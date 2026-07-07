@@ -807,7 +807,7 @@ class ZiweiFeature(
 
     val newHouseDataSet: Set<HouseData> = plateYear.houseDataSet.append(FlowType.MONTH, branchHouseMap)
 
-    return PlateWithMonth(plateYear , section, branchHouseMap, newHouseDataSet, plateYear.transFours.append(trans4Map))
+    return PlateWithMonth(plateYear , flowMonth, branchHouseMap, newHouseDataSet, plateYear.transFours.append(trans4Map))
   }
 
   /** 計算 流日盤  */
