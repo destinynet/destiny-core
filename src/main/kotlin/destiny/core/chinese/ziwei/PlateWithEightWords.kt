@@ -15,7 +15,8 @@ interface IPlateWithEightWords : IPlate {
 }
 
 data class PlateWithEightWords(
-  private val plate: IPlate ,
+  /** 內部原始命盤 (本命或疊盤後的 PlateWith*) , 供 raw [Plate] JSON 序列化取用 */
+  val plate: IPlate ,
   /** 八字資料  */
   override val personModel: IPersonContextModel) : IPlateWithEightWords , IPlate by plate , Serializable
 
