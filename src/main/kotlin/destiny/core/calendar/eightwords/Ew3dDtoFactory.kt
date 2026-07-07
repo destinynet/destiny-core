@@ -10,6 +10,7 @@ import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.chinese.display
+import destiny.core.calendar.fixError
 import destiny.core.calendar.toLmt
 import jakarta.inject.Named
 import java.time.LocalDateTime
@@ -29,21 +30,22 @@ class Ew3dDtoFactory(
     val gmtJulDay = lmt.toGmtJulDay(location)
     val sunLng = starPosMap[Planet.SUN]?.lngDeg?.value ?: error("SUN position absent")
 
-    val terms = solarTermsImpl.getSolarTermsEvents(gmtJulDay - 190, gmtJulDay + 190).map { ev ->
+    val terms = solarTermsImpl.getSolarTermsEvents(gmtJulDay - TERM_WINDOW_DAYS, gmtJulDay + TERM_WINDOW_DAYS).map { ev ->
       Ew3dDto.SolarTermEventDto(
         ev.solarTerms.name,
         ev.solarTerms.zodiacDegree,
-        ev.begin.toLmt(location, julDayResolver) as LocalDateTime
+        ev.begin.toLmt(location, julDayResolver).fixError() as LocalDateTime
       )
     }
 
     val branches = hourImpl.getDailyBranchStartMap(lmt.toLocalDate(), location, julDayResolver, HourBranchConfig())
       .entries.sortedBy { it.value }
-      .map { (b, t) -> Ew3dDto.HourBranchDto(b.toString(), t as LocalDateTime) }
+      .map { (b, t) -> Ew3dDto.HourBranchDto(b.toString(), t.fixError() as LocalDateTime) }
 
     val dayStartGmt = lmt.toLocalDate().atStartOfDay().toGmtJulDay(location)
-    fun trans(p: TransPoint): LocalDateTime = riseTransImpl.getGmtTransJulDay(dayStartGmt, Planet.SUN, p, location)!!
-      .toLmt(location, julDayResolver) as LocalDateTime
+    fun trans(p: TransPoint): LocalDateTime =
+      (riseTransImpl.getGmtTransJulDay(dayStartGmt, Planet.SUN, p, location) ?: error("no $p transit for SUN at $location"))
+        .toLmt(location, julDayResolver).fixError() as LocalDateTime
 
     return Ew3dDto(
       eightWords = Ew3dDto.Pillars(
@@ -63,5 +65,10 @@ class Ew3dDtoFactory(
       meridianTime = trans(TransPoint.MERIDIAN),
       nadirTime = trans(TransPoint.NADIR)
     )
+  }
+
+  companion object {
+    /** 出生時刻前後各 190 天：每側涵蓋 >12 個節氣，約略一整年 */
+    private const val TERM_WINDOW_DAYS = 190
   }
 }
