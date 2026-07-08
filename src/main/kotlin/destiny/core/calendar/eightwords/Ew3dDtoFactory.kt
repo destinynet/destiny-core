@@ -19,11 +19,10 @@ import java.time.LocalDateTime
 class Ew3dDtoFactory(
   private val solarTermsImpl: ISolarTerms,
   private val riseTransImpl: IRiseTrans,
-  private val julDayResolver: JulDayResolver
+  private val julDayResolver: JulDayResolver,
+  private val hourSolarTransImpl : IHour,
 ) {
 
-  /** 刻意固定用 [HourSolarTransImpl]（真太陽時），不注入 [IHour] 避免 bean 歧義 */
-  private val hourImpl: IHour = HourSolarTransImpl(riseTransImpl)
 
   fun IEightWordsContextModel.toEw3dDto(): Ew3dDto {
     val lmt = time as LocalDateTime
@@ -38,7 +37,7 @@ class Ew3dDtoFactory(
       )
     }
 
-    val branches = hourImpl.getDailyBranchStartMap(lmt.toLocalDate(), location, julDayResolver, HourBranchConfig())
+    val branches = hourSolarTransImpl.getDailyBranchStartMap(lmt.toLocalDate(), location, julDayResolver, HourBranchConfig())
       .entries.sortedBy { it.value }
       .map { (b, t) -> Ew3dDto.HourBranchDto(b.toString(), t.fixError() as LocalDateTime) }
 
