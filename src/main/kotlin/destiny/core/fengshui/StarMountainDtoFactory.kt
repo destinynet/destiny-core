@@ -45,6 +45,7 @@ class StarMountainDtoFactory(
     place: String? = null,
     mapZoom: Int = DEFAULT_MAP_ZOOM,
     mapScale: Int = DEFAULT_MAP_SCALE,
+    mapType: MapType = MapType.roadmap,
     sampleStepMinutes: Double = DEFAULT_SAMPLE_STEP_MINUTES,
     locale: Locale = Locale.getDefault(),
   ): StarMountainDto {
@@ -97,7 +98,7 @@ class StarMountainDtoFactory(
       }
     }.sortedBy { it.tMin }
 
-    val png = staticMap.getImage(loc, width = MAP_SIZE, height = MAP_SIZE, zoom = mapZoom, mapType = MapType.roadmap, scale = mapScale, locale = locale)
+    val png = staticMap.getImage(loc, width = MAP_SIZE, height = MAP_SIZE, zoom = mapZoom, mapType = mapType, scale = mapScale, locale = locale)
     val mapImageDataUrl = "data:image/png;base64," + Base64.getEncoder().encodeToString(png)
 
     return StarMountainDto(
