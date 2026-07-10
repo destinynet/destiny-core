@@ -6,28 +6,27 @@ package destiny.tools
 import destiny.tools.CircleTools.normalize
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 internal class CircleToolsTest {
 
   @Test
   fun testGetNormalizeDegree() {
     //測試大於零的度數
-    assertTrue(0.0.normalize() == 0.0)
-    assertTrue(359.0.normalize() == 359.0)
-    assertTrue(360.0.normalize() == 0.0)
-    assertTrue(361.0.normalize() == 1.0)
-    assertTrue(720.0.normalize() == 0.0)
-    assertTrue(721.0.normalize() == 1.0)
+    assertEquals(0.0.normalize(), 0.0)
+    assertEquals(359.0.normalize(), 359.0)
+    assertEquals(360.0.normalize(), 0.0)
+    assertEquals(361.0.normalize(), 1.0)
+    assertEquals(720.0.normalize(), 0.0)
+    assertEquals(721.0.normalize(), 1.0)
 
     //測試小於零的度數
-    assertTrue((-1.0).normalize() == 359.0)
-    assertTrue((-359.0).normalize() == 1.0)
-    assertTrue((-360.0).normalize() == 0.0)
-    assertTrue((-361.0).normalize() == 359.0)
-    assertTrue((-719.0).normalize() == 1.0)
-    assertTrue((-720.0).normalize() == 0.0)
-    assertTrue((-721.0).normalize() == 359.0)
+    assertEquals((-1.0).normalize(), 359.0)
+    assertEquals((-359.0).normalize(), 1.0)
+    assertEquals((-360.0).normalize(), 0.0)
+    assertEquals((-361.0).normalize(), 359.0)
+    assertEquals((-719.0).normalize(), 1.0)
+    assertEquals((-720.0).normalize(), 0.0)
+    assertEquals((-721.0).normalize(), 359.0)
   }
 
   @Test
