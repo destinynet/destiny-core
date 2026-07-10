@@ -5,6 +5,8 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.tools.CircleTools.normalize
+import destiny.tools.CircleTools.normalizeSigned
 import jakarta.inject.Named
 import kotlin.math.abs
 import kotlin.math.sign
@@ -36,13 +38,13 @@ class AzimuthTransitImpl(
     if (star is Arabic || star is LunarStation)
       return null
 
-    val target = ((targetAzimuthDeg % 360.0) + 360.0) % 360.0
+    val target = targetAzimuthDeg.normalize()
 
     fun azAt(t: GmtJulDay): IStarPositionWithAzimuth =
       starPositionWithAzimuthImpl.getPositionWithAzimuth(star, t, loc, centric, Coordinate.ECLIPTIC, temperature, pressure, options)
 
     /** 與 target 的帶符號夾角，wrap 到 (-180, 180] */
-    fun diff(t: GmtJulDay): Double = wrap180(azAt(t).azimuthDeg - target)
+    fun diff(t: GmtJulDay): Double = (azAt(t).azimuthDeg - target).normalizeSigned()
 
     val dir = if (forward) 1.0 else -1.0
 
@@ -75,14 +77,6 @@ class AzimuthTransitImpl(
       scanned += COARSE_STEP
     }
     return null
-  }
-
-  /** 帶符號夾角 wrap 到 (-180, 180] */
-  private fun wrap180(deg: Double): Double {
-    var d = deg % 360.0
-    if (d > 180.0) d -= 360.0
-    if (d <= -180.0) d += 360.0
-    return d
   }
 
   /** 在 [a0, b0]（[diff] 已變號）內二分求根 */

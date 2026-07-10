@@ -17,6 +17,12 @@ object CircleTools {
     }
   }
 
+  /** 將度數 normalize 到 (-180, 180] 的區間 (帶符號的最短夾角) */
+  fun Double.normalizeSigned(): Double {
+    val n = this.normalize()
+    return if (n > 180) n - 360 else n
+  }
+
   /** 中間度數 */
   fun getCenterDegree(from: Double, to: Double): Double {
     return ((from + to) / 2).normalize().let { c ->

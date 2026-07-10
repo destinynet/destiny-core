@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
+import destiny.tools.CircleTools.normalize
 import kotlin.math.asin
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -60,7 +61,7 @@ object Astronomical : IObliquityCalculator {
               360.98564736629 * deltaJd +
               0.000387933 * t * t -
               t * t * t / 38710000.0
-    return ((deg % 360.0 + 360.0) % 360.0) / 15.0
+    return deg.normalize() / 15.0
   }
 
   /**
@@ -88,7 +89,7 @@ object Astronomical : IObliquityCalculator {
     val e = Math.toRadians(obliquity)
     val ra = atan2(sin(l) * cos(e) - tan(b) * sin(e), cos(l))
     val dec = asin((sin(b) * cos(e) + cos(b) * sin(e) * sin(l)).coerceIn(-1.0, 1.0))
-    val raDeg = ((Math.toDegrees(ra) % 360.0) + 360.0) % 360.0
+    val raDeg = Math.toDegrees(ra).normalize()
     return EquatorialPos(raDeg, Math.toDegrees(dec))
   }
 
@@ -110,7 +111,7 @@ object Astronomical : IObliquityCalculator {
     val a = Math.toRadians(ra)
     val e = Math.toRadians(obliquity)
     val lng = atan2(sin(a), cos(a) * cos(e))
-    return ((Math.toDegrees(lng) % 360.0) + 360.0) % 360.0
+    return Math.toDegrees(lng).normalize()
   }
 
   /**
