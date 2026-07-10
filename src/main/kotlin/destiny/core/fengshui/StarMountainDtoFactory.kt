@@ -14,12 +14,12 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.TimeTools.toGmtJulDay
-import destiny.core.calendar.fixError
 import destiny.core.calendar.toLmt
 import destiny.tools.location.IStaticMap
 import destiny.tools.location.MapType
 import jakarta.inject.Named
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 /**
@@ -53,7 +53,9 @@ class StarMountainDtoFactory(
     val totalMin = (toGmt - fromGmt) * 1440.0
 
     fun GmtJulDay.toTMin(): Double = (this - fromGmt) * 1440.0
-    fun GmtJulDay.toLmtTime(): LocalDateTime = this.toLmt(loc, julDayResolver).fixError() as LocalDateTime
+    // 顯示用途，四捨五入到秒（注意 destiny.tools 的 roundToNearestSecond 只清整秒邊界噪音，非通用取整）
+    fun GmtJulDay.toLmtTime(): LocalDateTime =
+      (this.toLmt(loc, julDayResolver) as LocalDateTime).plusNanos(500_000_000).truncatedTo(ChronoUnit.SECONDS)
 
     // 星體位置密集取樣（步長 sampleStepMinutes，含區間終點）
     val samples = buildList {
