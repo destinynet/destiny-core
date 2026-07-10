@@ -4,6 +4,7 @@
 package destiny.core.fengshui
 
 import destiny.core.astrology.AzimuthTransit
+import destiny.core.calendar.GmtJulDay
 import java.io.Serializable
 import kotlin.math.abs
 import kotlin.math.min
@@ -28,3 +29,16 @@ data class MountainTransit(
   val isRetreat: Boolean
     get() = abs(enter.azimuthDeg - leave.azimuthDeg).let { min(it % 360.0, 360.0 - it % 360.0) } < 7.5
 }
+
+/**
+ * 星體「進入」某山的單一事件，[StarMountainService.getMountainTransits] range 掃描的輸出單元。
+ *
+ * @property azimuthDeg 進入時的邊界方位角
+ * @property isRetreat 是否為逆行折返造成（本次進入的山 == 前一筆「進入前」的山，即 A→B→A 的第二次轉折回頭）
+ */
+data class MountainEntry(
+  val mountain: Mountain,
+  val gmtJulDay: GmtJulDay,
+  val azimuthDeg: Double,
+  val isRetreat: Boolean = false,
+) : Serializable

@@ -94,6 +94,52 @@ class StarMountainService(
     return null
   }
 
+  /**
+   * [fromGmt]..[toGmt] 內，[star] 依序「進入新山」的所有事件（時間遞增）。
+   * 方向無關（南北半球、逆行折返皆適用）：以 [COARSE_STEP] 粗掃「山」的變化，
+   * 變號區間內二分收斂穿越時刻至 [BISECT_PRECISION]（~0.5 秒）。
+   * 粗掃一步內若跨越多座山，二分收斂到「第一個」邊界、下一輪自該處續掃，故不漏山。
+   */
+  fun getMountainTransits(
+    star: Star, fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation,
+    compass: AbstractMountainCompass = EarthlyCompass(),
+    centric: Centric = Centric.GEO,
+    temperature: Double = 0.0, pressure: Double = 1013.25,
+    options: StarTypeOptions = StarTypeOptions.MEAN,
+  ): List<MountainEntry> {
+    if (fromGmt >= toGmt) return emptyList()
+
+    fun azAt(t: GmtJulDay): Double = azimuthOf(star, t, loc, centric, temperature, pressure, options)
+
+    val result = mutableListOf<MountainEntry>()
+    var cur = fromGmt
+    var curMnt = compass.get(azAt(cur))
+    var prevMnt: Mountain? = null  // 前一筆事件「進入前」的山，供 isRetreat 判定
+
+    while (true) {
+      // 粗掃：往後找第一個「山改變」的取樣區間 (lo, hi]
+      var lo = cur
+      var hi: GmtJulDay
+      while (true) {
+        hi = minOf(lo + COARSE_STEP, toGmt)
+        if (compass.get(azAt(hi)) != curMnt) break
+        if (hi >= toGmt) return result
+        lo = hi
+      }
+      // 二分：收斂「第一次離開 curMnt」的穿越時刻
+      while (hi - lo > BISECT_PRECISION) {
+        val mid = GmtJulDay((lo.value + hi.value) / 2)
+        if (compass.get(azAt(mid)) == curMnt) lo = mid else hi = mid
+      }
+      val az = azAt(hi)
+      val newMnt = compass.get(az)
+      result += MountainEntry(newMnt, hi, az, isRetreat = newMnt == prevMnt)
+      prevMnt = curMnt
+      curMnt = newMnt
+      cur = hi
+    }
+  }
+
   private fun azimuthOf(
     star: Star, gmt: GmtJulDay, loc: ILocation,
     centric: Centric, temperature: Double, pressure: Double, options: StarTypeOptions,
@@ -106,5 +152,11 @@ class StarMountainService(
 
     /** 進入/離開搜尋的邊界穿越次數上限 (防呆，正常 1~3 次即可定位) */
     private const val MAX_BOUNDARY_HOPS = 12
+
+    /** [getMountainTransits] 粗掃步長 (天)：2 分鐘。須遠小於一座山的最短停留，僅用於偵測「山改變」 */
+    private const val COARSE_STEP = 2.0 / 1440.0
+
+    /** [getMountainTransits] 二分收斂精度 (天)：約 0.5 秒 */
+    private const val BISECT_PRECISION = 0.5 / 86400.0
   }
 }
