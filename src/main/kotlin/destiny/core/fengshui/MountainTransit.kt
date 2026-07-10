@@ -5,9 +5,12 @@ package destiny.core.fengshui
 
 import destiny.core.astrology.AzimuthTransit
 import destiny.core.calendar.GmtJulDay
+import destiny.tools.serializers.DoubleTwoDecimalSerializer
+import destiny.tools.serializers.GmtJulDaySerializer
 import java.io.Serializable
 import kotlin.math.abs
 import kotlin.math.min
+import kotlinx.serialization.Serializable as KSerializable
 
 /**
  * 某星體「進入並離開」某座山的時間窗。
@@ -15,6 +18,7 @@ import kotlin.math.min
  * @property enter 進入此山的邊界穿越（方位角遞增時為 startDeg、遞減時為 endDeg）
  * @property leave 離開此山的邊界穿越（正常穿越到對側時為另一邊界；逆行折返時與 [enter] 同一邊界）
  */
+@KSerializable
 data class MountainTransit(
   val mountain: Mountain,
   val enter: AzimuthTransit,
@@ -36,9 +40,12 @@ data class MountainTransit(
  * @property azimuthDeg 進入時的邊界方位角
  * @property isRetreat 是否為逆行折返造成（本次進入的山 == 前一筆「進入前」的山，即 A→B→A 的第二次轉折回頭）
  */
+@KSerializable
 data class MountainEntry(
   val mountain: Mountain,
+  @KSerializable(with = GmtJulDaySerializer::class)
   val gmtJulDay: GmtJulDay,
+  @KSerializable(with = DoubleTwoDecimalSerializer::class)
   val azimuthDeg: Double,
   val isRetreat: Boolean = false,
 ) : Serializable
