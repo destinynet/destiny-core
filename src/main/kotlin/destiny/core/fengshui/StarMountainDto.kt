@@ -46,6 +46,13 @@ data class StarMountainDto(
 
   /** 選配：升/落/中天/天底時刻（LMT 標記） */
   val markers: List<EventMarker> = emptyList(),
+
+  /** 磁偏角（WMM，東偏為正；台北 ≈ −4.4° 西偏）。前端「磁北對齊」旋轉量與指北線方向 */
+  @KSerializable(with = DoubleTwoDecimalSerializer::class)
+  val magDeclinationDeg: Double = 0.0,
+
+  /** 磁北盤「進入新山」事件（三盤各一份；盤面 = 原盤旋轉磁偏角，時刻與正北盤不同） */
+  val magneticTransits: List<PlateTransits> = emptyList(),
 ) : Serializable {
 
   @KSerializable

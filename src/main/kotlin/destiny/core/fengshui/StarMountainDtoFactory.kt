@@ -9,6 +9,7 @@ import destiny.core.astrology.IRiseTrans
 import destiny.core.astrology.IStarPositionWithAzimuthCalculator
 import destiny.core.astrology.Star
 import destiny.core.astrology.TransPoint
+import destiny.core.IMag
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -32,6 +33,7 @@ class StarMountainDtoFactory(
   private val starPosWithAzimuth: IStarPositionWithAzimuthCalculator,
   private val riseTransImpl: IRiseTrans,
   private val staticMap: IStaticMap,
+  private val mag: IMag,
   private val julDayResolver: JulDayResolver,
 ) {
 
@@ -70,13 +72,17 @@ class StarMountainDtoFactory(
       StarMountainDto.Sample(tMin, pos.azimuthDeg, pos.apparentAltitude)
     }
 
-    // 三盤各一份「進入新山」事件
-    val transits = StarMountainDto.Plate.entries.map { plate ->
-      val entries = starMountainService.getMountainTransits(star, fromGmt, toGmt, loc, plate.compass()).map { e ->
-        StarMountainDto.Entry(e.mountain, e.gmtJulDay.toLmtTime(), e.gmtJulDay.toTMin(), e.azimuthDeg, e.isRetreat)
+    // 三盤各一份「進入新山」事件(正北盤 + 磁北盤;磁北盤 = 原盤旋轉磁偏角,root-find 時刻各自精確)
+    val declination = mag.getMag(loc.lat, loc.lng, 0.0, fromLmt.toLocalDate()).declination
+    fun plateTransits(compassOf: (StarMountainDto.Plate) -> AbstractMountainCompass): List<StarMountainDto.PlateTransits> =
+      StarMountainDto.Plate.entries.map { plate ->
+        val entries = starMountainService.getMountainTransits(star, fromGmt, toGmt, loc, compassOf(plate)).map { e ->
+          StarMountainDto.Entry(e.mountain, e.gmtJulDay.toLmtTime(), e.gmtJulDay.toTMin(), e.azimuthDeg, e.isRetreat)
+        }
+        StarMountainDto.PlateTransits(plate, entries)
       }
-      StarMountainDto.PlateTransits(plate, entries)
-    }
+    val transits = plateTransits { it.compass() }
+    val magneticTransits = plateTransits { RotatedMountainCompass(it.compass(), declination) }
 
     // 升/中天/落/天底 標記（range 內可能各有多筆，如多日 range）
     val markers = TransPoint.entries.flatMap { tp ->
@@ -107,6 +113,8 @@ class StarMountainDtoFactory(
       samples = samples,
       transits = transits,
       markers = markers,
+      magDeclinationDeg = declination,
+      magneticTransits = magneticTransits,
     )
   }
 

@@ -45,6 +45,13 @@ class StarMountainDtoTest {
     ),
     markers = listOf(
       StarMountainDto.EventMarker(TransPoint.MERIDIAN, LocalDateTime.of(2024, 3, 20, 12, 5, 6), 725.25)
+    ),
+    magDeclinationDeg = -4.5,
+    magneticTransits = listOf(
+      StarMountainDto.PlateTransits(
+        StarMountainDto.Plate.EARTHLY,
+        listOf(StarMountainDto.Entry(Mountain.卯, LocalDateTime.of(2024, 3, 20, 5, 59, 1), 359.25, 78.0))
+      )
     )
   )
 
@@ -81,6 +88,10 @@ class StarMountainDtoTest {
     // markers
     assertEquals("MERIDIAN", docCtx.read("$.markers[0].kind"))
     assertEquals("2024-03-20T12:05:06", docCtx.read("$.markers[0].lmt"))
+    // 磁偏角與磁北盤事件
+    assertEquals(-4.5, docCtx.read("$.magDeclinationDeg"))
+    assertEquals("EARTHLY", docCtx.read("$.magneticTransits[0].plate"))
+    assertEquals(78.0, docCtx.read("$.magneticTransits[0].entries[0].azimuthDeg"))
   }
 
   @Test
