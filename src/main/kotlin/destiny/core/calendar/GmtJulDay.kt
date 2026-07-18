@@ -138,6 +138,11 @@ fun GmtJulDay.toDate(zoneId: ZoneId): Date {
   return Date.from(zdt.toInstant())
 }
 
+/** to [java.time.LocalDateTime] in [zoneId], via instant-based conversion (no [JulDayResolver] needed). */
+fun GmtJulDay.toLocalDateTime(zoneId: ZoneId): LocalDateTime {
+  return this.toInstant().toJavaInstant().atZone(zoneId).toLocalDateTime()
+}
+
 fun GmtJulDay.absDuration(lmt: LocalDateTime, zoneId: ZoneId): Duration {
   return ((this - TimeTools.getGmtJulDay(lmt, zoneId)).absoluteValue * SECONDS_OF_DAY).toDuration(DurationUnit.SECONDS)
 }
