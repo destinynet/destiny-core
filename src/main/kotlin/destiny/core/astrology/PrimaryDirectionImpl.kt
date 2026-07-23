@@ -63,12 +63,13 @@ class PrimaryDirectionImpl(
       for (pro in promissors) {
         if (sig == pro) continue
         val proPos = natalChart.getPosition(pro) ?: continue
-        val proLat = if (method.withLatitude) proPos.lat else 0.0
 
         for (aspect in aspects) {
           // 該相位對應的黃道相位點：合相/衝相只有一點，其餘有 ±degree 兩點
           for (offset in aspectOffsets(aspect.degree)) {
             val targetLng = (proPos.lng + offset).normalize()
+            // 黃緯 (維度C) 僅適用於星體本體 (合相點)；非合相的相位點是黃道面上的幾何點 (緯度 0)
+            val proLat = if (method.withLatitude && offset == 0.0) proPos.lat else 0.0
             val raTarget = toRA(targetLng, proLat, eps)
 
             val arc = if (forward) {

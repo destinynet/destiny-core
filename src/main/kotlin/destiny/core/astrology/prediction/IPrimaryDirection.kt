@@ -57,7 +57,12 @@ enum class PdFrame {
 sealed interface PrimaryDirectionMethod {
   /** 量法框架 (維度A) */
   val frame: PdFrame
-  /** 是否使用星體自身黃緯 (維度C)。false = 古典「無緯度」，投影至黃道 (緯度0)。 */
+  /**
+   * 是否使用星體自身黃緯 (維度C)。false = 古典「無緯度」，投影至黃道 (緯度0)。
+   *
+   * 黃緯僅適用於星體**本體**（即合相點）；非合相的相位點是黃道面上的幾何點，恆為緯度 0，
+   * 不隨 promissor 的黃緯平移（Bianchini 式比例緯度等罕見流派不在此列）。
+   */
   val withLatitude: Boolean
 
   /** 黃道主限：相位形成於黃道；[frame] 決定弧角幾何。 */
