@@ -7,6 +7,7 @@ import destiny.core.astrology.IPointAspectPattern.AspectType
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.toLocalDateTime
 import destiny.core.electional.Impact
 import destiny.core.electional.Span
 import destiny.tools.KotlinLogging
@@ -76,7 +77,10 @@ class EventsTraversalSolarArcImpl(
       }.toSet()
 
 
-    fun searchPersonalEvents(aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet()): Sequence<AspectData> {
+    /** 將 [GmtJulDay] 格式化為當地日期 (yyyy-MM-dd)，供描述文字使用 */
+    fun GmtJulDay.ymd(): String = this.toLocalDateTime(loc.zoneId).toLocalDate().toString()
+
+    fun searchPersonalEvents(aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet()): Sequence<SaAspectEvent> {
 
       /**
        * map of
@@ -105,24 +109,68 @@ class EventsTraversalSolarArcImpl(
                   // Exact: SA aspect perfects within the time range
                   findGmtJulDayForArc(model, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)?.also { eventGmt ->
                     val pattern = PointAspectPattern(listOf(saPoint, natalPoint), aspectDegree, null, 0.0)
-                    val aspectData = AspectData(pattern, null, 0.0, null, eventGmt)
-                    yield(aspectData)
+                    val peakOrb = config.solarArcConfig.peakOrb
+                    val orbStr = peakOrb.truncateToString(2)
+
+                    // 太陽弧年速僅約 0.99°，單一日期無法表達影響範圍 → 解出進入／脫離 peakOrb 的時刻
+                    val bandStart = resolveArcTime(model, requiredArc - peakOrb, fromGmtJulDay, toGmtJulDay, hConfig)
+                    val bandEnd = resolveArcTime(model, requiredArc + peakOrb, fromGmtJulDay, toGmtJulDay, hConfig)
+
+                    val bandStr = when {
+                      bandStart != null && bandEnd != null -> " (orb <$orbStr° ${bandStart.ymd()} ~ ${bandEnd.ymd()})"
+                      bandStart != null                    -> " (orb <$orbStr° from ${bandStart.ymd()})"
+                      bandEnd != null                      -> " (orb <$orbStr° until ${bandEnd.ymd()})"
+                      else                                 -> ""
+                    }
+                    yield(SaAspectEvent(AspectData(pattern, null, 0.0, null, eventGmt), " EXACT$bandStr"))
+
+                    // 影響區間的進入／脫離標記 —— 僅在落於回報區間內時輸出，
+                    // 使逐月閱讀者在該月份本身就能看見這個相位，而非只在精準月份看到。
+                    if (bandStart != null && bandStart > fromGmtJulDay && bandStart < toGmtJulDay) {
+                      yield(
+                        SaAspectEvent(
+                          AspectData(pattern, AspectType.APPLYING, peakOrb, null, bandStart),
+                          " enters $orbStr° orb (perfects ${eventGmt.ymd()})"
+                        )
+                      )
+                    }
+                    if (bandEnd != null && bandEnd > fromGmtJulDay && bandEnd < toGmtJulDay) {
+                      yield(
+                        SaAspectEvent(
+                          AspectData(pattern, AspectType.SEPARATING, peakOrb, null, bandEnd),
+                          " leaves $orbStr° orb (perfected ${eventGmt.ymd()})"
+                        )
+                      )
+                    }
                   }
                 } else {
                   // Applying: aspect hasn't perfected yet, check if within orb at end of range
                   val applyingOrb = requiredArc - toSolarArc.degreeMoved
                   if (applyingOrb > 0 && applyingOrb <= config.solarArcConfig.applyingOrb) {
                     val pattern = PointAspectPattern(listOf(saPoint, natalPoint), aspectDegree, AspectType.APPLYING, applyingOrb)
-                    val aspectData = AspectData(pattern, AspectType.APPLYING, applyingOrb, null, toGmtJulDay)
-                    yield(aspectData)
+                    // orb 在太陽弧中即時間：補上精準日期，避免讀者把 1.9° (≈2 年後) 誤讀為近期事件
+                    val perfectStr = resolveArcTime(model, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)
+                      ?.let { ", perfects ${it.ymd()}" } ?: ""
+                    yield(
+                      SaAspectEvent(
+                        AspectData(pattern, AspectType.APPLYING, applyingOrb, null, toGmtJulDay),
+                        " (applying, orb ${applyingOrb.truncateToString(2)}°$perfectStr)"
+                      )
+                    )
                   }
 
                   // Separating: aspect perfected just before range start, check if still within orb
                   val separatingOrb = fromSolarArc.degreeMoved - requiredArc
                   if (separatingOrb > 0 && separatingOrb <= config.solarArcConfig.separatingOrb) {
                     val pattern = PointAspectPattern(listOf(saPoint, natalPoint), aspectDegree, AspectType.SEPARATING, separatingOrb)
-                    val aspectData = AspectData(pattern, AspectType.SEPARATING, separatingOrb, null, fromGmtJulDay)
-                    yield(aspectData)
+                    val perfectStr = resolveArcTime(model, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)
+                      ?.let { ", perfected ${it.ymd()}" } ?: ""
+                    yield(
+                      SaAspectEvent(
+                        AspectData(pattern, AspectType.SEPARATING, separatingOrb, null, fromGmtJulDay),
+                        " (separating, orb ${separatingOrb.truncateToString(2)}°$perfectStr)"
+                      )
+                    )
                   }
                 }
               }
@@ -194,15 +242,11 @@ class EventsTraversalSolarArcImpl(
     return sequence {
       if (config.personalAspect) {
         // SA to Natal 相位事件
-        val personalAspects = searchPersonalEvents(Aspect.getAspects(Aspect.Importance.HIGH).toSet()).map { aspectData ->
+        val personalAspects = searchPersonalEvents(Aspect.getAspects(Aspect.Importance.HIGH).toSet()).map { (aspectData, suffix) ->
           val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
           val description = buildString {
             append("[SA ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
-            when (aspectData.aspectType) {
-              AspectType.APPLYING -> append(" (applying, orb ${aspectData.orb.truncateToString(2)}°)")
-              AspectType.SEPARATING -> append(" (separating, orb ${aspectData.orb.truncateToString(2)}°)")
-              else -> {}
-            }
+            append(suffix)
           }
           AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
         }
@@ -220,6 +264,52 @@ class EventsTraversalSolarArcImpl(
         yieldAll(searchHouseIngressEvents())
       }
     }
+  }
+
+  /**
+   * 解出「太陽弧推進到 [targetArc]」的時刻。
+   *
+   * 與 [findGmtJulDayForArcInterpolated] 的差別：**允許結果落在 [fromGmt]~[toGmt] 之外**。
+   * 該函式在 targetArc 超出區間對應弧度時會直接回傳 null（見其開頭的範圍檢查），
+   * 但「影響區間端點」與「區間外相位的精準日期」本來就可能落在報告區間之外，
+   * 因此這裡先把搜尋界限逐年往外撐開，直到把 targetArc 夾住為止。
+   *
+   * @return 找不到（撐開 [maxExpandYears] 年後仍夾不住，或早於出生時刻）時回傳 null
+   */
+  private fun resolveArcTime(
+    model: IHoroscopeModel,
+    targetArc: Double,
+    fromGmt: GmtJulDay,
+    toGmt: GmtJulDay,
+    hConfig: HoroscopeConfig,
+    maxExpandYears: Int = 5
+  ): GmtJulDay? {
+    if (targetArc <= 0) return null
+
+    fun arcAt(gmt: GmtJulDay): Double = with(horoscopeFeature) {
+      model.getSolarArc(gmt, MINUTE, modernAspectCalculator, null, hConfig).degreeMoved
+    }
+
+    // 太陽弧自出生起算，故搜尋下限不得早於出生時刻
+    val floor = model.gmtJulDay + 1.0
+
+    var low = if (fromGmt < floor) floor else fromGmt
+    var high = toGmt
+    var expand = 0
+    while (expand++ < maxExpandYears) {
+      when {
+        targetArc < arcAt(low)  -> {
+          if (low <= floor) return null
+          val candidate = low - Constants.TROPICAL_YEAR_DAYS
+          low = if (candidate < floor) floor else candidate
+        }
+        targetArc > arcAt(high) -> high += Constants.TROPICAL_YEAR_DAYS
+        else                    -> break
+      }
+    }
+    if (targetArc < arcAt(low) || targetArc > arcAt(high)) return null
+
+    return findGmtJulDayForArcInterpolated(model, targetArc, low, high, hConfig)
   }
 
   private fun findGmtJulDayForArc(
@@ -364,6 +454,9 @@ class EventsTraversalSolarArcImpl(
   }
 
 
+
+  /** 一筆 SA 相位事件，及其要接在描述後面的註記（EXACT／進入區間／脫離區間／applying／separating） */
+  private data class SaAspectEvent(val aspectData: AspectData, val suffix: String)
 
   companion object {
     private val logger = KotlinLogging.logger { }

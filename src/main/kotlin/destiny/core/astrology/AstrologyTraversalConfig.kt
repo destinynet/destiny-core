@@ -45,10 +45,22 @@ data class ProgressionConfig(
   val houseIngress: Boolean = true,
 )
 
+/**
+ * 太陽弧 (Solar Arc) 遍歷設定。
+ *
+ * 注意：太陽弧年速約 0.99°，因此**容許度即時間**：
+ *   0.10° ≈ ±37 天、0.15° ≈ ±55 天、0.50° ≈ ±半年、1.00° ≈ ±1 年、2.00° ≈ ±2 年。
+ *
+ * @param applyingOrb   相位在區間**結束之後**才會精準時，於區間尾端回報的容許度上限（2.0° ≈ 未來 2 年內）。
+ * @param separatingOrb 相位在區間**開始之前**已經精準時，於區間開頭回報的容許度上限（1.0° ≈ 過去 1 年內）。
+ * @param peakOrb       相位在區間**之內**精準時，其「有效影響區間」的半徑。
+ *   由於太陽弧極慢，單一精準日期不足以表達影響範圍，故額外輸出進入／脫離此容許度的日期。
+ */
 data class SolarArcConfig(
   val transitingPoints: Set<AstroPoint> = Planet.values.toSet() + LunarNode.values.toSet() + Axis.MERIDIAN + Axis.RISING,
   val applyingOrb: Double = 2.0,
   val separatingOrb: Double = 1.0,
+  val peakOrb: Double = 0.10,
 )
 
 /**
