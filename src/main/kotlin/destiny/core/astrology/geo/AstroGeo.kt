@@ -62,13 +62,28 @@ data class AstroGeoContext(
       obliquityDeg: Double,
       centric: Centric = Centric.GEO,
       starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN,
+    ): AstroGeoContext = ofCyclo(gmtJulDay, gmtJulDay, stars, starPosition, obliquityDeg, centric, starTypeOptions)
+
+    /**
+     * CCG 混血 context（設計 doc 5.4）：天空凍結在本命恆星時（θ 取 [natalGmtJulDay]），
+     * 星體位置取行運時刻 [transitGmtJulDay] —— 語意為「行運星壓上 relocated 本命四角」。
+     * 回傳 context 的 [AstroGeoContext.gmtJulDay] 為行運時刻（位置的時刻）。
+     */
+    fun ofCyclo(
+      natalGmtJulDay: GmtJulDay,
+      transitGmtJulDay: GmtJulDay,
+      stars: Collection<Star>,
+      starPosition: IStarPosition<IStarPos>,
+      obliquityDeg: Double,
+      centric: Centric = Centric.GEO,
+      starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN,
     ): AstroGeoContext {
-      val gmstDeg = (Astronomical.gmst(gmtJulDay) * 15.0).normalize()
+      val gmstDeg = (Astronomical.gmst(natalGmtJulDay) * 15.0).normalize()
       val map = buildMap<AstroPoint, Map<AstroGeoBasis, EquatorialPos>> {
         stars.forEach { star ->
-          val inMundo = star.toEquatorial(gmtJulDay, centric, starPosition, starTypeOptions) ?: return@forEach
+          val inMundo = star.toEquatorial(transitGmtJulDay, centric, starPosition, starTypeOptions) ?: return@forEach
           val eclLng = runCatching {
-            starPosition.calculate(star, gmtJulDay, centric, Coordinate.ECLIPTIC, starTypeOptions).lng
+            starPosition.calculate(star, transitGmtJulDay, centric, Coordinate.ECLIPTIC, starTypeOptions).lng
           }.getOrNull() ?: return@forEach
           put(star, mapOf(
             AstroGeoBasis.IN_MUNDO to inMundo,
@@ -76,7 +91,7 @@ data class AstroGeoContext(
           ))
         }
       }
-      return AstroGeoContext(gmtJulDay, gmstDeg, map)
+      return AstroGeoContext(transitGmtJulDay, gmstDeg, map)
     }
   }
 }

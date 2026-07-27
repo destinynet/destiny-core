@@ -79,6 +79,13 @@ data class RelocationScoreConfig(
   val orbDeg: Double = 10.0,
 )
 
+/** 單一（星, 角, orb）的貢獻分：星權重 × 角權重 × orb 線性衰減；星體無權重 → null */
+fun RelocationScoreConfig.contribution(point: AstroPoint, angle: GeoAngle, orbDeg: Double): Double? {
+  val starWeight = starWeights[point] ?: return null
+  val angleWeight = angleWeights[angle] ?: 0.0
+  return starWeight * angleWeight * (1.0 - orbDeg / this.orbDeg).coerceAtLeast(0.0)
+}
+
 interface IRelocationScorer {
   fun score(c: RelocationCandidate, config: RelocationScoreConfig): Score
   fun reasons(c: RelocationCandidate, config: RelocationScoreConfig): List<ScoreReason>
@@ -104,10 +111,8 @@ class RelocationScorerClassicImpl : IRelocationScorer {
 
   override fun reasons(c: RelocationCandidate, config: RelocationScoreConfig): List<ScoreReason> =
     c.nearestLine.mapNotNull { (p, nearest) ->
-      val starWeight = config.starWeights[p] ?: return@mapNotNull null
-      val angleWeight = config.angleWeights[nearest.angle] ?: 0.0
-      val decay = (1.0 - nearest.deg / config.orbDeg).coerceAtLeast(0.0)
-      val contribution = starWeight * angleWeight * decay
-      if (contribution > 0.0) ScoreReason(p, nearest.angle, nearest.deg, contribution) else null
+      config.contribution(p, nearest.angle, nearest.deg)
+        ?.takeIf { it > 0.0 }
+        ?.let { ScoreReason(p, nearest.angle, nearest.deg, it) }
     }.sortedByDescending { it.contribution }
 }
