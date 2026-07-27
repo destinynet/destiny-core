@@ -39,6 +39,7 @@ data class CcgTravelConfig(
 
 /**
  * 一個候選城市的旅行評估：natal 層（終身靜態）+ 行運 hit 窗口（時效）。
+ * [score] 為排名鍵 = 兩層 suitability 加權（**0.5 = 中性**）；intensity 與 suitability 雙軸並陳。
  * 依設計 doc 第 8 節，B1 的文案只能講「這趟旅程的調性」，不得講「你的運勢」。
  */
 data class TravelRecommendation(
@@ -46,8 +47,10 @@ data class TravelRecommendation(
   val natal: RelocationCandidate,
   val hits: List<TransitLineHit>,
   val score: Score,
-  val natalScore: Score,
-  val transitScore: Score,
+  val natalIntensity: Score,
+  val natalSuitability: Score,
+  val transitIntensity: Score,
+  val transitSuitability: Score,
   val natalReasons: List<ScoreReason>,
   val transitReasons: List<ScoreReason>,
 )
@@ -113,13 +116,16 @@ class CcgTravelService(
       val transitReasons = hits.mapNotNull { hit ->
         config.scoreConfig.contribution(hit.planet, hit.angle, hit.peakOrbDeg)
           ?.takeIf { it > 0.0 }
-          ?.let { ScoreReason(hit.planet, hit.angle, hit.peakOrbDeg, it) }
+          ?.let { ScoreReason(hit.planet, hit.angle, hit.peakOrbDeg, it, config.scoreConfig.starValences[hit.planet] ?: 0.0) }
       }.sortedByDescending { it.contribution }
 
-      val transitScore = if (transitDenominator <= 0.0) 0.0.toScore()
+      val transitIntensity = if (transitDenominator <= 0.0) 0.0.toScore()
       else (transitReasons.sumOf { it.contribution } / transitDenominator).coerceIn(0.0, 1.0).toScore()
-      val natalScore = scorer.score(natal, config.scoreConfig)
-      val combined = (config.natalWeight * natalScore.value + config.transitWeight * transitScore.value) /
+      val transitSuitability = if (transitDenominator <= 0.0) 0.5.toScore()
+      else ((transitReasons.sumOf { it.contribution * it.valence } / transitDenominator + 1.0) / 2.0).coerceIn(0.0, 1.0).toScore()
+      val natalSuitability = scorer.suitability(natal, config.scoreConfig)
+      // 排名鍵用吉凶軸（設計 doc 5.3 雙軸）
+      val combined = (config.natalWeight * natalSuitability.value + config.transitWeight * transitSuitability.value) /
         (config.natalWeight + config.transitWeight)
 
       TravelRecommendation(
@@ -127,8 +133,10 @@ class CcgTravelService(
         natal = natal,
         hits = hits,
         score = combined.toScore(),
-        natalScore = natalScore,
-        transitScore = transitScore,
+        natalIntensity = scorer.score(natal, config.scoreConfig),
+        natalSuitability = natalSuitability,
+        transitIntensity = transitIntensity,
+        transitSuitability = transitSuitability,
         natalReasons = scorer.reasons(natal, config.scoreConfig),
         transitReasons = transitReasons,
       )

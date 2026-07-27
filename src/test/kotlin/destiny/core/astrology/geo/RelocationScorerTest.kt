@@ -25,6 +25,7 @@ class RelocationScorerTest {
   private val config = RelocationScoreConfig(
     angleWeights = mapOf(GeoAngle.MC to 1.0, GeoAngle.ASC to 0.8, GeoAngle.IC to 0.5, GeoAngle.DESC to 0.4),
     starWeights = mapOf(SUN to 1.0, JUPITER to 0.5),
+    starValences = mapOf(SUN to 0.5, JUPITER to 1.0),
     orbDeg = 10.0
   )
 
@@ -90,6 +91,60 @@ class RelocationScorerTest {
     assertEquals(GeoAngle.ASC, reasons[1].angle)
     assertEquals(5.0, reasons[1].orbDeg, 1e-12)
     assertEquals(0.2, reasons[1].contribution, 1e-12)
+  }
+
+  // ========== suitability（吉凶軸，0.5 = 中性） ==========
+
+  /** 空 candidate → 中性 0.5 */
+  @Test
+  fun testSuitabilityNeutralWhenEmpty() {
+    assertEquals(0.5, scorer.suitability(candidate(emptyMap()), config).value, 1e-12)
+  }
+
+  /** 吉星（JUPITER valence +1.0）正壓最強線 → suitability = (1×1+1)/2 = 1.0 */
+  @Test
+  fun testBeneficExactOnLineIsFullySuitable() {
+    val c = candidate(mapOf<AstroPoint, LineDistance>(JUPITER to line(GeoAngle.MC, 0.0)))
+    assertEquals(1.0, scorer.suitability(c, config).value, 1e-12)
+  }
+
+  /** 凶星（MARS valence −0.8）正壓最強線 → net = −0.8 → suitability = 0.1，低於中性 */
+  @Test
+  fun testMaleficExactOnLineIsUnsuitable() {
+    val maleficConfig = config.copy(
+      starWeights = mapOf(MARS to 1.0),
+      starValences = mapOf(MARS to -0.8),
+    )
+    val c = candidate(mapOf<AstroPoint, LineDistance>(MARS to line(GeoAngle.MC, 0.0)))
+    val s = scorer.suitability(c, maleficConfig)
+    assertEquals(0.1, s.value, 1e-12)
+    assertTrue(s.value < 0.5, "malefic line should score below neutral")
+    // 但強度軸仍然是滿分 —— 「很有事」與「不適合」並存
+    assertEquals(1.0, scorer.score(c, maleficConfig).value, 1e-12)
+  }
+
+  /**
+   * 吉凶混合：SUN on MC orb0 (w1.0, v0.5) + JUPITER on ASC orb5 (w0.5, v1.0)
+   * net = (1.0×1×1×0.5 + 0.5×0.8×0.5×1.0) / ((1.0+0.5)×1.0) = 0.7/1.5
+   * suitability = (0.4667+1)/2 ≈ 0.7333
+   */
+  @Test
+  fun testMixedSuitability() {
+    val c = candidate(
+      mapOf<AstroPoint, LineDistance>(
+        SUN to line(GeoAngle.MC, 0.0),
+        JUPITER to line(GeoAngle.ASC, 5.0)
+      )
+    )
+    assertEquals((0.7 / 1.5 + 1.0) / 2.0, scorer.suitability(c, config).value, 1e-12)
+  }
+
+  /** reasons 帶出該星的 valence 因子，供 AI 詮釋層使用 */
+  @Test
+  fun testReasonsCarryValence() {
+    val c = candidate(mapOf<AstroPoint, LineDistance>(SUN to line(GeoAngle.MC, 0.0)))
+    val reason = scorer.reasons(c, config).single()
+    assertEquals(0.5, reason.valence, 1e-12)
   }
 
   /** 權重表沒列的星體：不計分、也不進分母（否則會拖低所有分數） */

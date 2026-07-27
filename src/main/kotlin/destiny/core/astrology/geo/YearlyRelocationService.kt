@@ -33,6 +33,8 @@ data class YearlyRelocationConfig(
 
 /**
  * 一個候選地點的年度評估：natal 與 SR 各一張 [RelocationCandidate] 掛同一 candidate（設計 doc 5.2）。
+ * [score] 為排名鍵 = 兩層 suitability 加權（**0.5 = 中性**）；
+ * intensity（強度）與 suitability（吉凶）雙軸並陳，valence ⊥ intensity。
  * [validFrom]/[validTo]：此 SR 的有效期間。
  */
 data class YearlyRelocationResult(
@@ -40,8 +42,10 @@ data class YearlyRelocationResult(
   val natal: RelocationCandidate,
   val solarReturn: RelocationCandidate,
   val score: Score,
-  val natalScore: Score,
-  val srScore: Score,
+  val natalIntensity: Score,
+  val natalSuitability: Score,
+  val srIntensity: Score,
+  val srSuitability: Score,
   val natalReasons: List<ScoreReason>,
   val srReasons: List<ScoreReason>,
   val validFrom: GmtJulDay,
@@ -84,17 +88,20 @@ class YearlyRelocationService(
     val srCandidates = candidateService.getCandidates(srJd, base, places, config.basis, stars, horoscopeConfig)
 
     return natalCandidates.zip(srCandidates) { natal, sr ->
-      val natalScore = scorer.score(natal, config.scoreConfig)
-      val srScore = scorer.score(sr, config.scoreConfig)
-      val combined = (config.natalWeight * natalScore.value + config.srWeight * srScore.value) /
+      val natalSuitability = scorer.suitability(natal, config.scoreConfig)
+      val srSuitability = scorer.suitability(sr, config.scoreConfig)
+      // 排名鍵用吉凶軸：凶星正壓的地點必須沉下去，強度另陳（設計 doc 5.3 雙軸）
+      val combined = (config.natalWeight * natalSuitability.value + config.srWeight * srSuitability.value) /
         (config.natalWeight + config.srWeight)
       YearlyRelocationResult(
         place = natal.place,
         natal = natal,
         solarReturn = sr,
         score = combined.toScore(),
-        natalScore = natalScore,
-        srScore = srScore,
+        natalIntensity = scorer.score(natal, config.scoreConfig),
+        natalSuitability = natalSuitability,
+        srIntensity = scorer.score(sr, config.scoreConfig),
+        srSuitability = srSuitability,
         natalReasons = scorer.reasons(natal, config.scoreConfig),
         srReasons = scorer.reasons(sr, config.scoreConfig),
         validFrom = returnModel.validFrom,
