@@ -117,20 +117,23 @@ class EventsTraversalSolarArcImpl(
                     val bandEnd = resolveArcTime(model, requiredArc + peakOrb, fromGmtJulDay, toGmtJulDay, hConfig)
 
                     val bandStr = when {
-                      bandStart != null && bandEnd != null -> " (orb <$orbStr° ${bandStart.ymd()} ~ ${bandEnd.ymd()})"
-                      bandStart != null                    -> " (orb <$orbStr° from ${bandStart.ymd()})"
-                      bandEnd != null                      -> " (orb <$orbStr° until ${bandEnd.ymd()})"
+                      bandStart != null && bandEnd != null -> " — PEAK ORB <$orbStr° (max weight) ${bandStart.ymd()} ~ ${bandEnd.ymd()}"
+                      bandStart != null                    -> " — PEAK ORB <$orbStr° (max weight) from ${bandStart.ymd()}"
+                      bandEnd != null                      -> " — PEAK ORB <$orbStr° (max weight) until ${bandEnd.ymd()}"
                       else                                 -> ""
                     }
                     yield(SaAspectEvent(AspectData(pattern, null, 0.0, null, eventGmt), " EXACT$bandStr"))
 
                     // 影響區間的進入／脫離標記 —— 僅在落於回報區間內時輸出，
                     // 使逐月閱讀者在該月份本身就能看見這個相位，而非只在精準月份看到。
+                    // 措辭必須表達「此刻起已處於最高權重」，而非「才剛開始累積」：
+                    // 太陽弧在 peakOrb 之內的每一天權重相同，區間邊緣不代表效力較弱。
                     if (bandStart != null && bandStart > fromGmtJulDay && bandStart < toGmtJulDay) {
+                      val untilStr = bandEnd?.let { " until ${it.ymd()}" } ?: ""
                       yield(
                         SaAspectEvent(
                           AspectData(pattern, AspectType.APPLYING, peakOrb, null, bandStart),
-                          " enters $orbStr° orb (perfects ${eventGmt.ymd()})"
+                          " IN PEAK ORB <$orbStr° (max weight)$untilStr, perfects ${eventGmt.ymd()}"
                         )
                       )
                     }
@@ -138,7 +141,7 @@ class EventsTraversalSolarArcImpl(
                       yield(
                         SaAspectEvent(
                           AspectData(pattern, AspectType.SEPARATING, peakOrb, null, bandEnd),
-                          " leaves $orbStr° orb (perfected ${eventGmt.ymd()})"
+                          " leaves PEAK ORB <$orbStr° (max weight ends here; perfected ${eventGmt.ymd()})"
                         )
                       )
                     }
