@@ -11,6 +11,7 @@ import destiny.core.calendar.ILatLng
 import destiny.core.calendar.ILocationPlace
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
+import jakarta.inject.Named
 
 /** 相對「基準地」，某星體從第 [from] 宮移到第 [to] 宮 */
 data class HouseShift(val point: AstroPoint, val from: Int, val to: Int)
@@ -89,6 +90,7 @@ interface IRelocationScorer {
  * 正規化：除以「每顆有權重的星都正壓最強角線」的理論最大值，落在 [0,1]。
  * 權重表沒列的星體不計分、也不進分母（否則會拖低所有分數）。
  */
+@Named
 class RelocationScorerClassicImpl : IRelocationScorer {
 
   override fun score(c: RelocationCandidate, config: RelocationScoreConfig): Score {
