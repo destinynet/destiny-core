@@ -3,15 +3,10 @@ package destiny.core.astrology
 import destiny.core.IAggregatedEvent
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.IEclipse
-import destiny.core.calendar.GmtJulDay
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import destiny.tools.serializers.IZodiacDegreeSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-
-/** [AstroEvent.AspectPeak] 在影響區間三事件中扮演的角色 */
-@Serializable
-enum class PeakRole { ENTER, PEAK, LEAVE }
 
 /** 占星事件 */
 @Serializable
@@ -23,30 +18,6 @@ sealed class AstroEvent : IAggregatedEvent {
   data class AspectEvent(
     override val description: String,
     val aspectData: AspectData
-  ) : AstroEvent()
-
-  /**
-   * 慢速推運（SA / SP）相位的 peakOrb 影響區間事件。
-   * 一個精準相位發射三筆：ENTER（進入 peakOrb）、PEAK（精準）、LEAVE（脫離 peakOrb），
-   * 三筆都攜帶完整的 [enter]/[peak]/[leave] 時刻，供逐月閱讀者在任一月份看見完整區間。
-   *
-   * 時刻的座標系由生產者決定：SA 填真實時間、SP 填 convergent 時間；
-   * SP 的值由 ReportFactory.fetchEvents 以 getDivergentTime 映射為真實時間後，
-   * 連同含日期的 description 一併改寫 —— 下游永遠只見真實時間。
-   */
-  @Serializable
-  @SerialName("Astro.AspectPeak")
-  data class AspectPeak(
-    override val description: String,
-    val aspectData: AspectData,
-    val role: PeakRole,
-    val peakOrb: Double,
-    /** 進入 peakOrb 的時刻；被搜尋視窗裁掉時為 null（單邊顯示） */
-    val enter: GmtJulDay?,
-    /** 相位精準時刻 */
-    val peak: GmtJulDay,
-    /** 脫離 peakOrb 的時刻；被搜尋視窗裁掉時為 null（單邊顯示） */
-    val leave: GmtJulDay?,
   ) : AstroEvent()
 
   /** 月亮空亡 */

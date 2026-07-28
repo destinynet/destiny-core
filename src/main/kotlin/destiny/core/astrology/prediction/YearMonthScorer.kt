@@ -14,7 +14,6 @@ import destiny.core.astrology.Aspect
 import destiny.core.astrology.AspectData
 import destiny.core.astrology.AstroEvent
 import destiny.core.astrology.AstroPoint
-import destiny.core.astrology.PeakRole
 import destiny.core.astrology.ITimeLineEvent
 import destiny.core.astrology.IPointAspectPattern
 import destiny.core.astrology.IZodiacDegree
@@ -100,14 +99,6 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
       is AstroEvent.AspectEvent -> listOfNotNull(
         aspectEventHit(event.source, astro.aspectData, significators, targetLots, houseRulers)
       )
-
-      // AspectPeak trio 只在 PEAK（精準）計分一次；ENTER/LEAVE 是同一相位的區間標記，
-      // 若一併計分會讓慢速推運（SA/SP）相位膨脹三倍。
-      is AstroEvent.AspectPeak ->
-        if (astro.role == PeakRole.PEAK)
-          listOfNotNull(aspectEventHit(event.source, astro.aspectData, significators, targetLots, houseRulers))
-        else
-          emptyList()
 
       is AstroEvent.Eclipse -> {
         // B1:食型別 salience 因子(全食 > 偏食 > 半影),乘進相位通道 rawStrength(≤1,Score 仍合法)。
