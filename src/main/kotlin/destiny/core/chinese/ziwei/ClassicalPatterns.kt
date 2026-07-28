@@ -2967,7 +2967,11 @@ sealed class ClassicalPattern(
 
   companion object {
 
-    fun values(): List<IPatternFactory> = listOf(
+    fun values(): List<IPatternFactory> = allFactories
+
+    /** 內容固定不變，快取起來，避免每次呼叫 [values] 都重建 list */
+    private val allFactories: List<IPatternFactory> by lazy {
+      listOf(
       p極向離明, p紫府同宮, p紫府朝垣, p天府朝垣, p府相朝垣, p巨機同宮, p善蔭朝綱, p機月同梁, p日月照壁, p日麗中天,
       p君臣慶會, p日月同宮, p日月並明, p日照雷門, p陽梁昌祿, p明珠出海, p巨日同宮, p貪武同行, p將星得地, p七殺朝斗,
       p雄宿朝垣, p對面朝天, p科名會祿, p甲第登科, p科權逢迎, p祿合鴛鴦, p雙祿朝垣, p三奇嘉會, p祿馬交馳, p月朗天門,
@@ -2982,6 +2986,7 @@ sealed class ClassicalPattern(
       p祿逢兩煞, p君子在野, p羊陀夾忌, p火鈴夾忌, p羊陀夾命, p火鈴夾命, p空劫夾命, p刑囚夾印, p刑忌夾印, p祿衰馬困,
       p名不利達, p三方並凶, p三奇沖剋, p天機巳亥, p月同遇煞, p桃花滾浪, p梁同巳亥, p科星逢破, p刑囚會鈴, p鈴昌陀武,
       p廉殺羊鈴, p一生孤貧, p魁鉞凶冲, p眾水朝東
-    )
+      )
+    }
   }
 }
