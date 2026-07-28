@@ -43,6 +43,14 @@ data class ProgressionConfig(
   val eclipse: Boolean = true,
   val signIngress: Boolean = true,
   val houseIngress: Boolean = true,
+  /**
+   * 對哪些推運行星的 aspect 事件輸出 peakOrb 影響區間（enter/peak/leave）。空集合 = 全部維持點事件。
+   * SECONDARY 的 convergent→divergent 放大 365 倍，orb 即時間；
+   * Moon 太快（span 僅數天，點事件足夠）、Jupiter 以下太慢（span 超過整個報告視窗，逐月標記變噪音）。
+   */
+  val peakOrbPlanets: Set<Planet> = emptySet(),
+  /** 影響區間半徑。SP 語境下 0.10° ≈ SP Sun ±37 天、SP Mars ±70 天。 */
+  val peakOrb: Double = 0.10,
 )
 
 /**
@@ -122,8 +130,18 @@ data class AstrologyTraversalConfig(
   val oobPlanets: Set<Planet> = allOobCapable,
   /** 計算 transit aspect 的行星集合（外圈行星）。用於指定哪些行星作為過運星體。 */
   val transitingPlanets: Set<Planet> = outerPlanets,
+  /**
+   * 對哪些外圈行星的 aspect 事件輸出 peakOrb 影響區間（enter/peak/leave）。
+   * 空集合 = 全部維持點事件（真實 transit 的預設）。
+   * 此欄位是 [ProgressionConfig.peakOrbPlanets] 傳遞給 [EventsTraversalTransitImpl] 的載體。
+   */
+  val peakOrbPlanets: Set<Planet> = emptySet(),
+  /** [peakOrbPlanets] 的影響區間半徑 */
+  val peakOrb: Double = 0.10,
   /** Secondary Progression 遍歷設定 */
-  val secondaryProgressionConfig: ProgressionConfig = ProgressionConfig(),
+  val secondaryProgressionConfig: ProgressionConfig = ProgressionConfig(
+    peakOrbPlanets = setOf(SUN, MERCURY, VENUS, MARS)
+  ),
   /** Tertiary Progression 遍歷設定 */
   val tertiaryProgressionConfig: ProgressionConfig = ProgressionConfig(),
   /** SolarArc 遍歷設定 */

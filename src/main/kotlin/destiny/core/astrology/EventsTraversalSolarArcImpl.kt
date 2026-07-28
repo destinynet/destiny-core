@@ -110,30 +110,22 @@ class EventsTraversalSolarArcImpl(
                   findGmtJulDayForArc(model, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)?.also { eventGmt ->
                     val pattern = PointAspectPattern(listOf(saPoint, natalPoint), aspectDegree, null, 0.0)
                     val peakOrb = config.solarArcConfig.peakOrb
-                    val orbStr = peakOrb.truncateToString(2)
 
-                    // 太陽弧年速僅約 0.99°，單一日期無法表達影響範圍 → 解出進入／脫離 peakOrb 的時刻
+                    // 太陽弧年速僅約 0.99°，單一日期無法表達影響範圍 → 解出進入／脫離 peakOrb 的時刻。
+                    // 此處只發射結構化時刻，含日期的措辭由 ReportFactory.fetchEvents 的 formatter 統一組出
+                    // （SP 的時刻需先經 divergent 映射，formatter 是 SA/SP 共用的唯一措辭出處）。
                     val bandStart = resolveArcTime(model, requiredArc - peakOrb, fromGmtJulDay, toGmtJulDay, hConfig)
                     val bandEnd = resolveArcTime(model, requiredArc + peakOrb, fromGmtJulDay, toGmtJulDay, hConfig)
 
-                    val bandStr = when {
-                      bandStart != null && bandEnd != null -> " — PEAK ORB <$orbStr° (max weight) ${bandStart.ymd()} ~ ${bandEnd.ymd()}"
-                      bandStart != null                    -> " — PEAK ORB <$orbStr° (max weight) from ${bandStart.ymd()}"
-                      bandEnd != null                      -> " — PEAK ORB <$orbStr° (max weight) until ${bandEnd.ymd()}"
-                      else                                 -> ""
-                    }
-                    yield(SaAspectEvent(AspectData(pattern, null, 0.0, null, eventGmt), " EXACT$bandStr"))
+                    yield(SaAspectEvent(AspectData(pattern, null, 0.0, null, eventGmt), "", PeakTrio(PeakRole.PEAK, bandStart, eventGmt, bandEnd)))
 
                     // 影響區間的進入／脫離標記 —— 僅在落於回報區間內時輸出，
                     // 使逐月閱讀者在該月份本身就能看見這個相位，而非只在精準月份看到。
-                    // 措辭必須表達「此刻起已處於最高權重」，而非「才剛開始累積」：
-                    // 太陽弧在 peakOrb 之內的每一天權重相同，區間邊緣不代表效力較弱。
                     if (bandStart != null && bandStart > fromGmtJulDay && bandStart < toGmtJulDay) {
-                      val untilStr = bandEnd?.let { " until ${it.ymd()}" } ?: ""
                       yield(
                         SaAspectEvent(
                           AspectData(pattern, AspectType.APPLYING, peakOrb, null, bandStart),
-                          " IN PEAK ORB <$orbStr° (max weight)$untilStr, perfects ${eventGmt.ymd()}"
+                          "", PeakTrio(PeakRole.ENTER, bandStart, eventGmt, bandEnd)
                         )
                       )
                     }
@@ -141,7 +133,7 @@ class EventsTraversalSolarArcImpl(
                       yield(
                         SaAspectEvent(
                           AspectData(pattern, AspectType.SEPARATING, peakOrb, null, bandEnd),
-                          " leaves PEAK ORB <$orbStr° (max weight ends here; perfected ${eventGmt.ymd()})"
+                          "", PeakTrio(PeakRole.LEAVE, bandStart, eventGmt, bandEnd)
                         )
                       )
                     }
@@ -245,13 +237,15 @@ class EventsTraversalSolarArcImpl(
     return sequence {
       if (config.personalAspect) {
         // SA to Natal 相位事件
-        val personalAspects = searchPersonalEvents(Aspect.getAspects(Aspect.Importance.HIGH).toSet()).map { (aspectData, suffix) ->
+        val personalAspects = searchPersonalEvents(Aspect.getAspects(Aspect.Importance.HIGH).toSet()).map { (aspectData, suffix, trio) ->
           val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
-          val description = buildString {
-            append("[SA ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")
-            append(suffix)
+          val base = "[SA ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]"
+          val event = if (trio != null) {
+            AstroEvent.AspectPeak(base, aspectData, trio.role, config.solarArcConfig.peakOrb, trio.enter, trio.peak, trio.leave)
+          } else {
+            AstroEvent.AspectEvent(base + suffix, aspectData)
           }
-          AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
+          AstroEventDto(event, aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
         }
         yieldAll(personalAspects)
       }
@@ -459,7 +453,10 @@ class EventsTraversalSolarArcImpl(
 
 
   /** 一筆 SA 相位事件，及其要接在描述後面的註記（EXACT／進入區間／脫離區間／applying／separating） */
-  private data class SaAspectEvent(val aspectData: AspectData, val suffix: String)
+  /** trio 三事件共享的結構化時刻（真實時間）；suffix 僅供 applying/separating 邊界事件使用 */
+  private data class PeakTrio(val role: PeakRole, val enter: GmtJulDay?, val peak: GmtJulDay, val leave: GmtJulDay?)
+
+  private data class SaAspectEvent(val aspectData: AspectData, val suffix: String, val trio: PeakTrio? = null)
 
   companion object {
     private val logger = KotlinLogging.logger { }
