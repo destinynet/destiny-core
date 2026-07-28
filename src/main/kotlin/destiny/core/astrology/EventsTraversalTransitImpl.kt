@@ -1,5 +1,6 @@
 package destiny.core.astrology
 
+import destiny.core.astrology.IPointAspectPattern.AspectType
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
@@ -32,6 +33,11 @@ class EventsTraversalTransitImpl(
   private val voidCourseFeature: IVoidCourseFeature,
   private val retrogradeImpl: IRetrograde,
 ) : IEventsTraversal {
+
+  /** trio 三事件共享的結構化時刻（convergent 時間；divergent 映射是 ReportFactory 的職責） */
+  private data class PeakTrio(val role: PeakRole, val enter: GmtJulDay?, val peak: GmtJulDay, val leave: GmtJulDay?)
+
+  private data class AspectHit(val aspectData: AspectData, val trio: PeakTrio? = null)
 
   private val Planet.isStationaryPossible: Boolean
     get() = this != Planet.SUN && this != Planet.MOON
@@ -92,20 +98,58 @@ class EventsTraversalTransitImpl(
      * 搜尋 personal aspects（外圈 transit to 本命星體）。
      * 透過 [AstrologyTraversalConfig.effectiveAngles] 實現 per-planet 的相位規則過濾，
      * 在計算前就跳過不需要的角度組合。
+     *
+     * [AstrologyTraversalConfig.peakOrbPlanets] 內的行星額外求出每個精準相位的
+     * peakOrb 影響區間（enter/leave）：目標度數 D 的 D±orb 兩條邊界線與 D 同一批
+     * 丟進 [IStarTransit.getRangeTransitGmt]，再依時間就近配對 —— 不分哪一側邊界，
+     * 因此逆行（從 D+orb 側進入）自動正確。邊界落在搜尋視窗外 → null（單邊）。
      */
-    fun searchPersonalEvents(transitingStars: Set<Star>, natalPoints: Set<AstroPoint>): Sequence<AspectData> {
+    fun searchPersonalEvents(transitingStars: Set<Star>, natalPoints: Set<AstroPoint>): Sequence<AspectHit> {
       return transitingStars.asSequence().flatMap { outer ->
         val outerPlanet = outer as? Planet
+        val peakEnabled = outerPlanet != null && outerPlanet in config.peakOrbPlanets
         natalPoints.asSequence().flatMap { inner ->
           natalPointsPosMap[inner]?.let { innerDeg ->
             // 透過 aspectFilterRules 決定此 outer-inner 組合允許的角度
             val effectiveAngles = if (outerPlanet != null) config.effectiveAngles(outerPlanet, inner) else defaultAngles
             if (effectiveAngles.isEmpty()) return@flatMap emptySequence()
-            val degrees = effectiveAngles.map { it.toZodiacDegree() }.map { it + innerDeg }.toSet()
-            starTransitImpl.getRangeTransitGmt(outer, degrees, fromGmtJulDay, toGmtJulDay, options = config.horoscopeConfig.starTypeOptions).map { (zDeg, gmt) ->
-              val angle: Double = zDeg.getAngle(innerDeg).round()
-              val pattern = PointAspectPattern(listOf(outer, inner), angle, null, 0.0)
-              AspectData(pattern, null, 0.0, null, gmt)
+            val exactDegrees = effectiveAngles.map { it.toZodiacDegree() }.map { it + innerDeg }.toSet()
+
+            if (!peakEnabled) {
+              starTransitImpl.getRangeTransitGmt(outer, exactDegrees, fromGmtJulDay, toGmtJulDay, options = config.horoscopeConfig.starTypeOptions).map { (zDeg, gmt) ->
+                val angle: Double = zDeg.getAngle(innerDeg).round()
+                val pattern = PointAspectPattern(listOf(outer, inner), angle, null, 0.0)
+                AspectHit(AspectData(pattern, null, 0.0, null, gmt), null)
+              }
+            } else {
+              val orb = config.peakOrb
+              val edgeToExact: Map<ZodiacDegree, ZodiacDegree> = exactDegrees
+                .flatMap { d -> listOf((d - orb) to d, (d + orb) to d) }
+                .toMap()
+              val crossings = starTransitImpl.getRangeTransitGmt(outer, exactDegrees + edgeToExact.keys, fromGmtJulDay, toGmtJulDay, options = config.horoscopeConfig.starTypeOptions).toList()
+
+              sequence {
+                for (d in exactDegrees) {
+                  val exactHits = crossings.filter { it.first == d }.map { it.second }.sorted()
+                  if (exactHits.isEmpty())
+                    continue
+                  val edgeHits = crossings.filter { edgeToExact[it.first] == d }.map { it.second }.sorted()
+                  val angle: Double = d.getAngle(innerDeg).round()
+                  val pattern = PointAspectPattern(listOf(outer, inner), angle, null, 0.0)
+                  for (t in exactHits) {
+                    val enter = edgeHits.lastOrNull { it < t }
+                    val leave = edgeHits.firstOrNull { it > t }
+                    yield(AspectHit(AspectData(pattern, null, 0.0, null, t), PeakTrio(PeakRole.PEAK, enter, t, leave)))
+                    // enter/leave 標記各自成為事件，讓逐月閱讀者在邊緣月份也看得見此相位
+                    if (enter != null) {
+                      yield(AspectHit(AspectData(pattern, AspectType.APPLYING, orb, null, enter), PeakTrio(PeakRole.ENTER, enter, t, leave)))
+                    }
+                    if (leave != null) {
+                      yield(AspectHit(AspectData(pattern, AspectType.SEPARATING, orb, null, leave), PeakTrio(PeakRole.LEAVE, enter, t, leave)))
+                    }
+                  }
+                }
+              }
             }
           } ?: emptySequence()
         }
@@ -423,12 +467,16 @@ class EventsTraversalTransitImpl(
 
       if (config.personalAspect) {
         // 全球 to 個人 , 交角
-        yieldAll(searchPersonalEvents(transitingStars, natalPoints).map { aspectData ->
+        yieldAll(searchPersonalEvents(transitingStars, natalPoints).map { (aspectData, trio) ->
           val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
-          val description = buildString {
-            append("[transiting ${outerStar.toString(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.toString(Locale.ENGLISH)}]")
+          val description = "[transiting ${outerStar.toString(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.toString(Locale.ENGLISH)}]"
+          val event = if (trio != null) {
+            // 含日期的措辭由 ReportFactory.fetchEvents 的 formatter 統一組出（SP 時刻需先經 divergent 映射）
+            AstroEvent.AspectPeak(description, aspectData, trio.role, config.peakOrb, trio.enter, trio.peak, trio.leave)
+          } else {
+            AstroEvent.AspectEvent(description, aspectData)
           }
-          AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
+          AstroEventDto(event, aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
         })
       }
 
