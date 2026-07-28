@@ -8,6 +8,7 @@ import kotlinx.datetime.toJavaInstant
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.serialization.Serializable as KSerializable
 import java.io.Serializable
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -141,6 +142,11 @@ fun GmtJulDay.toDate(zoneId: ZoneId): Date {
 /** to [java.time.LocalDateTime] in [zoneId], via instant-based conversion (no [JulDayResolver] needed). */
 fun GmtJulDay.toLocalDateTime(zoneId: ZoneId): LocalDateTime {
   return this.toInstant().toJavaInstant().atZone(zoneId).toLocalDateTime()
+}
+
+/** to [java.time.LocalDate] in [zoneId], via instant-based conversion (no [JulDayResolver] needed). */
+fun GmtJulDay.toLocalDate(zoneId: ZoneId): LocalDate {
+  return this.toInstant().toJavaInstant().atZone(zoneId).toLocalDate()
 }
 
 fun GmtJulDay.absDuration(lmt: LocalDateTime, zoneId: ZoneId): Duration {
