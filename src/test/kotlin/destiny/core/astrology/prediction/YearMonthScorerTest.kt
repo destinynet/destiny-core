@@ -256,6 +256,25 @@ internal class YearMonthScorerTest {
       return TimeLineEvent(EventSource.TRANSIT, dto, dummyGmt)
     }
 
+    /**
+     * AspectPeak trio 只在 PEAK（精準）計分一次，且與同等 AspectEvent 同強度；
+     * ENTER/LEAVE 是同一相位的區間標記，重複計分會讓慢速推運（SA/SP）相位膨脹三倍。
+     */
+    @Test
+    fun aspectPeak_onlyPeakRoleScores() {
+      fun peakEvent(role: destiny.core.astrology.PeakRole): ITimeLineEvent {
+        val pattern = PointAspectPattern(listOf(Planet.SUN, Planet.VENUS), Aspect.TRINE.degree, null, 0.0)
+        val ad = AspectData(pattern, null, 0.0, null, dummyGmt)
+        val dto = AstroEventDto(AstroEvent.AspectPeak("desc", ad, role, 0.10, dummyGmt, dummyGmt, dummyGmt), dummyGmt, null, Span.INSTANT, Impact.PERSONAL)
+        return TimeLineEvent(EventSource.SECONDARY, dto, dummyGmt)
+      }
+
+      val peakHits = scorer.extractHits(peakEvent(destiny.core.astrology.PeakRole.PEAK), setOf(Planet.VENUS), emptySet(), emptyMap())
+      assertEquals(1, peakHits.size)
+      assertTrue(scorer.extractHits(peakEvent(destiny.core.astrology.PeakRole.ENTER), setOf(Planet.VENUS), emptySet(), emptyMap()).isEmpty())
+      assertTrue(scorer.extractHits(peakEvent(destiny.core.astrology.PeakRole.LEAVE), setOf(Planet.VENUS), emptySet(), emptyMap()).isEmpty())
+    }
+
     @Test
     fun significatorMatch() {
       val e = aspectEvent(EventSource.TRANSIT, Planet.JUPITER, Planet.VENUS, Aspect.TRINE, 1.0, true)
