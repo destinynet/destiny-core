@@ -6,6 +6,8 @@ package destiny.core.astrology
 import destiny.core.Gender
 import destiny.core.SynastryGrain
 import destiny.core.SynastryRelationship
+import destiny.core.innerGrain
+import destiny.core.outerGrain
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Axis.RISING
 import destiny.core.calendar.GmtJulDay
@@ -82,16 +84,16 @@ class PersonHoroscopeFeature(
     aspects: Set<Aspect>
   ): SynastryRequestDto {
     val innerPoints = modelInner.points.let { points ->
-      when (grain) {
-        SynastryGrain.BOTH_FULL, SynastryGrain.INNER_FULL_OUTER_DATE -> points
-        else                                                         -> points.filter { it != Planet.MOON }
+      when (grain.innerGrain) {
+        BirthDataGrain.MINUTE -> points
+        BirthDataGrain.DAY    -> points.filter { it != Planet.MOON }
       }
     }.toList()
 
     val outerPoints: List<AstroPoint> = modelOuter.points.let { points ->
-      when (grain) {
-        SynastryGrain.BOTH_FULL, SynastryGrain.INNER_DATE_OUTER_FULL -> points
-        else                                                         -> points.filter { it != Planet.MOON }
+      when (grain.outerGrain) {
+        BirthDataGrain.MINUTE -> points
+        BirthDataGrain.DAY    -> points.filter { it != Planet.MOON }
       }
     }.toList()
 
@@ -99,19 +101,7 @@ class PersonHoroscopeFeature(
     val posMapInner = modelInner.positionMap
 
     val threshold = 0.9
-    val innerIncludeAxis = when(grain) {
-      SynastryGrain.BOTH_FULL -> true
-      SynastryGrain.INNER_FULL_OUTER_DATE -> true
-      SynastryGrain.INNER_DATE_OUTER_FULL -> false
-      SynastryGrain.BOTH_DATE -> false
-    }
-    val outerIncludeAxis = when(grain) {
-      SynastryGrain.BOTH_FULL -> true
-      SynastryGrain.INNER_FULL_OUTER_DATE -> false
-      SynastryGrain.INNER_DATE_OUTER_FULL -> true
-      SynastryGrain.BOTH_DATE -> false
-    }
-    val synastry = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, threshold, innerIncludeAxis, aspects, outerIncludeAxis = outerIncludeAxis)
+    val synastry = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, threshold, grain.innerGrain, grain.outerGrain, aspects)
 
     val synastryAspects: List<SynastryAspect> = synastry.aspects
       .filter { aspect ->

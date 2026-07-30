@@ -75,9 +75,11 @@ class EventsTraversalTransitImpl(
      * [chosenPoints] 外圈的某星 針對內圈 的星體，形成哪些交角
      */
     fun IHoroscopeModel.outerToInner(vararg chosenPoints: AstroPoint): List<SynastryAspect> {
+      // 外盤時刻是行運遍歷的天文精確解，恆為 MINUTE
       return horoscopeFeature.synastry(this, model, modernAspectCalculator,
                                        threshold = null,
-                                       innerIncludeAxis = grain.includeAxis).aspects.filter { aspect: SynastryAspect ->
+                                       innerGrain = grain,
+                                       outerGrain = BirthDataGrain.MINUTE).aspects.filter { aspect: SynastryAspect ->
         aspect.outerPoint in chosenPoints && (
           if (grain.includeAxis)
             true

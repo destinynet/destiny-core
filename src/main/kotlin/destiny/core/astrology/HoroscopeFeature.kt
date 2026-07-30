@@ -123,25 +123,28 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
 
   /**
    * 計算兩個星盤之間的合盤相位與宮位落入
-   * @param innerIncludeAxis 內盤是否包含 Axis 點 (ASC/MC)，通常由 grain.includeAxis 決定
-   * @param outerIncludeAxis 外盤是否包含 Axis 點。**外盤的 ASC/MC 由「外盤自己那一刻」是否已知決定，
-   *   與內盤（本命）有沒有時辰無關** —— 例如本命無時辰、但事件時刻精確已知時，行運盤的 ASC/MC 仍然有效；
-   *   反之若事件時刻是捏造的正午，即使本命時辰精確，行運 ASC/MC 也是假的。預設 true 維持原行為。
+   *
+   * 每張盤的 Axis (ASC/MC) 是否參與，由「**那張盤自己的**時刻精度」決定，與另一張盤無關 ——
+   * 例如本命無時辰、但事件時刻精確已知時，行運盤（外盤）的 ASC/MC 仍然有效；
+   * 反之若事件時刻是捏造的正午，即使本命時辰精確，行運 ASC/MC 也是假的。
+   *
+   * @param innerGrain 內盤自身的時刻精度；DAY 時內盤 Axis 不參與相位，且不計算宮位落入
+   * @param outerGrain 外盤自身的時刻精度；DAY 時外盤 Axis 不參與相位
    */
   fun synastry(
     outer: IHoroscopeModel,
     inner: IHoroscopeModel,
     aspectCalculator: IAspectCalculator,
     threshold: Double?,
-    innerIncludeAxis: Boolean,
+    innerGrain: BirthDataGrain,
+    outerGrain: BirthDataGrain,
     aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
     laterForOuter: ((AstroPoint) -> IZodiacDegree?)? = null,
-    laterForInner: ((AstroPoint) -> IZodiacDegree?)? = null,
-    outerIncludeAxis: Boolean = true
+    laterForInner: ((AstroPoint) -> IZodiacDegree?)? = null
   ): Synastry {
-    val posMapOuter = if (outerIncludeAxis) outer.positionMap else outer.positionMap.filterKeys { it !is Axis }
+    val posMapOuter = if (outerGrain.includeAxis) outer.positionMap else outer.positionMap.filterKeys { it !is Axis }
 
-    val synastryAspects: List<SynastryAspect> = if (innerIncludeAxis) {
+    val synastryAspects: List<SynastryAspect> = if (innerGrain.includeAxis) {
       synastryAspectsFine(posMapOuter, inner, laterForOuter, laterForInner, aspectCalculator, threshold, aspects)
     } else {
       // 當 inner 不含 Axis 時，過濾掉 Axis 點，因為沒有精確出生時間時 Axis 沒有意義
@@ -151,7 +154,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
 
     val houseOverlayStars = outer.points.filter { it is Planet || it is FixedStar || it is LunarPoint }
 
-    val houseOverlayMap = if (innerIncludeAxis) {
+    val houseOverlayMap = if (innerGrain.includeAxis) {
       houseOverlayStars.asSequence().mapNotNull { pOuter: AstroPoint ->
         posMapOuter[pOuter]?.lngDeg?.let { zDeg ->
           val pOuterHouse = inner.getHouse(zDeg)

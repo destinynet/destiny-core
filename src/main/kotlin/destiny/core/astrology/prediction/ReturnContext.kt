@@ -264,7 +264,8 @@ class ReturnContext(
         //houses = emptyList()
       )
 
-    val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold, grain.includeAxis).let { synastry: Synastry ->
+    // 返照盤時刻由本命位置反推（DAY grain 的捏造正午 → 返照時刻誤差達數小時），外盤精度跟隨本命 grain
+    val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold, grain, grain).let { synastry: Synastry ->
       // SR Sun conjunct natal Sun / LR Moon conjunct natal Moon 是定義本身，永遠排除
       val filtered = synastry.aspects.filterNot { aspect -> aspect.points.all { it == this@ReturnContext.planet } }
       if (grain.includeAxis) {
