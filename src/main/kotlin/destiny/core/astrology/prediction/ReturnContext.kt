@@ -264,20 +264,13 @@ class ReturnContext(
         //houses = emptyList()
       )
 
-    // 返照盤時刻由本命位置反推（DAY grain 的捏造正午 → 返照時刻誤差達數小時），外盤精度跟隨本命 grain
+    // 返照盤時刻由本命位置反推（DAY grain 的捏造正午 → 返照時刻誤差達數小時），外盤精度跟隨本命 grain。
+    // DAY grain 的 Axis 排除／house 置 null 已由 synastry(innerGrain, outerGrain) 逐盤處理
+    //（coarse path 的 house 恆為 null、houseOverlayMap 恆空），此處只需排除定義性相位。
     val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold, grain, grain).let { synastry: Synastry ->
       // SR Sun conjunct natal Sun / LR Moon conjunct natal Moon 是定義本身，永遠排除
       val filtered = synastry.aspects.filterNot { aspect -> aspect.points.all { it == this@ReturnContext.planet } }
-      if (grain.includeAxis) {
-        Synastry(filtered, synastry.houseOverlayMap)
-      } else {
-        val aspects = filtered
-          .filterNot { aspect -> aspect.points.any { it is Axis } }
-          .map { sa: SynastryAspect ->
-            sa.copy(outerPointHouse = null, innerPointHouse = null)
-          }
-        Synastry(aspects, emptyMap())
-      }
+      Synastry(filtered, synastry.houseOverlayMap)
     }
 
     val returnType = when (this@ReturnContext.planet) {

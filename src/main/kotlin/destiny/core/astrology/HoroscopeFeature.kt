@@ -452,7 +452,7 @@ class HoroscopeFeature(
       synastryAspectsCoarse(posMap, innerPosMap, laterForP1, laterForP2, aspectCalculator, threshold)
     }
 
-    return SolarArcModel(this.gmtJulDay, (innerGrain == MINUTE), viewTime,
+    return SolarArcModel(this.gmtJulDay, innerGrain, viewTime,
                          forward,
                          convergentJulDay, degreeMoved,
                          this.location, posMap, synastryAspects)

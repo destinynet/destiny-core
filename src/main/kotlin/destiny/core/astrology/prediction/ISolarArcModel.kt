@@ -4,6 +4,7 @@
 package destiny.core.astrology.prediction
 
 import destiny.core.astrology.AstroPoint
+import destiny.core.astrology.BirthDataGrain
 import destiny.core.astrology.IZodiacDegree
 import destiny.core.astrology.SynastryAspect
 import destiny.core.calendar.GmtJulDay
@@ -16,7 +17,8 @@ import kotlinx.serialization.Serializable
 
 sealed interface ISolarArcModel : ITransitModel {
   val natalGmtJulDay: GmtJulDay
-  val natalHasTime : Boolean
+  /** 本命時刻精度：SA 盤的宮位／軸點由本命時刻推得，DAY 時皆不可信 */
+  val natalGrain: BirthDataGrain
   val viewGmtJulDay: GmtJulDay
   val forward: Boolean
   val convergentJulDay: GmtJulDay
@@ -30,7 +32,7 @@ sealed interface ISolarArcModel : ITransitModel {
 @Serializable
 data class SolarArcModel(
   override val natalGmtJulDay: GmtJulDay,
-  override val natalHasTime: Boolean,
+  override val natalGrain: BirthDataGrain,
   override val viewGmtJulDay: GmtJulDay,
   override val forward: Boolean = true,
   override val convergentJulDay: GmtJulDay,
