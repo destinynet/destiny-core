@@ -4,10 +4,16 @@
 package destiny.core.astrology
 
 import destiny.core.EventType
+import destiny.core.calendar.chinese.YearMonthRange
+import kotlinx.serialization.json.Json
+import org.junit.jupiter.api.Nested
 import java.time.LocalDate
 import java.time.YearMonth
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class AbstractEventTest {
@@ -161,5 +167,157 @@ class AbstractEventTest {
     val groups = events.groupAdjacentEvents(extMonth = 2)
     assertEquals(1, groups.size)
     assertEquals(listOf(events), groups)
+  }
+
+  @Nested
+  inner class PeriodEventTest {
+
+    private val json = Json
+
+    /** 有起爆日 → 排得出日盤；沒有 → 只做月級掃描。 */
+    @Test
+    fun grainDependsOnIgnition() {
+      val withIgnition = PeriodEvent(
+        from = LocalDate.of(2026, 6, 20), to = LocalDate.of(2026, 7, 31),
+        ignition = LocalDate.of(2026, 6, 20),
+        eventType = EventType.REPUTATION_CRISIS, details = "連環爆"
+      )
+      assertEquals(EventGrain.DAY, withIgnition.grain())
+      assertTrue(withIgnition.grain().canDayLevelTransit)
+      assertEquals(BirthDataGrain.DAY, withIgnition.grain().chartGrain)
+      assertEquals(LocalDate.of(2026, 6, 20).atTime(12, 0), withIgnition.chartTime())
+
+      val fuzzy = withIgnition.copy(ignition = null)
+      assertEquals(EventGrain.MONTH, fuzzy.grain())
+      assertFalse(fuzzy.grain().canDayLevelTransit)
+      assertNull(fuzzy.grain().chartGrain)
+      assertNull(fuzzy.chartTime())
+    }
+
+    @Test
+    fun yearMonthRange_spansToEnd() {
+      val e = PeriodEvent(
+        from = LocalDate.of(2026, 6, 20), to = LocalDate.of(2026, 7, 31),
+        eventType = EventType.REPUTATION_CRISIS, details = "連環爆"
+      )
+      assertEquals(YearMonth.of(2026, 6), e.yearMonth())          // 代表月 = 起始月
+      assertEquals(YearMonthRange(YearMonth.of(2026, 6), YearMonth.of(2026, 7)), e.yearMonthRange())
+    }
+
+    /** 進行中者刻意不外推到「現在」—— 資料模型不該知道 today。 */
+    @Test
+    fun ongoing_rangeStopsAtStart() {
+      val e = PeriodEvent(
+        from = LocalDate.of(2026, 6, 20), to = null,
+        eventType = EventType.REPUTATION_CRISIS, details = "尚未止息"
+      )
+      assertTrue(e.ongoing)
+      assertEquals(YearMonthRange(YearMonth.of(2026, 6), YearMonth.of(2026, 6)), e.yearMonthRange())
+    }
+
+    /** 點事件退化成 start == endInclusive，故舊行為完全不變。 */
+    @Test
+    fun pointEvents_degenerateToSingleMonth() {
+      assertEquals(
+        YearMonthRange(YearMonth.of(2025, 3), YearMonth.of(2025, 3)),
+        DayEvent(LocalDate.of(2025, 3, 15), EventType.OTHERS, "婚禮").yearMonthRange()
+      )
+      assertEquals(
+        YearMonthRange(YearMonth.of(2025, 3), YearMonth.of(2025, 3)),
+        MonthEvent(YearMonth.of(2025, 3), EventType.OTHERS, "婚禮").yearMonthRange()
+      )
+    }
+
+    /**
+     * 分群的關鍵差異：長跨度事件會把落在它**尾段**的事件拉進同一群。
+     *
+     * 只看代表月（2026-01）的舊邏輯會判成兩群 —— 7 月那筆離 1 月太遠。
+     */
+    @Test
+    fun groupAdjacent_periodPullsInEventsInsideItsTail() {
+      val period = PeriodEvent(
+        from = LocalDate.of(2026, 1, 5), to = LocalDate.of(2026, 8, 20),
+        eventType = EventType.LEGAL_CHALLENGE, details = "纏訟"
+      )
+      val inTail = DayEvent(LocalDate.of(2026, 7, 10), EventType.OTHERS, "開庭")
+
+      val groups = listOf(period, inTail).groupAdjacentEvents(extMonth = 1)
+      assertEquals(1, groups.size)
+      assertEquals(listOf(period, inTail), groups[0])
+    }
+
+    /** 但真正離群的仍該分開 —— 別讓「涵蓋」變成無條件合併。 */
+    @Test
+    fun groupAdjacent_farAwayEventStaysSeparate() {
+      val period = PeriodEvent(
+        from = LocalDate.of(2026, 1, 5), to = LocalDate.of(2026, 3, 20),
+        eventType = EventType.LEGAL_CHALLENGE, details = "纏訟"
+      )
+      val far = DayEvent(LocalDate.of(2026, 11, 10), EventType.OTHERS, "無關的事")
+
+      val groups = listOf(period, far).groupAdjacentEvents(extMonth = 1)
+      assertEquals(2, groups.size)
+      assertEquals(listOf(period), groups[0])
+      assertEquals(listOf(far), groups[1])
+    }
+
+    @Test
+    fun serializationRoundTrip() {
+      val full: AbstractEvent = PeriodEvent(
+        from = LocalDate.of(2026, 6, 20), to = LocalDate.of(2026, 7, 31),
+        ignition = LocalDate.of(2026, 6, 22),
+        eventType = EventType.REPUTATION_CRISIS, details = "連環爆", sentiment = EventSentiment.NEGATIVE
+      )
+      assertEquals(full, json.decodeFromString<AbstractEvent>(json.encodeToString(full)))
+
+      val ongoing: AbstractEvent = PeriodEvent(
+        from = LocalDate.of(2026, 6, 20),
+        eventType = EventType.REPUTATION_CRISIS, details = "尚未止息"
+      )
+      assertEquals(ongoing, json.decodeFromString<AbstractEvent>(json.encodeToString(ongoing)))
+    }
+
+    /** 有 `from` 就走 PeriodEvent；沒有才回頭看 `date` 的字面格式。點事件的分派不受影響。 */
+    @Test
+    fun deserialize_discriminatesByFromKey() {
+      val period = json.decodeFromString<AbstractEvent>(
+        """{"from":"2026-06-20","to":"2026-07-31","eventType":"REPUTATION_CRISIS","details":"連環爆"}"""
+      )
+      assertTrue(period is PeriodEvent)
+      assertEquals(EventGrain.MONTH, period.grain())
+
+      assertTrue(json.decodeFromString<AbstractEvent>("""{"date":"2026-06","eventType":"OTHERS","details":"x"}""") is MonthEvent)
+      assertTrue(json.decodeFromString<AbstractEvent>("""{"date":"2026-06-20","eventType":"OTHERS","details":"x"}""") is DayEvent)
+      assertTrue(json.decodeFromString<AbstractEvent>("""{"date":"2026-06-20T14:30","eventType":"OTHERS","details":"x"}""") is MinuteEvent)
+    }
+
+    /** from 與 date 並存代表上游搞混了，寧可炸掉也不要沉默地丟掉一半資訊。 */
+    @Test
+    fun deserialize_rejectsBothFromAndDate() {
+      assertFailsWith<IllegalArgumentException> {
+        json.decodeFromString<AbstractEvent>(
+          """{"from":"2026-06-20","date":"2026-06-20","eventType":"OTHERS","details":"x"}"""
+        )
+      }
+    }
+
+    @Test
+    fun rejectsInvalidBounds() {
+      assertFailsWith<IllegalArgumentException> {
+        PeriodEvent(LocalDate.of(2026, 7, 1), LocalDate.of(2026, 6, 1), null, EventType.OTHERS, "to 早於 from")
+      }
+      assertFailsWith<IllegalArgumentException> {
+        PeriodEvent(
+          LocalDate.of(2026, 6, 1), LocalDate.of(2026, 7, 1), LocalDate.of(2026, 5, 1),
+          EventType.OTHERS, "ignition 在區間之前"
+        )
+      }
+      assertFailsWith<IllegalArgumentException> {
+        PeriodEvent(
+          LocalDate.of(2026, 6, 1), LocalDate.of(2026, 7, 1), LocalDate.of(2026, 8, 1),
+          EventType.OTHERS, "ignition 在區間之後"
+        )
+      }
+    }
   }
 }

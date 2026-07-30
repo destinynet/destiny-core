@@ -131,14 +131,30 @@ sealed class AbstractEvent {
   abstract val eventType: EventType
   abstract val details: String
   abstract val sentiment: EventSentiment?
+
+  /** 代表月份 —— 排序與顯示用。有延時者取其**起始**月，要涵蓋範圍請改用 [yearMonthRange]。 */
   abstract fun yearMonth() : YearMonth
 
   /**
-   * 本事件的時刻精度。由子型別身分決定，故為 getter 而非建構參數 —— 不進序列化，也不可外部指定。
+   * 事件涵蓋的月份區間 —— 分群與月級掃描的依據。
+   *
+   * 點事件退化為 `start == endInclusive`（即 [yearMonth]），故此方法是 [yearMonth] 的超集；
+   * 判讀「這事件跨到哪」一律問這裡。這是繼 [grain]（精度）之後的**第三軸：延時** ——
+   * 「六月下旬起連環爆、燒到七月底未止」這種事，在只有單一時間點的模型裡無法表達。
+   */
+  open fun yearMonthRange(): YearMonthRange = yearMonth().let { YearMonthRange(it, it) }
+
+  /**
+   * 本事件的時刻精度。由子型別身分決定，不進序列化，也不可外部指定。
    *
    * 判讀端請問這個（或 [canDayLevelTransit] / [chartGrain]），不要對子型別寫窮舉 `when`。
+   *
+   * **衍生成員一律寫成函式**（同 [yearMonth] / [yearMonthRange] / [chartTime] / [dateLabel]），
+   * 只有真正序列化的四個欄位才是屬性。這不是風格偏好：`FormatSpec.of` 的 JSON schema 是用
+   * `KClass.memberProperties` 反射產生的，衍生屬性會被當成 LLM 該產出的必填欄位，
+   * 而反序列化用的 `Json` 未開 `ignoreUnknownKeys`，LLM 照做就會炸。
    */
-  abstract val grain: EventGrain
+  abstract fun grain(): EventGrain
 
   /**
    * 可用來排事件盤的當地時刻；[EventGrain.MONTH] 無日期可錨定，回傳 null。
@@ -150,7 +166,7 @@ sealed class AbstractEvent {
   abstract fun chartTime(): LocalDateTime?
 
   /** 原始日期字面，精度隨 [grain]（`2020-03` / `2020-03-03` / `2020-03-03T14:30`）。稽核比對用，不參與計算。 */
-  abstract val dateLabel: String
+  abstract fun dateLabel(): String
 }
 
 @Serializable
@@ -165,9 +181,9 @@ data class MonthEvent(
     return date
   }
 
-  override val grain: EventGrain get() = EventGrain.MONTH
+  override fun grain(): EventGrain = EventGrain.MONTH
   override fun chartTime(): LocalDateTime? = null
-  override val dateLabel: String get() = date.toString()
+  override fun dateLabel(): String = date.toString()
 }
 
 @Serializable
@@ -182,9 +198,9 @@ data class DayEvent(
     return YearMonth.from(date)
   }
 
-  override val grain: EventGrain get() = EventGrain.DAY
+  override fun grain(): EventGrain = EventGrain.DAY
   override fun chartTime(): LocalDateTime = date.atTime(12, 0)
-  override val dateLabel: String get() = date.toString()
+  override fun dateLabel(): String = date.toString()
 }
 
 @Serializable
@@ -199,9 +215,59 @@ data class MinuteEvent(
     return YearMonth.from(date)
   }
 
-  override val grain: EventGrain get() = EventGrain.MINUTE
+  override fun grain(): EventGrain = EventGrain.MINUTE
   override fun chartTime(): LocalDateTime = date
-  override val dateLabel: String get() = date.toString()
+  override fun dateLabel(): String = date.toString()
+}
+
+/**
+ * 有延時的事件 —— 名聲崩跌、纏訟、久病，這類「一路燒下去」的事，本質上不是某一天。
+ *
+ * 之所以不能用 [DayEvent] 硬湊：把 2023 那次爭議記成「道歉日」，錨點就落在整串事件的
+ * **最後一步**而非起點。以該錨點回推的星象規則會整體晚一截，而這種偏移在單點模型裡看不出來。
+ *
+ * @param from     期間起點。若只知道月份，取該月 1 日，並讓 [ignition] 留 null。
+ * @param to       期間終點；**null 代表進行中／未止**（見 [ongoing]），而不是「不知道」。
+ * @param ignition 起爆日 —— 值得為它排一張日盤的那一天（影片上傳、宣判、確診）。
+ *                 通常等於 [from]，但當 [from] 只是「六月下旬」這種粗略起點時必須留 null，
+ *                 否則就是拿一個捏造的日期去排盤，正是 [EventGrain] 要防的事。
+ *                 有值 → [grain] 為 [EventGrain.DAY]；null → [EventGrain.MONTH]，只做月級掃描。
+ */
+@Serializable
+data class PeriodEvent(
+  @Serializable(with = LocalDateSerializer::class)
+  val from: LocalDate,
+  @Serializable(with = LocalDateSerializer::class)
+  val to: LocalDate? = null,
+  @Serializable(with = LocalDateSerializer::class)
+  val ignition: LocalDate? = null,
+  override val eventType: EventType,
+  override val details: String,
+  override val sentiment: EventSentiment? = null,
+) : AbstractEvent() {
+
+  init {
+    require(to == null || !to.isBefore(from)) { "PeriodEvent: to ($to) 早於 from ($from)" }
+    require(ignition == null || (!ignition.isBefore(from) && (to == null || !ignition.isAfter(to)))) {
+      "PeriodEvent: ignition ($ignition) 落在 $from .. $to 之外"
+    }
+  }
+
+  /** 是否仍在進行中（[to] 為 null）。素材出口應據此標示，否則 LLM 會把「沒有終點」讀成「已結束」。 */
+  val ongoing: Boolean get() = to == null
+
+  override fun yearMonth(): YearMonth = YearMonth.from(from)
+
+  /**
+   * 進行中（[ongoing]）者只由起點決定區間，**刻意不外推到「現在」** ——
+   * 資料模型不該知道 today 是哪天。上界該由呼叫端以 viewDay 決定。
+   */
+  override fun yearMonthRange(): YearMonthRange =
+    YearMonthRange(YearMonth.from(from), YearMonth.from(to ?: from))
+
+  override fun grain(): EventGrain = if (ignition != null) EventGrain.DAY else EventGrain.MONTH
+  override fun chartTime(): LocalDateTime? = ignition?.atTime(12, 0)
+  override fun dateLabel(): String = "$from..${to ?: ""}${ignition?.let { "@$it" } ?: ""}"
 }
 
 object AbstractEventSerializer : KSerializer<AbstractEvent> {
@@ -225,18 +291,23 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
   private val YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM")
 
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("AbstractEvent") {
-    element<String>("date")
+    // 點事件（MinuteEvent / DayEvent / MonthEvent）：由 date 的字面格式決定是哪一種
+    element<String>("date", isOptional = true)
+    // 有延時的事件（PeriodEvent）：以 from 的存在作為判別式
+    element<String>("from", isOptional = true)
+    element<String>("to", isOptional = true)
+    element<String>("ignition", isOptional = true)
     element("eventType", EventType.serializer().descriptor)
     element<String>("details")
     element("sentiment", EventSentiment.serializer().descriptor, isOptional = true)
   }
 
   override fun serialize(encoder: Encoder, value: AbstractEvent) {
-    // 序列化邏輯保持不變
     when (value) {
-      is MonthEvent -> encoder.encodeSerializableValue(MonthEvent.serializer(), value)
-      is DayEvent   -> encoder.encodeSerializableValue(DayEvent.serializer(), value)
+      is MonthEvent  -> encoder.encodeSerializableValue(MonthEvent.serializer(), value)
+      is DayEvent    -> encoder.encodeSerializableValue(DayEvent.serializer(), value)
       is MinuteEvent -> encoder.encodeSerializableValue(MinuteEvent.serializer(), value)
+      is PeriodEvent -> encoder.encodeSerializableValue(PeriodEvent.serializer(), value)
     }
   }
 
@@ -246,6 +317,15 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
 
     // 將整個 JSON 物件讀取為 JsonElement
     val jsonObject = jsonDecoder.decodeJsonElement().jsonObject
+
+    // 判別式：有 "from" 就是有延時的事件，其餘一律靠 "date" 的字面格式分派。
+    // 兩者互斥 —— 同時出現代表上游搞混了，寧可炸掉也不要沉默地丟掉一半資訊。
+    if (jsonObject.containsKey("from")) {
+      require(!jsonObject.containsKey("date")) {
+        "AbstractEvent : 'from' 與 'date' 不可並存 —— 有延時的事件用 from/to，點事件用 date。"
+      }
+      return Json.decodeFromJsonElement(PeriodEvent.serializer(), jsonObject)
+    }
 
     // 提取 "date" 欄位的字串值
     val dateString = jsonObject["date"]?.jsonPrimitive?.content
@@ -277,19 +357,21 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
   }
 }
 
+/**
+ * 依 [AbstractEvent.yearMonthRange] 分群 —— 各自向外擴張 [extMonth] 個月後合併相鄰／重疊者。
+ *
+ * 以區間（而非單一 [AbstractEvent.yearMonth]）為依據，[PeriodEvent] 才能把自己跨到的月份
+ * 一併拉進同一群。點事件退化成 `start == endInclusive`，行為與改動前完全相同。
+ */
 fun List<AbstractEvent>.groupAdjacentEvents(extMonth: Int = 1): List<List<AbstractEvent>> {
   if (this.size < 2) {
     return listOf(this)
   }
 
-  val yearMonths = this.map { it.yearMonth() }
-
-  val mergedRanges: List<YearMonthRange> = yearMonths.groupMergedRanges(extMonth)
+  val mergedRanges: List<YearMonthRange> = this.map { it.yearMonthRange() }.groupMergedRanges(extMonth)
 
   return mergedRanges.map { range: YearMonthRange ->
-    this.filter { event ->
-      !event.yearMonth().isBefore(range.start) && !event.yearMonth().isAfter(range.endInclusive)
-    }
+    this.filter { event -> event.yearMonthRange().overlaps(range) }
   }
 }
 
@@ -434,7 +516,7 @@ data class Redaction(
     if (original.events.size != redacted.events.size) {
       return listOf("event count : ${original.events.size} -> ${redacted.events.size}")
     }
-    fun AbstractEvent.signalKey(): String = "$grain:$dateLabel"
+    fun AbstractEvent.signalKey(): String = "${grain()}:${dateLabel()}"
     return original.events.zip(redacted.events).mapNotNull { (a, b) ->
       when {
         a.signalKey() != b.signalKey() -> "date : ${a.signalKey()} -> ${b.signalKey()}"
