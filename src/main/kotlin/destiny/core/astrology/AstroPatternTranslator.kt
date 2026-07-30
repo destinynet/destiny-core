@@ -28,6 +28,24 @@ object AstroPatternTranslator : IPatternDescriptor<AstroPattern> {
 
   val logger = KotlinLogging.logger { }
 
+  /**
+   * [PointSignHouse.house] 為 null（無精確出生時刻，宮位不可得）時，改用不含宮位的訊息模板
+   * （key 後綴 [NO_HOUSE]），並由 [params] 把 null 的宮位從參數列中剔除，
+   * 使 NoHouse 模板的 `{n}` 索引自然往前遞補。
+   *
+   * 為何不是「渲染完再用 regex 把宮位字樣洗掉」：模板是多語系的（zh / en / ja），
+   * 括號形式與語序各不相同，事後掃散文既脆弱又只顧得到英文。
+   * 由 null 選 key，正確性改由 properties 檔本身保證。
+   *
+   * [AstroPattern.Boomerang] 有兩個宮位，任一為 null 就整組不渲染 —— 它們同源於一張盤，
+   * 不會出現一有一無。
+   */
+  private const val NO_HOUSE = ".NoHouse"
+
+  private fun key(base: String, vararg houses: Int?) = if (houses.all { it != null }) base else base + NO_HOUSE
+
+  private fun params(vararg items: Any?): List<Any> = items.filterNotNull()
+
   override fun getDescriptor(pattern: AstroPattern): Descriptive {
     return when (pattern) {
       is AstroPattern.GrandTrine -> {
@@ -54,69 +72,74 @@ object AstroPatternTranslator : IPatternDescriptor<AstroPattern> {
         )
       }
       is AstroPattern.TSquared -> {
+        val h = pattern.squared.house
         pattern.score?.let { score ->
           AstroPatternDescriptor(
-            pattern, "commentScore",
-            listOf(
-              *pattern.oppoPoints.toTypedArray(), pattern.squared.sign, pattern.squared.house, pattern.squared.point,
+            pattern, key("commentScore", h),
+            params(
+              *pattern.oppoPoints.toTypedArray(), pattern.squared.sign, h, pattern.squared.point,
               score
             )
           )
         } ?: AstroPatternDescriptor(
-          pattern, "commentBasic",
-          listOf(*pattern.oppoPoints.toTypedArray(), pattern.squared.sign, pattern.squared.house, pattern.squared.point)
+          pattern, key("commentBasic", h),
+          params(*pattern.oppoPoints.toTypedArray(), pattern.squared.sign, h, pattern.squared.point)
         )
       }
       is AstroPattern.Yod -> {
+        val h = pattern.apex.house
         pattern.score?.let { score ->
           AstroPatternDescriptor(
-            pattern, "commentScore",
-            listOf(
-              pattern.apex.point, pattern.apex.sign, pattern.apex.house, *pattern.bottoms.toTypedArray(),
+            pattern, key("commentScore", h),
+            params(
+              pattern.apex.point, pattern.apex.sign, h, *pattern.bottoms.toTypedArray(),
               score
             )
           )
         } ?: AstroPatternDescriptor(
-          pattern, "commentBasic",
-          listOf(pattern.apex.point, pattern.apex.sign, pattern.apex.house, *pattern.bottoms.toTypedArray())
+          pattern, key("commentBasic", h),
+          params(pattern.apex.point, pattern.apex.sign, h, *pattern.bottoms.toTypedArray())
         )
       }
       is AstroPattern.Boomerang -> {
         val yod = listOf(pattern.yod.apex.point).plus(pattern.yod.bottoms).toTypedArray()
 
+        val h1 = pattern.yod.apex.house
+        val h2 = pattern.oppoPoint.house
         pattern.score?.let { score ->
           AstroPatternDescriptor(
-            pattern, "commentScore",
-            listOf(
+            pattern, key("commentScore", h1, h2),
+            params(
               *yod, pattern.yod.apex.point, pattern.yod.apex.sign,
-              pattern.yod.apex.house, pattern.oppoPoint.point, pattern.oppoPoint.sign,
-              pattern.oppoPoint.house, score
+              h1, pattern.oppoPoint.point, pattern.oppoPoint.sign,
+              h2, score
             )
           )
         } ?: AstroPatternDescriptor(
-          pattern, "commentBasic",
-          listOf(
+          pattern, key("commentBasic", h1, h2),
+          params(
             *yod, pattern.yod.apex.point, pattern.yod.apex.sign,
-            pattern.yod.apex.house, pattern.oppoPoint.point, pattern.oppoPoint.sign,
-            pattern.oppoPoint.house
+            h1, pattern.oppoPoint.point, pattern.oppoPoint.sign,
+            h2
           )
         )
       }
       is AstroPattern.GoldenYod -> {
+        val h = pattern.pointer.house
         pattern.score?.let { score ->
           AstroPatternDescriptor(
-            pattern, "commentScore",
-            listOf(
+            pattern, key("commentScore", h),
+            params(
               pattern.pointer.point,
               pattern.pointer.sign,
-              pattern.pointer.house,
+              h,
               *pattern.bottoms.toTypedArray(),
               score
             )
           )
         } ?: AstroPatternDescriptor(
-          pattern, "commentBasic",
-          listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray())
+          pattern, key("commentBasic", h),
+          params(pattern.pointer.point, pattern.pointer.sign, h, *pattern.bottoms.toTypedArray())
         )
       }
       is AstroPattern.GrandCross -> {
@@ -149,24 +172,25 @@ object AstroPatternTranslator : IPatternDescriptor<AstroPattern> {
         } ?: AstroPatternDescriptor(pattern, "commentBasic", listOf(*group1, *group2))
       }
       is AstroPattern.Wedge -> {
+        val h = pattern.mediator.house
         pattern.score?.let { score ->
           AstroPatternDescriptor(
-            pattern, "commentScore",
-            listOf(
+            pattern, key("commentScore", h),
+            params(
               *pattern.oppoPoints.toTypedArray(),
               pattern.mediator.point,
               pattern.mediator.sign,
-              pattern.mediator.house,
+              h,
               score
             )
           )
         } ?: AstroPatternDescriptor(
-          pattern, "commentBasic",
-          listOf(
+          pattern, key("commentBasic", h),
+          params(
             *pattern.oppoPoints.toTypedArray(),
             pattern.mediator.point,
             pattern.mediator.sign,
-            pattern.mediator.house
+            h
           )
         )
       }

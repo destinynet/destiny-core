@@ -183,11 +183,22 @@ fun IHoroscopeModel.qualityDistribution(): Map<Quality, Double> {
 }
 
 
-/** 特殊格局 */
-fun IHoroscopeModel.getPatterns(patternContext: PatternContext, threshold: Double = 0.8): List<AstroPattern> {
+/**
+ * 特殊格局
+ *
+ * [grain] 無精確時刻時交出**空的宮首表** —— 宮位資訊的唯一來源就此斷掉，
+ * 各 detector 的 `signHouse()` 自動產出 `house = null`，不必逐處補 if。
+ * 這是「不計算不可信的東西」，而非「算完再洗掉」。
+ */
+fun IHoroscopeModel.getPatterns(
+  patternContext: PatternContext,
+  threshold: Double = 0.8,
+  grain: BirthDataGrain = BirthDataGrain.MINUTE
+): List<AstroPattern> {
+  val cusps = if (grain.includeAxis) cuspDegreeMap else emptyMap()
   return patternContext.patterns.asSequence().flatMap { factory ->
     val nonFixedStarMap = positionMap.filterKeys { p -> p !is FixedStar }
-    factory.getPatterns(nonFixedStarMap, cuspDegreeMap)
+    factory.getPatterns(nonFixedStarMap, cusps)
   }
     .filter { p -> p.score != null && p.score!!.value >= threshold }
     .sortedByDescending { it.score }

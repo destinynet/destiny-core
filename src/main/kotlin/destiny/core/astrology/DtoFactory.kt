@@ -136,7 +136,9 @@ class DtoFactory(
     val tightestAspects = getTightAspects(aspectCalculator, threshold, grain)
       .filterNot { pattern -> pattern.points.all { it is FixedStar } }
 
-    val astroPatterns = getPatterns(PatternContext(aspectAffective, aspectCalculator), threshold).let { patterns ->
+    // grain 傳進 getPatterns：宮位在**產生時**就不算（house = null），而非事後洗掉。
+    // 這裡額外濾掉以 Axis 為構成星的 pattern —— 那是「點本身不可得」，與「宮位不可得」是兩件事。
+    val astroPatterns = getPatterns(PatternContext(aspectAffective, aspectCalculator), threshold, grain).let { patterns ->
       if (grain.includeAxis) patterns
       else patterns.filterNot { pattern -> pattern.points.any { it is Axis } }
     }

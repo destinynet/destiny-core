@@ -21,10 +21,16 @@ import kotlin.math.sin
 class PatternContext(val aspectEffective: IAspectEffective,
                      val aspectCalculator: IAspectCalculator) : Serializable {
 
+  /**
+   * 空的 [cuspDegreeMap] 表示「宮首不可得」（無精確出生時刻），此時 [PointSignHouse.house] 為 null。
+   *
+   * 注意不能直接把空表餵給 [IHoroscopeModel.getHouse] —— 它的回傳型別非空，
+   * 找不到落點時會 fallback 成第 12 宮，等於**憑空捏造一個宮位**，比缺漏更糟。
+   */
   private fun AstroPoint.signHouse(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): PointSignHouse {
     return posMap.getValue(this).let { iPos ->
       val sign: ZodiacSign = iPos.sign
-      val house: Int = IHoroscopeModel.getHouse(iPos.lngDeg, cuspDegreeMap)
+      val house: Int? = cuspDegreeMap.takeIf { it.isNotEmpty() }?.let { cusps -> IHoroscopeModel.getHouse(iPos.lngDeg, cusps) }
       PointSignHouse(this, sign, house)
     }
   }
@@ -407,6 +413,9 @@ class PatternContext(val aspectEffective: IAspectEffective,
   // 群星聚集 某宮位 (至少四顆星)
   private val stelliumHouse = object : IPatternFactory {
     override fun getPatterns(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
+      // 沒有宮首就沒有「宮位星群」可言。此格局完全建立在宮位上，拿掉宮位什麼都不剩，
+      // 故整類不產出 —— 不同於 TSquared / Yod：那些的構成星與星座仍是真訊號，只有宮位為 null。
+      if (cuspDegreeMap.isEmpty()) return emptySet()
       return posMap.asSequence().map { (point, pos) -> point to IHoroscopeModel.getHouse(pos.lngDeg, cuspDegreeMap) }
         .groupBy { (_, house) -> house }
         .filter { (_, list: List<Pair<AstroPoint, Int>>) -> list.size >= 4 }

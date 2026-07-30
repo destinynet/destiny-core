@@ -12,13 +12,18 @@ import java.util.*
 /**
  * 某星( or [AstroPoint] ) 位於那個星座 , 第幾宮 , 通常用於描述 pattern 的關鍵點
  *
+ * [house] 可為 null —— 無精確出生時刻時宮位不可得，而**星座與構成星仍然有效**，
+ * 故整個 pattern 要留下、只有宮位為空。null 是這個資訊唯一的傳遞通道：
+ * 它必須能穿過 context-free 的序列化器（[AstroPatternSerializer] 是無狀態 object，
+ * 拿不到 grain），一路傳到 [AstroPatternTranslator] 決定要不要渲染「第幾宮」的字樣。
+ *
  * http://goodvibeastrology.com/aspect-patterns/
  */
 @KSerializable
 data class PointSignHouse(
   val point: AstroPoint,
   val sign: ZodiacSign,
-  val house: Int
+  val house: Int?
 )
 
 @KSerializable(with = AstroPatternSerializer::class)
