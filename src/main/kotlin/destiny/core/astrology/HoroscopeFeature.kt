@@ -124,6 +124,9 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   /**
    * 計算兩個星盤之間的合盤相位與宮位落入
    * @param innerIncludeAxis 內盤是否包含 Axis 點 (ASC/MC)，通常由 grain.includeAxis 決定
+   * @param outerIncludeAxis 外盤是否包含 Axis 點。**外盤的 ASC/MC 由「外盤自己那一刻」是否已知決定，
+   *   與內盤（本命）有沒有時辰無關** —— 例如本命無時辰、但事件時刻精確已知時，行運盤的 ASC/MC 仍然有效；
+   *   反之若事件時刻是捏造的正午，即使本命時辰精確，行運 ASC/MC 也是假的。預設 true 維持原行為。
    */
   fun synastry(
     outer: IHoroscopeModel,
@@ -133,16 +136,17 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     innerIncludeAxis: Boolean,
     aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
     laterForOuter: ((AstroPoint) -> IZodiacDegree?)? = null,
-    laterForInner: ((AstroPoint) -> IZodiacDegree?)? = null
+    laterForInner: ((AstroPoint) -> IZodiacDegree?)? = null,
+    outerIncludeAxis: Boolean = true
   ): Synastry {
-    val posMapOuter = outer.positionMap
+    val posMapOuter = if (outerIncludeAxis) outer.positionMap else outer.positionMap.filterKeys { it !is Axis }
 
     val synastryAspects: List<SynastryAspect> = if (innerIncludeAxis) {
-      synastryAspectsFine(outer.positionMap, inner, laterForOuter, laterForInner, aspectCalculator, threshold, aspects)
+      synastryAspectsFine(posMapOuter, inner, laterForOuter, laterForInner, aspectCalculator, threshold, aspects)
     } else {
       // 當 inner 不含 Axis 時，過濾掉 Axis 點，因為沒有精確出生時間時 Axis 沒有意義
       val filteredInnerMap = inner.positionMap.filterKeys { it !is Axis }
-      synastryAspectsCoarse(outer.positionMap, filteredInnerMap, laterForOuter, laterForInner, aspectCalculator, threshold, aspects)
+      synastryAspectsCoarse(posMapOuter, filteredInnerMap, laterForOuter, laterForInner, aspectCalculator, threshold, aspects)
     }
 
     val houseOverlayStars = outer.points.filter { it is Planet || it is FixedStar || it is LunarPoint }

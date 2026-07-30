@@ -105,7 +105,13 @@ class PersonHoroscopeFeature(
       SynastryGrain.INNER_DATE_OUTER_FULL -> false
       SynastryGrain.BOTH_DATE -> false
     }
-    val synastry = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, threshold, innerIncludeAxis, aspects)
+    val outerIncludeAxis = when(grain) {
+      SynastryGrain.BOTH_FULL -> true
+      SynastryGrain.INNER_FULL_OUTER_DATE -> false
+      SynastryGrain.INNER_DATE_OUTER_FULL -> true
+      SynastryGrain.BOTH_DATE -> false
+    }
+    val synastry = horoscopeFeature.synastry(modelOuter, modelInner, aspectCalculator, threshold, innerIncludeAxis, aspects, outerIncludeAxis = outerIncludeAxis)
 
     val synastryAspects: List<SynastryAspect> = synastry.aspects
       .filter { aspect ->
