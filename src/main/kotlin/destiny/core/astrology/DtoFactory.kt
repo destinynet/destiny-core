@@ -43,19 +43,14 @@ class DtoFactory(
         .mapValues { (_ , points) ->
           points.filterNot { it is FixedStar } // 過濾恆星
             .filter { astroPoint ->
-              when(grain) {
-                BirthDataGrain.MINUTE -> true
-                BirthDataGrain.DAY -> astroPoint !is Axis // 過濾四軸
-              }
+              grain.includeAxis || astroPoint !is Axis // 無精確時刻 → 過濾四軸
             }
         }
         .filter { (_, points) ->
           points.isNotEmpty()
         }
 
-    val byHouse: List<HouseDto> = when(grain) {
-      BirthDataGrain.DAY -> emptyList()
-      BirthDataGrain.MINUTE -> houses.map { h ->
+    val byHouse: List<HouseDto> = if (!grain.includeAxis) emptyList() else houses.map { h ->
         HouseDto(
           h.index,
           h.cusp,
@@ -65,7 +60,6 @@ class DtoFactory(
             .filterNot { it is FixedStar } // 過濾恆星
         )
       }
-    }
 
     val threshold = 0.8
 
@@ -78,10 +72,7 @@ class DtoFactory(
       }.toMap()
 
     val byStar: Map<AstroPoint, Natal.StarPosInfo> = getByStarMap(threshold, aspectCalculator, rulerImpl, grain, declinationMap).filter { (p, _) ->
-      when (grain) {
-        BirthDataGrain.MINUTE -> true
-        BirthDataGrain.DAY    -> p !is Axis
-      }
+      grain.includeAxis || p !is Axis
     }
       .filterKeys { it !is FixedStar } // 過濾恆星
 
@@ -90,9 +81,8 @@ class DtoFactory(
     // 從 8度之內起算
     val toleranceOrb = 8.0
 
-    val axisStars: Map<Axis, List<AxisStar>> = when(grain) {
-      BirthDataGrain.DAY -> emptyMap()
-      BirthDataGrain.MINUTE -> {
+    val axisStars: Map<Axis, List<AxisStar>> = if (!grain.includeAxis) emptyMap() else {
+      run {
         getAxisStars(8.0).map { (axis , starAndOrbs) ->
           val newStarAndOrbs = starAndOrbs.filter { (star , orb) ->
             if (star is FixedStar) {
@@ -114,9 +104,8 @@ class DtoFactory(
 
     val allPlanets = points.filterIsInstance<Planet>().size
 
-    val houseStarDistribution: Map<HouseType, Natal.HouseStarDistribution> = when(grain) {
-      BirthDataGrain.DAY -> emptyMap()
-      BirthDataGrain.MINUTE -> {
+    val houseStarDistribution: Map<HouseType, Natal.HouseStarDistribution> = if (!grain.includeAxis) emptyMap() else {
+      run {
         HouseType.entries.associateWith { houseType ->
           val starCount = getHousePoints(houseType).filterIsInstance<Planet>().size
           Natal.HouseStarDistribution(starCount, (starCount.toDouble() * 100.0 / allPlanets))
@@ -131,9 +120,9 @@ class DtoFactory(
       classicalFeature.getModel(gmtJulDay, location, cfg).flatMap { (_, list: List<IPlanetPattern>) ->
         list
           .filterNot { pattern ->
-            // 沒有出生時辰 (grain = DAY) 時，得時/不得時 (Hayz / Out of Sect) 依賴晝夜與星體
-            // 在地平面上下，以正午 placeholder 推算不可採信，故濾除。
-            grain == BirthDataGrain.DAY &&
+            // 沒有精確出生時辰時，得時/不得時 (Hayz / Out of Sect) 依賴晝夜「與」星體在地平面上下 ——
+            // 後者需要精確時刻，故即使知晝夜 (DAY_NIGHT)，以正午 placeholder 推算仍不可採信，濾除。
+            !grain.includeAxis &&
               (pattern is AccidentalDignity.Hayz || pattern is Debility.Out_of_Sect)
           }
           .map {
@@ -148,40 +137,29 @@ class DtoFactory(
       .filterNot { pattern -> pattern.points.all { it is FixedStar } }
 
     val astroPatterns = getPatterns(PatternContext(aspectAffective, aspectCalculator), threshold).let { patterns ->
-      when (grain) {
-        BirthDataGrain.MINUTE -> patterns
-        BirthDataGrain.DAY -> {
-          patterns.filterNot { pattern -> pattern.points.any { it is Axis } }
-        }
-      }
+      if (grain.includeAxis) patterns
+      else patterns.filterNot { pattern -> pattern.points.any { it is Axis } }
     }
 
     val midPoints = getMidPointsWithFocal().filter { it.orb <= 1.0 }.let { midPoints ->
-      when(grain) {
-        BirthDataGrain.MINUTE -> midPoints
-        BirthDataGrain.DAY -> {
-          midPoints.filterNot {
-            midPoint ->
-            midPoint.points.any { it is Axis } || midPoint.focal is Axis
-          }
-        }
+      if (grain.includeAxis) midPoints
+      else midPoints.filterNot { midPoint ->
+        midPoint.points.any { it is Axis } || midPoint.focal is Axis
       }
     }
 
 
-    val harmonics: Map<Int, Harmonic> = when (grain) {
-      BirthDataGrain.MINUTE -> {
-        listOf(5, 7, 9).associateWith { n ->
-          val aspectAffectiveHarmonic = AspectEffectiveHarmonic(n, aspectAffective)
+    // 諧波盤把位置誤差放大 n 倍（正午 placeholder 的月亮誤差 ±6.6° × 9 ≈ 60°），僅 MINUTE 可信
+    val harmonics: Map<Int, Harmonic> = if (grain != BirthDataGrain.MINUTE) emptyMap() else {
+      listOf(5, 7, 9).associateWith { n ->
+        val aspectAffectiveHarmonic = AspectEffectiveHarmonic(n, aspectAffective)
 
-          @Suppress("UNCHECKED_CAST")
-          val harmonicAspectCalculator = AspectCalculatorImpl(aspectAffectiveHarmonic, positionMap as Map<AstroPoint, IPosition<*>>)
-          with(horoscopeFeature) {
-            this@toHoroscopeDto.getHarmonic(n, harmonicAspectCalculator)
-          }
+        @Suppress("UNCHECKED_CAST")
+        val harmonicAspectCalculator = AspectCalculatorImpl(aspectAffectiveHarmonic, positionMap as Map<AstroPoint, IPosition<*>>)
+        with(horoscopeFeature) {
+          this@toHoroscopeDto.getHarmonic(n, harmonicAspectCalculator)
         }
       }
-      BirthDataGrain.DAY    -> emptyMap()
     }.filter { (_ , harmonic) -> harmonic.aspects.isNotEmpty() }
 
 

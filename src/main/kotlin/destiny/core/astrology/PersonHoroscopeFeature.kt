@@ -83,18 +83,13 @@ class PersonHoroscopeFeature(
     grain: SynastryGrain,
     aspects: Set<Aspect>
   ): SynastryRequestDto {
+    // 月亮日行 ~13°，正午 placeholder 誤差可達 ±6.6°，非 MINUTE 一律排除
     val innerPoints = modelInner.points.let { points ->
-      when (grain.innerGrain) {
-        BirthDataGrain.MINUTE -> points
-        BirthDataGrain.DAY    -> points.filter { it != Planet.MOON }
-      }
+      if (grain.innerGrain == BirthDataGrain.MINUTE) points else points.filter { it != Planet.MOON }
     }.toList()
 
     val outerPoints: List<AstroPoint> = modelOuter.points.let { points ->
-      when (grain.outerGrain) {
-        BirthDataGrain.MINUTE -> points
-        BirthDataGrain.DAY    -> points.filter { it != Planet.MOON }
-      }
+      if (grain.outerGrain == BirthDataGrain.MINUTE) points else points.filter { it != Planet.MOON }
     }.toList()
 
     val posMapOuter = modelOuter.positionMap

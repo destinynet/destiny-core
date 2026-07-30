@@ -7,17 +7,28 @@ import destiny.core.astrology.prediction.Firdaria
 import destiny.core.astrology.prediction.FirdariaMajorPeriod
 import destiny.core.astrology.prediction.FirdariaSubPeriod
 import destiny.core.astrology.prediction.FirdariaTimeline
+import destiny.core.DayNight
 import destiny.core.astrology.prediction.firdariaPeriodOverlapping
 import destiny.core.astrology.prediction.getMajorRulers
 import destiny.core.astrology.prediction.majorRulerYearsMap
 import destiny.core.calendar.GmtJulDay
 
+/**
+ * 晝夜生判定：[dayNight] 非 null 時直接採用（[BirthDataGrain.DAY_NIGHT_DIURNAL] 等
+ * 「不知時刻但知晝夜」的情境 —— 此時盤面時刻是捏造的正午，太陽宮位不可信）；
+ * null 時維持現行「太陽在地平線上（第 7~12 宮）」推導，需精確時刻。
+ */
+private fun IHoroscopeModel.isDiurnal(dayNight: DayNight?): Boolean {
+  return dayNight?.let { it == DayNight.DAY } ?: run {
+    val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
+    sunHouse in 7..12
+  }
+}
 
-fun IHoroscopeModel.getFirdariaPeriods(gmtJulDay: GmtJulDay): Pair<FirdariaMajorPeriod, FirdariaSubPeriod?> {
+fun IHoroscopeModel.getFirdariaPeriods(gmtJulDay: GmtJulDay, dayNight: DayNight? = null): Pair<FirdariaMajorPeriod, FirdariaSubPeriod?> {
   require(gmtJulDay >= this.gmtJulDay) { "Query time must be at or after birth time." }
 
-  val sunHouse = this.getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
-  val diurnal = sunHouse in 7..12
+  val diurnal = isDiurnal(dayNight)
 
   val fullMajorRulerSequence = getMajorRulers(diurnal)
   // 副運序列只包含七大行星，順序與主運序列一致
@@ -64,8 +75,8 @@ fun IHoroscopeModel.getFirdariaPeriods(gmtJulDay: GmtJulDay): Pair<FirdariaMajor
   return foundMajor to foundSub
 }
 
-fun IHoroscopeModel.getFirdaria(gmtJulDay: GmtJulDay): Firdaria {
-  val (majorPeriod, subPeriod) = getFirdariaPeriods(gmtJulDay)
+fun IHoroscopeModel.getFirdaria(gmtJulDay: GmtJulDay, dayNight: DayNight? = null): Firdaria {
+  val (majorPeriod, subPeriod) = getFirdariaPeriods(gmtJulDay, dayNight)
   val period = subPeriod ?: majorPeriod
 
   return Firdaria(majorPeriod.ruler, period.ruler, period.fromTime, period.toTime)
@@ -78,9 +89,8 @@ fun IHoroscopeModel.getFirdaria(gmtJulDay: GmtJulDay): Firdaria {
  * @param to 結束時間
  * @return 一個包含所有與指定範圍重疊的 Firdaria 時段的列表。
  */
-fun IHoroscopeModel.getRangeFirdaria(from: GmtJulDay, to: GmtJulDay): List<Firdaria> {
-  val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
-  val diurnal = sunHouse in 7..12
+fun IHoroscopeModel.getRangeFirdaria(from: GmtJulDay, to: GmtJulDay, dayNight: DayNight? = null): List<Firdaria> {
+  val diurnal = isDiurnal(dayNight)
 
   val fullMajorRulerSequence = getMajorRulers(diurnal)
   val planetarySequence = fullMajorRulerSequence.filterIsInstance<Planet>()
@@ -120,11 +130,10 @@ fun IHoroscopeModel.getRangeFirdaria(from: GmtJulDay, to: GmtJulDay): List<Firda
     .toList()
 }
 
-fun IHoroscopeModel.getFirdariaTimeline(years: Int): FirdariaTimeline {
+fun IHoroscopeModel.getFirdariaTimeline(years: Int, dayNight: DayNight? = null): FirdariaTimeline {
   require(years > 0) { "Years must be positive." }
 
-  val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
-  val diurnal = sunHouse in 7..12
+  val diurnal = isDiurnal(dayNight)
 
   val fullMajorRulerSequence = getMajorRulers(diurnal)
   val planetarySequence = fullMajorRulerSequence.filterIsInstance<Planet>()

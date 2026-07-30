@@ -196,10 +196,7 @@ fun IHoroscopeModel.getPatterns(patternContext: PatternContext, threshold: Doubl
 
 fun IHoroscopeModel.getTightAspects(aspectCalculator: IAspectCalculator, threshold: Double, grain: BirthDataGrain): List<IPointAspectPattern> {
   val points = points.filter {
-    when(grain) {
-      BirthDataGrain.MINUTE -> true
-      BirthDataGrain.DAY -> it !is Axis
-    }
+    grain.includeAxis || it !is Axis
   }.toSet()
 
   return with(aspectCalculator) { getAspectPatterns(points) }
@@ -229,10 +226,7 @@ fun IHoroscopeModel.getByStarMap(
         .let { setOf(it) }
     }
 
-    val house = when(grain) {
-      BirthDataGrain.MINUTE -> getHouse(astroPoint)!!
-      BirthDataGrain.DAY -> null
-    }
+    val house = if (grain.includeAxis) getHouse(astroPoint)!! else null
 
     Natal.StarPosInfo(
       getZodiacDegree(astroPoint)!!,
@@ -247,12 +241,7 @@ fun IHoroscopeModel.getByStarMap(
       if (astroPoint is Star) {
         getRetrogradePhase(astroPoint)
       } else null,
-      if (astroPoint is Planet) {
-        when(grain) {
-          BirthDataGrain.MINUTE -> getRulingHouses(astroPoint)
-          BirthDataGrain.DAY -> emptySet()
-        }
-      } else emptySet(),
+      if (astroPoint is Planet && grain.includeAxis) getRulingHouses(astroPoint) else emptySet(),
       dispositors,
       astroPoint.getAspects(this, threshold, aspectCalculator, grain),
       declination = declinationMap[astroPoint],
