@@ -137,7 +137,8 @@ fun Double.truncate(decimals: Int): Double {
   return floor(this * factor) / factor
 }
 
-private const val MAX_PRECISION = 10
+/** [truncateToString] 容許的最大小數位數。`internal` 是為了讓測試引用它而非寫死字面值 —— 曾因此失準過。 */
+internal const val MAX_PRECISION = 10
 private val POW10 = DoubleArray(MAX_PRECISION + 1) { i -> 10.0.pow(i) }
 private val FORMAT_TEMPLATES = Array(MAX_PRECISION + 1) { i -> "%.${i}f" }
 

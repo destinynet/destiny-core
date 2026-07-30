@@ -52,21 +52,23 @@ class LanguageToolsKtTest {
       assertEquals("2.00", value.truncateToString(2, epsilon = 0.6))
     }
 
+    /**
+     * 原本用 `try { ... ; assert(false) } catch (e: IllegalArgumentException) {}` 表達，有兩個問題：
+     *
+     * 1. Kotlin 的 `assert()` 編譯成 JVM assertion，**未加 `-ea` 時整句是 no-op** ——
+     *    IntelliJ 與 Maven surefire 的預設不同（surefire 預設開啟），於是同一份程式碼
+     *    IDE 綠、CLI 紅。誤報的來源不是環境差異，是這個斷言本身可被關掉。
+     * 2. 上界寫死成 5，但實作的 [MAX_PRECISION] 早已放寬到 10，`truncateToString(6)` 根本合法。
+     *    測試名為「n > 5 應拋例外」，實際上是測試自己過期了。
+     *
+     * 改用 [assertThrows]（不受 `-ea` 影響）並引用 [MAX_PRECISION] 而非字面值。
+     */
     @Test
     fun testInvalidInput() {
-      try {
-        (-1.0).truncateToString(-1)
-        assert(false) { "Should throw exception for negative n" }
-      } catch (e: IllegalArgumentException) {
-        // pass
-      }
-
-      try {
-        1.0.truncateToString(6)
-        assert(false) { "Should throw exception for n > 5" }
-      } catch (e: IllegalArgumentException) {
-        // pass
-      }
+      assertThrows<IllegalArgumentException> { (-1.0).truncateToString(-1) }
+      assertThrows<IllegalArgumentException> { 1.0.truncateToString(MAX_PRECISION + 1) }
+      // 邊界內側不得拋出
+      assertEquals("1.0000000000", 1.0.truncateToString(MAX_PRECISION))
     }
   }
 
