@@ -49,3 +49,17 @@ val BirthDataGrain.includeProfection: Boolean
  */
 val BirthDataGrain.includeLunarReturns: Boolean
   get() = this == BirthDataGrain.MINUTE
+
+/**
+ * 本命月亮的位置是否可信 —— 亦即可否作為相位標的。
+ *
+ * 月亮日行約 13°，無精確時刻時以正午錨定，誤差達 **±6.5°**，**超過任何 orb**。
+ * 因此無精確時刻時，本命月亮不該進入任何相位判讀：它產出的是
+ * 「看起來很有說服力的噪音」，對 LLM 而言比缺漏更糟 —— 分不出真假，就會拿去論斷。
+ *
+ * 注意這與「排除**行運**月亮」是兩件事：行運月亮被排除的理由是效應僅數小時，
+ * 與出生時刻精度無關。兩者都要做，但條件不同 —— 舊實作只做了行運側，
+ * 註解寫著 `exclude MOON`，本命側卻照收。
+ */
+val BirthDataGrain.includeLunarPosition: Boolean
+  get() = this == BirthDataGrain.MINUTE
