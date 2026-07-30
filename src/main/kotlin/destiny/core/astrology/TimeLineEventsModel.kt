@@ -132,6 +132,25 @@ sealed class AbstractEvent {
   abstract val details: String
   abstract val sentiment: EventSentiment?
   abstract fun yearMonth() : YearMonth
+
+  /**
+   * 本事件的時刻精度。由子型別身分決定，故為 getter 而非建構參數 —— 不進序列化，也不可外部指定。
+   *
+   * 判讀端請問這個（或 [canDayLevelTransit] / [chartGrain]），不要對子型別寫窮舉 `when`。
+   */
+  abstract val grain: EventGrain
+
+  /**
+   * 可用來排事件盤的當地時刻；[EventGrain.MONTH] 無日期可錨定，回傳 null。
+   *
+   * [EventGrain.DAY] 取正午 —— 這是**刻意的捏造**，僅為了讓日行度較慢的行星（太陽、水金火）
+   * 有個代表位置；其 ASC/MC 完全無效，故 [chartGrain] 會把它標成 [BirthDataGrain.DAY]，
+   * 由下游的 grain 閘門把軸點與宮位擋掉。
+   */
+  abstract fun chartTime(): LocalDateTime?
+
+  /** 原始日期字面，精度隨 [grain]（`2020-03` / `2020-03-03` / `2020-03-03T14:30`）。稽核比對用，不參與計算。 */
+  abstract val dateLabel: String
 }
 
 @Serializable
@@ -145,6 +164,10 @@ data class MonthEvent(
   override fun yearMonth(): YearMonth {
     return date
   }
+
+  override val grain: EventGrain get() = EventGrain.MONTH
+  override fun chartTime(): LocalDateTime? = null
+  override val dateLabel: String get() = date.toString()
 }
 
 @Serializable
@@ -158,6 +181,10 @@ data class DayEvent(
   override fun yearMonth(): YearMonth {
     return YearMonth.from(date)
   }
+
+  override val grain: EventGrain get() = EventGrain.DAY
+  override fun chartTime(): LocalDateTime = date.atTime(12, 0)
+  override val dateLabel: String get() = date.toString()
 }
 
 @Serializable
@@ -171,6 +198,10 @@ data class MinuteEvent(
   override fun yearMonth(): YearMonth {
     return YearMonth.from(date)
   }
+
+  override val grain: EventGrain get() = EventGrain.MINUTE
+  override fun chartTime(): LocalDateTime = date
+  override val dateLabel: String get() = date.toString()
 }
 
 object AbstractEventSerializer : KSerializer<AbstractEvent> {
@@ -396,18 +427,14 @@ data class Redaction(
    *
    * 特別檢查**日期精度**：LLM 會傾向把 `2020-03-03` 這種 [DayEvent] 降級成 `2020-03` 的 [MonthEvent]
    * （大概是誤以為「日」也算個資）。那會靜默摧毀日級校準能力 ——
-   * `getMergedUserEventsModel` 的 DAY scale 是靠 `filterIsInstance<DayEvent>()` 才展開行運的。
-   * 因此這裡比對的是「型別 + 完整日期」，不是 [AbstractEvent.yearMonth]。
+   * `getMergedUserEventsModel` 只對 [EventGrain.canDayLevelTransit] 為真的事件展開行運。
+   * 因此這裡比對的是「[AbstractEvent.grain] + 完整日期」，不是 [AbstractEvent.yearMonth]。
    */
   fun signalMismatches(original: ExtractedEvents): List<String> {
     if (original.events.size != redacted.events.size) {
       return listOf("event count : ${original.events.size} -> ${redacted.events.size}")
     }
-    fun AbstractEvent.signalKey(): String = when (this) {
-      is DayEvent    -> "DAY:$date"
-      is MonthEvent  -> "MONTH:$date"
-      is MinuteEvent -> "MINUTE:$date"
-    }
+    fun AbstractEvent.signalKey(): String = "$grain:$dateLabel"
     return original.events.zip(redacted.events).mapNotNull { (a, b) ->
       when {
         a.signalKey() != b.signalKey() -> "date : ${a.signalKey()} -> ${b.signalKey()}"
