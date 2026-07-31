@@ -211,8 +211,32 @@ class AbstractEventTest {
         from = LocalDate.of(2026, 6, 20), to = null,
         eventType = EventType.REPUTATION_CRISIS, details = "尚未止息"
       )
-      assertTrue(e.ongoing)
+      assertTrue(e.ongoing())
       assertEquals(YearMonthRange(YearMonth.of(2026, 6), YearMonth.of(2026, 6)), e.yearMonthRange())
+    }
+
+    /** [effectiveYearMonthRange]：進行中者由呼叫端以 viewMonth 提供上界；已結束者與點事件不受影響。 */
+    @Test
+    fun effectiveRange_extendsOngoingToUpperBound() {
+      val ongoing = PeriodEvent(
+        from = LocalDate.of(2026, 6, 20), to = null,
+        eventType = EventType.REPUTATION_CRISIS, details = "尚未止息"
+      )
+      val viewMonth = YearMonth.of(2026, 9)
+      assertEquals(YearMonthRange(YearMonth.of(2026, 6), viewMonth), ongoing.effectiveYearMonthRange(viewMonth))
+      // 上界為 null → 原樣（資料模型不知道 today 的預設行為）
+      assertEquals(ongoing.yearMonthRange(), ongoing.effectiveYearMonthRange(null))
+      // 上界早於（或等於）既有終點 → 不縮短
+      assertEquals(ongoing.yearMonthRange(), ongoing.effectiveYearMonthRange(YearMonth.of(2026, 5)))
+
+      val closed = PeriodEvent(
+        from = LocalDate.of(2026, 6, 20), to = LocalDate.of(2026, 7, 31),
+        eventType = EventType.REPUTATION_CRISIS, details = "已止息"
+      )
+      assertEquals(closed.yearMonthRange(), closed.effectiveYearMonthRange(viewMonth), "已結束者不外推")
+
+      val point = DayEvent(LocalDate.of(2026, 6, 20), EventType.OTHERS, "點事件")
+      assertEquals(point.yearMonthRange(), point.effectiveYearMonthRange(viewMonth), "點事件不受影響")
     }
 
     /** 點事件退化成 start == endInclusive，故舊行為完全不變。 */
@@ -246,6 +270,27 @@ class AbstractEventTest {
       assertEquals(listOf(period, inTail), groups[0])
     }
 
+    /**
+     * 進行中的事件把「它燒到的月份裡發生的其他事件」拉進同一群 ——
+     * 六月起延燒未止的危機 + 十一月的獨立事件，在 viewMonth = 十二月看盤時屬同一段敘事。
+     * 不給上界（舊行為）則判成兩群（與 [groupAdjacent_farAwayEventStaysSeparate] 同距離）。
+     */
+    @Test
+    fun groupAdjacent_ongoingPullsInLaterEventsUpToUpperBound() {
+      val ongoing = PeriodEvent(
+        from = LocalDate.of(2026, 6, 20), to = null,
+        eventType = EventType.REPUTATION_CRISIS, details = "延燒未止"
+      )
+      val later = DayEvent(LocalDate.of(2026, 11, 10), EventType.OTHERS, "危機期間的另一事件")
+
+      val without = listOf(ongoing, later).groupAdjacentEvents(extMonth = 1)
+      assertEquals(2, without.size, "無上界 → 進行中事件停在起始月，兩群")
+
+      val with = listOf(ongoing, later).groupAdjacentEvents(extMonth = 1, ongoingUpperBound = YearMonth.of(2026, 12))
+      assertEquals(1, with.size, "有上界 → 延燒區間涵蓋十一月，同一群")
+      assertEquals(listOf(ongoing, later), with[0])
+    }
+
     /** 但真正離群的仍該分開 —— 別讓「涵蓋」變成無條件合併。 */
     @Test
     fun groupAdjacent_farAwayEventStaysSeparate() {
@@ -275,6 +320,33 @@ class AbstractEventTest {
         eventType = EventType.REPUTATION_CRISIS, details = "尚未止息"
       )
       assertEquals(ongoing, json.decodeFromString<AbstractEvent>(json.encodeToString(ongoing)))
+    }
+
+    /**
+     * 進行中者的序列化出口必須附加顯式 `"ongoing": true` ——
+     * 「to 欄位缺席」對 LLM 而言與「已結束」無法區分。
+     * 輸入端寬容剝除此標記（roundtrip 對稱由 [serializationRoundTrip] 一併驗證）。
+     */
+    @Test
+    fun ongoingMarker_emittedOnExportStrippedOnImport() {
+      val ongoing: AbstractEvent = PeriodEvent(
+        from = LocalDate.of(2026, 6, 20),
+        eventType = EventType.REPUTATION_CRISIS, details = "尚未止息"
+      )
+      val encoded = json.encodeToString(ongoing)
+      assertTrue("\"ongoing\":true" in encoded.replace(" ", ""), "出口須含 ongoing 標記：$encoded")
+
+      val closed: AbstractEvent = PeriodEvent(
+        from = LocalDate.of(2026, 6, 20), to = LocalDate.of(2026, 7, 31),
+        eventType = EventType.REPUTATION_CRISIS, details = "已止息"
+      )
+      assertFalse("ongoing" in json.encodeToString(closed), "已結束者不得有標記")
+
+      // 輸入端剝除：帶標記的 JSON（例如曾被序列化的素材）能正常解析
+      val parsed = json.decodeFromString<AbstractEvent>(
+        """{"from":"2026-06-20","ongoing":true,"eventType":"REPUTATION_CRISIS","details":"尚未止息"}"""
+      )
+      assertEquals(ongoing, parsed)
     }
 
     /** 有 `from` 就走 PeriodEvent；沒有才回頭看 `date` 的字面格式。點事件的分派不受影響。 */

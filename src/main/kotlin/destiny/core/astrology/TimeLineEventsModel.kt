@@ -29,6 +29,9 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.encodeStructure
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonEncoder
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.time.LocalDate
@@ -253,14 +256,20 @@ data class PeriodEvent(
     }
   }
 
-  /** 是否仍在進行中（[to] 為 null）。素材出口應據此標示，否則 LLM 會把「沒有終點」讀成「已結束」。 */
-  val ongoing: Boolean get() = to == null
+  /**
+   * 是否仍在進行中（[to] 為 null）。[AbstractEventSerializer] 的出口會據此附加
+   * `"ongoing": true` 標記，否則 LLM 會把「沒有終點」讀成「已結束」。
+   *
+   * 寫成函式而非屬性 —— 見 [AbstractEvent.grain] 的 KDoc：衍生成員一律寫成函式，
+   * 否則 `FormatSpec.of` 反射出的 JSON schema 會把它當成 LLM 該產出的必填欄位。
+   */
+  fun ongoing(): Boolean = to == null
 
   override fun yearMonth(): YearMonth = YearMonth.from(from)
 
   /**
    * 進行中（[ongoing]）者只由起點決定區間，**刻意不外推到「現在」** ——
-   * 資料模型不該知道 today 是哪天。上界該由呼叫端以 viewDay 決定。
+   * 資料模型不該知道 today 是哪天。呼叫端請改用 [effectiveYearMonthRange] 以 viewDay 提供上界。
    */
   override fun yearMonthRange(): YearMonthRange =
     YearMonthRange(YearMonth.from(from), YearMonth.from(to ?: from))
@@ -297,6 +306,8 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
     element<String>("from", isOptional = true)
     element<String>("to", isOptional = true)
     element<String>("ignition", isOptional = true)
+    // 出口附加的唯讀標記（見 serialize），輸入端寬容剝除 —— 不是資料欄位
+    element<Boolean>("ongoing", isOptional = true)
     element("eventType", EventType.serializer().descriptor)
     element<String>("details")
     element("sentiment", EventSentiment.serializer().descriptor, isOptional = true)
@@ -307,7 +318,18 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
       is MonthEvent  -> encoder.encodeSerializableValue(MonthEvent.serializer(), value)
       is DayEvent    -> encoder.encodeSerializableValue(DayEvent.serializer(), value)
       is MinuteEvent -> encoder.encodeSerializableValue(MinuteEvent.serializer(), value)
-      is PeriodEvent -> encoder.encodeSerializableValue(PeriodEvent.serializer(), value)
+      is PeriodEvent -> {
+        if (value.ongoing()) {
+          // 進行中的事件在出口附加顯式標記 —— 「to 欄位缺席」對 LLM 而言與「已結束」無法區分。
+          // deserialize 端會把此標記剝除，維持 roundtrip 對稱。
+          val jsonEncoder = encoder as? JsonEncoder
+            ?: throw IllegalStateException("This serializer can only be used with JSON format.")
+          val obj = jsonEncoder.json.encodeToJsonElement(PeriodEvent.serializer(), value).jsonObject
+          jsonEncoder.encodeJsonElement(JsonObject(obj + ("ongoing" to JsonPrimitive(true))))
+        } else {
+          encoder.encodeSerializableValue(PeriodEvent.serializer(), value)
+        }
+      }
     }
   }
 
@@ -324,7 +346,9 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
       require(!jsonObject.containsKey("date")) {
         "AbstractEvent : 'from' 與 'date' 不可並存 —— 有延時的事件用 from/to，點事件用 date。"
       }
-      return Json.decodeFromJsonElement(PeriodEvent.serializer(), jsonObject)
+      // "ongoing" 是出口附加的唯讀標記（見 serialize），輸入端寬容剝除 ——
+      // 曾被序列化的素材（或照抄範例的 LLM）餵回來時才不會炸
+      return Json.decodeFromJsonElement(PeriodEvent.serializer(), JsonObject(jsonObject.filterKeys { it != "ongoing" }))
     }
 
     // 提取 "date" 欄位的字串值
@@ -358,20 +382,40 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
 }
 
 /**
- * 依 [AbstractEvent.yearMonthRange] 分群 —— 各自向外擴張 [extMonth] 個月後合併相鄰／重疊者。
+ * 事件的**有效**月份區間：進行中（[PeriodEvent.ongoing]）者由呼叫端以 [ongoingUpperBound]
+ * 提供上界（通常是 viewDay 所在月）—— 這是 [PeriodEvent.yearMonthRange] KDoc 承諾的落地點。
+ *
+ * 資料模型不知道 today，所以「延燒中的事件燒到哪」只能在讀取時計算：
+ * 不外推的話，六月起延燒未止的事件在七月底看盤，七月的行運根本不會被掃到。
+ * 非進行中的事件（含所有點事件）原樣返回，[ongoingUpperBound] 為 null 亦原樣返回。
+ */
+fun AbstractEvent.effectiveYearMonthRange(ongoingUpperBound: YearMonth?): YearMonthRange {
+  val range = yearMonthRange()
+  return if (ongoingUpperBound != null && this is PeriodEvent && ongoing() && ongoingUpperBound > range.endInclusive) {
+    YearMonthRange(range.start, ongoingUpperBound)
+  } else {
+    range
+  }
+}
+
+/**
+ * 依 [effectiveYearMonthRange] 分群 —— 各自向外擴張 [extMonth] 個月後合併相鄰／重疊者。
  *
  * 以區間（而非單一 [AbstractEvent.yearMonth]）為依據，[PeriodEvent] 才能把自己跨到的月份
  * 一併拉進同一群。點事件退化成 `start == endInclusive`，行為與改動前完全相同。
+ *
+ * @param ongoingUpperBound 進行中事件的區間上界（通常是 viewDay 所在月）。
+ *   提供時，延燒中的事件會把它燒到的月份（乃至期間內發生的其他事件）拉進同一群。
  */
-fun List<AbstractEvent>.groupAdjacentEvents(extMonth: Int = 1): List<List<AbstractEvent>> {
+fun List<AbstractEvent>.groupAdjacentEvents(extMonth: Int = 1, ongoingUpperBound: YearMonth? = null): List<List<AbstractEvent>> {
   if (this.size < 2) {
     return listOf(this)
   }
 
-  val mergedRanges: List<YearMonthRange> = this.map { it.yearMonthRange() }.groupMergedRanges(extMonth)
+  val mergedRanges: List<YearMonthRange> = this.map { it.effectiveYearMonthRange(ongoingUpperBound) }.groupMergedRanges(extMonth)
 
   return mergedRanges.map { range: YearMonthRange ->
-    this.filter { event -> event.yearMonthRange().overlaps(range) }
+    this.filter { event -> event.effectiveYearMonthRange(ongoingUpperBound).overlaps(range) }
   }
 }
 
