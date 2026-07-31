@@ -268,8 +268,26 @@ class ReturnContext(
     // DAY grain 的 Axis 排除／house 置 null 已由 synastry(innerGrain, outerGrain) 逐盤處理
     //（coarse path 的 house 恆為 null、houseOverlayMap 恆空），此處只需排除定義性相位。
     val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold, grain, grain).let { synastry: Synastry ->
-      // SR Sun conjunct natal Sun / LR Moon conjunct natal Moon 是定義本身，永遠排除
-      val filtered = synastry.aspects.filterNot { aspect -> aspect.points.all { it == this@ReturnContext.planet } }
+      /**
+       * **返照星作為外盤端點的相位，全部是本命相位的重述，一律排除。**
+       *
+       * 返照盤的定義就是「[planet] 回到本命同一個黃經度」，所以返照盤的該顆星與本命的
+       * 該顆星是**同一個度數**。於是 `SR Sun □ natal Pluto` 與本命的 `Sun □ Pluto`
+       * 是同一條相位、同一個 orb，零新資訊。
+       *
+       * 舊版只擋兩端都是 [planet] 的那一筆（`SR Sun ☌ natal Sun`），漏掉了
+       * 「外盤是返照星、內盤是別顆星」的一整族。實測本 fixture 的 10 張太陽返照盤：
+       * 163 筆 SR-to-natal 相位中有 **20 筆（12%）** 屬此類，而且**每一年都是同樣那兩筆、
+       * 同樣的 orb**（`□ natal Moon 0.01`、`□ natal Pluto 0.78`）——
+       * 因為它們根本就是本命的 `Sun □ Moon` 與 `Sun □ Pluto`。
+       *
+       * 危害不只是冗餘：`orb 0.01` **每一年都排在最緊**，所以任何
+       * 「取返照盤最緊密相位＝該年主題」的規則會被它系統性劫持，年年得到同一個答案。
+       * 兩輪獨立的盲測 subagent（R4、R5）都自行察覺並手動排除了它 —— 兩次都靠讀者
+       * 補救，表示這是素材缺陷而非讀者問題。更糟的是 DAY grain 下那個 0.01 還是
+       * 正午錨定的假數字（本命月亮 ±6.5°），等於「一個捏造值的重述」年年奪冠。
+       */
+      val filtered = synastry.aspects.filterNot { aspect -> aspect.outerPoint == this@ReturnContext.planet }
       Synastry(filtered, synastry.houseOverlayMap)
     }
 
