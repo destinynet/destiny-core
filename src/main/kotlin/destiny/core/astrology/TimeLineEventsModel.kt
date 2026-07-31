@@ -405,6 +405,51 @@ data class EventGroup(
   val transits : Map<@Contextual GmtJulDay, Synastry>
 )
 
+/**
+ * 掃描層的身分 —— past 與 future 共用同一組定義，這正是重點：
+ * LLM 要「從 past 已驗證的 pattern 對照 future」，前提是兩邊用**相同的幾何詞彙**掃描。
+ * 若某類訊號（如月相、行運星互相位）只存在於一側，該類規則就永遠無法校準。
+ */
+@Serializable
+enum class ScanLayer {
+  /** 推運層：太陽弧 + 次限（past 的日級錨點另含三推／小限）。找「年份級」的背景。 */
+  PROGRESSION,
+
+  /** 背景層：火星 + 外行星，含行運星互相位、滯留、食、慢星換座。找「窗口」。 */
+  BACKGROUND,
+
+  /** 快層：日水金對本命。職能是把背景層標出的窗口定位到 ±2 天，不是自己找窗口。 */
+  FAST,
+
+  /** 月相層：只吐月相（日月角度），不吐月亮對本命的相位（月速 13°/日，效應僅數小時）。 */
+  LUNAR_PHASE
+}
+
+/**
+ * 素材的取樣說明書 —— 把「掃了什麼詞彙、掃到哪裡」寫進資料本身。
+ *
+ * 動機：取樣邊界若只存在於程式碼（如快層只覆蓋前 90 天、past 的月相只掃事件群窗口），
+ * 讀素材的 LLM 分不出「沒事發生」與「我們沒掃」—— 這正是本專案自己批評過的**沉默截斷**。
+ * 附帶效益：盲測各輪的素材版本可以直接 diff coverage，不必再靠人工在 docs 裡記錄。
+ *
+ * 欄位刻意用人讀的字串（而非結構化型別）：消費者是 LLM 與盲測稽核者，不是程式。
+ *
+ * @param transiting   此層行運端（外圈）的星體
+ * @param natalTargets 本命側標的的文字描述；月相層無本命側，留 null
+ * @param features     此層產出的事件種類（transit-to-natal aspects, stations, eclipses…）
+ * @param span         覆蓋範圍。全段者寫實際日期區間；窗口式者寫規則（如 "each dated event −5 ~ +1 days"）
+ * @param note         取樣邊界的補充說明 —— 讀者「必須知道否則會誤讀」的那句話寫在這
+ */
+@Serializable
+data class ScanCoverage(
+  val layer: ScanLayer,
+  val transiting: List<String> = emptyList(),
+  val natalTargets: String? = null,
+  val features: List<String> = emptyList(),
+  val span: String,
+  val note: String? = null
+)
+
 @Serializable
 data class Past(
   val eventGroups: List<EventGroup>,
@@ -413,7 +458,8 @@ data class Past(
   @Contextual
   val fromTime: GmtJulDay,
   @Contextual
-  val toTime: GmtJulDay
+  val toTime: GmtJulDay,
+  val coverage: List<ScanCoverage> = emptyList()
 )
 
 @Serializable
@@ -426,7 +472,8 @@ data class Future(
   val lunarReturns: List<ReturnCoverageDto>,
   val solarReturns: List<@Contextual IReturnDto>,
   val firdariaPeriods: List<Firdaria>,
-  val profections: List<Profection>
+  val profections: List<Profection>,
+  val coverage: List<ScanCoverage> = emptyList()
 )
 
 @Serializable
