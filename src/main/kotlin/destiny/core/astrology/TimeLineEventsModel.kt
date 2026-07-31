@@ -1,5 +1,6 @@
 package destiny.core.astrology
 
+import destiny.core.DayNight
 import destiny.core.EventType
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
@@ -543,8 +544,29 @@ data class ExtractedEvents(
   val lat: Double, val lng: Double, val tzid: String,
   override val place: String,
   val intro: String,
-  val events: List<AbstractEvent>
+  val events: List<AbstractEvent>,
+  /**
+   * 晝夜生 —— [hourMinute] 為 null 時的次佳精度：不知幾點幾分、但知晝生或夜生
+   * （ADB 的 Rodden 註記、家屬口述常有此等級），足以解鎖 Firdaria
+   * （見 [BirthDataGrain.DAY_NIGHT_DIURNAL] / [BirthDataGrain.DAY_NIGHT_NOCTURNAL]）。
+   * [hourMinute] 非 null 時此欄位被忽略（晝夜由盤面太陽位置推導）。
+   * 置於參數尾端而非緊鄰 [hourMinute]：既有 positional 建構呼叫點不必動。
+   */
+  val dayNight: DayNight? = null
 ) : IBirthDataNamePlace {
+
+  /**
+   * 出生資料的時刻精度 —— grain 推導的**唯一定義點**。
+   * 呼叫端（如 `ReportFactory.getMergedUserEventsModel`）一律問這裡，不得自行以
+   * `hourMinute != null` 二分 —— 那正是 DAY_NIGHT 兩級曾經不可達的原因。
+   * 寫成函式而非屬性：見 [AbstractEvent.grain] 的 FormatSpec 反射理由。
+   */
+  fun birthGrain(): BirthDataGrain = when {
+    hourMinute != null         -> BirthDataGrain.MINUTE
+    dayNight == DayNight.DAY   -> BirthDataGrain.DAY_NIGHT_DIURNAL
+    dayNight == DayNight.NIGHT -> BirthDataGrain.DAY_NIGHT_NOCTURNAL
+    else                       -> BirthDataGrain.DAY
+  }
 
   override val time: ChronoLocalDateTime<*>
     get() = birthDay.let { birthDay ->
