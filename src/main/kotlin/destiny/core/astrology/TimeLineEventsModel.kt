@@ -504,7 +504,34 @@ data class Past(
   val fromTime: GmtJulDay,
   @Contextual
   val toTime: GmtJulDay,
-  val coverage: List<ScanCoverage> = emptyList()
+  val coverage: List<ScanCoverage> = emptyList(),
+  /**
+   * 負對照窗 —— 與 [eventGroups] **同一組掃描層、同樣一個日曆月**，但該月不屬於任何已記錄事件。
+   *
+   * 動機：讀素材的 LLM 只看得到「有事的月份長什麼樣」，於是任何在事件月出現的組態都顯得特殊。
+   * 沒有平凡月份可比，精確率就無從估計 —— 這正是 R9 自評的第一威脅（疊層法則召回 8/8、
+   * 精確率因窗口取樣不可估）。給幾個對照範例，比給一串統計數字更貼 LLM 的推理形態。
+   *
+   * **語意務必精確**：`userEvents` 為空代表「該月不落在任何**已記錄**事件的窗口內」，
+   * 不代表「該月什麼都沒發生」—— 校準集是手挑的重大事件，不是完整生活史。
+   * 這層限制寫在對應的 [ScanCoverage.note] 裡，不可省略，否則就是本專案自己批評過的沉默截斷。
+   *
+   * 與 [eventGroups] 分開存放而非混入其中：混入的話，「空的 userEvents」會與
+   * 「有事但事件沒被記錄到的群」在結構上無法區分。
+   */
+  val negativeControlGroups: List<EventGroup> = emptyList(),
+  /**
+   * 已記錄事件集本身的說明 —— 幾筆、跨多久、平均密度，以及那個密度是**下界**。
+   *
+   * 動機：讀素材的 LLM 會拿事件筆數除以跨度來當基準率，據以估計「未來 N 個月會不會有事」。
+   * 但校準集是手挑的重大事件，不是完整生活史，這樣算出來的密度系統性偏低。
+   * 密度是從資料本身就能算出來的東西，缺的是「這個分母代表什麼」——補上這句，
+   * 推論由讀者自己做。
+   *
+   * **只陳述事實，不下指示**：寫「此為下界」是描述取樣性質，寫「不要低估」則是在教答案；
+   * 盲測素材只能是前者。
+   */
+  val eventSetNote: String? = null
 )
 
 @Serializable
@@ -528,7 +555,7 @@ data class MergedUserEventsModel(
   val summary: String,
   val past: Past,
   @Serializable(with = LocalDateSerializer::class)
-  val today : LocalDate,
+  val viewDay : LocalDate,
   val future : Future? = null,
 )
 

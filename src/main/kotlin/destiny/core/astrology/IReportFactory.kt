@@ -6,6 +6,7 @@ import destiny.core.calendar.GmtJulDay
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.YearMonth
 
 interface IReportFactory {
 
@@ -43,7 +44,13 @@ interface IReportFactory {
     withLunarReturns : Boolean = true
   ): ITimeLineEventsModel
 
-  /** 事件自動分群(依據相鄰事件) */
+  /**
+   * 事件自動分群(依據相鄰事件)
+   *
+   * @param negativeControlMonths 負對照窗的月份 —— 該月不屬於任何已記錄事件，以與事件群
+   *   **完全相同**的掃描層產出，落在 [Past.negativeControlGroups]。選月請用預先宣告的規則
+   *   而非逐月手挑：挑到星象特別乾淨的月份，等於倒過來製造倖存者偏差。
+   */
   fun getMergedUserEventsModel(
     extractedEvents: ExtractedEvents,
     eventScaleConfigs: Map<Scale, Set<EventSourceConfig>>,
@@ -51,5 +58,6 @@ interface IReportFactory {
     futureDuration: Duration? = null,
     longTermFromTime: GmtJulDay? = null,
     longTermToTime: GmtJulDay? = null,
+    negativeControlMonths: Set<YearMonth> = emptySet(),
   ): MergedUserEventsModel
 }
