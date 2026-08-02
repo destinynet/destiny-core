@@ -3,6 +3,9 @@
  */
 package destiny.tools
 
+import destiny.tools.serializers.LangSerializer
+import kotlinx.serialization.Serializable as KSerializable
+
 /**
  * 平台中立的語言標示 —— [java.util.Locale] 的替代品，可進入 KMP `commonMain`。
  *
@@ -27,6 +30,7 @@ package destiny.tools
  * @property tag 正規化後的 BCP-47 標籤；[ROOT] 為空字串
  */
 @JvmInline
+@KSerializable(with = LangSerializer::class)
 value class Lang private constructor(val tag: String) {
 
   /** 語言子標籤（小寫）。[ROOT] 為空字串 */
