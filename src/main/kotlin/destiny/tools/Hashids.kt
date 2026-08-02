@@ -3,7 +3,6 @@
  */
 package destiny.tools
 
-import java.util.regex.Pattern
 import kotlin.math.ceil
 import kotlin.math.pow
 
@@ -209,10 +208,9 @@ class Hashids(var salt: String = "", var length: Int = 0, alphabet: String = "ab
       return ""
 
     val matched = ArrayList<Long>()
-    val matcher = Pattern.compile("[\\w\\W]{1,12}").matcher(hexa)
 
-    while (matcher.find())
-      matched.add(java.lang.Long.parseLong("1" + matcher.group(), 16))
+    for (m in "[\\w\\W]{1,12}".toRegex().findAll(hexa))
+      matched.add(("1" + m.value).toLong(16))
 
     val result = LongArray(matched.size)
     for (i in matched.indices) result[i] = matched[i]
@@ -231,7 +229,9 @@ class Hashids(var salt: String = "", var length: Int = 0, alphabet: String = "ab
     val numbers = decode(hash)
 
     for (number in numbers) {
-      result += java.lang.Long.toHexString(number).substring(1)
+      // number 恆為 encodeHex 產生的 ("1" + 最多12位hex)，必為正且 < 2^52，
+      // 故 toString(16) 與 java.lang.Long.toHexString 等價（後者僅在負數時才走無號表示）
+      result += number.toString(16).substring(1)
     }
 
     return result
