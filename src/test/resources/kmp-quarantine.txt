@@ -3,7 +3,7 @@
 # 由 KmpReadinessRatchetTest 管控。不在此清單上的 .kt 一律必須無 JVM-only 相依。
 # 這份清單只准變短：改乾淨了就刪掉該行。詳見該測試的 KDoc。
 #
-# 目前數量：337
+# 目前數量：338
 
 destiny/core/BirthData.kt
 destiny/core/Descriptive.kt
@@ -297,6 +297,7 @@ destiny/tools/IsoTool.kt
 destiny/tools/JCacheTools.kt
 destiny/tools/JSerializable.kt
 destiny/tools/KotlinLogging.kt
+destiny/tools/LangJvm.kt
 destiny/tools/LanguageTools.kt
 destiny/tools/LocaleComparator.kt
 destiny/tools/LocaleTools.kt
