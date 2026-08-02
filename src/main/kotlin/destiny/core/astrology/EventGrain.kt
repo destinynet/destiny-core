@@ -6,9 +6,9 @@ package destiny.core.astrology
  *
  * 總序：[MONTH] < [DAY] < [MINUTE]。
  *
- * 這個概念在被命名之前，已經以兩種替代形式各自存在過：
- * `Redaction.signalMismatches` 裡拼成字串前綴（`"DAY:"` / `"MONTH:"`），
- * 以及 `ReportFactory` 裡編碼成 `BirthDataGrain?`（`MONTH` 即 `null`）。兩者都無法序列化。
+ * 這個概念在被命名之前，已經以兩種替代形式各自存在過：去識別化的訊號比對裡拼成
+ * 字串前綴（`"DAY:"` / `"MONTH:"`），以及 `ReportFactory` 裡編碼成 `BirthDataGrain?`
+ * （`MONTH` 即 `null`）。兩者都無法序列化。
  *
  * 對 [AbstractEvent] 的子型別**不要**再寫窮舉 `when`，改問這裡的能力屬性 ——
  * 如此新增事件型別（例如帶起訖的期間事件）時，只需讓它回答自己的 grain，
