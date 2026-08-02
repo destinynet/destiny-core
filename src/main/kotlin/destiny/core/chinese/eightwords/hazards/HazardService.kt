@@ -5,13 +5,14 @@ package destiny.core.chinese.eightwords.hazards
 
 import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
+import destiny.tools.JSerializable
 import destiny.tools.getTitle
 import jakarta.inject.Named
 import java.util.*
 
 
 @Named
-class HazardService : IHazardService, java.io.Serializable {
+class HazardService : IHazardService, JSerializable {
 
   override val hazardFactories: List<IHazardFactory> = childHazardFactories
 

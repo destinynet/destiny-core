@@ -8,6 +8,7 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.JSerializable
 import destiny.tools.serializers.astrology.StarSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -18,7 +19,7 @@ data class ApsisAzimuthConfig(@Serializable(with = StarSerializer::class)
                               val coordinate: Coordinate = Coordinate.ECLIPTIC,
                               val nodeType: NodeType = NodeType.MEAN,
                               val temperature: Double = 0.0,
-                              val pressure: Double = 1013.25) : java.io.Serializable
+                              val pressure: Double = 1013.25) : JSerializable
 
 @DestinyMarker
 class ApsisAzimuthConfigBuilder : Builder<ApsisAzimuthConfig> {

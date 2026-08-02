@@ -2,6 +2,7 @@ package destiny.core.astrology
 
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.CircleTools.normalize
+import destiny.tools.JSerializable
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import kotlinx.serialization.Serializable
 
@@ -82,4 +83,4 @@ interface IStarPositionWithAzimuth : IStarPos, IPosWithAzimuth, IAzimuth
 
 data class StarPosWithAzimuth(
   val starPos: IStarPos,
-  val azimuth: Azimuth) : IStarPositionWithAzimuth, IStarPos by starPos, IAzimuth by azimuth, java.io.Serializable
+  val azimuth: Azimuth) : IStarPositionWithAzimuth, IStarPos by starPos, IAzimuth by azimuth, JSerializable

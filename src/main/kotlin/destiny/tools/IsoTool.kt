@@ -3,10 +3,9 @@
  */
 package destiny.tools
 
-import java.io.Serializable
 import java.util.*
 
-class IsoTool : Serializable {
+class IsoTool : JSerializable {
   companion object {
 
     /** 小寫 2-letter 英文字母 , 例如 'zh'  */

@@ -1,11 +1,11 @@
 package destiny.core.calendar
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 import kotlin.time.Duration
 
 /** 單一時間點 */
-interface IEvent : Serializable , Comparable<IEvent>{
+interface IEvent : JSerializable , Comparable<IEvent>{
   val begin: GmtJulDay
 
   fun getTitle(locale: Locale): String {

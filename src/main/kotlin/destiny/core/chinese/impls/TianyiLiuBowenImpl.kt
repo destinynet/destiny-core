@@ -8,7 +8,7 @@ import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 /**
@@ -26,7 +26,7 @@ import java.io.Serializable
  */
 class TianyiLiuBowenImpl : ITianyi,
                            Descriptive by Tianyi.LiuBowen.asDescriptive(),
-                           Serializable {
+                           JSerializable {
 
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     return when (stem) {

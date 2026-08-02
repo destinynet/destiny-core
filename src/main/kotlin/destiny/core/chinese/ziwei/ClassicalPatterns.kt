@@ -18,7 +18,7 @@ import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
 import destiny.core.chinese.ziwei.T4Value.忌
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 // =========================== 以下 , 吉格 ===========================
@@ -2619,7 +2619,7 @@ interface IClassicalPattern : ZPattern {
 sealed class ClassicalPattern(
   override val type: PatternType,
   private val notes: String? = null
-) : IClassicalPattern, Serializable {
+) : IClassicalPattern, JSerializable {
 
   override fun toString(): String {
     return this::class.simpleName!!

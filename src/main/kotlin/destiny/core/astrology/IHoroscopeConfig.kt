@@ -5,8 +5,9 @@ import destiny.core.astrology.classical.ClassicalConfig
 import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.astrology.classical.rules.IPlanetPatternFactory
 import destiny.core.calendar.GmtJulDay
+import destiny.tools.JSerializable
 
-interface IHoroscopeConfig : java.io.Serializable {
+interface IHoroscopeConfig : JSerializable {
   var points: Set<AstroPoint>
   var houseSystem: HouseSystem
   var coordinate: Coordinate
@@ -22,7 +23,7 @@ interface IHoroscopeConfig : java.io.Serializable {
     get() = HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, place, relocations, starTypeOptions)
 }
 
-interface IClassicalConfig : java.io.Serializable {
+interface IClassicalConfig : JSerializable {
   var factories: List<IPlanetPatternFactory>
   val classicalConfig: ClassicalConfig
     get() = ClassicalConfig(factories)
@@ -37,7 +38,7 @@ interface IPersonHoroscopeConfig : IHoroscopeConfig {
     }
 }
 
-data class TransitConfig(val forward: Boolean = true) : java.io.Serializable
+data class TransitConfig(val forward: Boolean = true) : JSerializable
 
 interface IHoroscopePresentConfig : IPersonHoroscopeConfig , IPresentConfig {
   val transitConfig: TransitConfig?

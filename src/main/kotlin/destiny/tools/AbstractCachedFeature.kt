@@ -20,7 +20,7 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
     val gmtJulDay: GmtJulDay,
     val loc: Location,  // 使用具體類別避免序列化問題
     val config: Config
-  ) : java.io.Serializable {
+  ) : JSerializable {
     companion object {
       private const val serialVersionUID: Long = 7384629517263849152L
     }
@@ -51,7 +51,7 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
     val lmt: ChronoLocalDateTime<*>,
     val loc: Location,  // 使用具體類別避免序列化問題
     val config: Config
-  ) : java.io.Serializable {
+  ) : JSerializable {
     companion object {
       private const val serialVersionUID: Long = 2951847362019485736L
     }

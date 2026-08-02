@@ -5,7 +5,7 @@ package destiny.core.chinese
 
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 太玄數
@@ -13,7 +13,7 @@ import java.io.Serializable
  * 甲己子午九，乙庚丑未八，丙辛寅申七，丁壬卯酉六，戊癸辰戌五，巳亥單四數
  * 深入探討資料： @see [http://tieba.baidu.com/p/2236977909](http://tieba.baidu.com/p/2236977909)
  */
-class TaiXuan : Serializable {
+class TaiXuan : JSerializable {
   companion object {
 
     private val stemMap = mapOf(

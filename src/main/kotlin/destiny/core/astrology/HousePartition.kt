@@ -3,7 +3,7 @@
  */
 package destiny.core.astrology
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
-data class HousePartition(val house: Int, val toHead: Double, val toTail: Double) : Serializable
+data class HousePartition(val house: Int, val toHead: Double, val toTail: Double) : JSerializable

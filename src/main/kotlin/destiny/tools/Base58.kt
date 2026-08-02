@@ -3,12 +3,11 @@
  */
 package destiny.tools
 
-import java.io.Serializable
 
 /**
  * http://java.dzone.com/articles/create-your-own-bitly-using
  */
-class Base58 : Serializable {
+class Base58 : JSerializable {
   companion object {
 
     private val BASE58_CHARS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz".toCharArray()

@@ -3,6 +3,6 @@
  */
 package destiny.core.astrology
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
-abstract class AbstractPositionImpl<out T : AstroPoint>(override val point: T) : IPosition<T>, Serializable
+abstract class AbstractPositionImpl<out T : AstroPoint>(override val point: T) : IPosition<T>, JSerializable

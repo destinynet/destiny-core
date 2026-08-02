@@ -7,13 +7,13 @@ package destiny.core.iching
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.IFiveElement
 import destiny.core.chinese.IYinYang
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 /**
  * 八卦基本符號以及其資料
  */
-enum class Symbol(private val yinYangs: BooleanArray , val unicode : Char) : Serializable, ISymbol, IFiveElement {
+enum class Symbol(private val yinYangs: BooleanArray , val unicode : Char) : JSerializable, ISymbol, IFiveElement {
   乾(booleanArrayOf(true, true, true) , '☰'),
   兌(booleanArrayOf(true, true, false) , '☱'),
   離(booleanArrayOf(true, false, true) , '☲'),

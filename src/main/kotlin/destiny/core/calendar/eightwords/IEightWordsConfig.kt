@@ -10,16 +10,16 @@ import destiny.core.astrology.StarTypeOptions
 import destiny.core.astrology.TransConfig
 import destiny.core.astrology.ZodiacSignConfig
 import destiny.core.chinese.eightwords.*
-import java.io.Serializable
+import destiny.tools.JSerializable
 
-interface IYearConfig : Serializable {
+interface IYearConfig : JSerializable {
   var changeYearDegree: Double
 
   val yearConfig: YearConfig
     get() = YearConfig(changeYearDegree)
 }
 
-interface IMonthConfig : Serializable {
+interface IMonthConfig : JSerializable {
   var southernHemisphereOpposition: Boolean
   var hemisphereBy: HemisphereBy
   var monthImpl: MonthImpl
@@ -34,7 +34,7 @@ interface IYearMonthConfig : IYearConfig, IMonthConfig {
     get() = YearMonthConfig(yearConfig, monthConfig)
 }
 
-interface IDayConfig : Serializable {
+interface IDayConfig : JSerializable {
   var changeDayAfterZi: Boolean
   var midnight: MidnightImpl
 
@@ -42,7 +42,7 @@ interface IDayConfig : Serializable {
     get() = DayConfig(changeDayAfterZi, midnight)
 }
 
-interface ITransConfig : Serializable {
+interface ITransConfig : JSerializable {
   var discCenter: Boolean
   var refraction: Boolean
   var temperature: Double

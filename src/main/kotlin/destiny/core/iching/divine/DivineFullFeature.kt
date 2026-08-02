@@ -16,6 +16,7 @@ import destiny.core.iching.contentProviders.*
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.JSerializable
 import destiny.tools.PersonFeature
 import destiny.tools.serializers.IEightWordsNullableSerializer
 import jakarta.inject.Named
@@ -28,7 +29,7 @@ data class DivineFullConfig(val traditionalConfig: DivineTraditionalConfig = Div
                             @Serializable(with = IEightWordsNullableSerializer::class)
                             val eightWordsNullable: IEightWordsNullable = EightWordsNullable.empty(),
                             val question: String? = null,
-                            val approach: DivineApproach? = null): java.io.Serializable
+                            val approach: DivineApproach? = null): JSerializable
 
 @DestinyMarker
 class DivineFullConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<DivineFullConfig> {

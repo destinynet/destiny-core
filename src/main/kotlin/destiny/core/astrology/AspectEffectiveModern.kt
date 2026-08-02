@@ -8,7 +8,7 @@ import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
 import jakarta.inject.Named
-import java.io.Serializable
+import destiny.tools.JSerializable
 import kotlin.math.abs
 
 /**
@@ -22,7 +22,7 @@ class AspectEffectiveModern(
   private val aspectOrbsImpl: IAspectOrbs = AspectOrbsDefaultImpl(),
   /** 「考量行星的」交角容許度實作 */
   val aspectOrbsPlanetImpl: IAspectOrbsPlanet = AspectOrbsPlanetDefaultImpl()
-) : IAspectEffective, Serializable {
+) : IAspectEffective, JSerializable {
 
   override val applicableAspects: Set<Aspect> = Aspect.entries.toSet()
 

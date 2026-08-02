@@ -5,7 +5,7 @@ package destiny.core.fengshui.sanyuan
 
 import destiny.core.IPattern
 import destiny.core.iching.Symbol
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 enum class MntDir {
@@ -21,7 +21,7 @@ enum class MntDirSpec {
 
 
 /** 全局 特徵 */
-sealed class ChartPattern : IPattern, Serializable {
+sealed class ChartPattern : IPattern, JSerializable {
 
   data class 合十(val mntDir: MntDir) : ChartPattern()
   data class 伏吟元旦盤(val mntDir: MntDir) : ChartPattern()
@@ -52,7 +52,7 @@ sealed class ChartPattern : IPattern, Serializable {
 }
 
 /** 單宮 特徵 */
-sealed class BlockPattern : IPattern, Serializable {
+sealed class BlockPattern : IPattern, JSerializable {
 
   data class 合十(val mntDir: MntDir) : BlockPattern()
   data class 伏吟元旦盤(val mntDir: MntDir) : BlockPattern()

@@ -5,7 +5,7 @@ package destiny.core.chinese.eightwords
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.chinese.IStemBranch
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /** 一柱大運的相關資訊。包含上方文字，干支...  */
 data class FortuneData(
@@ -22,7 +22,7 @@ data class FortuneData(
   /** 起運歲數的註解（西元、或民國） */
   val startFortuneAgeNotes: List<String>,
   /** 終運歲數的註解（西元、或民國） */
-  val endFortuneAgeNotes: List<String>) : Serializable {
+  val endFortuneAgeNotes: List<String>) : JSerializable {
 
   override fun toString(): String {
     return "{$startFortuneAge $stemBranch , from $startFortuneGmtJulDay}"

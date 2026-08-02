@@ -15,16 +15,17 @@ import destiny.core.iching.Symbol
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.JSerializable
 import jakarta.inject.Named
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.math.abs
 
 @Serializable
-data class SeasonalSymbolConfig(val impl: Impl = Impl.Chinese) : java.io.Serializable {
+data class SeasonalSymbolConfig(val impl: Impl = Impl.Chinese) : JSerializable {
 
   @Serializable
-  sealed class Impl : java.io.Serializable {
+  sealed class Impl : JSerializable {
 
     @Serializable
     @SerialName("Chinese")

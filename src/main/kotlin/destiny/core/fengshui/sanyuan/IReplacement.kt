@@ -5,9 +5,9 @@ package destiny.core.fengshui.sanyuan
 
 import destiny.core.fengshui.Mountain
 import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
-import java.io.Serializable
+import destiny.tools.JSerializable
 
-data class ReplacementStar(val period: Period, val enabled: Boolean) : Serializable
+data class ReplacementStar(val period: Period, val enabled: Boolean) : JSerializable
 
 /** 替卦 */
 interface IReplacement {
@@ -25,7 +25,7 @@ interface IReplacement {
  * 若問寅午庚丁上
  * 一律挨來是弼星 (9,離)
  */
-class ReplacementDefaultImpl : IReplacement, Serializable {
+class ReplacementDefaultImpl : IReplacement, JSerializable {
 
   val map: Map<Mountain, ReplacementStar> = mapOf(
     Mountain.壬 to ReplacementStar(2.toPeriod(), true),   // 坤、壬、乙，巨門(2,坤)從頭出

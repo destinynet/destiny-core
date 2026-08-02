@@ -4,5 +4,6 @@
 package destiny.core.oracles
 
 import destiny.core.Descriptive
+import destiny.tools.JSerializable
 
-interface IClause : Descriptive, java.io.Serializable
+interface IClause : Descriptive, JSerializable

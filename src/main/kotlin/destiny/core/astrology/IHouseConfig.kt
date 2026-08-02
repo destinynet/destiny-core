@@ -3,10 +3,10 @@
  */
 package destiny.core.astrology
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
-interface IHouseConfig : Serializable {
+interface IHouseConfig : JSerializable {
   var houseSystem: HouseSystem
   var coordinate: Coordinate
 

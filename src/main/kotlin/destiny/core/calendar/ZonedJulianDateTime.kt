@@ -4,7 +4,7 @@
 package destiny.core.calendar
 
 import org.threeten.extra.chrono.JulianDate
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.*
 import java.time.chrono.ChronoZonedDateTime
 import java.time.temporal.*
@@ -25,7 +25,7 @@ class ZonedJulianDateTime private constructor(
   /**
    * The time-zone.
    */
-  private val zone: ZoneId) : Temporal, ChronoZonedDateTime<JulianDate>, Serializable {
+  private val zone: ZoneId) : Temporal, ChronoZonedDateTime<JulianDate>, JSerializable {
 
   /**
    * Gets the hour-of-day field.

@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import kotlinx.serialization.Serializable as KSerializable
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 命盤中，一個宮位所包含的所有資訊
@@ -35,7 +35,7 @@ data class HouseData(
   val rangeToAge: Int,
 
   /** 8條小限  */
-  val smallRanges: List<Int>) : Serializable, Comparable<HouseData> {
+  val smallRanges: List<Int>) : JSerializable, Comparable<HouseData> {
 
   fun getHouse(flowType: FlowType = FlowType.MAIN) : House {
     return flowHouseMap[flowType] ?: house

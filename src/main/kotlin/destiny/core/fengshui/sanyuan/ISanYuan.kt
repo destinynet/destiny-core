@@ -11,7 +11,7 @@ import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.chinese.Yuan
 import destiny.core.chinese.StemBranch
 import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.chrono.ChronoLocalDateTime
@@ -62,7 +62,7 @@ interface ISanYuan {
   }
 }
 
-class SanYuanImpl(val solarTermsImpl: ISolarTerms) : ISanYuan, Serializable {
+class SanYuanImpl(val solarTermsImpl: ISolarTerms) : ISanYuan, JSerializable {
 
   override fun getYuan(lmt: ChronoLocalDateTime<*>, loc: ILocation): Yuan {
 

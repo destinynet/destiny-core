@@ -7,7 +7,7 @@ import destiny.core.astrology.AzimuthTransit
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import destiny.tools.serializers.GmtJulDaySerializer
-import java.io.Serializable
+import destiny.tools.JSerializable
 import kotlin.math.abs
 import kotlin.math.min
 import kotlinx.serialization.Serializable as KSerializable
@@ -23,7 +23,7 @@ data class MountainTransit(
   val mountain: Mountain,
   val enter: AzimuthTransit,
   val leave: AzimuthTransit,
-) : Serializable {
+) : JSerializable {
 
   /**
    * 是否「逆行折返」：由原邊界進入又由原邊界退出（未穿越到對側）。
@@ -48,4 +48,4 @@ data class MountainEntry(
   @KSerializable(with = DoubleTwoDecimalSerializer::class)
   val azimuthDeg: Double,
   val isRetreat: Boolean = false,
-) : Serializable
+) : JSerializable

@@ -13,7 +13,7 @@ import destiny.core.astrology.TransPoint
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 以太陽過天底的時間來決定『子正』
@@ -24,7 +24,7 @@ class MidnightSolarTransImpl(private val riseTransImpl: IRiseTrans,
                              val discCenter: Boolean = true,
                              val refraction: Boolean = true) : IMidnight,
                                                                Descriptive by MidnightImpl.NADIR.asDescriptive(),
-                                                               Serializable {
+                                                               JSerializable {
 
   /** 以太陽過當地天底的時間來決定 「子正」 , 回傳 GMT 時刻  */
   override fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation): GmtJulDay {

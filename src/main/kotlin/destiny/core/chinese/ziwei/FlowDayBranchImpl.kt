@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 計算流日： 固定傳回流日地支
@@ -15,7 +15,7 @@ import java.io.Serializable
  */
 class FlowDayBranchImpl : IFlowDay,
                           Descriptive by FlowDay.Branch.asDescriptive(),
-                          Serializable {
+                          JSerializable {
 
   override fun getFlowDay(flowDayBranch: Branch, flowDayNum: Int, flowMonthMainHouse: Branch): Branch {
     return flowDayBranch

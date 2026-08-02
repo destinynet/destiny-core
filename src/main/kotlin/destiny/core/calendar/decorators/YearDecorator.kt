@@ -6,7 +6,7 @@ package destiny.core.calendar.decorators
 
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 object YearDecorator {
@@ -23,7 +23,7 @@ object YearDecorator {
 }
 
 
-class YearDecoratorTaiwan : Decorator<Int>, Serializable {
+class YearDecoratorTaiwan : Decorator<Int>, JSerializable {
   override fun getOutputString(value: Int): String {
     return if (value - 1911 >= 1)
       "西元" + value + "年 (民國" + (value - 1911) + "年)"
@@ -34,7 +34,7 @@ class YearDecoratorTaiwan : Decorator<Int>, Serializable {
 }
 
 
-class YearDecoratorChina : Decorator<Int>, Serializable {
+class YearDecoratorChina : Decorator<Int>, JSerializable {
 
   override fun getOutputString(value: Int): String {
     return "西元" + value.toString() + "年"
@@ -42,14 +42,14 @@ class YearDecoratorChina : Decorator<Int>, Serializable {
 
 }
 
-class YearDecoratorJapanese : Decorator<Int>, Serializable {
+class YearDecoratorJapanese : Decorator<Int>, JSerializable {
   override fun getOutputString(value: Int): String {
     return "西暦年" + value + "年"
   }
 }
 
 
-class YearDecoratorEnglish : Decorator<Int>, Serializable {
+class YearDecoratorEnglish : Decorator<Int>, JSerializable {
   override fun getOutputString(value: Int): String {
     return value.toString()
   }

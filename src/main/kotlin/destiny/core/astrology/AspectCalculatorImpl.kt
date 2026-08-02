@@ -8,13 +8,13 @@ import destiny.core.astrology.IPointAspectPattern.AspectType.APPLYING
 import destiny.core.astrology.IPointAspectPattern.AspectType.SEPARATING
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.Score
-import java.io.Serializable
+import destiny.tools.JSerializable
 import kotlin.math.abs
 
 class AspectCalculatorImpl(
   val aspectEffectiveImpl: IAspectEffective,
   private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>
-) : IAspectCalculator, Serializable {
+) : IAspectCalculator, JSerializable {
 
 
   override fun getAspectPattern(

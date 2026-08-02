@@ -6,7 +6,7 @@ package destiny.core.astrology.classical
 
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.Planet
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 /**
@@ -14,7 +14,7 @@ import java.util.*
  * 參考資料 http://www.skyscript.co.uk/aspects.html
  * 比較少用，對比於內定的 PointDiameterAlBiruniImpl
  */
-class PointDiameterLillyImpl : IPointDiameter, Serializable {
+class PointDiameterLillyImpl : IPointDiameter, JSerializable {
 
   override fun getTitle(locale: Locale): String {
     return "William Lilly"

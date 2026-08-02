@@ -19,6 +19,7 @@ import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
 import destiny.core.toString
 import destiny.tools.*
+import destiny.tools.JSerializable
 import jakarta.inject.Inject
 import jakarta.inject.Named
 import java.text.MessageFormat
@@ -30,7 +31,7 @@ import javax.cache.Cache
 
 
 /** 某時刻對應到的 大運、流年 兩資訊 */
-data class Flow(val section: StemBranch?, val year: StemBranch) : java.io.Serializable
+data class Flow(val section: StemBranch?, val year: StemBranch) : JSerializable
 
 
 interface IZiweiFeature : PersonFeature<IZiweiConfig, IPlate> {

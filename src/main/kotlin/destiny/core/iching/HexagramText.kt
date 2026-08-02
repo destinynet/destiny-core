@@ -6,7 +6,7 @@ package destiny.core.iching
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.YinYang
 import destiny.core.iching.contentProviders.*
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 
@@ -16,7 +16,7 @@ data class LineText(
   /** 爻辭 */
   val expression: String,
   /** 象曰 */
-  val image: String) : IYinYang by yinYang, Serializable
+  val image: String) : IYinYang by yinYang, JSerializable
 
 interface IHexagramName {
   /** 短卦名 , 一個中文字 */
@@ -29,7 +29,7 @@ data class HexagramName(
   /** 短卦名 , 一個中文字 */
   override val shortName: String,
   /** 完整卦名 , 三或四個中文字 */
-  override val fullName: String) : IHexagramName, Serializable
+  override val fullName: String) : IHexagramName, JSerializable
 
 
 /** 完整一個卦象的所有文字 */
@@ -66,7 +66,7 @@ data class HexagramText(
   /** 六爻 */
   override val lineTexts: List<LineText>,
   /** 用九、用六 的爻辭、象曰 */
-  override val extraLine: LineText?) : IHexagramText, IHexagramName by hexagramName, Serializable {
+  override val extraLine: LineText?) : IHexagramText, IHexagramName by hexagramName, JSerializable {
 
   override val yinYangs: List<IYinYang> = lineTexts
 }
@@ -75,7 +75,7 @@ class HexagramTextContext(private val hexagramNameFull: IHexNameFull,
                           private val hexagramNameShort: IHexNameShort,
                           private val hexExpressionImpl: IHexagramExpression,
                           private val hexImageImpl: IHexProvider<String, String>,
-                          private val hexJudgement: IHexJudgement) : IHexagramProvider<IHexagramText>, Serializable {
+                          private val hexJudgement: IHexJudgement) : IHexagramProvider<IHexagramText>, JSerializable {
 
   override fun getHexagram(hex: IHexagram, locale: Locale): IHexagramText {
 

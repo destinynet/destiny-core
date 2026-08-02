@@ -6,7 +6,7 @@ package destiny.core.astrology.classical
 import destiny.core.astrology.*
 import destiny.core.astrology.IPointAspectPattern.AspectType.APPLYING
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 import kotlin.math.abs
 
 interface ICollectionOfLight {
@@ -46,7 +46,7 @@ interface ICollectionOfLight {
 
 class CollectionOfLightImpl(private val besiegedImpl: IBesieged,
                             private val essentialImpl: IEssential,
-                            private val aspectCalculator: IAspectCalculator) : ICollectionOfLight, Serializable {
+                            private val aspectCalculator: IAspectCalculator) : ICollectionOfLight, JSerializable {
 
   /**
    * 指定某種「光線蒐集模式」

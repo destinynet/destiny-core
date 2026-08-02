@@ -13,6 +13,7 @@ import destiny.core.chinese.Stem.*
 import destiny.core.chinese.eightwords.hazards.Book.*
 import destiny.core.chinese.eightwords.hazards.ChildHazard.*
 import destiny.core.chinese.trilogy
+import destiny.tools.JSerializable
 
 private val 子午卯酉 = setOf(子, 午, 卯, 酉)
 private val 寅申巳亥 = setOf(寅, 申, 巳, 亥)
@@ -29,14 +30,14 @@ private val 亥卯未 = setOf(亥, 卯, 未)
 private val 寅午戌 = setOf(寅, 午, 戌)
 
 
-interface IHazard : java.io.Serializable {
+interface IHazard : JSerializable {
 
   fun getBooks(): Set<Book> = emptySet()
 
   fun test(eightWords: IEightWords, gender: Gender?): Boolean
 }
 
-interface IHazardFactory : java.io.Serializable {
+interface IHazardFactory : JSerializable {
 
   val hazard: ChildHazard
 

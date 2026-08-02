@@ -6,7 +6,7 @@ package destiny.core.oracles.linchi
 
 import destiny.core.iching.Symbol
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /** 靈棋經  */
 data class Linchi(
@@ -21,4 +21,4 @@ data class Linchi(
   /** 轉成一個 Symbol , 例如「乾天西北」,「離火正南」 ...  */
   val symbol: Symbol,
   /** 卦象解釋，四個中文字 , ex "純陽得令"  */
-  val symbolDesc: String) : Serializable
+  val symbolDesc: String) : JSerializable

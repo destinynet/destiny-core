@@ -13,10 +13,10 @@ import destiny.core.iching.IHexData
 import destiny.core.iching.IHexagram
 import destiny.core.iching.IHexagramText
 import destiny.core.iching.contentProviders.IHexProvider
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
-interface IHoloHexagram : IHexagram, TimeRange<GmtJulDay>, Serializable {
+interface IHoloHexagram : IHexagram, TimeRange<GmtJulDay>, JSerializable {
 
   enum class Scale {
     LIFE,    // 半輩子，意味： 先天卦 or 後天卦
@@ -48,7 +48,7 @@ data class HoloHexagram(
   override val yuanTang: Int,
   override val stemBranches: List<StemBranch>,
   override val start: GmtJulDay,
-  override val endExclusive: GmtJulDay) : IHoloHexagram, IHexagram by hexagram, Serializable {
+  override val endExclusive: GmtJulDay) : IHoloHexagram, IHexagram by hexagram, JSerializable {
 
   override fun toString(): String {
     return "$${Hexagram.of(hexagram)} 之 $yuanTang"

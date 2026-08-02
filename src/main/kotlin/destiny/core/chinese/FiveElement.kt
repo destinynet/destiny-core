@@ -5,9 +5,9 @@
 package destiny.core.chinese
 
 import destiny.core.News
-import java.io.Serializable
+import destiny.tools.JSerializable
 
-enum class FiveElement : IFiveElement, Serializable {
+enum class FiveElement : IFiveElement, JSerializable {
   木,
   火,
   土,

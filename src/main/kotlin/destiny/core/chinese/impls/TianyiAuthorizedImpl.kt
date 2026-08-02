@@ -8,11 +8,11 @@ import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 class TianyiAuthorizedImpl : ITianyi,
                              Descriptive by Tianyi.Authorized.asDescriptive(),
-                             Serializable {
+                             JSerializable {
 
   /**
    * 《協紀辨方書》 《蠡海集》

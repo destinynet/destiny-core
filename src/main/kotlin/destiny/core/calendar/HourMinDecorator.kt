@@ -4,6 +4,7 @@
 package destiny.core.calendar
 
 import destiny.tools.Decorator
+import destiny.tools.JSerializable
 import destiny.tools.LocaleTools
 import java.util.*
 
@@ -20,7 +21,7 @@ object HourMinDecorator {
   }
 }
 
-object HourMinDecoratorTradChinese : Decorator<Pair<Int, Int>>, java.io.Serializable {
+object HourMinDecoratorTradChinese : Decorator<Pair<Int, Int>>, JSerializable {
   private fun readResolve(): Any = HourMinDecoratorTradChinese
   override fun getOutputString(value: Pair<Int, Int>): String {
     return buildString {
@@ -30,7 +31,7 @@ object HourMinDecoratorTradChinese : Decorator<Pair<Int, Int>>, java.io.Serializ
   }
 }
 
-object HourMinDecoratorSimplifiedChinese : Decorator<Pair<Int, Int>>, java.io.Serializable {
+object HourMinDecoratorSimplifiedChinese : Decorator<Pair<Int, Int>>, JSerializable {
   private fun readResolve(): Any = HourMinDecoratorSimplifiedChinese
   override fun getOutputString(value: Pair<Int, Int>): String {
     return buildString {
@@ -40,7 +41,7 @@ object HourMinDecoratorSimplifiedChinese : Decorator<Pair<Int, Int>>, java.io.Se
   }
 }
 
-object HourMinDecoratorEnglish : Decorator<Pair<Int, Int>>, java.io.Serializable {
+object HourMinDecoratorEnglish : Decorator<Pair<Int, Int>>, JSerializable {
   private fun readResolve(): Any = HourMinDecoratorEnglish
   override fun getOutputString(value: Pair<Int, Int>): String {
     return buildString {

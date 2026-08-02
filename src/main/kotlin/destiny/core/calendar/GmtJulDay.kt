@@ -7,7 +7,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.serialization.Serializable as KSerializable
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -23,7 +23,7 @@ import kotlin.time.toDuration
 
 @JvmInline
 @KSerializable(with = GmtJulDaySerializer::class)
-value class GmtJulDay(val value: Double) : Comparable<GmtJulDay>, Serializable {
+value class GmtJulDay(val value: Double) : Comparable<GmtJulDay>, JSerializable {
 
   /**
    * Returns a new GmtJulDay representing the start of the calendar day (00:00:00 GMT)

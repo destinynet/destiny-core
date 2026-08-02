@@ -4,6 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.ILocation
+import destiny.tools.JSerializable
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import destiny.tools.serializers.ILocationSerializer
 import destiny.tools.serializers.LocalDateTimeSerializer
@@ -33,7 +34,7 @@ data class Ew3dDto(
   val meridianTime: LocalDateTime,
   @Serializable(with = LocalDateTimeSerializer::class)
   val nadirTime: LocalDateTime
-) : java.io.Serializable {
+) : JSerializable {
 
   @Serializable
   data class Pillars(val year: String, val month: String, val day: String, val hour: String)

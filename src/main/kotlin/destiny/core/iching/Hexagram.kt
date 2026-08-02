@@ -6,11 +6,11 @@ package destiny.core.iching
 
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.YinYang
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 enum class Hexagram(
   override val upperSymbol: Symbol,
-  override val lowerSymbol: Symbol) : IHexagram, Serializable {
+  override val lowerSymbol: Symbol) : IHexagram, JSerializable {
 
 
   乾(Symbol.乾, Symbol.乾),

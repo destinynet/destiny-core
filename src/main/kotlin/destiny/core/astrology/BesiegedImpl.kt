@@ -5,10 +5,10 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
-class BesiegedImpl(private val relativeTransitImpl: IRelativeTransit) : IBesieged, Serializable {
+class BesiegedImpl(private val relativeTransitImpl: IRelativeTransit) : IBesieged, JSerializable {
 
   /**
    * 最 Generalized 的介面

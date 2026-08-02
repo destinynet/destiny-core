@@ -7,11 +7,11 @@ import destiny.core.Descriptive
 import destiny.core.Gender
 import destiny.core.chinese.Branch
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 class PositiveGenderImpl : IPositive,
                            Descriptive by PositiveImpl.Gender.asDescriptive(),
-                           Serializable {
+                           JSerializable {
 
   override fun isPositive(gender: Gender, yearBranch: Branch): Boolean {
     return gender === Gender.M

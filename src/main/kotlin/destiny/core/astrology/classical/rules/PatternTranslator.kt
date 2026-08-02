@@ -9,7 +9,7 @@ import destiny.core.astrology.LunarNode
 import destiny.core.astrology.Planet.*
 import destiny.tools.AbstractPropertyBasedPatternDescriptor
 import destiny.tools.getTitle
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 
@@ -23,17 +23,17 @@ abstract class AbstractPlanetPatternDescriptor<out T : IPlanetPattern>(pattern: 
 
 
 class EssentialDignityDescriptor(rule: EssentialDignity, key: String, parameters: List<Any>) :
-  AbstractPlanetPatternDescriptor<EssentialDignity>(rule, key, parameters), Serializable {
+  AbstractPlanetPatternDescriptor<EssentialDignity>(rule, key, parameters), JSerializable {
   override val resource: String = "destiny.core.astrology.classical.rules.EssentialDignities"
 }
 
 class AccidentalDignityDescriptor(rule: AccidentalDignity, key: String, parameters: List<Any>) :
-  AbstractPlanetPatternDescriptor<AccidentalDignity>(rule, key, parameters), Serializable {
+  AbstractPlanetPatternDescriptor<AccidentalDignity>(rule, key, parameters), JSerializable {
   override val resource: String = "destiny.core.astrology.classical.rules.AccidentalDignities"
 }
 
 class DebilityDescriptor(rule: Debility, key: String, parameters: List<Any>) : AbstractPlanetPatternDescriptor<Debility>(
-  rule, key, parameters) , Serializable {
+  rule, key, parameters) , JSerializable {
   override val resource: String = "destiny.core.astrology.classical.rules.Debilities"
 }
 

@@ -5,12 +5,12 @@ import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /** 羊刃 : 「祿」  的下一位 , 陰干 的羊刃，會落在辰戌丑未 四庫中。 參考 https://imgur.com/bZZQRIw */
 object YangBladeNextBlissImpl : IYangBlade,
                                Descriptive by YangBlade.NextBliss.asDescriptive(),
-                               Serializable {
+                               JSerializable {
   private fun readResolve(): Any = YangBladeNextBlissImpl
   override fun getYangBlade(stem: Stem): Branch {
     return Characters.getBliss(stem).next(1)
@@ -20,7 +20,7 @@ object YangBladeNextBlissImpl : IYangBlade,
 /** 羊刃 : 劫財 算法 , 陰干 的羊刃，會落在 寅巳申亥 四驛馬中。 參考 https://imgur.com/bZZQRIw */
 object YangBladeRobCashImpl : IYangBlade,
                              Descriptive by YangBlade.RobCash.asDescriptive(),
-                             Serializable {
+                             JSerializable {
   private fun readResolve(): Any = YangBladeRobCashImpl
   override fun getYangBlade(stem: Stem): Branch {
     return when (stem) {

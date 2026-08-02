@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.JSerializable
 import destiny.tools.serializers.IZodiacDegreeSerializer
 import kotlinx.serialization.Serializable
 
@@ -15,7 +16,7 @@ enum class HouseType {
 
 data class House(val index: Int,
                  val cusp: ZodiacDegree,
-                 val pointPositions: List<Pair<AstroPoint, IPosWithAzimuth>>) : java.io.Serializable
+                 val pointPositions: List<Pair<AstroPoint, IPosWithAzimuth>>) : JSerializable
 
 @Serializable
 data class HouseDto(

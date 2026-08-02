@@ -5,7 +5,7 @@ import destiny.core.Scale
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDateHour
 import destiny.core.chinese.Branch
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 interface IPalmModel {
@@ -144,7 +144,7 @@ data class PalmModel(
   override val hour: Branch,
 
   override val houseMap: Map<Branch, IPalmModel.House>
-                    ) : IPalmModel, Serializable {
+                    ) : IPalmModel, JSerializable {
 
   /** 每「柱」各在哪個地支宮位 */
   private val pillarMap: Map<Scale, Branch> = mapOf(
@@ -179,7 +179,7 @@ data class HouseDescription(val branch: Branch,
   val dao: String,
   val star: String,
   val intro: String,
-  val map: Map<Scale, String>) : Serializable
+  val map: Map<Scale, String>) : JSerializable
 
 /** 一則 [IPalmModel] 的文字解釋 */
 interface IPalmModelDesc {
@@ -203,7 +203,7 @@ data class PalmModelDesc(
   override val houseDescriptions: List<HouseDescription>,
   override val hourPoem: String,
   override val hourContent: String
-                        ) : IPalmModelDesc, Serializable
+                        ) : IPalmModelDesc, JSerializable
 
 
 data class PalmMetaModel(
@@ -212,11 +212,11 @@ data class PalmMetaModel(
   override val loc: ILocation,
   override val place: String?,
   override val name: String?,
-  override val chineseDateHour: ChineseDateHour) : IPalmMetaModel, IPalmModel by palmModel, Serializable
+  override val chineseDateHour: ChineseDateHour) : IPalmMetaModel, IPalmModel by palmModel, JSerializable
 
 data class PalmMetaModelDesc(
   val palmMetaModel: IPalmMetaModel,
   val palmModelDesc: IPalmModelDesc
                             ) : IPalmMetaModelDesc, IPalmMetaModel by palmMetaModel, IPalmModelDesc by palmModelDesc,
-  Serializable
+  JSerializable
 

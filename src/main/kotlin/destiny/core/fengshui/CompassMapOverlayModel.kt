@@ -7,10 +7,10 @@ import destiny.core.TimeLoc
 import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
 import destiny.tools.location.MapType
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
-interface ICompassMapOverlayModel : ICompassMapsModel, Serializable {
+interface ICompassMapOverlayModel : ICompassMapsModel, JSerializable {
 
   val width: Int
 

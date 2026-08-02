@@ -7,10 +7,10 @@ import destiny.core.calendar.ILatLng
 import destiny.core.calendar.IPlace
 import destiny.core.calendar.Lat
 import destiny.core.calendar.Lng
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
-interface IPoi : ILatLng, IPlace, Serializable {
+interface IPoi : ILatLng, IPlace, JSerializable {
   val name: String
   val placeId: String
   val userRatingsTotal: Int?

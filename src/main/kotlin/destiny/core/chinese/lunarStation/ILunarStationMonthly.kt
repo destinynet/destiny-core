@@ -6,7 +6,7 @@ import destiny.core.astrology.LunarStation.*
 import destiny.core.astrology.Planet
 import destiny.core.astrology.Planet.*
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 /** 二十八星宿 值月 */
@@ -37,7 +37,7 @@ interface ILunarStationMonthly : Descriptive {
  */
 class LunarStationMonthlyAoHead : ILunarStationMonthly,
                                   Descriptive by MonthlyImpl.AoHead.asDescriptive(),
-                                  Serializable {
+                                  JSerializable {
 
   override fun getMonthly(yearStation: LunarStation, monthNumber: Int): LunarStation {
     return getFirstMonth(yearStation.planet).next(monthNumber - 1)
@@ -77,7 +77,7 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly,
  */
 class LunarStationMonthlyAnimalExplained : ILunarStationMonthly,
                                            Descriptive by MonthlyImpl.AnimalExplained.asDescriptive(),
-                                           Serializable {
+                                           JSerializable {
 
   override fun getMonthly(yearStation: LunarStation, monthNumber: Int): LunarStation {
     return getFirstMonth(yearStation.planet).next(monthNumber - 1)

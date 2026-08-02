@@ -6,7 +6,7 @@ package destiny.core.astrology
 import destiny.tools.Score
 import destiny.tools.serializers.astrology.AstroPatternSerializers.*
 import kotlinx.serialization.Serializable as KSerializable
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 /**
@@ -436,7 +436,7 @@ sealed class AstroPattern(
 
 }
 
-interface IPatternFactory : Serializable {
+interface IPatternFactory : JSerializable {
 
   fun getPatterns(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern>
 

@@ -6,12 +6,12 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.chinese.*
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
 
-interface IPlate : Serializable {
+interface IPlate : JSerializable {
   /** 名稱  */
   val name: String?
 

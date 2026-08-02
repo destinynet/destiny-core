@@ -8,7 +8,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.tools.asDescriptive
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 閏月排紫微星 , 累加前一月(非閏月)的日數
@@ -19,7 +19,7 @@ import java.io.Serializable
  */
 class PurpleStarBranchLeapAccumDaysImpl : IPurpleStarBranch,
                                           Descriptive by PurpleStarBranch.LeapAccumDays.asDescriptive(),
-                                          Serializable {
+                                          JSerializable {
 
   /**
    * @param state 局數

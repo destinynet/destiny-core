@@ -1,7 +1,7 @@
 package destiny.core.calendar
 
 import destiny.core.calendar.Constants.SECONDS_OF_DAY
-import java.io.Serializable
+import destiny.tools.JSerializable
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 
@@ -16,7 +16,7 @@ data class SolarTermsTimePos(
   val middle: SolarTermsEvent,
 
   /** 下一個「節」， 及其 GMT JulDay */
-  val nextMajor: SolarTermsEvent) : Serializable {
+  val nextMajor: SolarTermsEvent) : JSerializable {
 
   /** 前半部 (節 to 中氣) */
   val firstHalf : Boolean by lazy {

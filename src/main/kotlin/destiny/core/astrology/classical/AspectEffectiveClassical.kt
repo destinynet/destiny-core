@@ -13,7 +13,7 @@ import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.DestinyMarker
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
-import java.io.Serializable
+import destiny.tools.JSerializable
 import kotlin.math.abs
 
 /**
@@ -27,7 +27,7 @@ import kotlin.math.abs
 class AspectEffectiveClassical(
   val planetOrbsImpl: IPointDiameter = PointDiameterAlBiruniImpl(),
   /** 符合交角的評分，內定從幾分開始算起 */
-  private val defaultThreshold: Double = 0.6) : IAspectEffective, Serializable {
+  private val defaultThreshold: Double = 0.6) : IAspectEffective, JSerializable {
 
   override val applicableAspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
 

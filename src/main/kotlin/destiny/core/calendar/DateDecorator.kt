@@ -6,7 +6,7 @@ package destiny.core.calendar
 import destiny.tools.AlignTools
 import destiny.tools.Decorator
 import destiny.tools.LocaleTools
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.IsoEra
 import java.time.temporal.ChronoField.*
@@ -32,7 +32,7 @@ object DateDecorator {
  * 西元　2000年01月01日
  * 西元前2000年12月31日
  */
-object DateDecoratorChinese : Decorator<ChronoLocalDate>, Serializable {
+object DateDecoratorChinese : Decorator<ChronoLocalDate>, JSerializable {
   private fun readResolve(): Any = DateDecoratorChinese
   override fun getOutputString(value: ChronoLocalDate): String {
 
@@ -50,7 +50,7 @@ object DateDecoratorChinese : Decorator<ChronoLocalDate>, Serializable {
   }
 }
 
-object DateDecoratorEnglish : Decorator<ChronoLocalDate>, Serializable {
+object DateDecoratorEnglish : Decorator<ChronoLocalDate>, JSerializable {
   private fun readResolve(): Any = DateDecoratorEnglish
   override fun getOutputString(value: ChronoLocalDate): String {
     return buildString {
@@ -68,7 +68,7 @@ object DateDecoratorEnglish : Decorator<ChronoLocalDate>, Serializable {
   }
 }
 
-object DateDecoratorJapan : Decorator<ChronoLocalDate>, Serializable {
+object DateDecoratorJapan : Decorator<ChronoLocalDate>, JSerializable {
   private fun readResolve(): Any = DateDecoratorJapan
   override fun getOutputString(value: ChronoLocalDate): String {
     return buildString {

@@ -11,7 +11,7 @@ import destiny.tools.Score
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import destiny.tools.serializers.ScoreTwoDecimalSerializer
 import kotlinx.serialization.Serializable as KSerializable
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 interface IAspectData : IPointAspectPattern, IGmtJulDay
@@ -31,7 +31,7 @@ data class AspectData(
   @KSerializable(with = ScoreTwoDecimalSerializer::class)
   override val score: Score? = null,
   override val gmtJulDay: GmtJulDay
-) : IAspectData, IPointAspectPattern by pointAspectPattern, Serializable {
+) : IAspectData, IPointAspectPattern by pointAspectPattern, JSerializable {
 
   private constructor(
     /** 存放形成交角的兩顆「不同」星體  */

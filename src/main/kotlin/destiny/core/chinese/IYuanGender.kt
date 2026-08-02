@@ -8,7 +8,7 @@ import destiny.core.Gender.F
 import destiny.core.Gender.M
 import destiny.core.calendar.chinese.Yuan
 import destiny.core.iching.Symbol
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 interface IYuanGender {
   /**
@@ -17,7 +17,7 @@ interface IYuanGender {
   fun getSymbol(gender: Gender, yuan: Yuan, yinYang: IYinYang) : Symbol
 }
 
-class YuanGenderImpl : IYuanGender, Serializable {
+class YuanGenderImpl : IYuanGender, JSerializable {
   override fun getSymbol(gender: Gender, yuan: Yuan, yinYang: IYinYang) : Symbol {
     return when (yuan) {
       Yuan.UP -> when (gender) {

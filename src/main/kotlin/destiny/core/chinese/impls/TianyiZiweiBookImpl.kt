@@ -8,7 +8,7 @@ import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 紫微斗數全書 對於天乙貴人的設定
@@ -20,7 +20,7 @@ import java.io.Serializable
  */
 class TianyiZiweiBookImpl : ITianyi,
                             Descriptive by Tianyi.ZiweiBook.asDescriptive(),
-                            Serializable {
+                            JSerializable {
 
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     return when (stem) {

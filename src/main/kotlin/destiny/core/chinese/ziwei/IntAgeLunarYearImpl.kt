@@ -16,6 +16,7 @@ import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.AgeType
 import destiny.core.chinese.StemBranch
+import destiny.tools.JSerializable
 import java.time.LocalTime
 
 
@@ -26,7 +27,7 @@ import java.time.LocalTime
 class IntAgeLunarYearImpl(private val ageType: AgeType,
                           private val chineseDateImpl: IChineseDate,
                           private val relativeTransitImpl: IRelativeTransit,
-                          private val julDayResolver: JulDayResolver) : IIntAge, java.io.Serializable {
+                          private val julDayResolver: JulDayResolver) : IIntAge, JSerializable {
 
   override fun getRange(gender: Gender, gmtJulDay: GmtJulDay, loc: ILocation, age: Int): Pair<GmtJulDay, GmtJulDay> {
     if (ageType == AgeType.VIRTUAL && age == 0)

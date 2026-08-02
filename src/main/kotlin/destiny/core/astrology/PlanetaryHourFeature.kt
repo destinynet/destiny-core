@@ -10,6 +10,7 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
+import destiny.tools.JSerializable
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -23,7 +24,7 @@ enum class PlanetaryHourType {
 
 @Serializable
 data class PlanetaryHourConfig(val type: PlanetaryHourType = PlanetaryHourType.ASTRO,
-                               val transConfig: TransConfig = TransConfig()): java.io.Serializable
+                               val transConfig: TransConfig = TransConfig()): JSerializable
 
 @DestinyMarker
 class PlanetaryHourConfigBuilder : Builder<PlanetaryHourConfig> {

@@ -3,10 +3,9 @@
  */
 package destiny.tools
 
-import java.io.Serializable
 import java.util.*
 
-class LocaleComparator(private val locale: Locale) : Comparator<Locale>, Serializable {
+class LocaleComparator(private val locale: Locale) : Comparator<Locale>, JSerializable {
 
   override fun compare(locale1: Locale, locale2: Locale): Int {
     return when {

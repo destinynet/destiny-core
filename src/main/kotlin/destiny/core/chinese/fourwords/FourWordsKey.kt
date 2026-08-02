@@ -4,7 +4,7 @@ package destiny.core.chinese.fourwords
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /** 四字斷終生 的 key  */
 data class FourWordsKey(
@@ -13,7 +13,7 @@ data class FourWordsKey(
   /** 月支  */
   val monthBranch: Branch,
   /** 時支  */
-  val hourBranch: Branch) : Serializable {
+  val hourBranch: Branch) : JSerializable {
 
   override fun toString(): String {
     return "FourWordsKey [日干=$dayStem, 月支=$monthBranch, 時支=$hourBranch]"

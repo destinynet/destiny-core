@@ -7,7 +7,7 @@ package destiny.core.calendar.decorators
 import destiny.tools.ChineseStringTools
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 object MonthDecorator {
@@ -22,7 +22,7 @@ object MonthDecorator {
 }
 
 
-class MonthDecoratorChinese : Decorator<Int>, Serializable {
+class MonthDecoratorChinese : Decorator<Int>, JSerializable {
 
   override fun getOutputString(value: Int): String {
     return when (value) {
@@ -36,7 +36,7 @@ class MonthDecoratorChinese : Decorator<Int>, Serializable {
 }
 
 
-class MonthDecoratorEnglish : Decorator<Int>, Serializable {
+class MonthDecoratorEnglish : Decorator<Int>, JSerializable {
   override fun getOutputString(value: Int): String {
     return when (value) {
       1 -> "January"

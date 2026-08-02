@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 計算流時命宮
@@ -15,7 +15,7 @@ import java.io.Serializable
  */
 class FlowHourDayMainHouseDepImpl : IFlowHour,
                                     Descriptive by FlowHour.MainHouseDep.asDescriptive(),
-                                    Serializable {
+                                    JSerializable {
 
   override fun getFlowHour(hour: Branch, flowDayMainHour: Branch): Branch {
     return flowDayMainHour.next(hour.getAheadOf(Branch.子))

@@ -27,7 +27,7 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
     val name: String?,
     val place: String?,
     val config: Config
-  ) : java.io.Serializable {
+  ) : JSerializable {
     companion object {
       private const val serialVersionUID: Long = 4817263950284716593L
     }
@@ -63,7 +63,7 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
     val name: String?,
     val place: String?,
     val config: Config
-  ) : java.io.Serializable {
+  ) : JSerializable {
     companion object {
       private const val serialVersionUID: Long = 6293847156203948571L
     }

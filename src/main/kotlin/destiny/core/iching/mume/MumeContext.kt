@@ -7,7 +7,7 @@ package destiny.core.iching.mume
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 梅花易 , 梅花的學名為 Prunus(李屬) mume(梅種)
@@ -19,7 +19,7 @@ data class MumeContext(
   val hexagram: IHexagram,
 
   /** 動爻 , 1~6  */
-  val motivate: Int) : Serializable {
+  val motivate: Int) : JSerializable {
 
   /**
    * @return 變卦

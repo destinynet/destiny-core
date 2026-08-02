@@ -11,7 +11,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField.*
 import java.time.temporal.ChronoUnit
@@ -21,7 +21,7 @@ import java.time.temporal.ChronoUnit
  */
 class MidnightLmtImpl(private val julDayResolver: JulDayResolver) : IMidnight ,
                                                                     Descriptive by MidnightImpl.CLOCK0.asDescriptive(),
-                                                                    Serializable {
+                                                                    JSerializable {
 
   override fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation): GmtJulDay {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)

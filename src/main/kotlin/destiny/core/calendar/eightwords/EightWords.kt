@@ -8,7 +8,7 @@ import destiny.core.chinese.*
 import destiny.tools.ChineseStringTools
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable as KSerializable
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 八字資料結構，可以包含 null 值
@@ -99,7 +99,7 @@ interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
 data class EightWordsNullable(override val year: IStemBranchOptional,
                               override val month: IStemBranchOptional,
                               override val day: IStemBranchOptional,
-                              override val hour: IStemBranchOptional) : IEightWordsNullable, IEightWordsNullableFactory, Serializable {
+                              override val hour: IStemBranchOptional) : IEightWordsNullable, IEightWordsNullableFactory, JSerializable {
 
 
   override val eightWordsNullable: EightWordsNullable
@@ -191,7 +191,7 @@ data class EightWords(override val year: StemBranch,
                       override val month: IStemBranch,
                       override val day: StemBranch,
                       override val hour: StemBranch) : IEightWords,
-  Serializable {
+  JSerializable {
 
   /** 以字串 "甲子","甲子","甲子","甲子" 方式 construct 此物件 , 任何一柱都不可以為 null */
   constructor(year: String, month: String, day: String, hour: String)

@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 /**
@@ -16,7 +16,7 @@ import java.io.Serializable
  */
 class FlowHourBranchImpl : IFlowHour,
                            Descriptive by FlowHour.Branch.asDescriptive(),
-                           Serializable {
+                           JSerializable {
 
   override fun getFlowHour(hour: Branch, flowDayMainHour: Branch): Branch {
     return hour

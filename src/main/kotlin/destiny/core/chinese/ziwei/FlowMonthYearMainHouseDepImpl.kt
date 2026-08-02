@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 以流年命宮起為流月正月
@@ -16,7 +16,7 @@ import java.io.Serializable
  */
 class FlowMonthYearMainHouseDepImpl : IFlowMonth,
                                       Descriptive by FlowMonth.YearMainHouseDep.asDescriptive(),
-                                      Serializable {
+                                      JSerializable {
 
   /**
    * 以流年的地支當命宮，起流月為正月

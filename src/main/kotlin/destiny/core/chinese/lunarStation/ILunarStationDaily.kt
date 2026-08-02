@@ -7,7 +7,7 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.Branch
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
@@ -42,7 +42,7 @@ interface ILunarStationDaily {
  * 日禽 實作
  */
 class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
-                            private val julDayResolver: JulDayResolver) : ILunarStationDaily, Serializable {
+                            private val julDayResolver: JulDayResolver) : ILunarStationDaily, JSerializable {
 
 
   /**

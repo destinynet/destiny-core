@@ -9,12 +9,12 @@ import destiny.core.iching.Symbol
 import destiny.core.iching.Symbol.*
 import destiny.tools.CircleTools
 import destiny.tools.CircleTools.normalize
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 後天八卦於羅盤上的位置
  */
-class AcquiredSymbolCompass : AbstractSymbolCompass(), Serializable {
+class AcquiredSymbolCompass : AbstractSymbolCompass(), JSerializable {
 
   /**
    * 取得某個卦的起始度數

@@ -2,7 +2,7 @@ package destiny.core
 
 import destiny.core.astrology.*
 import destiny.tools.ILocaleString
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 /**
@@ -39,7 +39,7 @@ abstract class Point(
   val nameKey: String,
   val resource: String,
   /** 縮寫key , 為了輸出美觀所用 , 限定兩個 bytes , 例如 : 日(SU) , 月(MO) , 冥(PL) , 升(No) , 強(So) , 穀 , 灶 ... */
-  val abbrKey: String? = null) : Serializable
+  val abbrKey: String? = null) : JSerializable
 {
 
   init {

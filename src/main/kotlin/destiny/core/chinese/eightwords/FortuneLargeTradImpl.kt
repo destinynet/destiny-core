@@ -8,7 +8,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.IStemBranch
 import jakarta.inject.Named
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -19,7 +19,7 @@ import java.time.chrono.ChronoLocalDateTime
  * https://sites.google.com/site/laughing8word/home/horoscope_figure
  */
 @Named
-class FortuneLargeTradImpl : IPersonFortuneLarge , Serializable {
+class FortuneLargeTradImpl : IPersonFortuneLarge , JSerializable {
 
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, config: FortuneLargeConfig): List<FortuneData> {
     TODO("Not yet implemented")

@@ -5,7 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.IGmtJulDay
 import destiny.core.calendar.GmtJulDay
-import java.io.Serializable
+import destiny.tools.JSerializable
 import kotlin.math.abs
 
 
@@ -32,7 +32,7 @@ data class AngleData(
   private val pointAnglePattern: IPointAnglePattern,
 
   /** 何時發生 */
-  override val gmtJulDay: GmtJulDay) : IAngleData, IPointAnglePattern by pointAnglePattern, Serializable {
+  override val gmtJulDay: GmtJulDay) : IAngleData, IPointAnglePattern by pointAnglePattern, JSerializable {
 
   constructor(p1: AstroPoint, p2: AstroPoint, angle: Double, gmtJulDay: GmtJulDay) : this(PointAnglePattern.of(setOf(p1, p2), angle), gmtJulDay)
 }

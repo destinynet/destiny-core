@@ -37,6 +37,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.JSerializable
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -74,7 +75,7 @@ data class StarTypeOptions(
    * Only affects [LunarApsis] calculations. Has no effect on other star types.
    */
   val apsisType: MeanOscu = MeanOscu.MEAN
-) : java.io.Serializable {
+) : JSerializable {
   companion object {
     /**
      * Default options using MEAN for both node and apsis calculations.

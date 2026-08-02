@@ -4,9 +4,9 @@
 package destiny.tools.converters
 
 import destiny.core.IBirthData
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 data class ParsedBasic(
   val successful: Boolean,
-  val birthData: IBirthData) : Serializable, IBirthData by birthData
+  val birthData: IBirthData) : JSerializable, IBirthData by birthData

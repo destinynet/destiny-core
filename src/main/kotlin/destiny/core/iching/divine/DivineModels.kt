@@ -15,21 +15,21 @@ import destiny.core.chinese.StemBranch
 import destiny.core.iching.*
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable as KSerializable
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
-interface ICombined : Serializable {
+interface ICombined : JSerializable {
   val src: IHexagram
   val dst: IHexagram
 }
 
-interface IMeta : Serializable {
+interface IMeta : JSerializable {
   val settings: SettingsOfStemBranch
   val hiddenEnergy: HiddenEnergy
 }
 
 data class Meta(override val settings: SettingsOfStemBranch,
-                override val hiddenEnergy: HiddenEnergy) : IMeta, Serializable
+                override val hiddenEnergy: HiddenEnergy) : IMeta, JSerializable
 
 
 /**
@@ -37,7 +37,7 @@ data class Meta(override val settings: SettingsOfStemBranch,
  */
 @KSerializable
 data class Combined(@Contextual override val src: IHexagram,
-                    @Contextual override val dst: IHexagram) : ICombined, Serializable
+                    @Contextual override val dst: IHexagram) : ICombined, JSerializable
 
 
 /** 單一卦象，卦名、世爻應爻、六親等資訊 */
@@ -75,7 +75,7 @@ data class SingleHexagram(
   /** 六親 */
   override val relatives: List<Relative>,
   override val 伏神納甲: List<StemBranch?>,
-  override val 伏神六親: List<Relative?>) : ISingleHexagram, IHexagram by hexagram, Serializable
+  override val 伏神六親: List<Relative?>) : ISingleHexagram, IHexagram by hexagram, JSerializable
 
 
 /** 純粹組合兩卦 , 沒有其他 卦名、卦辭、日期 等資訊 */
@@ -94,7 +94,7 @@ data class CombinedWithMeta(
   override val meta: Meta) : ICombinedWithMeta,
                              ICombined by Combined(srcModel, dstModel),
                              IMeta by meta,
-                             Serializable
+                             JSerializable
 
 
 interface ISingleHexagramWithName : ISingleHexagram, IHexagramName
@@ -104,7 +104,7 @@ data class SingleHexagramWithName(private val singleHexagram: ISingleHexagram,
   ISingleHexagramWithName,
   ISingleHexagram by singleHexagram,
   IHexagramName by hexagramName,
-  Serializable
+  JSerializable
 
 
 /** 合併卦象，只有卦名，沒有其他卦辭、爻辭等文字，也沒有日期時間等資料 (for 經文易排盤後對照) */
@@ -119,7 +119,7 @@ data class CombinedWithMetaName(
   override val dstModel: ISingleHexagramWithName,
   override val 變卦對於本卦的六親: List<Relative>,
   override val meta: Meta) : ICombinedWithMetaName,
-                             ICombinedWithMeta by CombinedWithMeta(srcModel, dstModel, 變卦對於本卦的六親, meta), Serializable
+                             ICombinedWithMeta by CombinedWithMeta(srcModel, dstModel, 變卦對於本卦的六親, meta), JSerializable
 
 
 /**
@@ -175,7 +175,7 @@ data class CombinedWithMetaNameDayMonth(
   /** 六獸 */
   override val sixAnimals: List<SixAnimal>) :
   ICombinedWithMetaNameDayMonth,
-  ICombinedWithMetaName by combinedWithMetaName, Serializable {
+  ICombinedWithMetaName by combinedWithMetaName, JSerializable {
 
   override val day = eightWordsNullable.day.let {
     if (it.stem != null && it.branch != null)
@@ -217,7 +217,7 @@ data class DivineMeta(
   override val decoratedDate: String?,
   override val decoratedDateTime: String?,
   val meta: IMeta,
-  val link: String? = null) : IMeta by meta, IDivineMeta, Serializable
+  val link: String? = null) : IMeta by meta, IDivineMeta, JSerializable
 
 
 /** 完整卜卦盤 , 包含所有資料 */
@@ -232,7 +232,7 @@ data class CombinedFull(
   ICombinedFull,
   ICombinedWithMetaNameDayMonth by combinedWithMetaNameDayMonth,
   IDivineMeta by divineMeta,
-  Serializable {
+  JSerializable {
 
   override val settings
     get() = divineMeta.settings

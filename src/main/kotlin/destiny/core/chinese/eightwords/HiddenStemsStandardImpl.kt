@@ -9,7 +9,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 /**
@@ -17,7 +17,7 @@ import java.io.Serializable
  * 潘文欽有另一套說法：
  * https://destiny.to/ubbthreads/files/1704571-%E8%97%8F%E5%B9%B2.jpg
  */
-class HiddenStemsStandardImpl : IHiddenStems, Serializable {
+class HiddenStemsStandardImpl : IHiddenStems, JSerializable {
 
   override fun getHiddenStems(branch: Branch): List<Stem> {
     return map.getValue(branch)

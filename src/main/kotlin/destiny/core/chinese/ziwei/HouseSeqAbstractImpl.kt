@@ -5,10 +5,10 @@ package destiny.core.chinese.ziwei
 
 import destiny.tools.KotlinLogging
 import destiny.tools.getTitle
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
-abstract class HouseSeqAbstractImpl : IHouseSeq, Serializable {
+abstract class HouseSeqAbstractImpl : IHouseSeq, JSerializable {
   // 建立 House 到索引的映射（延遲初始化，提升查找性能）
   private val houseToIndexMap: Map<House, Int> by lazy {
     houses.withIndex().associate { (index, house) -> house to index }

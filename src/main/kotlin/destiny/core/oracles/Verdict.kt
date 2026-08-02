@@ -1,5 +1,5 @@
 package destiny.core.oracles
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
-data class Verdict(val domain: String, val result: String) : Serializable
+data class Verdict(val domain: String, val result: String) : JSerializable

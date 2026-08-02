@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.*
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 data class HouseCalContext(/** 「陰曆」的年干支 */
                            val lunarYear: StemBranch,
@@ -32,7 +32,7 @@ data class HouseCalContext(/** 「陰曆」的年干支 */
                            val predefinedMainHouse: Branch?,
                            val purpleStarBranchImplMap: Map<PurpleStarBranch, IPurpleStarBranch>,
                            val tianyiImplMap: Map<Tianyi, ITianyi>
-                           ) : Serializable {
+                           ) : JSerializable {
   val year : StemBranch
     get() {
       return if (config.yearType == YearType.YEAR_LUNAR)

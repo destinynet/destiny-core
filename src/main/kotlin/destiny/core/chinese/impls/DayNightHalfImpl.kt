@@ -10,12 +10,12 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.ITransConfig
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight,
                                                                 Descriptive by DayNightImpl.Half.asDescriptive(),
-                                                                Serializable {
+                                                                JSerializable {
 
   // TODO : 極區內可能不適用
   override fun getDayNight(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: ITransConfig): DayNight {

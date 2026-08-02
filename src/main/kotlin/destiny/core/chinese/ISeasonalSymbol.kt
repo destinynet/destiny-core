@@ -12,7 +12,7 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement.*
 import destiny.core.iching.Symbol
 import destiny.core.iching.Symbol.*
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -29,7 +29,7 @@ interface ISeasonalSymbol {
 /**
  * 東方設定：四立點
  */
-class SeasonalSymbolChineseImpl(val solarTermsImpl: ISolarTerms) : ISeasonalSymbol, Serializable {
+class SeasonalSymbolChineseImpl(val solarTermsImpl: ISolarTerms) : ISeasonalSymbol, JSerializable {
 
   override fun getSeasonalSymbol(gmtJulDay: GmtJulDay): Set<Symbol> {
     val solarTerms: SolarTerms = solarTermsImpl.getSolarTerms(gmtJulDay)

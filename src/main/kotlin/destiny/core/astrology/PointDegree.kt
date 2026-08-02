@@ -4,12 +4,12 @@
  */
 package destiny.core.astrology
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 純粹資料結構，存放星體(日月/行星/南北交點/恆星)在黃道帶上的度數 (0~360)
  */
-data class PointDegree(val point: AstroPoint, val degree: Double) : Serializable {
+data class PointDegree(val point: AstroPoint, val degree: Double) : JSerializable {
 
   /** 取得黃道此度數所在的星座  */
   val zodiacSign: ZodiacSign

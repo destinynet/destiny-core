@@ -6,7 +6,7 @@ package destiny.core.astrology
 import destiny.core.DayNight
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 描述一段期間，其 Planetary Hour 屬於哪顆行星 的資料結構
@@ -23,4 +23,4 @@ data class PlanetaryHour(
 
   val planet: Planet,
 
-  val location: ILocation) : Serializable
+  val location: ILocation) : JSerializable

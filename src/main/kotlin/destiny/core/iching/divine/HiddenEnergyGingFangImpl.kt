@@ -10,14 +10,14 @@ import destiny.core.chinese.StemBranch
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 伏神系統，京房之《京房易卦》 , 一定不會傳回 null
  */
 class HiddenEnergyGingFangImpl : IHiddenEnergy,
                                  Descriptive by HiddenEnergy.GingFang.asDescriptive(),
-                                 Serializable {
+                                 JSerializable {
 
   override fun getStemBranch(hexagram: IHexagram, settings: ISettingsOfStemBranch, lineIndex: Int): StemBranch {
     val comparator = HexagramDivinationComparator()

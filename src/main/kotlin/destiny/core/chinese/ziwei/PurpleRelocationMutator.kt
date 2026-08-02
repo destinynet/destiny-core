@@ -1,13 +1,14 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch
+import destiny.tools.JSerializable
 import jakarta.inject.Named
 
 /**
  * 紫微星變盤
  */
 @Named
-class PurpleRelocationMutator(private val prevMonthDaysImpl: IPrevMonthDays) : IHouseMutator, java.io.Serializable {
+class PurpleRelocationMutator(private val prevMonthDaysImpl: IPrevMonthDays) : IHouseMutator, JSerializable {
 
   override fun mutate(plate: IPlate, config: IZiweiConfig): Set<HouseData>? {
 

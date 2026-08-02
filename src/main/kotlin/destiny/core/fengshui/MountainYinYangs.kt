@@ -7,7 +7,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.trilogy
 import destiny.core.iching.Symbol
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 interface IMountainYinYang {
   fun getYinYang(m: Mountain): Boolean
@@ -56,7 +56,7 @@ interface IMountainYinYang {
  * 參考圖檔 https://imgur.com/QiNaMbL
  *
  * */
-class MountainYinYangEmptyImpl : IMountainYinYang, Serializable {
+class MountainYinYangEmptyImpl : IMountainYinYang, JSerializable {
   override fun getYinYang(m: Mountain): Boolean {
     return when (m.mnt) {
       is SealedMnt.MntSymbol -> true
@@ -79,7 +79,7 @@ class MountainYinYangEmptyImpl : IMountainYinYang, Serializable {
  *
  * 參照： https://imgur.com/vQ6TDfh
  */
-class MountainYinYangSanYuanImpl : IMountainYinYang, Serializable {
+class MountainYinYangSanYuanImpl : IMountainYinYang, JSerializable {
   override fun getYinYang(m: Mountain): Boolean {
     return when (m.mnt) {
       is SealedMnt.MntSymbol -> false
@@ -102,7 +102,7 @@ class MountainYinYangSanYuanImpl : IMountainYinYang, Serializable {
  * 巽、辛、丁、巳、酉、丑此六山為陰
  * 艮、丙、庚、亥、卯、未此六山為陰
  */
-class MountainYinYangTrilogyImpl : IMountainYinYang, Serializable {
+class MountainYinYangTrilogyImpl : IMountainYinYang, JSerializable {
   override fun getYinYang(m: Mountain): Boolean {
     return when (m.mnt) {
       is SealedMnt.MntBranch -> {

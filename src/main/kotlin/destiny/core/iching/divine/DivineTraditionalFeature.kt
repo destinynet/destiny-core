@@ -20,6 +20,7 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
+import destiny.tools.JSerializable
 import destiny.tools.serializers.IHexagramSerializer
 import destiny.tools.serializers.LocaleSerializer
 import jakarta.inject.Named
@@ -37,7 +38,7 @@ data class DivineTraditionalConfig(@Serializable(with = IHexagramSerializer::cla
                                    val yangBlade: YangBlade = YangBlade.NextBliss,
                                    @Serializable(with = LocaleSerializer::class)
                                    val locale: Locale = Locale.TAIWAN,
-                                   val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
+                                   val eightWordsConfig: EightWordsConfig = EightWordsConfig()): JSerializable
 @DestinyMarker
 class DivineTraditionalConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<DivineTraditionalConfig> {
 

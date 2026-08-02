@@ -8,7 +8,7 @@ import destiny.core.astrology.Element.*
 import destiny.core.astrology.Planet
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacSign
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * J.B. Morin Triplicity 實作
@@ -42,7 +42,7 @@ import java.io.Serializable
  *
  * </pre>
  */
-object TriplicityMorinImpl : ITriplicity, Serializable {
+object TriplicityMorinImpl : ITriplicity, JSerializable {
   private fun readResolve(): Any = TriplicityMorinImpl
 
   /** 哪顆星在此星座得到三分相 (+3) */

@@ -10,7 +10,7 @@ import destiny.core.astrology.PointDegree
 import destiny.core.astrology.ZodiacDegree
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * Egyptian Terms (Bounds) - 埃及界限
@@ -19,7 +19,7 @@ import java.io.Serializable
  * Each zodiac sign is divided into 5 unequal parts (terms), each ruled by one of the
  * 5 visible planets (excluding Sun and Moon).
  */
-object TermEgyptianImpl : ITerm, Serializable {
+object TermEgyptianImpl : ITerm, JSerializable {
   private fun readResolve(): Any = TermEgyptianImpl
 
   override fun getPoint(degree: ZodiacDegree): AstroPoint {

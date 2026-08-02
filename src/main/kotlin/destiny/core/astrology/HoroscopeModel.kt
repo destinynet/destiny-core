@@ -10,7 +10,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 fun Map<Int, ZodiacDegree>.getCuspDegree(cusp: Int): ZodiacDegree {
@@ -49,7 +49,7 @@ data class HoroscopeModel(
 
   /** ruler */
   override val rulingHouseMap: Map<Planet, Set<RulingHouse>>
-) : IHoroscopeModel, Serializable {
+) : IHoroscopeModel, JSerializable {
 
   override val time: ChronoLocalDateTime<*>
     get() = TimeTools.getLmtFromGmt(gmtJulDay, location, JulDayResolver1582CutoverImpl())

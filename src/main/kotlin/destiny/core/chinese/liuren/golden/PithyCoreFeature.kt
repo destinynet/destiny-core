@@ -18,6 +18,7 @@ import destiny.core.chinese.liuren.*
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.JSerializable
 import destiny.tools.KotlinLogging
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -31,7 +32,7 @@ data class PithyConfig(val direction: Branch = Branch.子,
                        val tianyi: Tianyi = Tianyi.LiurenPithy,
                        val generalSeq : GeneralSeq = GeneralSeq.Default,
                        val generalStemBranch : GeneralStemBranch = GeneralStemBranch.Pithy
-                       ) : java.io.Serializable
+                       ) : JSerializable
 
 @DestinyMarker
 class PithyConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<PithyConfig> {

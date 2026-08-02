@@ -3,7 +3,8 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.JSerializable
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RulingHouse(val house: Int, val sign: ZodiacSign) : java.io.Serializable
+data class RulingHouse(val house: Int, val sign: ZodiacSign) : JSerializable

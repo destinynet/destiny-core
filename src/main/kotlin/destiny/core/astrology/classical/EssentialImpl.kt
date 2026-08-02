@@ -7,7 +7,7 @@ package destiny.core.astrology.classical
 import destiny.core.DayNight
 import destiny.core.astrology.*
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /** Facade Class of Ptolemy's Table of Essential Dignities and Debilities  */
 class EssentialImpl(private val rulerImpl: IRuler,
@@ -17,7 +17,7 @@ class EssentialImpl(private val rulerImpl: IRuler,
                     private val triplicityImpl: ITriplicity,
                     private val termImpl: ITerm,
                     private val faceImpl: IFace,
-                    private val dayNightDifferentiator: IDayNight) : IEssential, Serializable {
+                    private val dayNightDifferentiator: IDayNight) : IEssential, JSerializable {
 
 
   override fun AstroPoint.getDignitiesFromSignMap(map: Map<AstroPoint, ZodiacSign>, dayNight: DayNight?): List<Dignity> {

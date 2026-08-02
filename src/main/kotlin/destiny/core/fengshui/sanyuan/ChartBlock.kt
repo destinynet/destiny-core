@@ -8,7 +8,7 @@ package destiny.core.fengshui.sanyuan
 import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
 import destiny.core.iching.Symbol
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 在三元盤中，每個 Chart 都有九個 Block
@@ -26,7 +26,7 @@ data class ChartBlock(
   val dir: Period,
 
   /** 元運 , 1~9 */
-  val period: Period) : Serializable {
+  val period: Period) : JSerializable {
 
     companion object {
       fun of(symbol: Symbol? , mnt: Int , dir: Int , period: Int) : ChartBlock {

@@ -7,12 +7,12 @@ package destiny.core.iching.divine
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
 import destiny.core.iching.IHexagramSequence
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 京房卦序：乾為天,天風姤,天山遯,天地否...
  */
-class HexagramDivinationComparator : Comparator<IHexagram>, IHexagramSequence , Serializable {
+class HexagramDivinationComparator : Comparator<IHexagram>, IHexagramSequence , JSerializable {
 
   /**
    * 實作 HexagramSequenceIF

@@ -8,14 +8,14 @@ import destiny.core.Gender
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.ziwei.House.命宮
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 鄰宮起大限
  */
 class FlowSectionSkipMain : IFlowSection,
                             Descriptive by BigRange.SkipMain.asDescriptive(),
-                            Serializable {
+                            JSerializable {
 
   override fun getAgeRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int> {
     val steps: Int = if (yinYang.booleanValue && gender === Gender.M || !yinYang.booleanValue && gender === Gender.F) {

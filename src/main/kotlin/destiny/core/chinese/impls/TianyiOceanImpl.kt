@@ -8,7 +8,7 @@ import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 《淵海子平》《六壬視斯》《六壬大占》《大六壬金口訣》(部份版本用此法)
@@ -20,7 +20,7 @@ import java.io.Serializable
  */
 class TianyiOceanImpl : ITianyi,
                         Descriptive by Tianyi.Ocean.asDescriptive(),
-                        Serializable {
+                        JSerializable {
 
   /**
    * 甲戊兼牛羊，乙己鼠猴鄉，丙丁豬雞位，壬癸兔蛇藏，

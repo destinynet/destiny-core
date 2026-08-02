@@ -8,7 +8,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.寅
 import destiny.tools.KotlinLogging
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 內定求紫微星的地支宮位，不考慮閏月問題
@@ -24,7 +24,7 @@ import java.io.Serializable
  */
 class PurpleStarBranchDefaultImpl : IPurpleStarBranch,
                                     Descriptive by PurpleStarBranch.Default.asDescriptive(),
-                                    Serializable {
+                                    JSerializable {
 
   /**
    * @param state 局數

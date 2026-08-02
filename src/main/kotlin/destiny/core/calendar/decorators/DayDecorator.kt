@@ -6,7 +6,7 @@ package destiny.core.calendar.decorators
 
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 
@@ -23,13 +23,13 @@ object DayDecorator {
 }
 
 
-class DayDecoratorChinese : Decorator<Int>, Serializable {
+class DayDecoratorChinese : Decorator<Int>, JSerializable {
   override fun getOutputString(value: Int): String {
     return value.toString() + "日"
   }
 }
 
-class DayDecoratorEnglish : Decorator<Int>, Serializable {
+class DayDecoratorEnglish : Decorator<Int>, JSerializable {
 
   override fun getOutputString(value: Int): String {
     return value.toString()

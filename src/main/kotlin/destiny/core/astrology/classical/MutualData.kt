@@ -2,9 +2,9 @@ package destiny.core.astrology.classical
 
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.ZodiacSign
-import java.io.Serializable
+import destiny.tools.JSerializable
 
-interface IMutualData : Serializable {
+interface IMutualData : JSerializable {
 
   /**
    * 意味此 [AstroPoint] 放射出哪種能量 ([Dignity]) 給另一顆星

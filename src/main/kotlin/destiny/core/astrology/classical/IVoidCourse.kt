@@ -12,7 +12,7 @@ import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 import kotlin.math.min
 
@@ -98,7 +98,7 @@ sealed interface IVoidCourse : Descriptive {
 class VoidCourseHellenistic(
   private val besiegedImpl: IBesieged,
   private val starPositionImpl: IStarPosition<*>
-) : IVoidCourse, Serializable {
+) : IVoidCourse, JSerializable {
   override fun getVoidCourse(
     gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, planet: Planet, centric: Centric, starTypeOptions: StarTypeOptions
   ): Misc.VoidCourseSpan? {
@@ -155,7 +155,7 @@ class VoidCourseHellenistic(
  */
 class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
                              private val starPositionImpl: IStarPosition<*>,
-                             private val starTransitImpl: IStarTransit) : IVoidCourse, Serializable {
+                             private val starTransitImpl: IStarTransit) : IVoidCourse, JSerializable {
 
   private val pointDiameter: IPointDiameter = PointDiameterLillyImpl()
 
@@ -224,7 +224,7 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
  */
 class VoidCourseMedieval(private val besiegedImpl: IBesieged,
                          private val starPositionImpl: IStarPosition<*>,
-                         private val starTransitImpl: IStarTransit) : IVoidCourse, Serializable {
+                         private val starTransitImpl: IStarTransit) : IVoidCourse, JSerializable {
   override fun getVoidCourse(
     gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, planet: Planet, centric: Centric, starTypeOptions: StarTypeOptions
   ): Misc.VoidCourseSpan? {

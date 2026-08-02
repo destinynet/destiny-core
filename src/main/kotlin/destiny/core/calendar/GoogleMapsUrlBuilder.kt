@@ -4,9 +4,9 @@
  */
 package destiny.core.calendar
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
-class GoogleMapsUrlBuilder : LocationUrlBuilder, Serializable {
+class GoogleMapsUrlBuilder : LocationUrlBuilder, JSerializable {
 
   // https://www.google.com/maps?&z=10&q=25.039059+121.517675&ll=25.039059+121.517675
   override fun getUrl(lat: Double, lng: Double): String {

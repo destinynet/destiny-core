@@ -14,6 +14,7 @@ import destiny.core.chinese.Tianyi
 import destiny.core.chinese.YearType
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.JSerializable
 import destiny.tools.serializers.LocaleSerializer
 import destiny.tools.serializers.ZStarSerializer
 import kotlinx.serialization.Contextual
@@ -127,7 +128,7 @@ enum class ChineseDateImpl {
   Civil
 }
 
-interface IZiweiConfig : IEightWordsConfig , java.io.Serializable {
+interface IZiweiConfig : IEightWordsConfig , JSerializable {
   val stars: Set<@Serializable(with = ZStarSerializer::class) ZStar>
   /** 命宮、身宮 演算法  */
   var mainBodyHouse: MainBodyHouse

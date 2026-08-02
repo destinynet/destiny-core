@@ -13,7 +13,7 @@ import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.IClockwise
 import destiny.core.chinese.Stem.*
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 推算貴神
@@ -23,7 +23,7 @@ import java.io.Serializable
 class ClockwiseXinRenKuiReverseImpl(private val dayHourImpl: IDayHour,
                                     private val differentiator: IDayNight) : IClockwise,
                                                                              Descriptive by destiny.core.chinese.liuren.Clockwise.XinRenKuiReverse.asDescriptive(),
-                                                                             Serializable {
+                                                                             JSerializable {
 
   override fun getClockwise(gmtJulDay: GmtJulDay, loc: ILocation): Clockwise {
     val day = dayHourImpl.getDay(gmtJulDay, loc)

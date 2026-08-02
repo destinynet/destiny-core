@@ -15,7 +15,7 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
@@ -26,7 +26,7 @@ import java.time.temporal.ChronoUnit
  * 再從太陽過天頂到天底，平均劃分十二等份
  * 依此來切割 12 時辰
  */
-class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Serializable {
+class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, JSerializable {
 
   private var transConfig = TransConfig(discCenter = true, refraction = true, temperature = 0.0, pressure = 1013.25)
 

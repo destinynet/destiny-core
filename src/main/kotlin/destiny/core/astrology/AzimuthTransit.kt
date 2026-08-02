@@ -6,7 +6,7 @@ package destiny.core.astrology
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import destiny.tools.serializers.GmtJulDaySerializer
-import java.io.Serializable
+import destiny.tools.JSerializable
 import kotlinx.serialization.Serializable as KSerializable
 
 /**
@@ -28,4 +28,4 @@ data class AzimuthTransit(
   val apparentAltitude: Double,
   /** 是否為「上升段」通過：高度正在增加 (東半天) = true；下降段 (西半天) = false。用來區分一日兩次通過 */
   val ascending: Boolean
-) : Serializable
+) : JSerializable

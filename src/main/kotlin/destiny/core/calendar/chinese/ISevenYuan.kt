@@ -4,7 +4,7 @@
 package destiny.core.calendar.chinese
 
 import destiny.core.calendar.ILocation
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 /** 七元 */
@@ -19,7 +19,7 @@ interface ISevenYuan {
  * 甲子己卯符頭定，甲午己酉年值通。
  * 康熙上元畢月值，循環順數去無窮。
  * */
-class SevenYuanImpl : ISevenYuan, Serializable {
+class SevenYuanImpl : ISevenYuan, JSerializable {
   override fun getYuan(lmt: ChronoLocalDateTime<*>, loc: ILocation): Yuan {
     TODO("Not yet implemented")
   }

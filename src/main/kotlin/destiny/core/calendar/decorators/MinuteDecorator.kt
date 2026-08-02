@@ -6,7 +6,7 @@ package destiny.core.calendar.decorators
 
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 object MinuteDecorator {
@@ -20,14 +20,14 @@ object MinuteDecorator {
   }
 }
 
-class MinuteDecoratorChinese : Decorator<Int>, Serializable {
+class MinuteDecoratorChinese : Decorator<Int>, JSerializable {
   override fun getOutputString(value: Int): String {
     return value.toString() + "分"
   }
 }
 
 
-class MinuteDecoratorEnglish : Decorator<Int>, Serializable {
+class MinuteDecoratorEnglish : Decorator<Int>, JSerializable {
   override fun getOutputString(value: Int): String {
     return value.toString()
   }

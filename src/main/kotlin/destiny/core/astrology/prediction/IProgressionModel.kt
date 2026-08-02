@@ -5,14 +5,14 @@ package destiny.core.astrology.prediction
 
 import destiny.core.astrology.ISynastryAspect
 import destiny.core.calendar.GmtJulDay
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 enum class ProgressionType {
   TRANSIT, SECONDARY, TERTIARY, MINOR
 }
 
-interface ITransitModel : Serializable {
+interface ITransitModel : JSerializable {
   val natalTime: GmtJulDay
   val viewTime: GmtJulDay
 }

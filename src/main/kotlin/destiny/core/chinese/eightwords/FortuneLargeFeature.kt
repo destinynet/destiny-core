@@ -17,6 +17,7 @@ import destiny.core.chinese.StemBranchUtils.toAnimal
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.JSerializable
 import destiny.tools.PersonFeature
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -33,7 +34,7 @@ enum class FortuneLargeImpl {
 data class FortuneLargeConfig(val impl: FortuneLargeImpl = FortuneLargeImpl.DefaultSpan,
                               val span : Double = 120.0,
                               val intAgeNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
-                              val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
+                              val eightWordsConfig: EightWordsConfig = EightWordsConfig()): JSerializable
 
 @DestinyMarker
 class FortuneLargeConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<FortuneLargeConfig> {

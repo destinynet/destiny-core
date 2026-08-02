@@ -8,7 +8,7 @@ import destiny.core.Gender
 import destiny.core.chinese.Branch
 import destiny.core.chinese.onePalm.PositiveImpl.GenderYinYang
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * http://curtisyen74.pixnet.net/blog/post/19456721
@@ -18,7 +18,7 @@ import java.io.Serializable
  */
 class PositiveGenderYinYangImpl : IPositive,
                                   Descriptive by GenderYinYang.asDescriptive(),
-                                  Serializable {
+                                  JSerializable {
 
   override fun isPositive(gender: Gender, yearBranch: Branch): Boolean {
     return gender === Gender.M && yearBranch.index % 2 == 0 || gender === Gender.F && yearBranch.index % 2 == 1

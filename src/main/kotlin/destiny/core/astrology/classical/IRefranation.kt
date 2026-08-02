@@ -5,7 +5,7 @@ package destiny.core.astrology.classical
 
 import destiny.core.astrology.*
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * Refranation 定義：返回、臨陣脫逃
@@ -41,7 +41,7 @@ interface IRefranation {
 
 class RefranationImpl(private val aspectCalculator: IAspectCalculator,
                       private val relativeTransitImpl: IRelativeTransit,
-                      private val retrogradeImpl: IRetrograde) : IRefranation, Serializable {
+                      private val retrogradeImpl: IRetrograde) : IRefranation, JSerializable {
 
 
   override fun getResult(horoscope: IHoroscopeModel,

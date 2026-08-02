@@ -9,7 +9,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.Branch
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -28,7 +28,7 @@ import java.time.chrono.ChronoLocalDateTime
 class HourHouseImpl(val houseCuspImpl: IHouseCusp,
                     val starPositionImpl: IStarPosition<*>,
                     val star: Star = Planet.SUN,
-                    val houseSystem: HouseSystem = HouseSystem.MERIDIAN) : IHour, Serializable {
+                    val houseSystem: HouseSystem = HouseSystem.MERIDIAN) : IHour, JSerializable {
 
   override fun getHour(gmtJulDay: GmtJulDay, loc: ILocation, config: IHourBranchConfig): Branch {
 

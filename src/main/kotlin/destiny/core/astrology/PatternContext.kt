@@ -13,13 +13,13 @@ import destiny.tools.Score.Companion.toScore
 import org.apache.commons.math3.ml.clustering.Cluster
 import org.apache.commons.math3.ml.clustering.Clusterable
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer
-import java.io.Serializable
+import destiny.tools.JSerializable
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 
 class PatternContext(val aspectEffective: IAspectEffective,
-                     val aspectCalculator: IAspectCalculator) : Serializable {
+                     val aspectCalculator: IAspectCalculator) : JSerializable {
 
   /**
    * 空的 [cuspDegreeMap] 表示「宮首不可得」（無精確出生時刻），此時 [PointSignHouse.house] 為 null。

@@ -5,7 +5,7 @@ package destiny.core.calendar
 
 import destiny.tools.KotlinLogging
 import org.threeten.extra.chrono.JulianChronology
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.*
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
@@ -17,7 +17,7 @@ import kotlin.math.floor
  * 1582-10-15 (含) 之後 , 傳回 [IsoChronology]
  * 其切分時間點，與 Java 的 [java.util.GregorianCalendar] 相同
  */
-class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
+class JulDayResolver1582CutoverImpl : JulDayResolver, JSerializable {
 
 
   override fun getLocalDateTime(gmtJulDay: GmtJulDay): ChronoLocalDateTime<*> {

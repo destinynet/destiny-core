@@ -1,6 +1,6 @@
 package destiny.core
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 enum class Hint {
   POSITIVE,
@@ -8,7 +8,7 @@ enum class Hint {
   NOTICE
 }
 
-sealed class Paragraph(open val content: String, open val hint: Hint? = null) : Serializable {
+sealed class Paragraph(open val content: String, open val hint: Hint? = null) : JSerializable {
   data class Normal(override val content: String, override val hint: Hint? = null) : Paragraph(content, hint)
   data class Scripture(override val content: String, override val hint: Hint? = null) : Paragraph(content, hint)
 }

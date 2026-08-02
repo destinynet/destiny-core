@@ -4,11 +4,10 @@
 package destiny.tools
 
 import kotlinx.serialization.Serializable as KSerializable
-import java.io.Serializable
 
 @KSerializable
 @JvmInline
-value class Score(val value: Double) : Comparable<Score>, Serializable {
+value class Score(val value: Double) : Comparable<Score>, JSerializable {
   init {
     require(value in 0.0..1.0) {
       throw IllegalArgumentException("value $value 必須介於 0 與 1 之間")

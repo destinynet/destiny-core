@@ -12,13 +12,13 @@ import destiny.core.chinese.StemBranch
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 /** 伏神系統，王洪緒之《卜筮正宗》 , 大多數會是 null  */
 class HiddenEnergyWangImpl : IHiddenEnergy,
                              Descriptive by HiddenEnergy.Wang.asDescriptive(),
-                             Serializable {
+                             JSerializable {
 
   override fun getStemBranch(hexagram: IHexagram, settings: ISettingsOfStemBranch, lineIndex: Int): StemBranch? {
     val comparator = HexagramDivinationComparator()

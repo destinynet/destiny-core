@@ -9,12 +9,12 @@ import destiny.core.calendar.IEvent
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.locationOf
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
-interface IGmtJulDay : Serializable {
+interface IGmtJulDay : JSerializable {
   val gmtJulDay: GmtJulDay
 }
 

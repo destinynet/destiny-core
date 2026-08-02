@@ -14,11 +14,11 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.IMonthMaster
 import destiny.core.chinese.MonthMaster
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 class MonthMasterStarPositionImpl(private val starPositionImpl: IStarPosition<*>) : IMonthMaster,
                                                                                     Descriptive by MonthMaster.StarPosition.asDescriptive(),
-                                                                                    Serializable {
+                                                                                    JSerializable {
 
   override fun getBranch(gmtJulDay: GmtJulDay, loc: ILocation): Branch {
     val pos = starPositionImpl.calculate(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC)

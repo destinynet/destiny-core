@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 紫微斗數全集 , 流年斗君 順數月
@@ -19,7 +19,7 @@ import java.io.Serializable
  */
 class FlowMonthDefaultImpl : IFlowMonth,
                              Descriptive by FlowMonth.Default.asDescriptive(),
-                             Serializable {
+                             JSerializable {
 
   override fun getFlowMonth(flowYear: Branch, flowMonth: Branch, birthMonth: Int, birthHour: Branch): Branch {
     return Ziwei

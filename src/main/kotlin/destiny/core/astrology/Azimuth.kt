@@ -4,7 +4,7 @@
  */
 package destiny.core.astrology
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 interface IAzimuth {
@@ -25,4 +25,4 @@ data class Azimuth(
   /** 真實高度  */
   override val trueAltitude: Double,
   /** 視高度 (會考量到大氣折射)  */
-  override val apparentAltitude: Double) : IAzimuth , Serializable
+  override val apparentAltitude: Double) : IAzimuth , JSerializable

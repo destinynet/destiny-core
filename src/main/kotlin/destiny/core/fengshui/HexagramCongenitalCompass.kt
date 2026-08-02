@@ -6,12 +6,12 @@ package destiny.core.fengshui
 import destiny.core.iching.Congenital
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 先天64卦羅盤 , for 伏羲先天六十四卦天圓地方圖 [destiny.core.iching.Congenital]
  */
-class HexagramCongenitalCompass : ICompass<IHexagram>, Serializable {
+class HexagramCongenitalCompass : ICompass<IHexagram>, JSerializable {
 
   override val initDegree: Double = 0.0
 

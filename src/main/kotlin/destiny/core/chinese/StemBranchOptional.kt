@@ -3,14 +3,14 @@
  */
 package destiny.core.chinese
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 /**
  * 干、支 可其中一個為空，也可兩個都為空
  * nullable & UnConstrained
  */
-interface IStemBranchOptional : Serializable {
+interface IStemBranchOptional : JSerializable {
   val stem: Stem?
   val branch: Branch?
 

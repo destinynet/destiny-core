@@ -8,7 +8,7 @@ import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 此為 web 大六壬 內定版本
@@ -31,7 +31,7 @@ import java.io.Serializable
  */
 class TianyiLiurenPithyImpl : ITianyi,
                               Descriptive by Tianyi.LiurenPithy.asDescriptive(),
-                              Serializable {
+                              JSerializable {
 
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     return when (stem) {

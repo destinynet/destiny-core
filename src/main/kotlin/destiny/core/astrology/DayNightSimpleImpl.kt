@@ -11,12 +11,12 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.ITransConfig
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.temporal.ChronoField
 
 class DayNightSimpleImpl(val julDayResolver: JulDayResolver) : IDayNight,
                                                                Descriptive by DayNightImpl.Simple.asDescriptive(),
-                                                               Serializable {
+                                                               JSerializable {
 
   override fun getDayNight(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: ITransConfig): DayNight {
 

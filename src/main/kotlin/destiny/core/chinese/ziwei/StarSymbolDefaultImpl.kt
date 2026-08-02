@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.iching.Symbol
 import destiny.core.iching.Symbol.*
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 紫微斗數配卦
@@ -15,7 +15,7 @@ import java.io.Serializable
  *
  * 其餘系統參考這裡  http://skylight-hk.net/forum/forum.php?mod=viewthread&tid=607
  */
-class StarSymbolDefaultImpl : IStarSymbol, Serializable {
+class StarSymbolDefaultImpl : IStarSymbol, JSerializable {
 
   override fun getSymbolAcquired(star: StarMain): Symbol {
     return when(star) {

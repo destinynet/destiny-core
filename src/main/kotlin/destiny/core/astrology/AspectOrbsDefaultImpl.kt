@@ -7,7 +7,7 @@ package destiny.core.astrology
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Aspect.Importance.HIGH
 import destiny.core.astrology.Aspect.Importance.MEDIUM
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 「現代占星術」的交角容許度，內定實作
@@ -15,7 +15,7 @@ import java.io.Serializable
  *
  * @param defaultThreshold 符合容許度後，評分從幾分開始起跳 , 本實作 [HIGH] , [MEDIUM] 有設定 , 其餘不重要的度數 , 就從 0.9 起跳
  */
-class AspectOrbsDefaultImpl(private val defaultThreshold : Double = 0.9) : IAspectOrbs, Serializable {
+class AspectOrbsDefaultImpl(private val defaultThreshold : Double = 0.9) : IAspectOrbs, JSerializable {
 
   override fun getAspectOrbAndThreshold(aspect: Aspect): Pair<Double, Double> {
 

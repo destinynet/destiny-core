@@ -5,7 +5,7 @@ package destiny.core.calendar
 
 import destiny.tools.Decorator
 import destiny.tools.LocaleTools
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
@@ -31,7 +31,7 @@ object DateHourMinSecDecorator {
  * 西元前2000年12月31日　23時59分 59.99秒
 </pre> *
  */
-object DateHourMinSecDecoratorTradChinese : Decorator<ChronoLocalDateTime<*>>, Serializable {
+object DateHourMinSecDecoratorTradChinese : Decorator<ChronoLocalDateTime<*>>, JSerializable {
   private fun readResolve(): Any = DateHourMinSecDecoratorTradChinese
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
@@ -45,7 +45,7 @@ object DateHourMinSecDecoratorTradChinese : Decorator<ChronoLocalDateTime<*>>, S
 }
 
 
-object DateHourMinSecDecoratorJapanese : Decorator<ChronoLocalDateTime<*>>, Serializable {
+object DateHourMinSecDecoratorJapanese : Decorator<ChronoLocalDateTime<*>>, JSerializable {
   private fun readResolve(): Any = DateHourMinSecDecoratorJapanese
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
@@ -60,7 +60,7 @@ object DateHourMinSecDecoratorJapanese : Decorator<ChronoLocalDateTime<*>>, Seri
 
 
 
-object DateHourMinSecDecoratorEnglish : Decorator<ChronoLocalDateTime<*>>, Serializable {
+object DateHourMinSecDecoratorEnglish : Decorator<ChronoLocalDateTime<*>>, JSerializable {
   private fun readResolve(): Any = DateHourMinSecDecoratorEnglish
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {

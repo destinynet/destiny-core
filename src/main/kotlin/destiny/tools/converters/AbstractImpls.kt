@@ -8,13 +8,13 @@ import destiny.core.Descriptive
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 /**
  * Context 與 Map<String , String> 互換
  */
-interface IContextMap<T> : Serializable {
+interface IContextMap<T> : JSerializable {
   fun getMap(context: T): Map<String, String>
 
   fun getMapExceptDefault(context: T, defaultContextProvider: () -> T): Map<String, String> {
@@ -125,7 +125,7 @@ private fun <T : Any> Array<T>.findNonDefaultImplAndKey(domainKey: String): Map<
 
 open class AbstractImpls<T : Any>(
   override val key: String, final override val defaultImpl: T, private val defaultImplKey: String
-) : Serializable, IAbstractImpls<T> {
+) : JSerializable, IAbstractImpls<T> {
 
   constructor(key: String, pair: Pair<T, String>) : this(key, pair.first, pair.second)
 

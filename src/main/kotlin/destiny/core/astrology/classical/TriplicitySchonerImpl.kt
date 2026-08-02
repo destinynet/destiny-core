@@ -8,7 +8,7 @@ import destiny.core.astrology.Element.*
 import destiny.core.astrology.Planet
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacSign
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * Schoner Triplicity 實作
@@ -27,7 +27,7 @@ import java.io.Serializable
  * 水象 | 金星 | 火星 | 月亮
  * </pre>
  */
-object TriplicitySchonerImpl : ITriplicity, Serializable {
+object TriplicitySchonerImpl : ITriplicity, JSerializable {
   private fun readResolve(): Any = TriplicitySchonerImpl
 
   /** 哪顆星在此星座得到三分相 (+3) */

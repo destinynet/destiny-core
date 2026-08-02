@@ -5,13 +5,14 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
 import destiny.tools.AbstractCachedFeature
+import destiny.tools.JSerializable
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class TradChineseRisingSignConfig(
   val hourImpl: HourImpl = HourImpl.TST
-): java.io.Serializable {
+): JSerializable {
   companion object {
     private const val serialVersionUID: Long = 1L
   }

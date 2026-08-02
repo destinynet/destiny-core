@@ -19,6 +19,7 @@ import destiny.core.chinese.StemBranchCycle
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.JSerializable
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
@@ -28,7 +29,7 @@ data class FortuneSmallConfig(val impl: Impl = Impl.Hour,
                               /** 取得幾條小運 */
                               val count: Int = 120,
                               val intAgeNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
-                              val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable {
+                              val eightWordsConfig: EightWordsConfig = EightWordsConfig()): JSerializable {
   enum class Impl {
     Hour,   // 以時柱推算小運
     Star,   // 《星學大成》

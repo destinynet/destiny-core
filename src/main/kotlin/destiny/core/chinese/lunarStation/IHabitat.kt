@@ -6,7 +6,7 @@ package destiny.core.chinese.lunarStation
 import destiny.core.astrology.LunarStation
 import destiny.core.astrology.LunarStation.*
 import destiny.core.chinese.lunarStation.Habitat.*
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 enum class Habitat {
   天, 地, 山, 水, 家
@@ -18,7 +18,7 @@ interface IHabitat {
 
 
 /** 《禽星易見》 */
-class HabitatAnimalStar : IHabitat, Serializable {
+class HabitatAnimalStar : IHabitat, JSerializable {
   override fun getHabitats(lunarStation: LunarStation): Set<Habitat> {
     return map.keys.filter { h -> map[h]!!.contains(lunarStation) }
       .toSet()
@@ -35,7 +35,7 @@ class HabitatAnimalStar : IHabitat, Serializable {
 }
 
 /** 《鰲頭通書》 */
-class HabitatAoHeadImpl : IHabitat, Serializable {
+class HabitatAoHeadImpl : IHabitat, JSerializable {
   override fun getHabitats(lunarStation: LunarStation): Set<Habitat> {
     return map.keys.filter { h -> map[h]!!.contains(lunarStation) }
       .toSet()

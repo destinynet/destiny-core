@@ -5,11 +5,11 @@ package destiny.core
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.temporal.ChronoField
 
 /** 民國紀年  */
-class IntAgeNoteMinguoYearImpl(val julDayResolver: JulDayResolver) : IIntAgeNote, Serializable {
+class IntAgeNoteMinguoYearImpl(val julDayResolver: JulDayResolver) : IIntAgeNote, JSerializable {
 
   override val intAgeNote: IntAgeNote = IntAgeNote.Minguo
 

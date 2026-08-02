@@ -1,7 +1,7 @@
 package destiny.core.astrology
 
 import destiny.core.toString
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 /** 兩顆（可能相同）星體的度數 */
@@ -23,7 +23,7 @@ interface IPointAnglePattern : IAstroPattern {
 data class PointAnglePattern(
   override val points: List<AstroPoint>,
   override val angle: Double
-) : IPointAnglePattern, Serializable {
+) : IPointAnglePattern, JSerializable {
 
   override fun getName(locale: Locale): String {
     return buildString {

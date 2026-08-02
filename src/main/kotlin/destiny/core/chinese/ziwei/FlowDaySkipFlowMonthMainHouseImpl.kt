@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 計算流日：「流月命宮（「不」當作該月一日），順數日」
@@ -16,7 +16,7 @@ import java.io.Serializable
  */
 class FlowDaySkipFlowMonthMainHouseImpl : IFlowDay,
                                           Descriptive by FlowDay.SkipFlowMonthMainHouse.asDescriptive(),
-                                          Serializable {
+                                          JSerializable {
 
 
   override fun getFlowDay(flowDayBranch: Branch, flowDayNum: Int, flowMonthMainHouse: Branch): Branch {

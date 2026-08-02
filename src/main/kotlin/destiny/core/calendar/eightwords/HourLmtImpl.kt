@@ -11,7 +11,7 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.子
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField.*
 import java.time.temporal.ChronoUnit
@@ -20,7 +20,7 @@ import java.time.temporal.ChronoUnit.DAYS
 /**
  * 最簡單 , 以當地平均時間來區隔時辰 , 兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時
  */
-class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
+class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, JSerializable {
 
   override fun getHour(gmtJulDay: GmtJulDay, loc: ILocation, config: IHourBranchConfig): Branch {
     return Lmt.getHourBranch(gmtJulDay, loc, julDayResolver)

@@ -11,7 +11,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.IClockwise
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 推算貴神
@@ -21,7 +21,7 @@ import java.io.Serializable
  */
 class ClockwiseDayNightFixedImpl(private val differentiator: IDayNight) : IClockwise,
                                                                           Descriptive by destiny.core.chinese.liuren.Clockwise.DayNightFixed.asDescriptive(),
-                                                                          Serializable {
+                                                                          JSerializable {
 
   override fun getClockwise(gmtJulDay: GmtJulDay, loc: ILocation): Clockwise {
     val dayNight = differentiator.getDayNight(gmtJulDay, loc)

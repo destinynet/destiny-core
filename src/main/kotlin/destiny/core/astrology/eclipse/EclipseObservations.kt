@@ -7,7 +7,7 @@ import destiny.core.astrology.Azimuth
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.Lat
 import destiny.core.calendar.Lng
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 某時某地點，針對某日食、月食的觀測資料
@@ -31,7 +31,7 @@ data class EclipseObservation(
   override val lng: Lng,
   override val lat: Lat,
   override val alt: Double,
-  override val azimuth: Azimuth) : IEclipseObservation, Serializable
+  override val azimuth: Azimuth) : IEclipseObservation, JSerializable
 
 
 /** 日食 觀測資料 */

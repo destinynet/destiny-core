@@ -7,7 +7,7 @@ package destiny.core.astrology
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Planet.MOON
 import destiny.core.astrology.Planet.SUN
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 「現代占星術」中，考量星體的交角容許度，內定實作
@@ -16,7 +16,7 @@ import java.io.Serializable
  */
 
 
-class AspectOrbsPlanetDefaultImpl : IAspectOrbsPlanet, Serializable {
+class AspectOrbsPlanetDefaultImpl : IAspectOrbsPlanet, JSerializable {
 
   /**
    * 先傳回交角容許度，再傳回門檻分數 (0~1)

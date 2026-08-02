@@ -1,9 +1,9 @@
 package destiny.core
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
-interface IPattern : Serializable {
+interface IPattern : JSerializable {
 
   fun getName(locale: Locale = Locale.TAIWAN): String {
     return javaClass.simpleName

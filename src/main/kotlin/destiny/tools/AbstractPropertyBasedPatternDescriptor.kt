@@ -9,7 +9,6 @@ import destiny.core.astrology.*
 import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.toString
 import destiny.core.toString
-import java.io.Serializable
 import java.text.MessageFormat
 import java.util.*
 
@@ -22,7 +21,7 @@ import java.util.*
 abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
                                                       private val commentKey: String,
                                                       private val parameters: List<Any>,
-                                                      private val doubleFormat : String? = "%.1f") : Descriptive , Serializable {
+                                                      private val doubleFormat : String? = "%.1f") : Descriptive , JSerializable {
 
   private val nameKey = pattern::class.java.simpleName
 

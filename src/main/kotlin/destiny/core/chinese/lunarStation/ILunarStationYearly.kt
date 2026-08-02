@@ -7,7 +7,7 @@ import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.calendar.eightwords.IYear
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YearType
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 
@@ -43,7 +43,7 @@ class LunarStationYearlyImpl(override val yearType: YearType = YearType.YEAR_SOL
                              override val yearEpoch: YearEpoch = YearEpoch.EPOCH_1564,
                              private val yearImpl: IYear,
                              val chineseDateImpl: IChineseDate,
-                             val dayHourImpl: IDayHour) : ILunarStationYearly, Serializable {
+                             val dayHourImpl: IDayHour) : ILunarStationYearly, JSerializable {
   override fun getYearlyIndex(lmt: ChronoLocalDateTime<*>, loc: ILocation): YearIndex {
 
     val epoch = when (yearEpoch) {

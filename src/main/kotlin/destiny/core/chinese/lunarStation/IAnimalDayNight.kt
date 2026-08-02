@@ -6,7 +6,7 @@ package destiny.core.chinese.lunarStation
 import destiny.core.DayNight
 import destiny.core.astrology.LunarStation
 import destiny.core.astrology.LunarStation.*
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 interface IAnimalDayNight {
@@ -14,7 +14,7 @@ interface IAnimalDayNight {
 }
 
 /** 《禽星易見》、《演禽通纂》  (鍾義明 採用) */
-class AnimalDayNightAnimalStarImpl : IAnimalDayNight, Serializable {
+class AnimalDayNightAnimalStarImpl : IAnimalDayNight, JSerializable {
   override fun getDayNight(lunarStation: LunarStation): DayNight {
     return map.filterValues { s -> s.contains(lunarStation) }
       .keys.first()
@@ -29,7 +29,7 @@ class AnimalDayNightAnimalStarImpl : IAnimalDayNight, Serializable {
 }
 
 /** 《鰲頭通書》*/
-class AnimalDayNightAoHeadImpl : IAnimalDayNight , Serializable {
+class AnimalDayNightAoHeadImpl : IAnimalDayNight , JSerializable {
   override fun getDayNight(lunarStation: LunarStation): DayNight {
     TODO("待查")
   }

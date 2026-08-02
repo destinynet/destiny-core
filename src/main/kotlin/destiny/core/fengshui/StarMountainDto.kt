@@ -9,7 +9,7 @@ import destiny.core.calendar.ILocation
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import destiny.tools.serializers.ILocationSerializer
 import destiny.tools.serializers.LocalDateTimeSerializer
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.LocalDateTime
 import kotlinx.serialization.Serializable as KSerializable
 
@@ -53,7 +53,7 @@ data class StarMountainDto(
 
   /** 磁北盤「進入新山」事件（三盤各一份；盤面 = 原盤旋轉磁偏角，時刻與正北盤不同） */
   val magneticTransits: List<PlateTransits> = emptyList(),
-) : Serializable {
+) : JSerializable {
 
   @KSerializable
   data class Sample(
@@ -62,10 +62,10 @@ data class StarMountainDto(
     @KSerializable(with = DoubleTwoDecimalSerializer::class) val azimuthDeg: Double,
     /** 視高度；<0 = 地平線下 */
     @KSerializable(with = DoubleTwoDecimalSerializer::class) val altitudeDeg: Double,
-  ) : Serializable
+  ) : JSerializable
 
   @KSerializable
-  data class PlateTransits(val plate: Plate, val entries: List<Entry>) : Serializable
+  data class PlateTransits(val plate: Plate, val entries: List<Entry>) : JSerializable
 
   @KSerializable
   data class Entry(
@@ -80,7 +80,7 @@ data class StarMountainDto(
     @KSerializable(with = DoubleTwoDecimalSerializer::class) val azimuthDeg: Double,
     /** 此筆是否為逆行折返造成（見 [MountainEntry.isRetreat]） */
     val isRetreat: Boolean = false,
-  ) : Serializable
+  ) : JSerializable
 
   @KSerializable
   data class EventMarker(
@@ -88,7 +88,7 @@ data class StarMountainDto(
     @KSerializable(with = LocalDateTimeSerializer::class)
     val lmt: LocalDateTime,
     @KSerializable(with = DoubleTwoDecimalSerializer::class) val tMin: Double,
-  ) : Serializable
+  ) : JSerializable
 
   /** 地盤/人盤/天盤 */
   enum class Plate { EARTHLY, HUMAN, HEAVENLY }

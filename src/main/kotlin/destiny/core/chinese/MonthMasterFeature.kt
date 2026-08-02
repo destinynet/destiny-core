@@ -17,13 +17,14 @@ import destiny.core.chinese.MonthMasterConfig.Impl
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.JSerializable
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class MonthMasterConfig(val impl: Impl = Impl.SunSign ,
                              /** 只有在 impl = [Impl.Combined] 時，才有必要參考此設定 */
-                             val monthConfig: MonthConfig = MonthConfig()): java.io.Serializable {
+                             val monthConfig: MonthConfig = MonthConfig()): JSerializable {
   enum class Impl {
     SunSign,  // 星體觀測（過中氣）
     Combined  // 月支六合（過節）

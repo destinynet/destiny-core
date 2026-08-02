@@ -10,11 +10,11 @@ import destiny.core.chinese.StemBranch
 import destiny.core.iching.IHexagram
 import destiny.core.iching.Symbol
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 abstract class AbstractSettings(override val settings: SettingsOfStemBranch) : ISettingsOfStemBranch,
                                                                                Descriptive by settings.asDescriptive(),
-                                                                               Serializable {
+                                                                               JSerializable {
 
   protected abstract val symbolStemMap: Map<Symbol, List<Stem>>
   protected abstract val symbolBranchMap: Map<Symbol, List<Branch>>

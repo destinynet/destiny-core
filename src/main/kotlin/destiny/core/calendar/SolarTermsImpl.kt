@@ -13,13 +13,13 @@ import destiny.core.astrology.Planet.SUN
 import destiny.core.astrology.StarTypeOptions
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 節氣實作
  */
 class SolarTermsImpl(private val starTransitImpl: IStarTransit,
-                     private val starPositionImpl: IStarPosition<*>) : ISolarTerms, Serializable {
+                     private val starPositionImpl: IStarPosition<*>) : ISolarTerms, JSerializable {
 
 
   /**

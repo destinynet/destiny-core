@@ -10,11 +10,12 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.Feature
+import destiny.tools.JSerializable
 import destiny.tools.serializers.astrology.PlanetSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
-interface IVoidCourseConfig : java.io.Serializable {
+interface IVoidCourseConfig : JSerializable {
   var planet: Planet
   var centric: Centric
   var vocImpl: VoidCourseImpl

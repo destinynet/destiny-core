@@ -12,6 +12,7 @@ import destiny.core.chinese.NaYin
 import destiny.core.iching.IHexagramText
 import destiny.core.iching.contentProviders.IHexagramProvider
 import destiny.tools.AbstractCachedPersonFeature
+import destiny.tools.JSerializable
 import destiny.tools.PersonFeature
 import jakarta.inject.Inject
 import jakarta.inject.Named
@@ -23,7 +24,7 @@ import javax.cache.Cache
 
 @Serializable
 data class HoloFullConfig(val viewGmtJulDay: GmtJulDay = GmtJulDay.nowCeilingToNoon(),
-                          val holoConfig: HoloConfig = HoloConfig()): java.io.Serializable
+                          val holoConfig: HoloConfig = HoloConfig()): JSerializable
 
 interface IHoloFullFeature : PersonFeature<HoloFullConfig, Pair<IPoemHolo, List<HoloFullHexagram>>> {
 

@@ -6,13 +6,13 @@ package destiny.core.chinese.liuren
 import destiny.core.Descriptive
 import destiny.core.chinese.liuren.General.*
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 
 class GeneralSeqDefaultImpl : IGeneralSeq,
                               Descriptive by GeneralSeq.Default.asDescriptive(),
-                              Serializable {
+                              JSerializable {
 
   override fun next(from: General, n: Int): General {
     return get(getIndex(from) + n)

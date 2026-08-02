@@ -14,7 +14,7 @@ import destiny.core.chinese.*
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
 import destiny.core.iching.Symbol
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 四節氣卦
@@ -63,7 +63,7 @@ sealed class GoldenKey(open val code: Int,
                        override val fiveElement: FiveElement,
                        open val text: String,
                        open val day:Branch,
-                       open val hour:Branch) : IFiveElement , Serializable {
+                       open val hour:Branch) : IFiveElement , JSerializable {
   data class GoldenKeyGender(override val code: Int, override val fiveElement: FiveElement, val gender: Gender, override val text: String, override val day: Branch, override val hour: Branch) : GoldenKey(code, fiveElement, text , day, hour)
   data class GoldenKeyFlow(override val code: Int, override val fiveElement: FiveElement, override val text: String, override val day: Branch, override val hour: Branch) : GoldenKey(code, fiveElement, text , day, hour)
 }

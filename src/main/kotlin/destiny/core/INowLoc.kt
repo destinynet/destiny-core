@@ -5,11 +5,11 @@ package destiny.core
 
 import destiny.core.astrology.IHoroscopePresentConfig
 import destiny.core.calendar.ILocation
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.LocalDate
 
 
-interface INowLoc : Serializable {
+interface INowLoc : JSerializable {
   val bdnp: IBirthDataNamePlace
   val localDate: LocalDate
   val location: ILocation

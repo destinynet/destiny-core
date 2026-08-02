@@ -13,7 +13,7 @@ import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.astrology.ZodiacSign.Companion.of
 import destiny.tools.CircleTools.normalize
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 /**
@@ -83,7 +83,7 @@ object ExaltationPtolemyImpl : AbstractPtolemy(), IExaltation {
 }
 
 /** Fall , -4 */
-object FallPtolemyImpl : AbstractPtolemy(), IFall, Serializable {
+object FallPtolemyImpl : AbstractPtolemy(), IFall, JSerializable {
   private fun readResolve(): Any = FallPtolemyImpl
 
   /** 哪顆星體在此星座 落 (FALL , -4) , 必定為 1 or 0 顆星 */
@@ -119,7 +119,7 @@ object FallPtolemyImpl : AbstractPtolemy(), IFall, Serializable {
  * William Lily 指稱 , 托勒密後來把水象星座 的日夜 ruler 都改為火星 , 但此實作仍拆分為 金星、月亮
  * 另一版本實作 [TriplicityWilliamImpl] 則作此調整
  * */
-object TriplicityPtolomyImpl : ITriplicity, Serializable {
+object TriplicityPtolomyImpl : ITriplicity, JSerializable {
   private fun readResolve(): Any = TriplicityPtolomyImpl
 
   /** 哪顆星在此星座得到三分相 (+3) */
@@ -156,7 +156,7 @@ object TriplicityPtolomyImpl : ITriplicity, Serializable {
 }
 
 
-object TermPtolomyImpl : ITerm, Serializable {
+object TermPtolomyImpl : ITerm, JSerializable {
   private fun readResolve(): Any = TermPtolomyImpl
 
   override fun getPoint(degree: ZodiacDegree): AstroPoint {
@@ -296,7 +296,7 @@ object TermPtolomyImpl : ITerm, Serializable {
 
 
 
-object FacePtolomyImpl : IFace, Serializable {
+object FacePtolomyImpl : IFace, JSerializable {
   private fun readResolve(): Any = FacePtolomyImpl
 
   /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360  */
@@ -342,7 +342,7 @@ object FacePtolomyImpl : IFace, Serializable {
 
 
 
-abstract class AbstractPtolemy : Serializable {
+abstract class AbstractPtolemy : JSerializable {
 
   fun findPoint(sign: ZodiacSign, map: Map<AstroPoint, Double>): AstroPoint? {
     return map.entries

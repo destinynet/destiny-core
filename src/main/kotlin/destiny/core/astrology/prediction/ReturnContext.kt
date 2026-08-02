@@ -10,7 +10,7 @@ import destiny.core.astrology.classical.RulerPtolemyImpl
 import destiny.core.astrology.classical.VoidCourseImpl
 import destiny.core.calendar.*
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * [validFrom] , [validTo] : 此 return context 有效期限
@@ -158,7 +158,7 @@ class ReturnContext(
   /** 是否消除歲差，內定是不計算歲差  */
   override val precession: Boolean = false,
   override val starTypeOptions: StarTypeOptions
-) : IReturnContext, Serializable {
+) : IReturnContext, JSerializable {
 
   override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation, nowPlace: String?): ReturnModel {
     return getConvergentPeriod(natalModel.gmtJulDay, nowGmtJulDay).let { (from, to) ->

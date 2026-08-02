@@ -13,7 +13,7 @@ import destiny.core.astrology.classical.*
 import destiny.core.chinese.YinYang
 import destiny.tools.KotlinLogging
 import destiny.tools.getTitle
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 
@@ -29,7 +29,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val translationOfLightImpl: ITranslationOfLight,
                               private val collectionOfLightImpl: ICollectionOfLight,
                               private val refranationImpl: IRefranation
-) : Serializable {
+) : JSerializable {
 
   private val essentialImpl: IEssential =
     EssentialImpl(rulerImpl, exaltImpl, fallImpl, detrimentImpl, triplicityImpl, termImpl, faceImpl,

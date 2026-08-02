@@ -5,6 +5,7 @@ package destiny.core.chinese.eightwords.hazards
 
 import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
+import destiny.tools.JSerializable
 import java.util.*
 
 data class HazardItem(
@@ -12,7 +13,7 @@ data class HazardItem(
   val title: String,
   /** bookName , bookNote */
   val bookNotes: List<Pair<String, String>>
-) : java.io.Serializable
+) : JSerializable
 
 interface IHazardService {
 

@@ -22,6 +22,7 @@ import destiny.core.iching.divine.DivineTraditionalConfig
 import destiny.core.iching.divine.ISettingsOfStemBranch
 import destiny.core.iching.divine.SettingsOfStemBranch
 import destiny.tools.*
+import destiny.tools.JSerializable
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -32,7 +33,7 @@ data class HoloConfig(val divineTraditionalConfig: DivineTraditionalConfig = Div
                       val seasonalSymbolConfig: SeasonalSymbolConfig = SeasonalSymbolConfig(SeasonalSymbolConfig.Impl.Holo()),
                       val threeKings: ThreeKingsAlgo? = ThreeKingsAlgo.HALF_YEAR,
                       val hexChange: HexChange = HexChange.DST,
-                      val monthlyHexagram: MonthlyHexagram = MonthlyHexagram.Sign): java.io.Serializable
+                      val monthlyHexagram: MonthlyHexagram = MonthlyHexagram.Sign): JSerializable
 
 @DestinyMarker
 class HoloConfigBuilder : Builder<HoloConfig> {

@@ -14,7 +14,7 @@ import destiny.core.chinese.StemBranch
 import destiny.tools.serializers.ChronoLocalDateTimeSerializer
 import destiny.tools.serializers.ILocationSerializer
 import kotlinx.serialization.Serializable as KSerializable
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 
@@ -94,7 +94,7 @@ open class Plate (
   override val rageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
 
   override val summaries: List<String>
-) : IPlate, Serializable
+) : IPlate, JSerializable
 
 /** 大運盤 */
 open class PlateWithSection(p : IPlate ,
@@ -105,7 +105,7 @@ open class PlateWithSection(p : IPlate ,
                        extraFlows: Map<FlowType, StemBranch> = emptyMap()
                        ) : Plate(p.name , p.chineseDate, p.localDateTime, p.year, p.finalMonthNumForMonthStars, p.hour, p.location, p.place, p.dayNight, p.gender,
                                  p.bodyHouse , p.mainStar, p.bodyStar, p.fiveElement, p.state, houseDataSet, transFours,
-                                 p.flowBranchMap + (FlowType.SECTION to flowSection) + extraFlows, p.starStrengthMap, p.notes, p.vageMap, p.rageMap,p.summaries), IPlateSection, Serializable
+                                 p.flowBranchMap + (FlowType.SECTION to flowSection) + extraFlows, p.starStrengthMap, p.notes, p.vageMap, p.rageMap,p.summaries), IPlateSection, JSerializable
 
 /** 流年盤 */
 open class PlateWithYear(p: IPlateSection,
@@ -115,7 +115,7 @@ open class PlateWithYear(p: IPlateSection,
                     transFours: Map<ZStar, Map<FlowType, T4Value>>,
                     extraFlows: Map<FlowType, StemBranch> = emptyMap()
                     ) : PlateWithSection(p, p.flowSection, branchHouseMap, houseDataSet, transFours,
-                                         mapOf(FlowType.YEAR to flowYear) + extraFlows) , IPlateYear, Serializable
+                                         mapOf(FlowType.YEAR to flowYear) + extraFlows) , IPlateYear, JSerializable
 
 /** 流月盤 */
 open class PlateWithMonth(p : IPlateYear,
@@ -125,7 +125,7 @@ open class PlateWithMonth(p : IPlateYear,
                           transFours: Map<ZStar, Map<FlowType, T4Value>>,
                           extraFlows: Map<FlowType, StemBranch> = emptyMap()
                           ) : PlateWithYear(p, p.flowYear, branchHouseMap, houseDataSet, transFours,
-                                            mapOf(FlowType.MONTH to flowMonth) + extraFlows), IPlateMonth, Serializable
+                                            mapOf(FlowType.MONTH to flowMonth) + extraFlows), IPlateMonth, JSerializable
 
 /** 流日盤 */
 open class PlateWithDay(p: IPlateMonth,
@@ -134,7 +134,7 @@ open class PlateWithDay(p: IPlateMonth,
                         houseDataSet: Set<HouseData>,
                         transFours: Map<ZStar, Map<FlowType, T4Value>>,
                         extraFlows: Map<FlowType, StemBranch> = emptyMap()) : PlateWithMonth(p, p.flowMonth, branchHouseMap, houseDataSet, transFours,
-                                                                                             mapOf(FlowType.DAY to flowDay) + extraFlows), IPlateDay, Serializable
+                                                                                             mapOf(FlowType.DAY to flowDay) + extraFlows), IPlateDay, JSerializable
 
 /** 流時盤 */
 class PlateWithHour(p : IPlateDay,
@@ -142,4 +142,4 @@ class PlateWithHour(p : IPlateDay,
                     branchHouseMap: Map<Branch, House>,
                     houseDataSet: Set<HouseData>,
                     transFours: Map<ZStar, Map<FlowType, T4Value>>) : PlateWithDay(p, p.flowDay, branchHouseMap, houseDataSet, transFours,
-                                                                                   mapOf(FlowType.HOUR to flowHour)), IPlateHour, Serializable
+                                                                                   mapOf(FlowType.HOUR to flowHour)), IPlateHour, JSerializable

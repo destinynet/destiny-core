@@ -13,7 +13,7 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 interface IPithyModel {
@@ -90,7 +90,7 @@ data class Pithy(
 
   /** 貴神  */
   override val benefactor: StemBranch
-) : IPithyModel, Serializable
+) : IPithyModel, JSerializable
 
 
 /**
@@ -103,7 +103,7 @@ data class PithyModernModel(
   override val gender: Gender,
   override val time: ChronoLocalDateTime<*>,
   override val location: ILocation
-) : IPithyModernModel, IPithyModel by pithy, Serializable
+) : IPithyModernModel, IPithyModel by pithy, JSerializable
 
 
 /**
@@ -127,4 +127,4 @@ data class PithyDetailModel(
   override val place: String?,
   override val question: String?,
   override val method: IPithyDetailModel.Method
-) : IPithyDetailModel, IPithyModernModel by pithyModernModel, Serializable
+) : IPithyDetailModel, IPithyModernModel by pithyModernModel, JSerializable

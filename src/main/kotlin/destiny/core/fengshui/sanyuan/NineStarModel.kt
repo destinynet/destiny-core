@@ -8,13 +8,13 @@ import destiny.core.TriGrid
 import destiny.core.chinese.IStemBranch
 import destiny.core.iching.Symbol
 import destiny.core.iching.SymbolAcquired
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 data class NineStarModel(
   val stemBranch: IStemBranch,
   val scale: Scale,
   val center: NineStar,
-  val map: Map<Symbol, NineStar>) : Serializable
+  val map: Map<Symbol, NineStar>) : JSerializable
 
 /**
  * 承上，只是以九宮格 表示，方便輸出
@@ -22,7 +22,7 @@ data class NineStarModel(
 data class TriGridModel(
   val triGrid: TriGrid,
   val symbol: Symbol?,
-  val map: Map<Scale, NineStar>) : Serializable
+  val map: Map<Scale, NineStar>) : JSerializable
 
 fun List<NineStarModel>.toTriGridModel(view: Symbol): List<TriGridModel> {
 

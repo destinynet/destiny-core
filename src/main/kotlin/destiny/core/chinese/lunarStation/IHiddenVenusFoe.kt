@@ -16,7 +16,7 @@ import destiny.core.chinese.lunarStation.HiddenVenusFoeFeature.Companion.isDayFo
 import destiny.core.chinese.lunarStation.HiddenVenusFoeFeature.Companion.isDayFoeForYear
 import destiny.core.chinese.lunarStation.HiddenVenusFoeFeature.Companion.isHourFoeForHour
 import destiny.core.chinese.lunarStation.HiddenVenusFoeFeature.Companion.monthFoeMap
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 
@@ -52,7 +52,7 @@ class HiddenVenusFoeAnimalStar(private val yearlyImpl: ILunarStationYearly,
                                private val chineseDateImpl: IChineseDate,
                                private val dayHourImpl: IDayHour,
                                val monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS) :
-  IHiddenVenusFoe, Serializable {
+  IHiddenVenusFoe, JSerializable {
 
   override fun getHiddenVenusFoe(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Pair<Scale, Scale>> {
     val yearly = yearlyImpl.getYearly(lmt, loc)

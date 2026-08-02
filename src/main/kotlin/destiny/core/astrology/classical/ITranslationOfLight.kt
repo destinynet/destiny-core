@@ -5,7 +5,7 @@ package destiny.core.astrology.classical
 
 import destiny.core.astrology.*
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 import kotlin.math.abs
 
 interface ITranslationOfLight {
@@ -37,7 +37,7 @@ interface ITranslationOfLight {
  * 最後，包夾此行星的兩顆星，是否要形成「出相位」，我認為「不一定」，因為意義不同，應該可以設為選項
  */
 class TranslationOfLightImpl(private val aspectCalculator: IAspectCalculator,
-                             private val besiegedImpl: IBesieged) : ITranslationOfLight, Serializable {
+                             private val besiegedImpl: IBesieged) : ITranslationOfLight, JSerializable {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Triple<Planet, Planet, IPointAspectPattern.AspectType?>? {
     // 不考慮合相的交角

@@ -9,7 +9,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.Branch
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -46,7 +46,7 @@ interface ILunarStationHourly : Descriptive {
 class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
                                  private val dayHourImpl: IDayHour) : ILunarStationHourly,
                                                                       Descriptive by HourlyImpl.Yuan.asDescriptive(),
-                                                                      Serializable {
+                                                                      JSerializable {
 
   override fun getHourly(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
 
@@ -96,7 +96,7 @@ class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
 class LunarStationHourlyFixedImpl(private val dailyImpl: ILunarStationDaily,
                                   private val dayHourImpl: IDayHour) : ILunarStationHourly,
                                                                        Descriptive by HourlyImpl.Fixed.asDescriptive(),
-                                                                       Serializable {
+                                                                       JSerializable {
 
   override fun getHourly(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
 

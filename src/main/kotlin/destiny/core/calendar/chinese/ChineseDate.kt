@@ -9,7 +9,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.tools.ChineseStringTools.digitToChinese
 import kotlinx.serialization.Serializable as KSerializable
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 農曆日期的表示法（無時辰）
@@ -77,7 +77,7 @@ data class ChineseDate(
   /** 是否是潤月  */
   override val leapMonth: Boolean,
   /** 日  */
-  override val day: Int) : IChineseDateModel, Serializable
+  override val day: Int) : IChineseDateModel, JSerializable
 
 fun Int.toChineseMonthString(): String {
   return buildString {
@@ -125,4 +125,4 @@ fun ChineseDate.display(appendDay: Boolean = false): String {
  */
 data class ChineseDateHour(val chineseDate: ChineseDate,
                            override val hourBranch: Branch) : IChineseDateModel by chineseDate, IChineseDateHourModel,
-  Serializable
+  JSerializable

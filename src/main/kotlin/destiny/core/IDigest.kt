@@ -3,13 +3,13 @@
  */
 package destiny.core
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 /**
  * digest of Model [M] , output to type of [T]
  */
-interface IDigest<M, T> : Serializable {
+interface IDigest<M, T> : JSerializable {
 
   fun digest(model: M, locale: Locale = Locale.getDefault()): T?
 }

@@ -5,7 +5,7 @@ import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 /**
@@ -14,7 +14,7 @@ import java.util.*
  * 每卦 （365又1/4）÷　60 = 6又7/80 ==> 6 又 7/80 日
  * 本實作以精確的算法，平均分割「節」至「節」為五等分。
  */
-class DailyHexagramAverage5Impl(val solarTermsImpl: ISolarTerms) : IDailyHexagram, Serializable {
+class DailyHexagramAverage5Impl(val solarTermsImpl: ISolarTerms) : IDailyHexagram, JSerializable {
 
   override fun getHexagram(gmtJulDay: GmtJulDay): Pair<Hexagram, Pair<GmtJulDay, GmtJulDay>> {
     val majorBetween = solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay)

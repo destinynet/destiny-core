@@ -3,6 +3,6 @@
  */
 package destiny.core.chinese.ziwei
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
-abstract class HouseAbstractImpl<T> protected constructor(override val star: ZStar) : IHouse<T>, Serializable
+abstract class HouseAbstractImpl<T> protected constructor(override val star: ZStar) : IHouse<T>, JSerializable

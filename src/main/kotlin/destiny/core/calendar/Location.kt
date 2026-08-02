@@ -12,7 +12,7 @@ import destiny.core.calendar.Lat.Companion.toLat
 import destiny.core.calendar.Lng.Companion.toLng
 import destiny.tools.LocaleTools
 import kotlinx.serialization.Serializable as KSerializable
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.Instant
 import java.time.ZoneId
 import java.util.*
@@ -21,7 +21,7 @@ import kotlin.math.absoluteValue
 
 @JvmInline
 @KSerializable
-value class Lat(val value: Double) : Serializable {
+value class Lat(val value: Double) : JSerializable {
   init {
     require(value.absoluteValue <= 90)
   }
@@ -48,7 +48,7 @@ value class Lat(val value: Double) : Serializable {
 
 @JvmInline
 @KSerializable
-value class Lng(val value: Double) : Serializable {
+value class Lng(val value: Double) : JSerializable {
   init {
     require(value.absoluteValue <= 180)
   }
@@ -73,7 +73,7 @@ value class Lng(val value: Double) : Serializable {
 }
 
 /** 純粹經緯度座標，沒有時區 [TimeZone] [ZoneId] 或是 時差 (minuteOffset) 等資訊 */
-interface ILatLng : Serializable {
+interface ILatLng : JSerializable {
 
   val lat: Lat
   val lng: Lng
@@ -160,7 +160,7 @@ data class Location(override val lat: Lat,
                     override val lng: Lng,
                     override val tzid: String? = null,
                     override val minuteOffset: Int? = null,
-                    override val altitudeMeter: Double? = null) : ILocation, Serializable {
+                    override val altitudeMeter: Double? = null) : ILocation, JSerializable {
 
   /**
    * 最詳盡的 constructor
@@ -254,7 +254,7 @@ data class Location(override val lat: Lat,
 interface ILocationPlace : ILocation, IPlace
 
 data class LocationPlace(val location: ILocation, override val place: String) : ILocationPlace, ILocation by location,
-  Serializable {
+  JSerializable {
   fun toString(locale: Locale): String {
     return LocationDecorator.getOutputString(this, locale)
   }

@@ -8,7 +8,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.IRisingSign
 import destiny.core.chinese.Branch
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -17,7 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
  */
 class MainBodyHouseAstroImpl(private val risingSignImpl: IRisingSign,
                              private val starPositionImpl: IStarPosition<*>) :
-  IMainBodyHouse, Serializable {
+  IMainBodyHouse, JSerializable {
 
   override val mainBodyHouse: MainBodyHouse = MainBodyHouse.Astro
 

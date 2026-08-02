@@ -5,7 +5,7 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import jakarta.inject.Named
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 interface INumberize {
   fun getNumber(stem: Stem): Int
@@ -13,7 +13,7 @@ interface INumberize {
 }
 
 @Named
-class NumberizeImpl : INumberize, Serializable {
+class NumberizeImpl : INumberize, JSerializable {
   override fun getNumber(stem: Stem): Int {
     return when (stem) {
       甲, 壬 -> 6

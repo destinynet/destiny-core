@@ -3,10 +3,11 @@
  */
 package destiny.core
 
+import destiny.tools.JSerializable
 import java.util.*
 
 
-interface IPatternDescriptionsFactory<T, P : IPattern, D : IPatternParasDescription<P>> : java.io.Serializable {
+interface IPatternDescriptionsFactory<T, P : IPattern, D : IPatternParasDescription<P>> : JSerializable {
 
   fun getPatternDescriptions(model: T, locale: Locale = Locale.getDefault()): List<D>
 

@@ -5,10 +5,10 @@ package destiny.core
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.temporal.ChronoField
 
-class IntAgeNoteWestYearImpl(val julDayResolver: JulDayResolver) : IIntAgeNote, Serializable {
+class IntAgeNoteWestYearImpl(val julDayResolver: JulDayResolver) : IIntAgeNote, JSerializable {
 
   override val intAgeNote: IntAgeNote = IntAgeNote.WestYear
 

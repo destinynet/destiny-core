@@ -4,13 +4,14 @@
 package destiny.core.tarot
 
 import destiny.core.Descriptive
+import destiny.tools.JSerializable
 import destiny.tools.LocaleTools
 import kotlinx.serialization.Serializable
 import java.util.*
 
 
 @Serializable
-sealed interface ISpread : Descriptive, java.io.Serializable {
+sealed interface ISpread : Descriptive, JSerializable {
 
   val cards : List<CardOrientation>
     get() = getLocalePosMap().map { it.first }.toList()

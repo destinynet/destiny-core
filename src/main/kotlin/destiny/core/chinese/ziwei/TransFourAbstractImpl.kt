@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.Descriptive
 import destiny.core.chinese.Stem
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 參考文件
@@ -35,7 +35,7 @@ import java.io.Serializable
  */
 abstract class TransFourAbstractImpl(override val transFour: TransFour) : ITransFour,
                                                                           Descriptive by transFour.asDescriptive(),
-                                                                          Serializable {
+                                                                          JSerializable {
 
   protected abstract val table: Collection<Triple<Stem, T4Value, ZStar>>
 

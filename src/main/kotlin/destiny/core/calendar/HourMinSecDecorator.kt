@@ -4,6 +4,7 @@
 package destiny.core.calendar
 
 import destiny.tools.Decorator
+import destiny.tools.JSerializable
 import destiny.tools.LocaleTools
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -24,7 +25,7 @@ object HourMinSecDecorator {
 
 val secNanoPattern: DateTimeFormatter = DateTimeFormatter.ofPattern("ss.SS")
 
-object LocalTimeDecoratorTradChinese : Decorator<LocalTime>, java.io.Serializable {
+object LocalTimeDecoratorTradChinese : Decorator<LocalTime>, JSerializable {
   override fun getOutputString(value: LocalTime): String {
 
     return buildString {
@@ -36,7 +37,7 @@ object LocalTimeDecoratorTradChinese : Decorator<LocalTime>, java.io.Serializabl
   }
 }
 
-object LocalTimeDecoratorSimpChinese : Decorator<LocalTime>, java.io.Serializable {
+object LocalTimeDecoratorSimpChinese : Decorator<LocalTime>, JSerializable {
   override fun getOutputString(value: LocalTime): String {
     return buildString {
       append(HourMinDecorator.getOutputString(value.hour to value.minute, Locale.CHINA))
@@ -48,7 +49,7 @@ object LocalTimeDecoratorSimpChinese : Decorator<LocalTime>, java.io.Serializabl
 }
 
 
-object LocalTimeDecoratorEnglish : Decorator<LocalTime>, java.io.Serializable {
+object LocalTimeDecoratorEnglish : Decorator<LocalTime>, JSerializable {
   override fun getOutputString(value: LocalTime): String {
     return buildString {
       append(HourMinDecorator.getOutputString(value.hour to value.minute, Locale.ENGLISH))

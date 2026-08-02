@@ -5,10 +5,10 @@
  */
 package destiny.core.fengshui
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 import kotlin.math.abs
 
-interface ICompass<T> : Serializable {
+interface ICompass<T> : JSerializable {
 
   /**
    * 取得某個此輪初始元素的起始度數

@@ -4,7 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.calendar.eightwords.Direction
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /** 宮干四化「自化」 顯示選項  */
 enum class SelfTransFour {
@@ -63,5 +63,5 @@ data class ViewSettings(
   /** 顯示 歲前12星  */
   val showYearFront: Boolean = true
 
-) : Serializable
+) : JSerializable
 

@@ -12,7 +12,7 @@ import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
 import destiny.core.iching.Symbol
 import destiny.tools.KotlinLogging
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
 /**
@@ -20,7 +20,7 @@ import java.util.*
  * https://i.imgur.com/g34Zeup.jpg
  */
 class DailyHexagramCongenitalImpl(val starTransitImpl: IStarTransit,
-                                  private val starPosImpl: IStarPosition<*>) : IDailyHexagram, Serializable {
+                                  private val starPosImpl: IStarPosition<*>) : IDailyHexagram, JSerializable {
 
   override fun getHexagram(gmtJulDay: GmtJulDay): Pair<Hexagram, Pair<GmtJulDay, GmtJulDay>> {
     val lng = starPosImpl.calculate(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lng

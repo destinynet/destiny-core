@@ -13,7 +13,7 @@ import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.eightwords.hazards.HazardItem
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 /** 八字 (包含 人 的資料) */
@@ -121,7 +121,7 @@ data class PersonContextModel(
   /** 評分 */
   override val score: Double
   ) : IPersonContextModel,
-  IEightWordsContextModel by eightWordsContextModel, Serializable
+  IEightWordsContextModel by eightWordsContextModel, JSerializable
 
 /** 除了「人」的資料，還包括「排盤當下的時間」，會標註當下行運、流年 */
 interface IPersonPresentModel : IPersonContextModel {
@@ -148,5 +148,5 @@ data class PersonPresentModel(
   override val selectedFortuneLarge: IStemBranch?,
   override val selectedFortuneLargeYears: List<StemBranch>,
   override val presentYear: StemBranch) :
-  IPersonPresentModel, IPersonContextModel by personContextModel, Serializable
+  IPersonPresentModel, IPersonContextModel by personContextModel, JSerializable
 

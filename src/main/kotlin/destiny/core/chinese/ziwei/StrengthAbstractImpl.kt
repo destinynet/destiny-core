@@ -10,7 +10,7 @@ import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMinor.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 /**
@@ -95,7 +95,7 @@ private val commonPairMap: Map<Pair<ZStar, Branch>, Int> = commonTable
 
 abstract class StrengthAbstractImpl(override val strength: Strength) : IStrength,
                                                                        Descriptive by strength.asDescriptive(),
-                                                                       Serializable {
+                                                                       JSerializable {
 
   /** 取得一個星體，在 12 個宮位的廟旺表  */
   override fun getMapOf(star: ZStar): Map<Branch, Int> {

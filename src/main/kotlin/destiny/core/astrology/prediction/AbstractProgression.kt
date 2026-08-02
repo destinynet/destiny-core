@@ -5,13 +5,13 @@
 package destiny.core.astrology.prediction
 
 import destiny.core.calendar.GmtJulDay
-import java.io.Serializable
+import destiny.tools.JSerializable
 import kotlin.math.absoluteValue
 
 /**
  * Progression 抽象類別，具備 Progression 演算法的 template methods
  */
-abstract class AbstractProgression : ILinear, Conversable, Serializable {
+abstract class AbstractProgression : ILinear, Conversable, JSerializable {
 
   abstract val type: ProgressionType
 

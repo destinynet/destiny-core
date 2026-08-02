@@ -9,7 +9,7 @@ import destiny.core.chinese.Branch.*
 import destiny.core.iching.Hexagram
 import destiny.core.iching.Hexagram.*
 import destiny.core.iching.IHexagram
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 /**
@@ -68,7 +68,7 @@ interface IDailyHexagramService {
 }
 
 
-class DailyHexagramService(val impls: Set<IDailyHexagram>) : IDailyHexagramService, Serializable {
+class DailyHexagramService(val impls: Set<IDailyHexagram>) : IDailyHexagramService, JSerializable {
 
   override fun getHexagramMap(gmtJulDay: GmtJulDay): Map<IDailyHexagram, Pair<Hexagram, Pair<GmtJulDay, GmtJulDay>>> {
     return impls.associateWith {

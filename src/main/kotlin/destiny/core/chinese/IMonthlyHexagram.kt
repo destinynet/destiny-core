@@ -11,7 +11,7 @@ import destiny.core.chinese.holo.MonthlyHexagram
 import destiny.core.iching.Hexagram
 import destiny.core.iching.Hexagram.*
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 12消息卦，兩種設定
@@ -28,7 +28,7 @@ interface IMonthlyHexagram : Descriptive {
  */
 class MonthlyHexagramSignImpl : IMonthlyHexagram,
                                 Descriptive by MonthlyHexagram.Sign.asDescriptive(),
-                                Serializable {
+                                JSerializable {
 
   override fun getHexagram(solarTerms: SolarTerms): Pair<Hexagram, Pair<SolarTerms, SolarTerms>> {
     return if (solarTerms.major) {
@@ -68,7 +68,7 @@ class MonthlyHexagramSignImpl : IMonthlyHexagram,
  */
 class MonthlyHexagramBranchImpl : IMonthlyHexagram,
                                   Descriptive by MonthlyHexagram.Branch.asDescriptive(),
-                                  Serializable {
+                                  JSerializable {
 
   override fun getHexagram(solarTerms: SolarTerms): Pair<Hexagram, Pair<SolarTerms, SolarTerms>> {
     val hex: Hexagram = map.getValue(solarTerms.branch)

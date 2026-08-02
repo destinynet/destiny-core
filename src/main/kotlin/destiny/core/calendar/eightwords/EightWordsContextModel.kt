@@ -11,7 +11,7 @@ import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.chinese.StemBranch
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 
@@ -92,7 +92,7 @@ data class EightWordsContextModel(
 
   /** 星體交角 */
   override val aspectsDataSet: Set<IPointAspectPattern>
-) : IEightWordsContextModel, Serializable {
+) : IEightWordsContextModel, JSerializable {
 
   /** 是否有日光節約  */
   override val dst: Boolean

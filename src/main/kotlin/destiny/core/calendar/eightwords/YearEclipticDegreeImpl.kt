@@ -8,7 +8,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.StemBranch
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 /**
@@ -18,7 +18,7 @@ class YearEclipticDegreeImpl(
   /** 換年的度數 , 通常是立春點 (315) 換年 */
   override val changeYearDegree: Double = 315.0,
   private val starPositionImpl: IStarPosition<*>,
-  private val julDayResolver: JulDayResolver) : IYear , Serializable {
+  private val julDayResolver: JulDayResolver) : IYear , JSerializable {
 
   init {
     require(changeYearDegree > 180 && changeYearDegree < 360) { "changeYearDegree should between 180 and 360" }

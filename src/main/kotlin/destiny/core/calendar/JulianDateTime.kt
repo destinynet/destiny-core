@@ -4,7 +4,7 @@
 package destiny.core.calendar
 
 import org.threeten.extra.chrono.JulianDate
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.*
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.*
@@ -14,7 +14,7 @@ import java.util.*
 /**
  * reference : [java.time.LocalDateTime]
  */
-class JulianDateTime private constructor(private val date: JulianDate, private val time: LocalTime) : Serializable,
+class JulianDateTime private constructor(private val date: JulianDate, private val time: LocalTime) : JSerializable,
   ChronoLocalDateTime<JulianDate> {
 
   /** 一定為正值  */

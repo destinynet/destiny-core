@@ -12,14 +12,14 @@ import destiny.core.chinese.liuren.General.*
 import destiny.core.chinese.liuren.GeneralStemBranch
 import destiny.core.chinese.liuren.IGeneralStemBranch
 import destiny.tools.asDescriptive
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * 金口訣：壬子玄武 癸亥天后
  */
 class GeneralStemBranchPithy : IGeneralStemBranch,
                                Descriptive by GeneralStemBranch.Pithy.asDescriptive(),
-                               Serializable {
+                               JSerializable {
 
   private val map = mapOf(
     貴人 to 己丑,

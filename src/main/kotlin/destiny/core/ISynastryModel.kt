@@ -5,7 +5,7 @@ import destiny.tools.ai.model.Domain
 import destiny.tools.ai.model.DomainSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable as KSerializable
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 enum class SynastryGrain {
   BOTH_FULL,              // Both parties have full date and time
@@ -36,7 +36,7 @@ enum class SynastryRelationship {
   PARENT_CHILD,
 }
 
-interface ISynastryModel : Serializable {
+interface ISynastryModel : JSerializable {
   val inner: IBirthDataNamePlace
   val outer: IBirthDataNamePlace
   val grain: SynastryGrain

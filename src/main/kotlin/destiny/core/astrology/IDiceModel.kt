@@ -6,7 +6,7 @@ package destiny.core.astrology
 import destiny.core.Gender
 import destiny.core.ITimeLoc
 import kotlinx.serialization.Serializable as KSerializable
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 enum class DiceStar(val star: Star, val unicode: Char = star.unicode!!) {
@@ -25,7 +25,7 @@ enum class DiceStar(val star: Star, val unicode: Char = star.unicode!!) {
 }
 
 
-interface IDiceModel : Serializable {
+interface IDiceModel : JSerializable {
   val star: DiceStar
   val sign: ZodiacSign
   val house: Int

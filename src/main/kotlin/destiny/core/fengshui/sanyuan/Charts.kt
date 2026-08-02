@@ -9,7 +9,7 @@ import destiny.core.fengshui.Mountain
 import destiny.core.fengshui.MountainYinYangEmptyImpl
 import destiny.core.iching.Symbol
 import destiny.core.iching.SymbolAcquired
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 
 interface IPeriod {
@@ -111,13 +111,13 @@ interface IChartMntPresenter : IChartMnt, IChartPresenter {
 data class ChartMnt(override val period: Period,
                     override val mnt: Mountain,
                     override val replacement: Boolean,
-                    override val blocks: List<ChartBlock>) : IChartMnt, Serializable
+                    override val blocks: List<ChartBlock>) : IChartMnt, JSerializable
 
 /** 元運 + 座山的度數 （可推導出 座山)  */
 data class ChartDegree(override val period: Period,
                        override val degree: Double,
                        override val replacement: Boolean,
-                       override val blocks: List<ChartBlock>) : IChartDegree, Serializable {
+                       override val blocks: List<ChartBlock>) : IChartDegree, JSerializable {
 
   override val mnt: Mountain
     get() = EarthlyCompass().get(degree)
@@ -131,5 +131,5 @@ data class ChartMntPresenter(override val period: Period,
                              val view: Symbol,
                              override val replacement: Boolean,
                              override val blocks: List<ChartBlock>,
-                             override val gridMap: Map<TriGrid, Symbol?>) : Serializable, IChartMntPresenter
+                             override val gridMap: Map<TriGrid, Symbol?>) : JSerializable, IChartMntPresenter
 

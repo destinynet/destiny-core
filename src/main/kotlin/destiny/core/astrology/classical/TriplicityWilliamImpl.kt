@@ -6,7 +6,7 @@ import destiny.core.astrology.Element.*
 import destiny.core.astrology.Planet
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacSign
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /**
  * https://altairastrology.wordpress.com/2008/04/18/a-closer-look-at-triplicity/
@@ -26,7 +26,7 @@ import java.io.Serializable
  * Lilly makes Mars the day and night ruler of the watery triplicity and
  * ignores participating rulers.
  */
-object TriplicityWilliamImpl : ITriplicity, Serializable {
+object TriplicityWilliamImpl : ITriplicity, JSerializable {
   private fun readResolve(): Any = TriplicityWilliamImpl
 
   /** 哪顆星在此星座得到三分相 (+3) */

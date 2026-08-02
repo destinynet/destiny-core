@@ -11,7 +11,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms.立春
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.concurrent.TimeUnit
 
 /**
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
  * 出生當下，即為一歲。（故， age 不可以 <= 0）
  * 「一歲」終止於「順推」的立春之時
  */
-class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializable {
+class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, JSerializable {
 
   private data class CacheKey(val gender: Gender,
                               val gmtJulDay: GmtJulDay,

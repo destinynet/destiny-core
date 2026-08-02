@@ -3,10 +3,10 @@
  */
 package destiny.core.iching
 
-import java.io.Serializable
+import destiny.tools.JSerializable
 
 /** 以 Map 實作 64卦的卦序  */
-abstract class AbstractHexagramSequence : IHexagramSequence, Serializable {
+abstract class AbstractHexagramSequence : IHexagramSequence, JSerializable {
 
   protected abstract val map: Map<Hexagram, Int>
 

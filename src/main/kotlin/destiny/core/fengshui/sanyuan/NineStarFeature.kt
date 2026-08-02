@@ -21,13 +21,14 @@ import destiny.core.fengshui.sanyuan.NineStarFunctions.getYearCenterStar
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.JSerializable
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 @Serializable
 data class NineStarConfig(val scales: List<Scale> = listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR),
-                          val ewConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
+                          val ewConfig: EightWordsConfig = EightWordsConfig()): JSerializable
 
 @DestinyMarker
 class NineStarConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<NineStarConfig> {

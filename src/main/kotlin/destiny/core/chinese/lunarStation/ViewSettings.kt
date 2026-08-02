@@ -4,6 +4,6 @@
 package destiny.core.chinese.lunarStation
 
 import destiny.core.calendar.eightwords.Direction
-import java.io.Serializable
+import destiny.tools.JSerializable
 
-data class ViewSettings(val direction: Direction = Direction.R2L) : Serializable
+data class ViewSettings(val direction: Direction = Direction.R2L) : JSerializable

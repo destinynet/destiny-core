@@ -9,13 +9,14 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.tools.AbstractCachedPersonFeature
+import destiny.tools.JSerializable
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class PithyModernDetailConfig(val pithyConfig: PithyConfig = PithyConfig(),
                                    val question: String? = null,
-                                   val method: IPithyDetailModel.Method = IPithyDetailModel.Method.MANUAL): java.io.Serializable
+                                   val method: IPithyDetailModel.Method = IPithyDetailModel.Method.MANUAL): JSerializable
 
 
 @Named

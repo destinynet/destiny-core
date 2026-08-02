@@ -11,7 +11,7 @@ import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
 import destiny.core.chinese.YearType
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -33,7 +33,7 @@ class MainBodyHouseTradImpl(val yearMonthImpl: IYearMonth,
                             val dayHourImpl: IDayHour,
                             private val chineseDateImpl: IChineseDate,
                             val mainStarsAlgo: MonthAlgo
-) : IMainBodyHouse, Serializable {
+) : IMainBodyHouse, JSerializable {
 
   override val mainBodyHouse: MainBodyHouse = MainBodyHouse.Trad
 

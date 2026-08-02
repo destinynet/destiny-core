@@ -7,10 +7,10 @@ import destiny.tools.CircleTools.aheadOf
 import destiny.tools.CircleTools.normalize
 import destiny.tools.getTitle
 import kotlinx.serialization.Serializable as KSerializable
-import java.io.Serializable
+import destiny.tools.JSerializable
 import java.util.*
 
-interface IZodiacDegree : Comparable<IZodiacDegree>, Serializable {
+interface IZodiacDegree : Comparable<IZodiacDegree>, JSerializable {
   val zDeg: Double
 
   val sign: ZodiacSign

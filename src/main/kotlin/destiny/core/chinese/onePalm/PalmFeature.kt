@@ -15,6 +15,7 @@ import destiny.core.chinese.Branch
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.JSerializable
 import destiny.tools.PersonFeature
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -34,7 +35,7 @@ data class PalmConfig(
   val risingSignConfig: RisingSignConfig = RisingSignConfig(),
   val trueRisingSign: Boolean = false,
   val clockwiseHouse: Boolean = true
-) : java.io.Serializable
+) : JSerializable
 
 @DestinyMarker
 class PalmConfigBuilder(val iEwConfig : IEightWordsConfig , val iRsConfig : IRisingSignConfig) : Builder<PalmConfig> {

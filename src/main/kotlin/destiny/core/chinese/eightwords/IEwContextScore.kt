@@ -8,12 +8,13 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsContextModel
+import destiny.tools.JSerializable
 import destiny.tools.getTitle
 import destiny.tools.KotlinLogging
 import java.util.*
 
 
-interface IEwContextScore : java.io.Serializable {
+interface IEwContextScore : JSerializable {
 
   /**
    * 總分
