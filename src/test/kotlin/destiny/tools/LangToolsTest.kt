@@ -201,31 +201,35 @@ class LangToolsTest {
   // ------------------------------------------------------- 刻意不同之處
 
   /**
-   * 以下三項是 [LangTools] 相對 [LocaleTools] 的**修正**，故意不一致。
+   * [LangTools] 相對 [LocaleTools] 僅存的刻意差異。
    * 用測試釘住，避免日後被誤當成 bug「修」回去。
    */
   @Test
-  fun `刻意的行為差異`() {
-    // ① 三段輸入：Locale 版把 Hant 當成 country，產生壞掉的 Locale
-    val brokenLocale = LocaleTools.getLocale("zh-Hant-TW")!!
-    assertEquals("HANT", brokenLocale.country)
-    assertEquals("TW", brokenLocale.variant)
-    assertEquals("", brokenLocale.script)
-    assertEquals("zh-x-lvariant-TW", brokenLocale.toLanguageTag())
-    // Lang 版正確辨識 script
-    Lang.of("zh-Hant-TW")!!.let {
-      assertEquals("Hant", it.script)
-      assertEquals("TW", it.region)
-      assertEquals("zh-Hant-TW", it.tag)
-    }
-    assertNotEquals(brokenLocale.toLang(), Lang.of("zh-Hant-TW"))
-
-    // ② 底線分隔：Java 只吃連字號
-    assertEquals(Locale.ROOT, Locale.forLanguageTag("zh_TW"))
-    assertEquals(Lang.ZH_TW, Lang.of("zh_TW"))
-
-    // ③ Accept-Language "*"：Locale 版得到 ROOT（未定語言），Lang 版回傳 default
+  fun `刻意的行為差異 —— Accept-Language 的 asterisk`() {
+    // Locale 版得到 ROOT（未定語言），Lang 版視為無法解析而回傳 default
     assertEquals(Locale.ROOT, LocaleTools.parseAcceptLanguageHeader("*", Locale.TRADITIONAL_CHINESE))
     assertEquals(Lang.DEFAULT, LangTools.parseAcceptLanguageHeader("*"))
+  }
+
+  /**
+   * `Lang.of` 相對 **JDK API** 的差異（與 [LocaleTools] 無關 —— 後者一向自行處理底線）。
+   */
+  @Test
+  fun `Lang_of 吃底線，forLanguageTag 不吃`() {
+    assertEquals(Locale.ROOT, Locale.forLanguageTag("zh_TW"))
+    assertEquals(Lang.ZH_TW, Lang.of("zh_TW"))
+  }
+
+  /**
+   * 曾經是差異，**2026-08-03 起一致** —— [LocaleTools.getLocale] 已改為委派 [Lang.of]，
+   * 不再把 `zh-Hant-TW` 的 script 誤當成 country。
+   */
+  @Test
+  fun `getLocale 與 Lang_of 對 script 的解析一致`() {
+    val locale = LocaleTools.getLocale("zh-Hant-TW")!!
+    assertEquals("Hant", locale.script)
+    assertEquals("TW", locale.country)
+    assertEquals(Lang.of("zh-Hant-TW"), locale.toLang())
+    assertNotEquals("HANT", locale.country)   // 舊行為
   }
 }

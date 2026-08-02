@@ -68,23 +68,70 @@ class LocaleToolsTest {
 
   // ========== getLocale tests ==========
 
+  /** 常見輸入 —— 2026-08-03 改委派 [destiny.tools.Lang.of] 後行為完全不變 */
   @Test
   fun getLocale() {
 
     assertNull(LocaleTools.getLocale(""))
+    assertNull(LocaleTools.getLocale("   "))
+    assertNull(LocaleTools.getLocale(null))
 
     assertEquals(Locale.of("zh"), LocaleTools.getLocale("zh"))
     assertEquals(Locale.of("zh"), LocaleTools.getLocale("ZH"))
     assertEquals(Locale.of("zh"), LocaleTools.getLocale("ZH#TAIWAN"))
 
     assertEquals(Locale.TAIWAN, LocaleTools.getLocale("zh_TW"))
+    assertEquals(Locale.TAIWAN, LocaleTools.getLocale("zh-TW"))
     assertEquals(Locale.TAIWAN, LocaleTools.getLocale("zh_TW#TAIPEI"))
     assertEquals(Locale.CHINA, LocaleTools.getLocale("zh_CN"))
 
-    assertEquals(Locale.of("zh" , "TW" , "TAIPEI"), LocaleTools.getLocale("zh_TW_TAIPEI"))
-    assertEquals(Locale.of("zh" , "TW" , "TAIPEI"), LocaleTools.getLocale("zh_TW_TAIPEI#ABC"))
+    assertEquals(Locale.of("zh", "HK"), LocaleTools.getLocale("zh_HK_#Hant"))
 
-    assertEquals(Locale.of("zh" , "HK"), LocaleTools.getLocale("zh_HK_#Hant"))
+    assertEquals(Locale.of("en", "US"), LocaleTools.getLocale("en_US"))
+    assertEquals(Locale.of("ja"), LocaleTools.getLocale("ja"))
+    assertEquals(Locale.of("ko", "KR"), LocaleTools.getLocale("ko-KR"))
+  }
+
+  /**
+   * **2026-08-03 的 bug 修正**：舊版按位置切分成 language/country/variant，
+   * 把 BCP-47 合法的 `zh-Hant-TW`（CLDR / Android / iOS 對繁中的正規寫法）
+   * 誤解成 `country=HANT, variant=TW`，language tag 變成 `zh-x-lvariant-TW`，
+   * 導致後續 ResourceBundle 查找全數落空。
+   *
+   * 而 `AbstractLineService` 會把此結果經 `destinyUserDao.getOrCreate()` 寫進 DB。
+   */
+  @Test
+  fun `getLocale 正確辨識 script 子標籤`() {
+    val locale = LocaleTools.getLocale("zh-Hant-TW")!!
+    assertEquals("zh", locale.language)
+    assertEquals("Hant", locale.script)
+    assertEquals("TW", locale.country)
+    assertEquals("", locale.variant)
+    assertEquals("zh-Hant-TW", locale.toLanguageTag())
+
+    // 底線寫法亦同
+    assertEquals(locale, LocaleTools.getLocale("zh_Hant_TW"))
+    // 簡體
+    assertEquals("zh-Hans-CN", LocaleTools.getLocale("zh-Hans-CN")!!.toLanguageTag())
+  }
+
+  /** 修正的附帶差異 —— 皆為改善，逐項釘住免得日後被誤「修」回去 */
+  @Test
+  fun `getLocale 修正後的附帶差異`() {
+    // ① variant 正規化為小寫（BCP-47 標準大小寫）
+    val v = LocaleTools.getLocale("zh_TW_TAIPEI")!!
+    assertEquals("taipei", v.variant)
+    assertEquals(Locale.forLanguageTag("zh-TW-taipei"), v)
+    assertEquals(v, LocaleTools.getLocale("zh_TW_TAIPEI#ABC"))
+
+    // ② 非法語言碼回傳 null，而非產生 tag 為 "und" 的畸形 Locale
+    //    （所有呼叫端本來就處理 null —— 回傳型別一向可空）
+    assertNull(LocaleTools.getLocale("1"))
+    assertNull(LocaleTools.getLocale("zh1"))
+    assertNull(LocaleTools.getLocale("-"))
+
+    // ③ "und" 是「語言未定」，應為 ROOT 而非 language=="und" 的 Locale
+    assertEquals(Locale.ROOT, LocaleTools.getLocale("und"))
   }
 
   @Test

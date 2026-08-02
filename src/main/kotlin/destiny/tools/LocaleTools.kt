@@ -7,20 +7,30 @@ import java.util.*
 
 object LocaleTools {
 
-  private val localeDelimiter = Regex("[_-]")
-
-  fun getLocale(input: String?): Locale? {
-    if (input.isNullOrBlank()) return null
-
-    val parts = input.split(localeDelimiter)
-      .map { it.substringBefore('#') }
-
-    return when (parts.size) {
-      1    -> Locale.of(parts[0])
-      2    -> Locale.of(parts[0], parts[1])
-      else -> Locale.of(parts[0], parts[1], parts[2])
-    }
-  }
+  /**
+   * 解析語言字串。委派給 [Lang.of]，因此正確辨識 BCP-47 的 script 子標籤。
+   *
+   * ## 2026-08-03 修正
+   *
+   * 舊版按**位置**切分成 language / country / variant，因此把
+   * `"zh-Hant-TW"`（BCP-47 的合法寫法，CLDR / Android / iOS 對繁中的正規形式）
+   * 誤解成 `country=HANT, variant=TW`，其 language tag 會變成 `zh-x-lvariant-TW`，
+   * 後續一切 [ResourceBundle] 查找靜默落空、退回預設語言。
+   * 而 `AbstractLineService` 會把這個結果經 `destinyUserDao.getOrCreate()` 寫進 DB。
+   *
+   * 修正後的附帶差異（皆為改善，`LocaleToolsTest.getLocale` 有逐項釘住）：
+   *
+   * | 輸入 | 舊 | 新 |
+   * |---|---|---|
+   * | `zh-Hant-TW` | `zh_HANT_TW`（壞） | `zh_Hant_TW` |
+   * | `zh_TW_TAIPEI` | variant `TAIPEI` | variant `taipei`（BCP-47 正規大小寫） |
+   * | `1` / `zh1` 等非法語言碼 | 產生 tag 為 `und` 的畸形 Locale | `null` |
+   * | `und` | language 為 `"und"` 的 Locale | [Locale.ROOT] |
+   *
+   * 常見輸入（`zh`、`zh_TW`、`zh-TW`、`en_US`、`ZH#TAIWAN`、`zh_HK_#Hant` …）
+   * 行為完全不變。所有呼叫端本來就處理 null（回傳型別一向可空）。
+   */
+  fun getLocale(input: String?): Locale? = Lang.of(input)?.toLocale()
 
 
   fun parseAcceptLanguageHeader(acceptLanguage: String?, default: Locale = Locale.TRADITIONAL_CHINESE): Locale {

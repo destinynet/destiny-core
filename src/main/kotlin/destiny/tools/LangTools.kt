@@ -12,16 +12,19 @@ package destiny.tools
  *
  * ## 與 [LocaleTools] 刻意不同的地方
  *
- *  1. **三段輸入**：`LocaleTools.getLocale("zh-Hant-TW")` 按位置硬塞成
- *     language/country/variant，得到 `country=HANT, variant=TW` 這種壞掉的
- *     Locale（其 language tag 會變成 `zh-x-lvariant-TW`）。
- *     [Lang.of] 則正確辨識 `Hant` 為 script。
- *  2. **底線分隔**：`Locale.forLanguageTag("zh_TW")` 回傳空 Locale（Java 只吃
- *     連字號），[Lang.of] 兩種都吃。
- *  3. **`Accept-Language: *`**：Locale 版得到 `ROOT`（等於「未定語言」），
- *     Lang 版視為無法解析而回傳 default —— 後者才是呼叫端要的。
+ *  1. **`Accept-Language: *`**：[LocaleTools.parseAcceptLanguageHeader] 得到
+ *     `Locale.ROOT`（等於「未定語言」），本物件視為無法解析而回傳 default ——
+ *     後者才是呼叫端要的。
  *
- * 以上三點都是修正而非退步。
+ * ## 曾經不同、現已一致
+ *
+ * [LocaleTools.getLocale] 原本按位置把輸入硬塞成 language/country/variant，
+ * 會把 `"zh-Hant-TW"` 解成 `country=HANT, variant=TW`。
+ * **2026-08-03 已改為委派 [Lang.of]**，兩者行為一致，故此處不再有差異。
+ *
+ * 另注意 `Locale.forLanguageTag("zh_TW")` 回傳空 Locale（Java 只吃連字號），
+ * 而 [Lang.of] 兩種分隔都吃 —— 這是 [Lang.of] 相對 **JDK API** 的差異，
+ * 與 [LocaleTools] 無關（後者一向自行處理底線）。
  */
 object LangTools {
 
