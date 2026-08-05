@@ -6,6 +6,9 @@ package destiny.core.calendar.eightwords
 
 
 import java.util.*
+import destiny.tools.I18nBundles
+import destiny.tools.toLang
+import destiny.tools.bundleName
 
 /**
  * 十神 , 天干之間互相的互動關係 : 比間，劫財，正財...
@@ -42,7 +45,7 @@ enum class Reaction  {
 
   /** 縮寫  */
   fun getAbbreviation(locale: Locale): String {
-    return ResourceBundle.getBundle(Reaction::class.java.name, locale).getString(name + "_ABBR")
+    return I18nBundles.string(Reaction::class.bundleName(), locale.toLang(), name + "_ABBR") ?: name
   }
 
 }

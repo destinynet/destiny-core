@@ -5,6 +5,8 @@ package destiny.core
 
 import destiny.tools.JSerializable
 import java.util.*
+import destiny.tools.I18nBundles
+import destiny.tools.toLang
 
 
 sealed class News : JSerializable {
@@ -70,7 +72,7 @@ fun News.NorthSouth.toCoordinateString(locale: Locale): String {
     is News.NorthSouth.SOUTH -> "SOUTH.Coordinate"
   }
   val resource = News::class.qualifiedName!!
-  return ResourceBundle.getBundle(resource, locale).getString(nameKey)
+  return I18nBundles.string(resource, locale.toLang(), nameKey) ?: nameKey
 }
 
 
@@ -83,12 +85,12 @@ fun News.EastWest.toCoordinateString(locale: Locale): String {
     is News.EastWest.WEST -> "WEST.Coordinate"
   }
   val resource = News::class.qualifiedName!!
-  return ResourceBundle.getBundle(resource, locale).getString(nameKey)
+  return I18nBundles.string(resource, locale.toLang(), nameKey) ?: nameKey
 }
 
 /** 東 / 西 / 南 / 北 */
 fun News.getTitle(locale: Locale): String {
   val nameKey = this::class.simpleName!!
   val resource = News::class.qualifiedName!!
-  return ResourceBundle.getBundle(resource, locale).getString(nameKey)
+  return I18nBundles.string(resource, locale.toLang(), nameKey) ?: nameKey
 }

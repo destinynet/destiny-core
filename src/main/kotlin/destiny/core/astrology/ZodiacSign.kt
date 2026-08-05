@@ -14,11 +14,13 @@ import destiny.tools.CircleTools.normalize
 import destiny.tools.getTitle
 import kotlinx.serialization.Serializable
 import java.util.*
+import destiny.tools.I18nBundles
+import destiny.tools.toLang
 
 
 fun ZodiacSign.getAbbreviation(locale: Locale): String {
   val resource = ZodiacSign::class.qualifiedName!!
-  return ResourceBundle.getBundle(resource, locale).getString(this.abbrKey)
+  return I18nBundles.string(resource, locale.toLang(), this.abbrKey) ?: this.abbrKey
 }
 
 
@@ -61,7 +63,7 @@ enum class ZodiacSign(val abbrKey: String,
 
   /** 縮寫  */
   val abbreviation: String
-    get() = ResourceBundle.getBundle(resource, Locale.getDefault()).getString(abbrKey)
+    get() = I18nBundles.string(resource, Locale.getDefault().toLang(), abbrKey) ?: abbrKey
 
   /** 取得對沖的星座  */
   val oppositeSign: ZodiacSign

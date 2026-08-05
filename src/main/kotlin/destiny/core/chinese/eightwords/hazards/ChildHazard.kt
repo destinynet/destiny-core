@@ -5,6 +5,9 @@ package destiny.core.chinese.eightwords.hazards
 
 import destiny.core.chinese.eightwords.EwPattern
 import java.util.*
+import destiny.tools.I18nBundles
+import destiny.tools.toLang
+import destiny.tools.bundleName
 
 
 enum class Book {
@@ -123,13 +126,6 @@ sealed class ChildHazard : EwPattern {
 
 
 fun ChildHazard.getBookNote(locale: Locale, book: Book): String? {
-  return ResourceBundle.getBundle(ChildHazard::class.qualifiedName!!, locale).let { resourceBundle ->
-
-    val key = "${this::class.simpleName}.${book.name}"
-    try {
-      resourceBundle.getString(key)
-    } catch (e: MissingResourceException) {
-      null
-    }
-  }
+  val key = "${this::class.simpleName}.${book.name}"
+  return I18nBundles.string(ChildHazard::class.bundleName(), locale.toLang(), key)
 }

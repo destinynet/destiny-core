@@ -3,7 +3,7 @@
 # 由 KmpReadinessRatchetTest 管控。不在此清單上的 .kt 一律必須無 JVM-only 相依。
 # 這份清單只准變短：改乾淨了就刪掉該行。詳見該測試的 KDoc。
 #
-# 目前數量：338
+# 目前數量：339
 
 destiny/core/BirthData.kt
 destiny/core/Descriptive.kt

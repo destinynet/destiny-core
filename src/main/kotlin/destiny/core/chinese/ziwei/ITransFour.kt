@@ -6,6 +6,9 @@ package destiny.core.chinese.ziwei
 import destiny.core.Descriptive
 import destiny.core.chinese.Stem
 import java.util.*
+import destiny.tools.I18nBundles
+import destiny.tools.toLang
+import destiny.tools.bundleName
 
 enum class T4Value {
 
@@ -15,7 +18,7 @@ enum class T4Value {
   忌;
 
   fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(ZStar::class.java.name, locale).getString(name)
+    return I18nBundles.string(ZStar::class.bundleName(), locale.toLang(), name) ?: name
   }
 }
 /**

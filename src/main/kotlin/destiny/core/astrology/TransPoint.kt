@@ -7,11 +7,13 @@ package destiny.core.astrology
 
 import destiny.tools.ILocaleString
 import java.util.*
+import destiny.tools.I18nBundles
+import destiny.tools.toLang
 
 fun TransPoint.asLocaleString() = object : ILocaleString {
   private val resource = "destiny.core.astrology.Star"
   override fun getTitle(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+    return I18nBundles.string(resource, locale.toLang(), this@asLocaleString.nameKey) ?: this@asLocaleString.nameKey
   }
 }
 

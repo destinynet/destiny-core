@@ -27,18 +27,16 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
   abstract val resource: String
 
   override fun getTitle(locale: Locale): String {
-    return try {
-      logger.trace("try to get nameKey = {} of locale = {} , resource = {}", nameKey, locale, resource)
-      ResourceBundle.getBundle(resource, locale).getString(nameKey)
-    } catch (e: Exception) {
-      logger.info("cannot get from nameKey = {}", nameKey)
-      pattern::class.simpleName!!
-    }
+    logger.trace("try to get nameKey = {} of locale = {} , resource = {}", nameKey, locale, resource)
+    return I18nBundles.string(resource, locale.toLang(), nameKey)
+      ?: pattern::class.simpleName!!.also { logger.info("cannot get from nameKey = {}", nameKey) }
   }
 
+  /** 註解缺漏時退回 [getTitle]，與 `Enum<T>.getDescription` 的慣例一致（原本會拋例外） */
   override fun getDescription(locale: Locale): String {
     logger.trace("commentKey = {} , parameters = {}", commentKey, parameters)
-    val pattern: String = ResourceBundle.getBundle(resource, locale).getString("$nameKey.$commentKey")
+    val pattern: String = I18nBundles.string(resource, locale.toLang(), "$nameKey.$commentKey")
+      ?: return getTitle(locale)
     return formatPattern(pattern, getCommentParameters(locale, parameters).toList())
   }
 

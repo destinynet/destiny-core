@@ -7,6 +7,9 @@ import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.StemBranch.*
 import destiny.tools.JSerializable
 import java.util.*
+import destiny.tools.I18nBundles
+import destiny.tools.toLang
+import destiny.tools.bundleName
 
 
 /**
@@ -135,7 +138,7 @@ enum class NaYin(override val fiveElement: FiveElement) : IFiveElement , JSerial
     /** 詳情 , 三個字 , 例如「海中金」  */
     fun getDesc(sb: StemBranch, locale: Locale): String {
       val resourceKey = map.getValue(sb).name
-      return ResourceBundle.getBundle(NaYin::class.java.name, locale).getString(resourceKey)
+      return I18nBundles.string(NaYin::class.bundleName(), locale.toLang(), resourceKey) ?: resourceKey
     }
   }
 

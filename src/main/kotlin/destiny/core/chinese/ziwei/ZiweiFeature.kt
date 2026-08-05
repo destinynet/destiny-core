@@ -262,7 +262,7 @@ class ZiweiFeature(
 
   private fun List<Pair<String, Array<Any>>>.build(locale: Locale): List<String> {
     return this.map { (first: String, second: Array<Any>) ->
-      val pattern = ResourceBundle.getBundle(ZiweiFeature::class.java.name, locale).getString(first)
+      val pattern = I18nBundles.string(ZiweiFeature::class.bundleName(), locale.toLang(), first) ?: first
       formatPattern(pattern, second.toList()).also {
         logger.trace("note : {}", it)
       }

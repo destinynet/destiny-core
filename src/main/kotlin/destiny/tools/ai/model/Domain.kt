@@ -10,6 +10,8 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.util.*
+import destiny.tools.I18nBundles
+import destiny.tools.toLang
 
 
 @Serializable(with = DomainSerializer::class)
@@ -80,7 +82,7 @@ sealed class Domain {
 
 fun Domain.getTitle(locale: Locale): String {
   val resource = Domain::class.qualifiedName!!
-  return ResourceBundle.getBundle(resource, locale).getString("$this.title")
+  return I18nBundles.string(resource, locale.toLang(), "$this.title") ?: this.toString()
 }
 
 object DomainConverter : MapConverter<Domain> {
