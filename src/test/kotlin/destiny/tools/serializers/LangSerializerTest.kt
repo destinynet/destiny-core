@@ -101,13 +101,23 @@ class LangSerializerTest {
 
   /**
    * [Lang.of] 比 `Locale.forLanguageTag` 寬鬆：吃底線分隔。
-   * 這是刻意的修正 —— 舊資料裡若存在 `"zh_TW"` 這種 key，Locale 版會讀成 ROOT
-   * （語言遺失），Lang 版能正確還原。
+   *
+   * 這原本是 Lang 版**獨有**的能力，Locale 版會把 `"zh_TW"` 讀成 ROOT（語言遺失）。
+   * 現在 [LocaleSerializer] / [LocaleMapSerializer] 也改走 [Lang.of]，兩版對齊 ——
+   * 讀取端一律容忍底線，寫入端一律吐 BCP-47。
    */
   @Test
-  fun `底線形式的舊資料 —— Lang 讀得回來，Locale 讀不回`() {
-    assertEquals(Locale.ROOT, json.decodeFromString<LocaleHolder>("""{"v":"zh_TW"}""").v)
+  fun `底線形式的舊資料 —— 兩版都讀得回來`() {
+    assertEquals(Locale.TAIWAN, json.decodeFromString<LocaleHolder>("""{"v":"zh_TW"}""").v)
     assertEquals(Lang.ZH_TW, json.decodeFromString<LangHolder>("""{"v":"zh_TW"}""").v)
+  }
+
+  /** 讀底線、寫連字號 —— 這條往返把「格式收斂」的性質釘住 */
+  @Test
+  fun `底線進、BCP-47 出`() {
+    val decoded = json.decodeFromString<LocaleMapHolder>("""{"m":{"zh_CN":"职业","zh_TW":"職業"}}""")
+    assertEquals(mapOf(Locale.CHINA to "职业", Locale.TAIWAN to "職業"), decoded.m)
+    assertEquals("""{"m":{"zh-CN":"职业","zh-TW":"職業"}}""", json.encodeToString(decoded))
   }
 
   // ------------------------------------------------------------ Map
