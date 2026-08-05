@@ -288,6 +288,7 @@ destiny/tools/CacheConfigProvider.kt
 destiny/tools/Decorator.kt
 destiny/tools/Extensions.kt
 destiny/tools/Feature.kt
+destiny/tools/I18nBundles.kt
 destiny/tools/I18nSupport.kt
 destiny/tools/IChainLinks.kt
 destiny/tools/ILocaleString.kt
