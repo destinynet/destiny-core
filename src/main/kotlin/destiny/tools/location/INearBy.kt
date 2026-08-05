@@ -9,6 +9,7 @@ import destiny.core.calendar.Lat
 import destiny.core.calendar.Lng
 import destiny.tools.JSerializable
 import java.util.*
+import destiny.tools.defaultLocale
 
 interface IPoi : ILatLng, IPlace, JSerializable {
   val name: String
@@ -28,7 +29,7 @@ data class NearByPoi(val poi: IPoi, override val meters: Int) : INearByPoi, IPoi
 
 interface INearBy {
 
-  suspend fun getNearBy(lat: Lat, lng: Lng, type: String, keyword: String?, radiusMeters: Int, locale: Locale = Locale.getDefault()): List<IPoi>
+  suspend fun getNearBy(lat: Lat, lng: Lng, type: String, keyword: String?, radiusMeters: Int, locale: Locale = defaultLocale): List<IPoi>
 
-  suspend fun getNearBys(lat: Lat, lng: Lng, types: List<String>, radiusMeters: Int, locale: Locale = Locale.getDefault()): List<INearByPoi>
+  suspend fun getNearBys(lat: Lat, lng: Lng, types: List<String>, radiusMeters: Int, locale: Locale = defaultLocale): List<INearByPoi>
 }

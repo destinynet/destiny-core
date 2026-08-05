@@ -594,7 +594,7 @@ class ZiweiFeature(
         append("命宮在")
         append(mainHouse.branch).append(",")
 
-        append(StarMain.紫微.toString(Locale.getDefault())).append("在")
+        append(StarMain.紫微.toString(defaultLocale)).append("在")
         starMap[StarMain.紫微]?.also { ziweiHouse: HouseData ->
           append(ziweiHouse.stemBranch.branch)
           append("(").append(ziweiHouse.house).append("宮)")

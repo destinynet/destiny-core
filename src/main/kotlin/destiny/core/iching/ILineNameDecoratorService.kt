@@ -5,6 +5,7 @@
 package destiny.core.iching
 
 import java.util.*
+import destiny.tools.defaultLocale
 
 
 interface ILineNameDecorator {
@@ -27,5 +28,5 @@ interface ILineNameDecoratorService {
    *
    * @param lineIndex 1~6 (乾坤之外) , 1~7 for 乾坤
    */
-  fun getName(hexagram: IHexagram, lineIndex: Int, locale: Locale = Locale.getDefault()): String
+  fun getName(hexagram: IHexagram, lineIndex: Int, locale: Locale = defaultLocale): String
 }

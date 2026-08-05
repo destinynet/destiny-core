@@ -22,6 +22,7 @@ import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 import javax.cache.Cache
+import destiny.tools.defaultLocale
 
 @Serializable
 data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContextConfig = EightWordsContextConfig(),
@@ -29,7 +30,7 @@ data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContext
                                   override var fortuneSmallConfig: FortuneSmallConfig = FortuneSmallConfig(eightWordsConfig = eightwordsContextConfig.eightWordsConfig),
                                   override var ewContextScore: EwContextScore = EwContextScore.OctaDivide316,
                                   @Serializable(with = LocaleSerializer::class)
-                                  val locale : Locale = Locale.getDefault()): IEightWordsPersonConfig , IEightWordsContextConfig by eightwordsContextConfig
+                                  val locale : Locale = defaultLocale): IEightWordsPersonConfig , IEightWordsContextConfig by eightwordsContextConfig
 
 @DestinyMarker
 class PersonConfigBuilder(val iEwConfig : IEightWordsContextConfig) : Builder<EightWordsPersonConfig> {
@@ -46,7 +47,7 @@ class PersonConfigBuilder(val iEwConfig : IEightWordsContextConfig) : Builder<Ei
 
   var ewContextScore: EwContextScore = EwContextScore.OctaDivide316
 
-  var locale: Locale = Locale.getDefault()
+  var locale: Locale = defaultLocale
 
   override fun build(): EightWordsPersonConfig {
     return EightWordsPersonConfig(iEwConfig.ewContextConfig, fortuneLargeConfig, fortuneSmallConfig, ewContextScore, locale)

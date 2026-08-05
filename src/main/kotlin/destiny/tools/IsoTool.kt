@@ -16,12 +16,12 @@ class IsoTool : JSerializable {
 
     /** 大小寫通吃，即使傳入 'ZH' 也會轉成 'zh' ，並且傳回 true  */
     fun isValidLanguage(s: String): Boolean {
-      return ISO_LANGUAGES.contains(s.lowercase(Locale.getDefault()))
+      return ISO_LANGUAGES.contains(s.lowercase())
     }
 
     /** 大小寫通吃，即使傳入 'tw' 也會轉成 'TW' ，並且傳回 true  */
     fun isValidCountry(s: String): Boolean {
-      return ISO_COUNTRIES.contains(s.uppercase(Locale.getDefault()))
+      return ISO_COUNTRIES.contains(s.uppercase())
     }
   }
 }

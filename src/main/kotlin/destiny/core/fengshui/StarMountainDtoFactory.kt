@@ -22,6 +22,7 @@ import jakarta.inject.Named
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
+import destiny.tools.defaultLocale
 
 /**
  * 組裝 [StarMountainDto]：星曆計算（samples/transits/markers）全在伺服器，
@@ -47,7 +48,7 @@ class StarMountainDtoFactory(
     mapScale: Int = DEFAULT_MAP_SCALE,
     mapType: MapType = MapType.roadmap,
     sampleStepMinutes: Double = DEFAULT_SAMPLE_STEP_MINUTES,
-    locale: Locale = Locale.getDefault(),
+    locale: Locale = defaultLocale,
   ): StarMountainDto {
     require(fromLmt < toLmt) { "fromLmt ($fromLmt) must precede toLmt ($toLmt)" }
 

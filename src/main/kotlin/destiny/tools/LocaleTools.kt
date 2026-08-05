@@ -135,7 +135,7 @@ object LocaleTools {
    * 3. 目標語言(language)
    * </pre>
    */
-  fun getBestMatchingLocale(locale: Locale = Locale.getDefault(), locales: Iterable<Locale>): Locale? {
+  fun getBestMatchingLocale(locale: Locale = defaultLocale, locales: Iterable<Locale>): Locale? {
 
     return locales.let { locs ->
       locs.firstOrNull {
@@ -161,7 +161,7 @@ object LocaleTools {
   /**
    * @param locales : 找尋最符合的 locale , 如果找不到，則採取此 locales 第一個
    */
-  fun getBestMatchingLocaleOrFirst(locale: Locale = Locale.getDefault(), locales: Iterable<Locale>): Locale {
+  fun getBestMatchingLocaleOrFirst(locale: Locale = defaultLocale, locales: Iterable<Locale>): Locale {
     return getBestMatchingLocale(locale, locales) ?: locales.first()
   }
 
@@ -179,12 +179,8 @@ object LocaleTools {
    * </pre>
    */
   fun getBestMatchingLocaleWithDefault(locales: Iterable<Locale>,
-                                       locale: Locale = Locale.getDefault()): Locale? {
-
-    val defaultLocale = Locale.getDefault()
-
+                                       locale: Locale = defaultLocale): Locale? {
     return getBestMatchingLocale(locale, locales) ?: getBestMatchingLocale(defaultLocale, locales)
-
   }
 
 

@@ -32,7 +32,7 @@ abstract class AbstractStarSerializer<T : ZStar> : KSerializer<T> {
       error("Invalid format for ${companion.type.simpleName}: $raw")
     }
 
-    return companion.fromString(value, Locale.getDefault()) ?: error("Cannot deserialize: $raw")
+    return companion.valueOf(value) ?: error("Cannot deserialize: $raw")
   }
 }
 

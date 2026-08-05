@@ -18,6 +18,7 @@ import java.time.ZoneId
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.absoluteValue
+import destiny.tools.defaultLocale
 
 @JvmInline
 @KSerializable
@@ -260,12 +261,12 @@ data class LocationPlace(val location: ILocation, override val place: String) : 
   }
 
   override fun toString(): String {
-    return toString(Locale.getDefault())
+    return toString(defaultLocale)
   }
 }
 
 fun locationOf(locale: Locale): Location {
-  val matchedLocale = LocaleTools.getBestMatchingLocale(locale, locMap.keys) ?: Locale.getDefault()
+  val matchedLocale = LocaleTools.getBestMatchingLocale(locale, locMap.keys) ?: Locale.TAIWAN
   val loc = locMap.getValue(matchedLocale)
   return Location(loc.lat, loc.lng, loc.tzid, loc.minuteOffset, loc.altitudeMeter)
 }

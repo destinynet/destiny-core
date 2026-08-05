@@ -14,6 +14,7 @@ import destiny.tools.serializers.IZodiacDegreeSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.util.*
+import destiny.tools.defaultLocale
 
 /**
  * 行星的 25種狀態
@@ -156,7 +157,7 @@ sealed class Misc : IPlanetPattern {
     override val star: Star = planet
 
     override fun getTitle(locale: Locale): String {
-      return planet.toString(Locale.getDefault()) + " 空亡"
+      return planet.toString(defaultLocale) + " 空亡"
     }
 
     override fun getDescription(locale: Locale): String {

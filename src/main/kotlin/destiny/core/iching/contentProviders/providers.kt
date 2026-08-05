@@ -3,11 +3,12 @@ package destiny.core.iching.contentProviders
 import destiny.core.iching.IHexData
 import destiny.core.iching.IHexagram
 import java.util.*
+import destiny.tools.defaultLocale
 
 /** 針對「卦」所做的註解 */
 interface IHex<HexT> {
 
-  fun getHexagram(hex: IHexagram, locale: Locale = Locale.getDefault()): HexT
+  fun getHexagram(hex: IHexagram, locale: Locale = defaultLocale): HexT
 }
 
 /** 針對「爻」所做的註解 */
@@ -16,21 +17,21 @@ interface IHexLine<LineT> {
   /**
    * @param lineIndex 1 <= lineIndex <= 6
    */
-  fun getLine(hex: IHexagram, lineIndex: Int, locale: Locale = Locale.getDefault()): LineT
+  fun getLine(hex: IHexagram, lineIndex: Int, locale: Locale = defaultLocale): LineT
 
-  fun getExtraLine(hex: IHexagram, locale: Locale = Locale.getDefault()): LineT?
+  fun getExtraLine(hex: IHexagram, locale: Locale = defaultLocale): LineT?
 }
 
 
 interface IHexagramProvider<T : IHexagram> {
 
-  fun getHexagram(hex: IHexagram, locale: Locale = Locale.getDefault()): T
+  fun getHexagram(hex: IHexagram, locale: Locale = defaultLocale): T
 }
 
 /** 卦 [IHex] + 爻 [IHexLine] , 此 interface 不實作 [IHexagram] 有其考量，避免 subclass 出現 diamond problem */
 interface IHexProvider<HexT, LineT> : IHex<HexT>, IHexLine<LineT> {
 
-  fun getHexagramData(hex: IHexagram, locale: Locale = Locale.getDefault()): IHexData<HexT, LineT>
+  fun getHexagramData(hex: IHexagram, locale: Locale = defaultLocale): IHexData<HexT, LineT>
 }
 
 /** 短卦名 (中文為 一或兩字元) */

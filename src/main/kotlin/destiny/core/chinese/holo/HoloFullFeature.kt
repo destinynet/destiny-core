@@ -20,6 +20,7 @@ import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 import javax.cache.Cache
+import destiny.tools.defaultLocale
 
 
 @Serializable
@@ -57,16 +58,16 @@ class HoloFullFeature(private val holoFeature: HoloFeature,
 
   private fun getCongenital(holo: IHolo, locale: Locale): LifeHoloPoemHexagram {
     return LifeHoloPoemHexagram(holo.hexagramCongenital,
-                                poemParser.getHexagramData(holo.hexagramCongenital, Locale.getDefault()) as IPoemHexagram,
-                                lifeDescParser.getHexagramData(holo.hexagramCongenital, Locale.getDefault()) as IHoloLifeDescHexagram,
+                                poemParser.getHexagramData(holo.hexagramCongenital, defaultLocale) as IPoemHexagram,
+                                lifeDescParser.getHexagramData(holo.hexagramCongenital, defaultLocale) as IHoloLifeDescHexagram,
                                 hexTextProvider.getHexagram(holo.hexagramCongenital, locale)
     )
   }
 
   private fun getAcquired(holo: IHolo, locale: Locale): LifeHoloPoemHexagram {
     return LifeHoloPoemHexagram(holo.hexagramAcquired,
-                                poemParser.getHexagramData(holo.hexagramAcquired, Locale.getDefault()) as IPoemHexagram,
-                                lifeDescParser.getHexagramData(holo.hexagramAcquired, Locale.getDefault()) as IHoloLifeDescHexagram,
+                                poemParser.getHexagramData(holo.hexagramAcquired, defaultLocale) as IPoemHexagram,
+                                lifeDescParser.getHexagramData(holo.hexagramAcquired, defaultLocale) as IHoloLifeDescHexagram,
                                 hexTextProvider.getHexagram(holo.hexagramAcquired, locale)
     )
   }
@@ -110,8 +111,8 @@ class HoloFullFeature(private val holoFeature: HoloFeature,
 
 
         HoloFullHexagram(holoHexagram
-                         , poemParser.getHexagramData(holoHexagram, Locale.getDefault()) as IPoemHexagram
-                         , lifeDescParser.getHexagramData(holoHexagram, Locale.getDefault())
+                         , poemParser.getHexagramData(holoHexagram, defaultLocale) as IPoemHexagram
+                         , lifeDescParser.getHexagramData(holoHexagram, defaultLocale)
                          , hexText, goldenKey
         )
       }

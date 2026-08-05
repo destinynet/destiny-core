@@ -8,12 +8,13 @@ import destiny.core.calendar.ILatLng
 import destiny.core.calendar.Lat
 import destiny.core.calendar.Lng
 import java.util.*
+import destiny.tools.defaultLocale
 
 interface ReverseGeocodingService {
 
-  fun reverseGeocoding(lat: Lat, lng: Lng, locale: Locale = Locale.getDefault()): String?
+  fun reverseGeocoding(lat: Lat, lng: Lng, locale: Locale = defaultLocale): String?
 
-  fun reverseGeocoding(latLng : ILatLng, locale: Locale = Locale.getDefault()) : String? {
+  fun reverseGeocoding(latLng : ILatLng, locale: Locale = defaultLocale) : String? {
     return reverseGeocoding(latLng.lat, latLng.lng, locale)
   }
 

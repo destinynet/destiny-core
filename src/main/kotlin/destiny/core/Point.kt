@@ -6,6 +6,7 @@ import destiny.tools.ILocaleString
 import destiny.tools.JSerializable
 import destiny.tools.toLang
 import java.util.*
+import destiny.tools.defaultLocale
 
 /**
  * 抽象class , 代表星盤上的一「點」，可能是實星（行星 [Planet], 小行星 [Asteroid], 恆星 [FixedStar]），
@@ -55,7 +56,7 @@ abstract class Point(
 
   /** 名稱  */
   private val name: String by lazy {
-    I18nBundles.string(resource, Locale.getDefault().toLang(), nameKey) ?: nameKey
+    I18nBundles.string(resource, defaultLocale.toLang(), nameKey) ?: nameKey
   }
 
   /** toString 直接取名稱  */

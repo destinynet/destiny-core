@@ -12,6 +12,7 @@ import destiny.core.chinese.Branch
 import destiny.core.toString
 import destiny.tools.getTitle
 import java.util.*
+import destiny.tools.defaultLocale
 
 
 sealed class TimeDesc(override val begin: GmtJulDay, open val descs: List<String>) : IEvent {
@@ -28,14 +29,14 @@ sealed class TimeDesc(override val begin: GmtJulDay, open val descs: List<String
   data class TypeSolarTerms(override val begin: GmtJulDay, val desc: String, val solarTerms: SolarTerms) : TimeDesc(begin, listOf(desc))
 
   /** 日月交角 */
-  data class TypeSunMoon(override val begin: GmtJulDay, val phase: LunarPhase) : TimeDesc(begin, phase.getTitle(Locale.getDefault()))
+  data class TypeSunMoon(override val begin: GmtJulDay, val phase: LunarPhase) : TimeDesc(begin, phase.getTitle(defaultLocale))
 
   /** 日食 */
   data class TypeSolarEclipse(
     override val begin: GmtJulDay, val type: SolarType, val time: EclipseTime, val locPlace: ILocationPlace? = null
   ) : TimeDesc(begin, buildString {
-    append(type.getTitle(Locale.getDefault()))
-    time.getTitle(Locale.getDefault())
+    append(type.getTitle(defaultLocale))
+    time.getTitle(defaultLocale)
       .takeIf { it.isNotBlank() }
       ?.also {
         append(" ")
@@ -53,16 +54,16 @@ sealed class TimeDesc(override val begin: GmtJulDay, open val descs: List<String
     override val begin: GmtJulDay, val type: LunarType, val time: EclipseTime
   ) : TimeDesc(
     begin, when (type) {
-      LunarType.PARTIAL  -> LunarType.PARTIAL.getTitle(Locale.getDefault()) + " " + time.getTitle(Locale.getDefault())
-      LunarType.TOTAL    -> LunarType.TOTAL.getTitle(Locale.getDefault()) + time.getTitle(Locale.getDefault())
-      LunarType.PENUMBRA -> LunarType.PENUMBRA.getTitle(Locale.getDefault()) + time.getTitle(Locale.getDefault())
+      LunarType.PARTIAL  -> LunarType.PARTIAL.getTitle(defaultLocale) + " " + time.getTitle(defaultLocale)
+      LunarType.TOTAL    -> LunarType.TOTAL.getTitle(defaultLocale) + time.getTitle(defaultLocale)
+      LunarType.PENUMBRA -> LunarType.PENUMBRA.getTitle(defaultLocale) + time.getTitle(defaultLocale)
     }
   )
 
   /** 逆行 開始/結束 */
   sealed class Retrograde(star: Star , type : StationaryType , begin: GmtJulDay) : TimeDesc(
     begin,
-    star.toString(Locale.getDefault()) + " " + type.getTitle(Locale.getDefault())
+    star.toString(defaultLocale) + " " + type.getTitle(defaultLocale)
   ) {
 
     data class Begin(val stationary: Stationary) : Retrograde(stationary.star, StationaryType.DIRECT_TO_RETROGRADE, stationary.begin)

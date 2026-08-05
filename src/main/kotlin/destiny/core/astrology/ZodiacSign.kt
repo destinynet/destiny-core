@@ -16,6 +16,7 @@ import kotlinx.serialization.Serializable
 import java.util.*
 import destiny.tools.I18nBundles
 import destiny.tools.toLang
+import destiny.tools.defaultLocale
 
 
 fun ZodiacSign.getAbbreviation(locale: Locale): String {
@@ -63,7 +64,7 @@ enum class ZodiacSign(val abbrKey: String,
 
   /** 縮寫  */
   val abbreviation: String
-    get() = I18nBundles.string(resource, Locale.getDefault().toLang(), abbrKey) ?: abbrKey
+    get() = I18nBundles.string(resource, defaultLocale.toLang(), abbrKey) ?: abbrKey
 
   /** 取得對沖的星座  */
   val oppositeSign: ZodiacSign
@@ -81,7 +82,7 @@ enum class ZodiacSign(val abbrKey: String,
   }
 
   override fun toString(): String {
-    return this.getTitle(Locale.getDefault())
+    return this.getTitle(defaultLocale)
   }
 
 //  fun getAbbreviation(locale: Locale): String {

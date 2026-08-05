@@ -8,5 +8,5 @@ import java.util.*
 
 interface ILocaleString : JSerializable {
 
-  fun getTitle(locale: Locale = Locale.getDefault()): String
+  fun getTitle(locale: Locale = defaultLocale): String
 }

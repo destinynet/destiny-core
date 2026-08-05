@@ -4,13 +4,14 @@ package destiny.tools.location
 import destiny.core.calendar.Lat
 import destiny.core.calendar.Lng
 import java.util.*
+import destiny.tools.defaultLocale
 
 /**
  * 從經緯度尋找附近的地名
  */
 interface ReverseGeocoder {
 
-  suspend fun reverseGeocoding(lat: Lat, lng: Lng, locale: Locale = Locale.getDefault()): String?
+  suspend fun reverseGeocoding(lat: Lat, lng: Lng, locale: Locale = defaultLocale): String?
 
 }
 

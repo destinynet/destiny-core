@@ -13,6 +13,7 @@ import destiny.tools.JSerializable
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
+import destiny.tools.defaultLocale
 
 interface IGmtJulDay : JSerializable {
   val gmtJulDay: GmtJulDay
@@ -47,7 +48,7 @@ data class TimeLocMutable(
 
   companion object {
     fun withDefault(): ITimeLoc {
-      return TimeLoc(LocalDateTime.now(), locationOf(Locale.getDefault()))
+      return TimeLoc(LocalDateTime.now(), locationOf(defaultLocale))
     }
   }
 }

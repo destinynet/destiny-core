@@ -6,6 +6,7 @@ package destiny.tools.location
 import destiny.core.calendar.ILatLng
 import java.awt.Color
 import java.util.*
+import destiny.tools.defaultLocale
 
 interface IStaticMap {
 
@@ -23,6 +24,6 @@ interface IStaticMap {
                        zoom : Int = 15,
                        mapType: MapType = MapType.roadmap,
                        scale: Int = 1,
-                       locale: Locale = Locale.getDefault(),
+                       locale: Locale = defaultLocale,
                        markers : List<Marker> = emptyList()): ByteArray
 }
