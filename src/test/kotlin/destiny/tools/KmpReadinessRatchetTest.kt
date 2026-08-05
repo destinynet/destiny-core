@@ -11,6 +11,8 @@ import kotlin.io.path.readLines
 import kotlin.io.path.walk
 import kotlin.io.path.writeText
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import kotlin.test.fail
 
 /**
@@ -94,6 +96,52 @@ class KmpReadinessRatchetTest {
     )
   }
 
+  // ---------------------------------------------------------------- 掃描規則本身的測試
+
+  @Test
+  fun `攔截 import 與全限定用法`() {
+    assertViolates("import java.util.Locale")
+    assertViolates("import com.google.common.collect.BiMap")
+    assertViolates("class Foo : java.io.Serializable")
+    assertClean("import destiny.tools.Lang")
+    assertClean("val x = 1")
+  }
+
+  /**
+   * **`::class.java` / `javaClass` 這類慣用法原本完全漏網。**
+   *
+   * [FQN_IN_BODY] 要求「`java.` ＋ 小寫套件 ＋ **大寫類別名**」，所以
+   * `Planet::class.java`（後面沒東西）、`clazz.java.isAssignableFrom`（小寫）、
+   * `p1.javaClass`（連 `java.` 都沒有）三種全都比對不到。
+   *
+   * 全 `src/main` 有 32 個檔案用這類慣用法，其中 30 個剛好因為別的原因已在 quarantine，
+   * 2 個完全漏網（`DomainObjectFinder` / `AstroPointComparator`）——
+   * 也就是說 ratchet 的「不在清單上就一律乾淨」這個保證是有破口的。
+   */
+  @Test
+  fun `攔截 JVM 反射慣用法`() {
+    assertViolates("val c = Planet::class.java")
+    assertViolates("if (Domain::class.java.isAssignableFrom(clazz.java)) {")
+    assertViolates("val p1class = p1.javaClass")
+    assertViolates("val n = this::class.java.simpleName")
+    assertViolates("logger.info(javaClass.name)")
+  }
+
+  @Test
+  fun `註解不算相依`() {
+    assertClean("// val c = Planet::class.java")
+    assertClean("* 例如 Planet::class.java 或 javaClass.simpleName")
+    assertClean("/* import java.util.Locale */")
+  }
+
+  private fun assertViolates(line: String) {
+    assertTrue(scanLines(listOf(line)).isNotEmpty(), "應被攔截但沒有：$line")
+  }
+
+  private fun assertClean(line: String) {
+    assertEquals(emptyList(), scanLines(listOf(line)), "不該被攔截：$line")
+  }
+
   // ---------------------------------------------------------------- 掃描
 
   @OptIn(kotlin.io.path.ExperimentalPathApi::class)
@@ -107,9 +155,12 @@ class KmpReadinessRatchetTest {
       .toMap()
   }
 
-  private fun violationsOf(file: Path): List<String> {
+  private fun violationsOf(file: Path): List<String> = scanLines(file.readLines())
+
+  /** 行掃描的本體，抽出來讓規則本身可被單獨測試 */
+  private fun scanLines(lines: List<String>): List<String> {
     val out = mutableListOf<String>()
-    file.readLines().forEachIndexed { idx, raw ->
+    lines.forEachIndexed { idx, raw ->
       val line = raw.trim()
       // 略過註解 —— KDoc 裡提到 java.io.Serializable 是說明，不是相依
       if (line.startsWith("//") || line.startsWith("*") || line.startsWith("/*")) return@forEachIndexed
@@ -121,6 +172,8 @@ class KmpReadinessRatchetTest {
       } else {
         // 全限定用法（無 import），例如 `: java.io.Serializable`
         FQN_IN_BODY.find(line)?.let { out += "L${idx + 1}: ${it.value}…" }
+        // JVM 反射慣用法，例如 `Planet::class.java` / `p1.javaClass`
+        JVM_REFLECTION.find(line)?.let { out += "L${idx + 1}: ${it.value}" }
       }
     }
     return out
@@ -178,5 +231,17 @@ class KmpReadinessRatchetTest {
 
     /** 無 import 的全限定用法，例如 `: java.io.Serializable` */
     private val FQN_IN_BODY = Regex("""\b(java|javax|jakarta)\.[a-z][A-Za-z0-9_]*(\.[a-z][A-Za-z0-9_]*)*\.[A-Z]""")
+
+    /**
+     * JVM 反射慣用法。**[FQN_IN_BODY] 抓不到這些** —— 它要求
+     * 「`java.` ＋ 小寫套件 ＋ 大寫類別名」，而 `Planet::class.java` 後面沒有類別名、
+     * `clazz.java.isAssignableFrom` 後面是小寫、`p1.javaClass` 連 `java.` 都沒有。
+     *
+     * commonMain 沒有 `KClass.java`，也沒有 `Any.javaClass`。
+     * 多數用途（`.java.simpleName`）可直接換成 `KClass.simpleName`（全平台皆有，
+     * 差別是回傳 `String?`）；把 `Class` 物件當值用的（型別排序表、`isAssignableFrom`）
+     * 則要改設計。
+     */
+    private val JVM_REFLECTION = Regex("""(::class\.java\b|\bjavaClass\b)""")
   }
 }

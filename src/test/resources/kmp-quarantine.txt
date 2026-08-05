@@ -3,10 +3,11 @@
 # 由 KmpReadinessRatchetTest 管控。不在此清單上的 .kt 一律必須無 JVM-only 相依。
 # 這份清單只准變短：改乾淨了就刪掉該行。詳見該測試的 KDoc。
 #
-# 目前數量：339
+# 目前數量：341
 
 destiny/core/BirthData.kt
 destiny/core/Descriptive.kt
+destiny/core/DomainObjectFinder.kt
 destiny/core/IDigest.kt
 destiny/core/IIntAge.kt
 destiny/core/IIntAgeNote.kt
@@ -30,6 +31,7 @@ destiny/core/astrology/AspectEffectiveModern.kt
 destiny/core/astrology/Asteroid.kt
 destiny/core/astrology/AstroPattern.kt
 destiny/core/astrology/AstroPoint.kt
+destiny/core/astrology/AstroPointComparator.kt
 destiny/core/astrology/Axis.kt
 destiny/core/astrology/Ayanamsa.kt
 destiny/core/astrology/AzimuthDegreeDecorator.kt
