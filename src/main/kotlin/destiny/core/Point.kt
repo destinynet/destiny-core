@@ -1,8 +1,10 @@
 package destiny.core
 
 import destiny.core.astrology.*
+import destiny.tools.I18nBundles
 import destiny.tools.ILocaleString
 import destiny.tools.JSerializable
+import destiny.tools.toLang
 import java.util.*
 
 /**
@@ -53,7 +55,7 @@ abstract class Point(
 
   /** 名稱  */
   private val name: String by lazy {
-    ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
+    I18nBundles.string(resource, Locale.getDefault().toLang(), nameKey) ?: nameKey
   }
 
   /** toString 直接取名稱  */
@@ -85,7 +87,7 @@ abstract class Point(
 
 fun Point.asLocaleString() = object : ILocaleString {
   override fun getTitle(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
+    return I18nBundles.string(resource, locale.toLang(), nameKey) ?: nameKey
   }
 }
 
@@ -113,9 +115,9 @@ fun Point.getAbbreviation(locale: Locale): String {
   }
 
   return if (abbrKey != null) {
-    ResourceBundle.getBundle(resource, locale).getString(abbrKey)
+    I18nBundles.string(resource, locale.toLang(), abbrKey) ?: abbrKey
   } else {
-    val name = ResourceBundle.getBundle(resource, locale).getString(nameKey)
+    val name = I18nBundles.string(resource, locale.toLang(), nameKey) ?: nameKey
     getAbbr(locale, name)
   }
 }

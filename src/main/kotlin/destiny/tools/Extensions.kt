@@ -273,20 +273,18 @@ inline fun <reified T : Enum<T>> Enum<T>.asDescriptive() : Descriptive {
   }
 }
 
+/**
+ * destiny 全平台最熱的 i18n 路徑 —— 被 8 個 repo、116 個檔案 import。
+ *
+ * 因為是 `inline reified`，換 [I18nBundles] 之後呼叫端**一行都不用改**（只需重編）。
+ */
 inline fun <reified T : Enum<T>> Enum<T>.getTitle(locale: Locale): String {
-  return try {
-    ResourceBundle.getBundle(T::class.java.name, locale).getString("${this.name}.title")
-  } catch (e: MissingResourceException) {
-    this.name
-  }
+  return I18nBundles.string(T::class.bundleName(), locale.toLang(), "$name.title") ?: name
 }
 
 inline fun <reified T : Enum<T>> Enum<T>.getDescription(locale: Locale): String {
-  return try {
-    ResourceBundle.getBundle(T::class.java.name, locale).getString("${this.name}.description")
-  } catch (e : MissingResourceException) {
-    getTitle(locale)
-  }
+  return I18nBundles.string(T::class.bundleName(), locale.toLang(), "$name.description")
+    ?: getTitle<T>(locale)
 }
 
 fun <T : Enum<T>> KClass<out Enum<T>>.getValues(): Array<out Enum<T>> {
