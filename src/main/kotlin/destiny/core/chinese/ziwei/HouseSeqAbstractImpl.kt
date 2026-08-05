@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.tools.KotlinLogging
 import destiny.tools.getTitle
 import destiny.tools.JSerializable
-import java.util.*
+import destiny.tools.Lang
 
 abstract class HouseSeqAbstractImpl : IHouseSeq, JSerializable {
   // 建立 House 到索引的映射（延遲初始化，提升查找性能）
@@ -29,12 +29,12 @@ abstract class HouseSeqAbstractImpl : IHouseSeq, JSerializable {
     return if (steps >= 0) steps else steps + houses.size
   }
 
-  override fun getTitle(locale: Locale): String {
-    return houseSeq.getTitle(locale)
+  override fun getTitle(lang: Lang): String {
+    return houseSeq.getTitle(lang)
   }
 
-  override fun getDescription(locale: Locale): String {
-    return getTitle(locale)
+  override fun getDescription(lang: Lang): String {
+    return getTitle(lang)
   }
 
   private operator fun get(index: Int): House {

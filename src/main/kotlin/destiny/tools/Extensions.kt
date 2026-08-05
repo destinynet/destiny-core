@@ -263,12 +263,12 @@ fun <T> Sequence<T>.chunkedByProximity(isProximate: (firstInChunk: T, current: T
 
 inline fun <reified T : Enum<T>> Enum<T>.asDescriptive() : Descriptive {
   return object : Descriptive {
-    override fun getTitle(locale: Locale): String {
-      return this@asDescriptive.getTitle(locale)
+    override fun getTitle(lang: Lang): String {
+      return this@asDescriptive.getTitle(lang)
     }
 
-    override fun getDescription(locale: Locale): String {
-      return this@asDescriptive.getDescription(locale)
+    override fun getDescription(lang: Lang): String {
+      return this@asDescriptive.getDescription(lang)
     }
   }
 }
@@ -278,14 +278,23 @@ inline fun <reified T : Enum<T>> Enum<T>.asDescriptive() : Descriptive {
  *
  * 因為是 `inline reified`，換 [I18nBundles] 之後呼叫端**一行都不用改**（只需重編）。
  */
-inline fun <reified T : Enum<T>> Enum<T>.getTitle(locale: Locale): String {
-  return I18nBundles.string(T::class.bundleName(), locale.toLang(), "$name.title") ?: name
+inline fun <reified T : Enum<T>> Enum<T>.getTitle(lang: Lang): String {
+  return I18nBundles.string(T::class.bundleName(), lang, "$name.title") ?: name
 }
 
-inline fun <reified T : Enum<T>> Enum<T>.getDescription(locale: Locale): String {
-  return I18nBundles.string(T::class.bundleName(), locale.toLang(), "$name.description")
-    ?: getTitle<T>(locale)
+inline fun <reified T : Enum<T>> Enum<T>.getDescription(lang: Lang): String {
+  return I18nBundles.string(T::class.bundleName(), lang, "$name.description")
+    ?: getTitle<T>(lang)
 }
+
+/**
+ * 橋接：仍以 `Locale` 溝通的呼叫端走這裡。與 Lang 版**同名同檔**，
+ * 所以下游既有的 `import destiny.tools.getTitle` 不必改。
+ */
+inline fun <reified T : Enum<T>> Enum<T>.getTitle(locale: Locale): String = getTitle<T>(locale.toLang())
+
+/** 橋接，說明同上 */
+inline fun <reified T : Enum<T>> Enum<T>.getDescription(locale: Locale): String = getDescription<T>(locale.toLang())
 
 fun <T : Enum<T>> KClass<out Enum<T>>.getValues(): Array<out Enum<T>> {
   return this.java.enumConstants

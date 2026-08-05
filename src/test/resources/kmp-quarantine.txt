@@ -3,19 +3,17 @@
 # 由 KmpReadinessRatchetTest 管控。不在此清單上的 .kt 一律必須無 JVM-only 相依。
 # 這份清單只准變短：改乾淨了就刪掉該行。詳見該測試的 KDoc。
 #
-# 目前數量：341
+# 目前數量：314
 
 destiny/core/BirthData.kt
 destiny/core/Descriptive.kt
 destiny/core/DomainObjectFinder.kt
 destiny/core/IDigest.kt
 destiny/core/IIntAge.kt
-destiny/core/IIntAgeNote.kt
 destiny/core/IMag.kt
 destiny/core/INowLoc.kt
 destiny/core/IPattern.kt
 destiny/core/IPatternDescriptionsFactory.kt
-destiny/core/IPatternParasDescription.kt
 destiny/core/IPoints.kt
 destiny/core/IntAgeNoteMinguoYearImpl.kt
 destiny/core/IntAgeNoteWestYearImpl.kt
@@ -29,7 +27,6 @@ destiny/core/astrology/Aspect.kt
 destiny/core/astrology/AspectCalculatorImpl.kt
 destiny/core/astrology/AspectEffectiveModern.kt
 destiny/core/astrology/Asteroid.kt
-destiny/core/astrology/AstroPattern.kt
 destiny/core/astrology/AstroPoint.kt
 destiny/core/astrology/AstroPointComparator.kt
 destiny/core/astrology/Axis.kt
@@ -40,7 +37,6 @@ destiny/core/astrology/AzimuthTransitImpl.kt
 destiny/core/astrology/DayNightFeature.kt
 destiny/core/astrology/DayNightSimpleImpl.kt
 destiny/core/astrology/DtoFactory.kt
-destiny/core/astrology/Events.kt
 destiny/core/astrology/EventsTraversalPrimaryDirectionImpl.kt
 destiny/core/astrology/EventsTraversalSolarArcImpl.kt
 destiny/core/astrology/EventsTraversalTransitImpl.kt
@@ -76,9 +72,7 @@ destiny/core/astrology/Planet.kt
 destiny/core/astrology/PlanetaryHourAstroImpl.kt
 destiny/core/astrology/PlanetaryHourClockImpl.kt
 destiny/core/astrology/PlanetaryHourFeature.kt
-destiny/core/astrology/PointAnglePattern.kt
 destiny/core/astrology/PointAspectPattern.kt
-destiny/core/astrology/PointPatterns.kt
 destiny/core/astrology/PrimaryDirectionImpl.kt
 destiny/core/astrology/RiseTransFeature.kt
 destiny/core/astrology/Star.kt
@@ -92,12 +86,9 @@ destiny/core/astrology/ZodiacSignFeature.kt
 destiny/core/astrology/classical/ClassicalFeature.kt
 destiny/core/astrology/classical/Dignity.kt
 destiny/core/astrology/classical/IVoidCourse.kt
-destiny/core/astrology/classical/PointDiameterAlBiruniImpl.kt
-destiny/core/astrology/classical/PointDiameterLillyImpl.kt
 destiny/core/astrology/classical/VoidCourseFeature.kt
 destiny/core/astrology/classical/rules/ClassicalPatternContext.kt
 destiny/core/astrology/classical/rules/PatternTranslator.kt
-destiny/core/astrology/classical/rules/Patterns.kt
 destiny/core/astrology/geo/AimedSolarReturnService.kt
 destiny/core/astrology/geo/CcgTravelService.kt
 destiny/core/astrology/geo/Relocation.kt
@@ -126,7 +117,6 @@ destiny/core/calendar/LngLatDecorator.kt
 destiny/core/calendar/Location.kt
 destiny/core/calendar/LocationDecorator.kt
 destiny/core/calendar/LocationTools.kt
-destiny/core/calendar/SolarTermsEvent.kt
 destiny/core/calendar/TimeDesc.kt
 destiny/core/calendar/TimeTools.kt
 destiny/core/calendar/ZonedJulianDateTime.kt
@@ -141,7 +131,6 @@ destiny/core/calendar/decorators/MonthDecorator.kt
 destiny/core/calendar/decorators/YearDecorator.kt
 destiny/core/calendar/eightwords/AbstractDayHourImpl.kt
 destiny/core/calendar/eightwords/DayHourFeature.kt
-destiny/core/calendar/eightwords/Direction.kt
 destiny/core/calendar/eightwords/EightWordsContextFeature.kt
 destiny/core/calendar/eightwords/EightWordsContextModel.kt
 destiny/core/calendar/eightwords/EightWordsFeature.kt
@@ -170,9 +159,6 @@ destiny/core/calendar/eightwords/YearFeature.kt
 destiny/core/calendar/eightwords/YearMonthFeature.kt
 destiny/core/calendar/eightwords/YearMonthSolarTermsStarPositionImpl.kt
 destiny/core/calendar/eightwords/YearMonthSunSignImpl.kt
-destiny/core/chinese/DailyHexagramAverage5Impl.kt
-destiny/core/chinese/DailyHexagramCongenitalImpl.kt
-destiny/core/chinese/FortuneOutput.kt
 destiny/core/chinese/IMonthMaster.kt
 destiny/core/chinese/ISeasonalSymbol.kt
 destiny/core/chinese/IYearSplitter.kt
@@ -196,7 +182,6 @@ destiny/core/chinese/eightwords/PersonContextFeature.kt
 destiny/core/chinese/eightwords/PersonContextModel.kt
 destiny/core/chinese/eightwords/PersonPresentFeature.kt
 destiny/core/chinese/eightwords/hazards/ChildHazard.kt
-destiny/core/chinese/eightwords/hazards/ChildHazardDescriptor.kt
 destiny/core/chinese/eightwords/hazards/HazardService.kt
 destiny/core/chinese/eightwords/hazards/IHazardService.kt
 destiny/core/chinese/holo/HoloFeature.kt
@@ -211,7 +196,6 @@ destiny/core/chinese/lunarStation/HiddenVenusFoeFeature.kt
 destiny/core/chinese/lunarStation/IHiddenVenusFoe.kt
 destiny/core/chinese/lunarStation/ILunarStationDaily.kt
 destiny/core/chinese/lunarStation/ILunarStationHourly.kt
-destiny/core/chinese/lunarStation/ILunarStationMonthly.kt
 destiny/core/chinese/lunarStation/ILunarStationYearly.kt
 destiny/core/chinese/lunarStation/LunarStationDailyFeature.kt
 destiny/core/chinese/lunarStation/LunarStationFeature.kt
@@ -221,8 +205,6 @@ destiny/core/chinese/lunarStation/LunarStationMonthlyFeature.kt
 destiny/core/chinese/lunarStation/LunarStationYearlyFeature.kt
 destiny/core/chinese/onePalm/PalmFeature.kt
 destiny/core/chinese/onePalm/PalmModels.kt
-destiny/core/chinese/ziwei/ClassicalPatterns.kt
-destiny/core/chinese/ziwei/HouseSeqAbstractImpl.kt
 destiny/core/chinese/ziwei/IMainBodyHouse.kt
 destiny/core/chinese/ziwei/IPlate.kt
 destiny/core/chinese/ziwei/IStrength.kt
@@ -240,7 +222,6 @@ destiny/core/chinese/ziwei/StarMain.kt
 destiny/core/chinese/ziwei/StarMinor.kt
 destiny/core/chinese/ziwei/StarUnlucky.kt
 destiny/core/chinese/ziwei/StarYearFront.kt
-destiny/core/chinese/ziwei/ZPattern.kt
 destiny/core/chinese/ziwei/ZStar.kt
 destiny/core/chinese/ziwei/Ziwei.kt
 destiny/core/chinese/ziwei/ZiweiConfig.kt
@@ -267,13 +248,6 @@ destiny/core/iching/divine/DivineTraditionalFeature.kt
 destiny/core/iching/divine/IPairHexQuestion.kt
 destiny/core/misc/NumerologyTools.kt
 destiny/core/oracles/IClauseSerializer.kt
-destiny/core/oracles/chuge/ChugeLine.kt
-destiny/core/oracles/dizang/Dizang.kt
-destiny/core/oracles/guanyin/Guanyin.kt
-destiny/core/oracles/phrom/Phrom.kt
-destiny/core/oracles/sixty/Sixty.kt
-destiny/core/oracles/storm/Storm.kt
-destiny/core/oracles/taigi/Taigi.kt
 destiny/core/tarot/ISpread.kt
 destiny/core/tarot/SpreadFiveCross.kt
 destiny/core/tarot/SpreadFourElements.kt
@@ -343,6 +317,5 @@ destiny/tools/serializers/Modules.kt
 destiny/tools/serializers/OffsetDateTimeSerializer.kt
 destiny/tools/serializers/UriSerializer.kt
 destiny/tools/serializers/YearMonthSerializer.kt
-destiny/tools/serializers/ZStarSerializer.kt
 destiny/tools/serializers/ZonedDateTimeSerializer.kt
 destiny/tools/serializers/astrology/AstroPatternSerializers.kt

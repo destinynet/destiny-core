@@ -7,6 +7,7 @@ import destiny.tools.JSerializable
 import destiny.tools.toLang
 import java.util.*
 import destiny.tools.defaultLocale
+import destiny.tools.Lang
 
 /**
  * 抽象class , 代表星盤上的一「點」，可能是實星（行星 [Planet], 小行星 [Asteroid], 恆星 [FixedStar]），
@@ -87,14 +88,17 @@ abstract class Point(
 }
 
 fun Point.asLocaleString() = object : ILocaleString {
-  override fun getTitle(locale: Locale): String {
-    return I18nBundles.string(resource, locale.toLang(), nameKey) ?: nameKey
+  override fun getTitle(lang: Lang): String {
+    return I18nBundles.string(resource, lang, nameKey) ?: nameKey
   }
 }
 
-fun Point.toString(locale: Locale): String {
-  return this.asLocaleString().getTitle(locale)
+fun Point.toString(lang: Lang): String {
+  return this.asLocaleString().getTitle(lang)
 }
+
+/** 橋接，說明見 [destiny.tools.ILocaleString] */
+fun Point.toString(locale: Locale): String = toString(locale.toLang())
 
 /** 取得縮寫 , 如果沒有傳入縮寫，則把 name 取前兩個 bytes  */
 fun Point.getAbbreviation(locale: Locale): String {

@@ -8,17 +8,21 @@ import destiny.tools.ILocaleString
 import java.util.*
 import destiny.tools.I18nBundles
 import destiny.tools.toLang
+import destiny.tools.Lang
 
 fun Dignity.asLocaleString() = object : ILocaleString {
   private val resource = "destiny.core.astrology.classical.Classical"
-  override fun getTitle(locale: Locale): String {
-    return I18nBundles.string(resource, locale.toLang(), this@asLocaleString.nameKey) ?: this@asLocaleString.nameKey
+  override fun getTitle(lang: Lang): String {
+    return I18nBundles.string(resource, lang, this@asLocaleString.nameKey) ?: this@asLocaleString.nameKey
   }
 }
 
-fun Dignity.toString(locale: Locale): String {
-  return this.asLocaleString().getTitle(locale)
+fun Dignity.toString(lang: Lang): String {
+  return this.asLocaleString().getTitle(lang)
 }
+
+/** 橋接，說明見 [destiny.tools.ILocaleString] */
+fun Dignity.toString(locale: Locale): String = toString(locale.toLang())
 
 /**
  * 行星落入星座的 , 廟 旺 陷 落

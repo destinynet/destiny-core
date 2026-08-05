@@ -9,7 +9,6 @@ import destiny.core.astrology.*
 import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.toString
 import destiny.core.toString
-import java.util.*
 
 /**
  * 利用 properties 檔案，將 [IPattern] 轉換成 [Descriptive]
@@ -26,18 +25,18 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
 
   abstract val resource: String
 
-  override fun getTitle(locale: Locale): String {
-    logger.trace("try to get nameKey = {} of locale = {} , resource = {}", nameKey, locale, resource)
-    return I18nBundles.string(resource, locale.toLang(), nameKey)
+  override fun getTitle(lang: Lang): String {
+    logger.trace("try to get nameKey = {} of lang = {} , resource = {}", nameKey, lang, resource)
+    return I18nBundles.string(resource, lang, nameKey)
       ?: pattern::class.simpleName!!.also { logger.info("cannot get from nameKey = {}", nameKey) }
   }
 
   /** 註解缺漏時退回 [getTitle]，與 `Enum<T>.getDescription` 的慣例一致（原本會拋例外） */
-  override fun getDescription(locale: Locale): String {
+  override fun getDescription(lang: Lang): String {
     logger.trace("commentKey = {} , parameters = {}", commentKey, parameters)
-    val pattern: String = I18nBundles.string(resource, locale.toLang(), "$nameKey.$commentKey")
-      ?: return getTitle(locale)
-    return formatPattern(pattern, getCommentParameters(locale, parameters).toList())
+    val pattern: String = I18nBundles.string(resource, lang, "$nameKey.$commentKey")
+      ?: return getTitle(lang)
+    return formatPattern(pattern, getCommentParameters(lang, parameters).toList())
   }
 
   /** 設定註解參數 , 檢查參數是否是 [ILocaleString] , 如果是的話 , 就轉為適當的 locale
@@ -45,19 +44,19 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
    *
    * score (0~1 的 double 值) 改用百分比呈現
    * */
-  private fun getCommentParameters(locale: Locale, commentParameters: List<Any>): Array<Any> {
+  private fun getCommentParameters(lang: Lang, commentParameters: List<Any>): Array<Any> {
 
     fun objectToString(it : Any) : String {
       return when(it) {
         is Score -> (it.value * 100).toInt().toString()
-        is ILocaleString -> it.getTitle(locale)
+        is ILocaleString -> it.getTitle(lang)
         is Double -> String.format( doubleFormat?:"%.1f", it)
-        is AstroPoint -> it.toString(locale)
-        is Element -> it.getTitle(locale)
-        is Quality -> it.getTitle(locale)
-        is Aspect -> it.getTitle(locale)
-        is Dignity -> it.toString(locale)
-        is ZodiacSign -> it.getTitle(locale)
+        is AstroPoint -> it.toString(lang)
+        is Element -> it.getTitle(lang)
+        is Quality -> it.getTitle(lang)
+        is Aspect -> it.getTitle(lang)
+        is Dignity -> it.toString(lang)
+        is ZodiacSign -> it.getTitle(lang)
         is Collection<*> -> it.joinToString(",") { item -> objectToString(item?:"")  }
         else -> it.toString()
       }

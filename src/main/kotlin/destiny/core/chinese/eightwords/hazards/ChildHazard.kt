@@ -8,6 +8,7 @@ import java.util.*
 import destiny.tools.I18nBundles
 import destiny.tools.toLang
 import destiny.tools.bundleName
+import destiny.tools.Lang
 
 
 enum class Book {
@@ -125,7 +126,10 @@ sealed class ChildHazard : EwPattern {
 }
 
 
-fun ChildHazard.getBookNote(locale: Locale, book: Book): String? {
+fun ChildHazard.getBookNote(lang: Lang, book: Book): String? {
   val key = "${this::class.simpleName}.${book.name}"
-  return I18nBundles.string(ChildHazard::class.bundleName(), locale.toLang(), key)
+  return I18nBundles.string(ChildHazard::class.bundleName(), lang, key)
 }
+
+/** 橋接，說明見 [destiny.tools.ILocaleString] */
+fun ChildHazard.getBookNote(locale: Locale, book: Book): String? = getBookNote(locale.toLang(), book)

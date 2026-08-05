@@ -4,7 +4,7 @@ import destiny.core.astrology.IAstroPattern
 import destiny.core.astrology.IPointAnglePattern
 import destiny.core.astrology.IPointHousePattern
 import destiny.core.astrology.IPointSignPattern
-import java.util.*
+import destiny.tools.Lang
 
 /**
  * 整合 [IPattern] , 以及 [Descriptive]
@@ -26,12 +26,12 @@ data class PatternParasDescription<T : IPattern>(
   /**
    * 沒有其他語系，就傳中文的 [IPattern.getName] 即可
    */
-  override fun getTitle(locale: Locale): String {
-    return pattern.getName(locale)
+  override fun getTitle(lang: Lang): String {
+    return pattern.getName(lang)
   }
 
-  override fun getDescription(locale: Locale): String {
-    return pattern.getNotes(locale) ?: ""
+  override fun getDescription(lang: Lang): String {
+    return pattern.getNotes(lang) ?: ""
   }
 }
 

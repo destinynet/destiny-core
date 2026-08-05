@@ -7,7 +7,7 @@ import destiny.core.astrology.Planet
 import destiny.core.astrology.Planet.*
 import destiny.tools.asDescriptive
 import destiny.tools.JSerializable
-import java.util.*
+import destiny.tools.Lang
 
 /** 二十八星宿 值月 */
 interface ILunarStationMonthly : Descriptive {
@@ -84,7 +84,7 @@ class LunarStationMonthlyAnimalExplained : ILunarStationMonthly,
   }
 
 
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return "《剋擇講義》"
   }
 

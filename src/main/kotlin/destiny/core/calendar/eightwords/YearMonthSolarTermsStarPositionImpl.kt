@@ -11,6 +11,7 @@ import destiny.core.chinese.IStemBranch
 import destiny.tools.getDescription
 import destiny.tools.getTitle
 import java.util.*
+import destiny.tools.Lang
 
 /**
  * (default)
@@ -29,12 +30,12 @@ class YearMonthSolarTermsStarPositionImpl(
   override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
 ) : IYearMonth, IYear by yearImpl {
 
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return MonthImpl.SolarTerms.getTitle(Locale.TAIWAN)
   }
 
-  override fun getDescription(locale: Locale): String {
-    return MonthImpl.SolarTerms.getDescription(locale)
+  override fun getDescription(lang: Lang): String {
+    return MonthImpl.SolarTerms.getDescription(lang)
   }
 
   val solarTermsImpl: ISolarTerms by lazy {

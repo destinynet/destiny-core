@@ -5,7 +5,7 @@
 package destiny.core.oracles.chuge
 
 import destiny.core.oracles.IClause
-import java.util.*
+import destiny.tools.Lang
 
 interface IChugeLine : IClause {
   /** 籤詩  */
@@ -23,7 +23,7 @@ data class ChugeLine(private val yinyang: Boolean,
                      /** 解籤  */
                      override val explanation: String) : IChugeLine {
 
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return "諸葛神數"
   }
                      }

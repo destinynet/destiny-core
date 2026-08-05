@@ -5,7 +5,7 @@ package destiny.core.oracles.phrom
 
 import destiny.core.oracles.IClause
 import destiny.core.oracles.Verdict
-import java.util.*
+import destiny.tools.Lang
 
 /** 四面佛三十籤 */
 data class Phrom(
@@ -22,7 +22,7 @@ data class Phrom(
 
   enum class Level { 上, 中, 下 }
 
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return "四面佛"
   }
 }

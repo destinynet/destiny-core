@@ -8,6 +8,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
 import java.util.Locale.*
+import destiny.tools.Lang
 
 /**
  *           (1) Kether - Crown
@@ -40,8 +41,8 @@ data class SpreadTreeOfLife(
   val malkuth: CardOrientation
 ) : ISpread {
 
-  override fun getTitle(locale: Locale): String {
-    return SpreadTreeOfLife.getTitle(locale)
+  override fun getTitle(lang: Lang): String {
+    return SpreadTreeOfLife.getTitle(lang)
   }
 
   override fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>> {
@@ -100,8 +101,8 @@ data class SpreadTreeOfLife(
   }
 
   companion object : ILocaleString {
-    override fun getTitle(locale: Locale): String {
-      return when (locale.language) {
+    override fun getTitle(lang: Lang): String {
+      return when (lang.language) {
         "en" -> "Tree of Life Spread"
         "ja" -> "生命の樹スプレッド"
         else -> "生命之樹排陣"

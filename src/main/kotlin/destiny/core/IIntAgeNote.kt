@@ -5,7 +5,7 @@ package destiny.core
 
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.getTitle
-import java.util.*
+import destiny.tools.Lang
 
 /**
  * 將 [IIntAge] 計算出來的結果 Pair[GMT , GMT] 附註年份
@@ -23,8 +23,8 @@ interface IIntAgeNote : Descriptive {
    */
   fun getAgeNote(startAndEnd: Pair<GmtJulDay, GmtJulDay>): String?
 
-  override fun getTitle(locale: Locale): String {
-    return intAgeNote.getTitle(locale)
+  override fun getTitle(lang: Lang): String {
+    return intAgeNote.getTitle(lang)
   }
 }
 

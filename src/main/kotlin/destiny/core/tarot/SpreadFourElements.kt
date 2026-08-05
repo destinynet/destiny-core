@@ -9,6 +9,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
 import java.util.Locale.*
+import destiny.tools.Lang
 
 
 @Serializable
@@ -20,8 +21,8 @@ data class SpreadFourElements(
   val earth: CardOrientation
 ) : ISpread {
 
-  override fun getTitle(locale: Locale): String {
-    return SpreadFourElements.getTitle(locale)
+  override fun getTitle(lang: Lang): String {
+    return SpreadFourElements.getTitle(lang)
   }
 
   fun getCardOrientation(element: Element): CardOrientation {
@@ -64,8 +65,8 @@ data class SpreadFourElements(
       return SpreadFourElements(map[Element.FIRE]!!, map[Element.WATER]!!, map[Element.AIR]!!, map[Element.EARTH]!!)
     }
 
-    override fun getTitle(locale: Locale): String {
-      return when (locale.language) {
+    override fun getTitle(lang: Lang): String {
+      return when (lang.language) {
         "en" -> "The Four Elements Spread"
         "ja" -> "四元素スプレッド"
         else -> "四要素"

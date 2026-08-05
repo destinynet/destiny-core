@@ -4,11 +4,11 @@
 package destiny.core.oracles.taigi
 
 import destiny.core.oracles.IClause
-import java.util.*
+import destiny.tools.Lang
 
 @JvmInline
 value class Taigi(val content : String) : IClause {
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return "太極神數"
   }
 }

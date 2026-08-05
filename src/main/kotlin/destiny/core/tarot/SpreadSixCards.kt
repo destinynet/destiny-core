@@ -8,14 +8,15 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
 import java.util.Locale.*
+import destiny.tools.Lang
 
 @Serializable
 @SerialName("6cards")
 data class SpreadSixCards(val lt: CardOrientation, val mt: CardOrientation, val rt: CardOrientation,
                           val lb: CardOrientation, val mb: CardOrientation, val rb: CardOrientation) : ISpread {
 
-  override fun getTitle(locale: Locale): String {
-    return SpreadSixCards.getTitle(locale)
+  override fun getTitle(lang: Lang): String {
+    return SpreadSixCards.getTitle(lang)
   }
 
   override fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>> {
@@ -54,8 +55,8 @@ data class SpreadSixCards(val lt: CardOrientation, val mt: CardOrientation, val 
   }
 
   companion object : ILocaleString {
-    override fun getTitle(locale: Locale): String {
-      return when (locale.language) {
+    override fun getTitle(lang: Lang): String {
+      return when (lang.language) {
         "en" -> "Six Card Spread"
         "ja" -> "六枚カード"
         else -> "六牌法"

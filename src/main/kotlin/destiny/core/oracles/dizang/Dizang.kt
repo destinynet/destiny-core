@@ -6,7 +6,7 @@ package destiny.core.oracles.dizang
 import destiny.core.chinese.StemBranch
 import destiny.core.oracles.IClause
 import kotlinx.serialization.Serializable
-import java.util.*
+import destiny.tools.Lang
 
 
 @Serializable
@@ -18,7 +18,7 @@ data class Dizang(/** 六十甲子 */
                   val shortDescs : List<String>,
                   val fullDescs : List<String>) : IClause {
 
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return "地藏靈籤"
   }
 

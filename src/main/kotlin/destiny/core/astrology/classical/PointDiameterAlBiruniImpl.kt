@@ -7,7 +7,7 @@ package destiny.core.astrology.classical
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.Planet.*
 import destiny.tools.JSerializable
-import java.util.*
+import destiny.tools.Lang
 
 
 /**
@@ -17,7 +17,7 @@ import java.util.*
  */
 class PointDiameterAlBiruniImpl : IPointDiameter, JSerializable {
 
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return "Al-Biruni"
   }
 

@@ -13,8 +13,8 @@ import destiny.core.toString
 import destiny.tools.serializers.IZodiacDegreeSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import java.util.*
 import destiny.tools.defaultLocale
+import destiny.tools.Lang
 
 /**
  * 行星的 25種狀態
@@ -156,11 +156,11 @@ sealed class Misc : IPlanetPattern {
                             val exactAspectPrior: AspectData, val exactAspectAfter: AspectData) : Misc(), IStarEventSpan {
     override val star: Star = planet
 
-    override fun getTitle(locale: Locale): String {
+    override fun getTitle(lang: Lang): String {
       return planet.toString(defaultLocale) + " 空亡"
     }
 
-    override fun getDescription(locale: Locale): String {
+    override fun getDescription(lang: Lang): String {
       return buildString {
         append(" 為期 ")
         if (duration.inWholeHours > 0) {

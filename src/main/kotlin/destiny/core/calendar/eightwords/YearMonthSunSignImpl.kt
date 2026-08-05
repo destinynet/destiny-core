@@ -11,6 +11,7 @@ import destiny.core.chinese.StemBranchUnconstrained
 import destiny.tools.getDescription
 import destiny.tools.getTitle
 import java.util.*
+import destiny.tools.Lang
 
 /**
  * 120柱月令
@@ -31,12 +32,12 @@ class YearMonthSunSignImpl(private val ymSolarTermsStarPositionImpl: YearMonthSo
     ymSolarTermsStarPositionImpl.solarTermsImpl
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return MonthImpl.SunSign.getTitle(Locale.TAIWAN)
   }
 
-  override fun getDescription(locale: Locale): String {
-    return MonthImpl.SunSign.getDescription(locale)
+  override fun getDescription(lang: Lang): String {
+    return MonthImpl.SunSign.getDescription(lang)
   }
 
   override fun getMonth(gmtJulDay: GmtJulDay, location: ILocation): IStemBranch {

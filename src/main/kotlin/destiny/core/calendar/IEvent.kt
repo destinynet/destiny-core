@@ -1,6 +1,8 @@
 package destiny.core.calendar
 
 import destiny.tools.JSerializable
+import destiny.tools.Lang
+import destiny.tools.toLang
 import java.util.*
 import kotlin.time.Duration
 
@@ -8,13 +10,19 @@ import kotlin.time.Duration
 interface IEvent : JSerializable , Comparable<IEvent>{
   val begin: GmtJulDay
 
-  fun getTitle(locale: Locale): String {
+  fun getTitle(lang: Lang): String {
     return javaClass.simpleName
   }
 
-  fun getDescription(locale: Locale) : String {
-    return  getTitle(locale)
+  fun getDescription(lang: Lang) : String {
+    return getTitle(lang)
   }
+
+  /** 橋接，說明見 [destiny.tools.ILocaleString]。**實作端不要覆寫。** */
+  fun getTitle(locale: Locale): String = getTitle(locale.toLang())
+
+  /** 橋接，說明見 [destiny.tools.ILocaleString]。**實作端不要覆寫。** */
+  fun getDescription(locale: Locale): String = getDescription(locale.toLang())
 
   override fun compareTo(other: IEvent): Int {
     return when {

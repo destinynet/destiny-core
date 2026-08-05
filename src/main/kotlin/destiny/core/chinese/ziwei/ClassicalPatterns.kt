@@ -19,7 +19,7 @@ import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
 import destiny.core.chinese.ziwei.T4Value.忌
 import destiny.tools.JSerializable
-import java.util.*
+import destiny.tools.Lang
 
 // =========================== 以下 , 吉格 ===========================
 /**
@@ -2625,7 +2625,7 @@ sealed class ClassicalPattern(
     return this::class.simpleName!!
   }
 
-  override fun getNotes(locale: Locale): String? {
+  override fun getNotes(lang: Lang): String? {
     return notes
   }
 

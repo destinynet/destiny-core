@@ -12,7 +12,6 @@ import destiny.core.calendar.locationOf
 import destiny.tools.JSerializable
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 import destiny.tools.defaultLocale
 
 interface IGmtJulDay : JSerializable {

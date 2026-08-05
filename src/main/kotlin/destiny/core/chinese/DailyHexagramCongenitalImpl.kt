@@ -13,7 +13,7 @@ import destiny.core.iching.IHexagram
 import destiny.core.iching.Symbol
 import destiny.tools.KotlinLogging
 import destiny.tools.JSerializable
-import java.util.*
+import destiny.tools.Lang
 
 /**
  * 伏羲先天六十四卦天圓地方圖
@@ -88,11 +88,11 @@ class DailyHexagramCongenitalImpl(val starTransitImpl: IStarTransit,
     }
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return "先天卦氣"
   }
 
-  override fun getDescription(locale: Locale): String {
+  override fun getDescription(lang: Lang): String {
     return "伏羲先天六十四卦天圓地方圖"
   }
 

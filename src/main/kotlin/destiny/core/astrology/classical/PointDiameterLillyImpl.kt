@@ -7,7 +7,7 @@ package destiny.core.astrology.classical
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.Planet
 import destiny.tools.JSerializable
-import java.util.*
+import destiny.tools.Lang
 
 /**
  * 古典占星術，William Lilly 的交角 <br></br>
@@ -16,7 +16,7 @@ import java.util.*
  */
 class PointDiameterLillyImpl : IPointDiameter, JSerializable {
 
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return "William Lilly"
   }
 

@@ -8,11 +8,12 @@ import destiny.tools.ILocaleString
 import java.util.*
 import destiny.tools.I18nBundles
 import destiny.tools.toLang
+import destiny.tools.Lang
 
 fun Apsis.asLocaleString() = object : ILocaleString {
   private val resource = "destiny.core.astrology.Star"
-  override fun getTitle(locale: Locale): String {
-    return I18nBundles.string(resource, locale.toLang(), this@asLocaleString.nameKey) ?: this@asLocaleString.nameKey
+  override fun getTitle(lang: Lang): String {
+    return I18nBundles.string(resource, lang, this@asLocaleString.nameKey) ?: this@asLocaleString.nameKey
   }
 }
 

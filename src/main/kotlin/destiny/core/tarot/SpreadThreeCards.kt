@@ -8,6 +8,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
 import java.util.Locale.*
+import destiny.tools.Lang
 
 /**
  * maybe Major Arcana
@@ -39,8 +40,8 @@ data class SpreadThreeCards(@SerialName("c1") val card1: CardOrientation,
     )
   }
 
-  override fun getTitle(locale: Locale): String {
-    return SpreadThreeCards.getTitle(locale)
+  override fun getTitle(lang: Lang): String {
+    return SpreadThreeCards.getTitle(lang)
   }
 
   companion object : ILocaleString {
@@ -49,8 +50,8 @@ data class SpreadThreeCards(@SerialName("c1") val card1: CardOrientation,
       return SpreadThreeCards(list[0], list[1], list[2])
     }
 
-    override fun getTitle(locale: Locale): String {
-      return when (locale.language) {
+    override fun getTitle(lang: Lang): String {
+      return when (lang.language) {
         "en" -> "Three Card Spread"
         "ja" -> "三枚カード"
         else -> "三牌法"

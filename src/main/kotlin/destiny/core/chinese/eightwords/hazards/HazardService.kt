@@ -9,6 +9,7 @@ import destiny.tools.JSerializable
 import destiny.tools.getTitle
 import jakarta.inject.Named
 import java.util.*
+import destiny.tools.toLang
 
 
 @Named
@@ -38,7 +39,7 @@ class HazardService : IHazardService, JSerializable {
         val descriptor = ChildHazardDescriptor(hazard)
         val title = descriptor.getTitle(locale)
         val bookNotes = list.map { (_, book) ->
-          book to hazard.getBookNote(locale, book)
+          book to hazard.getBookNote(locale.toLang(), book)
         }.filter { (_, note) -> note != null }
           .map { (book, note) -> book.getTitle(locale) to note!! }
           .toList()

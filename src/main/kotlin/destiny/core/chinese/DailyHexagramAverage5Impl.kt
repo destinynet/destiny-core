@@ -6,7 +6,7 @@ import destiny.core.calendar.SolarTerms
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
 import destiny.tools.JSerializable
-import java.util.*
+import destiny.tools.Lang
 
 /**
  * 《易緯》 孟喜易 , 六日七分
@@ -44,11 +44,11 @@ class DailyHexagramAverage5Impl(val solarTermsImpl: ISolarTerms) : IDailyHexagra
     }
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return "《易緯》"
   }
 
-  override fun getDescription(locale: Locale): String {
+  override fun getDescription(lang: Lang): String {
     return "《易緯》六日七分，孟喜易。坎離震兌並未值日。"
   }
 }

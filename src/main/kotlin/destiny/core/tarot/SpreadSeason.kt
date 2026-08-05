@@ -9,6 +9,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
 import java.util.Locale.*
+import destiny.tools.Lang
 
 
 @Serializable
@@ -18,8 +19,8 @@ data class SpreadSeason(
   val map: Map<Element, CardOrientation>
 ) : ISpread {
 
-  override fun getTitle(locale: Locale): String {
-    return SpreadSeason.getTitle(locale)
+  override fun getTitle(lang: Lang): String {
+    return SpreadSeason.getTitle(lang)
   }
 
   override fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>> {
@@ -67,8 +68,8 @@ data class SpreadSeason(
   }
 
   companion object : ILocaleString {
-    override fun getTitle(locale: Locale): String {
-      return when (locale.language) {
+    override fun getTitle(lang: Lang): String {
+      return when (lang.language) {
         "en" -> "Seasonal Tarot"
         "ja" -> "四季タロット"
         else -> "四季牌陣"

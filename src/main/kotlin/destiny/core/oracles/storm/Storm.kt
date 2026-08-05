@@ -6,7 +6,7 @@ package destiny.core.oracles.storm
 import destiny.core.chinese.Stem
 import destiny.core.oracles.IClause
 import destiny.core.oracles.Verdict
-import java.util.*
+import destiny.tools.Lang
 
 
 data class Storm(val index: Int,
@@ -32,7 +32,7 @@ data class Storm(val index: Int,
                  /** 斷曰 */
                  val verdicts: Set<Verdict>) : IClause {
 
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return "雷雨師籤"
   }
 

@@ -13,11 +13,11 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.tools.KotlinLogging
 import destiny.tools.JSerializable
-import java.util.*
 import kotlin.math.min
 import destiny.tools.I18nBundles
 import destiny.tools.toLang
 import destiny.tools.bundleName
+import destiny.tools.Lang
 
 
 sealed interface IVoidCourse : Descriptive {
@@ -80,9 +80,9 @@ sealed interface IVoidCourse : Descriptive {
       .associate { (planet, voc) -> planet to voc!! }
   }
 
-  override fun getTitle(locale: Locale): String {
-    return I18nBundles.string(IVoidCourse::class.bundleName(), locale.toLang(), javaClass.simpleName) ?: run {
-      logger.trace { "missing resource : $locale , 傳回 simple name : ${javaClass.simpleName}" }
+  override fun getTitle(lang: Lang): String {
+    return I18nBundles.string(IVoidCourse::class.bundleName(), lang, javaClass.simpleName) ?: run {
+      logger.trace { "missing resource : $lang , 傳回 simple name : ${javaClass.simpleName}" }
       javaClass.simpleName
     }
   }

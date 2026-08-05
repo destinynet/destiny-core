@@ -8,17 +8,21 @@ import destiny.tools.ILocaleString
 import java.util.*
 import destiny.tools.I18nBundles
 import destiny.tools.toLang
+import destiny.tools.Lang
 
 fun HouseSystem.asLocaleString() = object : ILocaleString {
   private val resource = "destiny.core.astrology.Astrology"
-  override fun getTitle(locale: Locale): String {
-    return I18nBundles.string(resource, locale.toLang(), this@asLocaleString.nameKey) ?: this@asLocaleString.nameKey
+  override fun getTitle(lang: Lang): String {
+    return I18nBundles.string(resource, lang, this@asLocaleString.nameKey) ?: this@asLocaleString.nameKey
   }
 }
 
-fun HouseSystem.toString(locale: Locale): String {
-  return this.asLocaleString().getTitle(locale)
+fun HouseSystem.toString(lang: Lang): String {
+  return this.asLocaleString().getTitle(lang)
 }
+
+/** 橋接，說明見 [destiny.tools.ILocaleString] */
+fun HouseSystem.toString(locale: Locale): String = toString(locale.toLang())
 
 /**
  * 分宮法 , Zodiac House Systems

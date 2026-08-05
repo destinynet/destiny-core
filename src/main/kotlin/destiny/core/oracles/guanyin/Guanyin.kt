@@ -5,7 +5,7 @@ package destiny.core.oracles.guanyin
 
 import destiny.core.oracles.IClause
 import destiny.core.oracles.Verdict
-import java.util.*
+import destiny.tools.Lang
 
 
 data class Guanyin(val index: Int,
@@ -24,7 +24,7 @@ data class Guanyin(val index: Int,
                    /** 斷語 */
                    val verdicts: Set<Verdict>) : IClause {
 
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return "觀音靈籤"
   }
 

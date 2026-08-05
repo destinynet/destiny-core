@@ -9,7 +9,7 @@ import destiny.core.chinese.StemBranch
 import destiny.core.iching.Hexagram
 import destiny.core.oracles.IClause
 import destiny.core.oracles.Verdict
-import java.util.*
+import destiny.tools.Lang
 
 
 /**
@@ -48,7 +48,7 @@ data class Sixty(
   val verdicts: Set<Verdict> = emptySet()
 
 ) : IClause {
-  override fun getTitle(locale: Locale): String {
+  override fun getTitle(lang: Lang): String {
     return "六十甲子籤詩"
   }
 
