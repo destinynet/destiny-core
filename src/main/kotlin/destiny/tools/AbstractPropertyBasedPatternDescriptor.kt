@@ -9,7 +9,6 @@ import destiny.core.astrology.*
 import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.toString
 import destiny.core.toString
-import java.text.MessageFormat
 import java.util.*
 
 /**
@@ -40,7 +39,7 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
   override fun getDescription(locale: Locale): String {
     logger.trace("commentKey = {} , parameters = {}", commentKey, parameters)
     val pattern: String = ResourceBundle.getBundle(resource, locale).getString("$nameKey.$commentKey")
-    return MessageFormat.format(pattern, *getCommentParameters(locale, parameters))
+    return formatPattern(pattern, getCommentParameters(locale, parameters).toList())
   }
 
   /** 設定註解參數 , 檢查參數是否是 [ILocaleString] , 如果是的話 , 就轉為適當的 locale

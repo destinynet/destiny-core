@@ -49,6 +49,48 @@ object I18nBundles {
 }
 
 /**
+ * `java.text.MessageFormat` 的平台中立替代品。
+ *
+ * **只支援兩條規則**，因為本 repo 只用到這兩條（2026-08-05 實測 258 個 .properties、
+ * 1,093 個佔位符，**100% 是單純 `{n}`**，零 `{0,number}` / `{0,choice}`；8 行用到 `''`）：
+ *
+ *  1. `{n}` → `args[n]`（索引不存在時原樣保留佔位符）
+ *  2. `''`  → `'`
+ *
+ * `FormatPatternTest` 掃過全部 bundle 與 `MessageFormat` 逐字比對，證明等價。
+ * 若日後有人在 .properties 寫進不支援的語法，該測試會失敗 —— 那是刻意的護欄。
+ */
+fun formatPattern(pattern: String, args: List<Any?>): String {
+  if ('{' !in pattern && '\'' !in pattern) return pattern
+
+  val sb = StringBuilder(pattern.length)
+  var i = 0
+  while (i < pattern.length) {
+    val c = pattern[i]
+    when {
+      c == '\'' && i + 1 < pattern.length && pattern[i + 1] == '\'' -> {
+        sb.append('\'')
+        i += 2
+      }
+
+      c == '{'                                                      -> {
+        val close = pattern.indexOf('}', i + 1)
+        val idx = if (close > i) pattern.substring(i + 1, close).toIntOrNull() else null
+        when {
+          idx == null           -> { sb.append(c); i++ }
+          idx in args.indices   -> { sb.append(args[idx].toString()); i = close + 1 }
+          // 參數不足：原樣保留，與 MessageFormat 行為一致
+          else                  -> { sb.append(pattern, i, close + 1); i = close + 1 }
+        }
+      }
+
+      else                                                          -> { sb.append(c); i++ }
+    }
+  }
+  return sb.toString()
+}
+
+/**
  * bundle 名稱的推導接縫。
  *
  * 目前是 `java.name`。未來進 commonMain 時，**這一行是唯一要面對

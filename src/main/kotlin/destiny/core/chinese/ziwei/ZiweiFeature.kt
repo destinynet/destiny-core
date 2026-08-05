@@ -22,7 +22,6 @@ import destiny.tools.*
 import destiny.tools.JSerializable
 import jakarta.inject.Inject
 import jakarta.inject.Named
-import java.text.MessageFormat
 import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
@@ -264,7 +263,7 @@ class ZiweiFeature(
   private fun List<Pair<String, Array<Any>>>.build(locale: Locale): List<String> {
     return this.map { (first: String, second: Array<Any>) ->
       val pattern = ResourceBundle.getBundle(ZiweiFeature::class.java.name, locale).getString(first)
-      MessageFormat.format(pattern, *second).also {
+      formatPattern(pattern, second.toList()).also {
         logger.trace("note : {}", it)
       }
     }
