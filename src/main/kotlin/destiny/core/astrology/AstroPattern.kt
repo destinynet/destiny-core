@@ -266,6 +266,13 @@ sealed class AstroPattern(
       }
     }
 
+    /**
+     * 與 [DoubleT] 同樣是複合組態，成員星藏在子組態裡。
+     * 不攤平的話 [points] 會是空集合，凡是以 `points` 為判準的篩選都會整個略過本型別。
+     */
+    override val points: Set<AstroPoint>
+      get() = grandTrines.flatMap { it.points }.toSet()
+
     override fun getNotes(lang: Lang): String {
       val (g1, g2) = grandTrines.toList().let { it[0] to it[1] }
       return StringBuilder().apply {
