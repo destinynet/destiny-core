@@ -58,6 +58,14 @@ data class EventModel(
   val transitToSecondaryAspects: List<SynastryAspect>,
   val firdaria: Firdaria?,
   val profectionMap: Map<Scale, Profection>,
+  /**
+   * 此刻的黃道釋放狀態，每個 Lot 一筆（Fortune 與 Spirit）。
+   *
+   * 需精確出生時刻 —— 兩個 Lot 都由 ASC 起算，[BirthDataGrain] 不足時為空。
+   * 空 list 而非 null，與鄰居 [profectionMap] 同慣例；讀者由同一份 JSON 裡的 [grain] 分辨
+   * 「沒算」與「算了沒有」。
+   */
+  val zodiacalReleasings: List<ZrSnapshot> = emptyList(),
   val surroundingEvents: List<@Contextual ITimeLineEvent>,
   val surroundingLunarReturns: List<ReturnCoverageDto>,
   @SerialName("transit")

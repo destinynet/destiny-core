@@ -22,10 +22,12 @@
  */
 package destiny.core.astrology.prediction
 
+import destiny.core.astrology.Arabic
 import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.classical.AbstractPtolemy
 import destiny.core.calendar.GmtJulDay
+import destiny.tools.serializers.astrology.ArabicSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlin.math.min
@@ -70,6 +72,16 @@ data class ZodiacalReleasing(
   val level: Int,
   val sign: ZodiacSign,
   val lord: Planet,
+  /**
+   * Angularity of [sign] counted whole-sign from the Lot this timeline released from
+   * (the Lot's own sign = 1st). The **same** reference sign is used at every level:
+   * an L3 period is judged from the Lot, not from its L2 parent — see [zrAngularity].
+   *
+   * Stored rather than derived because the consumer is a serialized report: a derived
+   * member would not appear in the JSON, leaving the reader to count whole-sign houses
+   * modulo 12 by hand. [angularityFrom] remains available for hand-built periods.
+   */
+  val angularity: ZrAngularity,
   @Contextual
   val fromTime: GmtJulDay,
   @Contextual
@@ -103,7 +115,7 @@ fun generateL1(lotSign: ZodiacSign, startTime: GmtJulDay, endTime: GmtJulDay): L
   while (currentTime < endTime) {
     val duration = zodiacalReleasingYears.getValue(sign) * EGYPTIAN_YEAR_DAYS
     val periodEnd = GmtJulDay(min(currentTime.value + duration, endTime.value))
-    periods.add(ZodiacalReleasing(1, sign, rulerOf(sign), currentTime, periodEnd))
+    periods.add(ZodiacalReleasing(1, sign, rulerOf(sign), zrAngularity(lotSign, sign), currentTime, periodEnd))
     currentTime = GmtJulDay(currentTime.value + duration)
     sign = sign.next(1)
   }
@@ -119,12 +131,19 @@ fun generateL1(lotSign: ZodiacSign, startTime: GmtJulDay, endTime: GmtJulDay): L
  * Loosing of the Bond triggers: jump to the 7th sign from [parentSign]
  * and continue until time runs out.
  *
- * @param parentSign the zodiac sign of the parent period
+ * @param lotSign the sign of the Lot the whole timeline released from — the reference for
+ *   [ZodiacalReleasing.angularity] at **every** level. Required, deliberately without a default:
+ *   defaulting it to [parentSign] would let any forgetful caller compute angularity from the
+ *   wrong reference, and a wrong PEAK/CADENT looks entirely plausible in the output.
+ * @param parentSign the zodiac sign of the parent period — where this level starts cycling,
+ *   and the anchor for the Loosing-of-the-Bond jump. Equals [lotSign] only at level 2 of the
+ *   Lot's own first L1 period.
  * @param parentFrom start time of the parent period
  * @param parentDuration total duration of the parent period in days
  * @param level the sub-period level (2, 3, 4, ...)
  */
 fun generateSubPeriods(
+  lotSign: ZodiacSign,
   parentSign: ZodiacSign,
   parentFrom: GmtJulDay,
   parentDuration: Double,
@@ -142,7 +161,7 @@ fun generateSubPeriods(
     val signDuration = zodiacalReleasingYears.getValue(sign) * unitDays
     val actualDuration = min(signDuration, remaining)
     val endTime = GmtJulDay(currentTime.value + actualDuration)
-    periods.add(ZodiacalReleasing(level, sign, rulerOf(sign), currentTime, endTime))
+    periods.add(ZodiacalReleasing(level, sign, rulerOf(sign), zrAngularity(lotSign, sign), currentTime, endTime))
     currentTime = endTime
     remaining -= actualDuration
     sign = sign.next(1)
@@ -155,7 +174,7 @@ fun generateSubPeriods(
       val signDuration = zodiacalReleasingYears.getValue(sign) * unitDays
       val actualDuration = min(signDuration, remaining)
       val endTime = GmtJulDay(currentTime.value + actualDuration)
-      periods.add(ZodiacalReleasing(level, sign, rulerOf(sign), currentTime, endTime, isLoosingOfBond = true))
+      periods.add(ZodiacalReleasing(level, sign, rulerOf(sign), zrAngularity(lotSign, sign), currentTime, endTime, isLoosingOfBond = true))
       currentTime = endTime
       remaining -= actualDuration
       sign = sign.next(1)
@@ -188,19 +207,19 @@ fun generateZodiacalReleasing(
   if (maxLevel >= 2) {
     for (l1 in l1Periods) {
       val l1Duration = l1.toTime.value - l1.fromTime.value
-      val l2Periods = generateSubPeriods(l1.sign, l1.fromTime, l1Duration, 2)
+      val l2Periods = generateSubPeriods(lotSign, l1.sign, l1.fromTime, l1Duration, 2)
       allPeriods.addAll(l2Periods)
 
       if (maxLevel >= 3) {
         for (l2 in l2Periods) {
           val l2Duration = l2.toTime.value - l2.fromTime.value
-          val l3Periods = generateSubPeriods(l2.sign, l2.fromTime, l2Duration, 3)
+          val l3Periods = generateSubPeriods(lotSign, l2.sign, l2.fromTime, l2Duration, 3)
           allPeriods.addAll(l3Periods)
 
           if (maxLevel >= 4) {
             for (l3 in l3Periods) {
               val l3Duration = l3.toTime.value - l3.fromTime.value
-              val l4Periods = generateSubPeriods(l3.sign, l3.fromTime, l3Duration, 4)
+              val l4Periods = generateSubPeriods(lotSign, l3.sign, l3.fromTime, l3Duration, 4)
               allPeriods.addAll(l4Periods)
             }
           }
@@ -236,6 +255,61 @@ fun zrAngularity(lotSign: ZodiacSign, periodSign: ZodiacSign): ZrAngularity =
     else        -> ZrAngularity.CADENT // 3, 6, 9, 12
   }
 
-/** Classify this period's angularity relative to the Lot's sign [lotSign] it released from. */
+/**
+ * Classify this period's angularity relative to the Lot's sign [lotSign] it released from.
+ *
+ * Generated periods already carry [ZodiacalReleasing.angularity]; this remains for periods
+ * built by hand, or to re-read one against a *different* Lot.
+ */
 fun ZodiacalReleasing.angularityFrom(lotSign: ZodiacSign): ZrAngularity =
   zrAngularity(lotSign, this.sign)
+
+/**
+ * One Lot's Zodiacal Releasing state at a **single instant** — the L1..Lmax periods enclosing it,
+ * one per level, outermost first.
+ *
+ * Grouped by Lot rather than flattened: a report normally carries both Fortune and Spirit, and a
+ * flat list of periods cannot say which Lot a given period belongs to. Grouping also avoids
+ * repeating [lot] / [lotSign] on every level.
+ */
+@Serializable
+data class ZrSnapshot(
+  @Serializable(with = ArabicSerializer::class)
+  val lot: Arabic,
+  /** Natal sign of [lot] — the reference for every period's [ZodiacalReleasing.angularity] */
+  val lotSign: ZodiacSign,
+  val periods: List<ZodiacalReleasing>
+)
+
+/**
+ * Build a [ZrSnapshot]: the L1..[maxLevel] periods enclosing [gmt], one per level, outermost first.
+ *
+ * [lotSign] is passed in rather than read off a chart on purpose. The Lots are not part of the
+ * default [destiny.core.astrology.HoroscopeConfig.points], so `chart.getZodiacSign(lot)` returns
+ * null for an ordinary chart — an overload taking the chart would quietly yield nothing at all.
+ * The caller resolves the Lot's position (which needs the Ascendant, hence a known birth time)
+ * and states it here.
+ *
+ * Two subtleties this does not share with [destiny.core.astrology.getRangeZodiacalReleasing]:
+ * containment is half-open `[fromTime, toTime)`, so a query landing exactly on a changeover still
+ * reports the period that is starting; and generation runs **past** [gmt], because
+ * [generateZodiacalReleasing] truncates its final period at `endTime` — stopping at [gmt] would
+ * report the enclosing L1 as ending today rather than years from now.
+ *
+ * @param natalGmt birth time — where every level's cycle starts
+ * @param maxLevel depth; L4 periods run ~5 hours and mean nothing at day precision
+ */
+fun zrSnapshotAt(
+  lot: Arabic,
+  lotSign: ZodiacSign,
+  natalGmt: GmtJulDay,
+  gmt: GmtJulDay,
+  maxLevel: Int = 3
+): ZrSnapshot {
+  // the longest possible L1 (Aquarius, 30 Egyptian years) — enough for the period holding gmt to complete
+  val margin = zodiacalReleasingYears.values.max() * EGYPTIAN_YEAR_DAYS
+  val periods = generateZodiacalReleasing(lotSign, natalGmt, gmt + margin, maxLevel)
+    .filter { it.fromTime <= gmt && gmt < it.toTime }
+    .sortedBy { it.level }
+  return ZrSnapshot(lot, lotSign, periods)
+}

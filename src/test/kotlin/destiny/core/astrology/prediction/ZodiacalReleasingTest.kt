@@ -96,7 +96,7 @@ class ZodiacalReleasingTest {
   fun `L2 periods within L1 Capricorn`() {
     // L1 apricorn: 27 years × 360 days = 9720 days
     val l1Duration = 27.0 * EGYPTIAN_YEAR_DAYS
-    val l2 = generateSubPeriods(CAPRICORN, birthTime, l1Duration, 2)
+    val l2 = generateSubPeriods(lotSign, CAPRICORN, birthTime, l1Duration, 2)
 
     // First 12 signs (normal pass) + LB signs
     // Total L2 first pass: 211 months × 30 days = 6330 days
@@ -202,7 +202,7 @@ class ZodiacalReleasingTest {
     // L1 Aquarius starts after L1 Capricorn
     val l1AquStart = GmtJulDay(birthTime.value + 27.0 * EGYPTIAN_YEAR_DAYS)
     val l1AquDuration = 30.0 * EGYPTIAN_YEAR_DAYS // 10800 days
-    val l2 = generateSubPeriods(AQUARIUS, l1AquStart, l1AquDuration, 2)
+    val l2 = generateSubPeriods(lotSign, AQUARIUS, l1AquStart, l1AquDuration, 2)
 
     // L2 Aqu: starts ~1996-08-12
     assertEquals(AQUARIUS, l2[0].sign)
@@ -228,7 +228,7 @@ class ZodiacalReleasingTest {
     val l2TauStart = GmtJulDay(l1AquStart.value + (30 + 12 + 15) * EGYPTIAN_MONTH_DAYS)
     val l2TauDuration = 8.0 * EGYPTIAN_MONTH_DAYS // 240 days
 
-    val l3 = generateSubPeriods(TAURUS, l2TauStart, l2TauDuration, 3)
+    val l3 = generateSubPeriods(lotSign, TAURUS, l2TauStart, l2TauDuration, 3)
 
     val l3Unit = levelUnitDays(3) // 2.5 days per year
 
@@ -274,7 +274,7 @@ class ZodiacalReleasingTest {
     val l3TauStart = GmtJulDay(l1AquStart.value + (30 + 12 + 15) * EGYPTIAN_MONTH_DAYS)
     val l3TauDuration = 8.0 * levelUnitDays(3) // 8 × 2.5 = 20 days
 
-    val l4 = generateSubPeriods(TAURUS, l3TauStart, l3TauDuration, 4)
+    val l4 = generateSubPeriods(lotSign, TAURUS, l3TauStart, l3TauDuration, 4)
 
     val l4Unit = levelUnitDays(4) // 5/24 days per year ≈ 0.2083 days
 
@@ -332,7 +332,7 @@ class ZodiacalReleasingTest {
     // L2 Pisces is the first sub-period of L1 Pisces, starts at same time
     // L2 Pisces duration = 12 × 30 = 360 days
     val l2PisDuration = 12.0 * EGYPTIAN_MONTH_DAYS // 360 days
-    val l3 = generateSubPeriods(PISCES, l1PisStart, l2PisDuration, 3)
+    val l3 = generateSubPeriods(lotSign, PISCES, l1PisStart, l2PisDuration, 3)
 
     // L3 Pis: 12 × 2.5 = 30 days, starts Mar 8, 2026 00:00 TW
     assertEquals(PISCES, l3[0].sign)
@@ -394,7 +394,7 @@ class ZodiacalReleasingTest {
     // L3 Pisces starts at same time as L2 Pisces (= L1 Pisces start)
     // L3 Pisces duration = 12 × 2.5 = 30 days
     val l3PisDuration = 12.0 * levelUnitDays(3) // 30 days
-    val l4 = generateSubPeriods(PISCES, l1PisStart, l3PisDuration, 4)
+    val l4 = generateSubPeriods(lotSign, PISCES, l1PisStart, l3PisDuration, 4)
 
     val l4Unit = levelUnitDays(4) // 5/24 days per year
 

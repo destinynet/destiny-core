@@ -588,8 +588,9 @@ internal class YearMonthScorerTest {
   @Nested
   inner class ZrPeriod {
 
+    /** 每個 case 的 lot 都是 ARIES（見下方各 [YearMonthScorer.zrPeriodHit] 呼叫），angularity 據此算 */
     private fun zr(sign: ZodiacSign, loosingOfBond: Boolean = false, level: Int = 1) =
-      ZodiacalReleasing(level, sign, Planet.SATURN, dummyGmt, yearLater, loosingOfBond)
+      ZodiacalReleasing(level, sign, Planet.SATURN, zrAngularity(ZodiacSign.ARIES, sign), dummyGmt, yearLater, loosingOfBond)
 
     @Test
     fun peakPeriod_fires() {

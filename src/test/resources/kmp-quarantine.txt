@@ -65,7 +65,6 @@ destiny/core/astrology/LunarApsis.kt
 destiny/core/astrology/LunarNode.kt
 destiny/core/astrology/LunarPoint.kt
 destiny/core/astrology/LunarStation.kt
-destiny/core/astrology/NatalOnlyDayEventModel.kt
 destiny/core/astrology/PatternContext.kt
 destiny/core/astrology/PersonHoroscopeFeature.kt
 destiny/core/astrology/Planet.kt
