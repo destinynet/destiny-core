@@ -5,11 +5,19 @@ import kotlinx.serialization.Serializable
 
 
 /**
- * 生命領域 —— [EventType] 的上層分組。
+ * 生命領域 —— [EventType] 的上層分組，**純粹為了表單好選**。
  *
- * 除了顯示分組（表單以此摺疊選項），它也是 `planetaryDomainMatrix`（行星 × 領域的觸發次數）
- * 的**統計分母**，而該矩陣的百分比會被引用為判讀證據。故增刪或重新切分本 enum，
- * 會讓歷次產出的百分比整批位移、跨輪不可比 —— 不是單純的分類整理。
+ * 四五十個選項攤平在下拉選單裡很傷眼，所以摺疊成幾組。它的職責到此為止。
+ *
+ * ## 不得進入任何餵給 LLM 的出口
+ *
+ * 事件類型該怎麼歸群，**依當事人的處境而定**：選舉中的人會把 `COMPETITION_WIN` 與
+ * `MAJOR_ACHIEVEMENT`、`PROMOTION_APPOINTMENT` 看成一件事；商人則會把 `COMPETITION_WIN`
+ * 與 `MAJOR_FINANCIAL_GAIN`、`CAREER_SETBACK` 放在一起。這兩種歸法在本 enum 裡分屬不同組，
+ * 而它們都是對的 —— 一個固定的切法只能服務其中一種。
+ *
+ * 因此把本 enum 交給判讀端，等於塞給它一個未經驗證的先驗，還讓它看起來像事實。
+ * 判讀端只該看見 [EventType]，歸群由它依當時的幾何與處境自行決定、自行命名。
  */
 enum class EventCategory {
   /** 感情與婚姻 */
