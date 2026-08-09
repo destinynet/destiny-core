@@ -69,6 +69,10 @@ abstract class EnumTest {
    * 只檢查**已存在**的語系檔 —— 不強制每個 enum 都要有 `_ja`（目前 100 個 bundle 家族中僅 15 個有）。
    * 規則是「翻了就要翻完」，而不是「每個都要翻」。
    *
+   * **與 `I18nBundlesCoverageTest` 的分工**：那支跑遍全 repo 驗語系檔與 base 的 key 集合一致，
+   * 但它不知道哪個 bundle 服務哪個 enum。此處補的是那三件它做不到的事 ——
+   * base 必須涵蓋每個 enum 常數、base 不得有 enum 已移除的殘留 key、至少要有一個語系檔。
+   *
    * @param resourceDir base bundle 所在目錄，相對於 `src/main/resources`，例如 `destiny/core`
    * @param suffixes    要檢查的 key 後綴；預設只有 `.title`
    */
