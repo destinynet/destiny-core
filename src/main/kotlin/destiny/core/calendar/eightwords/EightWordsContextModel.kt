@@ -24,9 +24,6 @@ interface IEightWordsContextModel : ITimeLoc {
 
   val gmtMinuteOffset: Int
 
-  /** 地點名稱  */
-  val place: String?
-
   /** 農曆  */
   val chineseDate: ChineseDate
 
@@ -65,8 +62,6 @@ data class EightWordsContextModel(
   override val eightWords: IEightWords,
   override val time: ChronoLocalDateTime<*>,
   override val location: ILocation,
-  /** 地點名稱  */
-  override val place: String?,
   /** 農曆  */
   override val chineseDate: ChineseDate,
   /** 與前後節氣 （外加中氣） 的相對位置 */

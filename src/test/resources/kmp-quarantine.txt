@@ -223,7 +223,6 @@ destiny/core/chinese/ziwei/StarUnlucky.kt
 destiny/core/chinese/ziwei/StarYearFront.kt
 destiny/core/chinese/ziwei/ZStar.kt
 destiny/core/chinese/ziwei/Ziwei.kt
-destiny/core/chinese/ziwei/ZiweiConfig.kt
 destiny/core/chinese/ziwei/ZiweiFeature.kt
 destiny/core/chinese/ziwei/ZiweiPresentFeature.kt
 destiny/core/electional/DayHourService.kt

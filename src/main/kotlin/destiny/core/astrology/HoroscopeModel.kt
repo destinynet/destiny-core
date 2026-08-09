@@ -54,9 +54,6 @@ data class HoroscopeModel(
   override val time: ChronoLocalDateTime<*>
     get() = TimeTools.getLmtFromGmt(gmtJulDay, location, JulDayResolver1582CutoverImpl())
 
-  /** 地名 */
-  override val place: String? = config.place
-
   /** 分宮法  */
   override val houseSystem: HouseSystem = config.houseSystem
 
@@ -88,5 +85,6 @@ interface IPersonHoroscopeModel : IHoroscopeModel, IBirthDataNamePlace {
 data class PersonHoroscopeModel(
   private val horoscopeModel: IHoroscopeModel,
   override val gender: Gender,
-  override val name: String?
+  override val name: String?,
+  override val place: String? = null
 ) : IPersonHoroscopeModel, IHoroscopeModel by horoscopeModel

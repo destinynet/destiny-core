@@ -31,7 +31,7 @@ interface IReturnContext : Conversable, IDiscrete {
   val starTypeOptions: StarTypeOptions
 
   /** 對外主要的 method , 取得 return 盤  */
-  fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation, nowPlace: String? = null): ReturnModel
+  fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel
 
   fun IHoroscopeModel.getReturnDto(
     grain: BirthDataGrain,
@@ -160,7 +160,7 @@ class ReturnContext(
   override val starTypeOptions: StarTypeOptions
 ) : IReturnContext, JSerializable {
 
-  override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation, nowPlace: String?): ReturnModel {
+  override fun getReturnHoroscope(natalModel: IHoroscopeModel, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): ReturnModel {
     return getConvergentPeriod(natalModel.gmtJulDay, nowGmtJulDay).let { (from, to) ->
 
       val config = HoroscopeConfig(
@@ -171,7 +171,6 @@ class ReturnContext(
         0.0,
         1013.25,
         VoidCourseImpl.Medieval,
-        nowPlace ?: natalModel.place,
       )
       val horoscope = horoscopeFeature.getModel(from, nowLoc, config)
       ReturnModel(horoscope, from, to)
@@ -246,10 +245,10 @@ class ReturnContext(
     includeClassical: Boolean
   ): IReturnDto {
     logger.debug { "[$planet] getReturnDto , nowGmtJulDay = $nowGmtJulDay (${nowGmtJulDay.toLmt(this.location, JulDayResolver1582CutoverImpl()).fixError()})" }
-    val returnModel: ReturnModel = getReturnHoroscope(this, nowGmtJulDay, nowLoc, nowPlace)
+    val returnModel: ReturnModel = getReturnHoroscope(this, nowGmtJulDay, nowLoc)
 
     val returnChart: IHoroscopeDto = with(dtoFactory) {
-      returnModel.horoscope.toHoroscopeDto(grain, rulerImpl, aspectEffective, aspectCalculator, config, includeClassical)
+      returnModel.horoscope.toHoroscopeDto(grain, rulerImpl, aspectEffective, aspectCalculator, config, includeClassical, nowPlace)
     }.let { it as HoroscopeDto }
 
       // 移除以下 fields，畢竟這在 return chart 參考度不高

@@ -92,7 +92,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
 
-    val ewModel: IEightWordsContextModel = eightWordsContextFeature.getModel(lmt, loc, config.eightwordsContextConfig.copy(place = place))
+    val ewModel: IEightWordsContextModel = eightWordsContextFeature.getModel(lmt, loc, config.eightwordsContextConfig)
     val gmtJulDay = lmt.toGmtJulDay(loc)
     // 1到120歲 , 每歲的開始、以及結束
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = intAgeImpl.getRangesMap(gender, gmtJulDay, loc, 1, 120)
@@ -104,7 +104,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
 
     val score = ewContextScoreImplMap[config.ewContextScore]!!.getScore(ewModel)
 
-    return PersonContextModel(ewModel, gender, name, larges, smalls, ageMap, childHazards, score)
+    return PersonContextModel(ewModel, gender, name, place, larges, smalls, ageMap, childHazards, score)
   }
 
   companion object {

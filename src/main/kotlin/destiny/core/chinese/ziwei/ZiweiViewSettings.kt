@@ -3,8 +3,12 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.IntAgeNote
 import destiny.core.calendar.eightwords.Direction
 import destiny.tools.JSerializable
+import destiny.tools.Lang
+import destiny.tools.serializers.LangSerializer
+import kotlinx.serialization.Serializable
 
 /** 宮干四化「自化」 顯示選項  */
 enum class SelfTransFour {
@@ -31,7 +35,8 @@ enum class OppoTransFour {
   OPPO_TRANS_FOUR_ARROW_TO
 }
 
-data class ViewSettings(
+@Serializable
+data class ZiweiViewSettings(
   /** 宮干四化「自化」 顯示選項  */
   val selfTransFour: SelfTransFour = SelfTransFour.SELF_TRANS_FOUR_TEXT,
 
@@ -61,7 +66,13 @@ data class ViewSettings(
   val showGeneralFront: Boolean = true,
 
   /** 顯示 歲前12星  */
-  val showYearFront: Boolean = true
+  val showYearFront: Boolean = true,
+
+  /** 歲運註記 */
+  val ageNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
+
+  /** 顯示語言 */
+  @Serializable(with = LangSerializer::class)
+  val locale: Lang = Lang.DEFAULT
 
 ) : JSerializable
-

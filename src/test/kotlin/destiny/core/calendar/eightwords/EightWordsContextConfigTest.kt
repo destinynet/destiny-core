@@ -35,8 +35,7 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
           TradChineseRisingSignConfig(HourImpl.LMT),
           RisingSignImpl.TradChinese
         ),
-        ZodiacSignConfig(Planet.SUN, StarTypeOptions.PRECISE),
-        "台北市"
+        ZodiacSignConfig(Planet.SUN, StarTypeOptions.PRECISE)
       )
     }
 
@@ -107,7 +106,6 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
       return with(ewConfig) {
         with(risingSignConfig) {
           ewContext {
-            place = "台北市"
             zodiacSign {
               star = Planet.SUN
               starTypeOptions = StarTypeOptions.PRECISE
@@ -169,8 +167,7 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
                "nodeType":"TRUE",
                "apsisType":"OSCU"
             }
-         },
-         "place":"台北市"
+         }
       }
     """.trimIndent())
     assertEquals(expected, actual)

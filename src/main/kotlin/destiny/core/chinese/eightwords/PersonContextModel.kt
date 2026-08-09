@@ -106,6 +106,9 @@ data class PersonContextModel(
   /** 名稱 */
   override val name: String?,
 
+  /** 地點名稱 */
+  override val place: String?,
+
   /** 總共要輸出的大運  */
   override val fortuneDataLarges: List<FortuneData>,
 

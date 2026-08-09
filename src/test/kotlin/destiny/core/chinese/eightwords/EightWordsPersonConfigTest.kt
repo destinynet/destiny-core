@@ -90,7 +90,6 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
             zodiacSign {
               star = Planet.SUN
             }
-            place = "台北市"
           }
         }
       }
@@ -137,7 +136,6 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
     assertFalse(raw.contains(""""hourImpl":\s*"TST"""".toRegex()))
 
     assertTrue(raw.contains(""""tradChineseRisingSignConfig""".toRegex()))
-    assertTrue(raw.contains(""""place":\s*"台北市"""".toRegex()))
 
     assertTrue(raw.contains(""""impl":\s*"SolarTermsSpan"""".toRegex()))
     assertTrue(raw.contains(""""span":\s*90.0""".toRegex()))

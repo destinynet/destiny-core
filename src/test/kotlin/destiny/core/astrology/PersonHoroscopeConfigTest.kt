@@ -26,7 +26,6 @@ internal class PersonHoroscopeConfigTest : AbstractConfigTest<PersonHoroscopeCon
       temperature = 23.0,
       pressure = 1000.0,
       vocImpl = VoidCourseImpl.Hellenistic,
-      place = "台北市",
       relocations = mapOf(
         Planet.MOON to 60.0,
         Asteroid.CERES to 120.0
@@ -45,7 +44,6 @@ internal class PersonHoroscopeConfigTest : AbstractConfigTest<PersonHoroscopeCon
         temperature = 23.0
         pressure = 1000.0
         vocImpl = VoidCourseImpl.Hellenistic
-        place = "台北市"
         relocations = mapOf(
           Planet.MOON to 60.0,
           Asteroid.CERES to 120.0
@@ -78,7 +76,6 @@ internal class PersonHoroscopeConfigTest : AbstractConfigTest<PersonHoroscopeCon
             "temperature":23.0,
             "pressure":1000.0,
             "vocImpl":"Hellenistic",
-            "place":"台北市",
             "relocations":{
                "Planet.MOON":60.0,
                "Asteroid.CERES":120.0

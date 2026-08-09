@@ -36,7 +36,8 @@ class DtoFactory(
     aspectAffective: IAspectEffective,
     aspectCalculator: IAspectCalculator,
     horoConfig: IHoroscopeConfig,
-    includeClassical: Boolean
+    includeClassical: Boolean,
+    place: String? = null
   ): IHoroscopeDto {
     val bySign: Map<ZodiacSign, List<AstroPoint>> =
       signPointsMap
@@ -199,7 +200,7 @@ class DtoFactory(
     aspectCalculator: IAspectCalculator,
     horoConfig: IHoroscopeConfig
   ): IPersonHoroscopeDto {
-    val horoscopeDto: IHoroscopeDto = this.toHoroscopeDto(grain, rulerImpl, aspectAffective, aspectCalculator, horoConfig, true)
+    val horoscopeDto: IHoroscopeDto = this.toHoroscopeDto(grain, rulerImpl, aspectAffective, aspectCalculator, horoConfig, true, this.place)
     val age = this.getAge(viewGmt)
 
     return Natal(gender, age, name, horoscopeDto)

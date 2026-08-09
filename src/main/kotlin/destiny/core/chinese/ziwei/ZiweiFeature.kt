@@ -619,7 +619,7 @@ class ZiweiFeature(
     }
 
 
-    val notes: List<String> = notesBuilders.build(config.locale).let {
+    val notes: List<String> = notesBuilders.build(defaultLocale).let {
       if (appendingNotes.isEmpty()) {
         it
       } else {
@@ -1034,7 +1034,7 @@ class ZiweiFeature(
     // 實歲時刻 , gmt Julian Day
     val rageMap = intRageImpl.getRangesMap(gender, lmt.toGmtJulDay(loc), loc, 0, 130)
 
-    val appendingNotes = notesBuilders.build(config.locale)
+    val appendingNotes = notesBuilders.build(defaultLocale)
 
     return getModernBirthPlate(
       name, lmt, loc, place,

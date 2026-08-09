@@ -24,7 +24,7 @@ class Ew3dDtoFactory(
 ) {
 
 
-  fun IEightWordsContextModel.toEw3dDto(): Ew3dDto {
+  fun IEightWordsContextModel.toEw3dDto(place: String? = null): Ew3dDto {
     val lmt = time as LocalDateTime
     val gmtJulDay = lmt.toGmtJulDay(location)
     val sunLng = starPosMap[Planet.SUN]?.lngDeg?.value ?: error("SUN position absent")

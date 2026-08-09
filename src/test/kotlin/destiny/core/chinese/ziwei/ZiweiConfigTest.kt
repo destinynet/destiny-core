@@ -5,7 +5,6 @@ package destiny.core.chinese.ziwei
 
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
-import destiny.core.IntAgeNote
 import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.DayConfig
 import destiny.core.calendar.eightwords.DayHourConfig
@@ -18,7 +17,6 @@ import destiny.core.chinese.ziwei.ZiweiConfigBuilder.Companion.ziweiConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
 
@@ -48,7 +46,6 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     FlowHour.Branch,
     BigRange.SkipMain,
     AgeType.REAL,
-    listOf(IntAgeNote.WestYear),
     EightWordsConfig(
       dayHourConfig = DayHourConfig(
         DayConfig(changeDayAfterZi = false, midnight = MidnightImpl.CLOCK0),
@@ -90,7 +87,6 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
           flowHour = FlowHour.Branch
           bigRange = BigRange.SkipMain
           sectionAgeType = AgeType.REAL
-          ageNotes = listOf(IntAgeNote.WestYear)
         }
       }
 
@@ -98,27 +94,26 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     }
 
   override val assertion: (String) -> Unit = { raw: String ->
-    assertTrue(raw.contains(""""mainBodyHouse":\s*"Astro"""".toRegex()))
-    assertTrue(raw.contains(""""purpleStarBranch":\s*"LeapAccumDays"""".toRegex()))
-    assertTrue(raw.contains(""""mainStarsAlgo":\s*"MONTH_SOLAR_TERMS"""".toRegex()))
-    assertTrue(raw.contains(""""monthStarsAlgo":\s*"MONTH_LEAP_SPLIT15"""".toRegex()))
-    assertTrue(raw.contains(""""yearType":\s*"YEAR_SOLAR"""".toRegex()))
-    assertTrue(raw.contains(""""houseSeq":\s*"Astro"""".toRegex()))
-    assertTrue(raw.contains(""""tianyi":\s*"Ocean"""".toRegex()))
-    assertTrue(raw.contains(""""fireBell":\s*"FIREBELL_COLLECT"""".toRegex()))
-    assertTrue(raw.contains(""""skyHorse":\s*"MONTH"""".toRegex()))
-    assertTrue(raw.contains(""""hurtAngel":\s*"HURT_ANGEL_YINYANG"""".toRegex()))
-    assertTrue(raw.contains(""""redBeauty":\s*"RED_BEAUTY_SAME"""".toRegex()))
-    assertTrue(raw.contains(""""transFour":\s*"Ziyun"""".toRegex()))
-    assertTrue(raw.contains(""""strength":\s*"Middle"""".toRegex()))
-    assertTrue(raw.contains(""""flowYear":\s*"Anchor"""".toRegex()))
-    assertTrue(raw.contains(""""flowMonth":\s*"Fixed"""".toRegex()))
-    assertTrue(raw.contains(""""flowDay":\s*"SkipFlowMonthMainHouse"""".toRegex()))
-    assertTrue(raw.contains(""""flowHour":\s*"Branch"""".toRegex()))
-    assertTrue(raw.contains(""""bigRange":\s*"SkipMain"""".toRegex()))
-    assertTrue(raw.contains(""""sectionAgeType":\s*"REAL"""".toRegex()))
-    assertTrue(raw.contains(""""ageNotes":\s*\[\s*"WestYear"\s*]""".toRegex()))
     val docCtx = JsonPath.parse(raw)
+    assertEquals("Astro", docCtx.read("$.mainBodyHouse", String::class.java))
+    assertEquals("LeapAccumDays", docCtx.read("$.purpleStarBranch", String::class.java))
+    assertEquals("MONTH_SOLAR_TERMS", docCtx.read("$.mainStarsAlgo", String::class.java))
+    assertEquals("MONTH_LEAP_SPLIT15", docCtx.read("$.monthStarsAlgo", String::class.java))
+    assertEquals("YEAR_SOLAR", docCtx.read("$.yearType", String::class.java))
+    assertEquals("Astro", docCtx.read("$.houseSeq", String::class.java))
+    assertEquals("Ocean", docCtx.read("$.tianyi", String::class.java))
+    assertEquals("FIREBELL_COLLECT", docCtx.read("$.fireBell", String::class.java))
+    assertEquals("MONTH", docCtx.read("$.skyHorse", String::class.java))
+    assertEquals("HURT_ANGEL_YINYANG", docCtx.read("$.hurtAngel", String::class.java))
+    assertEquals("RED_BEAUTY_SAME", docCtx.read("$.redBeauty", String::class.java))
+    assertEquals("Ziyun", docCtx.read("$.transFour", String::class.java))
+    assertEquals("Middle", docCtx.read("$.strength", String::class.java))
+    assertEquals("Anchor", docCtx.read("$.flowYear", String::class.java))
+    assertEquals("Fixed", docCtx.read("$.flowMonth", String::class.java))
+    assertEquals("SkipFlowMonthMainHouse", docCtx.read("$.flowDay", String::class.java))
+    assertEquals("Branch", docCtx.read("$.flowHour", String::class.java))
+    assertEquals("SkipMain", docCtx.read("$.bigRange", String::class.java))
+    assertEquals("REAL", docCtx.read("$.sectionAgeType", String::class.java))
     assertFalse(docCtx.read("$.ewConfig.dayHourConfig.dayConfig.changeDayAfterZi", Boolean::class.java))
     assertEquals("CLOCK0", docCtx.read("$.ewConfig.dayHourConfig.dayConfig.midnight", String::class.java))
   }

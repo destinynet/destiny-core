@@ -16,9 +16,6 @@ import kotlin.math.abs
  */
 interface IHoroscopeModel : ITimeLoc {
 
-  /** 地名 */
-  val place: String?
-
   /** 分宮法  */
   val houseSystem: HouseSystem
 

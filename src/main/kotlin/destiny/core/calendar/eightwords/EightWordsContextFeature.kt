@@ -19,8 +19,7 @@ import javax.cache.Cache
 data class EightWordsContextConfig(
   val eightWordsConfig: EightWordsConfig = EightWordsConfig(),
   override val risingSignConfig: RisingSignConfig = RisingSignConfig(),
-  override var zodiacSignConfig: ZodiacSignConfig = ZodiacSignConfig(),
-  override var place : String? = null
+  override var zodiacSignConfig: ZodiacSignConfig = ZodiacSignConfig()
   //override var houseConfig : HouseConfig = HouseConfig(HouseSystem.MERIDIAN, Coordinate.ECLIPTIC),
 ): IEightWordsContextConfig , IEightWordsConfig by eightWordsConfig , IRisingSignConfig by risingSignConfig
 
@@ -32,10 +31,8 @@ class EightWordsContextConfigBuilder(val iEwConfig : IEightWordsConfig, val iRsC
     this.zodiacSignConfig = ZodiacSignBuilder.zodiacSign(block)
   }
 
-  var place : String? = null
-
   override fun build(): EightWordsContextConfig {
-    return EightWordsContextConfig(iEwConfig.ewConfig, iRsConfig.risingSignConfig, zodiacSignConfig, place)
+    return EightWordsContextConfig(iEwConfig.ewConfig, iRsConfig.risingSignConfig, zodiacSignConfig)
   }
 
   companion object {
@@ -132,7 +129,6 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
       eightWords,
       lmt,
       loc,
-      config.place,
       chineseDate,
       solarTermsTimePos,
       prevSolarSign,

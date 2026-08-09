@@ -81,10 +81,9 @@ interface IEightWordsConfig : IYearMonthConfig, IDayHourConfig {
 
 interface IEightWordsContextConfig : IEightWordsConfig , IRisingSignConfig {
   var zodiacSignConfig: ZodiacSignConfig
-  var place: String?
 
   val ewContextConfig: EightWordsContextConfig
-    get() = EightWordsContextConfig(ewConfig, risingSignConfig, zodiacSignConfig, place)
+    get() = EightWordsContextConfig(ewConfig, risingSignConfig, zodiacSignConfig)
 }
 
 

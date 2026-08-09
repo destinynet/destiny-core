@@ -1,7 +1,6 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.IPresentConfig
-import destiny.core.IntAgeNote
 import destiny.core.astrology.DayNightConfig
 import destiny.core.astrology.DayNightConfigBuilder
 import destiny.core.calendar.GmtJulDay
@@ -15,11 +14,9 @@ import destiny.core.chinese.YearType
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.JSerializable
-import destiny.tools.serializers.LocaleSerializer
 import destiny.tools.serializers.ZStarSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import java.util.*
 
 /** 命宮、身宮 演算法  */
 enum class MainBodyHouse {
@@ -190,9 +187,6 @@ interface IZiweiConfig : IEightWordsConfig , JSerializable {
   /** 大限歲數 , 實歲 or 虛歲 */
   var sectionAgeType: AgeType
 
-  /** 歲運註記 */
-  val ageNotes: List<IntAgeNote>
-
   /** 八字設定 設定 */
   //val ewConfig: EightWordsConfig = EightWordsConfig()
 
@@ -204,8 +198,6 @@ interface IZiweiConfig : IEightWordsConfig , JSerializable {
 
   /** 紫微強制地支 */
   var purpleFixedBranch: Branch?
-
-  var locale: Locale
 
   val ziweiConfig : ZiweiConfig
     get() = ZiweiConfig(
@@ -229,12 +221,10 @@ interface IZiweiConfig : IEightWordsConfig , JSerializable {
       flowHour,
       bigRange,
       sectionAgeType,
-      ageNotes,
       ewConfig,
       dayNightConfig,
       chineseDateImpl,
-      purpleFixedBranch,
-      locale
+      purpleFixedBranch
     )
 }
 
@@ -285,8 +275,6 @@ data class ZiweiConfig(
   override var bigRange: BigRange = BigRange.FromMain,
   /** 大限歲數 , 實歲 or 虛歲 */
   override var sectionAgeType: AgeType = AgeType.VIRTUAL,
-  /** 歲運註記 */
-  override val ageNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
   /** 八字設定 設定 */
   override val ewConfig: EightWordsConfig = EightWordsConfig(),
   /** 晝夜區分 */
@@ -294,9 +282,7 @@ data class ZiweiConfig(
   /** 曆法 */
   override var chineseDateImpl: ChineseDateImpl = ChineseDateImpl.Civil,
   /** 紫微強制地支 */
-  override var purpleFixedBranch : Branch? = null,
-  @Serializable(with = LocaleSerializer::class)
-  override var locale: Locale = Locale.TRADITIONAL_CHINESE
+  override var purpleFixedBranch : Branch? = null
 ) : IZiweiConfig , IEightWordsConfig by ewConfig
 
 @DestinyMarker
@@ -366,9 +352,6 @@ class ZiweiConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<ZiweiConfi
   /** 大限歲數 , 實歲 or 虛歲 */
   var sectionAgeType: AgeType = defaultConfig.sectionAgeType
 
-  /** 歲運註記 */
-  var ageNotes: List<IntAgeNote> = defaultConfig.ageNotes
-
   /** 晝夜區分 */
   var dayNightConfig: DayNightConfig = defaultConfig.dayNightConfig
 
@@ -382,8 +365,6 @@ class ZiweiConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<ZiweiConfi
   var chineseDateImpl: ChineseDateImpl = defaultConfig.chineseDateImpl
 
   var purpleFixedBranch: Branch? = defaultConfig.purpleFixedBranch
-
-  var locale: Locale = Locale.TRADITIONAL_CHINESE
 
   override fun build(): ZiweiConfig {
     return ZiweiConfig(
@@ -407,12 +388,10 @@ class ZiweiConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<ZiweiConfi
       flowHour,
       bigRange,
       sectionAgeType,
-      ageNotes,
       iEwConfig.ewConfig,
       dayNightConfig,
       chineseDateImpl,
-      purpleFixedBranch,
-      locale
+      purpleFixedBranch
     )
   }
 

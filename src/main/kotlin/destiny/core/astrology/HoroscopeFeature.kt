@@ -36,7 +36,6 @@ data class HoroscopeConfig(
   override var temperature: Double = 0.0,
   override var pressure: Double = 1013.25,
   override var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval,
-  override var place: String? = null,
   override val relocations: Map<AstroPoint, Double> = emptyMap(),
   override val starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN
 ) : IHoroscopeConfig
@@ -51,12 +50,11 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
   var temperature: Double = 0.0
   var pressure: Double = 1013.25
   var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval
-  var place: String? = null
   var relocations: Map<AstroPoint, Double> = emptyMap()
   var starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN
 
   override fun build(): HoroscopeConfig {
-    return HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, place, relocations, starTypeOptions)
+    return HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, relocations, starTypeOptions)
   }
 
   companion object {
