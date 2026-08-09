@@ -265,15 +265,17 @@ fun ZodiacalReleasing.angularityFrom(lotSign: ZodiacSign): ZrAngularity =
   zrAngularity(lotSign, this.sign)
 
 /**
- * One Lot's Zodiacal Releasing state at a **single instant** — the L1..Lmax periods enclosing it,
- * one per level, outermost first.
+ * One Lot's Zodiacal Releasing periods, carrying the Lot they released from.
  *
- * Grouped by Lot rather than flattened: a report normally carries both Fortune and Spirit, and a
- * flat list of periods cannot say which Lot a given period belongs to. Grouping also avoids
- * repeating [lot] / [lotSign] on every level.
+ * Grouped rather than flattened because a report normally carries **both** Fortune and Spirit,
+ * and a flat `List<ZodiacalReleasing>` cannot say which Lot a given period belongs to. Grouping
+ * also avoids repeating [lot] / [lotSign] on every period.
+ *
+ * Whether [periods] encloses a single instant or spans a range is the producer's business —
+ * see [zrByLotAt] and [zrByLotRange]. The consuming field documents which it holds.
  */
 @Serializable
-data class ZrSnapshot(
+data class ZrByLot(
   @Serializable(with = ArabicSerializer::class)
   val lot: Arabic,
   /** Natal sign of [lot] — the reference for every period's [ZodiacalReleasing.angularity] */
@@ -282,13 +284,7 @@ data class ZrSnapshot(
 )
 
 /**
- * Build a [ZrSnapshot]: the L1..[maxLevel] periods enclosing [gmt], one per level, outermost first.
- *
- * [lotSign] is passed in rather than read off a chart on purpose. The Lots are not part of the
- * default [destiny.core.astrology.HoroscopeConfig.points], so `chart.getZodiacSign(lot)` returns
- * null for an ordinary chart — an overload taking the chart would quietly yield nothing at all.
- * The caller resolves the Lot's position (which needs the Ascendant, hence a known birth time)
- * and states it here.
+ * The L1..[maxLevel] periods enclosing [gmt], one per level, outermost first.
  *
  * Two subtleties this does not share with [destiny.core.astrology.getRangeZodiacalReleasing]:
  * containment is half-open `[fromTime, toTime)`, so a query landing exactly on a changeover still
@@ -296,20 +292,49 @@ data class ZrSnapshot(
  * [generateZodiacalReleasing] truncates its final period at `endTime` — stopping at [gmt] would
  * report the enclosing L1 as ending today rather than years from now.
  *
+ * @param lotSign see [zrByLotRange] — passed in rather than read off a chart, for the same reason
  * @param natalGmt birth time — where every level's cycle starts
  * @param maxLevel depth; L4 periods run ~5 hours and mean nothing at day precision
  */
-fun zrSnapshotAt(
+fun zrByLotAt(
   lot: Arabic,
   lotSign: ZodiacSign,
   natalGmt: GmtJulDay,
   gmt: GmtJulDay,
   maxLevel: Int = 3
-): ZrSnapshot {
-  // the longest possible L1 (Aquarius, 30 Egyptian years) — enough for the period holding gmt to complete
-  val margin = zodiacalReleasingYears.values.max() * EGYPTIAN_YEAR_DAYS
-  val periods = generateZodiacalReleasing(lotSign, natalGmt, gmt + margin, maxLevel)
+): ZrByLot {
+  val periods = generateZodiacalReleasing(lotSign, natalGmt, gmt + L1_COMPLETION_MARGIN_DAYS, maxLevel)
     .filter { it.fromTime <= gmt && gmt < it.toTime }
     .sortedBy { it.level }
-  return ZrSnapshot(lot, lotSign, periods)
+  return ZrByLot(lot, lotSign, periods)
 }
+
+/**
+ * Every period overlapping `[fromTime, toTime)`, across L1..[maxLevel].
+ *
+ * [lotSign] is passed in rather than read off a chart on purpose. The Lots are not part of the
+ * default [destiny.core.astrology.HoroscopeConfig.points], so `chart.getZodiacSign(lot)` returns
+ * null for an ordinary chart — an overload taking the chart would quietly yield nothing at all.
+ * The caller resolves the Lot's position (which needs the Ascendant, hence a known birth time)
+ * and states it here.
+ */
+fun zrByLotRange(
+  lot: Arabic,
+  lotSign: ZodiacSign,
+  natalGmt: GmtJulDay,
+  fromTime: GmtJulDay,
+  toTime: GmtJulDay,
+  maxLevel: Int = 3
+): ZrByLot {
+  val periods = generateZodiacalReleasing(lotSign, natalGmt, toTime + L1_COMPLETION_MARGIN_DAYS, maxLevel)
+    .filter { it.fromTime < toTime && fromTime < it.toTime }
+    .sortedWith(compareBy({ it.fromTime }, { it.level }))
+  return ZrByLot(lot, lotSign, periods)
+}
+
+/**
+ * Generation margin past the query time — the longest possible L1 (Aquarius, 30 Egyptian years).
+ * [generateZodiacalReleasing] truncates its final period at `endTime`, so without this the period
+ * covering the query would be reported as ending there.
+ */
+private val L1_COMPLETION_MARGIN_DAYS: Double = zodiacalReleasingYears.values.max() * EGYPTIAN_YEAR_DAYS

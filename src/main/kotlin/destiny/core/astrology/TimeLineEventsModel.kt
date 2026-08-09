@@ -9,7 +9,7 @@ import destiny.core.astrology.prediction.Firdaria
 import destiny.core.astrology.prediction.IReturnDto
 import destiny.core.astrology.prediction.Profection
 import destiny.core.astrology.prediction.ReturnCoverageDto
-import destiny.core.astrology.prediction.ZodiacalReleasing
+import destiny.core.astrology.prediction.ZrByLot
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.Lat.Companion.toLat
@@ -103,7 +103,14 @@ interface ITimeLineEventsModel {
   val monthProfections : List<Profection>
   val firdarias: List<Firdaria>
   val solarReturns: List<ReturnCoverageDto>
-  val zodiacalReleasings: List<ZodiacalReleasing>
+
+  /**
+   * 區間內的黃道釋放，每個 Lot 一筆（Fortune 與 Spirit）。
+   *
+   * 按 Lot 分組而非攤平：兩個 Lot 的期間混在同一串 `List<ZodiacalReleasing>` 裡就分不出誰是誰，
+   * 而 angularity（PEAK 等）只在知道是從哪個 Lot 釋放時才可解讀。
+   */
+  val zodiacalReleasings: List<ZrByLot>
 }
 
 @Serializable
@@ -120,7 +127,7 @@ data class TimeLineEventsModel(
   override val monthProfections: List<Profection> = emptyList(),
   override val firdarias: List<Firdaria> = emptyList(),
   override val solarReturns: List<ReturnCoverageDto> = emptyList(),
-  override val zodiacalReleasings: List<ZodiacalReleasing> = emptyList(),
+  override val zodiacalReleasings: List<ZrByLot> = emptyList(),
 ) : ITimeLineEventsModel
 
 @Serializable
