@@ -28,8 +28,10 @@
 package destiny.core.chinese.eightwords
 
 import destiny.core.ChartDensity
+import destiny.core.Gender
 import destiny.core.Scale
 import destiny.core.astrology.ZodiacSign
+import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.Reaction
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
@@ -120,6 +122,14 @@ data class EwMetaDto(
   val dayEmpties: List<String>,
   /** 得分，[ChartDensity.COMPACT] 為 null。分法依排盤設定 */
   val score: Double?,
+  /**
+   * 此盤只有四柱、無出生時刻（古書命例）。
+   *
+   * 此時 [EwChartDto.fortunes] / [EwChartDto.solarTerms] / [mingStemBranch] / [score]
+   * 在**任何密度下都是空的**（不是被 density 過濾掉），renderer 據此省略那幾塊區域，
+   * 而不是畫出空的大運列與跑不動的節氣進度條。
+   */
+  val pillarsOnly: Boolean,
 )
 
 @Serializable
@@ -135,38 +145,88 @@ data class EwChartDto(
 
 private fun Reaction.toDto(stem: Stem) = EwReactionDto(stem.name, name, getAbbreviation(ZH))
 
+/**
+ * 只需要八個字就算得出來的部分 —— 四柱干支、十神、藏干、納音。
+ * 有時刻的盤與古書命例共用這段。
+ */
+private class PillarMapper(private val eightWords: IEightWords, private val hiddenStemsImpl: IHiddenStems) {
+
+  private val dayStem = eightWords.day.stem
+
+  fun reactionOf(stem: Stem): Reaction = ReactionUtil.getReaction(stem, dayStem)
+
+  /** 地支藏干對日主的十神 */
+  fun hiddenStemsOf(branch: Branch): List<EwReactionDto> = hiddenStemsImpl.getHiddenStems(branch)
+    .map { hiddenStem -> reactionOf(hiddenStem).toDto(hiddenStem) }
+
+  fun pillars(density: ChartDensity): List<EwPillarDto> {
+    val compact = density == ChartDensity.COMPACT
+    return listOf<Pair<Scale, IStemBranch>>(
+      Scale.YEAR to eightWords.year,
+      Scale.MONTH to eightWords.month,
+      Scale.DAY to eightWords.day,
+      Scale.HOUR to eightWords.hour,
+    ).map { (scale, sb) ->
+      // 日主不對自己談十神
+      val reaction = if (compact || scale == Scale.DAY) null else reactionOf(sb.stem)
+      EwPillarDto(
+        scale = scale.name,
+        stem = sb.stem.name,
+        branch = sb.branch.name,
+        stemReaction = reaction?.name,
+        stemReactionAbbr = reaction?.getAbbreviation(ZH),
+        hiddenStems = if (compact) emptyList() else hiddenStemsOf(sb.branch),
+        naYin = if (density == ChartDensity.ALL) sb.naYin?.name else null,
+      )
+    }
+  }
+
+  /** 日柱空亡的兩個地支 */
+  fun dayEmpties(density: ChartDensity): List<String> =
+    if (density == ChartDensity.ALL) eightWords.day.empties.map { it.name } else emptyList()
+}
+
+/**
+ * 古書命例（三命通會、滴天髓…）的排盤：**只有四柱與性別**。
+ *
+ * 沒有出生時刻 ⇒ 大運（起運歲數要算到節氣的距離）、節氣位置、命宮（要太陽位置）、
+ * 八分法得分（月支分數取決於節氣深淺）全都算不出來，[EwMetaDto.pillarsOnly] 因此為 true。
+ * 也因為沒有排盤這一步，換日／換年／真太陽時等設定在此完全不參與 ——
+ * 同一筆古書命例對所有使用者都是同一張盤。
+ *
+ * 密度階梯仍然有效：十神、藏干、納音、空亡都只需要八個字。
+ */
+fun IEightWords.toEwChartDto(
+  gender: Gender,
+  density: ChartDensity,
+  hiddenStemsImpl: IHiddenStems = HiddenStemsStandardImpl(),
+): EwChartDto {
+  val mapper = PillarMapper(this, hiddenStemsImpl)
+  return EwChartDto(
+    meta = EwMetaDto(
+      gender = gender.name,
+      mingStemBranch = null,
+      mingSign = null,
+      dayEmpties = mapper.dayEmpties(density),
+      score = null,
+      pillarsOnly = true,
+    ),
+    pillars = mapper.pillars(density),
+    fortunes = emptyList(),
+    solarTerms = null,
+  )
+}
+
 fun IPersonContextModel.toEwChartDto(
   density: ChartDensity,
   hiddenStemsImpl: IHiddenStems = HiddenStemsStandardImpl(),
 ): EwChartDto {
   val compact = density == ChartDensity.COMPACT
   val all = density == ChartDensity.ALL
-  val dayStem = eightWords.day.stem
+  val mapper = PillarMapper(eightWords, hiddenStemsImpl)
 
-  fun reactionOf(stem: Stem) = ReactionUtil.getReaction(stem, dayStem)
-
-  /** 地支藏干對日主的十神 */
-  fun hiddenStemsOf(branch: Branch): List<EwReactionDto> = hiddenStemsImpl.getHiddenStems(branch)
-    .map { hiddenStem -> reactionOf(hiddenStem).toDto(hiddenStem) }
-
-  val pillars = listOf<Pair<Scale, IStemBranch>>(
-    Scale.YEAR to eightWords.year,
-    Scale.MONTH to eightWords.month,
-    Scale.DAY to eightWords.day,
-    Scale.HOUR to eightWords.hour,
-  ).map { (scale, sb) ->
-    // 日主不對自己談十神
-    val reaction = if (compact || scale == Scale.DAY) null else reactionOf(sb.stem)
-    EwPillarDto(
-      scale = scale.name,
-      stem = sb.stem.name,
-      branch = sb.branch.name,
-      stemReaction = reaction?.name,
-      stemReactionAbbr = reaction?.getAbbreviation(ZH),
-      hiddenStems = if (compact) emptyList() else hiddenStemsOf(sb.branch),
-      naYin = if (all) sb.naYin?.name else null,
-    )
-  }
+  fun reactionOf(stem: Stem) = mapper.reactionOf(stem)
+  fun hiddenStemsOf(branch: Branch) = mapper.hiddenStemsOf(branch)
 
   val fortunes = if (compact) emptyList() else fortuneDataLarges.map { fortuneData ->
     val reaction = reactionOf(fortuneData.stemBranch.stem)
@@ -204,10 +264,11 @@ fun IPersonContextModel.toEwChartDto(
       gender = gender.name,
       mingStemBranch = if (compact) null else risingStemBranch.toString(),
       mingSign = if (compact) null else ZodiacSign.of(risingStemBranch.branch).getTitle<ZodiacSign>(ZH),
-      dayEmpties = if (all) eightWords.day.empties.map { it.name } else emptyList(),
+      dayEmpties = mapper.dayEmpties(density),
       score = if (compact) null else score,
+      pillarsOnly = false,
     ),
-    pillars = pillars,
+    pillars = mapper.pillars(density),
     fortunes = fortunes,
     solarTerms = solarTerms,
   )

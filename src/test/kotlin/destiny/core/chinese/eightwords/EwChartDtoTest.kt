@@ -17,6 +17,7 @@ import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -140,6 +141,50 @@ class EwChartDtoTest {
     assertEquals("丙申", meta.mingStemBranch)
     assertEquals("雙子", meta.mingSign)
     assertEquals(5.0, meta.score)
+  }
+
+  /**
+   * 古書命例（三命通會、滴天髓…）只有四柱與性別，沒有時刻，
+   * 因此排不出大運、節氣位置、命宮，八分法也算不出來（月支分數取決於節氣深淺）。
+   */
+  @Test
+  fun pillarsOnlyChart_carriesNoTimeDerivedData() {
+    val dto = EightWords("丙午", "丙申", "己未", "乙丑").toEwChartDto(Gender.M, ChartDensity.ALL)
+
+    assertTrue(dto.meta.pillarsOnly)
+    assertTrue(dto.fortunes.isEmpty())
+    assertNull(dto.solarTerms)
+    assertNull(dto.meta.mingStemBranch)
+    assertNull(dto.meta.mingSign)
+    assertNull(dto.meta.score)
+    assertEquals("M", dto.meta.gender)
+  }
+
+  /** 有時刻的盤要標成 false，renderer 才知道能不能給密度切換 */
+  @Test
+  fun timedChart_isNotFlaggedPillarsOnly() {
+    assertFalse(fakeModel().toEwChartDto(ChartDensity.FULL).meta.pillarsOnly)
+  }
+
+  /**
+   * 純四柱仍有三級可分 —— 十神、藏干、納音、空亡全都只需要八個字，
+   * 故密度切換依然有意義，不必因缺時刻而鎖死。
+   */
+  @Test
+  fun pillarsOnlyChart_stillHonoursDensityLadder() {
+    val ew = EightWords("丙午", "丙申", "己未", "乙丑")
+
+    val compact = ew.toEwChartDto(Gender.M, ChartDensity.COMPACT)
+    assertTrue(compact.pillars.all { it.stemReaction == null && it.hiddenStems.isEmpty() })
+
+    val full = ew.toEwChartDto(Gender.M, ChartDensity.FULL)
+    assertEquals("正印", full.pillars.single { it.scale == "YEAR" }.stemReaction)
+    assertEquals(3, full.pillars.single { it.scale == "MONTH" }.hiddenStems.size)
+    assertTrue(full.pillars.all { it.naYin == null })
+
+    val all = ew.toEwChartDto(Gender.M, ChartDensity.ALL)
+    assertEquals("天河水", all.pillars.single { it.scale == "YEAR" }.naYin)
+    assertEquals(listOf("子", "丑"), all.meta.dayEmpties)
   }
 
   @Test
