@@ -101,10 +101,10 @@ fun Point.toString(lang: Lang): String {
 fun Point.toString(locale: Locale): String = toString(locale.toLang())
 
 /** 取得縮寫 , 如果沒有傳入縮寫，則把 name 取前兩個 bytes  */
-fun Point.getAbbreviation(locale: Locale): String {
+fun Point.getAbbreviation(lang: Lang): String {
   /** 處理縮寫 */
-  fun getAbbr(locale: Locale, value: String): String {
-    return if (locale.language == "zh") {
+  fun getAbbr(lang: Lang, value: String): String {
+    return if (lang.language == "zh") {
       value.substring(0, 1)
 //      val byteArray: ByteArray
 //      val arr = ByteArray(2)
@@ -120,9 +120,12 @@ fun Point.getAbbreviation(locale: Locale): String {
   }
 
   return if (abbrKey != null) {
-    I18nBundles.string(resource, locale.toLang(), abbrKey) ?: abbrKey
+    I18nBundles.string(resource, lang, abbrKey) ?: abbrKey
   } else {
-    val name = I18nBundles.string(resource, locale.toLang(), nameKey) ?: nameKey
-    getAbbr(locale, name)
+    val name = I18nBundles.string(resource, lang, nameKey) ?: nameKey
+    getAbbr(lang, name)
   }
 }
+
+/** 橋接，說明見 [destiny.tools.ILocaleString] */
+fun Point.getAbbreviation(locale: Locale): String = getAbbreviation(locale.toLang())
