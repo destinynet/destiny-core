@@ -49,8 +49,10 @@ data class ZiweiStarDto(
   val abbr: String,
   /** MAIN | LUCKY | UNLUCKY | MINOR | DOCTOR | LONGEVITY | GENERAL_FRONT | YEAR_FRONT */
   val tier: String,
-  /** 廟旺弱陷，無資料為 null */
+  /** 廟旺弱陷的級數（1=廟 … 7=陷），無資料為 null。供樣式分級用 */
   val strength: Int?,
+  /** 廟旺弱陷的文字（廟/旺/地/利/平/閒/陷），無資料為 null */
+  val strengthLabel: String?,
   /** 本命四化（祿/權/科/忌）；大限、流年四化不列入 */
   val transFours: List<String>,
 )
@@ -156,11 +158,13 @@ fun IPlate.toZiweiPlateDto(density: ZiweiDensity): ZiweiPlateDto {
         fortuneFromAge = houseData.rangeFromAge,
         fortuneToAge = houseData.rangeToAge,
         stars = houseData.stars.filter { it.visibleIn(density) }.map { star ->
+          val strength = starStrengthMap[star]
           ZiweiStarDto(
             label = star.pointToString(ZH),
             abbr = star.getAbbreviation(ZH),
             tier = star.tierLabel,
-            strength = starStrengthMap[star],
+            strength = strength,
+            strengthLabel = strength?.let { IStrength.getString(it, ZH) },
             transFours = transFours[star]?.get(FlowType.MAIN)?.let { listOf(it.name) } ?: emptyList(),
           )
         }

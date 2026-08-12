@@ -5,6 +5,8 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch
+import destiny.tools.Lang
+import destiny.tools.toLang
 import java.util.*
 
 /**
@@ -31,8 +33,11 @@ interface IStrength : Descriptive {
      * 北派依序分成（即紫微斗數全書）→廟、旺、    得地、利益、平和、   不得地(失地)、陷    ，等七級。
      */
     /** 將 1轉成「廟」 , 2轉成「旺」...  */
-    fun getString(value: Int, locale: Locale): String {
-      if (locale === Locale.CHINA) {
+    fun getString(value: Int, locale: Locale): String = getString(value, locale.toLang())
+
+    /** 將 1轉成「廟」 , 2轉成「旺」...  */
+    fun getString(value: Int, lang: Lang): String {
+      if (lang.language == "zh" && lang.region == "CN") {
         return when (value) {
           1 -> "庙"
           2 -> "旺"

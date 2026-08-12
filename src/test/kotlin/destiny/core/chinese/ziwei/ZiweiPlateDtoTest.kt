@@ -159,6 +159,18 @@ class ZiweiPlateDtoTest {
     assertEquals(mapOf("紫微" to 2, "文昌" to null), stars)
   }
 
+  /**
+   * 廟旺弱陷給的是**文字**，不是不透明的整數 —— 1→廟、2→旺 的對應屬領域知識（[IStrength]），
+   * 不該外流到 renderer 各自實作一份。原始整數仍保留供樣式分級使用。
+   */
+  @Test
+  fun stars_carryStrengthLabel() {
+    val dto = decoratedPlate().toZiweiPlateDto(ZiweiDensity.FULL)
+
+    val stars = dto.houses.single().stars.associate { it.label to it.strengthLabel }
+    assertEquals(mapOf("紫微" to "旺", "文昌" to null), stars)
+  }
+
   @Test
   fun stars_carryAbbreviation() {
     val dto = decoratedPlate().toZiweiPlateDto(ZiweiDensity.FULL)
