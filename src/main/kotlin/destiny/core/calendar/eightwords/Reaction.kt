@@ -7,6 +7,7 @@ package destiny.core.calendar.eightwords
 
 import java.util.*
 import destiny.tools.I18nBundles
+import destiny.tools.Lang
 import destiny.tools.toLang
 import destiny.tools.bundleName
 
@@ -44,8 +45,11 @@ enum class Reaction  {
 
 
   /** 縮寫  */
-  fun getAbbreviation(locale: Locale): String {
-    return I18nBundles.string(Reaction::class.bundleName(), locale.toLang(), name + "_ABBR") ?: name
+  fun getAbbreviation(lang: Lang): String {
+    return I18nBundles.string(Reaction::class.bundleName(), lang, name + "_ABBR") ?: name
   }
+
+  /** 縮寫  */
+  fun getAbbreviation(locale: Locale): String = getAbbreviation(locale.toLang())
 
 }
