@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.ChartDensity
 import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.calendar.chinese.ChineseDate
@@ -31,7 +32,7 @@ class ZiweiPlateDtoTest {
       )
     )
 
-    val dto = plate.toZiweiPlateDto(ZiweiDensity.ALL)
+    val dto = plate.toZiweiPlateDto(ChartDensity.ALL)
 
     val tiers = dto.houses.single { it.branch == "子" }.stars.associate { it.label to it.tier }
     assertEquals(
@@ -63,28 +64,28 @@ class ZiweiPlateDtoTest {
 
   @Test
   fun compactDensity_keepsOnlyMainStars() {
-    val dto = fourTierPlate().toZiweiPlateDto(ZiweiDensity.COMPACT)
+    val dto = fourTierPlate().toZiweiPlateDto(ChartDensity.COMPACT)
 
     assertEquals(listOf("紫微"), dto.houses.single().stars.map { it.label })
   }
 
   @Test
   fun fullDensity_keepsMinorButDropsMiscellaneous() {
-    val dto = fourTierPlate().toZiweiPlateDto(ZiweiDensity.FULL)
+    val dto = fourTierPlate().toZiweiPlateDto(ChartDensity.FULL)
 
     assertEquals(setOf("紫微", "文昌", "天刑"), dto.houses.single().stars.map { it.label }.toSet())
   }
 
   @Test
   fun allDensity_keepsMiscellaneous() {
-    val dto = fourTierPlate().toZiweiPlateDto(ZiweiDensity.ALL)
+    val dto = fourTierPlate().toZiweiPlateDto(ChartDensity.ALL)
 
     assertEquals(setOf("紫微", "文昌", "天刑", "博士"), dto.houses.single().stars.map { it.label }.toSet())
   }
 
   @Test
   fun houses_carryStemBranchAndLocalizedHouseLabel() {
-    val dto = twoHousePlate().toZiweiPlateDto(ZiweiDensity.FULL)
+    val dto = twoHousePlate().toZiweiPlateDto(ChartDensity.FULL)
 
     assertEquals(
       mapOf("子" to ("甲子" to "命宮"), "丑" to ("乙丑" to "兄弟")),
@@ -94,21 +95,21 @@ class ZiweiPlateDtoTest {
 
   @Test
   fun mingHouse_flaggedByHouseName() {
-    val dto = twoHousePlate().toZiweiPlateDto(ZiweiDensity.FULL)
+    val dto = twoHousePlate().toZiweiPlateDto(ChartDensity.FULL)
 
     assertEquals(listOf("子"), dto.houses.filter { it.isMing }.map { it.branch })
   }
 
   @Test
   fun bodyHouse_flaggedByStemBranch() {
-    val dto = twoHousePlate().toZiweiPlateDto(ZiweiDensity.FULL)
+    val dto = twoHousePlate().toZiweiPlateDto(ChartDensity.FULL)
 
     assertEquals(listOf("丑"), dto.houses.filter { it.isBody }.map { it.branch })
   }
 
   @Test
   fun houseWithoutMainStar_flaggedEmpty() {
-    val dto = twoHousePlate().toZiweiPlateDto(ZiweiDensity.FULL)
+    val dto = twoHousePlate().toZiweiPlateDto(ChartDensity.FULL)
 
     assertEquals(listOf("丑"), dto.houses.filter { it.isEmpty }.map { it.branch })
   }
@@ -121,14 +122,14 @@ class ZiweiPlateDtoTest {
       houses = arrayOf(houseOf(House.兄弟, StemBranch.乙丑, StarLucky.文昌))
     )
 
-    val dto = plate.toZiweiPlateDto(ZiweiDensity.COMPACT)
+    val dto = plate.toZiweiPlateDto(ChartDensity.COMPACT)
 
     assertEquals(true, dto.houses.single().isEmpty)
   }
 
   @Test
   fun houses_carryFortuneAgeRange() {
-    val dto = twoHousePlate().toZiweiPlateDto(ZiweiDensity.FULL)
+    val dto = twoHousePlate().toZiweiPlateDto(ChartDensity.FULL)
 
     val ming = dto.houses.single { it.branch == "子" }
     assertEquals(4 to 13, ming.fortuneFromAge to ming.fortuneToAge)
@@ -136,7 +137,7 @@ class ZiweiPlateDtoTest {
 
   @Test
   fun stars_carryBirthTransFours() {
-    val dto = decoratedPlate().toZiweiPlateDto(ZiweiDensity.FULL)
+    val dto = decoratedPlate().toZiweiPlateDto(ChartDensity.FULL)
 
     val ziwei = dto.houses.single().stars.single { it.label == "紫微" }
     assertEquals(listOf("祿"), ziwei.transFours)
@@ -145,7 +146,7 @@ class ZiweiPlateDtoTest {
   /** 只取本命（[FlowType.MAIN]）四化 —— 大限/流年四化不屬於本命盤呈現 */
   @Test
   fun stars_ignoreNonNatalTransFours() {
-    val dto = decoratedPlate().toZiweiPlateDto(ZiweiDensity.FULL)
+    val dto = decoratedPlate().toZiweiPlateDto(ChartDensity.FULL)
 
     val wenchang = dto.houses.single().stars.single { it.label == "文昌" }
     assertEquals(emptyList(), wenchang.transFours)
@@ -153,7 +154,7 @@ class ZiweiPlateDtoTest {
 
   @Test
   fun stars_carryStrength() {
-    val dto = decoratedPlate().toZiweiPlateDto(ZiweiDensity.FULL)
+    val dto = decoratedPlate().toZiweiPlateDto(ChartDensity.FULL)
 
     val stars = dto.houses.single().stars.associate { it.label to it.strength }
     assertEquals(mapOf("紫微" to 2, "文昌" to null), stars)
@@ -165,7 +166,7 @@ class ZiweiPlateDtoTest {
    */
   @Test
   fun stars_carryStrengthLabel() {
-    val dto = decoratedPlate().toZiweiPlateDto(ZiweiDensity.FULL)
+    val dto = decoratedPlate().toZiweiPlateDto(ChartDensity.FULL)
 
     val stars = dto.houses.single().stars.associate { it.label to it.strengthLabel }
     assertEquals(mapOf("紫微" to "旺", "文昌" to null), stars)
@@ -173,14 +174,14 @@ class ZiweiPlateDtoTest {
 
   @Test
   fun stars_carryAbbreviation() {
-    val dto = decoratedPlate().toZiweiPlateDto(ZiweiDensity.FULL)
+    val dto = decoratedPlate().toZiweiPlateDto(ChartDensity.FULL)
 
     assertEquals("紫", dto.houses.single().stars.single { it.label == "紫微" }.abbr)
   }
 
   @Test
   fun meta_carriesChartLevelFacts() {
-    val dto = twoHousePlate().toZiweiPlateDto(ZiweiDensity.FULL)
+    val dto = twoHousePlate().toZiweiPlateDto(ChartDensity.FULL)
 
     assertEquals(
       ZiweiMetaDto(

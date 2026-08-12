@@ -21,6 +21,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.ChartDensity
 import destiny.core.getAbbreviation
 import destiny.tools.Lang
 import kotlinx.serialization.Serializable
@@ -28,18 +29,6 @@ import destiny.core.toString as pointToString
 
 /** 星名的查表語系 —— 紫微固定繁中，不對外開放為參數 */
 private val ZH = Lang.ZH_TW
-
-/** 呈現密度 —— 對應 [ZStar] 的 sealed 子型別分組，而非 [ZStar.Type]（後者是「由什麼決定的星」，對顯示無意義） */
-enum class ZiweiDensity {
-  /** 主星（14）：多張盤並排概覽 */
-  COMPACT,
-
-  /** ＋六吉六煞＋乙級雜曜：單張放大 */
-  FULL,
-
-  /** ＋博士12／長生12／將前12／歲前12：`FULL` 裡的「顯示雜曜」開關 */
-  ALL
-}
 
 @Serializable
 data class ZiweiStarDto(
@@ -126,13 +115,13 @@ private val ZStar.tierLabel: String
   }
 
 /** 該星是否在此密度下呈現 */
-private fun ZStar.visibleIn(density: ZiweiDensity): Boolean = when (density) {
-  ZiweiDensity.COMPACT -> this is StarMain
-  ZiweiDensity.FULL    -> this is StarMain || this is StarLucky || this is StarUnlucky || this is StarMinor
-  ZiweiDensity.ALL     -> true
+private fun ZStar.visibleIn(density: ChartDensity): Boolean = when (density) {
+  ChartDensity.COMPACT -> this is StarMain
+  ChartDensity.FULL    -> this is StarMain || this is StarLucky || this is StarUnlucky || this is StarMinor
+  ChartDensity.ALL     -> true
 }
 
-fun IPlate.toZiweiPlateDto(density: ZiweiDensity): ZiweiPlateDto {
+fun IPlate.toZiweiPlateDto(density: ChartDensity): ZiweiPlateDto {
   return ZiweiPlateDto(
     meta = ZiweiMetaDto(
       gender = gender.name,
