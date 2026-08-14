@@ -152,6 +152,31 @@ value class Lang private constructor(val tag: String) {
   }
 }
 
+/**
+ * 以語系鍵查表 —— 鍵可以是任何 [Lang.of] 認得的寫法（`zh-TW` / `zh_TW` / `ZH-tw`）。
+ *
+ * 以字串為鍵的多語系 map（JSONB 欄位、外部 API 回應、設定檔）在真實資料裡常常同時存在
+ * 多種寫法，而 `Map` 的相等性是字面相等 —— 少一層正規化的症狀是「查不到、退回預設語言」，
+ * 沒有例外也沒有錯誤訊息。
+ *
+ * 查找順序刻意如此：**完整標籤優先於語言碼，且不受鍵的寫法影響**。
+ * `{"zh": "通用", "zh_TW": "繁體"}` 查 `zh-TW` 回傳「繁體」——
+ * 若先比對語言碼，症狀會是簡繁混淆而不是查不到，更難發現。
+ *
+ * 已是正規形的鍵走 hash 直接命中，不會逐一解析；只有寫法歪掉的資料才付掃描成本。
+ *
+ * 找不到回傳 null：後備策略（退英文？退原文？）屬於呼叫端的政策，不在本函式內決定。
+ */
+fun <V> Map<String, V>.byLang(lang: Lang): V? =
+  this[lang.tag]
+    ?: firstByNormalizedKey { it.tag == lang.tag }
+    ?: this[lang.language]
+    ?: firstByNormalizedKey { it.language == lang.language }
+
+/** 逐一把鍵正規化後比對；無法解析的鍵略過 */
+private fun <V> Map<String, V>.firstByNormalizedKey(predicate: (Lang) -> Boolean): V? =
+  entries.firstOrNull { (key, _) -> Lang.of(key)?.let(predicate) == true }?.value
+
 private fun String.isScript(): Boolean = length == 4 && all { it.isLetter() }
 
 private fun String.isRegion(): Boolean =
