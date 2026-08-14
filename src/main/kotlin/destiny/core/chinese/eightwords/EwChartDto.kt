@@ -38,6 +38,7 @@ import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.Stem
 import destiny.tools.Lang
 import destiny.tools.getTitle
+import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import kotlinx.serialization.Serializable
 
 /** 查表語系 —— 八字固定繁中，不對外開放為參數 */
@@ -107,6 +108,7 @@ data class EwSolarTermsDto(
   /** 距前一個「節」幾天（取整） */
   val daysFromPrev: Int,
   /** 兩節之間的進度 0–1 */
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
   val ratio: Double,
 )
 
@@ -121,6 +123,7 @@ data class EwMetaDto(
   /** 日柱空亡的兩個地支，僅 [ChartDensity.ALL] */
   val dayEmpties: List<String>,
   /** 得分，[ChartDensity.COMPACT] 為 null。分法依排盤設定 */
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
   val score: Double?,
   /**
    * 此盤只有四柱、無出生時刻（古書命例）。

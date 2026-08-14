@@ -21,6 +21,7 @@ package destiny.core.astrology
 
 import destiny.core.ChartDensity
 import destiny.tools.Lang
+import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import kotlinx.serialization.Serializable
 import destiny.core.toString as pointToString
 
@@ -36,10 +37,12 @@ data class HoroscopePointDto(
   /** unicode 字形（如 ☉），無則 null —— renderer 退回顯示 [label] */
   val glyph: String?,
   /** **絕對黃經 0–360**，圓盤唯一需要的座標 */
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
   val zDeg: Double,
   /** 星座（[ZodiacSign] 名稱） */
   val sign: String,
   /** 星座內度數 0–30 */
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
   val signDegree: Double,
   /** 宮位 1–12，無法判定為 null */
   val house: Int?,
@@ -53,6 +56,7 @@ data class HoroscopeHouseDto(
   /** 1–12 */
   val id: Int,
   /** 宮頭的絕對黃經 */
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
   val cuspDeg: Double,
   /** 宮頭所在星座 */
   val cuspSign: String,
@@ -69,8 +73,10 @@ data class HoroscopeAspectDto(
   /** [Aspect] 名稱，如 `CONJUNCTION` */
   val aspect: String,
   /** 該相位的**標準**角度（0/60/90/120/180…），非實測角 */
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
   val angle: Double,
   /** 誤差（度） */
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
   val orb: Double,
   /** 主要相位（[Aspect.Importance.HIGH]）—— renderer 據此決定線寬 */
   val major: Boolean,
@@ -83,8 +89,10 @@ data class HoroscopeMetaDto(
   /** M | F */
   val gender: String,
   /** 上升點的絕對黃經 */
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
   val ascDeg: Double,
   /** 天頂的絕對黃經 */
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
   val mcDeg: Double,
 )
 
