@@ -31,6 +31,9 @@ fun HouseSystem.toString(locale: Locale): String = toString(locale.toLang())
 
 /**
  * 分宮法 , Zodiac House Systems
+ *
+ * @param nameKey **已不是名稱查表的 key**（2026-08-15 起）。名稱走 `HouseSystem.properties`
+ *   的 `<常數>.title`，也就是全站慣例的 [destiny.tools.getTitle]；本欄位僅為既有 API 保留。
  */
 enum class HouseSystem(val nameKey: String) {
 
