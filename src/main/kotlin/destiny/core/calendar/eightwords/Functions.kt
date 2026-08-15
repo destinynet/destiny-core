@@ -227,7 +227,7 @@ fun getDay(
   nextZiStart: ChronoLocalDateTime<*>,
   // 下個子正時刻
   nextMidnightLmt: ChronoLocalDateTime<*>,
-  changeDayAfterZi: Boolean,
+  changeDay: ChangeDay,
   julDayResolver: JulDayResolver
 ): StemBranch {
 
@@ -237,7 +237,7 @@ fun getDay(
 
   if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >= 12) {
     //子正，在 LMT 零時之前
-    index = getIndex(index, nextMidnightLmt, lmt, hourImpl, location, changeDayAfterZi, nextZiStart, julDayResolver)
+    index = getIndex(index, nextMidnightLmt, lmt, hourImpl, location, changeDay, nextZiStart, julDayResolver)
   } else {
     //子正，在 LMT 零時之後（含）
     if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
@@ -247,13 +247,13 @@ fun getDay(
         index--
       } else {
         // lmt 落於子初到子正之間
-        if (!changeDayAfterZi)
+        if (changeDay == ChangeDay.ZI_MIDDLE)
         //如果子正才換日
           index--
       }
     } else {
       // lmt 落於前一個子正之後，到當天24時為止 (範圍最大的一塊「餅」)
-      if (changeDayAfterZi
+      if (changeDay == ChangeDay.ZI_BEGIN
         && lmt.get(ChronoField.DAY_OF_MONTH) != nextZiStart.get(ChronoField.DAY_OF_MONTH)
         && nextZiStart.get(ChronoField.HOUR_OF_DAY) >= 12
       )
@@ -270,7 +270,7 @@ private fun getIndex(
   lmt: ChronoLocalDateTime<*>,
   hourImpl: IHour,
   loc: ILocation,
-  changeDayAfterZi: Boolean,
+  changeDay: ChangeDay,
   nextZi: ChronoLocalDateTime<*>,
   julDayResolver: JulDayResolver
 ): Int {
@@ -281,7 +281,7 @@ private fun getIndex(
     // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
     val midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt, loc, 子, julDayResolver)
 
-    if (changeDayAfterZi && nextZi.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH)) {
+    if (changeDay == ChangeDay.ZI_BEGIN && nextZi.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH)) {
       result++
     }
   } else {

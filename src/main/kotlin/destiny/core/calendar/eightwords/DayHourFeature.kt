@@ -23,14 +23,63 @@ import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 
+/**
+ * 換日時點 —— 一天的日柱從哪一刻起換成下一組干支。
+ *
+ * 命理實務上兩派並存，且改動的不只日柱：時柱的天干由日干推得，因此換日設定不同時，
+ * 子時前後出生者的**日柱與時柱都會不同**。
+ *
+ * 2026-08-15 由 `changeDayAfterZi: Boolean` 改成列舉。舊名稱的語意與字面相反
+ * （`true` 指的是**子初**換日，但 "after Zi" 讀起來像子時結束之後），
+ * 而且 boolean 拿不到 `.properties` 的名稱，逼得每個 UI 各自硬寫「子初換日／子正換日」。
+ */
+enum class ChangeDay {
+  /** 子初換日（23:00 前後，子時一開始就換日）—— 預設 */
+  ZI_BEGIN,
+
+  /** 子正換日（子時中點才換日；此時「早子時」仍屬前一日） */
+  ZI_MIDDLE
+}
+
 enum class MidnightImpl {
   CLOCK0, // 當地時間手錶零時
   NADIR   // 太陽劃過天底(子午線)
 }
 
+/**
+ * 與此時辰切割自洽的子正定義。
+ *
+ * 子正依定義是子時的中點，因此它與時辰切割必須用**同一套時刻系統**：
+ * 真太陽時的子時以真太陽過天底為中心，其子正就是 [MidnightImpl.NADIR]；
+ * 平太陽時的子時是固定的 23:00–01:00，其子正就是鐘面零時 [MidnightImpl.CLOCK0]。
+ *
+ * 另外兩種組合在**經度遠離時區中線**的地方（例如全境用 UTC+8 的喀什、
+ * 用 CET 的馬德里）會讓「子正」落到「子初」**之前**，[DayHourFeature] 的日柱分支
+ * 因而整天偏移一柱 —— 不拋例外，而且在靠近中線處（如台北）幾乎看不出來。
+ *
+ * 提供設定介面時應以此為準：**兩者由同一個「時刻系統」選項決定**，
+ * 而不是給使用者兩個獨立的選單。實測見 destiny-core-impl 的
+ * `MidnightHourImplCoherenceTest`。
+ */
+val HourImpl.coherentMidnight: MidnightImpl
+  get() = when (this) {
+    HourImpl.TST -> MidnightImpl.NADIR
+    HourImpl.LMT -> MidnightImpl.CLOCK0
+  }
+
+/**
+ * 時辰切割與子正是否用同一套時刻系統（見 [coherentMidnight]）。
+ *
+ * 不自洽不是非法輸入 —— [MidnightImpl] 另有 [destiny.core.chinese.holo.HoloFeature]、
+ * 禽星等「下一個子正是何時」的用途，在那裡兩個值各自獨立且合理。
+ * 耦合只存在於**兩者被一起消費**的日柱推算。
+ */
+val IDayHourConfig.isTimeSystemCoherent: Boolean
+  get() = midnight == hourImpl.coherentMidnight
+
 @Serializable
 data class DayConfig(
-  override var changeDayAfterZi: Boolean = true,
+  override var changeDay: ChangeDay = ChangeDay.ZI_BEGIN,
   override var midnight: MidnightImpl = MidnightImpl.NADIR
 ) : IDayConfig
 
@@ -38,12 +87,12 @@ data class DayConfig(
 @DestinyMarker
 class DayConfigBuilder : Builder<DayConfig> {
 
-  var changeDayAfterZi: Boolean = true
+  var changeDay: ChangeDay = ChangeDay.ZI_BEGIN
 
   var midnight: MidnightImpl = MidnightImpl.NADIR
 
   override fun build(): DayConfig {
-    return DayConfig(changeDayAfterZi, midnight)
+    return DayConfig(changeDay, midnight)
   }
 
   companion object {
@@ -97,6 +146,15 @@ class DayHourFeature(
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IDayHourConfig): Pair<StemBranch, StemBranch> {
 
+    if (!config.isTimeSystemCoherent) {
+      // 不擋下也不自動修正：擋下會讓既有的連結 500，自動修正則是靜默覆蓋使用者的輸入。
+      // 但要留下痕跡 —— 這個組合在經度遠離時區中線處會讓日柱整天偏一柱（見 coherentMidnight）
+      logger.warn(
+        "時刻系統不自洽：時辰切割={} 但子正={}（自洽的是 {}）。" +
+          "經度遠離時區中線處，日柱可能整天偏一柱。lmt={} loc={}",
+        config.hourImpl, config.midnight, config.hourImpl.coherentMidnight, lmt, loc)
+    }
+
     // 下個子初時刻
     val nextZiStart = hourBranchFeature.getLmtNextStartOf(lmt, loc, 子, config.hourBranchConfig)
 
@@ -131,7 +189,7 @@ class DayHourFeature(
 
     val tempDayStem = day.stem.let {
       // 如果「子正」才換日
-      if (!config.dayConfig.changeDayAfterZi) {
+      if (config.dayConfig.changeDay == ChangeDay.ZI_MIDDLE) {
         /**
          * <pre>
          * 而且 LMT 的八字日柱 不同於 下一個子初的八字日柱 發生情況有兩種：
@@ -173,7 +231,7 @@ class DayHourFeature(
     config: IDayHourConfig
   ): StemBranch {
 
-    val changeDayAfterZi = config.dayConfig.changeDayAfterZi
+    val changeDay = config.dayConfig.changeDay
 
     // 這是很特別的作法，將 lmt 當作 GMT 取 JulDay
     val lmtJulDay = (TimeTools.getGmtJulDay(lmt).value + 0.5).toInt()
@@ -191,13 +249,13 @@ class DayHourFeature(
           index--
         } else {
           // lmt 落於子初到子正之間
-          if (!changeDayAfterZi)
+          if (changeDay == ChangeDay.ZI_MIDDLE)
           //如果子正才換日
             index--
         }
       } else {
         // lmt 落於前一個子正之後，到當天24時為止 (範圍最大的一塊「餅」)
-        if (changeDayAfterZi
+        if (changeDay == ChangeDay.ZI_BEGIN
           && lmt.get(ChronoField.DAY_OF_MONTH) != nextZiStart.get(ChronoField.DAY_OF_MONTH)
           && nextZiStart.get(ChronoField.HOUR_OF_DAY) >= 12
         )
@@ -224,7 +282,7 @@ class DayHourFeature(
 
       val midnightNextZi = hourBranchFeature.getLmtNextStartOf(nextMidnightLmt, loc, 子, config.hourBranchConfig)
 
-      if (config.dayConfig.changeDayAfterZi && nextZi.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH)) {
+      if (config.dayConfig.changeDay == ChangeDay.ZI_BEGIN && nextZi.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH)) {
         result++
       }
     } else {

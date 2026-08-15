@@ -4,6 +4,7 @@
  */
 package destiny.core.calendar.chinese
 
+import destiny.core.calendar.eightwords.ChangeDay
 import destiny.core.Descriptive
 import destiny.core.calendar.CalType
 import destiny.core.calendar.ILocation
@@ -46,8 +47,8 @@ interface IChineseDate : Descriptive {
   fun getChineseDate(lmt: ChronoLocalDateTime<*>, location: ILocation, dayHourImpl: IDayHour): ChineseDate
 
   /** 計算子時狀況 */
-  fun calculateZi(lmt: ChronoLocalDateTime<*>, lmtDate: ChineseDate, nextDate: ChineseDate, prevDate: ChineseDate, nextMidnightLmt: ChronoLocalDateTime<*>, nextMidnightDay: ChineseDate, changeDayAfterZi: Boolean): ChineseDate {
-    return if (changeDayAfterZi) {
+  fun calculateZi(lmt: ChronoLocalDateTime<*>, lmtDate: ChineseDate, nextDate: ChineseDate, prevDate: ChineseDate, nextMidnightLmt: ChronoLocalDateTime<*>, nextMidnightDay: ChineseDate, changeDay: ChangeDay): ChineseDate {
+    return if (changeDay == ChangeDay.ZI_BEGIN) {
       // 如果是子初換日
       if (lmt.get(ChronoField.HOUR_OF_DAY) >= 12) {
         // 而且是 24點之前 : 那就是「下一日」

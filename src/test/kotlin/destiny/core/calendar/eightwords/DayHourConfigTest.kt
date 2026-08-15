@@ -18,7 +18,7 @@ internal class DayHourConfigTest : AbstractConfigTest<DayHourConfig>() {
   override val serializer: KSerializer<DayHourConfig> = DayHourConfig.serializer()
 
   override val configByConstructor: DayHourConfig = DayHourConfig(
-    DayConfig(changeDayAfterZi = false, midnight = MidnightImpl.CLOCK0),
+    DayConfig(changeDay = ChangeDay.ZI_MIDDLE, midnight = MidnightImpl.CLOCK0),
     HourBranchConfig(
       hourImpl = HourImpl.LMT,
       transConfig = TransConfig(
@@ -47,7 +47,7 @@ internal class DayHourConfigTest : AbstractConfigTest<DayHourConfig>() {
       }
 
       val dayConfig = dayConfig {
-        changeDayAfterZi = false
+        changeDay = ChangeDay.ZI_MIDDLE
         midnight = MidnightImpl.CLOCK0
       }
 
@@ -62,8 +62,8 @@ internal class DayHourConfigTest : AbstractConfigTest<DayHourConfig>() {
     }
 
   override val assertion = { raw: String ->
-    assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
-    assertFalse(raw.contains(""""changeDayAfterZi":\s*true""".toRegex()))
+    assertTrue(raw.contains(""""changeDay":\s*"ZI_MIDDLE"""".toRegex()))
+    assertFalse(raw.contains(""""changeDay":\s*"ZI_BEGIN"""".toRegex()))
 
     assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))
     assertTrue(raw.contains(""""hourImpl":\s*"LMT"""".toRegex()))

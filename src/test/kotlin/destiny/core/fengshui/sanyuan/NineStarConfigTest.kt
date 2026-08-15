@@ -26,7 +26,7 @@ internal class NineStarConfigTest : AbstractConfigTest<NineStarConfig>() {
         )
       ),
       dayHourConfig = DayHourConfig(
-        DayConfig(changeDayAfterZi = false, midnight = MidnightImpl.CLOCK0),
+        DayConfig(changeDay = ChangeDay.ZI_MIDDLE, midnight = MidnightImpl.CLOCK0),
         HourBranchConfig(hourImpl = HourImpl.LMT)
       )
     )
@@ -42,7 +42,7 @@ internal class NineStarConfigTest : AbstractConfigTest<NineStarConfig>() {
           southernHemisphereOpposition = true
           hemisphereBy = HemisphereBy.DECLINATION
           monthImpl = MonthImpl.SunSign
-          changeDayAfterZi = false
+          changeDay = ChangeDay.ZI_MIDDLE
           midnight = MidnightImpl.CLOCK0
           hourImpl = HourImpl.LMT
         }
@@ -56,7 +56,7 @@ internal class NineStarConfigTest : AbstractConfigTest<NineStarConfig>() {
     assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))
     assertTrue(raw.contains(""""monthImpl":\s*"SunSign"""".toRegex()))
 
-    assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
+    assertTrue(raw.contains(""""changeDay":\s*"ZI_MIDDLE"""".toRegex()))
     assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))
     assertTrue(raw.contains(""""hourImpl":\s*"LMT"""".toRegex()))
   }

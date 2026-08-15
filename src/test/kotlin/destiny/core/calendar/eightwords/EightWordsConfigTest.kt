@@ -33,7 +33,7 @@ internal class EightWordsConfigTest : AbstractConfigTest<EightWordsConfig>() {
       )
     ),
     dayHourConfig = DayHourConfig(
-      DayConfig(changeDayAfterZi = false, midnight = MidnightImpl.CLOCK0),
+      DayConfig(changeDay = ChangeDay.ZI_MIDDLE, midnight = MidnightImpl.CLOCK0),
       HourBranchConfig(
         hourImpl = HourImpl.LMT,
         transConfig = TransConfig(
@@ -80,7 +80,7 @@ internal class EightWordsConfigTest : AbstractConfigTest<EightWordsConfig>() {
       }
 
       val dayConfig = dayConfig {
-        changeDayAfterZi = false
+        changeDay = ChangeDay.ZI_MIDDLE
         midnight = MidnightImpl.CLOCK0
       }
 
@@ -106,7 +106,7 @@ internal class EightWordsConfigTest : AbstractConfigTest<EightWordsConfig>() {
     assertEquals(true , docCtx.read("$.yearMonthConfig.monthConfig.southernHemisphereOpposition", Boolean::class.java))
     assertEquals("DECLINATION", docCtx.read("$.yearMonthConfig.monthConfig.hemisphereBy", String::class.java))
     assertEquals("SunSign", docCtx.read("$.yearMonthConfig.monthConfig.monthImpl", String::class.java))
-    assertFalse(docCtx.read("$.dayHourConfig.dayConfig.changeDayAfterZi", Boolean::class.java))
+    assertEquals("ZI_MIDDLE", docCtx.read("$.dayHourConfig.dayConfig.changeDay", String::class.java))
     assertEquals("CLOCK0", docCtx.read("$.dayHourConfig.dayConfig.midnight", String::class.java))
     assertEquals("LMT", docCtx.read("$.dayHourConfig.hourBranchConfig.hourImpl", String::class.java))
 

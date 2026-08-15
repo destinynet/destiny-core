@@ -55,7 +55,7 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
       }
 
       val dayConfig = DayConfigBuilder.dayConfig {
-        changeDayAfterZi = false
+        changeDay = ChangeDay.ZI_MIDDLE
         midnight = MidnightImpl.CLOCK0
       }
 
@@ -126,8 +126,8 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
     assertTrue(raw.contains(""""monthImpl":\s*"SunSign"""".toRegex()))
     assertFalse(raw.contains(""""monthImpl":\s*"SolarTerms"""".toRegex()))
 
-    assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
-    assertFalse(raw.contains(""""changeDayAfterZi":\s*true""".toRegex()))
+    assertTrue(raw.contains(""""changeDay":\s*"ZI_MIDDLE"""".toRegex()))
+    assertFalse(raw.contains(""""changeDay":\s*"ZI_BEGIN"""".toRegex()))
 
     assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))
     assertFalse(raw.contains(""""midnight":\s*"NADIR"""".toRegex()))

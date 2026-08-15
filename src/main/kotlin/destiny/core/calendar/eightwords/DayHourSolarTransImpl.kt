@@ -5,7 +5,7 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.JulDayResolver
 
-class DayHourSolarTransImpl(override val changeDayAfterZi: Boolean,
+class DayHourSolarTransImpl(override val changeDay: ChangeDay,
                             override val midnightImpl: IMidnight,
                             hourImpl: HourSolarTransImpl,
                             julDayResolver: JulDayResolver) : AbstractDayHourImpl(hourImpl, julDayResolver)

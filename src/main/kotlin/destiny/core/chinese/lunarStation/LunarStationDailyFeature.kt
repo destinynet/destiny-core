@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.lunarStation
 
+import destiny.core.calendar.eightwords.ChangeDay
 import destiny.core.astrology.LunarStation
 import destiny.core.astrology.LunarStation.虛
 import destiny.core.calendar.GmtJulDay
@@ -54,7 +55,7 @@ class LunarStationDailyFeature(private val hourBranchFeature: IHourBranchFeature
       if (hour.branch == Branch.子) {
         if (lmt.get(ChronoField.HOUR_OF_DAY) > 12) {
           // 24 時之前
-          if (config.dayConfig.changeDayAfterZi) {
+          if (config.dayConfig.changeDay == ChangeDay.ZI_BEGIN) {
             // 子初換日
             it + 1
           } else {
@@ -68,7 +69,7 @@ class LunarStationDailyFeature(private val hourBranchFeature: IHourBranchFeature
           }
         } else {
           // 0時之後
-          if (config.dayConfig.changeDayAfterZi) {
+          if (config.dayConfig.changeDay == ChangeDay.ZI_BEGIN) {
             // 子初換日
             it
           } else {

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.lunarStation
 
+import destiny.core.calendar.eightwords.ChangeDay
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.EightWordsConfig
@@ -35,7 +36,7 @@ internal class LunarStationModernConfigTest : AbstractConfigTest<LunarStationMod
           yearType = YearType.YEAR_LUNAR
           yearEpoch = YearEpoch.EPOCH_1864
 
-          changeDayAfterZi = false
+          changeDay = ChangeDay.ZI_MIDDLE
           monthlyImpl = MonthlyImpl.AnimalExplained
           hourlyImpl = HourlyImpl.Fixed
         }

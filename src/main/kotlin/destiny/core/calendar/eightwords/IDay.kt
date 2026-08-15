@@ -13,8 +13,8 @@ import java.time.chrono.ChronoLocalDateTime
 /** 取得日干支的介面  */
 interface IDay {
 
-  /** 是否子初換日 */
-  val changeDayAfterZi: Boolean
+  /** 換日時點 */
+  val changeDay: ChangeDay
 
   /** 子正實作 */
   val midnightImpl: IMidnight

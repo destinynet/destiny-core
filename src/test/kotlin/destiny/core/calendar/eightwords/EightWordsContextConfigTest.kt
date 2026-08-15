@@ -26,7 +26,7 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
             MonthConfig(true, HemisphereBy.DECLINATION, MonthImpl.SunSign)
           ),
           DayHourConfig(
-            DayConfig(changeDayAfterZi = false , MidnightImpl.CLOCK0),
+            DayConfig(changeDay = ChangeDay.ZI_MIDDLE , MidnightImpl.CLOCK0),
             HourBranchConfig(HourImpl.LMT, TransConfig(true, false, 23.0, 1000.0))
           )
         ),
@@ -73,7 +73,7 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
       }
 
       val dayConfig = DayConfigBuilder.dayConfig {
-        changeDayAfterZi = false
+        changeDay = ChangeDay.ZI_MIDDLE
         midnight = MidnightImpl.CLOCK0
       }
 
@@ -133,7 +133,7 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
             },
             "dayHourConfig":{
                "dayConfig":{
-                  "changeDayAfterZi":false,
+                  "changeDay":"ZI_MIDDLE",
                   "midnight":"CLOCK0"
                },
                "hourBranchConfig":{

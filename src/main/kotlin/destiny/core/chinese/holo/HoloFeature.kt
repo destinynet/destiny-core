@@ -834,13 +834,13 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
     val stemBranches = (1..6).map { settingsImpl.getStemBranch(dayHex, it) }
 
 
-    val start: GmtJulDay = if (dayHourConfig.dayConfig.changeDayAfterZi) {
+    val start: GmtJulDay = if (dayHourConfig.dayConfig.changeDay == ChangeDay.ZI_BEGIN) {
       hourBranchFeature.getGmtPrevStartOf(viewGmt, loc, 子, julDayResolver, dayHourConfig.hourBranchConfig)
     } else {
       midnightFeature.getPrevMidnight(viewGmt, loc, dayHourConfig.dayConfig.midnight)
     }
 
-    val end: GmtJulDay = if (dayHourConfig.dayConfig.changeDayAfterZi) {
+    val end: GmtJulDay = if (dayHourConfig.dayConfig.changeDay == ChangeDay.ZI_BEGIN) {
       hourBranchFeature.getGmtNextStartOf(viewGmt, loc, 子, julDayResolver, dayHourConfig.hourBranchConfig)
     } else {
       midnightFeature.getNextMidnight(viewGmt, loc, dayHourConfig.dayConfig.midnight)

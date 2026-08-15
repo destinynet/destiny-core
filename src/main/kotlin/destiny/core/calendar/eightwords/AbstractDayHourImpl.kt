@@ -44,14 +44,14 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
       }
     }
 
-    return getDay(lmt, location, hourImpl, nextZiStart, nextMidnightLmt, changeDayAfterZi, julDayResolver)
+    return getDay(lmt, location, hourImpl, nextZiStart, nextMidnightLmt, changeDay, julDayResolver)
   } // LMT 版本
 
   /**
    * 取得 GMT 此時刻，在此地 的一日，從何時，到何時 (gmt)
    */
   override fun getDayRange(gmtJulDay: GmtJulDay, location: ILocation): Pair<GmtJulDay, GmtJulDay> {
-    return if (changeDayAfterZi) {
+    return if (changeDay == ChangeDay.ZI_BEGIN) {
       // 子初換日
       // 上個子初
       val prevZiStart = hourImpl.getGmtPrevStartOf(gmtJulDay , location , Branch.子, HourBranchConfig())

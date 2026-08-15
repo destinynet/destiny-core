@@ -1,5 +1,6 @@
 package destiny.core.chinese.lunarStation
 
+import destiny.core.calendar.eightwords.ChangeDay
 import destiny.core.astrology.LunarStation
 import destiny.core.astrology.LunarStation.*
 import destiny.core.calendar.ILocation
@@ -66,7 +67,7 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
       if (hourSb == Branch.子) {
         if (lmt.get(ChronoField.HOUR_OF_DAY) > 12) {
           // 24 時之前
-          if (dayHourImpl.changeDayAfterZi) {
+          if (dayHourImpl.changeDay == ChangeDay.ZI_BEGIN) {
             // 子初換日
             it + 1
           } else {
@@ -80,7 +81,7 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
           }
         } else {
           // 0時之後
-          if (dayHourImpl.changeDayAfterZi) {
+          if (dayHourImpl.changeDay == ChangeDay.ZI_BEGIN) {
             // 子初換日
             it
           } else {

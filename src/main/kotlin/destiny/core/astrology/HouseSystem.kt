@@ -6,19 +6,24 @@ package destiny.core.astrology
 
 import destiny.tools.ILocaleString
 import java.util.*
-import destiny.tools.I18nBundles
+import destiny.tools.getTitle
 import destiny.tools.toLang
 import destiny.tools.Lang
 
+/**
+ * 名稱查表走全站慣例（`HouseSystem.properties` 的 `<常數>.title`），
+ * 而非早期與 [Ayanamsa] 共用 `Astrology.properties` 的 `HouseSystem.<常數>`。
+ *
+ * 改動原因（2026-08-15）：舊慣例讓 `HouseSystem.PLACIDUS.getTitle(lang)` ——
+ * 也就是每個人都會先試的那條路 —— **靜默退回列舉名**，寫新程式的人不會發現自己走錯。
+ * 現在兩條路徑同源，本函式只是保留給既有呼叫端的別名。
+ */
 fun HouseSystem.asLocaleString() = object : ILocaleString {
-  private val resource = "destiny.core.astrology.Astrology"
-  override fun getTitle(lang: Lang): String {
-    return I18nBundles.string(resource, lang, this@asLocaleString.nameKey) ?: this@asLocaleString.nameKey
-  }
+  override fun getTitle(lang: Lang): String = this@asLocaleString.getTitle(lang)
 }
 
 fun HouseSystem.toString(lang: Lang): String {
-  return this.asLocaleString().getTitle(lang)
+  return this.getTitle(lang)
 }
 
 /** 橋接，說明見 [destiny.tools.ILocaleString] */

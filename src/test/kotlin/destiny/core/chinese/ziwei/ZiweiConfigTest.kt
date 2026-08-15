@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.calendar.eightwords.ChangeDay
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.chinese.MonthAlgo
@@ -48,7 +49,7 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     AgeType.REAL,
     EightWordsConfig(
       dayHourConfig = DayHourConfig(
-        DayConfig(changeDayAfterZi = false, midnight = MidnightImpl.CLOCK0),
+        DayConfig(changeDay = ChangeDay.ZI_MIDDLE, midnight = MidnightImpl.CLOCK0),
       )
     )
   )
@@ -58,7 +59,7 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
 
       val ewConfig = EightWordsConfig(
         dayHourConfig = DayHourConfig(
-          DayConfig(changeDayAfterZi = false, midnight = MidnightImpl.CLOCK0),
+          DayConfig(changeDay = ChangeDay.ZI_MIDDLE, midnight = MidnightImpl.CLOCK0),
         )
       )
 
@@ -114,7 +115,7 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     assertEquals("Branch", docCtx.read("$.flowHour", String::class.java))
     assertEquals("SkipMain", docCtx.read("$.bigRange", String::class.java))
     assertEquals("REAL", docCtx.read("$.sectionAgeType", String::class.java))
-    assertFalse(docCtx.read("$.ewConfig.dayHourConfig.dayConfig.changeDayAfterZi", Boolean::class.java))
+    assertEquals("ZI_MIDDLE", docCtx.read("$.ewConfig.dayHourConfig.dayConfig.changeDay", String::class.java))
     assertEquals("CLOCK0", docCtx.read("$.ewConfig.dayHourConfig.dayConfig.midnight", String::class.java))
   }
 }

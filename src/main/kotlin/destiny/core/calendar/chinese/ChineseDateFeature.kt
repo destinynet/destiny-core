@@ -81,9 +81,9 @@ class ChineseDateFeature(private val chineseDateImpl : IChineseDate,
       // 下個子正的農曆日期
       val nextMidnightDay = chineseDateImpl.getChineseDate(nextMidnightLmt.toLocalDate())
 
-      chineseDateImpl.calculateZi(lmt, lmtDate, nextDate, prevDate, nextMidnightLmt, nextMidnightDay, config.changeDayAfterZi)
+      chineseDateImpl.calculateZi(lmt, lmtDate, nextDate, prevDate, nextMidnightLmt, nextMidnightDay, config.changeDay)
     }
 
-    //return chineseDateImpl.getChineseDate(lmt, loc, day, hour, midnightFeature, config.dayConfig.changeDayAfterZi, julDayResolver)
+    //return chineseDateImpl.getChineseDate(lmt, loc, day, hour, midnightFeature, config.dayConfig.changeDay, julDayResolver)
   }
 }

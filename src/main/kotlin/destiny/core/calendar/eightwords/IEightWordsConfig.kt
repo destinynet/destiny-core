@@ -35,11 +35,11 @@ interface IYearMonthConfig : IYearConfig, IMonthConfig {
 }
 
 interface IDayConfig : JSerializable {
-  var changeDayAfterZi: Boolean
+  var changeDay: ChangeDay
   var midnight: MidnightImpl
 
   val dayConfig: DayConfig
-    get() = DayConfig(changeDayAfterZi, midnight)
+    get() = DayConfig(changeDay, midnight)
 }
 
 interface ITransConfig : JSerializable {
