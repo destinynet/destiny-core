@@ -4,18 +4,14 @@ package destiny.tools
 import java.time.ZoneId
 import java.time.zone.ZoneRulesException
 import java.util.*
-import kotlin.test.Ignore
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
+import kotlin.test.*
 
 class TimeZoneTest {
 
   private val logger = KotlinLogging.logger { }
 
   @Test
-  fun testTimeZone() {
+  fun testNotEquals() {
     val tp = TimeZone.getTimeZone("Asia/Taipei")
     val sh = TimeZone.getTimeZone("Asia/Shanghai")
 
