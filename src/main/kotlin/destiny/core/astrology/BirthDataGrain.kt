@@ -1,6 +1,7 @@
 package destiny.core.astrology
 
 import destiny.core.DayNight
+import destiny.core.IBirthDataNamePlace
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -176,3 +177,31 @@ val BirthDataGrain.includeLunarReturns: Boolean
  */
 val BirthDataGrain.includeLunarPosition: Boolean
   get() = this == BirthDataGrain.MINUTE || this == BirthDataGrain.HOUR2
+
+/**
+ * 能自報時刻精度的出生資料。
+ *
+ * [IBirthDataNamePlace] 本身只是「時刻 + 地點 + 姓名」，**不帶精度** —— 它拿到的時刻，
+ * 可能是使用者填的分鐘，也可能是 [BirthDataGrain.HOUR2] 的時辰中點或 [BirthDataGrain.DAY]
+ * 的捏造正午。消費端若無從分辨，就只能假設精確，然後排出捏造的 ASC 與宮位。
+ *
+ * 由持有 grain 的實體（如 `destiny.service.base.BirthData`）實作，讓
+ * 只吃 [IBirthDataNamePlace] 的 digester 問得出來。
+ */
+interface IGrainedBirthData : IBirthDataNamePlace {
+  val birthDataGrain: BirthDataGrain
+}
+
+/**
+ * 取得出生資料的時刻精度；來源不表態時退回 [BirthDataGrain.MINUTE]。
+ *
+ * 退回 MINUTE 而非 DAY，是為了與既有語意一致（`BirthData.grain` 為 null 代表
+ * 未表態的歷史資料，一律視同精確），也才不會讓沒實作 [IGrainedBirthData] 的
+ * 既有呼叫端（如事件盤、賽事盤）突然失去軸點。
+ *
+ * **新的消費端請優先讓自己的模型攜帶 grain**，這個函式是給「型別上拿不到 grain、
+ * 但實際物件多半有」的既有介面用的補救。
+ */
+fun IBirthDataNamePlace.resolveGrain(): BirthDataGrain =
+  (this as? IGrainedBirthData)?.birthDataGrain ?: BirthDataGrain.MINUTE
+
