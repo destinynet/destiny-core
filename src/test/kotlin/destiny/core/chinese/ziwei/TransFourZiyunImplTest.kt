@@ -6,9 +6,9 @@ package destiny.core.chinese.ziwei
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.StarMain.太陽
 import destiny.core.chinese.ziwei.T4Value.*
-import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 
@@ -16,11 +16,12 @@ class TransFourZiyunImplTest {
 
   internal var impl: ITransFour = TransFourZiyunImpl()
 
-  private val logger = KotlinLogging.logger { }
 
+  /** 各家四化流派的名稱（i18n）。原本只有 logger.info，翻譯掉了也不會紅 */
   @Test
   fun testTitle() {
-    logger.info("title tw = {} , cn = {}", impl.getTitle(Locale.TAIWAN), impl.getTitle(Locale.CHINA))
+    assertEquals("紫雲", impl.getTitle(Locale.TAIWAN))
+    assertEquals("紫云", impl.getTitle(Locale.CHINA))
   }
 
   @Test

@@ -4,15 +4,12 @@
 package destiny.core.iching
 
 import destiny.core.iching.Symbol.*
-import destiny.tools.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 
 class SymbolAcquiredTest {
-
-  private val logger = KotlinLogging.logger { }
 
   @Test
   fun testGetIndex() {
@@ -27,10 +24,36 @@ class SymbolAcquiredTest {
     assertEquals(6, SymbolAcquired.getIndex(乾).toLong())
   }
 
+  /**
+   * [SymbolAcquired.getSymbol] 是 [SymbolAcquired.getSymbolNullable] 的**週期版**：
+   * 先對 9 取餘，故 0 等同 9（離）、10 等同 1（坎），不像 nullable 版超過 9 就爆掉。
+   * 中宮（5）沒有對應的卦，回傳 null。
+   *
+   * ```
+   * 巽4 | 離9 | 坤2
+   * ----+-----+----
+   * 震3 |  5  | 兌7
+   * ----+-----+----
+   * 艮8 | 坎1 | 乾6
+   * ```
+   *
+   * 原本這裡只是把 0..19 印出來用眼睛核對。
+   */
   @Test
   fun testGetSymbol() {
-    for (i in 0..19) {
-      logger.info("index = {} , 後天卦 = {}", i, SymbolAcquired.getSymbol(i))
+    val oneToNine = listOf(坎, 坤, 震, 巽, null, 乾, 兌, 艮, 離)
+
+    // 1..9 為洛書本盤
+    assertEquals(oneToNine, (1..9).map { SymbolAcquired.getSymbol(it) })
+    // 0 ≡ 9 (離)
+    assertSame(離, SymbolAcquired.getSymbol(0))
+    // 10.. 起以 9 為週期重複
+    assertEquals(oneToNine, (10..18).map { SymbolAcquired.getSymbol(it) })
+    assertSame(坎, SymbolAcquired.getSymbol(19))
+
+    // 1..9 的範圍內，與 getSymbolNullable 完全一致
+    (1..9).forEach { i ->
+      assertEquals(SymbolAcquired.getSymbolNullable(i), SymbolAcquired.getSymbol(i), "index = $i")
     }
   }
 

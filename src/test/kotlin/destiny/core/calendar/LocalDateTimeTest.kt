@@ -14,56 +14,70 @@ import java.time.temporal.ChronoField.YEAR_OF_ERA
 import java.time.temporal.ChronoUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotSame
 import kotlin.test.assertSame
 
 class LocalDateTimeTest {
 
   private val logger = KotlinLogging.logger { }
 
+  /** 秒以下到微秒（6 位）都能解析 */
   @Test
   fun testParse2() {
-    val t = "2019-04-02T18:04:37.628251"
-    logger.info("parsed = {}", LocalDateTime.parse(t))
+    assertEquals(
+      LocalDateTime.of(2019, 4, 2, 18, 4, 37, 628_251_000),
+      LocalDateTime.parse("2019-04-02T18:04:37.628251")
+    )
   }
 
+  /** 無秒數的 ISO 字串：預設 parser 與 [DateTimeFormatter.ISO_DATE_TIME] 結果相同 */
   @Test
   fun testParse() {
     // trump : 1946-06-14T12:30
     val trump = "1946-06-14T12:30"
-    logger.info("parsed 1 {} = {}", trump, LocalDateTime.parse(trump))
-    logger.info("parsed 2 {} = {}", trump, LocalDateTime.parse(trump, DateTimeFormatter.ISO_DATE_TIME))
+    val expected = LocalDateTime.of(1946, 6, 14, 12, 30)
+
+    assertEquals(expected, LocalDateTime.parse(trump))
+    assertEquals(expected, LocalDateTime.parse(trump, DateTimeFormatter.ISO_DATE_TIME))
   }
 
+  /** `withXxx` 回傳新物件，原物件不變（immutable）。原本用 now() 且只有 log，不可重現也驗不到東西 */
   @Test
   fun testWithValue() {
-    val ldt = LocalDateTime.now()
-    logger.info("before withYear , ldt = {}", ldt)
+    val ldt = LocalDateTime.of(2019, 4, 2, 18, 4, 37)
     val ldt2 = ldt.withYear(2000)
-    logger.info("after withYear , ldt = {}", ldt)
-    logger.info("ldt2 = {}", ldt2)
+
+    assertEquals(2019, ldt.year)
+    assertEquals(LocalDateTime.of(2000, 4, 2, 18, 4, 37), ldt2)
+    assertNotSame(ldt, ldt2)
   }
 
 
   @Test
   fun testOutput() {
-    logger.info("{}", LocalDate.of(2012, 6, 21).format(DateTimeFormatter.ofPattern("uuuu-MM-dd")))
-    logger.info("{}", LocalDate.of(2012, 6, 21).format(DateTimeFormatter.ofPattern("uuuu-MM")))
+    assertEquals("2012-06-21", LocalDate.of(2012, 6, 21).format(DateTimeFormatter.ofPattern("uuuu-MM-dd")))
+    assertEquals("2012-06", LocalDate.of(2012, 6, 21).format(DateTimeFormatter.ofPattern("uuuu-MM")))
   }
 
   /**
-   * LocalDateTime 並未考慮 cutover 狀況
+   * [LocalDateTime] 採 ISO proleptic 曆法，**不理會 1582 的 Julian→Gregorian cutover**：
+   * 從 1582-10-16 往前退 10 天，會平順地走到 1582-10-06，
+   * 而不是像 [java.util.GregorianCalendar] 那樣跳過 10/05～10/14。
    *
+   * 需要 cutover 語意時得改用 `JulDayResolver1582CutoverImpl`（見 [JulDayResolver1582ImplTest]）。
+   * 原本這裡只是把 10 天印出來，這個結論並沒有被驗證。
    */
   @Test
   fun testLocalDateTime1582() {
-    val ldt = LocalDateTime.of(1582, 10, 16, 0, 0)
-    //TimeZone tz = TimeZone.getTimeZone("America/New_York");
     val tz = ZoneId.of("Asia/Taipei")
-    var zdt = ldt.atZone(tz)
-    for (i in 0..9) {
+    var zdt = LocalDateTime.of(1582, 10, 16, 0, 0).atZone(tz)
+
+    val dates = (0..9).map {
       zdt = ZonedDateTime.from(zdt).minusDays(1)
-      logger.info("zdt = {}", zdt)
+      zdt.toLocalDate()
     }
+
+    assertEquals((15 downTo 6).map { LocalDate.of(1582, 10, it) }, dates)
   }
 
   /**
@@ -129,11 +143,23 @@ class LocalDateTimeTest {
    */
   @Test
   fun test_LocalDateTime_BC() {
+    // (LocalDateTime , era , year , year_of_era) —— 即 KDoc 那張表
+    val expected = listOf(
+      Triple(LocalDateTime.of(1, 1, 2, 0, 0), IsoEra.CE, 1),
+      Triple(LocalDateTime.of(1, 1, 1, 0, 0), IsoEra.CE, 1),
+      Triple(LocalDateTime.of(0, 12, 31, 0, 0), IsoEra.BCE, 0),
+      Triple(LocalDateTime.of(0, 12, 30, 0, 0), IsoEra.BCE, 0),
+      Triple(LocalDateTime.of(0, 12, 29, 0, 0), IsoEra.BCE, 0),
+      Triple(LocalDateTime.of(0, 12, 28, 0, 0), IsoEra.BCE, 0),
+    )
+
     var ldt = LocalDateTime.of(1, 1, 3, 0, 0)
-    for (i in 1..6) {
+    expected.forEach { (expectedLdt, expectedEra, expectedYear) ->
       ldt = ldt.minusDays(1)
-      logger.info("{} : era = {} , year = {} , year_of_era = {}",
-        ldt, ldt.toLocalDate().era, ldt.year, ldt.get(YEAR_OF_ERA))
+      assertEquals(expectedLdt, ldt)
+      assertSame(expectedEra, ldt.toLocalDate().era)
+      assertEquals(expectedYear, ldt.year)      // year 連續，故「西元前一年」的 year = 0
+      assertEquals(1, ldt.get(YEAR_OF_ERA))     // year_of_era 恆大於 0
     }
   }
 

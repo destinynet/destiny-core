@@ -14,28 +14,6 @@ class ChartMntPresenterTest {
 
 
   /**
-  14 　 68 　 86
-  巽六　離二　坤四
-  　　　　　　　　
-  95 　 23 　 41
-  震五　中七　兌九
-  　　　　　　　　
-  59 　 77 　 32
-  艮一　坎三　乾八
-   */
-  @Test
-  fun `七運，午山子向 , 坎底`() {
-    val chart = ChartMntContext.getChartPresenter(7.toPeriod(), Mountain.午, Symbol.坎)
-    println(chart.gridMap)
-  }
-
-  @Test
-  fun `七運，午山子向 , 乾底`() {
-    val chart = ChartMntContext.getChartPresenter(7.toPeriod(), Mountain.午, Symbol.乾)
-    println(chart.gridMap)
-  }
-
-  /**
    * 七運,乾山巽向 , 參考結果  https://imgur.com/Z6TIe0X
    *
    * 過程推演 https://kknews.cc/zh-tw/geomantic/lppj4bg.html
@@ -72,7 +50,6 @@ class ChartMntPresenterTest {
   fun `不同的觀點（視角）不會影響結果`() {
 
     val chart坎底 = ChartMntContext.getChartPresenter(7.toPeriod(), Mountain.午, Symbol.坎)
-    println(chart坎底)
     assertEquals(ChartBlock.of(Symbol.坎, 7, 7, 3), chart坎底.getChartBlockFromGrid(TriGrid.B))
     assertEquals(ChartBlock.of(Symbol.艮, 5, 9, 1), chart坎底.getChartBlockFromGrid(TriGrid.LB))
     assertEquals(ChartBlock.of(Symbol.震, 9, 5, 5), chart坎底.getChartBlockFromGrid(TriGrid.L))

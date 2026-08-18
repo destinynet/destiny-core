@@ -8,6 +8,7 @@ import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
 import destiny.core.iching.Symbol
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 
 class ChartMntContextTest {
@@ -38,13 +39,30 @@ class ChartMntContextTest {
     }
   }
 
+  /**
+   * 一運 24 山的城門訣：每山都有正、副兩個城門，各自標記此運是否可取。
+   * 原本只是把 24 行 println 出來，沒有任何斷言。
+   */
   @Test
-  fun 印出一運所有山之城門訣() {
-    Mountain.entries.forEach { mnt ->
-      ChartMntContext.getChartMnt(1.toPeriod(), mnt).getGates().also { map ->
-        println("$mnt 山 , 正 = ${map[Gate.正城門]} , 副 = ${map[Gate.副城門]}")
-      }
+  fun 一運所有山之城門訣() {
+    val all = Mountain.entries.associateWith { ChartMntContext.getChartMnt(1.toPeriod(), it).getGates() }
+
+    all.forEach { (mnt, gates) ->
+      assertEquals(setOf(Gate.正城門, Gate.副城門), gates.keys, "$mnt 山")
     }
+
+    // 抽驗：子山正副皆可取、丑山正副皆不可取
+    assertEquals(
+      mapOf(Gate.正城門 to (Mountain.巽 to true), Gate.副城門 to (Mountain.坤 to true)),
+      all.getValue(Mountain.子)
+    )
+    assertEquals(
+      mapOf(Gate.正城門 to (Mountain.庚 to false), Gate.副城門 to (Mountain.丙 to false)),
+      all.getValue(Mountain.丑)
+    )
+
+    // 一運 48 個城門中恰有一半可取
+    assertEquals(24, all.values.sumOf { gates -> gates.values.count { it.second } })
   }
 
   /**
@@ -167,36 +185,63 @@ class ChartMntContextTest {
   }
 
   /**
-   * 測試 [IChartMnt.getMntDirSpec]
+   * [IChartMnt.getMntDirSpec] 的契約（見其原始碼註解）：
+   * **正常的挨星下卦一定有值，只有替星盤才可能為 null。**
+   *
+   * 9 運 × 24 山 = 216 種下卦盤全部有值，且只會落在 [MntDirSpec] 的四種格局裡。
+   * 原本這裡是把 216 + 216 行結果 println 出來 —— 包含替星盤那一大片 `null`，
+   * 沒有任何斷言，看起來像「都有跑到」，其實什麼都沒驗。
    */
   @Test
   fun testGetMntDirSpec() {
-    (1..9).forEach { period ->
-      Mountain.entries.forEach { mnt ->
-        ChartMntContext.getChartMnt(period.toPeriod(), mnt).also {
-          println("$period 運 $mnt 山 : ${it.getMntDirSpec()}")
-        }
+    val downGua: List<MntDirSpec?> = (1..9).flatMap { period ->
+      Mountain.entries.map { mnt ->
+        ChartMntContext.getChartMnt(period.toPeriod(), mnt).getMntDirSpec()
       }
     }
 
-    val repImpl = ReplacementDefaultImpl()
-    (1..9).forEach { period ->
-      Mountain.entries.forEach { mnt ->
-        ChartMntContext.getChartMnt(period.toPeriod(), mnt, repImpl).also {
-          println("[替] $period 運 $mnt 山 : ${it.getMntDirSpec()}")
-        }
-      }
-    }
+    assertEquals(216, downGua.size)
+    assertTrue(downGua.all { it != null }, "下卦盤不該出現 null")
+    assertEquals(MntDirSpec.entries.toSet(), downGua.toSet(), "四種格局都該出現")
+
+    // 抽驗兩個定盤
+    assertEquals(MntDirSpec.雙星到向, ChartMntContext.getChartMnt(7.toPeriod(), Mountain.午).getMntDirSpec())
+    assertEquals(MntDirSpec.雙星到山, ChartMntContext.getChartMnt(7.toPeriod(), Mountain.子).getMntDirSpec())
   }
 
+  /**
+   * 替星盤（用替）就允許 null —— 這正是 [IChartMnt.getMntDirSpec] 回傳型別可為 null 的唯一理由。
+   *
+   * 216 種當中有 142 種取不到格局。這個數字是**現況的刻畫**，並非某條命理規則的推論；
+   * 釘住它是為了讓「替星規則被動到」這件事看得見（原本這一大片 null 只是被 println 沖掉）。
+   */
+  @Test
+  fun `替星盤的山向格局可以是 null`() {
+    val replaced: List<MntDirSpec?> = (1..9).flatMap { period ->
+      Mountain.entries.map { mnt ->
+        ChartMntContext.getChartMnt(period.toPeriod(), mnt, replaceImpl).getMntDirSpec()
+      }
+    }
+
+    assertEquals(216, replaced.size)
+    assertEquals(142, replaced.count { it == null })
+    assertEquals(MntDirSpec.entries.toSet(), replaced.filterNotNull().toSet())
+  }
+
+  /** 用替與否，盤面結構不變：9 宮（8 卦 + 中宮），且座山、運數如實帶入 */
   @Test
   fun getChartMnt() {
-    val repImpl = ReplacementDefaultImpl()
-
     Mountain.entries.forEach { mnt ->
-      println("\n7運 $mnt 山 : 用替 ")
-      ChartMntContext.getChartMnt(7.toPeriod(), mnt, repImpl).also {
-        println(it)
+      listOf(false to ChartMntContext.getChartMnt(7.toPeriod(), mnt),
+             true to ChartMntContext.getChartMnt(7.toPeriod(), mnt, replaceImpl)
+      ).forEach { (replacement, chart) ->
+        assertEquals(9, chart.blocks.size, "$mnt 山 (替=$replacement)")
+        assertEquals(7.toPeriod(), chart.period)
+        assertEquals(mnt, chart.mnt)
+        assertEquals(replacement, chart.replacement)
+        // 8 卦各一宮 + 中宮（symbol 為 null）
+        assertEquals(Symbol.entries.toSet(), chart.blocks.mapNotNull { it.symbol }.toSet())
+        assertEquals(1, chart.blocks.count { it.symbol == null })
       }
     }
   }

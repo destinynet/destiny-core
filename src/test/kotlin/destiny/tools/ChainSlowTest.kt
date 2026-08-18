@@ -6,6 +6,7 @@ package destiny.tools
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import kotlin.time.ExperimentalTime
 
 
@@ -48,11 +49,17 @@ class ChainSlowTest {
     assertEquals(expected, impl.chain(map))
   }
 
+  /**
+   * 與 [ChainFastTest.measure] 同一份測資、同一組斷言 —— 兩個實作對大資料量必須給出相同結果。
+   *
+   * 仍維持 `@Ignore`：[ChainSlow] 在這個尺寸下慢到不適合進日常 CI，
+   * 但改動 [ChainSlow] 時手動跑它，就能真的驗出對錯（原本只 log 耗時，跑錯也看不出來）。
+   */
   @ExperimentalTime
   @Test
   @Ignore
   fun measure() {
-    measureTimed({ t ->
+    val chains = measureTimed({ t ->
       logger.info("$impl takes {}", t)
     })
     {
@@ -63,6 +70,9 @@ class ChainSlowTest {
       }.toMap()
       impl.chain(map)
     }
+
+    assertEquals((1..99).map { it * 10 + 1 }, chains.map { it.size }.sorted())
+    assertTrue(chains.contains((0..10).map { it * 1000 + 1 }), "i=1 那條鏈應為 1, 1001, ... , 10001")
   }
 
 }

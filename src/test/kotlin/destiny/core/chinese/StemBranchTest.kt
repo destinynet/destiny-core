@@ -52,9 +52,18 @@ class StemBranchTest {
     assertNull(StemBranch.of(null, null))
   }
 
+  /** 60 甲子的順序與數量。原本只是 println 出來看 */
   @Test
   fun testList() {
-    StemBranch.entries.joinToString(",") { it.toString() }.let { println(it) }
+    assertEquals(60, StemBranch.entries.size)
+    assertSame(甲子, StemBranch.entries.first())
+    assertSame(癸亥, StemBranch.entries.last())
+
+    assertTrue(StemBranch.entries.joinToString(",").startsWith("甲子,乙丑,丙寅,丁卯,戊辰,"))
+    assertTrue(StemBranch.entries.joinToString(",").endsWith(",己未,庚申,辛酉,壬戌,癸亥"))
+
+    // index 與順序一致
+    assertEquals((0..59).toList(), StemBranch.entries.map { it.index })
   }
 
   @Test

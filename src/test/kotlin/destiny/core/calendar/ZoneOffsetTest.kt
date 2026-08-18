@@ -16,10 +16,14 @@ class ZoneOffsetTest {
 
   private val logger = KotlinLogging.logger {  }
 
+  /** `"+8"` 這種簡寫會被正規化成 `+08:00` */
   @Test
   fun testZone() {
     val offset = ZoneOffset.of("+8")
-    logger.info("offset = {}", offset)
+
+    assertEquals("+08:00", offset.id)
+    assertEquals(8 * 60 * 60, offset.totalSeconds)
+    assertEquals(ZoneOffset.ofHours(8), offset)
   }
 
 
@@ -52,6 +56,8 @@ class ZoneOffsetTest {
 
     val newTS = Timestamp.from(cldt.atZone(sysDefaultZoneId).toInstant())
     logger.info("新演算法 : {} , getTime = {}", newTS, newTS.time)
-
+    // 新舊演算法必須等價 —— 這正是本測試的目的，原本卻只有 log
+    assertEquals(epochLmtTS.time, newTS.time)
+    assertEquals(offset, sysDefaultZoneId.rules.getOffset(epochLMT))
   }
 }

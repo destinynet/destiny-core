@@ -22,13 +22,18 @@ class JulianDateTest {
   private val logger = KotlinLogging.logger { }
 
   /**
-   * 蘇軾 1037年1月8日 , 農曆 宋仁宗景祐三年十二月十九日
+   * 蘇軾 1037年1月8日（儒略曆）, 農曆 宋仁宗景祐三年十二月十九日。
+   * 換算成（回推的）格里曆是 1037-01-14，兩者相差 6 天。
+   * 原本註解裡就寫著答案 `// 1037-01-14`，卻只有 logger.info，沒有斷言。
    */
   @Test
   fun 蘇軾() {
-    val jd = JulianDate.of(1037 , 1 , 8)
-    val gd = LocalDate.from(jd) // 1037-01-14
-    logger.info("gd = {}" , gd)
+    val jd = JulianDate.of(1037, 1, 8)
+    val gd = LocalDate.from(jd)
+
+    assertEquals(LocalDate.of(1037, 1, 14), gd)
+    // 兩種曆法指向同一個 epoch day
+    assertEquals(gd.toEpochDay(), jd.toEpochDay())
   }
 
   /**

@@ -217,11 +217,20 @@ class TimeToolsTest {
     assertEquals(2457774.75, TimeTools.getGmtJulDay(JulianDateTime.of(2017, 1, 8, 6, 0)).value)
   }
 
+  /**
+   * LMT ↔ GMT 來回轉換必須回到原點。
+   *
+   * 原本用 `LocalDateTime.now()` 且只有 log —— 既不可重現，也驗不到任何東西。
+   * 這裡改用非日光節約期間的固定時刻，東八區固定差 8 小時。
+   */
   @Test
   fun getGmtFromLmt() {
-    val now = LocalDateTime.now()
-    val gmt = TimeTools.getGmtFromLmt(now, ZoneId.systemDefault())
-    logger.info("now = {} , gmt = {}", now, gmt)
+    val lmt = LocalDateTime.of(2017, 1, 7, 12, 0)
+
+    val gmt = TimeTools.getGmtFromLmt(lmt, asiaTaipeiZoneId)
+    assertEquals(LocalDateTime.of(2017, 1, 7, 4, 0), gmt)
+
+    assertEquals(lmt, TimeTools.getLmtFromGmt(gmt, asiaTaipeiZoneId))
   }
 
   /**

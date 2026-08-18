@@ -15,14 +15,26 @@ class GoogleMapsUrlBuilderTest {
 
   private val builder = GoogleMapsUrlBuilder()
 
+  /**
+   * 兩個 overload（吃 lat/lng 與吃 [ILocation]）必須產生相同的 URL；
+   * 順帶釘住西經（負經度）的輸出格式。原本三行都只有 logger.info。
+   */
   @Test
   fun getUrl() {
-    val location = locationOf(Locale.TAIWAN)
-    val s = builder.getUrl(location.lat.value, location.lng.value)
-    logger.info("{}", s)
+    listOf(Locale.TAIWAN, Locale.of("zh", "HK"), Locale.US).forEach { locale ->
+      val location = locationOf(locale)
+      assertEquals(
+        builder.getUrl(location.lat.value, location.lng.value),
+        builder.getUrl(location),
+        "$locale 的兩個 overload 應一致"
+      )
+    }
 
-    logger.info("{}", builder.getUrl(locationOf(Locale.of("zh", "HK"))))
-    logger.info("{}", builder.getUrl(locationOf(Locale.US)))
+    // 紐約：經度為負
+    assertEquals(
+      "https://www.google.com/maps?&z=10&q=40.758899+-73.985131&ll=40.758899+-73.985131&z=14",
+      builder.getUrl(locationOf(Locale.US))
+    )
   }
 
   /** 明確釘住 URL 格式 —— 原本只有 logger.info，格式跑掉不會被測出來 */

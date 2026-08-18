@@ -109,24 +109,35 @@ class congenitalTest {
     assertEquals(63 , Hexagram.坤.behindOf(Hexagram.剝))
   }
 
+  /** 圓圖的 [next] 走完 64 卦剛好一圈：不重複、不遺漏，第 65 步回到起點 */
   @Test
   fun testTimeSeq_順推() {
-    generateSequence(Hexagram.乾) {
-      it.next()
-    }.take(64)
-      .forEach {
-        logger.info("{}" , it)
-      }
+    val cycle = generateSequence(Hexagram.乾) { it.next() }.take(64).toList()
+
+    assertEquals(
+      listOf(Hexagram.乾, Hexagram.姤, Hexagram.大過, Hexagram.鼎,
+             Hexagram.恆, Hexagram.巽, Hexagram.井, Hexagram.蠱),
+      cycle.take(8)
+    )
+    assertEquals(64, cycle.distinct().size)
+    assertEquals(Hexagram.entries.toSet(), cycle.toSet())
+    assertSame(Hexagram.乾, cycle.last().next())
   }
 
+  /** [prev] 為 [next] 的反向：逆推序列即順推序列（起點不動）的反轉 */
   @Test
   fun testTimeSeq_逆推() {
-    generateSequence(Hexagram.乾) {
-      it.prev()
-    }.take(64)
-      .forEach {
-        logger.info("{}" , it)
-      }
+    val forward = generateSequence(Hexagram.乾) { it.next() }.take(64).toList()
+    val backward = generateSequence(Hexagram.乾) { it.prev() }.take(64).toList()
+
+    assertEquals(
+      listOf(Hexagram.乾, Hexagram.夬, Hexagram.大有, Hexagram.大壯,
+             Hexagram.小畜, Hexagram.需, Hexagram.大畜, Hexagram.泰),
+      backward.take(8)
+    )
+    assertEquals(Hexagram.entries.toSet(), backward.toSet())
+    assertEquals(listOf(forward.first()) + forward.drop(1).reversed(), backward)
+    assertSame(Hexagram.乾, backward.last().prev())
   }
 
   @Test
@@ -154,14 +165,25 @@ class congenitalTest {
   }
 
 
+  /**
+   * 方圖的 [tableNext] 走完 64 卦剛好是一個循環：不重複、不遺漏，第 65 步回到起點。
+   * 原本只是把 64 個 (卦, 序號) 印出來。
+   */
   @Test
   fun printAll() {
-    generateSequence(Hexagram.乾 to 1) {
-      it.first.tableNext() to it.second+1
-    }.take(64)
-      .forEach {
-        logger.info("{}" , it)
-      }
+    val cycle = generateSequence(Hexagram.乾) { it.tableNext() }.take(64).toList()
+
+    assertEquals(64, cycle.size)
+    assertEquals(64, cycle.distinct().size, "64 卦不得重複")
+    assertEquals(Hexagram.entries.toSet(), cycle.toSet(), "64 卦不得遺漏")
+
+    assertEquals(listOf(Hexagram.乾, Hexagram.夬, Hexagram.大有, Hexagram.大壯,
+                        Hexagram.小畜, Hexagram.需, Hexagram.大畜, Hexagram.泰), cycle.take(8))
+
+    // 繞完一圈回到乾
+    assertSame(Hexagram.乾, cycle.last().tableNext())
+    // tableNext 與 tablePrev 互為反向
+    cycle.forEach { assertSame(it, it.tableNext().tablePrev()) }
   }
 
 

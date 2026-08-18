@@ -13,28 +13,26 @@ import kotlin.test.assertSame
 
 
 class HexagramDefaultComparatorTest {
-  // 輸出給 HexagramSimple
+  /**
+   * 這裡原本不是測試，而是**產生 Java 原始碼**（`map.put(new Boolean[]{...}, n);`）
+   * 貼到 HexagramSimple 去用的小工具，整段只有 println。
+   *
+   * 改成驗同一份資料的雙向自洽：序號 → 卦 → 六爻布林 → 卦 → 序號，繞一圈必須回得來。
+   */
   @Test
   fun testOutput() {
-    // map.put(new Boolean[]{true}, 1);
     val impl = HexagramDefaultComparator.instance
-    for (hex in 1..64) {
-      val sb = StringBuffer()
 
-      sb.append("map.put(new Boolean[] {")
+    (1..64).forEach { index ->
+      val hexagram = impl.getHexagram(index)
+      assertEquals(index, impl.getIndex(hexagram), "序號 $index")
 
-      val h = impl.getHexagram(hex)
-      for (line in 1..6) {
-        sb.append(h.getBoolean(line))
-        sb.append(',')
-      }
-      sb.append("},")
-      sb.append(hex)
-
-      sb.append(");")
-      println(sb)
+      val lines: List<Boolean> = (1..6).map { hexagram.getBoolean(it) }
+      assertSame(hexagram, Hexagram.of(lines), "六爻 $lines")
     }
 
+    // 64 卦不重複、不遺漏
+    assertEquals(Hexagram.entries.toSet(), (1..64).map { impl.getHexagram(it) }.toSet())
   }
 
   @Test

@@ -8,20 +8,21 @@ import destiny.core.chinese.ziwei.StarLucky.右弼
 import destiny.core.chinese.ziwei.StarLucky.左輔
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.T4Value.*
-import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 class TransFourFullCollectImplTest {
 
   private val impl = TransFourFullCollectImpl()
 
-  private val logger = KotlinLogging.logger { }
 
+  /** 各家四化流派的名稱（i18n）。原本只有 logger.info，翻譯掉了也不會紅 */
   @Test
   fun testTitle() {
-    logger.info("title tw = {} , cn = {}", impl.getTitle(Locale.TAIWAN), impl.getTitle(Locale.CHINA))
+    assertEquals("全集", impl.getTitle(Locale.TAIWAN))
+    assertEquals("全集", impl.getTitle(Locale.CHINA))
   }
 
   @Test

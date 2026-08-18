@@ -206,11 +206,72 @@ class AspectTest : EnumTest() {
     }
   }
 
-  @Test
-  fun testExpand() {
-    Aspect.getAspects(Aspect.Importance.HIGH).toSet().expand().forEach { (deg, aspect) ->
-      println("$deg -> $aspect")
+  /**
+   * [expand] 是 [expandMulti] 的「單值版」：同一度數若被多個 aspect 佔用，
+   * 只保留 importance 較高者；importance 相同時保留 degree 較大者。
+   *
+   * 原本只有一個把結果 println 出來的 `testExpand`，[expand] 等於完全沒有測試
+   * （相對地 [ExpandMultiTest] 已有完整覆蓋）。
+   */
+  @Nested
+  inner class ExpandTest {
 
+    @Test
+    fun `HIGH 全集展開`() {
+      assertEquals(
+        mapOf(
+          0.0 to Aspect.OPPOSITION,
+          60.0 to Aspect.SEXTILE,
+          90.0 to Aspect.SQUARE,
+          120.0 to Aspect.TRINE,
+          180.0 to Aspect.OPPOSITION,
+          240.0 to Aspect.TRINE,
+          270.0 to Aspect.SQUARE,
+          300.0 to Aspect.SEXTILE,
+        ),
+        Aspect.getAspects(Aspect.Importance.HIGH).toSet().expand()
+      )
+    }
+
+    /**
+     * **0 度要注意**：OPPOSITION 展開時 180×2 = 360 ≡ 0，與 CONJUNCTION 撞在同一格；
+     * 兩者同為 HIGH，於是依「degree 較大者勝」判給 OPPOSITION ——
+     * 也就是說用 [expand] **拿不回 CONJUNCTION**（要保留兩者得用 [expandMulti]）。
+     *
+     * 這是現行合併規則的必然結果，不是筆誤。若日後認定 0° 應回 CONJUNCTION，
+     * 該改的是合併規則，屆時這個測試會提醒你一起更新。
+     */
+    @Test
+    fun `0 度被 OPPOSITION 蓋過 CONJUNCTION`() {
+      val expanded = setOf(Aspect.CONJUNCTION, Aspect.OPPOSITION).expand()
+
+      assertEquals(Aspect.OPPOSITION, expanded[0.0])
+      assertEquals(Aspect.OPPOSITION, expanded[180.0])
+      assertTrue(Aspect.CONJUNCTION !in expanded.values)
+
+      // expandMulti 則兩者都留得住
+      assertTrue(expandMulti0().containsAll(listOf(Aspect.CONJUNCTION, Aspect.OPPOSITION)))
+    }
+
+    private fun expandMulti0(): List<Aspect> =
+      setOf(Aspect.CONJUNCTION, Aspect.OPPOSITION).expandMulti()[0.0] ?: emptyList()
+
+    @Test
+    fun `單一 aspect 展開出所有倍角`() {
+      assertEquals(
+        mapOf(
+          0.0 to Aspect.SQUARE,
+          90.0 to Aspect.SQUARE,
+          180.0 to Aspect.SQUARE,
+          270.0 to Aspect.SQUARE
+        ),
+        setOf(Aspect.SQUARE).expand()
+      )
+    }
+
+    @Test
+    fun `空集合展開為空`() {
+      assertTrue(emptySet<Aspect>().expand().isEmpty())
     }
   }
 

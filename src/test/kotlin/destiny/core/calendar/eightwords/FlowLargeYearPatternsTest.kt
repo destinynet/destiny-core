@@ -213,7 +213,7 @@ class FlowLargeYearPatternsTest {
     @Test
     fun empty() {
       with(branchOpposition) {
-        EightWords(丙子, 乙未, 乙未, 己卯).getPatterns(甲辰, 乙亥).isEmpty()
+        assertTrue { EightWords(丙子, 乙未, 乙未, 己卯).getPatterns(甲辰, 乙亥).isEmpty() }
       }
     }
 
