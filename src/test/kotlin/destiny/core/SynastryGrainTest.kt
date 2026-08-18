@@ -76,4 +76,20 @@ class SynastryGrainTest {
     assertNull(SynastryGrain.ofOrNull("NOPE"))
     assertNull(SynastryGrain.ofOrNull(null))
   }
+
+  /**
+   * 舊四名的**讀取**支援不可移除 —— 那些字串加密在使用者的 LINE 聊天記錄裡，
+   * 我們查不到也改不了（見 [SynastryGrain.Companion.of] 的 KDoc）。
+   *
+   * 這支測試是給未來想清理「死碼」的人看的：把 of() 的相容層拿掉，它會轉紅。
+   */
+  @Test
+  fun legacyNamesMustStayReadable() {
+    listOf("BOTH_FULL", "INNER_FULL_OUTER_DATE", "INNER_DATE_OUTER_FULL", "BOTH_DATE").forEach { legacy ->
+      assertEquals(
+        SynastryGrain.of(legacy), Json.decodeFromString<SynastryGrain>("\"$legacy\""),
+        "$legacy 必須永遠讀得回來 —— 使用者 LINE 聊天記錄裡的舊訊息帶的就是這個字串"
+      )
+    }
+  }
 }
