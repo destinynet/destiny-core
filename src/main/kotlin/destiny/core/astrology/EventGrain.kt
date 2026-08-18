@@ -41,7 +41,7 @@ val EventGrain.canDayLevelTransit: Boolean
  * 這是「事件資料模型」與「盤」兩層唯一的交會點，刻意只留這一處。
  * 之所以映射到 [BirthDataGrain] 而非另立 `ChartGrain`：非本命盤實際只消費
  * [includeAxis] 一個屬性（見 `IHoroscopeFeature.synastry` 的 `outerGrain`），
- * `includeFirdaria` / `includeProfection` / `includeLunarReturns` / [includeLunarPosition]
+ * `includeProfection` / `includeLunarReturns` / [includeLunarPosition] 與 [DayNightSource]
  * 全是本命獨有的技法。型別超載的代價目前僅止於命名，不值得為此改動數十處呼叫點。
  */
 val EventGrain.chartGrain: BirthDataGrain?

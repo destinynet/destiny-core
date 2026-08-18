@@ -596,19 +596,29 @@ data class ExtractedEvents(
    * 寫成函式而非屬性：見 [AbstractEvent.grain] 的 FormatSpec 反射理由。
    */
   fun birthGrain(): BirthDataGrain = when {
-    hourMinute != null         -> BirthDataGrain.MINUTE
-    dayNight == DayNight.DAY   -> BirthDataGrain.DAY_NIGHT_DIURNAL
-    dayNight == DayNight.NIGHT -> BirthDataGrain.DAY_NIGHT_NOCTURNAL
-    else                       -> BirthDataGrain.DAY
+    hourMinute != null -> BirthDataGrain.MINUTE
+    dayNight != null   -> BirthDataGrain.DayNightOnly(dayNight)
+    else               -> BirthDataGrain.DAY
   }
 
+  /**
+   * 依 [BirthDataGrain] 的儲存規則「存已知區間的中點」錨定：
+   * 知時刻取該時刻；夜生取夜晚中點（≈ 當地午夜，即太陽下中天）；其餘取正午。
+   *
+   * 夜生取 00:00 而非正午，是為了守住 [BirthDataGrain] 的不變式 ——
+   * 儲存的時刻在儲存的地點下解讀必須與 grain 相容。舊實作不分晝夜一律給正午，
+   * 於是每一筆 `DAY_NIGHT_NOCTURNAL` 都自相矛盾（拿 `IDayNight` 去問會回答 DAY）。
+   * 之所以一直沒出事，是因為晝夜被當成 payload 直接注入 Firdaria，沒人回頭讀那個時刻。
+   *
+   * 極區（|lat| > 66.5°）另當別論：當地午夜可能是白天。此處是純資料類別、
+   * 拿不到 `IDayNight`，故維持 00:00 的近似；需要精確中點的寫入路徑請見
+   * `BirthDataService.resolveDateTime`。
+   */
   override val time: ChronoLocalDateTime<*>
-    get() = birthDay.let { birthDay ->
-      if (hourMinute != null) {
-        birthDay.atTime(hourMinute)
-      } else {
-        birthDay.atTime(12, 0)
-      }
+    get() = when {
+      hourMinute != null         -> birthDay.atTime(hourMinute)
+      dayNight == DayNight.NIGHT -> birthDay.atTime(0, 0)
+      else                       -> birthDay.atTime(12, 0)
     }
 
   override val location: ILocation
