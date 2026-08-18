@@ -90,4 +90,20 @@ class BirthDataGrainTest {
     assertEquals(DayNightSource.Indeterminate, BirthDataGrain.HOUR2.resolveDayNightSource(resolver))
     assertEquals(1, resolverCalls)
   }
+
+  /**
+   * 八字時柱／紫微命宮只需**時辰**，不需分鐘 —— 這是唯一一個 HOUR2 與 MINUTE 等價的閘門。
+   * 與 [includeAxis] 對照：ASC 需要分鐘，所以那個閘門對 HOUR2 是 false。
+   */
+  @Test
+  fun chineseHourNeedsOnlyTheDoubleHour() {
+    assertTrue(BirthDataGrain.MINUTE.includeChineseHour)
+    assertTrue(BirthDataGrain.HOUR2.includeChineseHour)
+    assertFalse(BirthDataGrain.DAY.includeChineseHour)
+    assertFalse(BirthDataGrain.DAY_NIGHT_DIURNAL.includeChineseHour)
+    assertFalse(BirthDataGrain.DAY_NIGHT_NOCTURNAL.includeChineseHour)
+
+    // 兩個閘門刻意不一致：HOUR2 有時辰、沒有 ASC
+    assertTrue(BirthDataGrain.HOUR2.includeChineseHour && !BirthDataGrain.HOUR2.includeAxis)
+  }
 }

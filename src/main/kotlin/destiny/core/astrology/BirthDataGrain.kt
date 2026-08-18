@@ -160,6 +160,20 @@ val BirthDataGrain.includeLunarReturns: Boolean
   get() = this == BirthDataGrain.MINUTE
 
 /**
+ * 是否算得出**時柱**（八字）與命宮／身宮（紫微）—— 這兩套只需要**時辰**，不需要分鐘。
+ *
+ * 這是唯一一個 [BirthDataGrain.HOUR2] 與 [BirthDataGrain.MINUTE] **等價**的閘門：
+ * 時柱由時辰決定，而 HOUR2 儲存的正是該時辰的中點 —— 依定義必落在同一個時辰內，
+ * 反查必得原時辰（見 [BirthDataGrain.HOUR2] 的 KDoc 與 round-trip 測試）。
+ *
+ * 對照 [includeAxis]：ASC 需要分鐘（±1 小時 → ±15°），所以那個閘門對 HOUR2 是 false。
+ * 兩者判準不同，不可共用 —— 舊實作以 `grain == MINUTE` 一併把八字紫微擋掉，
+ * 是把「西洋盤需要分鐘」的要求誤加到中式命理上。
+ */
+val BirthDataGrain.includeChineseHour: Boolean
+  get() = this == BirthDataGrain.MINUTE || this == BirthDataGrain.HOUR2
+
+/**
  * 本命月亮的位置是否可信 —— 亦即可否作為相位標的。
  *
  * 月亮日行約 13.18°（＝ **0.55°/小時**）：
