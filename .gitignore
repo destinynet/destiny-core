@@ -30,3 +30,11 @@ out/
 *.iws
 /GEMINI.md
 /CLAUDE.md
+
+##############################
+## 本 repo 是公開的（github.com/destinynet/destiny-core）
+##############################
+# 設計文件一律不進版控 —— 它們會描述整個 project 的模組關係、DB、商業邏輯，
+# 而這個 repo 是對外發布的。跨 repo 的設計放在 project 層級的 docs/plans/，
+# **destiny-core 不放 stub**（這是「原 repo 留一份 stub 指回去」那條慣例的唯一例外）。
+/docs/
