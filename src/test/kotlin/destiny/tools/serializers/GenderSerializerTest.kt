@@ -29,6 +29,13 @@ class GenderSerializerTest {
     assertEquals(Gender.F, Json.decodeFromString(GenderSerializer, "\"f\""))
   }
 
+  /** 2025-12-28 `2b6a2b3b` 改名前的舊 payload 用的是 enum 常數 男/女 */
+  @Test
+  fun `test deserialize gender - legacy 男女`() {
+    assertEquals(Gender.M, Json.decodeFromString(GenderSerializer, "\"男\""))
+    assertEquals(Gender.F, Json.decodeFromString(GenderSerializer, "\"女\""))
+  }
+
   @Test
   fun `test deserialize invalid gender`() {
     assertFailsWith<IllegalArgumentException> {

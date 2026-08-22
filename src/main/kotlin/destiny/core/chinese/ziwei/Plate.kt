@@ -12,6 +12,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
 import destiny.tools.serializers.ChronoLocalDateTimeSerializer
+import destiny.tools.serializers.GenderSerializer
 import destiny.tools.serializers.ILocationSerializer
 import kotlinx.serialization.Serializable as KSerializable
 import destiny.tools.JSerializable
@@ -52,6 +53,7 @@ open class Plate (
   override val dayNight: DayNight,
 
   /** 性別  */
+  @KSerializable(with = GenderSerializer::class)
   override val gender: Gender,
 
   /** 身宮  */

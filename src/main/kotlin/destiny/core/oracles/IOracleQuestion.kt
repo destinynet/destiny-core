@@ -4,6 +4,7 @@
 package destiny.core.oracles
 
 import destiny.core.Gender
+import destiny.tools.serializers.GenderSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -20,5 +21,6 @@ sealed interface IOracleQuestion {
 data class OracleQuestion(
   @Contextual
   override val clause: IClause,
+  @Serializable(with = GenderSerializer::class)
   override val gender: Gender?,
   override val question: String?) : IOracleQuestion

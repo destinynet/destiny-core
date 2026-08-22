@@ -4,6 +4,7 @@ import destiny.core.Gender
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.locationOf
 import destiny.core.iching.IHexagram
+import destiny.tools.serializers.GenderSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
@@ -21,6 +22,7 @@ interface IPairHexQuestion : ICombined {
 data class PairHexQuestion(
   @Contextual override val src: IHexagram,
   @Contextual override val dst: IHexagram,
+  @Serializable(with = GenderSerializer::class)
   override val gender: Gender? = null,
   override val question: String?
 ) : IPairHexQuestion
