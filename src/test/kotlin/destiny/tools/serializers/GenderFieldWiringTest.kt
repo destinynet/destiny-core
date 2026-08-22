@@ -3,12 +3,14 @@
  */
 package destiny.tools.serializers
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.Gender
 import destiny.core.astrology.DiceModel
 import destiny.core.chinese.ziwei.Plate
 import destiny.core.iching.divine.PairHexQuestion
 import destiny.core.oracles.OracleQuestion
 import destiny.core.tarot.TarotQuestion
+import destiny.tools.KotlinLogging
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
@@ -27,6 +29,8 @@ import kotlin.test.assertNotNull
  * 而非 `destiny.core.Gender`(內建 enum serializer)。
  */
 class GenderFieldWiringTest {
+
+  private val logger = KotlinLogging.logger { }
 
   private fun assertGenderFieldWired(serializer: KSerializer<*>) {
     val descriptor = serializer.descriptor
@@ -59,14 +63,23 @@ class GenderFieldWiringTest {
   /** end-to-end : 舊格式的 男/女 必須解得開 , 而且重新編碼出來是 M/F */
   @Test
   fun `DiceModel 吃得下舊格式的 gender`() {
-    val legacy = """{"star":"SUN","sign":"ARIES","house":1,"gender":"男","question":"測試"}"""
-    val model = Json.decodeFromString(DiceModel.serializer(), legacy)
-    assertEquals(Gender.M, model.gender)
+    mapOf(
+      "男" to Gender.M,
+      "女" to Gender.F,
+      // 新格式也必須維持原樣
+      "M" to Gender.M,
+      "F" to Gender.F,
+    ).forEach { (raw, expected) ->
+      val legacyJson = """{"star":"SUN","sign":"ARIES","house":1,"gender":"$raw","question":"測試"}"""
 
-    val reEncoded = Json.encodeToString(DiceModel.serializer(), model)
-    assertEquals(true, reEncoded.contains("\"gender\":\"M\""), "重新編碼必須是 M/F : $reEncoded")
+      val model = Json.decodeFromString(DiceModel.serializer(), legacyJson)
+      assertEquals(expected, model.gender, "gender = \"$raw\" 必須解成 $expected")
 
-    val female = """{"star":"SUN","sign":"ARIES","house":1,"gender":"女","question":null}"""
-    assertEquals(Gender.F, Json.decodeFromString(DiceModel.serializer(), female).gender)
+      Json.encodeToString(DiceModel.serializer(), model).also { rawJson ->
+        logger.info { rawJson }
+        val docCtx = JsonPath.parse(rawJson)
+        assertEquals(expected.name, docCtx.read("$.gender"), "重新編碼必須是 M/F : $rawJson")
+      }
+    }
   }
 }
