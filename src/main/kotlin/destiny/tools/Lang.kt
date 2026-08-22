@@ -105,6 +105,7 @@ value class Lang private constructor(val tag: String) {
     val ZH_CN = Lang("zh-CN")
     val EN = Lang("en")
     val JA = Lang("ja")
+    val KO = Lang("ko")
 
     /**
      * 本專案的預設語言。
