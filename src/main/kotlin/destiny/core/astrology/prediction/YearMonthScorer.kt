@@ -383,8 +383,22 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     combine: Combine,
     periodHitsAt: (YearMonth) -> List<PeriodHit>,
     topN: Int = 12,
-  ): List<YearMonthWindow> {
-    if (timedHits.isEmpty()) return emptyList()
+  ): List<YearMonthWindow> = buildCurve(timedHits, grain, combine, periodHitsAt, topN).windows
+
+  /**
+   * [buildWindows] 的完整輸出版:峰窗之外,把**合併切峰與 topN 之前**的逐桶強度曲線一併曝露
+   * (Yearly Peaks delta 1,見 root docs/plans/2026-08-24-yearly-peaks-algorithm.md §3.2)。
+   * 曲線與峰窗由同一次計算產生,不會分岔;[buildWindows] 即本函式的 `.windows` 投影。
+   * 谷抽取請把 [YearMonthCurve.strengths] 交給 [YearMonthTroughs.extract]。
+   */
+  fun buildCurve(
+    timedHits: List<TimedInstantHit>,
+    grain: SearchGrain,
+    combine: Combine,
+    periodHitsAt: (YearMonth) -> List<PeriodHit>,
+    topN: Int = 12,
+  ): YearMonthCurve {
+    if (timedHits.isEmpty()) return YearMonthCurve(emptyMap(), emptyList())
 
     // 1. 依粒度分桶。YEAR 以該年 1 月為桶鍵。
     val buckets: Map<YearMonth, List<InstantHit>> = timedHits
@@ -420,9 +434,12 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
       Combine.OR  -> perBucket.map { it.second }
     }
 
-    // 4. 合併相鄰(僅 MONTH 粒度;YEAR 桶各自獨立)→ 依 strength 排序取 top-N。
+    // 4. 曲線 = 合併切峰前的逐桶強度(桶鍵即 window.from:MONTH 為該月、YEAR 為該年 1 月)。
+    val curve: Map<YearMonth, Double> = filtered.associate { it.from to it.strength }
+
+    // 5. 合併相鄰(僅 MONTH 粒度;YEAR 桶各自獨立)→ 依 strength 排序取 top-N。
     val merged = if (grain == SearchGrain.MONTH) mergeAdjacentMonths(filtered) else filtered
-    return merged.sortedByDescending { it.strength }.take(topN)
+    return YearMonthCurve(curve, merged.sortedByDescending { it.strength }.take(topN))
   }
 
   private fun bucketKey(ym: YearMonth, grain: SearchGrain): YearMonth = when (grain) {
