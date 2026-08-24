@@ -46,6 +46,8 @@ data class RangePeaksModel(
   val lenses: List<LensCurve>,
   val peaks: List<RangePeak>,
   val troughs: List<TroughSpan>,
+  /** 個人化校準(B2):各 lens 對此人過往事件的實測可信度;由 service 於組裝後填入。 */
+  val calibrations: List<LensCalibration> = emptyList(),
 )
 
 object RangePeaks {
