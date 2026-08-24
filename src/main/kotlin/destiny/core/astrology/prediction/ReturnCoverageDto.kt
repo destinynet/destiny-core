@@ -11,6 +11,7 @@ package destiny.core.astrology.prediction
 
 import destiny.core.astrology.*
 import destiny.core.calendar.GmtJulDay
+import destiny.tools.serializers.IZodiacDegreeSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
@@ -47,10 +48,22 @@ data class ReturnCoverageDto(
   /** Coverage percentage within the search range (0–100) */
   val coveragePercent: Int,
 
-  val ascSign: ZodiacSign,
-  val ascDegree: Int,
-  val mcSign: ZodiacSign,
-  val mcDegree: Int,
+  /**
+   * 返照盤自身的上升／天頂 —— **nullable，且帶完整精度**。
+   *
+   * 2026-08-24 之前是 `ascSign: ZodiacSign + ascDegree: Int` 四個非空欄位：
+   * (a) `Int` 度數是假精度（判讀端拿 0.1° 級的 orb 對不上整數度數）；
+   * (b) 非空型別在無出生時刻（grain 閘門擋掉軸點）時被迫 fallback 成
+   *     「牡羊 0°」—— 憑空捏造，`GrainSanitizer` 的 key 黑名單就是為此而生。
+   *
+   * 改成 `IZodiacDegree?` 之後：無軸點就是 null，**型別層即擋掉捏造**，
+   * 序列化清洗不再需要；有軸點時 [IZodiacDegreeSerializer] 給 {sign, degree}
+   * 兩欄、度數兩位小數。
+   */
+  @Serializable(with = IZodiacDegreeSerializer::class)
+  val asc: IZodiacDegree? = null,
+  @Serializable(with = IZodiacDegreeSerializer::class)
+  val mc: IZodiacDegree? = null,
 
   /** Key planet positions (all 10 planets) */
   val planets: Map<Planet, StarSummary>,
@@ -91,10 +104,9 @@ data class ReturnCoverageDto(
         validFrom = dto.validFrom,
         validTo = dto.validTo,
         coveragePercent = coveragePercent,
-        ascSign = asc?.signDegree?.sign ?: ZodiacSign.ARIES,
-        ascDegree = asc?.signDegree?.signDegree?.second?.toInt() ?: 0,
-        mcSign = mc?.signDegree?.sign ?: ZodiacSign.ARIES,
-        mcDegree = mc?.signDegree?.signDegree?.second?.toInt() ?: 0,
+        // 無軸點（grain 閘門）就是 null —— 不 fallback。舊版捏造「牡羊 0°」的教訓見欄位 KDoc
+        asc = asc?.signDegree,
+        mc = mc?.signDegree,
         planets = Planet.values.map { planet ->
           planet to chart.stars[planet]
         }.filter { (_, v) -> v != null }.associate { (k, v) ->

@@ -21,6 +21,7 @@ import destiny.core.astrology.Stationary
 import destiny.core.astrology.StationaryType
 import destiny.core.astrology.SynastryAspect
 import destiny.core.astrology.TimeLineEvent
+import destiny.core.astrology.ZodiacDegree
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.eclipse.AbstractLunarEclipse
@@ -514,7 +515,7 @@ internal class YearMonthScorerTest {
       validFrom = dummyGmt,
       validTo = yearLater,
       coveragePercent = 100,
-      ascSign = ZodiacSign.ARIES, ascDegree = 0, mcSign = ZodiacSign.CAPRICORN, mcDegree = 0,
+      asc = ZodiacDegree.of(ZodiacSign.ARIES, 0.0), mc = ZodiacDegree.of(ZodiacSign.CAPRICORN, 0.0),
       planets = emptyMap(),
       keyAspectsToNatal = keyAspects,
       houseOverlay = houseOverlay,
