@@ -59,5 +59,14 @@ interface IReportFactory {
     longTermFromTime: GmtJulDay? = null,
     longTermToTime: GmtJulDay? = null,
     negativeControlMonths: Set<YearMonth> = emptySet(),
+    /**
+     * false 時**在工廠層跳過整個 past 掃描**（事件群逐月掃描、負對照窗、
+     * 過往太陽返照、全段長期觸發），回傳的 [Past] 為空殼。
+     *
+     * 給「FORECAST 吃觸發條件表」的精簡素材用：past 的結論已由上一次回顧分析
+     * 帶入，重掃一輪星曆只是把最貴的計算白跑（render 層丟棄不等於沒算）。
+     * ⚠️ 呼叫端剪掉 past 就必須補上替代物（觸發條件表），否則是把校準集丟掉。
+     */
+    includePast: Boolean = true,
   ): MergedUserEventsModel
 }

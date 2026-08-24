@@ -266,7 +266,15 @@ class ReturnContext(
     // 返照盤時刻由本命位置反推（DAY grain 的捏造正午 → 返照時刻誤差達數小時），外盤精度跟隨本命 grain。
     // DAY grain 的 Axis 排除／house 置 null 已由 synastry(innerGrain, outerGrain) 逐盤處理
     //（coarse path 的 house 恆為 null、houseOverlayMap 恆空），此處只需排除定義性相位。
-    val synastry: Synastry = horoscopeFeature.synastry(returnModel.horoscope, this, aspectCalculator, threshold, grain, grain).let { synastry: Synastry ->
+    // 入相/出相（aspectType）需要「稍後位置」對照 —— 少了這兩個 lambda，
+    // 返照盤對本命的每一條相位 aspectType 恆為 null（MINUTE 判讀稽核 §6-5 的資料缺口）。
+    // +0.01 天 ≈ 15 分鐘，與 ReportFactory 的 laterForTransit 同法；本命是靜態的，later 即自身。
+    val laterReturnModel = horoscopeFeature.getModel(returnModel.horoscope.gmtJulDay + 0.01, returnModel.horoscope.location, config)
+    val synastry: Synastry = horoscopeFeature.synastry(
+      returnModel.horoscope, this, aspectCalculator, threshold, grain, grain,
+      laterForOuter = { p -> laterReturnModel.positionMap[p] },
+      laterForInner = { p -> this.positionMap[p] },
+    ).let { synastry: Synastry ->
       /**
        * **返照星作為外盤端點的相位，全部是本命相位的重述，一律排除。**
        *
