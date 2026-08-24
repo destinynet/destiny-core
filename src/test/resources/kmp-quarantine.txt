@@ -3,7 +3,7 @@
 # 由 KmpReadinessRatchetTest 管控。不在此清單上的 .kt 一律必須無 JVM-only 相依。
 # 這份清單只准變短：改乾淨了就刪掉該行。詳見該測試的 KDoc。
 #
-# 目前數量：314
+# 目前數量：316
 
 destiny/core/BirthData.kt
 destiny/core/Descriptive.kt
@@ -94,7 +94,9 @@ destiny/core/astrology/geo/Relocation.kt
 destiny/core/astrology/geo/RelocationCandidateService.kt
 destiny/core/astrology/geo/YearlyRelocationService.kt
 destiny/core/astrology/prediction/PeriodRequestDto.kt
+destiny/core/astrology/prediction/RangePeaks.kt
 destiny/core/astrology/prediction/YearMonthBacktest.kt
+destiny/core/astrology/prediction/YearMonthCurve.kt
 destiny/core/astrology/prediction/YearMonthScorer.kt
 destiny/core/astrology/prediction/YearMonthSearch.kt
 destiny/core/calendar/DailyReportFeature.kt
