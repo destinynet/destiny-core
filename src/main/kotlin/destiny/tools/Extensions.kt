@@ -302,25 +302,32 @@ fun <T : Enum<T>> KClass<out Enum<T>>.getValues(): Array<out Enum<T>> {
 
 inline fun <reified T : Enum<T>> iterator(): Iterator<T> = enumValues<T>().iterator()
 
+/**
+ * 單一 JSON 值 → Kotlin 值。回 null 代表「此值不存在」（`JsonNull`，或無法辨識的字面量）。
+ *
+ * ⚠️ **解碼邏輯必須留在這裡遞迴，不可內聯回 [toMap] 的 `JsonObject` 分支。**
+ * 內聯的話，`JsonArray` 的元素只能回頭呼叫 `toMap()`，而 primitive 元素會撞上
+ * `toMap()` 的「非物件即 emptyMap」規則 —— `["A","B"]` 靜默變成 `[{}, {}]`，值全部蒸發。
+ *
+ * `JsonNull` 必須排在 `is JsonPrimitive` 之前 —— 它是 `JsonPrimitive` 的 subtype，
+ * 排在後面就永遠比不到。
+ */
+fun JsonElement.toAny(): Any? = when (this) {
+  JsonNull         -> null
+  is JsonPrimitive -> when {
+    isString              -> content
+    booleanOrNull != null -> boolean
+    intOrNull != null     -> int
+    doubleOrNull != null  -> double
+    else                  -> null
+  }
+  // 物件層維持「丟掉 null 值的鍵」的既有語意
+  is JsonObject    -> mapValues { (_, v) -> v.toAny() }.filterValues { it != null }.mapValues { (_, v) -> v!! }
+  is JsonArray     -> mapNotNull { it.toAny() }
+}
+
 fun JsonElement.toMap(): Map<String, Any> {
   logger.debug { "JsonElement.toMap : $this" }
-  return when (this) {
-    is JsonObject -> this.mapValues { (key, jsonElement: JsonElement) ->
-      when (jsonElement) {
-        is JsonPrimitive -> when {
-          jsonElement.isString              -> jsonElement.content
-          jsonElement.booleanOrNull != null -> jsonElement.boolean
-          jsonElement.intOrNull != null     -> jsonElement.int
-          jsonElement.doubleOrNull != null  -> jsonElement.double
-          jsonElement.floatOrNull != null   -> jsonElement.float
-          else                              -> null
-        }
-        is JsonObject    -> jsonElement.toMap()
-        is JsonArray     -> jsonElement.map { it.toMap() }
-      }
-    }.filter { (_, v) -> v != null }
-      .mapValues { (_, v) -> v!! }
-
-    else          -> emptyMap()
-  }
+  @Suppress("UNCHECKED_CAST")
+  return (toAny() as? Map<String, Any>) ?: emptyMap()
 }
