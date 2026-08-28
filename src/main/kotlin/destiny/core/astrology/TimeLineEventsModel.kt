@@ -538,7 +538,20 @@ data class Past(
    * **只陳述事實，不下指示**：寫「此為下界」是描述取樣性質，寫「不要低估」則是在教答案；
    * 盲測素材只能是前者。
    */
-  val eventSetNote: String? = null
+  val eventSetNote: String? = null,
+  /**
+   * 全段的法達期間。
+   *
+   * ⚠️ 與 [EventGroup.firdarias] **語意不同，兩者都需要**：
+   * 群裡那份只涵蓋有事件的月份，是**以事件為條件**取出來的樣本 ——
+   * 讀者由它看得出「出事時法達走到哪」，卻算不出「其餘時間走到哪」，
+   * 於是任何以它為分母的比率都帶倖存者偏誤。本欄提供的是全段母體。
+   *
+   * 法達與小限是出生資料與年齡的確定性函數，不需星曆掃描，代價與 [longTermTriggers] 不同量級。
+   */
+  val firdariaPeriods: List<Firdaria> = emptyList(),
+  /** 全段的小限。理由同 [firdariaPeriods]；[EventGroup.profections] 是事件條件下的樣本，非母體。 */
+  val profections: List<Profection> = emptyList(),
 )
 
 @Serializable
