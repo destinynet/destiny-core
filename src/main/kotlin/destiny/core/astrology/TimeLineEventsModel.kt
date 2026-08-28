@@ -552,6 +552,16 @@ data class Past(
   val firdariaPeriods: List<Firdaria> = emptyList(),
   /** 全段的小限。理由同 [firdariaPeriods]；[EventGroup.profections] 是事件條件下的樣本，非母體。 */
   val profections: List<Profection> = emptyList(),
+  /**
+   * 全段的黃道釋放，每個 Lot 一筆（Fortune 與 Spirit），含 L1~L3。
+   *
+   * ⚠️ 與 [firdariaPeriods]／[profections] 有一個關鍵差異：那兩者在 [EventGroup] 裡本來就有
+   * （事件條件下的樣本，可當假說產生器），**黃道釋放連那個都沒有**。
+   * 因此它若只存在於此而不呈現給讀者，等於這個技法不存在 —— 呈現層須至少給出 L1 與 L2。
+   *
+   * 兩個 Lot 都由 ASC 起算，故僅在 `grain.includeAxis` 成立時才有值。
+   */
+  val zodiacalReleasings: List<ZrByLot> = emptyList(),
 )
 
 @Serializable
