@@ -199,8 +199,12 @@ class EventsTraversalTransitImpl(
       }
       AstroEventDto(
         AstroEvent.Eclipse(
-          description, eclipse,
-          if (config.includeTransitToNatalAspects) transitToNatalAspects else emptyList()
+          // ⚠️ 相位**無條件**存進模型。`includeTransitToNatalAspects` 只該管
+          //    「要不要印進 description」（呈現），不該連帶把資料從模型裡刪掉。
+          //    兩者綁在一起的後果：想用這份資料做計算的消費端，只剩下
+          //    正則解析我們自己渲染的字串這一條路。
+          //    這個改動**不動素材一個 byte** —— description 仍然照舊由旗標決定。
+          description, eclipse, transitToNatalAspects, zodiacDegree,
         ), eclipse.max, null, Span.HOURS, Impact.GLOBAL
       )
     }
@@ -225,8 +229,12 @@ class EventsTraversalTransitImpl(
       }
       AstroEventDto(
         AstroEvent.Eclipse(
-          description, eclipse,
-          if (config.includeTransitToNatalAspects) transitToNatalAspects else emptyList()
+          // ⚠️ 相位**無條件**存進模型。`includeTransitToNatalAspects` 只該管
+          //    「要不要印進 description」（呈現），不該連帶把資料從模型裡刪掉。
+          //    兩者綁在一起的後果：想用這份資料做計算的消費端，只剩下
+          //    正則解析我們自己渲染的字串這一條路。
+          //    這個改動**不動素材一個 byte** —— description 仍然照舊由旗標決定。
+          description, eclipse, transitToNatalAspects, zodiacDegree,
         ), eclipse.max, null, Span.HOURS, Impact.GLOBAL
       )
     }

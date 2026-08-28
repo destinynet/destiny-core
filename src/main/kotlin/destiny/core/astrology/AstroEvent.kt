@@ -55,7 +55,20 @@ sealed class AstroEvent : IAggregatedEvent {
   data class Eclipse(
     override val description: String,
     val eclipse: IEclipse,
-    val transitToNatalAspects: List<SynastryAspect>
+    val transitToNatalAspects: List<SynastryAspect>,
+    /**
+     * 食點的黃道度數。
+     *
+     * ⚠️ 2026-08-28 補上 —— 此前 [Eclipse] 是三個帶位置的事件型別裡**唯一沒存度數的**
+     * （[PlanetStationary] 與 [LunarPhaseEvent] 都有）。度數只出現在 [description]
+     * 的字串裡（`… at Libra/19.02°`），於是任何想用它做計算的消費端都只能去
+     * 正則解析我們自己渲染的字串。
+     *
+     * 可為 null 且有預設值（與兩個兄弟不同）：既有已序列化的資料裡沒有這個欄位，
+     * 給預設值才不會讓它們反序列化失敗。
+     */
+    @Serializable(with = IZodiacDegreeSerializer::class)
+    val zodiacDegree: IZodiacDegree? = null,
   ) : AstroEvent()
 
   /** 月相 */
