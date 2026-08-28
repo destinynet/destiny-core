@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2025-07-23.
  */
-package destiny.core.calendar.chinese
+package destiny.core.calendar
 
 import java.time.LocalDateTime
 import java.time.YearMonth

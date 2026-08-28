@@ -4,17 +4,12 @@
 package destiny.core.astrology
 
 import destiny.core.EventType
-import destiny.core.calendar.chinese.YearMonthRange
+import destiny.core.calendar.YearMonthRange
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested
 import java.time.LocalDate
 import java.time.YearMonth
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class AbstractEventTest {
 
