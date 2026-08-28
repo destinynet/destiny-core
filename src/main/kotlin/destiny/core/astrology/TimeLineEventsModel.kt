@@ -453,6 +453,8 @@ data class EventGroup(
   val lunarReturns : List<ReturnCoverageDto>,
   val firdarias: List<Firdaria>,
   val profections: List<Profection>,
+  /** 事件窗內的黃道釋放（L1~L3，兩個 Lot）—— 以事件為條件的樣本，答「出事時走到哪」；基準率屬 [Past.zodiacalReleasings] 的全段序列 */
+  val zodiacalReleasings: List<ZrByLot> = emptyList(),
   @SerialName("transit_synastry_map")
   val transits : Map<@Contextual GmtJulDay, Synastry>
 )

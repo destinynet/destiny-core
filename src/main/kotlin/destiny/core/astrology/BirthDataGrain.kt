@@ -160,6 +160,19 @@ val BirthDataGrain.includeLunarReturns: Boolean
   get() = this == BirthDataGrain.MINUTE
 
 /**
+ * 是否計算黃道釋放（Zodiacal Releasing）—— 只有 [BirthDataGrain.MINUTE]。
+ *
+ * ZR 由 Lot（Fortune／Spirit）的**星座**起算，而 Lot = ASC ± (月 − 日)。
+ * [BirthDataGrain.HOUR2] 雖解鎖本命月亮（[includeLunarPosition]，±0.55°），
+ * 但 Lot 的誤差由 ASC 項主導：±1 小時 → ±15°，在 30° 的星座上約有 **1/4 機率整個星座都錯**。
+ *
+ * 星座錯一格對 ZR 不是「劣化」而是**整組替換**：L1 章節從出生起全部改寫，且無從察覺 ——
+ * 這比小限（[includeProfection]，每年重算一次）的失效模式更糟，故同樣不給 HOUR2。
+ */
+val BirthDataGrain.includeZodiacalReleasing: Boolean
+  get() = this == BirthDataGrain.MINUTE
+
+/**
  * 是否算得出**時柱**（八字）與命宮／身宮（紫微）—— 這兩套只需要**時辰**，不需要分鐘。
  *
  * 這是唯一一個 [BirthDataGrain.HOUR2] 與 [BirthDataGrain.MINUTE] **等價**的閘門：

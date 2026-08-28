@@ -61,10 +61,14 @@ class BirthDataGrainTest {
   fun capabilities() {
     // 軸點：只有 MINUTE
     assertTrue(BirthDataGrain.MINUTE.includeAxis)
+    assertTrue(BirthDataGrain.MINUTE.includeZodiacalReleasing)
     BirthDataGrain.entries.filter { it != BirthDataGrain.MINUTE }.forEach {
       assertFalse(it.includeAxis, "$it should not include axis")
       assertFalse(it.includeProfection, "$it should not include profection")
       assertFalse(it.includeLunarReturns, "$it should not include lunar returns")
+      // HOUR2 雖解鎖本命月亮，但 Lot 的誤差由 ASC 項主導（±15°），約 1/4 機率整個星座都錯 ——
+      // 而 ZR 只消費 Lot 的星座：錯一個星座不是劣化，是整條時間軸從出生起被整組換掉
+      assertFalse(it.includeZodiacalReleasing, "$it should not include zodiacal releasing")
     }
 
     // 本命月亮：MINUTE 與 HOUR2
