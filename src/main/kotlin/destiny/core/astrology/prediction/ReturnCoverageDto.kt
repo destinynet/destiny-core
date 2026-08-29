@@ -27,6 +27,18 @@ fun Synastry.keyAspects(scoreThreshold: Double = 0.95): List<SynastryAspect> =
     .sortedByDescending { it.score }
 
 /**
+ * 以 **orb** 為界過濾，orb 升冪。
+ *
+ * ⚠️ 與 [keyAspects]（以 score 為界）**刻意分開，不是重複**：
+ * 計數工具的查詢參數是 `maxOrb`，母體若以 score 篩就是「用 score 篩、用 orb 問」的單位錯配 ——
+ * 模型下 `maxOrb=3` 會拿到一個被靜默截斷的分母，而它看不見那個截斷。
+ */
+fun Synastry.aspectsWithin(maxOrb: Double): List<SynastryAspect> =
+  aspects
+    .filter { it.orb <= maxOrb }
+    .sortedBy { it.orb }
+
+/**
  * Convert [Synastry.houseOverlayMap] to a simplified Map of natal-house → list of return [Planet].
  * Filters out non-Planet points and empty entries.
  */

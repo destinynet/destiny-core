@@ -549,6 +549,22 @@ data class Past(
    * 兩個 Lot 都由 ASC 起算，故僅在 `grain.includeAxis` 成立時才有值。
    */
   val zodiacalReleasings: List<ZrByLot> = emptyList(),
+  /**
+   * 全段的返照序列（目前只算太陽返照）。
+   *
+   * ⚠️ 與 [solarReturns] **是兩件事，不可互相取代**：那一份按事件群取
+   * （10 張對 9 個事件群），是**事件條件樣本** —— 讀者由它看得出「出事那年返照長什麼樣」，
+   * 卻算不出「其餘年份長什麼樣」，任何以它為分母的比率都帶倖存者偏誤。
+   * 本欄是全段、與事件無關的母體。這與 [firdariaPeriods]／[profections]／[zodiacalReleasings]
+   * 對上各自的事件窗版本是同一個形狀。
+   *
+   * ⚠️ **不進素材。** 與全段小限、全段 ZR L3 同款：它的角色是分母，
+   * 而分母由計數工具承接（`count_returns`）。42 張返照盤印出來會是素材的一半。
+   *
+   * 動機出自 A010 r14 —— 受測者逐字寫下缺的就是這個：
+   * 「全期 42 張太陽回歸盤與約 563 張月亮回歸盤的完整序列，並與事件無關地掃描。材料裡沒有。」
+   */
+  val fullSpanReturns: List<@Contextual IReturnDto> = emptyList(),
 )
 
 @Serializable
