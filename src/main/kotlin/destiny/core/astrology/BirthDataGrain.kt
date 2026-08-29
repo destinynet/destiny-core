@@ -206,6 +206,30 @@ val BirthDataGrain.includeLunarPosition: Boolean
   get() = this == BirthDataGrain.MINUTE || this == BirthDataGrain.HOUR2
 
 /**
+ * 這個點是否可以作為**本命側的相位標的** —— [includeLunarPosition] 與 [includeAxis] 的合成。
+ *
+ * 兩個閘門的判準不同（軸點要分鐘、月亮到時辰即可），所以不可用單一的
+ * 「有沒有精確時刻」二分取代；這裡只是把「本命側標的」這個共同用途收成一處，
+ * 讓每個消費端不必各自重寫一次 `point == MOON || point is Axis` 的判斷。
+ *
+ * ## ⚠️ 純新增，不改變任何既有行為
+ *
+ * [HoroscopeFeature.synastry] 的本命側**只濾 [Axis]**，這是刻意的：把含月亮的整組
+ * 相位圖形一併丟掉會損失過多，故該路徑改以文字提醒讀者單獨捨棄月亮那一腳。
+ * **本函式不接進該路徑。**
+ *
+ * 提供給另一種消費端：輸出會被逐條引用、而讀者無從分辨哪一腳可信的場合。
+ * 對那種消費端，[includeLunarPosition] 的 KDoc 那句話字面成立 ——
+ * 無精確時刻的本命月亮產出的是「看起來很有說服力的噪音」，比缺漏更糟：
+ * 誤差 ±6.5° 超過任何 orb，但印出來仍然長得像 `orb=0.3°` 的精準接觸。
+ */
+fun BirthDataGrain.allowsNatalTarget(point: AstroPoint): Boolean = when {
+  point == Planet.MOON -> includeLunarPosition
+  point is Axis        -> includeAxis
+  else                 -> true
+}
+
+/**
  * 能自報時刻精度的出生資料。
  *
  * [IBirthDataNamePlace] 本身只是「時刻 + 地點 + 姓名」，**不帶精度** —— 它拿到的時刻，

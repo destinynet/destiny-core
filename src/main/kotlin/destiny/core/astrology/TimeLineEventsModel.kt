@@ -558,11 +558,9 @@ data class Past(
    * 本欄是全段、與事件無關的母體。這與 [firdariaPeriods]／[profections]／[zodiacalReleasings]
    * 對上各自的事件窗版本是同一個形狀。
    *
-   * ⚠️ **不進素材。** 與全段小限、全段 ZR L3 同款：它的角色是分母，
-   * 而分母由計數工具承接（`count_returns`）。42 張返照盤印出來會是素材的一半。
-   *
-   * 動機出自 A010 r14 —— 受測者逐字寫下缺的就是這個：
-   * 「全期 42 張太陽回歸盤與約 563 張月亮回歸盤的完整序列，並與事件無關地掃描。材料裡沒有。」
+   * ⚠️ **呈現層刻意不渲染它。** 與 [profections] 同款：它的角色是基準率的分母，
+   * 而分母該由確定性的計數承接，不該逐張印給讀者 ——
+   * 四十餘年的返照盤全部展開，體積會與其餘各段總和相當。
    */
   val fullSpanReturns: List<@Contextual IReturnDto> = emptyList(),
 )
