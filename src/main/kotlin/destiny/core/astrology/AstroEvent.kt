@@ -90,6 +90,15 @@ sealed class AstroEvent : IAggregatedEvent {
     val astroPoint: AstroPoint,
     val oldSign: ZodiacSign,
     val newSign: ZodiacSign,
+    /**
+     * 此時刻過運星體與本命星體形成的黃道相位。
+     *
+     * ⚠️ **必須有預設值**：既有已序列化的資料沒有這個欄位，無預設值會讓反序列化失敗
+     * （與 [Eclipse.zodiacDegree] 2026-08-28 補上時同一個理由）。
+     *
+     * 本命側已過 `BirthDataGrain.allowsNatalTarget` 閘門 —— DAY grain 不含本命月亮與軸點。
+     */
+    val transitToNatalAspects: List<SynastryAspect> = emptyList(),
   ) : AstroEvent()
 
   /** 星體換宮位 */
@@ -100,6 +109,15 @@ sealed class AstroEvent : IAggregatedEvent {
     val astroPoint: AstroPoint,
     val oldHouse: Int,
     val newHouse: Int,
+    /**
+     * 此時刻過運星體與本命星體形成的黃道相位。
+     *
+     * ⚠️ **必須有預設值**：既有已序列化的資料沒有這個欄位，無預設值會讓反序列化失敗
+     * （與 [Eclipse.zodiacDegree] 2026-08-28 補上時同一個理由）。
+     *
+     * 本命側已過 `BirthDataGrain.allowsNatalTarget` 閘門 —— DAY grain 不含本命月亮與軸點。
+     */
+    val transitToNatalAspects: List<SynastryAspect> = emptyList(),
   ) : AstroEvent()
 
   /** 星體進入或離開 Out of Bounds (赤緯超過 ±obliquity) */
@@ -115,6 +133,18 @@ sealed class AstroEvent : IAggregatedEvent {
     val declination: Double,
     /** 此時刻過運星體與本命星體形成的赤緯相位（parallel / contra-parallel） */
     val natalParallels: List<DeclinationAspect> = emptyList(),
+    /**
+     * 此時刻過運星體與本命星體形成的黃道相位。
+     *
+     * ⚠️ 與 [natalParallels] **兩者都給**（使用者 2026-08-30 裁定）：
+     * OOB 是赤緯現象，但同一時刻的黃道接觸同樣有判讀價值，兩種座標不互相取代。
+     *
+     * ⚠️ **必須有預設值**：既有已序列化的資料沒有這個欄位，無預設值會讓反序列化失敗
+     * （與 [Eclipse.zodiacDegree] 2026-08-28 補上時同一個理由）。
+     *
+     * 本命側已過 `BirthDataGrain.allowsNatalTarget` 閘門 —— DAY grain 不含本命月亮與軸點。
+     */
+    val transitToNatalAspects: List<SynastryAspect> = emptyList(),
   ) : AstroEvent()
 
 }

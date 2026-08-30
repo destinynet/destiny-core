@@ -289,6 +289,16 @@ class EventsTraversalTransitImpl(
       }
     } else emptySequence()
 
+    /**
+     * ingress 三型別的「對本命相位」—— **只在 [AstrologyTraversalConfig.includeTransitToNatalAspects]
+     * 為真時才計算**。每個事件要多建一張該時刻的星盤（`getModel`），
+     * 換座／換宮的事件數遠多於滯留，不設閘門會讓既有呼叫端平白付這筆成本。
+     */
+    fun aspectsAt(gmt: GmtJulDay, planet: AstroPoint): List<SynastryAspect> =
+      if (config.includeTransitToNatalAspects)
+        horoscopeFeature.getModel(gmt, loc, config.horoscopeConfig).outerToInner(planet)
+      else emptyList()
+
     // 星體換星座
     val signDegrees = (0..<360 step 30).map { it.toDouble().toZodiacDegree() }.toSet()
     val signIngresses = transitingStars.asSequence().flatMap { planet ->
@@ -303,12 +313,18 @@ class EventsTraversalTransitImpl(
           Triple(zDeg.sign, zDeg.sign.prev, "Regresses (retrogrades into)")
         }
 
+        val transitToNatalAspects = aspectsAt(gmt, planet)
         val description = buildString {
           append("${planet.toString(Locale.ENGLISH)} $eventType Sign. ")
           append("From ${oldSign.getTitle(Locale.ENGLISH)} to ${newSign.getTitle(Locale.ENGLISH)}")
+          if (transitToNatalAspects.isNotEmpty()) {
+            appendLine()
+            appendLine(transitToNatalAspects.describeAspects(grain))
+          }
         }
         AstroEventDto(
-          AstroEvent.SignIngress(description, planet, oldSign, newSign), gmt, null, Span.INSTANT, Impact.GLOBAL
+          AstroEvent.SignIngress(description, planet, oldSign, newSign, transitToNatalAspects),
+          gmt, null, Span.INSTANT, Impact.GLOBAL
         )
       }
     }
@@ -355,10 +371,14 @@ class EventsTraversalTransitImpl(
       val initialDecl = starPositionImpl.calculate(planet, fromGmtJulDay, Centric.GEO, Coordinate.EQUATORIAL, config.horoscopeConfig.starTypeOptions).lat
       val initialOobEvent = if (kotlin.math.abs(initialDecl) > OobCrossingFinder.OBLIQUITY) {
         val parallels = findNatalParallels(planet, initialDecl)
+        val transitToNatalAspects = aspectsAt(fromGmtJulDay, planet)
         val description = buildString {
 
           append("${planet.toString(Locale.ENGLISH)} is OOB at range start. ")
           append("Declination = ${initialDecl.truncateToString(2)}°")
+          if (transitToNatalAspects.isNotEmpty()) {
+            appendLine(); appendLine(transitToNatalAspects.describeAspects(grain))
+          }
           if (config.includeTransitToNatalAspects && parallels.isNotEmpty()) {
             appendLine()
             appendLine(parallels.describeParallels(grain))
@@ -366,7 +386,8 @@ class EventsTraversalTransitImpl(
         }
         sequenceOf(AstroEventDto(
           AstroEvent.OobIngress(description, planet, true, initialDecl,
-            if (config.includeTransitToNatalAspects) parallels else emptyList()),
+            if (config.includeTransitToNatalAspects) parallels else emptyList(),
+            transitToNatalAspects),
           fromGmtJulDay, null, Span.INSTANT, Impact.GLOBAL
         ))
       } else emptySequence()
@@ -377,10 +398,14 @@ class EventsTraversalTransitImpl(
         stepDays = stepDays
       ).map { crossing ->
         val parallels = findNatalParallels(planet, crossing.declination)
+        val transitToNatalAspects = aspectsAt(crossing.gmtJulDay, planet)
         val direction = if (crossing.entering) "enters OOB" else "returns from OOB"
         val description = buildString {
           append("${planet.toString(Locale.ENGLISH)} $direction. ")
           append("Declination = ${crossing.declination.truncateToString(2)}°")
+          if (transitToNatalAspects.isNotEmpty()) {
+            appendLine(); appendLine(transitToNatalAspects.describeAspects(grain))
+          }
           if (config.includeTransitToNatalAspects && parallels.isNotEmpty()) {
             appendLine()
             appendLine(parallels.describeParallels(grain))
@@ -388,7 +413,8 @@ class EventsTraversalTransitImpl(
         }
         AstroEventDto(
           AstroEvent.OobIngress(description, planet, crossing.entering, crossing.declination,
-            if (config.includeTransitToNatalAspects) parallels else emptyList()),
+            if (config.includeTransitToNatalAspects) parallels else emptyList(),
+            transitToNatalAspects),
           crossing.gmtJulDay, null, Span.INSTANT, Impact.GLOBAL
         )
       }
@@ -419,12 +445,18 @@ class EventsTraversalTransitImpl(
           }
 
           // 產生更精確的文字描述
+          val transitToNatalAspects = aspectsAt(gmt, planet)
           val description = buildString {
             append("${planet.toString(Locale.ENGLISH)} $eventType House. ")
             append("From House $oldHouse to House $newHouse")
+            if (transitToNatalAspects.isNotEmpty()) {
+              appendLine()
+              appendLine(transitToNatalAspects.describeAspects(grain))
+            }
           }
           AstroEventDto(
-            AstroEvent.HouseIngress(description, planet, oldHouse, newHouse), gmt, null, Span.INSTANT, Impact.PERSONAL
+            AstroEvent.HouseIngress(description, planet, oldHouse, newHouse, transitToNatalAspects),
+            gmt, null, Span.INSTANT, Impact.PERSONAL
           )
         }
       }

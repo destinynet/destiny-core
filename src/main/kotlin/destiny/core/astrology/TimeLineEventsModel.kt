@@ -9,6 +9,7 @@ import destiny.core.calendar.*
 import destiny.core.calendar.Lat.Companion.toLat
 import destiny.core.calendar.Lng.Companion.toLng
 import destiny.tools.serializers.*
+import destiny.tools.serializers.astrology.AstroPointSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
@@ -489,6 +490,37 @@ data class ScanCoverage(
   val note: String? = null
 )
 
+/**
+ * 一段星體順逆三相之一（入影／逆行／出影）。
+ *
+ * ⚠️ **不是逐日資料。** `IRetrograde.getDailyRetrogrades()` 是給日曆用的逐日序列，
+ * 長跨度會爆量；這裡存的是 `getPeriodCycles()` 的區間形狀。
+ * 與 [StationaryMoment] **同源於一次掃描** —— 兩者分成兩種查詢語意，底下不得掃兩次。
+ */
+@Serializable
+data class RetrogradePhaseSpan(
+  @Serializable(with = AstroPointSerializer::class)
+  val star: AstroPoint,
+  val phase: RetrogradePhase,
+  @Contextual val from: GmtJulDay,
+  @Contextual val to: GmtJulDay,
+)
+
+/**
+ * 一次留（轉向），以及該時刻對本命各點的相位。
+ *
+ * ⚠️ [contacts] 在**產生時**就過了 [allowsNatalTarget] 閘門 —— 與 `ReturnSpan` 同款。
+ * 下游（corpus、funCall）拿不到 grain，這裡不濾就沒有第二次機會。
+ */
+@Serializable
+data class StationaryMoment(
+  @Serializable(with = AstroPointSerializer::class)
+  val star: AstroPoint,
+  val type: StationaryType,
+  @Contextual val gmt: GmtJulDay,
+  val contacts: List<SynastryAspect> = emptyList(),
+)
+
 @Serializable
 data class Past(
   val eventGroups: List<EventGroup>,
@@ -526,6 +558,13 @@ data class Past(
    * 盲測素材只能是前者。
    */
   val eventSetNote: String? = null,
+  /**
+   * 全段的逆行三相區間。**素材不印**（它是背景日曆，不是對本命的事件），只走 funCall 這條路。
+   * 與 [stationaries] 同源於一次 `IRetrograde.getPeriodCycles()`。
+   */
+  val retrogradeSpans: List<RetrogradePhaseSpan> = emptyList(),
+  /** 全段的留（轉向點），含該時刻對本命的相位（已過 grain 閘門）。 */
+  val stationaries: List<StationaryMoment> = emptyList(),
   /**
    * 全段的法達期間。
    *
