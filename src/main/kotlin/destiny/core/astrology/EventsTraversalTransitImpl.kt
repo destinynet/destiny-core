@@ -55,10 +55,11 @@ class EventsTraversalTransitImpl(
       .asSequence()
       .filter { it in natalTargetPoints }
       .filter { it is Planet || it is LunarNode || it is Axis }
-      .filter {
-        if (grain == BirthDataGrain.MINUTE) true
-        else it !in Axis.values
-      }.toSet()
+      // ⚠️ 用正典 [allowsNatalTarget]，不要手寫 `grain == MINUTE` 的推導：
+      //    兩個閘門的判準不同（軸點要分鐘、月亮到時辰即可），寫成單一二分就會把
+      //    HOUR2 的月亮一起擋掉、或把 DAY 的月亮一起放行。行為對照：
+      //      MINUTE 全留（不變）／HOUR2 擋軸點、留月亮（不變）／DAY 擋軸點**與月亮**（本次修正）。
+      .filter { grain.allowsNatalTarget(it) }.toSet()
 
     // 從 config.aspectTypes 推導所有等價角度（用於 global aspects）
     val defaultAngles: Set<Double> = config.aspectTypes.flatMap { it.mirrorAngles }.toSet()
@@ -87,6 +88,12 @@ class EventsTraversalTransitImpl(
             aspect.innerPoint !in houseRelatedPoints
           }
           )
+          // ⚠️ **疊加**，不是取代上面那段。本檔的消費端（事件 description）會被 LLM 逐條引用，
+          //    正是 [allowsNatalTarget] KDoc 指名的那種「讀者無從分辨哪一腳可信」的場合 ——
+          //    而 [HoroscopeFeature.synastry] 本身刻意只濾軸點（該 KDoc 明文禁止接入本函式），
+          //    所以閘門要在這裡補，不在那裡改。
+          //    寫成取代會連 MINUTE 都變樣（該分支現行完全不濾，阿拉伯點與恆星都留著）。
+          && grain.allowsNatalTarget(aspect.innerPoint)
       }
     }
 
@@ -331,7 +338,8 @@ class EventsTraversalTransitImpl(
           append("\t(p) [transiting ${da.transitPoint.toString(Locale.ENGLISH)}]")
           append(" $typeLabel")
           append(" [natal ${da.natalPoint.toString(Locale.ENGLISH)}")
-          if (grain == BirthDataGrain.MINUTE) {
+          // 同 describeAspects：宮位需要精確出生時刻，用 [includeAxis] 不用推導。
+          if (grain.includeAxis) {
             model.getHouse(da.natalPoint)?.let { append(" (H$it)") }
           }
           append("] decl ${da.natalDeclination.truncateToString(2)}° orb = ${da.orb.truncateToString(2)}")
@@ -484,13 +492,14 @@ class EventsTraversalTransitImpl(
       buildString {
         append("\t")
         append("(p) [transiting ${aspect.outerPoint.toString(Locale.ENGLISH)}")
-        if (grain == BirthDataGrain.MINUTE) {
+        // 宮位只在有精確出生時刻時成立 —— 用 [includeAxis] 而非 `grain == MINUTE` 的推導。
+        if (grain.includeAxis) {
           append(" (H${aspect.outerPointHouse})")
         }
         append("] ")
         append(aspect.aspect)
         append(" [natal ${aspect.innerPoint.toString(Locale.ENGLISH)}")
-        if (grain == BirthDataGrain.MINUTE) {
+        if (grain.includeAxis) {
           append(" (H${aspect.innerPointHouse})")
         }
         append("] orb = ${aspect.orb.truncateToString(2)}")
