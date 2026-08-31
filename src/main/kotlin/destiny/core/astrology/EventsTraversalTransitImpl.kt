@@ -79,15 +79,48 @@ class EventsTraversalTransitImpl(
       //      MINUTE 全留（不變）／HOUR2 擋軸點、留月亮（不變）／DAY 擋軸點**與月亮**（本次修正）。
       .filter { grain.allowsNatalTarget(it) }.toSet()
 
-    /** 互相位事件的本命接點用哪些相位 —— 與滯留的處置同款（HIGH importance）。 */
-    val mutualNatalAspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet()
-
     // 從 config.aspectTypes 推導所有等價角度（用於 global aspects）
     val defaultAngles: Set<Double> = config.aspectTypes.flatMap { it.mirrorAngles }.toSet()
     // Use model.getPosition() to support all AstroPoint types (Planet, LunarNode, Axis)
     val natalPointsPosMap: Map<AstroPoint, ZodiacDegree> = natalPoints.mapNotNull { point ->
       model.getPosition(point)?.let { point to it.lngDeg }
     }.toMap()
+
+    /** 天象事件的本命接點用哪些相位 —— 與滯留的處置同款（HIGH importance）。 */
+    val skyEventNatalAspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet()
+
+    /**
+     * ⭐ **天象事件 → 對本命的接點**：互相位與三個 ingress 共用的唯一實作。
+     *
+     * ⚠️ **不建整張盤。** 取該星在該時刻的黃經（一次 `starPosition`），對迴圈外算好的
+     * [natalPointsPosMap]（已過 `allowsNatalTarget` 閘門）求相位。
+     * 相反做法的代價實測過：為每個事件建盤讓一段掃描從 290ms 變成 1m10s（240×）。
+     *
+     * ⭐ 入相／出相需要「稍後位置」對照（+0.01 天 ≈ 15 分鐘，與 `ReportFactory` 的
+     * transitSynastry 同法）。少了它 [SynastryAspect.aspectType] 恆為 null，
+     * 而「逼近 vs 分離」正是判讀主被動時實際被用到的區分。本命側是靜態的，later 即自身。
+     *
+     * orb 上限見 [MUTUAL_NATAL_MAX_ORB]。
+     */
+    fun toNatalAspectsAt(gmt: GmtJulDay, outer: AstroPoint): List<SynastryAspect> {
+      fun lngAt(t: GmtJulDay) = starPositionImpl.calculate(
+        outer as Star, t, config.horoscopeConfig.centric,
+        config.horoscopeConfig.coordinate, config.horoscopeConfig.starTypeOptions
+      ).lngDeg
+      if (outer !is Star) return emptyList()
+      val outerPosMap = mapOf<AstroPoint, IZodiacDegree>(outer to lngAt(gmt))
+      val laterOuter = mapOf<AstroPoint, IZodiacDegree>(outer to lngAt(gmt + 0.01))
+      return natalPointsPosMap.keys.mapNotNull { inner ->
+        modernAspectCalculator.getAspectPattern(
+          outer, inner, outerPosMap, natalPointsPosMap,
+          { p -> laterOuter[p] }, { p -> natalPointsPosMap[p] }, skyEventNatalAspects
+        )?.let { p ->
+          // ⚠️ aspect / orb 型別上可空 —— `!!` 會把「這筆沒有相位」的正常結果變成 NPE
+          p.aspect?.let { asp -> SynastryAspect(outer, inner, null, null, asp, p.orb ?: 0.0, p.aspectType, p.score) }
+        }?.takeIf { it.orb <= MUTUAL_NATAL_MAX_ORB }
+      }
+    }
+
 
 
     val houseRelatedPoints = listOf(Axis.values.toList(), Arabic.values.toList()).flatten()
@@ -164,27 +197,7 @@ class EventsTraversalTransitImpl(
        */
       val mutualToNatal: List<SynastryAspect> = listOfNotNull(
         outerStar1 as? Star, outerStar2 as? Star   // mutualAspectingEvents 只吐 Planet，這裡只是型別收窄
-      ).flatMap { outer ->
-        fun lngAt(gmt: GmtJulDay) = starPositionImpl.calculate(
-          outer, gmt, config.horoscopeConfig.centric,
-          config.horoscopeConfig.coordinate, config.horoscopeConfig.starTypeOptions
-        ).lngDeg
-        val outerPosMap = mapOf<AstroPoint, IZodiacDegree>(outer to lngAt(aspectData.gmtJulDay))
-        // ⭐ 入相／出相需要「稍後位置」對照 —— 與 `ReportFactory` 的 transitSynastry 同法
-        //    （+0.01 天 ≈ 15 分鐘）。少了它，[SynastryAspect.aspectType] 恆為 null，
-        //    而「逼近 vs 分離」正是判讀主被動時實際被用到的區分。
-        //    ⚠️ 仍然不建盤：這只是同一顆星多一次 starPosition。本命側是靜態的，later 即自身。
-        val laterOuter = mapOf<AstroPoint, IZodiacDegree>(outer to lngAt(aspectData.gmtJulDay + 0.01))
-        natalPointsPosMap.keys.mapNotNull { inner ->
-          modernAspectCalculator.getAspectPattern(
-            outer, inner, outerPosMap, natalPointsPosMap,
-            { p -> laterOuter[p] }, { p -> natalPointsPosMap[p] }, mutualNatalAspects
-          )?.let { p ->
-            // ⚠️ aspect / orb 型別上可空 —— `!!` 會把「這筆沒有相位」的正常結果變成 NPE
-            p.aspect?.let { asp -> SynastryAspect(outer, inner, null, null, asp, p.orb ?: 0.0, p.aspectType, p.score) }
-          }?.takeIf { it.orb <= MUTUAL_NATAL_MAX_ORB }
-        }
-      }
+      ).flatMap { outer -> toNatalAspectsAt(aspectData.gmtJulDay, outer) }
 
       val description = buildString {
         append("[transiting ${outerStar1.toString(Locale.ENGLISH)}] ${aspectData.aspect} [transiting ${outerStar2.toString(Locale.ENGLISH)}]")
@@ -355,14 +368,19 @@ class EventsTraversalTransitImpl(
     } else emptySequence()
 
     /**
-     * ingress 三型別的「對本命相位」—— **只在 [AstrologyTraversalConfig.includeTransitToNatalAspects]
-     * 為真時才計算**。每個事件要多建一張該時刻的星盤（`getModel`），
-     * 換座／換宮的事件數遠多於滯留，不設閘門會讓既有呼叫端平白付這筆成本。
+     * ingress 三型別的「對本命相位」——
+     * 仍受 [AstrologyTraversalConfig.includeTransitToNatalAspects] 控制，但**理由已經換了**。
+     *
+     * ⚠️ 舊版逐字寫著「每個事件要多建一張該時刻的星盤（`getModel`）……不設閘門會讓既有
+     * 呼叫端平白付這筆成本」—— 那個成本在 2026-08-31 消失了：改用與互相位同一條便宜路徑
+     * （一次 `starPosition` 取黃經，對迴圈外算好的 [natalPointsPosMap] 求相位），
+     * 實測同族改動讓一段掃描從 1m10s 降到 290ms（240×）。
+     *
+     * 旗標保留，但它現在控制的是**呈現層要不要這份資料**，不是成本。
+     * 打開它現在幾乎免費 —— 是否要讓 future 背景層的 ingress 也帶接點，屬素材形狀的決定。
      */
     fun aspectsAt(gmt: GmtJulDay, planet: AstroPoint): List<SynastryAspect> =
-      if (config.includeTransitToNatalAspects)
-        horoscopeFeature.getModel(gmt, loc, config.horoscopeConfig).outerToInner(planet)
-      else emptyList()
+      if (config.includeTransitToNatalAspects) toNatalAspectsAt(gmt, planet) else emptyList()
 
     // 星體換星座
     val signDegrees = (0..<360 step 30).map { it.toDouble().toZodiacDegree() }.toSet()
