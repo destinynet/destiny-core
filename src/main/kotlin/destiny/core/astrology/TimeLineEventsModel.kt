@@ -615,7 +615,23 @@ data class Future(
   val solarReturns: List<@Contextual IReturnDto>,
   val firdariaPeriods: List<Firdaria>,
   val profections: List<Profection>,
-  val coverage: List<ScanCoverage> = emptyList()
+  val coverage: List<ScanCoverage> = emptyList(),
+  /**
+   * **預測窗內**的逆行三相區間。與 [Past.retrogradeSpans] 同一個形狀、同一段程式碼掃出來，
+   * 差別只在掃描區間：那邊是全段（母體），這邊是 [fromTime] ~ [toTime]（本窗的日曆）。
+   *
+   * ⚠️ **掃描範圍必須是預測窗，不是全段** —— 與返照（[solarReturns]）的處置同構。
+   * 把過去那份掛進 FORECAST 會繞過「觸發表是 past 與 future 之間唯一通道」的設計。
+   *
+   * ⚠️ 為什麼要有這一份：`get_retrograde_stationary` 依裁定掛進 FORECAST 的取用類工具，
+   * 而 corpus-backed 的工具**只看得到 corpus**。此欄若不填，工具在 FORECAST 一律回
+   * NOT_APPLICABLE —— 「工具說有、素材說沒有」是本專案記過七次的缺陷族。
+   *
+   * 素材同樣不印（背景日曆，不是對本命的事件），只走 corpus → funCall。
+   */
+  val retrogradeSpans: List<RetrogradePhaseSpan> = emptyList(),
+  /** 預測窗內的留（轉向點），含該時刻對本命的相位（已過 grain 閘門）。理由同 [retrogradeSpans]。 */
+  val stationaries: List<StationaryMoment> = emptyList(),
 )
 
 @Serializable
