@@ -47,6 +47,10 @@ class EventsTraversalTransitImpl(
      *
      * ⚠️ 滯留（`StationaryMoment.contacts`）刻意**不**套這個上限：它是**工具**的回覆、
      * 依 orb 排序、且只在被問到時才出現，不佔素材版面。兩者的消費端不同。
+     *
+     * ⭐ 正因為消費端不同，這個上限**只施加在 `describeAspects`（呈現層）**，
+     * 不在 [toNatalAspectsAt]（資料層）—— 後者的結果同時流向素材與 corpus，
+     * 截在那裡等於讓素材的版面考量去決定工具答得出什麼。
      */
     const val MUTUAL_NATAL_MAX_ORB: Double = 3.0
   }
@@ -100,14 +104,18 @@ class EventsTraversalTransitImpl(
      * transitSynastry 同法）。少了它 [SynastryAspect.aspectType] 恆為 null，
      * 而「逼近 vs 分離」正是判讀主被動時實際被用到的區分。本命側是靜態的，later 即自身。
      *
-     * orb 上限見 [MUTUAL_NATAL_MAX_ORB]。
+     * ⚠️ **本函式不截 orb** —— 回傳全量。素材那一側的上限（[MUTUAL_NATAL_MAX_ORB]）
+     * 施加在 `describeAspects` 裡，理由見該處：模型與 corpus 是工具的資料來源，
+     * 截在這裡會連帶把 corpus 的食相接點一起砍掉。
      */
+    fun lngDegAt(gmt: GmtJulDay, star: Star): ZodiacDegree = starPositionImpl.calculate(
+      star, gmt, config.horoscopeConfig.centric,
+      config.horoscopeConfig.coordinate, config.horoscopeConfig.starTypeOptions
+    ).lngDeg
+
     fun toNatalAspectsAt(gmt: GmtJulDay, outer: AstroPoint): List<SynastryAspect> {
-      fun lngAt(t: GmtJulDay) = starPositionImpl.calculate(
-        outer as Star, t, config.horoscopeConfig.centric,
-        config.horoscopeConfig.coordinate, config.horoscopeConfig.starTypeOptions
-      ).lngDeg
       if (outer !is Star) return emptyList()
+      fun lngAt(t: GmtJulDay) = lngDegAt(t, outer)
       val outerPosMap = mapOf<AstroPoint, IZodiacDegree>(outer to lngAt(gmt))
       val laterOuter = mapOf<AstroPoint, IZodiacDegree>(outer to lngAt(gmt + 0.01))
       return natalPointsPosMap.keys.mapNotNull { inner ->
@@ -117,39 +125,24 @@ class EventsTraversalTransitImpl(
         )?.let { p ->
           // ⚠️ aspect / orb 型別上可空 —— `!!` 會把「這筆沒有相位」的正常結果變成 NPE
           p.aspect?.let { asp -> SynastryAspect(outer, inner, null, null, asp, p.orb ?: 0.0, p.aspectType, p.score) }
-        }?.takeIf { it.orb <= MUTUAL_NATAL_MAX_ORB }
+        }
       }
     }
 
 
 
-    val houseRelatedPoints = listOf(Axis.values.toList(), Arabic.values.toList()).flatten()
-
-    /**
-     * [this] : Outer
-     * [chosenPoints] 外圈的某星 針對內圈 的星體，形成哪些交角
+    /*
+     * ⛔ 這裡曾有 `IHoroscopeModel.outerToInner()` —— 留／食／月相的本命接點走
+     *    [HoroscopeFeature.synastry]（每個事件建一張整盤）的舊路徑，2026-08-31 移除。
+     *
+     * 移除的理由不是效能（雖然順帶省下每事件一次建盤），而是**同一份素材裡有兩套 orb 政策**：
+     * 互相位與 ingress 走 [toNatalAspectsAt]（呈現時截在 [MUTUAL_NATAL_MAX_ORB]，且帶入相／出相），
+     * 留／食／月相走 synastry 的預設表（合相 11°、四分三分 7.5°，且 aspectType 恆 null）。
+     * 兩者用**完全相同的語法**印出，讀者無從分辨哪一份被截斷過 ——
+     * 而實測「超過 3°」的比例（留 62%、食 53%）與當初量互相位不設限時是同一個分布。
+     *
+     * ⇒ 天象事件對本命的接點，全檔只有 [toNatalAspectsAt] 一份實作。
      */
-    fun IHoroscopeModel.outerToInner(vararg chosenPoints: AstroPoint): List<SynastryAspect> {
-      // 外盤時刻是行運遍歷的天文精確解，恆為 MINUTE
-      return horoscopeFeature.synastry(this, model, modernAspectCalculator,
-                                       threshold = null,
-                                       innerGrain = grain,
-                                       outerGrain = BirthDataGrain.MINUTE).aspects.filter { aspect: SynastryAspect ->
-        aspect.outerPoint in chosenPoints && (
-          if (grain.includeAxis)
-            true
-          else {
-            aspect.innerPoint !in houseRelatedPoints
-          }
-          )
-          // ⚠️ **疊加**，不是取代上面那段。本檔的消費端（事件 description）會被 LLM 逐條引用，
-          //    正是 [allowsNatalTarget] KDoc 指名的那種「讀者無從分辨哪一腳可信」的場合 ——
-          //    而 [HoroscopeFeature.synastry] 本身刻意只濾軸點（該 KDoc 明文禁止接入本函式），
-          //    所以閘門要在這裡補，不在那裡改。
-          //    寫成取代會連 MINUTE 都變樣（該分支現行完全不濾，阿拉伯點與恆星都留著）。
-          && grain.allowsNatalTarget(aspect.innerPoint)
-      }
-    }
 
     /**
      * 搜尋 personal aspects（外圈 transit to 本命星體）。
@@ -201,9 +194,9 @@ class EventsTraversalTransitImpl(
 
       val description = buildString {
         append("[transiting ${outerStar1.toString(Locale.ENGLISH)}] ${aspectData.aspect} [transiting ${outerStar2.toString(Locale.ENGLISH)}]")
-        if (mutualToNatal.isNotEmpty()) {
+        mutualToNatal.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
           appendLine()
-          appendLine(mutualToNatal.describeAspects(grain))
+          appendLine(it)
         }
       }
       // ⚠️ global = true —— 兩端都是行運端。消費端若照「[0]=行運、[1]=本命」投影會產生假資料，
@@ -231,17 +224,16 @@ class EventsTraversalTransitImpl(
     // 滯留（由 config.stationaryPlanets 獨立控制，不依賴 transitingStars）
     val planetStationaries = config.stationaryPlanets.asSequence().filter { it.isStationaryPossible }.flatMap { planet ->
       retrogradeImpl.getRangeStationaries(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl).map { s: Stationary ->
-        val outer = horoscopeFeature.getModel(s.gmtJulDay, loc, config.horoscopeConfig)
-        val zodiacDegree = outer.getZodiacDegree(planet)!!
-        val transitToNatalAspects = outer.outerToInner(planet)
+        val zodiacDegree = lngDegAt(s.gmtJulDay, planet)
+        val transitToNatalAspects = toNatalAspectsAt(s.gmtJulDay, planet)
 
         val description = buildString {
           append("${s.star.toString(Locale.ENGLISH)} Stationary (滯留). ${s.type.getTitle(Locale.ENGLISH)}")
           append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
           if (config.includeTransitToNatalAspects) {
-            if (transitToNatalAspects.isNotEmpty()) {
+            transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
               appendLine()
-              appendLine(transitToNatalAspects.describeAspects(grain))
+              appendLine(it)
             }
           }
         }
@@ -267,18 +259,17 @@ class EventsTraversalTransitImpl(
 
     // 日食
     val solarEclipses = eclipseImpl.getRangeSolarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
-      val outer = horoscopeFeature.getModel(eclipse.max, loc, config.horoscopeConfig)
-      val zodiacDegree = outer.getZodiacDegree(Planet.SUN)!!
-      val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(Planet.SUN)
+      val zodiacDegree = lngDegAt(eclipse.max, Planet.SUN)
+      val transitToNatalAspects: List<SynastryAspect> = toNatalAspectsAt(eclipse.max, Planet.SUN)
 
       val description = buildString {
         append("Solar Eclipse (日食). ")
         append("Type = ${eclipse.solarType.getTitle(Locale.ENGLISH)}")
         append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
         if (config.includeTransitToNatalAspects) {
-          if (transitToNatalAspects.isNotEmpty()) {
+          transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
             appendLine()
-            appendLine(transitToNatalAspects.describeAspects(grain))
+            appendLine(it)
           }
         }
       }
@@ -296,9 +287,8 @@ class EventsTraversalTransitImpl(
 
     // 月食
     val lunarEclipses = eclipseImpl.getRangeLunarEclipses(fromGmtJulDay, toGmtJulDay).map { eclipse ->
-      val outer = horoscopeFeature.getModel(eclipse.max, loc, config.horoscopeConfig)
-      val zodiacDegree = outer.getZodiacDegree(Planet.MOON)!!
-      val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(Planet.MOON)
+      val zodiacDegree = lngDegAt(eclipse.max, Planet.MOON)
+      val transitToNatalAspects: List<SynastryAspect> = toNatalAspectsAt(eclipse.max, Planet.MOON)
 
 
       val description = buildString {
@@ -306,9 +296,9 @@ class EventsTraversalTransitImpl(
         append("Type = ${eclipse.lunarType.getTitle(Locale.ENGLISH)}")
         append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
         if (config.includeTransitToNatalAspects) {
-          if (transitToNatalAspects.isNotEmpty()) {
+          transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
             appendLine()
-            appendLine(transitToNatalAspects.describeAspects(grain))
+            appendLine(it)
           }
         }
       }
@@ -333,9 +323,10 @@ class EventsTraversalTransitImpl(
         270.0 to LunarPhase.LAST_QUARTER
       ).flatMap { (angle, phase) ->
         relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(Planet.MOON, Planet.SUN, fromGmtJulDay, toGmtJulDay, angle, config.horoscopeConfig.starTypeOptions).map { gmtJulDay ->
-          val outer = horoscopeFeature.getModel(gmtJulDay, loc, config.horoscopeConfig)
-          val zodiacDegree = outer.getZodiacDegree(Planet.MOON)!!
-          val transitToNatalAspects: List<SynastryAspect> = outer.outerToInner(Planet.MOON, Planet.SUN)
+          val zodiacDegree = lngDegAt(gmtJulDay, Planet.MOON)
+          // 月相是日月相對位置的事件 —— 兩顆各自對本命的接點都要（與互相位同款）
+          val transitToNatalAspects: List<SynastryAspect> =
+            toNatalAspectsAt(gmtJulDay, Planet.MOON) + toNatalAspectsAt(gmtJulDay, Planet.SUN)
           val description = buildString {
             append("${Planet.MOON.toString(Locale.ENGLISH)} ")
             append(
@@ -349,9 +340,9 @@ class EventsTraversalTransitImpl(
             append(phase.getTitle(Locale.ENGLISH))
             append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
             if (config.includeTransitToNatalAspects) {
-              if (transitToNatalAspects.isNotEmpty()) {
+              transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
                 appendLine()
-                appendLine(transitToNatalAspects.describeAspects(grain))
+                appendLine(it)
               }
             }
           }
@@ -400,9 +391,9 @@ class EventsTraversalTransitImpl(
         val description = buildString {
           append("${planet.toString(Locale.ENGLISH)} $eventType Sign. ")
           append("From ${oldSign.getTitle(Locale.ENGLISH)} to ${newSign.getTitle(Locale.ENGLISH)}")
-          if (transitToNatalAspects.isNotEmpty()) {
+          transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
             appendLine()
-            appendLine(transitToNatalAspects.describeAspects(grain))
+            appendLine(it)
           }
         }
         AstroEventDto(
@@ -459,8 +450,8 @@ class EventsTraversalTransitImpl(
 
           append("${planet.toString(Locale.ENGLISH)} is OOB at range start. ")
           append("Declination = ${initialDecl.truncateToString(2)}°")
-          if (transitToNatalAspects.isNotEmpty()) {
-            appendLine(); appendLine(transitToNatalAspects.describeAspects(grain))
+          transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
+            appendLine(); appendLine(it)
           }
           if (config.includeTransitToNatalAspects && parallels.isNotEmpty()) {
             appendLine()
@@ -486,8 +477,8 @@ class EventsTraversalTransitImpl(
         val description = buildString {
           append("${planet.toString(Locale.ENGLISH)} $direction. ")
           append("Declination = ${crossing.declination.truncateToString(2)}°")
-          if (transitToNatalAspects.isNotEmpty()) {
-            appendLine(); appendLine(transitToNatalAspects.describeAspects(grain))
+          transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
+            appendLine(); appendLine(it)
           }
           if (config.includeTransitToNatalAspects && parallels.isNotEmpty()) {
             appendLine()
@@ -532,9 +523,9 @@ class EventsTraversalTransitImpl(
           val description = buildString {
             append("${planet.toString(Locale.ENGLISH)} $eventType House. ")
             append("From House $oldHouse to House $newHouse")
-            if (transitToNatalAspects.isNotEmpty()) {
+            transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
               appendLine()
-              appendLine(transitToNatalAspects.describeAspects(grain))
+              appendLine(it)
             }
           }
           AstroEventDto(
@@ -602,8 +593,19 @@ class EventsTraversalTransitImpl(
     }
   }
 
+  /**
+   * 天象事件的本命接點 → 素材文字。
+   *
+   * ⭐ **[MUTUAL_NATAL_MAX_ORB] 的唯一施加點就在這裡**（2026-08-31 由 [toNatalAspectsAt] 移來）。
+   *
+   * 為什麼是呈現層而不是資料層：該常數的 KDoc 已經寫明「滯留的 contacts 刻意不套上限 ——
+   * 它是**工具**的回覆，依 orb 排序、只在被問到時出現，不佔素材版面」。
+   * 兩個消費端的取捨不同，所以閘門要裝在分岔之後：模型與 corpus 留全量（工具答得出寬 orb 的接點），
+   * 素材只印得下最緊的那幾條。裝在 [toNatalAspectsAt] 會連帶把 corpus 的食相接點一起砍掉
+   * （190 → 75 實測），那不是這個上限要管的事。
+   */
   private fun List<SynastryAspect>.describeAspects(grain: BirthDataGrain): String {
-    return this.sortedBy { it.orb }.joinToString("\n") { aspect: SynastryAspect ->
+    return this.filter { it.orb <= MUTUAL_NATAL_MAX_ORB }.sortedBy { it.orb }.joinToString("\n") { aspect: SynastryAspect ->
       buildString {
         append("\t")
         append("(p) [transiting ${aspect.outerPoint.toString(Locale.ENGLISH)}")
