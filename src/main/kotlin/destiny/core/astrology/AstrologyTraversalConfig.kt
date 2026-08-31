@@ -2,6 +2,7 @@ package destiny.core.astrology
 
 import destiny.core.astrology.Aspect.Importance
 import destiny.core.astrology.Planet.*
+import destiny.core.astrology.prediction.EventSource
 import destiny.core.astrology.prediction.ITimeKey
 import destiny.core.astrology.prediction.PrimaryDirectionMethod
 import destiny.core.astrology.prediction.PtolemyKey
@@ -192,4 +193,43 @@ data class AstrologyTraversalConfig(
       aspectFilterRules = rules,
     )
   }
+}
+
+/**
+ * 某個 [source] 在這一次掃描裡**實際會移動的點** —— 掃描端與宣告端共用的唯一推導。
+ *
+ * ## 為什麼要有這個函式
+ *
+ * 「移動端有哪些」原本在三個地方各自算：`ReportFactory.scanTimeLineEvents` 的 `fetchEvents`
+ * （行運與各推運）、[EventsTraversalSolarArcImpl]（它**刻意忽略**呼叫端傳入的集合，
+ * 所以必須自己算一次），以及素材的 coverage 行（一份手寫字串）。
+ * 三份推導只要有一份落後，素材就會宣告一件母體做不到、或做得到卻沒說的事 ——
+ * 而「宣告與資料不符」是本專案付過最多次代價的缺陷族。
+ *
+ * 實際發生過的一次：長期層補進火星之後，母體有了 592 筆火星條目，
+ * 而讀素材的一方仍把火星當成「不在任何計數母體中」，回頭手推分母
+ * （「恆星週期 687 天…估約 45 個日曆月」）—— 資料是對的，可是沒有人知道。
+ *
+ * @param callerTransitingPoints 呼叫端指定的行運星集合（TRANSIT 用它）。
+ * @param progressionConfig 推運類 source 的設定；`planets` 取代呼叫端的集合。與 `fetchEvents` 同款。
+ * @param natalPoints 本命盤實際有的點 —— 只有 SOLAR_ARC 需要（它的移動端由本命點推出來）。
+ */
+fun AstrologyTraversalConfig.movingPointsOf(
+  source: EventSource,
+  grain: BirthDataGrain,
+  callerTransitingPoints: Set<AstroPoint>,
+  progressionConfig: ProgressionConfig? = null,
+  natalPoints: Set<AstroPoint>? = null,
+): Set<AstroPoint> {
+  val candidates: Collection<AstroPoint> = when {
+    // 太陽弧把所有點推進相同度數，不受呼叫端的外行星集合限制 —— 判準與 [EventsTraversalSolarArcImpl] 同源。
+    source == EventSource.SOLAR_ARC && natalPoints != null -> solarArcConfig.transitingPoints
+      .filter { it is Planet || it is LunarNode || it is Axis }
+      .filter { it in natalPoints }
+      .filter { grain.includeAxis || it !in Axis.values }
+
+    else                                                   -> progressionConfig?.planets ?: callerTransitingPoints
+  }
+  // ⚠️ 移動端的 grain 閘門 —— 推運／太陽弧的移動端由本命位置推出來，繼承同一個未知量。
+  return candidates.filter { grain.allowsMovingPoint(source, it) }.toSet()
 }

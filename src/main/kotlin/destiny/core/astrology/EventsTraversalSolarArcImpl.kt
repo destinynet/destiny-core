@@ -70,12 +70,11 @@ class EventsTraversalSolarArcImpl(
     //      [allowsMovingPoint]，但本 impl 把那個集合整個丟掉 —— SA 月亮因此照樣產出。
     //      太陽弧每年只走約 1°，而 DAY 精度下本命月亮 ±6.6° ⇒ **日期誤差 ±6.6 年**，
     //      印出來的 `perfects 2015-10-17` 與 `PEAK ORB <0.1°` 都是捏造的精度。
-    val saPointsToConsider = config.solarArcConfig.transitingPoints
-      .filter { it is Planet || it is LunarNode || it is Axis }
-      .filter { model.points.contains(it) }
-      .filter { grain.includeAxis || it !in Axis.values }
-      .filter { grain.allowsMovingPoint(EventSource.SOLAR_ARC, it) }
-      .toSet()
+    //      2026-08-31 起這份推導不再寫在這裡：改呼叫正典 [movingPointsOf]，
+    //      因為 corpus 的 `corpusTransitingPoints`（母體自陳涵蓋哪些移動端）也要同一份答案。
+    val saPointsToConsider = config.movingPointsOf(
+      EventSource.SOLAR_ARC, grain, transitingPoints, natalPoints = model.points
+    )
 
 
     /** 將 [GmtJulDay] 格式化為當地日期 (yyyy-MM-dd)，供描述文字使用 */

@@ -566,6 +566,20 @@ data class Past(
   /** 全段的留（轉向點），含該時刻對本命的相位（已過 grain 閘門）。 */
   val stationaries: List<StationaryMoment> = emptyList(),
   /**
+   * ⭐ 全段掃描（[longTermTriggers]，＝計數母體）**每個 source 實際移動了哪些點**。
+   *
+   * ## 為什麼母體要自陳這件事
+   *
+   * 讀者手上只有結果：一個「沒被掃到的行運星」與一個「掃了但沒成相的行運星」
+   * 在資料上長得一模一樣，而前者的計數是 0 卻附著收據 ——
+   * 與 [FullSpanCorpus.gatedNatalTargets] 要解的是同一個病，只是換成移動端。
+   *
+   * ⚠️ **必須由掃描設定導出，不得從資料反推**（`occasions` 裡出現過哪些行運星）。
+   * 反推會把「掃了但這段期間沒成相」誤報成「不在母體裡」—— 那正是本欄要防的那種假陳述。
+   * 推導的唯一正典是 [movingPointsOf]。
+   */
+  val longTermMovingPoints: Map<EventSource, Set<@Serializable(with = AstroPointSerializer::class) AstroPoint>> = emptyMap(),
+  /**
    * 全段的法達期間。
    *
    * ⚠️ 與 [EventGroup.firdarias] **語意不同，兩者都需要**：
