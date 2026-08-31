@@ -33,6 +33,24 @@ class EventsTraversalTransitImpl(
   private val retrogradeImpl: IRetrograde,
 ) : IEventsTraversal {
 
+  private companion object {
+    /**
+     * 互相位事件所附本命接點的 orb 上限。
+     *
+     * ⚠️ **這個上限是必要的，不是風格選擇。** 不設限時實測（A011 三個月預測窗）：
+     * 14 條互相位事件附出 **103 筆**接點（平均 7.4 筆／條），素材 **+16.4%**，
+     * 而 orb 中位數 3.55°、**62% 超過 3°** —— 絕大多數是噪音，
+     * 而它們與真正的訊號（如 `Mars ☌ Uranus` 同時四分本命交點軸 1.72°）混在同一行，
+     * 讀者要自己再篩一次。素材的每一行都在跟其他行競爭注意力。
+     *
+     * 取 3.0° 與 corpus 的 `RETURN_MAX_ORB` 一致（事件群的逐日行運相位更嚴，用 2°）。
+     *
+     * ⚠️ 滯留（`StationaryMoment.contacts`）刻意**不**套這個上限：它是**工具**的回覆、
+     * 依 orb 排序、且只在被問到時才出現，不佔素材版面。兩者的消費端不同。
+     */
+    const val MUTUAL_NATAL_MAX_ORB: Double = 3.0
+  }
+
   private val Planet.isStationaryPossible: Boolean
     get() = this != Planet.SUN && this != Planet.MOON
 
@@ -60,6 +78,9 @@ class EventsTraversalTransitImpl(
       //    HOUR2 的月亮一起擋掉、或把 DAY 的月亮一起放行。行為對照：
       //      MINUTE 全留（不變）／HOUR2 擋軸點、留月亮（不變）／DAY 擋軸點**與月亮**（本次修正）。
       .filter { grain.allowsNatalTarget(it) }.toSet()
+
+    /** 互相位事件的本命接點用哪些相位 —— 與滯留的處置同款（HIGH importance）。 */
+    val mutualNatalAspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet()
 
     // 從 config.aspectTypes 推導所有等價角度（用於 global aspects）
     val defaultAngles: Set<Double> = config.aspectTypes.flatMap { it.mirrorAngles }.toSet()
@@ -130,10 +151,54 @@ class EventsTraversalTransitImpl(
       fromGmtJulDay, toGmtJulDay, config.horoscopeConfig.starTypeOptions
     ).map { aspectData: AspectData ->
       val (outerStar1, outerStar2) = aspectData.points.let { it[0] to it[1] }
+
+      /**
+       * ⭐ 兩顆行運星**各自**對本命的相位。
+       *
+       * 沒有這一段，素材只印得出「兩顆行運星成相」而不含任何本命側資訊，
+       * 讀者要判斷它壓不壓在本命點上就只能憑記憶回想那時該星在哪 ——
+       * 而憑記憶回答天象正是本專案要消滅的行為（2026-08-31 裁定）。
+       *
+       * ⚠️ **不建整張盤**：取兩顆星的黃經對 [natalPointsPosMap]（迴圈外算好、已過閘門）
+       * 求相位。相反做法的代價實測過：為每個事件建盤讓一段掃描從 290ms 變成 1m10s。
+       */
+      val mutualToNatal: List<SynastryAspect> = listOfNotNull(
+        outerStar1 as? Star, outerStar2 as? Star   // mutualAspectingEvents 只吐 Planet，這裡只是型別收窄
+      ).flatMap { outer ->
+        fun lngAt(gmt: GmtJulDay) = starPositionImpl.calculate(
+          outer, gmt, config.horoscopeConfig.centric,
+          config.horoscopeConfig.coordinate, config.horoscopeConfig.starTypeOptions
+        ).lngDeg
+        val outerPosMap = mapOf<AstroPoint, IZodiacDegree>(outer to lngAt(aspectData.gmtJulDay))
+        // ⭐ 入相／出相需要「稍後位置」對照 —— 與 `ReportFactory` 的 transitSynastry 同法
+        //    （+0.01 天 ≈ 15 分鐘）。少了它，[SynastryAspect.aspectType] 恆為 null，
+        //    而「逼近 vs 分離」正是判讀主被動時實際被用到的區分。
+        //    ⚠️ 仍然不建盤：這只是同一顆星多一次 starPosition。本命側是靜態的，later 即自身。
+        val laterOuter = mapOf<AstroPoint, IZodiacDegree>(outer to lngAt(aspectData.gmtJulDay + 0.01))
+        natalPointsPosMap.keys.mapNotNull { inner ->
+          modernAspectCalculator.getAspectPattern(
+            outer, inner, outerPosMap, natalPointsPosMap,
+            { p -> laterOuter[p] }, { p -> natalPointsPosMap[p] }, mutualNatalAspects
+          )?.let { p ->
+            // ⚠️ aspect / orb 型別上可空 —— `!!` 會把「這筆沒有相位」的正常結果變成 NPE
+            p.aspect?.let { asp -> SynastryAspect(outer, inner, null, null, asp, p.orb ?: 0.0, p.aspectType, p.score) }
+          }?.takeIf { it.orb <= MUTUAL_NATAL_MAX_ORB }
+        }
+      }
+
       val description = buildString {
         append("[transiting ${outerStar1.toString(Locale.ENGLISH)}] ${aspectData.aspect} [transiting ${outerStar2.toString(Locale.ENGLISH)}]")
+        if (mutualToNatal.isNotEmpty()) {
+          appendLine()
+          appendLine(mutualToNatal.describeAspects(grain))
+        }
       }
-      AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.GLOBAL)
+      // ⚠️ global = true —— 兩端都是行運端。消費端若照「[0]=行運、[1]=本命」投影會產生假資料，
+      //    見 [AstroEvent.AspectEvent.global]。
+      AstroEventDto(
+        AstroEvent.AspectEvent(description, aspectData, global = true, transitToNatalAspects = mutualToNatal),
+        aspectData.gmtJulDay, null, Span.INSTANT, Impact.GLOBAL
+      )
     }
 
     val vocConfig = VoidCourseConfig(Planet.MOON, vocImpl = VoidCourseImpl.Medieval)
@@ -535,6 +600,9 @@ class EventsTraversalTransitImpl(
           append(" (H${aspect.innerPointHouse})")
         }
         append("] orb = ${aspect.orb.truncateToString(2)}")
+        // ⭐ 入相／出相 —— 受測者實際用它分主被動（「四分、逼近」vs「對分、分離」）。
+        //    null ＝ 該路徑沒有提供「稍後位置」，此時**不印**（不得猜）。
+        aspect.aspectType?.also { append(" (${it.name.lowercase(Locale.ENGLISH)})") }
       }
     }
   }

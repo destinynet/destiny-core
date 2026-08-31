@@ -17,7 +17,42 @@ sealed class AstroEvent : IAggregatedEvent {
   @SerialName("Astro.AspectEvent")
   data class AspectEvent(
     override val description: String,
-    val aspectData: AspectData
+    val aspectData: AspectData,
+    /**
+     * true ＝ **行運星互相位**（sky-to-sky，`AstrologyTraversalConfig.globalAspect`）——
+     * [aspectData] 的兩端**都是行運端**，沒有任何本命側資訊。
+     *
+     * ## ⚠️ 為什麼需要一個旗標，而不是靠呼叫端自己記得
+     *
+     * 消費端普遍假設 `aspectData.points[0]` 是行運端、`[1]` 是本命端
+     * （`OccasionCorpus.toOccasion` 就是這樣投影的）。對互相位事件，那個假設會把
+     * `t.Uranus` 當成**本命**天王星記進母體 —— 一筆帶收據的假資料，且不會有任何錯誤訊息。
+     *
+     * 在 2026-08-31 之前，這件事的安全性靠一個**遠端的旗標**維持：長期背景掃描
+     * 剛好 `globalAspect = false`。那不是不變式，是巧合 —— 有人為了別的理由打開它，
+     * 母體就靜默地被汙染。旗標讓判斷變成**本地**的。
+     *
+     * 帶預設值 false：既有已序列化的資料沒有這個欄位（與 `zodiacDegree`、
+     * `transitToNatalAspects` 補上時同一個理由）。
+     */
+    val global: Boolean = false,
+    /**
+     * 該時刻**兩顆行運星各自**對本命各點的相位 —— 只有 [global] 為真時才有值。
+     *
+     * ## 為什麼互相位需要這個
+     *
+     * 事件本身只說「兩顆行運星成相」（`[transiting Mars] CONJUNCTION [transiting Uranus]`）。
+     * 而讀者真正要問的是「它壓在我的哪個本命點上」—— 素材不印那一刻的黃經，
+     * 讀者無從複合，只能憑記憶回想那時天王星在哪。憑記憶回答天象正是本專案要消滅的行為。
+     *
+     * 語意與 [SignIngress]／`StationaryMoment` 的接點完全相同（**各自**對本命成相），
+     * 不是「合相中點壓在本命點上」—— 後者只在合相有意義，六分／三分時是另一回事。
+     * 本命側同樣過 `allowsNatalTarget` 閘門。
+     *
+     * ⚠️ 計算方式**不建整張盤**：取兩顆星的黃經（兩次 starPosition）對本命位置 map 求相位。
+     * 2026-08-31 實測過相反做法的代價 —— 為每個事件建盤讓一段掃描從 290ms 變成 1m10s。
+     */
+    val transitToNatalAspects: List<SynastryAspect> = emptyList(),
   ) : AstroEvent()
 
   /** 月亮空亡 */
