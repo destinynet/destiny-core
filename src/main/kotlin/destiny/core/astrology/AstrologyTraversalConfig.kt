@@ -233,3 +233,39 @@ fun AstrologyTraversalConfig.movingPointsOf(
   // ⚠️ 移動端的 grain 閘門 —— 推運／太陽弧的移動端由本命位置推出來，繼承同一個未知量。
   return candidates.filter { grain.allowsMovingPoint(source, it) }.toSet()
 }
+
+/**
+ * 移動端涵蓋範圍的**兩側**：某個 source 底下掃了哪些點、以及**哪些點在這個 source 底下沒有分母**。
+ *
+ * @param covered 這個 source 實際移動的點（來自 [movingPointsOf]）
+ * @param uncovered 全集扣掉 [covered] —— 「以這個技法問，沒有母體可算」的那些
+ */
+data class MovingPointCoverage(
+  val source: EventSource,
+  val covered: List<AstroPoint>,
+  val uncovered: List<AstroPoint>,
+)
+
+/**
+ * ⭐ 逐 source 算出涵蓋與其補集 —— **素材的 coverage 行與工具的自陳行共用這一份**。
+ *
+ * ## 為什麼補集要與正面清單一起走
+ *
+ * [BirthDataGrain.gatedNatalTargets] 的 KDoc 寫過同一條教訓：述詞只答得出「這個點行不行」，
+ * 答不出「有哪些點不見了」，而後者才是下游必須知道的。
+ * 只給正面清單的實測結果是：讀者**正確複述了清單**，卻仍在規則層寫
+ * 「這個計數母體不涵蓋行運火星」並手推分母 —— 因為它的推論不是查表，
+ * 而是**從行星速度推涵蓋範圍**（火星是快星 → 應該屬於快層 → 快層沒有母體）。
+ * 補集直接堵住那條推論。
+ *
+ * ⚠️ **補集必須逐 source 算，不可取聯集。** 太陽當行運沒有分母、當太陽弧有；
+ * 取聯集只會得到「只有月亮沒分母」這種對任何一條規則都無用的答案。
+ *
+ * 全集取行星＋月交點（軸點不會當移動端出現在計數母體裡）。
+ */
+fun movingPointCoverage(bySource: Map<EventSource, Collection<AstroPoint>>): List<MovingPointCoverage> {
+  val universe: List<AstroPoint> = Planet.values.toList() + LunarNode.values.toList()
+  return bySource.entries.sortedBy { it.key.ordinal }.map { (source, points) ->
+    MovingPointCoverage(source, points.toList(), universe.filterNot { it in points })
+  }
+}
