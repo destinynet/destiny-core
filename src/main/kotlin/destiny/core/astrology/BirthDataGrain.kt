@@ -230,6 +230,26 @@ fun BirthDataGrain.allowsNatalTarget(point: AstroPoint): Boolean = when {
 }
 
 /**
+ * 這個精度**排除掉**的本命側標的 —— [allowsNatalTarget] 的反面，列舉版。
+ *
+ * ## 為什麼需要「列舉版」
+ *
+ * 述詞只答得出「這個點行不行」，答不出「有哪些點不見了」。後者是**下游必須自己知道**
+ * 的事：把閘門施加在建置端（掃描、投影）之後，消費端手上的資料只剩結果，
+ * 一個被濾掉的標的與一個天上真的沒發生的標的**在資料上長得一模一樣**。
+ *
+ * 於是「問本命月亮出現幾次」會得到 0，而那個 0 是閘門造成的、不是天象 ——
+ * 這正是本專案反覆付代價的沉默截斷，且是最壞的一種：它帶著看似正當的分母。
+ *
+ * ⚠️ 因此凡是把閘門施加在建置端的資料結構，都應該把**這份清單**一起存下來
+ * （而不是存 grain 讓消費端重推一次述詞 —— 那會讓述詞有兩個施加點）。
+ *
+ * 涵蓋的點集＝本命側標的的全集（行星＋月交點＋軸點）。
+ */
+fun BirthDataGrain.gatedNatalTargets(): List<AstroPoint> =
+  (Planet.values.asList() + LunarNode.values + Axis.values).filterNot { allowsNatalTarget(it) }
+
+/**
  * 能自報時刻精度的出生資料。
  *
  * [IBirthDataNamePlace] 本身只是「時刻 + 地點 + 姓名」，**不帶精度** —— 它拿到的時刻，
