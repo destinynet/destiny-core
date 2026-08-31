@@ -37,7 +37,7 @@ class EventsTraversalTransitImpl(
     /**
      * 互相位事件所附本命接點的 orb 上限。
      *
-     * ⚠️ **這個上限是必要的，不是風格選擇。** 不設限時實測（A011 三個月預測窗）：
+     * ⚠️ **這個上限是必要的，不是風格選擇。** 不設限時實測（一個三個月的預測窗）：
      * 14 條互相位事件附出 **103 筆**接點（平均 7.4 筆／條），素材 **+16.4%**，
      * 而 orb 中位數 3.55°、**62% 超過 3°** —— 絕大多數是噪音，
      * 而它們與真正的訊號（如 `Mars ☌ Uranus` 同時四分本命交點軸 1.72°）混在同一行，
@@ -618,7 +618,7 @@ class EventsTraversalTransitImpl(
           append(" (H${aspect.innerPointHouse})")
         }
         append("] orb = ${aspect.orb.truncateToString(2)}")
-        // ⭐ 入相／出相 —— 受測者實際用它分主被動（「四分、逼近」vs「對分、分離」）。
+        // ⭐ 入相／出相 —— 「四分、逼近」vs「對分、分離」是判讀主被動時實際被用到的區分。
         //    null ＝ 該路徑沒有提供「稍後位置」，此時**不印**（不得猜）。
         aspect.aspectType?.also { append(" (${it.name.lowercase(Locale.ENGLISH)})") }
       }
