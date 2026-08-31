@@ -8,6 +8,7 @@ import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.toLocalDateTime
+import destiny.core.astrology.prediction.EventSource
 import destiny.core.electional.Impact
 import destiny.core.electional.Span
 import destiny.tools.KotlinLogging
@@ -54,27 +55,27 @@ class EventsTraversalSolarArcImpl(
     }
 
     // 內盤要考慮的星體 (Natal Points)
+    // ⚠️ 軸點閘門呼叫正典 [includeAxis]，不要手抄它的內容（今日等價；手抄複本會各自演化）。
     val natalPointsToConsider = model.points.filter { it in natalTargetPoints }
       .filter { it is Planet || it is LunarNode || it is Axis }
-      .filter {
-        if (grain == MINUTE)
-          true
-        else
-          it !in Axis.values
-      }.toSet()
+      .filter { grain.includeAxis || it !in Axis.values }
+      .toSet()
 
     // 外圈要考慮的星體 (Solar Arc Points)
     // Solar Arc 將所有行星推進相同度數，不應受限於 caller 傳入的 transitingPoints（通常只有外行星）。
     // SA 使用 SolarArcConfig.transitingPoints（預設包含所有行星+軸點），而非 caller 的 transitingPoints。
+    //
+    // ⚠️⚠️ **正因為它忽略 caller 的集合，移動端的 grain 閘門必須裝在這裡。**
+    //      2026-08-31：呼叫端（`ReportFactory.scanTimeLineEvents`）已對移動端施加
+    //      [allowsMovingPoint]，但本 impl 把那個集合整個丟掉 —— SA 月亮因此照樣產出。
+    //      太陽弧每年只走約 1°，而 DAY 精度下本命月亮 ±6.6° ⇒ **日期誤差 ±6.6 年**，
+    //      印出來的 `perfects 2015-10-17` 與 `PEAK ORB <0.1°` 都是捏造的精度。
     val saPointsToConsider = config.solarArcConfig.transitingPoints
       .filter { it is Planet || it is LunarNode || it is Axis }
       .filter { model.points.contains(it) }
-      .filter {
-        if (grain == MINUTE)
-          true
-        else
-          it !in Axis.values
-      }.toSet()
+      .filter { grain.includeAxis || it !in Axis.values }
+      .filter { grain.allowsMovingPoint(EventSource.SOLAR_ARC, it) }
+      .toSet()
 
 
     /** 將 [GmtJulDay] 格式化為當地日期 (yyyy-MM-dd)，供描述文字使用 */

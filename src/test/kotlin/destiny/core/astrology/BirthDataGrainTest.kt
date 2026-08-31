@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.DayNight
+import destiny.core.astrology.prediction.EventSource
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -110,4 +111,57 @@ class BirthDataGrainTest {
     // 兩個閘門刻意不一致：HOUR2 有時辰、沒有 ASC
     assertTrue(BirthDataGrain.HOUR2.includeChineseHour && !BirthDataGrain.HOUR2.includeAxis)
   }
+
+  /**
+   * ⭐ 移動端閘門的門檻表 —— 由「角度誤差 ÷ 技法推進速率 ＝ 日期誤差」導出，不是偏好設定。
+   *
+   * | 本命月亮 σ | DAY ±6.6° | HOUR2 ±0.55° |
+   * |---|---|---|
+   * | 太陽弧（≈1°／年） | ±6.6 **年** | ±6.6 個月 |
+   * | 二次推運（≈13.2°／年） | ±6 個月 | ±15 天 |
+   *
+   * ⇒ 太陽弧月亮只在 MINUTE 可用；二次推運月亮的門檻恰與本命月亮相同。
+   */
+  @Test
+  fun movingMoonThresholdsFollowTheArithmetic() {
+    // 太陽弧：只有 MINUTE 過關（HOUR2 已是 ±6.6 個月）
+    assertTrue(BirthDataGrain.MINUTE.allowsMovingPoint(EventSource.SOLAR_ARC, Planet.MOON))
+    assertFalse(BirthDataGrain.HOUR2.allowsMovingPoint(EventSource.SOLAR_ARC, Planet.MOON))
+    assertFalse(BirthDataGrain.DAY.allowsMovingPoint(EventSource.SOLAR_ARC, Planet.MOON))
+
+    // 二次推運：門檻與本命月亮相同（HOUR2 解鎖）
+    assertTrue(BirthDataGrain.MINUTE.allowsMovingPoint(EventSource.SECONDARY, Planet.MOON))
+    assertTrue(BirthDataGrain.HOUR2.allowsMovingPoint(EventSource.SECONDARY, Planet.MOON))
+    assertFalse(BirthDataGrain.DAY.allowsMovingPoint(EventSource.SECONDARY, Planet.MOON))
+    assertFalse(BirthDataGrain.DAY_NIGHT_DIURNAL.allowsMovingPoint(EventSource.SECONDARY, Planet.MOON))
+
+    // ⚠️ 兩個技法在 HOUR2 分道揚鑣 —— 這一條是整組的重點：速率差 13 倍
+    assertTrue(
+      BirthDataGrain.HOUR2.allowsMovingPoint(EventSource.SECONDARY, Planet.MOON) &&
+        !BirthDataGrain.HOUR2.allowsMovingPoint(EventSource.SOLAR_ARC, Planet.MOON)
+    )
+  }
+
+  /** 反向護欄：月亮以外的點不受此閘門影響（DAY 精度下它們的 σ 小兩個量級）。 */
+  @Test
+  fun movingGateOnlyTouchesTheMoon() {
+    listOf(Planet.SUN, Planet.SATURN, Planet.URANUS).forEach { p ->
+      EventSource.entries.forEach { src ->
+        assertTrue(BirthDataGrain.DAY.allowsMovingPoint(src, p), "$src / $p 不該被這個閘門碰到")
+      }
+    }
+  }
+
+  /**
+   * ⚠️ 三次推運與 MINOR **刻意不濾**：它們快到即使 DAY 的 ±6.6° 也只換算成
+   * ±13 天／±7 天，落在窗寬內。行運月亮另有理由被排除（效應僅數小時），與精度無關 ——
+   * 兩個理由不可混為一談，所以這個閘門不碰它。
+   */
+  @Test
+  fun fastTechniquesAndTransitAreNotGatedHere() {
+    listOf(EventSource.TERTIARY, EventSource.MINOR, EventSource.TRANSIT).forEach { src ->
+      assertTrue(BirthDataGrain.DAY.allowsMovingPoint(src, Planet.MOON), "$src 不屬於精度閘門的範圍")
+    }
+  }
+
 }

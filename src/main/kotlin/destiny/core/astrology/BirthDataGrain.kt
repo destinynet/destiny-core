@@ -1,6 +1,7 @@
 package destiny.core.astrology
 
 import destiny.core.DayNight
+import destiny.core.astrology.prediction.EventSource
 import destiny.core.IBirthDataNamePlace
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -227,6 +228,48 @@ fun BirthDataGrain.allowsNatalTarget(point: AstroPoint): Boolean = when {
   point == Planet.MOON -> includeLunarPosition
   point is Axis        -> includeAxis
   else                 -> true
+}
+
+/**
+ * 這個點可不可以作為該技法的**移動端** —— [allowsNatalTarget] 的鏡像面。
+ *
+ * ## ⚠️ 閘門先前只做了一半
+ *
+ * [allowsNatalTarget] 濾的是本命側。但推運／太陽弧的移動端**同樣由本命位置推出來**，
+ * 因此繼承同一個未知量：出生時刻不確定 → 本命月亮不確定 → 推運月亮不確定。
+ * 只濾本命側的後果是素材自相矛盾 —— 一邊宣告「本命月亮 ±6.5°、不可作標的」，
+ * 一邊印出 `[SA Moon] SQUARE [n.Pluto] EXACT — PEAK ORB <0.1°` 這種由同一個 ±6.5°
+ * 導出的「精準」日期。盲測受測者連續三輪自行拆掉它並拒絕採信。
+ *
+ * ## 判準：角度誤差 ÷ 技法推進速率 ＝ 日期誤差
+ *
+ * | 本命月亮 σ | DAY ±6.6° | 晝夜 ±3.3° | HOUR2 ±0.55° | MINUTE ±0.005° |
+ * |---|---|---|---|---|
+ * | **太陽弧**（≈1°／年） | ±6.6 **年** | ±3.3 年 | ±6.6 個月 | ±2 天 |
+ * | **二次推運**（≈13.2°／年） | ±6 個月 | ±3 個月 | ±15 天 | ±0.1 天 |
+ *
+ * ⇒ 太陽弧月亮**只在 MINUTE 可用**；二次推運月亮的門檻恰好與本命月亮相同
+ * （兩者都要求月亮被放到 ±0.55° 以內），故直接沿用 [includeLunarPosition]。
+ *
+ * ## 為什麼其餘技法不在此列
+ *
+ * - **三次推運**（1 日＝1 朔望月，月亮 ≈176°／年）與 **MINOR**（≈360°／年）：
+ *   即使 DAY 的 ±6.6° 也只換算成 ±13 天／±7 天，落在窗寬內。**不濾。**
+ * - **行運月亮**：另有理由被排除（效應僅數小時），與精度無關 ——
+ *   兩個理由不可混為一談，否則措辭會對讀者說謊。
+ *
+ * ## ⚠️ 已知但**刻意未處理**的一項
+ *
+ * DAY 精度下本命太陽本身也有 ±0.5°，而太陽弧的推進量由它定義 ——
+ * 於是**每一條**太陽弧線的日期都是 ±6 個月，不只月亮那幾條。
+ * 這裡不濾，因為太陽弧是主要的假說產生器，整條拿掉損失過大；
+ * 正確的處方是呈現層不給到日的日期（年窗才誠實），屬另一件事。
+ */
+fun BirthDataGrain.allowsMovingPoint(source: EventSource, point: AstroPoint): Boolean = when {
+  point != Planet.MOON -> true
+  source == EventSource.SOLAR_ARC -> this == BirthDataGrain.MINUTE
+  source == EventSource.SECONDARY -> includeLunarPosition
+  else -> true
 }
 
 /**
