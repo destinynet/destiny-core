@@ -590,6 +590,19 @@ data class Past(
    * 法達與小限是出生資料與年齡的確定性函數，不需星曆掃描，代價與 [longTermTriggers] 不同量級。
    */
   val firdariaPeriods: List<Firdaria> = emptyList(),
+  /**
+   * ⚠️ **法達是因為精度而算不出來，還是這段期間剛好沒有？** —— 兩者都讓 [firdariaPeriods] 為空，
+   * 但對讀者是相反的指示，所以必須由**設定**記下來，不可從空集合反推。
+   *
+   * 法達只需晝夜，不需宮位；但「晝夜」本身在 [BirthDataGrain.DAY] 下就是不知道
+   * （見 [DayNightSource.Unavailable]），[BirthDataGrain.HOUR2] 橫跨日出／日落時亦然
+   * （[DayNightSource.Indeterminate]）。兩種情況下法達整組算不出來，
+   * 而**手推同樣無效** —— 缺的是判斷序列從太陽起還是從月亮起的那個資訊。
+   *
+   * 沒有這一欄時，下游的計數工具會把它歸進「取樣邊界，你自己推導吧」那一類，
+   * 那句話會把讀者送去手推一個手推同樣無效的東西。
+   */
+  val firdariaGated: Boolean = false,
   /** 全段的小限。理由同 [firdariaPeriods]；[EventGroup.profections] 是事件條件下的樣本，非母體。 */
   val profections: List<Profection> = emptyList(),
   /**
