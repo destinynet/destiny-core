@@ -269,3 +269,105 @@ fun movingPointCoverage(bySource: Map<EventSource, Collection<AstroPoint>>): Lis
     MovingPointCoverage(source, points.toList(), universe.filterNot { it in points })
   }
 }
+
+/**
+ * 一種**現象**（而非一顆星）。
+ *
+ * [movingPointCoverage] 回答的是「哪些**點**沒有分母」；本列舉是它的另一半：
+ * 「哪些**現象**沒有分母」。兩者的缺失方式相同 —— 某一層掃了、另一層沒掃 ——
+ * 而先前只有前者被自陳出來。
+ *
+ * @param label 對外的措辭。**與素材的 coverage 行、工具的自陳行共用同一份**，
+ *   所以改這裡就等於同時改兩處；先前那兩處是各自手寫的字面清單。
+ */
+enum class ScanPhenomenon(val label: String) {
+  TRANSIT_TO_NATAL_ASPECT("transit-to-natal aspects"),
+  TRANSIT_TO_TRANSIT_ASPECT("transit-transit aspects"),
+  STATION("stations"),
+  RETROGRADE_SPAN("retrograde phases"),
+  ECLIPSE("eclipses"),
+  SIGN_INGRESS("sign ingresses"),
+  HOUSE_INGRESS("house ingresses"),
+  LUNAR_PHASE("lunar phases"),
+  VOID_OF_COURSE("void-of-course moon"),
+  ;
+}
+
+/**
+ * 這個設定掃不掃某個現象 —— **由旗標導出，不另立清單**。
+ *
+ * 這正是 [movingPointCoverage] 的 KDoc 裡那條「由設定導出、不從結果反推」的同一條規矩：
+ * 反推會把「掃了但這段期間剛好沒發生」誤報成「不在母體裡」。
+ */
+fun AstrologyTraversalConfig.scans(phenomenon: ScanPhenomenon): Boolean = when (phenomenon) {
+  ScanPhenomenon.TRANSIT_TO_NATAL_ASPECT   -> personalAspect
+  ScanPhenomenon.TRANSIT_TO_TRANSIT_ASPECT -> globalAspect
+  ScanPhenomenon.STATION                   -> stationaryPlanets.isNotEmpty()
+  ScanPhenomenon.RETROGRADE_SPAN           -> retrograde
+  ScanPhenomenon.ECLIPSE                   -> eclipse
+  ScanPhenomenon.SIGN_INGRESS              -> signIngress
+  ScanPhenomenon.HOUSE_INGRESS             -> houseIngress
+  ScanPhenomenon.LUNAR_PHASE               -> lunarPhase
+  ScanPhenomenon.VOID_OF_COURSE            -> voc
+}
+
+/**
+ * 現象層面的三分：**可以問分母 / 有資料但問不到 / 連資料都只在事件窗裡**。
+ *
+ * @param counted 全段掃到，而且有計數工具 —— 可以要分母
+ * @param fullSpanNoTool 全段掃到，但沒有計數工具 —— 資料在，分母得自己導（而導出來的通常是錯的）
+ * @param windowOnly 只在事件窗裡掃 —— **永遠沒有分母**，讀者只看得到「出事的月份長什麼樣」
+ */
+data class PhenomenonCoverage(
+  val counted: List<ScanPhenomenon>,
+  val fullSpanNoTool: List<ScanPhenomenon>,
+  val windowOnly: List<ScanPhenomenon>,
+)
+
+/**
+ * ⭐ 現象層面的涵蓋自陳 —— [movingPointCoverage] 的另一半。
+ *
+ * ## 為什麼要有這個
+ *
+ * 先前的自陳只列出「哪些**星體**沒有全段分母」。而實際發生過的是另一種：
+ * 某個**現象**在事件窗掃得到、全段掃不到，於是讀者在事件月裡看見它、
+ * 拿它寫成規則，再手推一個分母 —— 而那個分母被實測為錯了三倍、
+ * 分子甚至根本是零。整條錯誤鏈上沒有任何一處會報錯。
+ *
+ * 那個現象後來補上了計數工具；但**同一類缺口當時還有三個潛伏著**
+ * （互相位、換座、月相），只是還沒有人踩到。這個函式把那三個講出來。
+ *
+ * ## 三分而非二分
+ *
+ * 「有資料但沒工具」與「連資料都沒有」對讀者是不同的處境：
+ * 前者可以要求加工具，後者得改掃描設定。混成一句「沒有分母」會讓兩者都無法行動。
+ *
+ * @param windowLayers 事件窗那幾層（讀者在事件月看得見的東西）
+ * @param fullSpanLayers 全段那幾層
+ * @param fullSpanExtras 不由 [AstrologyTraversalConfig] 決定、但確實掃了全段的現象
+ *   （例如順逆三相與留另有自己的全段掃描，不吃 traversal 的旗標）。
+ *   ⛔ 呼叫端必須跟著實際的掃描走 —— 這是本函式唯一無法自行導出的一格。
+ * @param countable 有計數工具的現象。⛔ 增減計數工具時要跟著改。
+ */
+fun phenomenonCoverage(
+  windowLayers: List<AstrologyTraversalConfig>,
+  fullSpanLayers: List<AstrologyTraversalConfig>,
+  fullSpanExtras: Set<ScanPhenomenon> = emptySet(),
+  countable: Set<ScanPhenomenon> = emptySet(),
+): PhenomenonCoverage {
+  fun scannedBy(layers: List<AstrologyTraversalConfig>, p: ScanPhenomenon) = layers.any { it.scans(p) }
+  val counted = mutableListOf<ScanPhenomenon>()
+  val noTool = mutableListOf<ScanPhenomenon>()
+  val windowOnly = mutableListOf<ScanPhenomenon>()
+  ScanPhenomenon.entries.forEach { p ->
+    val inFullSpan = scannedBy(fullSpanLayers, p) || p in fullSpanExtras
+    val inWindow = scannedBy(windowLayers, p)
+    when {
+      inFullSpan && p in countable -> counted += p
+      inFullSpan                   -> noTool += p
+      inWindow                     -> windowOnly += p
+      // 兩邊都沒有 ＝ 這份素材根本不含這個現象，不必宣告（宣告了反而像在暗示它存在）
+    }
+  }
+  return PhenomenonCoverage(counted, noTool, windowOnly)
+}
