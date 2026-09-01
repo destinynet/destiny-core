@@ -231,8 +231,17 @@ enum class EventType(
    *
    * 它指的是一段期間而非一個點狀變化，故不取 `_START` / `_END`；
    * 期間的兩端由 `PeriodEvent` 的 `from` / `to` 承載，不必再拆成兩個型別。
+   *
+   * ## 主詞為什麼是雙向（[fixedAgency] `= null`）
+   *
+   * ⚠️ 一度被填成固定 [Agency.PASSIVE]（「生活被治療接管」），而那**與本 KDoc 自己打架**：
+   * 上面明寫「非自願的收容／戒治走 [FREEDOM_LOSS]，**本值留給自願入院**或至少未被剝奪
+   * 行動自由者」。既然非自願的那一半已經被分流出去，剩下的這一半怎麼會是固定被動？
+   *
+   * 兩種主詞都常見且在生命敘事裡份量不同：自己決定開始一段長期療程（戒治、選擇性化療方案、
+   * 主動進復健）vs. 被病程推著走。⇒ 這一格由 `AbstractEvent.agency` 逐筆決定。
    */
-  LONG_TERM_MEDICAL_TREATMENT(HEALTH_AND_ACCIDENTS, fixedAgency = Agency.PASSIVE),
+  LONG_TERM_MEDICAL_TREATMENT(HEALTH_AND_ACCIDENTS, fixedAgency = null),
 
   /**
    * 健康恢復 —— **只在恢復本身有明確日期時使用**：醫師宣告痊癒／緩解、追蹤確認無復發、
