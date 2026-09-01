@@ -1,5 +1,6 @@
 package destiny.core.astrology
 
+import destiny.core.Agency
 import destiny.core.DayNight
 import destiny.core.EventType
 import destiny.core.Gender
@@ -129,6 +130,51 @@ sealed class AbstractEvent {
   abstract val details: String
   abstract val sentiment: EventSentiment?
 
+  /**
+   * 主詞 —— 這件事是他做的，還是發生在他身上的。
+   *
+   * **`null` 不是「不知道」，是「照 [EventType.fixedAgency] 的預設」。**
+   * 本欄只在偏離型別預設、或型別本身雙向（`fixedAgency == null`）時才需要填：
+   *
+   * | 型別 | `fixedAgency` | 本欄 |
+   * |---|---|---|
+   * | `MAJOR_ILLNESS` | `PASSIVE` | 一律留 null —— 沒有「主動確診」這種事 |
+   * | `RELATIONSHIP_START` | `null`（雙向） | ⭐ 這裡才帶資訊：主動追求 vs 被追 |
+   * | `BAPTISM` | `null`（雙向） | 成人自願 vs 嬰兒受洗 |
+   *
+   * 資訊量因此集中在它該在的地方，抽取端也不必在沒有選擇的格子上問問題。
+   * 判準見 [Agency] 的 KDoc：**看動作是誰做的，不看結果由誰決定。**
+   *
+   * ⚠️ 與型別預設**矛盾**的值會在建構時炸掉（見 `init`）—— 沉默地留著一個
+   * 「主動遭攻擊」的事件，比炸掉糟得多：它會一路流進統計而沒人看得出來。
+   */
+  abstract val agency: Agency?
+
+  /**
+   * 型別預設與本筆申報合併後的主詞。無申報時退回型別預設 —— 讀取端一律問這裡，
+   * 不要自己 `agency ?: eventType.fixedAgency`（同一段邏輯多處推導是本專案的頭號缺陷族）。
+   *
+   * **寫成函式而非屬性** —— 見 [grain] 的 KDoc：衍生屬性會被 `FormatSpec.of` 反射成
+   * LLM 該產出的必填欄位。
+   */
+  fun effectiveAgency(): Agency? = agency ?: eventType.fixedAgency
+
+  /**
+   * 主詞的申報與型別預設是否矛盾（「主動遭攻擊」「被動創業」）。
+   * 回傳錯誤訊息，無矛盾則 null。
+   *
+   * ⚠️ 由**四個子型別各自的 `init`** 呼叫，不放在本基底 —— Kotlin 的初始化順序讓
+   * 基底 `init` 早於子型別建構子參數的賦值，在那裡讀 [agency] 只會拿到 null。
+   * 判斷邏輯只有這一份，子型別各自只是呼叫它。
+   */
+  fun agencyConflict(): String? {
+    val fixed = eventType.fixedAgency ?: return null
+    val declared = agency ?: return null
+    return if (declared == fixed) null
+    else "$eventType 的主詞由型別固定為 $fixed，本筆卻申報 $declared —— " +
+      "若真有這種個案，該修的是型別（把它改成雙向），不是在這裡塞一個矛盾值。"
+  }
+
   /** 代表月份 —— 排序與顯示用。有延時者取其**起始**月，要涵蓋範圍請改用 [yearMonthRange]。 */
   abstract fun yearMonth() : YearMonth
 
@@ -173,7 +219,10 @@ data class MonthEvent(
   override val eventType: EventType,
   override val details: String,
   override val sentiment: EventSentiment? = null,
+  override val agency: Agency? = null,
 ) : AbstractEvent() {
+  init { agencyConflict()?.let { throw IllegalArgumentException(it) } }
+
   override fun yearMonth(): YearMonth {
     return date
   }
@@ -190,7 +239,10 @@ data class DayEvent(
   override val eventType: EventType,
   override val details: String,
   override val sentiment: EventSentiment? = null,
+  override val agency: Agency? = null,
 ) : AbstractEvent() {
+  init { agencyConflict()?.let { throw IllegalArgumentException(it) } }
+
   override fun yearMonth(): YearMonth {
     return YearMonth.from(date)
   }
@@ -207,7 +259,10 @@ data class MinuteEvent(
   override val eventType: EventType,
   override val details: String,
   override val sentiment: EventSentiment? = null,
+  override val agency: Agency? = null,
 ) : AbstractEvent() {
+  init { agencyConflict()?.let { throw IllegalArgumentException(it) } }
+
   override fun yearMonth(): YearMonth {
     return YearMonth.from(date)
   }
@@ -241,7 +296,10 @@ data class PeriodEvent(
   override val eventType: EventType,
   override val details: String,
   override val sentiment: EventSentiment? = null,
+  override val agency: Agency? = null,
 ) : AbstractEvent() {
+  init { agencyConflict()?.let { throw IllegalArgumentException(it) } }
+
 
   init {
     require(to == null || !to.isBefore(from)) { "PeriodEvent: to ($to) 早於 from ($from)" }
@@ -305,6 +363,7 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
     element("eventType", EventType.serializer().descriptor)
     element<String>("details")
     element("sentiment", EventSentiment.serializer().descriptor, isOptional = true)
+    element("agency", Agency.serializer().descriptor, isOptional = true)
   }
 
   override fun serialize(encoder: Encoder, value: AbstractEvent) {

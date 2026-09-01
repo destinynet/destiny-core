@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.Agency
 import destiny.core.EventType
 import destiny.core.calendar.YearMonthRange
 import kotlinx.serialization.json.Json
@@ -385,6 +386,76 @@ class AbstractEventTest {
           EventType.OTHERS, "ignition 在區間之後"
         )
       }
+    }
+  }
+
+  /**
+   * 主詞（[AbstractEvent.agency]）—— `null` 是「照型別預設」，不是「不知道」。
+   */
+  @Nested
+  inner class AgencyTest {
+
+    @Test
+    fun `未申報時退回型別的預設`() {
+      // 單向型別：型別自己就決定了主詞
+      assertEquals(Agency.PASSIVE, DayEvent(LocalDate.of(2020, 3, 3), EventType.MAJOR_ILLNESS, "確診").effectiveAgency())
+      assertEquals(Agency.ACTIVE, DayEvent(LocalDate.of(2020, 3, 3), EventType.ENTREPRENEURSHIP, "創業").effectiveAgency())
+      // 雙向型別：沒申報就是真的不知道
+      assertNull(DayEvent(LocalDate.of(2020, 3, 3), EventType.RELATIONSHIP_START, "在一起").effectiveAgency())
+    }
+
+    @Test
+    fun `雙向型別上的申報兩種都收`() {
+      for (a in listOf(Agency.ACTIVE, Agency.PASSIVE)) {
+        val e = DayEvent(LocalDate.of(2020, 3, 3), EventType.RELATIONSHIP_START, "在一起", null, a)
+        assertEquals(a, e.effectiveAgency())
+        assertNull(e.agencyConflict())
+      }
+    }
+
+    /**
+     * 「主動遭攻擊」這種值一旦沉默地留著，會一路流進統計而沒人看得出來 ——
+     * 故在建構時就炸掉。四個子型別都要炸（檢查邏輯只有一份，各自呼叫）。
+     */
+    @Test
+    fun `與型別預設矛盾的申報在建構時就炸`() {
+      assertFailsWith<IllegalArgumentException> {
+        DayEvent(LocalDate.of(2020, 3, 3), EventType.VICTIM_OF_ATTACK, "遭攻擊", null, Agency.ACTIVE)
+      }
+      assertFailsWith<IllegalArgumentException> {
+        MonthEvent(YearMonth.of(2020, 3), EventType.ENTREPRENEURSHIP, "創業", null, Agency.PASSIVE)
+      }
+      assertFailsWith<IllegalArgumentException> {
+        MinuteEvent(java.time.LocalDateTime.of(2020, 3, 3, 14, 30), EventType.MAJOR_ILLNESS, "確診", null, Agency.ACTIVE)
+      }
+      assertFailsWith<IllegalArgumentException> {
+        PeriodEvent(LocalDate.of(2020, 3, 1), null, null, EventType.MAJOR_ILLNESS, "療程", null, Agency.ACTIVE)
+      }
+    }
+
+    /** 與型別預設**相同**的申報是冗餘但合法 —— 不必為了純潔性去炸掉一個沒有錯的值 */
+    @Test
+    fun `與型別預設相同的申報合法`() {
+      val e = DayEvent(LocalDate.of(2020, 3, 3), EventType.MAJOR_ILLNESS, "確診", null, Agency.PASSIVE)
+      assertNull(e.agencyConflict())
+      assertEquals(Agency.PASSIVE, e.effectiveAgency())
+    }
+
+    @Test
+    fun `序列化 roundtrip 帶得動 agency`() {
+      val e = DayEvent(LocalDate.of(2020, 3, 3), EventType.RELATIONSHIP_START, "在一起", EventSentiment.POSITIVE, Agency.PASSIVE)
+      val json = Json.encodeToString(AbstractEventSerializer, e as AbstractEvent)
+      assertTrue(json.contains("\"agency\""), json)
+      assertEquals(e, Json.decodeFromString(AbstractEventSerializer, json))
+    }
+
+    /** 沒有 agency 的舊 JSON 必須照樣讀得進來（欄位是後加的，既有素材都沒有） */
+    @Test
+    fun `舊 JSON 無 agency 仍可反序列化`() {
+      val old = """{"date":"2020-03-03","eventType":"MAJOR_ILLNESS","details":"確診"}"""
+      val e = Json.decodeFromString(AbstractEventSerializer, old)
+      assertNull(e.agency)
+      assertEquals(Agency.PASSIVE, e.effectiveAgency())
     }
   }
 }
