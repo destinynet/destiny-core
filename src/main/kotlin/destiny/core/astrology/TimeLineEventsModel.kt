@@ -521,15 +521,52 @@ data class StationaryMoment(
   val contacts: List<SynastryAspect> = emptyList(),
 )
 
+/**
+ * past 與 future 兩側投影到計數／取用工具母體（corpus）時共有的「與事件無關」欄位。
+ *
+ * ## 為什麼要有這個介面
+ *
+ * 兩側各自新增一種天象時，要記得改的地方有五處（[Past] 欄位、[Future] 欄位、
+ * 兩側掃描、兩條投影路徑）—— 全靠人記。實際踩過的形態：取用工具掛在 FORECAST 側，
+ * 而 future 的投影漏了對應欄位，工具於是永遠回「不適用」——
+ * 「工具說有、素材說沒有」是本專案付過多次代價的缺陷族。
+ * 投影端只准從這個介面取這些欄位；漏掉哪一側，編譯器先亮。
+ *
+ * ## ⚠️ [corpusReturns] 的對應是不對稱的，而那正是要釘住的語意
+ *
+ * past 這一側**不是** [Past.solarReturns]（那是按事件群取的**事件條件樣本**，
+ * 拿去當分母就是倖存者偏誤），而是 [Past.fullSpanReturns]（全段、與事件無關）；
+ * future 側的 [Future.solarReturns] 本來就與事件無關（還沒有事件），可直接投影。
+ * 這個對應先前只存在於兩條投影路徑的程式碼裡 —— 拿錯欄位不會有任何錯誤訊息。
+ *
+ * ## ⛔ 期間類（firdaria／profection／ZR）**刻意不在**此介面
+ *
+ * 兩側雖都有 [Past.firdariaPeriods]／[Future.firdariaPeriods] 等欄位，但投影端只有
+ * past 側取用 —— future 的 corpus 是 returns-only（只掛取用類工具），期間類唯一的
+ * 工具是計數類，在沒有校準事件窗的一側沒有分子可數。把期間欄位放進本介面，
+ * 等於邀請 future 側也投影它、繞過「預測側與過去之間唯一通道是觸發表」的設計。
+ * 哪天真有期間類的**取用**工具掛上預測側，再擴充本介面，讓編譯器強迫兩側同補。
+ */
+interface ICorpusProjectable {
+  val fromTime: GmtJulDay
+  val toTime: GmtJulDay
+  /** 該側時段內的逆行三相區間 */
+  val retrogradeSpans: List<RetrogradePhaseSpan>
+  /** 該側時段內的留（轉向點），含該時刻對本命的相位（已過 grain 閘門） */
+  val stationaries: List<StationaryMoment>
+  /** 與事件無關的返照序列 —— past 是全段母體，future 是預測窗序列。見類別 KDoc 的不對稱說明 */
+  val corpusReturns: List<IReturnDto>
+}
+
 @Serializable
 data class Past(
   val eventGroups: List<EventGroup>,
   val solarReturns: List<@Contextual IReturnDto>,
   val longTermTriggers: List<@Contextual ITimeLineEvent>,
   @Contextual
-  val fromTime: GmtJulDay,
+  override val fromTime: GmtJulDay,
   @Contextual
-  val toTime: GmtJulDay,
+  override val toTime: GmtJulDay,
   val coverage: List<ScanCoverage> = emptyList(),
   /**
    * 負對照窗 —— 與 [eventGroups] **同一組掃描層、同樣一個日曆月**，但該月不屬於任何已記錄事件。
@@ -562,9 +599,9 @@ data class Past(
    * 全段的逆行三相區間。**素材不印**（它是背景日曆，不是對本命的事件），只走 funCall 這條路。
    * 與 [stationaries] 同源於一次 `IRetrograde.getPeriodCycles()`。
    */
-  val retrogradeSpans: List<RetrogradePhaseSpan> = emptyList(),
+  override val retrogradeSpans: List<RetrogradePhaseSpan> = emptyList(),
   /** 全段的留（轉向點），含該時刻對本命的相位（已過 grain 閘門）。 */
-  val stationaries: List<StationaryMoment> = emptyList(),
+  override val stationaries: List<StationaryMoment> = emptyList(),
   /**
    * ⭐ 全段掃描（[longTermTriggers]，＝計數母體）**每個 source 實際移動了哪些點**。
    *
@@ -629,14 +666,17 @@ data class Past(
    * 四十餘年的返照盤全部展開，體積會與其餘各段總和相當。
    */
   val fullSpanReturns: List<@Contextual IReturnDto> = emptyList(),
-)
+) : ICorpusProjectable {
+  /** ⚠️ 是 [fullSpanReturns]、不是 [solarReturns] —— 理由見 [ICorpusProjectable] 的不對稱說明 */
+  override val corpusReturns: List<IReturnDto> get() = fullSpanReturns
+}
 
 @Serializable
 data class Future(
   @Contextual
-  val fromTime: GmtJulDay,
+  override val fromTime: GmtJulDay,
   @Contextual
-  val toTime: GmtJulDay,
+  override val toTime: GmtJulDay,
   val astroEvents: List<@Contextual ITimeLineEvent>,
   val lunarReturns: List<ReturnCoverageDto>,
   val solarReturns: List<@Contextual IReturnDto>,
@@ -656,10 +696,13 @@ data class Future(
    *
    * 素材同樣不印（背景日曆，不是對本命的事件），只走 corpus → funCall。
    */
-  val retrogradeSpans: List<RetrogradePhaseSpan> = emptyList(),
+  override val retrogradeSpans: List<RetrogradePhaseSpan> = emptyList(),
   /** 預測窗內的留（轉向點），含該時刻對本命的相位（已過 grain 閘門）。理由同 [retrogradeSpans]。 */
-  val stationaries: List<StationaryMoment> = emptyList(),
-)
+  override val stationaries: List<StationaryMoment> = emptyList(),
+) : ICorpusProjectable {
+  /** 預測窗的返照本來就與事件無關（還沒有事件），可直接投影 —— 見 [ICorpusProjectable] */
+  override val corpusReturns: List<IReturnDto> get() = solarReturns
+}
 
 @Serializable
 data class MergedUserEventsModel(
