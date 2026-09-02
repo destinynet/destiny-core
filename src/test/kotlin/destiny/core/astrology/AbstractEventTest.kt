@@ -394,19 +394,33 @@ class AbstractEventTest {
    * 主詞（[AbstractEvent.role]）—— `null` **只有一個語意：未答**。
    *
    * 型別層不再提供預設（[Situation.roles] 只列舉可能，不猜最常見），
-   * 故單值 situation 由 [AbstractEvent.effectiveRole] 從 `roles` 補，
-   * 兩值 situation 未答就是真的不知道。
+   * 故兩值 situation 未答就是真的不知道；單值 situation 的另一端則是型別層說死不可能。
+   *
+   * ⚠️ 這裡刻意**沒有** `effectiveRole()` 的測試 —— 那個「合併型別先驗與逐筆申報」的函式
+   * 已刻意移除（理由見 [AbstractEvent.role] 的 KDoc）。
    */
   @Nested
   inner class RoleTest {
 
-    /** 合法組合可建構 */
+    /**
+     * 合法的申報一律收。
+     *
+     * 兩值 situation 的**兩個方向都要試** —— 只測 INITIATOR 的話，
+     * 「守衛把 RECIPIENT 也擋掉了」這種錯只會被序列化測試**意外**蓋到。
+     *
+     * 單值 situation 顯式申報那個唯一合法值，是 [AbstractEvent.roleConflict] 的邊界格
+     * （`declared in situation.roles` 在 `roles.size == 1` 時），全套測試裡沒有別處建構過。
+     */
     @Test
-    fun `role 落在 situation_roles 之內`() {
-      val e = DayEvent(LocalDate.of(2020, 3, 3), Situation.VIOLENCE, "x", role = EventRole.INITIATOR)
-      assertEquals(EventRole.INITIATOR, e.role)
+    fun `合法的申報一律收 —— 兩值兩個方向、單值那一個方向`() {
+      for (r in EventRole.entries) {
+        val e = DayEvent(LocalDate.of(2020, 3, 3), Situation.VIOLENCE, "x", role = r)
+        assertEquals(r, e.role)
+        assertNull(e.roleConflict())
+      }
+      val e = DayEvent(LocalDate.of(2020, 3, 3), Situation.MAJOR_ILLNESS, "x", role = EventRole.RECIPIENT)
+      assertEquals(EventRole.RECIPIENT, e.role)
       assertNull(e.roleConflict())
-      assertEquals(EventRole.INITIATOR, e.effectiveRole())
     }
 
     /**
@@ -432,35 +446,26 @@ class AbstractEventTest {
       }
     }
 
-    /** null ＝ 未答，唯一語意。單值 situation 的主詞由 situation 自己給。 */
-    @Test
-    fun `null 是未答，effectiveRole 由 situation 補`() {
-      assertNull(DayEvent(LocalDate.of(2020, 3, 3), Situation.VIOLENCE, "x").role)
-      assertEquals(
-        EventRole.RECIPIENT,
-        DayEvent(LocalDate.of(2020, 3, 3), Situation.MAJOR_ILLNESS, "x").effectiveRole()
-      )
-      assertEquals(
-        EventRole.INITIATOR,
-        DayEvent(LocalDate.of(2020, 3, 3), Situation.ENTREPRENEURSHIP, "x").effectiveRole()
-      )
-      assertNull(DayEvent(LocalDate.of(2020, 3, 3), Situation.VIOLENCE, "x").effectiveRole())
-    }
-
     /**
-     * ⭐ 手寫 descriptor 的欄位名稱 —— [AbstractEventSerializer.descriptor] 是**手寫**的，
-     * 欄位改名時編譯器不會提醒。直接斷言 element 名稱，漏改就直接紅，
-     * 而不是靠 roundtrip 間接發現。
+     * 上一條逐一列舉四個子型別 —— 而守衛是**四份各自的 `init` 呼叫**，
+     * 第五個子型別漏寫 `init { roleConflict() }` 時，那條測試會**靜默過期**（它只認得那四個）。
+     *
+     * ⇒ 把數量釘住，讓新增子型別的人被擋下來。
      */
     @Test
-    fun `descriptor 的 element 名稱`() {
-      val names = AbstractEventSerializer.descriptor.elementNames.toList()
+    fun `sealed 子型別恰有四個`() {
       assertEquals(
-        listOf("date", "from", "to", "ignition", "ongoing", "situation", "details", "sentiment", "role"),
-        names
+        4, AbstractEvent::class.sealedSubclasses.size,
+        "新增子型別時請一併補 init { roleConflict() } 與上面那條四路測試"
       )
-      assertFalse("eventType" in names)
-      assertFalse("agency" in names)
+    }
+
+    /** null ＝ 未答，唯一語意 —— 型別層不會替它補上任何值。 */
+    @Test
+    fun `null 是未答`() {
+      assertNull(DayEvent(LocalDate.of(2020, 3, 3), Situation.VIOLENCE, "x").role)
+      assertNull(DayEvent(LocalDate.of(2020, 3, 3), Situation.MAJOR_ILLNESS, "x").role)
+      assertNull(DayEvent(LocalDate.of(2020, 3, 3), Situation.ENTREPRENEURSHIP, "x").role)
     }
 
     @Test
@@ -478,7 +483,53 @@ class AbstractEventTest {
       val old = """{"date":"2020-03-03","situation":"MAJOR_ILLNESS","details":"確診"}"""
       val e = Json.decodeFromString(AbstractEventSerializer, old)
       assertNull(e.role)
-      assertEquals(EventRole.RECIPIENT, e.effectiveRole())
+    }
+  }
+
+  /**
+   * ⭐ [AbstractEventSerializer.descriptor] 的**唯一守門員**。
+   *
+   * 那份 descriptor 是手寫的，而且**沒有 runtime 消費者**（編解碼走四個子型別編譯器產生的
+   * serializer、JSON schema 走 Kotlin 反射）—— 見它自己的 KDoc。
+   * ⇒ 欄位名寫錯不會炸、不會紅，只會靜靜地與真實欄位漂開。roundtrip 測試抓不到。
+   *
+   * ⚠️ **獨立成一個 `@Nested`，不寄住在 [RoleTest] 裡。** 它守的是全部九個 element
+   * （含 [PeriodEvent] 的三個時間欄位與 `ongoing` 標記），與 role 只沾到一個。
+   * 放在 `RoleTest` 裡，日後有人判斷「role 的事做完了，RoleTest 可以精簡」，
+   * 整份 descriptor 的唯一守門員會陪葬。
+   */
+  @Nested
+  inner class SerializerDescriptorTest {
+
+    /**
+     * 期望值從四個子型別**推導**，而不是再手寫一份。
+     *
+     * 手寫的期望值只抓得到「手寫的 descriptor 被改了」這一個方向；
+     * 推導版**兩個方向都抓** —— 子型別新增或改名欄位而 descriptor 沒跟上，也會紅。
+     */
+    @Test
+    fun `element 名稱與四個子型別同步`() {
+      val fromSubtypes = listOf(
+        MonthEvent.serializer(), DayEvent.serializer(), MinuteEvent.serializer(), PeriodEvent.serializer()
+      ).flatMap { it.descriptor.elementNames }.toSet()
+
+      // "ongoing" 是出口附加的唯讀標記（見 AbstractEventSerializer.serialize），不屬於任何子型別
+      assertEquals(fromSubtypes + "ongoing", AbstractEventSerializer.descriptor.elementNames.toSet())
+    }
+
+    /** 順序也是契約的一部分（上面那條比的是集合，看不見順序被打亂）。 */
+    @Test
+    fun `element 的順序`() {
+      assertEquals(
+        listOf("date", "from", "to", "ignition", "ongoing", "situation", "details", "sentiment", "role"),
+        AbstractEventSerializer.descriptor.elementNames.toList()
+      )
+    }
+
+    /** serialName 有真實消費者：反序列化失敗時 `IChatCompletion` 把它印進錯誤訊息。 */
+    @Test
+    fun `serialName 為 AbstractEvent`() {
+      assertEquals("AbstractEvent", AbstractEventSerializer.descriptor.serialName)
     }
   }
 }

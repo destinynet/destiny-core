@@ -136,24 +136,29 @@ sealed class AbstractEvent {
    * ⚠️ 與前身的 `agency` 欄位不同：舊欄位的 `null` 是「照型別預設」，
    * 而新設計裡型別**不再提供預設** —— [Situation.roles] 只列舉可能，不猜最常見。
    *
-   * 單值 situation 不必填（[effectiveRole] 會從 `roles` 補），
+   * 單值 situation 不必填（型別層已經說死了另一端不可能），
    * 兩值 situation 這一欄才帶資訊（主動追求 vs 被追、成人自願受洗 vs 嬰兒受洗）。
    *
    * ⚠️ 值域外的值（例如替只可能承受的 situation 申報發起端）會在建構時炸掉（見 `init`）——
    * 沉默地留著一筆，比炸掉糟得多：它會一路流進統計而沒人看得出來。
+   *
+   * ## ⛔ 這裡**刻意不提供** `effectiveRole()` 之類「合併型別先驗與逐筆申報」的函式
+   *
+   * 曾經有過一個 `role ?: situation.roles.singleOrNull()`，KDoc 還寫著「讀取端一律問這裡」——
+   * 兩者都已移除，因為那句話**主動邀請**讀取端做一件被禁止的事。
+   *
+   * 它把 [Situation.roles]（**型別層先驗**）混進一個看起來像逐筆事實的讀數。
+   * 而 [Situation.roles] 的 KDoc 明文寫著：先驗不得進入任何餵給 LLM 判讀的出口 ——
+   * 把先驗餵給判讀端，量到的是它複述先驗的能力，不是它從盤上讀出了什麼。
+   * 一個名字裡有 `effective`、簽章長得像 getter 的函式，會讓這個錯誤看起來像「取值」。
+   *
+   * ⚠️ 這與 [EventRole] 刻意不提供 `toAgency()` 是同一把尺，但**不是同一種病**：
+   * `toAgency()` 是跨側轉換（進料側偽裝成判讀側），本函式是先驗汙染（型別層偽裝成事件層）。
+   *
+   * ⇒ 真的需要「這一筆到底是哪個主詞」時，**在呼叫點自己寫那一行**，
+   * 因為只有呼叫點知道自己在進料側還是判讀側。等有了呼叫端就拔不掉了 —— 所以順序不能反過來。
    */
   abstract val role: EventRole?
-
-  /**
-   * 合併後的主詞。單值 situation 由型別補；兩值 situation 未答時為 null。
-   *
-   * **讀取端一律問這裡**，不要自己 `role ?: situation.roles.singleOrNull()`
-   * —— 同一段邏輯多處推導是本專案的頭號缺陷族。
-   *
-   * 寫成函式而非屬性 —— 見 [grain] 的 KDoc：衍生屬性會被 `FormatSpec.of` 反射成
-   * LLM 該產出的必填欄位。
-   */
-  fun effectiveRole(): EventRole? = role ?: situation.roles.singleOrNull()
 
   /**
    * 主詞是否落在 [Situation.roles] 之外。回傳錯誤訊息，合法則 null。
@@ -163,8 +168,14 @@ sealed class AbstractEvent {
    * 真正被治好的是「同一根軸被編碼兩次」，不是「守衛歸零」——
    * 兩個獨立 enum 的 pair 仍寫得出非法組合。
    *
-   * ⚠️ 由**四個子型別各自的 `init`** 呼叫，不放在本基底 —— Kotlin 的初始化順序讓
-   * 基底 `init` 早於子型別建構子參數的賦值，在那裡讀 [role] 只會拿到 null。
+   * ⚠️ 由**四個子型別各自的 `init`** 呼叫，不放在本基底。Kotlin 的初始化順序讓
+   * 基底 `init` 早於子型別建構子參數的賦值，於是在那裡 [role] **與** [situation] 都是 null。
+   *
+   * ⚠️ 而後果比 NPE 糟：`val declared = role ?: return null` **先短路**，
+   * 根本走不到讀 [situation] 的那一行。⇒ 放在基底 `init` 的話，這個守衛會
+   * **靜默地永遠通過** —— 不是例外、不是紅燈，是一道看起來還在、實際上完全失效的防線。
+   * 這把「不能放在基底」從風格建議升級成**硬需求**。
+   *
    * 判斷邏輯只有這一份，子型別各自只是呼叫它。
    */
   fun roleConflict(): String? {
@@ -371,8 +382,10 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
    * 是它會**靜靜地與真實欄位漂開**，直到哪天出現一個真的 descriptor-driven 的消費者
    * 才一次爆出來。而那時沒有人會記得這份 descriptor 從未被驗證過。
    *
-   * ⛔ **`AbstractEventTest` 的 `descriptor 的 element 名稱` 那條是本 descriptor 的
-   * 唯一守門員。** 不要刪它，也不要以為 roundtrip 測試涵蓋了這裡。
+   * ⛔ **`AbstractEventTest.SerializerDescriptorTest` 是本 descriptor 的唯一守門員。**
+   * 不要刪它，也不要以為 roundtrip 測試涵蓋了這裡。
+   * （它獨立成一個 `@Nested`，正是因為先前寄住在 `RoleTest` 裡 ——
+   * 而它守的是全部九個 element，與 role 無關的那七個會跟著陪葬。）
    */
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("AbstractEvent") {
     // 點事件（MinuteEvent / DayEvent / MonthEvent）：由 date 的字面格式決定是哪一種
