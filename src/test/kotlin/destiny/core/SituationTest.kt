@@ -7,7 +7,19 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class SituationTest {
+class SituationTest : EnumTest() {
+
+  /**
+   * 每個成員在每個語系都查得到 title / description，且 title 不等於 enum name。
+   *
+   * ⚠️ 這條與 [SituationBundleParityTest] **不重疊**：那邊比對的是 `.properties` 檔的 key 集合
+   * （抓「檔案裡缺一行」），這邊走 `ResourceBundle` 的實際查詢路徑
+   * （抓「查得到、但查回來的是 enum name」這類接縫失效）。
+   */
+  @Test
+  fun testString() {
+    testEnums(Situation::class, true)
+  }
 
   /** 成員總數釘住。改動數量必須是刻意的，不是順手加的。 */
   @Test
@@ -86,6 +98,28 @@ class SituationTest {
   fun `每個 EventCategory 至少有一個成員`() {
     val covered = Situation.entries.map { it.category }.toSet()
     assertEquals(EventCategory.entries.toSet(), covered, "有 EventCategory 沒有任何 Situation 成員")
+  }
+
+  /**
+   * 雙向成員必須涵蓋每一個生命領域。
+   *
+   * 雙向成員（[Situation.roles] 兩值）是主詞這一維**唯一帶資訊**的地方 ——
+   * 主詞若已由型別固定成單值，「依主詞分層」量到的其實是型別本身。
+   * 這裡把它釘住，免得日後把成員一路填成單值、使該維度悄悄退化。
+   *
+   * ⚠️ 與 [每個 EventCategory 至少有一個成員] **不是同一件事**：那條測的是「任何成員」的涵蓋，
+   * 這條測的是「**雙向**成員」的涵蓋 —— 某個領域可以成員滿滿卻一個雙向的都沒有，
+   * 那條全綠，而該領域的主詞分層已經退化了。
+   */
+  @Test
+  fun `雙向成員必須涵蓋每一個生命領域`() {
+    val bidirectional = Situation.entries.filter { it.roles.size == 2 }
+    assertTrue(bidirectional.size >= 15, "雙向成員只剩 ${bidirectional.size} 個")
+
+    // OTHERS 不算 —— 它是無領域可歸者的收容所，不能拿來充數
+    val covered = bidirectional.filter { it != Situation.OTHERS }.map { it.category }.toSet()
+    assertEquals(EventCategory.entries.toSet() - EventCategory.OTHERS, covered,
+                 "有生命領域完全沒有雙向成員，該領域的主詞分層必然退化")
   }
 
   /** 舊字彙的殘留：靠名稱區分主詞的雙生子與形容詞開頭的成員都必須消失。 */

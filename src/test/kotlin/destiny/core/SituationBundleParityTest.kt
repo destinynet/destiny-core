@@ -12,7 +12,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * [Situation] 的各語系 bundle 必須同步：key 集合一致、無空值。
+ * [Situation] 與 [EventCategory] 的各語系 bundle 必須同步：key 集合一致、無空值。
  *
  * ## 為什麼 [I18nBundlesTest] 擋不住這件事
  *
@@ -32,8 +32,8 @@ import kotlin.test.assertTrue
  *
  * （`.properties` 是 ISO-8859-1 + `\\uXXXX` escape，`Properties.load(InputStream)` 會處理。）
  *
- * ⚠️ [EventCategory] 的 bundle 由 `EventTypeBundleParityTest` 守著，本測試**刻意不重複** ——
- * 同一件事在兩處維護，遲早只有一處被更新。
+ * ⚠️ [EventCategory] 的 bundle 原先由前身的 parity 測試守著。前身連同它的 bundle 一併移除後，
+ * 那條測試**搬到了這裡** —— [EventCategory] 本身沒有被刪，它的五語系仍需有人看著。
  */
 class SituationBundleParityTest {
 
@@ -66,8 +66,14 @@ class SituationBundleParityTest {
     assertParity("Situation", Situation.entries.map { "${it.name}.title" }.toSet())
   }
 
+  /** 自前身的 parity 測試搬來 —— [EventCategory] 沒有隨前身一起被刪，它的 bundle 仍需有人守。 */
+  @Test
+  fun `EventCategory 五語系與 enum 同步`() {
+    assertParity("EventCategory", EventCategory.entries.map { "${it.name}.title" }.toSet())
+  }
+
   /**
-   * 上面那條比對的是檔案內容，這條確認**接縫真的把 ko 接上了** ——
+   * 上面那兩條比對的是檔案內容，這條確認**接縫真的把 ko 接上了** ——
    * 檔案齊全但 `Lang.KO` 解析錯 locale 的話，使用者看到的仍是繁中。
    *
    * 斷言「與 `_ko` 檔案裡的值相同」而非寫死韓文字串：文案本來就會被潤，
@@ -82,6 +88,10 @@ class SituationBundleParityTest {
         "$situation 的韓文標題沒有走到 _ko bundle"
       )
     }
+    assertEquals(
+      load("EventCategory", "_ko").getProperty("OTHERS.title"),
+      EventCategory.OTHERS.getTitle(Lang.KO)
+    )
   }
 
   /**

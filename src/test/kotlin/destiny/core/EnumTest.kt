@@ -63,7 +63,7 @@ abstract class EnumTest {
    *
    * **為什麼 [testEnums] 抓不到漏翻譯**：`ResourceBundle` 找不到 key 時會 fallback 到 base
    * bundle，於是未翻譯項目的 `getTitle(ja)` 仍會回傳繁中字串 —— 非 null、也不等於 enum name，
-   * 那兩條斷言都會通過。`EventType_ja.properties` 曾經整整少一個 `MAJOR_FINANCIAL_GAIN`，
+   * 那兩條斷言都會通過。[Situation] 的前身，其 `_ja` bundle 曾經整整少一個 `MAJOR_FINANCIAL_GAIN`，
    * 日文使用者看到的是繁體中文，而測試全綠。要抓到它只能比對**檔案本身**的 key 集合。
    *
    * 只檢查**已存在**的語系檔 —— 不強制每個 enum 都要有 `_ja`（目前 100 個 bundle 家族中僅 15 個有）。
