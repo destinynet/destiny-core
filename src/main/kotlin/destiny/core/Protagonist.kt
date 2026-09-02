@@ -10,8 +10,8 @@ import kotlinx.serialization.Serializable
  * ⇒ 把它塞成 [EventRole] 的第三個值，就是「兩根軸擠進一個符號」的老病換一層重演。
  *
  * ⚠️ 目前**只用於判讀側**（預測某段期間的主角可能不是當事人本人）。
- * 進料側不設此欄：使用者時間軸上「身邊的人出事」由 `Situation` 自己承載
- * （`FAMILY_LOSS` / `FAMILY_HEALTH_CRISIS`），不必每一筆都問。
+ * 進料側不設此欄：使用者時間軸上「身邊的人出事」由 [Situation] 自己承載
+ * （[Situation.FAMILY_LOSS] / [Situation.FAMILY_HEALTH_CRISIS]），不必每一筆都問。
  */
 @Serializable
 enum class Protagonist {

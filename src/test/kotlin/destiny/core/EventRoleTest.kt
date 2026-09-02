@@ -1,3 +1,6 @@
+/**
+ * Created by smallufo on 2026-09-02.
+ */
 package destiny.core
 
 import kotlin.test.Test
