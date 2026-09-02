@@ -456,7 +456,9 @@ class AbstractEventTest {
     fun `sealed 子型別恰有四個`() {
       assertEquals(
         4, AbstractEvent::class.sealedSubclasses.size,
-        "新增子型別時請一併補 init { roleConflict() } 與上面那條四路測試"
+        "新增子型別時請一併補三處：(1) 該子型別的 init { roleConflict() }、"
+        + "(2) 上面那條四路測試、(3) SerializerDescriptorTest 的四個子型別清單 —— "
+        + "⚠️ 第 (3) 處漏了不會有任何測試變紅（推導式期望值會跟著少一個子型別一起錯開）"
       )
     }
 

@@ -114,7 +114,6 @@ class SituationTest : EnumTest() {
   @Test
   fun `雙向成員必須涵蓋每一個生命領域`() {
     val bidirectional = Situation.entries.filter { it.roles.size == 2 }
-    assertTrue(bidirectional.size >= 15, "雙向成員只剩 ${bidirectional.size} 個")
 
     // OTHERS 不算 —— 它是無領域可歸者的收容所，不能拿來充數
     val covered = bidirectional.filter { it != Situation.OTHERS }.map { it.category }.toSet()

@@ -368,11 +368,10 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
    * [serialize] / [deserialize] 的 roundtrip 測試**仍然全綠** —— 因為實際的編解碼
    * 走的是四個子型別**編譯器產生的** serializer，本 descriptor 從頭到尾沒被碰到。
    *
-   * ⚠️ **更正（2026-09-02 複核）**：本段初稿寫「唯一的消費者是 `FormatSpec.of`」，**那是錯的**，
-   * 而且與本檔 [AbstractEvent.grain] 的 KDoc 自相矛盾 —— 那一段寫的才對：
-   * `FormatSpec.of` 的 JSON schema 是用 `KClass.memberProperties` 反射產生的，
-   * **不經過 `KSerializer.descriptor`**（追蹤鏈：`FormatSpec.of` → `KClass.toJsonSchema`
-   * → `orderedProperties()` → `memberProperties`）。
+   * ⚠️ **給 LLM 的 JSON schema 也不走這裡。** `FormatSpec.of` 是用
+   * `KClass.memberProperties` 反射產生 schema 的（追蹤鏈：`FormatSpec.of`
+   * → `KClass.toJsonSchema` → `orderedProperties()` → `memberProperties`），
+   * 不經過 `KSerializer.descriptor`。同一件事在 [AbstractEvent.grain] 的 KDoc 也說過。
    *
    * ⇒ 這份 descriptor **目前沒有 runtime 消費者**：編解碼走子型別的 serializer、
    * schema 走 Kotlin 反射，兩條路都不經過這裡。它是 `KSerializer` 介面要求存在的

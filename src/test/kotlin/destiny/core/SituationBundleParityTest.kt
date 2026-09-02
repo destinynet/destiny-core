@@ -95,6 +95,32 @@ class SituationBundleParityTest {
   }
 
   /**
+   * ⭐ `ja` 版的同一道接縫（2026-09-02 補）。
+   *
+   * ⚠️ **此前 `ja` 是唯一沒有查詢路徑覆蓋的語系** —— 檔案層的 parity 測的是
+   * 「bundle 裡有沒有這個 key」，測不到「`Lang.JA` 有沒有解析到正確的 locale」。
+   * ⇒ 若哪天 `Lang.JA` 的解析壞掉，五個 bundle 檔完好無損、所有測試全綠，
+   * 而日文站的事件名**整批顯示繁體中文** —— 與催生 `ko` 那條測試的事故一模一樣，
+   * 只是換一個語系重演。
+   *
+   * `en` 不需要這條：[EnumTest.testEnums] 已對它斷言「標題不等於 enum name」。
+   */
+  @Test
+  fun `ja 不再 fallback 成繁中`() {
+    Situation.entries.forEach { situation ->
+      assertEquals(
+        load("Situation", "_ja").getProperty("${situation.name}.title"),
+        situation.getTitle(Lang.JA),
+        "$situation 的日文標題沒有走到 _ja bundle"
+      )
+    }
+    assertEquals(
+      load("EventCategory", "_ja").getProperty("OTHERS.title"),
+      EventCategory.OTHERS.getTitle(Lang.JA)
+    )
+  }
+
+  /**
    * 健全性檢查：確認上面那些斷言真的掃到了東西。
    *
    * **不寫成「至少 N 個」的門檻** —— 以數量為基準的斷言會隨著資料變動自己走掉。
