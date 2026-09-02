@@ -45,15 +45,6 @@ enum class EventCategory {
   OTHERS,
 }
 
-/** 兩種主詞都可能 —— 另一端在現實中確實會發生，交給事件層逐筆決定。 */
-private val BOTH = setOf(EventRole.INITIATOR, EventRole.RECIPIENT)
-
-/** 只可能是發起端 —— 承受端在現實中不成立。 */
-private val INITIATES = setOf(EventRole.INITIATOR)
-
-/** 只可能是承受端 —— 發起端在現實中不成立。 */
-private val RECEIVES = setOf(EventRole.RECIPIENT)
-
 /**
  * 定義所有可選的具體生命處境。
  *
@@ -76,11 +67,10 @@ private val RECEIVES = setOf(EventRole.RECIPIENT)
  * 是一句成立的話：「他贏了選舉，而那毀了他」。勝敗是**結果**（可觀察，屬型別），
  * 好壞是**評價**（因人而異，屬 sentiment），兩者正交，都要保留 ——
  * 不要因為名稱看起來帶價值判斷就想把 [COMPETITION_WIN] / [COMPETITION_LOSS] 併成一個。
- *
- * @param category 事件所屬的類別
  */
 @Serializable
 enum class Situation(
+  /** 事件所屬的類別 —— 只為表單摺疊選項，判讀端看不到。理由見 [EventCategory]。 */
   val category: EventCategory,
   /**
    * 這個處境**在現實中可能有哪些主詞**。
@@ -99,6 +89,16 @@ enum class Situation(
    * 照那條判準，「升遷／獲得重要職位」判成承受方（任命是別人做的）、
    * 「進入高等教育」判成發起方（就讀是他做的），儘管兩者的結構一模一樣
    * （他爭取、別人核可、他接受）。判準若隨命名擺動，就不是判準。
+   *
+   * ⚠️ **命名指引不再列「是否出於己意」，因為它現在就是本欄這根軸。**
+   * 把它留在命名指引裡，等於邀請未來的成員再一次把主詞編進型別名稱 ——
+   * 那正是本 enum 取代前身要消滅的東西，所以那一條被刪掉了（此處記下這一刀，免得它靜默）。
+   *
+   * 但成員 KDoc **仍可**用它來畫**型別之間**的界線 —— **前提是分流的目的地存在**：
+   * [ACADEMIC_SETBACK] 把自願的那一半分流到 [CAREER_CHANGE]、
+   * [LONG_TERM_MEDICAL_TREATMENT] 把非自願的那一半分流到 [FREEDOM_LOSS]。
+   * 那種情形下「主動休學去創業」與「被退學」不只主詞不同、**後續的人生也不同**，
+   * 是真的兩個 situation，不是同一個 situation 的兩個主詞。⇒ 兩處看似矛盾，實則分工。
    *
    * ⚠️ **把「多半是 X」寫成「固定是 X」的代價不是措辭問題。**
    * 那一格會變成假的事實：統計端若依主詞分層，母體落在被寫死的型別上時，
@@ -145,24 +145,24 @@ enum class Situation(
   // ── 感情與婚姻 ──
 
   /** 開始重要戀情 */
-  RELATIONSHIP_START(ROMANCE_AND_MARRIAGE, BOTH),
+  RELATIONSHIP_START(ROMANCE_AND_MARRIAGE, Roles.BOTH),
 
   /** 訂婚／結婚 */
-  ENGAGEMENT_MARRIAGE(ROMANCE_AND_MARRIAGE, BOTH),
+  ENGAGEMENT_MARRIAGE(ROMANCE_AND_MARRIAGE, Roles.BOTH),
 
   /** 分手／離婚 */
-  RELATIONSHIP_END(ROMANCE_AND_MARRIAGE, BOTH),
+  RELATIONSHIP_END(ROMANCE_AND_MARRIAGE, Roles.BOTH),
 
   /** 外遇／關係危機 */
-  RELATIONSHIP_CRISIS(ROMANCE_AND_MARRIAGE, BOTH),
+  RELATIONSHIP_CRISIS(ROMANCE_AND_MARRIAGE, Roles.BOTH),
 
   // ── 家庭與家族 ──
 
   /** 生子／收養子女 */
-  CHILD_BIRTH(FAMILY_AND_RELATIVES, BOTH),
+  CHILD_BIRTH(FAMILY_AND_RELATIVES, Roles.BOTH),
 
   /** 親人亡故 */
-  FAMILY_LOSS(FAMILY_AND_RELATIVES, RECEIVES),
+  FAMILY_LOSS(FAMILY_AND_RELATIVES, Roles.RECIPIENT_ONLY),
 
   /**
    * 親屬的重大健康危機 —— **未亡故**：父母中風、配偶確診癌症、子女重傷住院。
@@ -173,21 +173,21 @@ enum class Situation(
    *
    * 親人**過世**請改記 [FAMILY_LOSS]；若病危與過世相隔甚遠，兩筆都記。
    */
-  FAMILY_HEALTH_CRISIS(FAMILY_AND_RELATIVES, RECEIVES),
+  FAMILY_HEALTH_CRISIS(FAMILY_AND_RELATIVES, Roles.RECIPIENT_ONLY),
 
   /** 家庭衝突 */
-  FAMILY_CONFLICT(FAMILY_AND_RELATIVES, BOTH),
+  FAMILY_CONFLICT(FAMILY_AND_RELATIVES, Roles.BOTH),
 
   /** 搬家／移民 */
-  RELOCATION_IMMIGRATION(FAMILY_AND_RELATIVES, BOTH),
+  RELOCATION_IMMIGRATION(FAMILY_AND_RELATIVES, Roles.BOTH),
 
   // ── 事業與學業 ──
 
   /** 進入高等教育 */
-  START_HIGHER_EDUCATION(CAREER_AND_ACADEMICS, BOTH),
+  START_HIGHER_EDUCATION(CAREER_AND_ACADEMICS, Roles.BOTH),
 
   /** 畢業 */
-  GRADUATION(CAREER_AND_ACADEMICS, INITIATES),
+  GRADUATION(CAREER_AND_ACADEMICS, Roles.INITIATOR_ONLY),
 
   /**
    * 學業挫敗 —— 落榜、重要考試失利、被當／退學、論文未過、學位未取得。
@@ -196,53 +196,53 @@ enum class Situation(
    * **只收非自願者**：為創業或轉行而主動休退學不是挫敗，走 [CAREER_CHANGE]。
    * 界線畫在「是否出於己意」而非「後果好壞」—— 好壞留給 sentiment 表態。
    */
-  ACADEMIC_SETBACK(CAREER_AND_ACADEMICS, RECEIVES),
+  ACADEMIC_SETBACK(CAREER_AND_ACADEMICS, Roles.RECIPIENT_ONLY),
 
   /** 創業 */
-  ENTREPRENEURSHIP(CAREER_AND_ACADEMICS, INITIATES),
+  ENTREPRENEURSHIP(CAREER_AND_ACADEMICS, Roles.INITIATOR_ONLY),
 
   /** 升遷／獲得重要職位 */
-  PROMOTION_APPOINTMENT(CAREER_AND_ACADEMICS, BOTH),
+  PROMOTION_APPOINTMENT(CAREER_AND_ACADEMICS, Roles.BOTH),
 
   /** 重大成就／得獎 */
-  MAJOR_ACHIEVEMENT(CAREER_AND_ACADEMICS, BOTH),
+  MAJOR_ACHIEVEMENT(CAREER_AND_ACADEMICS, Roles.BOTH),
 
   /** 事業挫敗 */
-  CAREER_SETBACK(CAREER_AND_ACADEMICS, BOTH),
+  CAREER_SETBACK(CAREER_AND_ACADEMICS, Roles.BOTH),
 
   /** 失業／資遣 */
-  UNEMPLOYMENT_LAYOFF(CAREER_AND_ACADEMICS, RECEIVES),
+  UNEMPLOYMENT_LAYOFF(CAREER_AND_ACADEMICS, Roles.RECIPIENT_ONLY),
 
   /** 轉換跑道 */
-  CAREER_CHANGE(CAREER_AND_ACADEMICS, BOTH),
+  CAREER_CHANGE(CAREER_AND_ACADEMICS, Roles.BOTH),
 
   /** 下台／請辭 */
-  STEP_DOWN_RESIGN(CAREER_AND_ACADEMICS, BOTH),
+  STEP_DOWN_RESIGN(CAREER_AND_ACADEMICS, Roles.BOTH),
 
   /** 退休 */
-  RETIREMENT(CAREER_AND_ACADEMICS, BOTH),
+  RETIREMENT(CAREER_AND_ACADEMICS, Roles.BOTH),
 
   // ── 財務與資產 ──
 
   /** 財務收入／重大投資回報 */
-  MAJOR_FINANCIAL_GAIN(FINANCE_AND_ASSETS, BOTH),
+  MAJOR_FINANCIAL_GAIN(FINANCE_AND_ASSETS, Roles.BOTH),
 
   /** 破產／重大虧損 */
-  MAJOR_FINANCIAL_LOSS(FINANCE_AND_ASSETS, BOTH),
+  MAJOR_FINANCIAL_LOSS(FINANCE_AND_ASSETS, Roles.BOTH),
 
   /** 繼承遺產／大筆獲利 */
-  INHERITANCE_WINDFALL(FINANCE_AND_ASSETS, RECEIVES),
+  INHERITANCE_WINDFALL(FINANCE_AND_ASSETS, Roles.RECIPIENT_ONLY),
 
   /** 買房 */
-  REAL_ESTATE_PURCHASE(FINANCE_AND_ASSETS, INITIATES),
+  REAL_ESTATE_PURCHASE(FINANCE_AND_ASSETS, Roles.INITIATOR_ONLY),
 
   /** 賣房 */
-  REAL_ESTATE_SALE(FINANCE_AND_ASSETS, BOTH),
+  REAL_ESTATE_SALE(FINANCE_AND_ASSETS, Roles.BOTH),
 
   // ── 健康與意外 ──
 
   /** 確診重大疾病 */
-  MAJOR_ILLNESS(HEALTH_AND_ACCIDENTS, RECEIVES),
+  MAJOR_ILLNESS(HEALTH_AND_ACCIDENTS, Roles.RECIPIENT_ONLY),
 
   /**
    * 精神狀態發作 —— 憂鬱發作、躁期、恐慌發作、精神病症狀發作、創傷後反應大幅惡化。
@@ -268,11 +268,20 @@ enum class Situation(
    *
    * **輕重不由本值承載**：進料側寫進 `details`，判讀側交給 `ForecastWindow.intensity`。
    * 把輕重編進型別會重蹈「主詞編進名稱」的覆轍。
+   *
+   * ## 主詞
+   *
+   * - [EventRole.INITIATOR] ＝ 自傷／自殺未遂（動作是他做的）
+   * - [EventRole.RECIPIENT] ＝ 被病程推著走的發作
+   *
+   * ⚠️ 一度被填成只有承受端，而那**與上面那顆 ⭐ 直接打架**：既然自殺未遂歸本值，
+   * 發起端就不可能是「現實中不成立」；[DEATH] 那一格還明寫著「[EventRole.INITIATOR] ＝ 自殺」。
+   * 同一根軸的相鄰兩格，既遂算發起、未遂算不可能 —— 那不是判準，是漏填。
    */
-  MENTAL_HEALTH_EPISODE(HEALTH_AND_ACCIDENTS, RECEIVES),
+  MENTAL_HEALTH_EPISODE(HEALTH_AND_ACCIDENTS, Roles.BOTH),
 
   /** 大型手術 */
-  MAJOR_SURGERY(HEALTH_AND_ACCIDENTS, BOTH),
+  MAJOR_SURGERY(HEALTH_AND_ACCIDENTS, Roles.BOTH),
 
   /**
    * 長期療程 —— 需持續數週以上、且會取代日常生活的醫療處置。
@@ -323,7 +332,7 @@ enum class Situation(
    * 兩種主詞都常見且在生命敘事裡份量不同：自己決定開始一段長期療程（戒治、選擇性化療方案、
    * 主動進復健）vs. 被病程推著走。⇒ 這一格由 `AbstractEvent.role` 逐筆決定。
    */
-  LONG_TERM_MEDICAL_TREATMENT(HEALTH_AND_ACCIDENTS, BOTH),
+  LONG_TERM_MEDICAL_TREATMENT(HEALTH_AND_ACCIDENTS, Roles.BOTH),
 
   /**
    * 健康恢復 —— **只在恢復本身有明確日期時使用**：醫師宣告痊癒／緩解、追蹤確認無復發、
@@ -333,10 +342,33 @@ enum class Situation(
    * [LONG_TERM_MEDICAL_TREATMENT] 的 `PeriodEvent` 區間表達，**不要編一個日期**。
    * 出院日亦然 —— 那是該 `PeriodEvent` 的 `to`，不是獨立的一筆恢復事件。
    */
-  HEALTH_RECOVERY(HEALTH_AND_ACCIDENTS, RECEIVES),
+  HEALTH_RECOVERY(HEALTH_AND_ACCIDENTS, Roles.RECIPIENT_ONLY),
 
-  /** 重大意外（非人為蓄意） */
-  SERIOUS_ACCIDENT(HEALTH_AND_ACCIDENTS, RECEIVES),
+  /**
+   * 重大意外 —— **非人為蓄意**：車禍、墜落、火災、天災、工安事故、醫療意外。
+   * 蓄意者走 [VIOLENCE]。
+   *
+   * ## 主詞
+   *
+   * - [EventRole.INITIATOR] ＝ **他造成的**（酒駕撞人、操作失誤釀成工安事故）
+   * - [EventRole.RECIPIENT] ＝ 他遭遇的
+   *
+   * ⚠️ 兩者**可以同時為真**（肇事者自己也重傷）—— 但 role 記的是**動作是誰做的**，
+   * 與傷亡落在誰身上無關。同時為真時依動作端填，傷勢另記。
+   *
+   * ## 這一格是「排除不可能」原則的價值示範
+   *
+   * 它一度被填成只有承受端，而那是**舊判準加上「意外」這個名稱**的自然結果：
+   * 意外聽起來就是發生在人身上的事。但問一句「另一端真的不可能嗎」就露餡了 ——
+   * 「他酒駕撞死人」重大意外 ✓、非人為蓄意 ✓、當事人是動作端 ✓，
+   * 而型別層卻宣告發起端不可能，於是這一格**無處可放**：標 [VIOLENCE] 是錯的（那是蓄意），
+   * 只能落 [OTHERS]。傳記裡「造成一場致命事故」份量極重，往往接著
+   * [LEGAL_PROCEEDING_START] 與 [FREEDOM_LOSS]，正是最不該掉進 [OTHERS] 的一類。
+   *
+   * 合併前身兩個暴力成員的理由（同一件物理事件的兩個主詞）對非蓄意這一半同樣成立，
+   * 只是當初沒被套用過來。
+   */
+  SERIOUS_ACCIDENT(HEALTH_AND_ACCIDENTS, Roles.BOTH),
 
   /**
    * 暴力 —— 人為蓄意的身體傷害：毆打、械鬥、槍擊、性侵、家暴、戰場上的施暴與受暴。
@@ -352,7 +384,7 @@ enum class Situation(
    * 與 [FREEDOM_LOSS] **正交**（該值的判準是行動自由被剝奪，不預設有無暴力）：
    * 遭綁架又受傷者兩筆都記。非蓄意者走 [SERIOUS_ACCIDENT]。
    */
-  VIOLENCE(HEALTH_AND_ACCIDENTS, BOTH),
+  VIOLENCE(HEALTH_AND_ACCIDENTS, Roles.BOTH),
 
   /**
    * 死亡。
@@ -375,18 +407,18 @@ enum class Situation(
    * 只是不進**預測輸出** —— 一個算命產品不該對使用者說「您可能會病逝」。
    * 該旗標的完整說明見其 KDoc，特別是「它只擋得住結構化欄位」那一段。
    */
-  DEATH(HEALTH_AND_ACCIDENTS, BOTH, forecastable = false),
+  DEATH(HEALTH_AND_ACCIDENTS, Roles.BOTH, forecastable = false),
 
   // ── 名聲與人際 ──
 
   /** 名聲危機 */
-  REPUTATION_CRISIS(REPUTATION_AND_RELATIONSHIPS, BOTH),
+  REPUTATION_CRISIS(REPUTATION_AND_RELATIONSHIPS, Roles.BOTH),
 
   /** 名譽恢復 */
-  REPUTATION_RESTORED(REPUTATION_AND_RELATIONSHIPS, BOTH),
+  REPUTATION_RESTORED(REPUTATION_AND_RELATIONSHIPS, Roles.BOTH),
 
   /** 爆紅 */
-  GOING_VIRAL(REPUTATION_AND_RELATIONSHIPS, BOTH),
+  GOING_VIRAL(REPUTATION_AND_RELATIONSHIPS, Roles.BOTH),
 
   /**
    * 私密失守 —— **非自願地失去對自身資訊的控制權**：病歷／診斷外洩、遭他人出櫃、
@@ -422,7 +454,7 @@ enum class Situation(
    * 讀到這裡會預期第三對 —— **刻意沒有**。名譽可以平反、自由可以釋放，
    * 但已經公開的事實收不回去，「私密恢復」找不到對應的可觀察事件。
    */
-  PRIVACY_LOSS(REPUTATION_AND_RELATIONSHIPS, RECEIVES),
+  PRIVACY_LOSS(REPUTATION_AND_RELATIONSHIPS, Roles.RECIPIENT_ONLY),
 
   /**
    * 法律程序開始 —— 遭起訴、被告、提告他人、被搜索約談、進入仲裁或重大訴訟。
@@ -436,7 +468,7 @@ enum class Situation(
    * [LEGAL_OUTCOME_FAVORABLE] / [LEGAL_OUTCOME_UNFAVORABLE]。
    * 訴訟纏身不必然失去自由 —— 那是 [FREEDOM_LOSS]，兩者不互相蘊含。
    */
-  LEGAL_PROCEEDING_START(REPUTATION_AND_RELATIONSHIPS, BOTH),
+  LEGAL_PROCEEDING_START(REPUTATION_AND_RELATIONSHIPS, Roles.BOTH),
 
   /**
    * 有利的法律結果 —— 勝訴、獲判無罪、不起訴、和解成立且對己有利、撤銷原判。
@@ -450,7 +482,7 @@ enum class Situation(
    * ⛔ **不要加第三個 `_MIXED`。** 那等於把 `sentiment` 的值抄進型別名稱 ——
    * 「混合」是評價那一軸的事，而評價已經有自己的欄位。
    */
-  LEGAL_OUTCOME_FAVORABLE(REPUTATION_AND_RELATIONSHIPS, RECEIVES),
+  LEGAL_OUTCOME_FAVORABLE(REPUTATION_AND_RELATIONSHIPS, Roles.RECIPIENT_ONLY),
 
   /**
    * 不利的法律結果 —— 敗訴、有罪判決、遭裁罰、和解條件不利、上訴駁回。
@@ -461,7 +493,7 @@ enum class Situation(
    * 部分勝訴部分敗訴的處理見 [LEGAL_OUTCOME_FAVORABLE]（兩筆都記，不設 `_MIXED`）。
    * 判決導致入監另記 [FREEDOM_LOSS] —— 判決與執行是兩天。
    */
-  LEGAL_OUTCOME_UNFAVORABLE(REPUTATION_AND_RELATIONSHIPS, RECEIVES),
+  LEGAL_OUTCOME_UNFAVORABLE(REPUTATION_AND_RELATIONSHIPS, Roles.RECIPIENT_ONLY),
 
   /**
    * 失去人身自由 —— 入獄服刑、羈押、綁架、非法監禁、軟禁、強制收容／住院。
@@ -470,25 +502,26 @@ enum class Situation(
    * 遭綁架又受傷者兩筆都記。也不等同 [LEGAL_PROCEEDING_START] —— 訴訟纏身不必然失去自由，
    * 而軟禁與綁架根本不經法律程序。
    */
-  FREEDOM_LOSS(REPUTATION_AND_RELATIONSHIPS, RECEIVES),
+  FREEDOM_LOSS(REPUTATION_AND_RELATIONSHIPS, Roles.RECIPIENT_ONLY),
 
   /** 重獲自由／釋放 —— [FREEDOM_LOSS] 的對稱項（命名對照 [REPUTATION_CRISIS] / [REPUTATION_RESTORED]） */
-  FREEDOM_RESTORED(REPUTATION_AND_RELATIONSHIPS, BOTH),
+  FREEDOM_RESTORED(REPUTATION_AND_RELATIONSHIPS, Roles.BOTH),
 
   /** 競逐得勝 */
-  COMPETITION_WIN(REPUTATION_AND_RELATIONSHIPS, INITIATES),
+  COMPETITION_WIN(REPUTATION_AND_RELATIONSHIPS, Roles.INITIATOR_ONLY),
 
   /** 競逐失利（如選舉、商業奪權） */
-  COMPETITION_LOSS(REPUTATION_AND_RELATIONSHIPS, INITIATES),
+  COMPETITION_LOSS(REPUTATION_AND_RELATIONSHIPS, Roles.INITIATOR_ONLY),
 
   /** 公開對抗／控訴 */
-  PUBLIC_CONFRONTATION(REPUTATION_AND_RELATIONSHIPS, INITIATES),
+  PUBLIC_CONFRONTATION(REPUTATION_AND_RELATIONSHIPS, Roles.INITIATOR_ONLY),
 
   /** 與摯友／夥伴決裂 */
-  FALLING_OUT(REPUTATION_AND_RELATIONSHIPS, BOTH),
+  FALLING_OUT(REPUTATION_AND_RELATIONSHIPS, Roles.BOTH),
 
   /**
-   * 背叛 —— 單向且在暗處：仍在信任範圍內的人反手，或從未浮上檯面就在扯後腿。
+   * 背叛／出賣／暗中陷害 —— 單向且在暗處：仍在信任範圍內的人反手，
+   * 或從未浮上檯面就在扯後腿。
    *
    * 與 [FALLING_OUT] 的差別在於**是否雙向且公開**：決裂是兩邊都知道翻臉了，
    * 背叛則是受方事後才知道。與 [PUBLIC_CONFRONTATION] 的差別同理。
@@ -497,13 +530,13 @@ enum class Situation(
    * 前身只收前者（名稱即「遭背叛」），於是傳記裡再常見不過的「他出賣了提攜他的人」
    * 無處可歸。⇒ 主詞走 [roles]，逐筆由 `AbstractEvent.role` 回答。
    */
-  BETRAYAL(REPUTATION_AND_RELATIONSHIPS, BOTH),
+  BETRAYAL(REPUTATION_AND_RELATIONSHIPS, Roles.BOTH),
 
   /** 和解 */
-  RECONCILIATION(REPUTATION_AND_RELATIONSHIPS, BOTH),
+  RECONCILIATION(REPUTATION_AND_RELATIONSHIPS, Roles.BOTH),
 
   /** 遇到重要導師 */
-  MEET_KEY_MENTOR(REPUTATION_AND_RELATIONSHIPS, BOTH),
+  MEET_KEY_MENTOR(REPUTATION_AND_RELATIONSHIPS, Roles.BOTH),
 
   // ── 心靈與宗教 ──
 
@@ -511,31 +544,68 @@ enum class Situation(
    * 受洗 —— **兩端都收**：成人受洗是自己決定的，嬰兒受洗則完全由父母決定，
    * 當事人連知情都談不上。兩者在生命敘事裡的份量完全不同。
    */
-  BAPTISM(SPIRITUAL_AND_RELIGIOUS, BOTH),
+  BAPTISM(SPIRITUAL_AND_RELIGIOUS, Roles.BOTH),
 
   /** 宗教皈依 */
-  CONVERSION(SPIRITUAL_AND_RELIGIOUS, BOTH),
+  CONVERSION(SPIRITUAL_AND_RELIGIOUS, Roles.BOTH),
 
   /**
    * 退教 —— **兩端都收**：自行離開，或遭逐出教門／絕罰／破門。
    * 後者是別人做的動作，與前者只是同一個狀態變化的兩種主詞。
    */
-  LEAVE_RELIGION(SPIRITUAL_AND_RELIGIOUS, BOTH),
+  LEAVE_RELIGION(SPIRITUAL_AND_RELIGIOUS, Roles.BOTH),
 
   /** 剃度出家／受戒 */
-  ORDINATION_MONASTIC(SPIRITUAL_AND_RELIGIOUS, BOTH),
+  ORDINATION_MONASTIC(SPIRITUAL_AND_RELIGIOUS, Roles.BOTH),
 
   /** 精神覺醒 */
-  SPIRITUAL_AWAKENING(SPIRITUAL_AND_RELIGIOUS, RECEIVES),
+  SPIRITUAL_AWAKENING(SPIRITUAL_AND_RELIGIOUS, Roles.RECIPIENT_ONLY),
 
   /** 朝聖 */
-  PILGRIMAGE(SPIRITUAL_AND_RELIGIOUS, INITIATES),
+  PILGRIMAGE(SPIRITUAL_AND_RELIGIOUS, Roles.INITIATOR_ONLY),
 
   /** 其他重大宗教儀式 */
-  RELIGIOUS_CEREMONY(SPIRITUAL_AND_RELIGIOUS, BOTH),
+  RELIGIOUS_CEREMONY(SPIRITUAL_AND_RELIGIOUS, Roles.BOTH),
 
   // ── 其他 ──
 
   /** 其他事件 */
-  OTHERS(EventCategory.OTHERS, BOTH),
+  OTHERS(EventCategory.OTHERS, Roles.BOTH),
+  ;
+
+  /**
+   * [roles] 的三個值域常數。
+   *
+   * 命名刻意用 `_ONLY` 尾綴呼應 [EventRole] 的值名：在位置參數的脈絡下，
+   * 常數名是呼叫點唯一的標籤，而「**另一端不可能**」正是單值那一格唯一在說的事，
+   * 應該在每一個呼叫點都看得見。
+   *
+   * ## 為什麼是巢狀 object，不是 file-level `private val`
+   *
+   * file-level property 依**原始碼順序**初始化。常數若放在檔案頂層，
+   * 只要有人日後在它**上方**加一個會讀到 [entries] 的 top-level property
+   * （例如照 [forecastable] 的叮囑「在這個檔案裡快取一份可預測清單」），
+   * 所有成員的 [roles] 就會**全部變成 `null`** —— 不拋例外、不出警告、編譯照過。
+   * 那是本檔最容易被觸發的靜默失效，而 [forecastable] 的 KDoc 幾乎是在邀請它。
+   *
+   * 巢狀 object 對這種順序攻擊免疫：`Situation.Roles` 是獨立類別，
+   * 不參與 file facade 的初始化順序。
+   *
+   * ## ⛔ 不能改放 `companion object`
+   *
+   * enum 的 companion 在 entries 之後才初始化。但**這條是編譯期就被擋下的**
+   * （`companion object of enum class 'Situation' is uninitialized here`），
+   * 不是執行期拿到 `null` —— 差別有實質意義：編譯器擋得住的錯誤是**安全的**錯誤，
+   * 不需要在文件或測試裡防守。上面那個順序坑才需要，因為只有它是靜默的。
+   */
+  private object Roles {
+    /** 兩種主詞都可能 —— 另一端在現實中確實會發生，交給事件層逐筆決定。 */
+    val BOTH = setOf(EventRole.INITIATOR, EventRole.RECIPIENT)
+
+    /** 只可能是發起端 —— 承受端在現實中不成立。 */
+    val INITIATOR_ONLY = setOf(EventRole.INITIATOR)
+
+    /** 只可能是承受端 —— 發起端在現實中不成立。 */
+    val RECIPIENT_ONLY = setOf(EventRole.RECIPIENT)
+  }
 }
