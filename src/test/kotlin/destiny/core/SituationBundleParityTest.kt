@@ -73,6 +73,20 @@ class SituationBundleParityTest {
   }
 
   /**
+   * [EventRole] 在 Task 1 當下**刻意沒有 bundle**：那時它還只是內部軸，
+   * 與 [Agency] 同類，而本 repo 的先例很清楚 —— 純內部軸的 enum 兩者皆無。
+   *
+   * ⭐ 2026-09-02 起它變成**使用者可見**（進料表單的主詞欄位，見
+   * `LifeEventBlocks.roleField`），於是落進另一條先例：**表單面的 enum 一律有
+   * `.properties` ＋ parity 測試**（[EventCategory] / `SynastryDomain` 皆是）。
+   * ⇒ 分類變了，守衛跟著變。
+   */
+  @Test
+  fun `EventRole 五語系與 enum 同步`() {
+    assertParity("EventRole", EventRole.entries.map { "${it.name}.title" }.toSet())
+  }
+
+  /**
    * 上面那兩條比對的是檔案內容，這條確認**接縫真的把 ko 接上了** ——
    * 檔案齊全但 `Lang.KO` 解析錯 locale 的話，使用者看到的仍是繁中。
    *
