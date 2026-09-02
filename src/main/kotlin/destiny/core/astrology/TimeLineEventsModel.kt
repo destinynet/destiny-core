@@ -350,6 +350,20 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
   private val LOCAL_DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE // YYYY-MM-DD
   private val YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM")
 
+  /**
+   * ⚠️ **這份 descriptor 是手寫的，而且 roundtrip 測試抓不到它的錯。**
+   *
+   * 2026-09-02 以變異測試證實：把 `element("situation", …)` 改回 `"eventType"` 之後，
+   * [serialize] / [deserialize] 的 roundtrip 測試**仍然全綠** —— 因為實際的編解碼
+   * 走的是四個子型別**編譯器產生的** serializer，本 descriptor 從頭到尾沒被碰到。
+   *
+   * 它唯一的消費者是**靠反射讀 schema 的人**（`FormatSpec.of` 產生給 LLM 的 JSON schema）。
+   * ⇒ 欄位名寫錯的懲罰不是例外、不是紅燈，是**餵給模型的 schema 與實際欄位對不上**，
+   * 而模型照著錯的 schema 產出的東西會在反序列化時才炸，或更糟 —— 靜默地少一個欄位。
+   *
+   * ⛔ **`AbstractEventTest` 的 `descriptor 的 element 名稱` 那條是本 descriptor 的
+   * 唯一守門員。** 不要刪它，也不要以為 roundtrip 測試涵蓋了這裡。
+   */
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("AbstractEvent") {
     // 點事件（MinuteEvent / DayEvent / MonthEvent）：由 date 的字面格式決定是哪一種
     element<String>("date", isOptional = true)
