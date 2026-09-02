@@ -3,9 +3,10 @@
  */
 package destiny.core.astrology
 
-import destiny.core.Agency
-import destiny.core.EventType
+import destiny.core.EventRole
+import destiny.core.Situation
 import destiny.core.calendar.YearMonthRange
+import kotlinx.serialization.descriptors.elementNames
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested
 import java.time.LocalDate
@@ -17,27 +18,27 @@ class AbstractEventTest {
   @Test
   fun testGroupAdjacentEvents_MonthOnly() {
     val events = listOf(
-      MonthEvent(YearMonth.of(2018, 12), EventType.OTHERS, "事件A"),
-      MonthEvent(YearMonth.of(2019, 2), EventType.OTHERS, "事件B"), // 與事件A鄰近 (因為 12月+1月+2月 連續)
+      MonthEvent(YearMonth.of(2018, 12), Situation.OTHERS, "事件A"),
+      MonthEvent(YearMonth.of(2019, 2), Situation.OTHERS, "事件B"), // 與事件A鄰近 (因為 12月+1月+2月 連續)
 
-      MonthEvent(YearMonth.of(2022, 5), EventType.OTHERS, "事件C"), // 獨立事件
+      MonthEvent(YearMonth.of(2022, 5), Situation.OTHERS, "事件C"), // 獨立事件
 
-      MonthEvent(YearMonth.of(2022, 11), EventType.OTHERS, "事件D"),
-      MonthEvent(YearMonth.of(2022, 12), EventType.OTHERS, "事件E") // 與事件D鄰近
+      MonthEvent(YearMonth.of(2022, 11), Situation.OTHERS, "事件D"),
+      MonthEvent(YearMonth.of(2022, 12), Situation.OTHERS, "事件E") // 與事件D鄰近
     )
 
     events.groupAdjacentEvents(extMonth = 1).also { groups ->
       assertEquals(3, groups.size)
       val expected = listOf(
         listOf(
-          MonthEvent(YearMonth.of(2018, 12), EventType.OTHERS, "事件A"),
-          MonthEvent(YearMonth.of(2019, 2), EventType.OTHERS, "事件B")
+          MonthEvent(YearMonth.of(2018, 12), Situation.OTHERS, "事件A"),
+          MonthEvent(YearMonth.of(2019, 2), Situation.OTHERS, "事件B")
         ),
-        listOf(MonthEvent(YearMonth.of(2022, 5), EventType.OTHERS, "事件C")),
+        listOf(MonthEvent(YearMonth.of(2022, 5), Situation.OTHERS, "事件C")),
 
         listOf(
-          MonthEvent(YearMonth.of(2022, 11), EventType.OTHERS, "事件D"),
-          MonthEvent(YearMonth.of(2022, 12), EventType.OTHERS, "事件E")
+          MonthEvent(YearMonth.of(2022, 11), Situation.OTHERS, "事件D"),
+          MonthEvent(YearMonth.of(2022, 12), Situation.OTHERS, "事件E")
         )
       )
       assertEquals(expected, groups)
@@ -50,21 +51,21 @@ class AbstractEventTest {
   @Test
   fun testGroupAdjacentEvents_MixedTypes() {
     val events = listOf(
-      MonthEvent(YearMonth.of(2025, 1), EventType.OTHERS, "升職"),
-      DayEvent(LocalDate.of(2025, 3, 15), EventType.OTHERS, "婚禮"), // 3月與1月鄰近 (extMonth=1)
+      MonthEvent(YearMonth.of(2025, 1), Situation.OTHERS, "升職"),
+      DayEvent(LocalDate.of(2025, 3, 15), Situation.OTHERS, "婚禮"), // 3月與1月鄰近 (extMonth=1)
 
-      MonthEvent(YearMonth.of(2025, 7), EventType.OTHERS, "搬家") // 7月與3月不鄰近
+      MonthEvent(YearMonth.of(2025, 7), Situation.OTHERS, "搬家") // 7月與3月不鄰近
     )
 
     val groups = events.groupAdjacentEvents(extMonth = 1)
     assertEquals(2, groups.size)
     val expected = listOf(
       listOf(
-        MonthEvent(YearMonth.of(2025, 1), EventType.OTHERS, "升職"),
-        DayEvent(LocalDate.of(2025, 3, 15), EventType.OTHERS, "婚禮")
+        MonthEvent(YearMonth.of(2025, 1), Situation.OTHERS, "升職"),
+        DayEvent(LocalDate.of(2025, 3, 15), Situation.OTHERS, "婚禮")
       ),
       listOf(
-        MonthEvent(YearMonth.of(2025, 7), EventType.OTHERS, "搬家")
+        MonthEvent(YearMonth.of(2025, 7), Situation.OTHERS, "搬家")
       )
     )
     assertEquals(expected, groups)
@@ -76,22 +77,22 @@ class AbstractEventTest {
   @Test
   fun testGroupAdjacentEvents_DayOnly_AcrossYears() {
     val events = listOf(
-      DayEvent(LocalDate.of(2023, 1, 10), EventType.OTHERS, "A公司面試"),
-      DayEvent(LocalDate.of(2023, 3, 5), EventType.OTHERS, "拿到A公司Offer"), // 3月與1月鄰近
-      DayEvent(LocalDate.of(2023, 12, 25), EventType.OTHERS, "聖誕節車禍"),
-      DayEvent(LocalDate.of(2024, 1, 30), EventType.OTHERS, "康復出院")  // 隔年1月與12月鄰近
+      DayEvent(LocalDate.of(2023, 1, 10), Situation.OTHERS, "A公司面試"),
+      DayEvent(LocalDate.of(2023, 3, 5), Situation.OTHERS, "拿到A公司Offer"), // 3月與1月鄰近
+      DayEvent(LocalDate.of(2023, 12, 25), Situation.OTHERS, "聖誕節車禍"),
+      DayEvent(LocalDate.of(2024, 1, 30), Situation.OTHERS, "康復出院")  // 隔年1月與12月鄰近
     )
 
     val groups = events.groupAdjacentEvents(extMonth = 1)
     assertEquals(2, groups.size)
     val expected = listOf(
       listOf(
-        DayEvent(LocalDate.of(2023, 1, 10), EventType.OTHERS, "A公司面試"),
-        DayEvent(LocalDate.of(2023, 3, 5), EventType.OTHERS, "拿到A公司Offer")
+        DayEvent(LocalDate.of(2023, 1, 10), Situation.OTHERS, "A公司面試"),
+        DayEvent(LocalDate.of(2023, 3, 5), Situation.OTHERS, "拿到A公司Offer")
       ),
       listOf(
-        DayEvent(LocalDate.of(2023, 12, 25), EventType.OTHERS, "聖誕節車禍"),
-        DayEvent(LocalDate.of(2024, 1, 30), EventType.OTHERS, "康復出院")
+        DayEvent(LocalDate.of(2023, 12, 25), Situation.OTHERS, "聖誕節車禍"),
+        DayEvent(LocalDate.of(2024, 1, 30), Situation.OTHERS, "康復出院")
       )
     )
     assertEquals(expected, groups)
@@ -114,7 +115,7 @@ class AbstractEventTest {
    */
   @Test
   fun testGroupAdjacentEvents_SingleEvent() {
-    val events = listOf(MonthEvent(YearMonth.of(2022, 5), EventType.OTHERS, "單一事件"))
+    val events = listOf(MonthEvent(YearMonth.of(2022, 5), Situation.OTHERS, "單一事件"))
     val groups = events.groupAdjacentEvents()
     assertEquals(1, groups.size)
     assertEquals(listOf(events), groups)
@@ -127,9 +128,9 @@ class AbstractEventTest {
   @Test
   fun testGroupAdjacentEvents_ExtMonthZero() {
     val events = listOf(
-      MonthEvent(YearMonth.of(2022, 1), EventType.OTHERS, "事件A"),
-      MonthEvent(YearMonth.of(2022, 2), EventType.OTHERS, "事件B"), // 與A相鄰
-      MonthEvent(YearMonth.of(2022, 4), EventType.OTHERS, "事件C")  // 與B不相鄰 (因為2月+0+4月不連續)
+      MonthEvent(YearMonth.of(2022, 1), Situation.OTHERS, "事件A"),
+      MonthEvent(YearMonth.of(2022, 2), Situation.OTHERS, "事件B"), // 與A相鄰
+      MonthEvent(YearMonth.of(2022, 4), Situation.OTHERS, "事件C")  // 與B不相鄰 (因為2月+0+4月不連續)
     )
 
     // extMonth = 0, range of 2022-02 is [2022-02, 2022-02]
@@ -139,11 +140,11 @@ class AbstractEventTest {
     assertEquals(2, groups.size)
     val expected = listOf(
       listOf(
-        MonthEvent(YearMonth.of(2022, 1), EventType.OTHERS, "事件A"),
-        MonthEvent(YearMonth.of(2022, 2), EventType.OTHERS, "事件B")
+        MonthEvent(YearMonth.of(2022, 1), Situation.OTHERS, "事件A"),
+        MonthEvent(YearMonth.of(2022, 2), Situation.OTHERS, "事件B")
       ),
       listOf(
-        MonthEvent(YearMonth.of(2022, 4), EventType.OTHERS, "事件C")
+        MonthEvent(YearMonth.of(2022, 4), Situation.OTHERS, "事件C")
       )
     )
     assertEquals(expected, groups)
@@ -156,9 +157,9 @@ class AbstractEventTest {
   @Test
   fun testGroupAdjacentEvents_ExtMonthTwo() {
     val events = listOf(
-      MonthEvent(YearMonth.of(2022, 1), EventType.OTHERS, "事件A"), // range: [2021-11, 2022-03]
-      MonthEvent(YearMonth.of(2022, 4), EventType.OTHERS, "事件B"), // range: [2022-02, 2022-06], 與A重疊
-      MonthEvent(YearMonth.of(2022, 8), EventType.OTHERS, "事件C")  // range: [2022-06, 2022-10], 與B重疊
+      MonthEvent(YearMonth.of(2022, 1), Situation.OTHERS, "事件A"), // range: [2021-11, 2022-03]
+      MonthEvent(YearMonth.of(2022, 4), Situation.OTHERS, "事件B"), // range: [2022-02, 2022-06], 與A重疊
+      MonthEvent(YearMonth.of(2022, 8), Situation.OTHERS, "事件C")  // range: [2022-06, 2022-10], 與B重疊
     )
     val groups = events.groupAdjacentEvents(extMonth = 2)
     assertEquals(1, groups.size)
@@ -176,7 +177,7 @@ class AbstractEventTest {
       val withIgnition = PeriodEvent(
         from = LocalDate.of(2026, 6, 20), to = LocalDate.of(2026, 7, 31),
         ignition = LocalDate.of(2026, 6, 20),
-        eventType = EventType.REPUTATION_CRISIS, details = "連環爆"
+        situation = Situation.REPUTATION_CRISIS, details = "連環爆"
       )
       assertEquals(EventGrain.DAY, withIgnition.grain())
       assertTrue(withIgnition.grain().canDayLevelTransit)
@@ -194,7 +195,7 @@ class AbstractEventTest {
     fun yearMonthRange_spansToEnd() {
       val e = PeriodEvent(
         from = LocalDate.of(2026, 6, 20), to = LocalDate.of(2026, 7, 31),
-        eventType = EventType.REPUTATION_CRISIS, details = "連環爆"
+        situation = Situation.REPUTATION_CRISIS, details = "連環爆"
       )
       assertEquals(YearMonth.of(2026, 6), e.yearMonth())          // 代表月 = 起始月
       assertEquals(YearMonthRange(YearMonth.of(2026, 6), YearMonth.of(2026, 7)), e.yearMonthRange())
@@ -205,7 +206,7 @@ class AbstractEventTest {
     fun ongoing_rangeStopsAtStart() {
       val e = PeriodEvent(
         from = LocalDate.of(2026, 6, 20), to = null,
-        eventType = EventType.REPUTATION_CRISIS, details = "尚未止息"
+        situation = Situation.REPUTATION_CRISIS, details = "尚未止息"
       )
       assertTrue(e.ongoing())
       assertEquals(YearMonthRange(YearMonth.of(2026, 6), YearMonth.of(2026, 6)), e.yearMonthRange())
@@ -216,7 +217,7 @@ class AbstractEventTest {
     fun effectiveRange_extendsOngoingToUpperBound() {
       val ongoing = PeriodEvent(
         from = LocalDate.of(2026, 6, 20), to = null,
-        eventType = EventType.REPUTATION_CRISIS, details = "尚未止息"
+        situation = Situation.REPUTATION_CRISIS, details = "尚未止息"
       )
       val viewMonth = YearMonth.of(2026, 9)
       assertEquals(YearMonthRange(YearMonth.of(2026, 6), viewMonth), ongoing.effectiveYearMonthRange(viewMonth))
@@ -227,11 +228,11 @@ class AbstractEventTest {
 
       val closed = PeriodEvent(
         from = LocalDate.of(2026, 6, 20), to = LocalDate.of(2026, 7, 31),
-        eventType = EventType.REPUTATION_CRISIS, details = "已止息"
+        situation = Situation.REPUTATION_CRISIS, details = "已止息"
       )
       assertEquals(closed.yearMonthRange(), closed.effectiveYearMonthRange(viewMonth), "已結束者不外推")
 
-      val point = DayEvent(LocalDate.of(2026, 6, 20), EventType.OTHERS, "點事件")
+      val point = DayEvent(LocalDate.of(2026, 6, 20), Situation.OTHERS, "點事件")
       assertEquals(point.yearMonthRange(), point.effectiveYearMonthRange(viewMonth), "點事件不受影響")
     }
 
@@ -240,11 +241,11 @@ class AbstractEventTest {
     fun pointEvents_degenerateToSingleMonth() {
       assertEquals(
         YearMonthRange(YearMonth.of(2025, 3), YearMonth.of(2025, 3)),
-        DayEvent(LocalDate.of(2025, 3, 15), EventType.OTHERS, "婚禮").yearMonthRange()
+        DayEvent(LocalDate.of(2025, 3, 15), Situation.OTHERS, "婚禮").yearMonthRange()
       )
       assertEquals(
         YearMonthRange(YearMonth.of(2025, 3), YearMonth.of(2025, 3)),
-        MonthEvent(YearMonth.of(2025, 3), EventType.OTHERS, "婚禮").yearMonthRange()
+        MonthEvent(YearMonth.of(2025, 3), Situation.OTHERS, "婚禮").yearMonthRange()
       )
     }
 
@@ -257,9 +258,9 @@ class AbstractEventTest {
     fun groupAdjacent_periodPullsInEventsInsideItsTail() {
       val period = PeriodEvent(
         from = LocalDate.of(2026, 1, 5), to = LocalDate.of(2026, 8, 20),
-        eventType = EventType.LEGAL_CHALLENGE, details = "纏訟"
+        situation = Situation.LEGAL_PROCEEDING_START, details = "纏訟"
       )
-      val inTail = DayEvent(LocalDate.of(2026, 7, 10), EventType.OTHERS, "開庭")
+      val inTail = DayEvent(LocalDate.of(2026, 7, 10), Situation.OTHERS, "開庭")
 
       val groups = listOf(period, inTail).groupAdjacentEvents(extMonth = 1)
       assertEquals(1, groups.size)
@@ -275,9 +276,9 @@ class AbstractEventTest {
     fun groupAdjacent_ongoingPullsInLaterEventsUpToUpperBound() {
       val ongoing = PeriodEvent(
         from = LocalDate.of(2026, 6, 20), to = null,
-        eventType = EventType.REPUTATION_CRISIS, details = "延燒未止"
+        situation = Situation.REPUTATION_CRISIS, details = "延燒未止"
       )
-      val later = DayEvent(LocalDate.of(2026, 11, 10), EventType.OTHERS, "危機期間的另一事件")
+      val later = DayEvent(LocalDate.of(2026, 11, 10), Situation.OTHERS, "危機期間的另一事件")
 
       val without = listOf(ongoing, later).groupAdjacentEvents(extMonth = 1)
       assertEquals(2, without.size, "無上界 → 進行中事件停在起始月，兩群")
@@ -292,9 +293,9 @@ class AbstractEventTest {
     fun groupAdjacent_farAwayEventStaysSeparate() {
       val period = PeriodEvent(
         from = LocalDate.of(2026, 1, 5), to = LocalDate.of(2026, 3, 20),
-        eventType = EventType.LEGAL_CHALLENGE, details = "纏訟"
+        situation = Situation.LEGAL_PROCEEDING_START, details = "纏訟"
       )
-      val far = DayEvent(LocalDate.of(2026, 11, 10), EventType.OTHERS, "無關的事")
+      val far = DayEvent(LocalDate.of(2026, 11, 10), Situation.OTHERS, "無關的事")
 
       val groups = listOf(period, far).groupAdjacentEvents(extMonth = 1)
       assertEquals(2, groups.size)
@@ -307,13 +308,13 @@ class AbstractEventTest {
       val full: AbstractEvent = PeriodEvent(
         from = LocalDate.of(2026, 6, 20), to = LocalDate.of(2026, 7, 31),
         ignition = LocalDate.of(2026, 6, 22),
-        eventType = EventType.REPUTATION_CRISIS, details = "連環爆", sentiment = EventSentiment.NEGATIVE
+        situation = Situation.REPUTATION_CRISIS, details = "連環爆", sentiment = EventSentiment.NEGATIVE
       )
       assertEquals(full, json.decodeFromString<AbstractEvent>(json.encodeToString(full)))
 
       val ongoing: AbstractEvent = PeriodEvent(
         from = LocalDate.of(2026, 6, 20),
-        eventType = EventType.REPUTATION_CRISIS, details = "尚未止息"
+        situation = Situation.REPUTATION_CRISIS, details = "尚未止息"
       )
       assertEquals(ongoing, json.decodeFromString<AbstractEvent>(json.encodeToString(ongoing)))
     }
@@ -327,20 +328,20 @@ class AbstractEventTest {
     fun ongoingMarker_emittedOnExportStrippedOnImport() {
       val ongoing: AbstractEvent = PeriodEvent(
         from = LocalDate.of(2026, 6, 20),
-        eventType = EventType.REPUTATION_CRISIS, details = "尚未止息"
+        situation = Situation.REPUTATION_CRISIS, details = "尚未止息"
       )
       val encoded = json.encodeToString(ongoing)
       assertTrue("\"ongoing\":true" in encoded.replace(" ", ""), "出口須含 ongoing 標記：$encoded")
 
       val closed: AbstractEvent = PeriodEvent(
         from = LocalDate.of(2026, 6, 20), to = LocalDate.of(2026, 7, 31),
-        eventType = EventType.REPUTATION_CRISIS, details = "已止息"
+        situation = Situation.REPUTATION_CRISIS, details = "已止息"
       )
       assertFalse("ongoing" in json.encodeToString(closed), "已結束者不得有標記")
 
       // 輸入端剝除：帶標記的 JSON（例如曾被序列化的素材）能正常解析
       val parsed = json.decodeFromString<AbstractEvent>(
-        """{"from":"2026-06-20","ongoing":true,"eventType":"REPUTATION_CRISIS","details":"尚未止息"}"""
+        """{"from":"2026-06-20","ongoing":true,"situation":"REPUTATION_CRISIS","details":"尚未止息"}"""
       )
       assertEquals(ongoing, parsed)
     }
@@ -349,14 +350,14 @@ class AbstractEventTest {
     @Test
     fun deserialize_discriminatesByFromKey() {
       val period = json.decodeFromString<AbstractEvent>(
-        """{"from":"2026-06-20","to":"2026-07-31","eventType":"REPUTATION_CRISIS","details":"連環爆"}"""
+        """{"from":"2026-06-20","to":"2026-07-31","situation":"REPUTATION_CRISIS","details":"連環爆"}"""
       )
       assertTrue(period is PeriodEvent)
       assertEquals(EventGrain.MONTH, period.grain())
 
-      assertTrue(json.decodeFromString<AbstractEvent>("""{"date":"2026-06","eventType":"OTHERS","details":"x"}""") is MonthEvent)
-      assertTrue(json.decodeFromString<AbstractEvent>("""{"date":"2026-06-20","eventType":"OTHERS","details":"x"}""") is DayEvent)
-      assertTrue(json.decodeFromString<AbstractEvent>("""{"date":"2026-06-20T14:30","eventType":"OTHERS","details":"x"}""") is MinuteEvent)
+      assertTrue(json.decodeFromString<AbstractEvent>("""{"date":"2026-06","situation":"OTHERS","details":"x"}""") is MonthEvent)
+      assertTrue(json.decodeFromString<AbstractEvent>("""{"date":"2026-06-20","situation":"OTHERS","details":"x"}""") is DayEvent)
+      assertTrue(json.decodeFromString<AbstractEvent>("""{"date":"2026-06-20T14:30","situation":"OTHERS","details":"x"}""") is MinuteEvent)
     }
 
     /** from 與 date 並存代表上游搞混了，寧可炸掉也不要沉默地丟掉一半資訊。 */
@@ -364,7 +365,7 @@ class AbstractEventTest {
     fun deserialize_rejectsBothFromAndDate() {
       assertFailsWith<IllegalArgumentException> {
         json.decodeFromString<AbstractEvent>(
-          """{"from":"2026-06-20","date":"2026-06-20","eventType":"OTHERS","details":"x"}"""
+          """{"from":"2026-06-20","date":"2026-06-20","situation":"OTHERS","details":"x"}"""
         )
       }
     }
@@ -372,90 +373,112 @@ class AbstractEventTest {
     @Test
     fun rejectsInvalidBounds() {
       assertFailsWith<IllegalArgumentException> {
-        PeriodEvent(LocalDate.of(2026, 7, 1), LocalDate.of(2026, 6, 1), null, EventType.OTHERS, "to 早於 from")
+        PeriodEvent(LocalDate.of(2026, 7, 1), LocalDate.of(2026, 6, 1), null, Situation.OTHERS, "to 早於 from")
       }
       assertFailsWith<IllegalArgumentException> {
         PeriodEvent(
           LocalDate.of(2026, 6, 1), LocalDate.of(2026, 7, 1), LocalDate.of(2026, 5, 1),
-          EventType.OTHERS, "ignition 在區間之前"
+          Situation.OTHERS, "ignition 在區間之前"
         )
       }
       assertFailsWith<IllegalArgumentException> {
         PeriodEvent(
           LocalDate.of(2026, 6, 1), LocalDate.of(2026, 7, 1), LocalDate.of(2026, 8, 1),
-          EventType.OTHERS, "ignition 在區間之後"
+          Situation.OTHERS, "ignition 在區間之後"
         )
       }
     }
   }
 
   /**
-   * 主詞（[AbstractEvent.agency]）—— `null` 是「照型別預設」，不是「不知道」。
+   * 主詞（[AbstractEvent.role]）—— `null` **只有一個語意：未答**。
+   *
+   * 型別層不再提供預設（[Situation.roles] 只列舉可能，不猜最常見），
+   * 故單值 situation 由 [AbstractEvent.effectiveRole] 從 `roles` 補，
+   * 兩值 situation 未答就是真的不知道。
    */
   @Nested
-  inner class AgencyTest {
+  inner class RoleTest {
 
+    /** 合法組合可建構 */
     @Test
-    fun `未申報時退回型別的預設`() {
-      // 單向型別：型別自己就決定了主詞
-      assertEquals(Agency.PASSIVE, DayEvent(LocalDate.of(2020, 3, 3), EventType.MAJOR_ILLNESS, "確診").effectiveAgency())
-      assertEquals(Agency.ACTIVE, DayEvent(LocalDate.of(2020, 3, 3), EventType.ENTREPRENEURSHIP, "創業").effectiveAgency())
-      // 雙向型別：沒申報就是真的不知道
-      assertNull(DayEvent(LocalDate.of(2020, 3, 3), EventType.RELATIONSHIP_START, "在一起").effectiveAgency())
-    }
-
-    @Test
-    fun `雙向型別上的申報兩種都收`() {
-      for (a in listOf(Agency.ACTIVE, Agency.PASSIVE)) {
-        val e = DayEvent(LocalDate.of(2020, 3, 3), EventType.RELATIONSHIP_START, "在一起", null, a)
-        assertEquals(a, e.effectiveAgency())
-        assertNull(e.agencyConflict())
-      }
+    fun `role 落在 situation_roles 之內`() {
+      val e = DayEvent(LocalDate.of(2020, 3, 3), Situation.VIOLENCE, "x", role = EventRole.INITIATOR)
+      assertEquals(EventRole.INITIATOR, e.role)
+      assertNull(e.roleConflict())
+      assertEquals(EventRole.INITIATOR, e.effectiveRole())
     }
 
     /**
-     * 「主動遭攻擊」這種值一旦沉默地留著，會一路流進統計而沒人看得出來 ——
-     * 故在建構時就炸掉。四個子型別都要炸（檢查邏輯只有一份，各自呼叫）。
+     * 非法組合仍會炸 —— ⚠️ 守衛**沒有消失，只是退化**：
+     * 從「型別先驗 vs 逐筆申報可能互相矛盾」的跨層一致性檢查，
+     * 降為「這個值在不在值域內」的成員檢查。
+     *
+     * 四個子型別都要炸（判斷邏輯只有一份，各自呼叫）。
      */
     @Test
-    fun `與型別預設矛盾的申報在建構時就炸`() {
+    fun `role 不在 situation_roles 之內時炸掉`() {
       assertFailsWith<IllegalArgumentException> {
-        DayEvent(LocalDate.of(2020, 3, 3), EventType.VICTIM_OF_ATTACK, "遭攻擊", null, Agency.ACTIVE)
+        DayEvent(LocalDate.of(2020, 3, 3), Situation.MAJOR_ILLNESS, "x", role = EventRole.INITIATOR)
       }
       assertFailsWith<IllegalArgumentException> {
-        MonthEvent(YearMonth.of(2020, 3), EventType.ENTREPRENEURSHIP, "創業", null, Agency.PASSIVE)
+        MonthEvent(YearMonth.of(2020, 3), Situation.ENTREPRENEURSHIP, "創業", null, EventRole.RECIPIENT)
       }
       assertFailsWith<IllegalArgumentException> {
-        MinuteEvent(java.time.LocalDateTime.of(2020, 3, 3, 14, 30), EventType.MAJOR_ILLNESS, "確診", null, Agency.ACTIVE)
+        MinuteEvent(java.time.LocalDateTime.of(2020, 3, 3, 14, 30), Situation.MAJOR_ILLNESS, "確診", null, EventRole.INITIATOR)
       }
       assertFailsWith<IllegalArgumentException> {
-        PeriodEvent(LocalDate.of(2020, 3, 1), null, null, EventType.MAJOR_ILLNESS, "療程", null, Agency.ACTIVE)
+        PeriodEvent(LocalDate.of(2020, 3, 1), null, null, Situation.MAJOR_ILLNESS, "療程", null, EventRole.INITIATOR)
       }
     }
 
-    /** 與型別預設**相同**的申報是冗餘但合法 —— 不必為了純潔性去炸掉一個沒有錯的值 */
+    /** null ＝ 未答，唯一語意。單值 situation 的主詞由 situation 自己給。 */
     @Test
-    fun `與型別預設相同的申報合法`() {
-      val e = DayEvent(LocalDate.of(2020, 3, 3), EventType.MAJOR_ILLNESS, "確診", null, Agency.PASSIVE)
-      assertNull(e.agencyConflict())
-      assertEquals(Agency.PASSIVE, e.effectiveAgency())
+    fun `null 是未答，effectiveRole 由 situation 補`() {
+      assertNull(DayEvent(LocalDate.of(2020, 3, 3), Situation.VIOLENCE, "x").role)
+      assertEquals(
+        EventRole.RECIPIENT,
+        DayEvent(LocalDate.of(2020, 3, 3), Situation.MAJOR_ILLNESS, "x").effectiveRole()
+      )
+      assertEquals(
+        EventRole.INITIATOR,
+        DayEvent(LocalDate.of(2020, 3, 3), Situation.ENTREPRENEURSHIP, "x").effectiveRole()
+      )
+      assertNull(DayEvent(LocalDate.of(2020, 3, 3), Situation.VIOLENCE, "x").effectiveRole())
+    }
+
+    /**
+     * ⭐ 手寫 descriptor 的欄位名稱 —— [AbstractEventSerializer.descriptor] 是**手寫**的，
+     * 欄位改名時編譯器不會提醒。直接斷言 element 名稱，漏改就直接紅，
+     * 而不是靠 roundtrip 間接發現。
+     */
+    @Test
+    fun `descriptor 的 element 名稱`() {
+      val names = AbstractEventSerializer.descriptor.elementNames.toList()
+      assertEquals(
+        listOf("date", "from", "to", "ignition", "ongoing", "situation", "details", "sentiment", "role"),
+        names
+      )
+      assertFalse("eventType" in names)
+      assertFalse("agency" in names)
     }
 
     @Test
-    fun `序列化 roundtrip 帶得動 agency`() {
-      val e = DayEvent(LocalDate.of(2020, 3, 3), EventType.RELATIONSHIP_START, "在一起", EventSentiment.POSITIVE, Agency.PASSIVE)
+    fun `序列化 roundtrip 帶得動 role`() {
+      val e = DayEvent(LocalDate.of(2020, 3, 3), Situation.RELATIONSHIP_START, "在一起", EventSentiment.POSITIVE, EventRole.RECIPIENT)
       val json = Json.encodeToString(AbstractEventSerializer, e as AbstractEvent)
-      assertTrue(json.contains("\"agency\""), json)
+      assertTrue(json.contains("\"role\""), json)
+      assertTrue(json.contains("\"situation\""), json)
       assertEquals(e, Json.decodeFromString(AbstractEventSerializer, json))
     }
 
-    /** 沒有 agency 的舊 JSON 必須照樣讀得進來（欄位是後加的，既有素材都沒有） */
+    /** 沒有 role 的舊 JSON 必須照樣讀得進來（欄位是選填的，既有素材多半沒有） */
     @Test
-    fun `舊 JSON 無 agency 仍可反序列化`() {
-      val old = """{"date":"2020-03-03","eventType":"MAJOR_ILLNESS","details":"確診"}"""
+    fun `無 role 的 JSON 仍可反序列化`() {
+      val old = """{"date":"2020-03-03","situation":"MAJOR_ILLNESS","details":"確診"}"""
       val e = Json.decodeFromString(AbstractEventSerializer, old)
-      assertNull(e.agency)
-      assertEquals(Agency.PASSIVE, e.effectiveAgency())
+      assertNull(e.role)
+      assertEquals(EventRole.RECIPIENT, e.effectiveRole())
     }
   }
 }

@@ -4,7 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.DayNight
-import destiny.core.EventType
+import destiny.core.Situation
 import destiny.core.Gender
 import kotlinx.serialization.json.Json
 import java.time.LocalDate
@@ -22,7 +22,7 @@ class ExtractedEventsTest {
     hourMinute = hourMinute,
     lat = 25.0330, lng = 121.5654, tzid = "Asia/Taipei", place = "臺北市",
     intro = "測試",
-    events = listOf(DayEvent(LocalDate.of(2020, 3, 3), EventType.OTHERS, "某事")),
+    events = listOf(DayEvent(LocalDate.of(2020, 3, 3), Situation.OTHERS, "某事")),
     dayNight = dayNight
   )
 
@@ -63,7 +63,7 @@ class ExtractedEventsTest {
     "name": "某人", "gender": "M", "birthDay": "1984-07-21",
     "lat": 25.0330, "lng": 121.5654, "tzid": "Asia/Taipei", "place": "臺北市",
     "intro": "測試",
-    "events": [ { "date": "2020-03-03", "eventType": "OTHERS", "details": "某事" } ]
+    "events": [ { "date": "2020-03-03", "situation": "OTHERS", "details": "某事" } ]
 }
       """
     )

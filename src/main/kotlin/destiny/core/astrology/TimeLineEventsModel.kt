@@ -1,10 +1,10 @@
 package destiny.core.astrology
 
-import destiny.core.Agency
 import destiny.core.DayNight
-import destiny.core.EventType
+import destiny.core.EventRole
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
+import destiny.core.Situation
 import destiny.core.astrology.prediction.*
 import destiny.core.calendar.*
 import destiny.core.calendar.Lat.Companion.toLat
@@ -126,53 +126,52 @@ enum class EventSentiment {
 
 @Serializable(with = AbstractEventSerializer::class)
 sealed class AbstractEvent {
-  abstract val eventType: EventType
+  abstract val situation: Situation
   abstract val details: String
   abstract val sentiment: EventSentiment?
 
   /**
-   * 主詞 —— 這件事是他做的，還是發生在他身上的。
+   * 這一筆的主詞。**`null` ＝ 未答**（唯一語意）。
    *
-   * **`null` 不是「不知道」，是「照 [EventType.fixedAgency] 的預設」。**
-   * 本欄只在偏離型別預設、或型別本身雙向（`fixedAgency == null`）時才需要填：
+   * ⚠️ 與前身的 `agency` 欄位不同：舊欄位的 `null` 是「照型別預設」，
+   * 而新設計裡型別**不再提供預設** —— [Situation.roles] 只列舉可能，不猜最常見。
    *
-   * | 型別 | `fixedAgency` | 本欄 |
-   * |---|---|---|
-   * | `MAJOR_ILLNESS` | `PASSIVE` | 一律留 null —— 沒有「主動確診」這種事 |
-   * | `RELATIONSHIP_START` | `null`（雙向） | ⭐ 這裡才帶資訊：主動追求 vs 被追 |
-   * | `BAPTISM` | `null`（雙向） | 成人自願 vs 嬰兒受洗 |
+   * 單值 situation 不必填（[effectiveRole] 會從 `roles` 補），
+   * 兩值 situation 這一欄才帶資訊（主動追求 vs 被追、成人自願受洗 vs 嬰兒受洗）。
    *
-   * 資訊量因此集中在它該在的地方，抽取端也不必在沒有選擇的格子上問問題。
-   * 判準見 [Agency] 的 KDoc：**看動作是誰做的，不看結果由誰決定。**
-   *
-   * ⚠️ 與型別預設**矛盾**的值會在建構時炸掉（見 `init`）—— 沉默地留著一個
-   * 「主動遭攻擊」的事件，比炸掉糟得多：它會一路流進統計而沒人看得出來。
+   * ⚠️ 值域外的值（例如替只可能承受的 situation 申報發起端）會在建構時炸掉（見 `init`）——
+   * 沉默地留著一筆，比炸掉糟得多：它會一路流進統計而沒人看得出來。
    */
-  abstract val agency: Agency?
+  abstract val role: EventRole?
 
   /**
-   * 型別預設與本筆申報合併後的主詞。無申報時退回型別預設 —— 讀取端一律問這裡，
-   * 不要自己 `agency ?: eventType.fixedAgency`（同一段邏輯多處推導是本專案的頭號缺陷族）。
+   * 合併後的主詞。單值 situation 由型別補；兩值 situation 未答時為 null。
    *
-   * **寫成函式而非屬性** —— 見 [grain] 的 KDoc：衍生屬性會被 `FormatSpec.of` 反射成
+   * **讀取端一律問這裡**，不要自己 `role ?: situation.roles.singleOrNull()`
+   * —— 同一段邏輯多處推導是本專案的頭號缺陷族。
+   *
+   * 寫成函式而非屬性 —— 見 [grain] 的 KDoc：衍生屬性會被 `FormatSpec.of` 反射成
    * LLM 該產出的必填欄位。
    */
-  fun effectiveAgency(): Agency? = agency ?: eventType.fixedAgency
+  fun effectiveRole(): EventRole? = role ?: situation.roles.singleOrNull()
 
   /**
-   * 主詞的申報與型別預設是否矛盾（「主動遭攻擊」「被動創業」）。
-   * 回傳錯誤訊息，無矛盾則 null。
+   * 主詞是否落在 [Situation.roles] 之外。回傳錯誤訊息，合法則 null。
+   *
+   * ⚠️ **這個守衛沒有消失，只是退化。** 前身做的是**跨層一致性檢查**
+   * （型別層先驗 vs 逐筆申報可能互相矛盾）；本函式只做**成員檢查**（值在不在值域內）。
+   * 真正被治好的是「同一根軸被編碼兩次」，不是「守衛歸零」——
+   * 兩個獨立 enum 的 pair 仍寫得出非法組合。
    *
    * ⚠️ 由**四個子型別各自的 `init`** 呼叫，不放在本基底 —— Kotlin 的初始化順序讓
-   * 基底 `init` 早於子型別建構子參數的賦值，在那裡讀 [agency] 只會拿到 null。
+   * 基底 `init` 早於子型別建構子參數的賦值，在那裡讀 [role] 只會拿到 null。
    * 判斷邏輯只有這一份，子型別各自只是呼叫它。
    */
-  fun agencyConflict(): String? {
-    val fixed = eventType.fixedAgency ?: return null
-    val declared = agency ?: return null
-    return if (declared == fixed) null
-    else "$eventType 的主詞由型別固定為 $fixed，本筆卻申報 $declared —— " +
-      "若真有這種個案，該修的是型別（把它改成雙向），不是在這裡塞一個矛盾值。"
+  fun roleConflict(): String? {
+    val declared = role ?: return null
+    return if (declared in situation.roles) null
+    else "$situation 的可能主詞是 ${situation.roles}，本筆卻申報 $declared —— " +
+      "若真有這種個案，該修的是 situation 的 roles，不是在這裡塞一個值域外的值。"
   }
 
   /** 代表月份 —— 排序與顯示用。有延時者取其**起始**月，要涵蓋範圍請改用 [yearMonthRange]。 */
@@ -216,12 +215,12 @@ sealed class AbstractEvent {
 data class MonthEvent(
   @Serializable(with = YearMonthSerializer::class)
   val date: YearMonth,
-  override val eventType: EventType,
+  override val situation: Situation,
   override val details: String,
   override val sentiment: EventSentiment? = null,
-  override val agency: Agency? = null,
+  override val role: EventRole? = null,
 ) : AbstractEvent() {
-  init { agencyConflict()?.let { throw IllegalArgumentException(it) } }
+  init { roleConflict()?.let { throw IllegalArgumentException(it) } }
 
   override fun yearMonth(): YearMonth {
     return date
@@ -236,12 +235,12 @@ data class MonthEvent(
 data class DayEvent(
   @Serializable(with = LocalDateSerializer::class)
   val date: LocalDate,
-  override val eventType: EventType,
+  override val situation: Situation,
   override val details: String,
   override val sentiment: EventSentiment? = null,
-  override val agency: Agency? = null,
+  override val role: EventRole? = null,
 ) : AbstractEvent() {
-  init { agencyConflict()?.let { throw IllegalArgumentException(it) } }
+  init { roleConflict()?.let { throw IllegalArgumentException(it) } }
 
   override fun yearMonth(): YearMonth {
     return YearMonth.from(date)
@@ -256,12 +255,12 @@ data class DayEvent(
 data class MinuteEvent(
   @Serializable(with = LocalDateTimeSerializer::class)
   val date: LocalDateTime,
-  override val eventType: EventType,
+  override val situation: Situation,
   override val details: String,
   override val sentiment: EventSentiment? = null,
-  override val agency: Agency? = null,
+  override val role: EventRole? = null,
 ) : AbstractEvent() {
-  init { agencyConflict()?.let { throw IllegalArgumentException(it) } }
+  init { roleConflict()?.let { throw IllegalArgumentException(it) } }
 
   override fun yearMonth(): YearMonth {
     return YearMonth.from(date)
@@ -293,12 +292,12 @@ data class PeriodEvent(
   val to: LocalDate? = null,
   @Serializable(with = LocalDateSerializer::class)
   val ignition: LocalDate? = null,
-  override val eventType: EventType,
+  override val situation: Situation,
   override val details: String,
   override val sentiment: EventSentiment? = null,
-  override val agency: Agency? = null,
+  override val role: EventRole? = null,
 ) : AbstractEvent() {
-  init { agencyConflict()?.let { throw IllegalArgumentException(it) } }
+  init { roleConflict()?.let { throw IllegalArgumentException(it) } }
 
 
   init {
@@ -360,10 +359,10 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
     element<String>("ignition", isOptional = true)
     // 出口附加的唯讀標記（見 serialize），輸入端寬容剝除 —— 不是資料欄位
     element<Boolean>("ongoing", isOptional = true)
-    element("eventType", EventType.serializer().descriptor)
+    element("situation", Situation.serializer().descriptor)
     element<String>("details")
     element("sentiment", EventSentiment.serializer().descriptor, isOptional = true)
-    element("agency", Agency.serializer().descriptor, isOptional = true)
+    element("role", EventRole.serializer().descriptor, isOptional = true)
   }
 
   override fun serialize(encoder: Encoder, value: AbstractEvent) {
