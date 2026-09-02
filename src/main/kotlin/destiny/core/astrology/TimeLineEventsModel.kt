@@ -357,9 +357,19 @@ object AbstractEventSerializer : KSerializer<AbstractEvent> {
    * [serialize] / [deserialize] 的 roundtrip 測試**仍然全綠** —— 因為實際的編解碼
    * 走的是四個子型別**編譯器產生的** serializer，本 descriptor 從頭到尾沒被碰到。
    *
-   * 它唯一的消費者是**靠反射讀 schema 的人**（`FormatSpec.of` 產生給 LLM 的 JSON schema）。
-   * ⇒ 欄位名寫錯的懲罰不是例外、不是紅燈，是**餵給模型的 schema 與實際欄位對不上**，
-   * 而模型照著錯的 schema 產出的東西會在反序列化時才炸，或更糟 —— 靜默地少一個欄位。
+   * ⚠️ **更正（2026-09-02 複核）**：本段初稿寫「唯一的消費者是 `FormatSpec.of`」，**那是錯的**，
+   * 而且與本檔 [AbstractEvent.grain] 的 KDoc 自相矛盾 —— 那一段寫的才對：
+   * `FormatSpec.of` 的 JSON schema 是用 `KClass.memberProperties` 反射產生的，
+   * **不經過 `KSerializer.descriptor`**（追蹤鏈：`FormatSpec.of` → `KClass.toJsonSchema`
+   * → `orderedProperties()` → `memberProperties`）。
+   *
+   * ⇒ 這份 descriptor **目前沒有 runtime 消費者**：編解碼走子型別的 serializer、
+   * schema 走 Kotlin 反射，兩條路都不經過這裡。它是 `KSerializer` 介面要求存在的
+   * **對外宣告的契約**。
+   *
+   * ⇒ 欄位名寫錯的懲罰因此不是例外、不是紅燈、**今天也不是錯的 schema** ——
+   * 是它會**靜靜地與真實欄位漂開**，直到哪天出現一個真的 descriptor-driven 的消費者
+   * 才一次爆出來。而那時沒有人會記得這份 descriptor 從未被驗證過。
    *
    * ⛔ **`AbstractEventTest` 的 `descriptor 的 element 名稱` 那條是本 descriptor 的
    * 唯一守門員。** 不要刪它，也不要以為 roundtrip 測試涵蓋了這裡。
