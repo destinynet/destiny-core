@@ -18,6 +18,7 @@ import destiny.core.astrology.Aspect
 import destiny.core.astrology.Arabic
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.AstrologyTraversalConfig
+import destiny.core.astrology.SolarArcConfig
 import destiny.core.astrology.IZodiacDegree
 import destiny.core.astrology.Planet
 import destiny.core.astrology.Stationary
@@ -397,6 +398,10 @@ data class YearMonthSearchConfig(
   val traversalConfig: AstrologyTraversalConfig = AstrologyTraversalConfig.YEARLY_FORECAST.copy(
     signIngress = true,
     houseIngress = true,
+    // 本引擎把 convergentTime 當**事件時刻**分桶,故 solar arc 只要區間內真正精準的交會。
+    // 窗界標記(applying/separating)的時間戳是區間端點,收進來會讓每個查詢窗的頭尾兩個月
+    // 對幾乎每個人被灌成高峰 —— 落點由呼叫端怎麼設窗決定,與這個人、與天象都無關。
+    solarArcConfig = SolarArcConfig.EXACT_ONLY,
   ),
   /** 計分權重(可校準)。收進此 config → `search` 可逐次帶不同權重,直接支援 backtest 校準。 */
   val scoring: YearMonthScoringConfig = YearMonthScoringConfig(),

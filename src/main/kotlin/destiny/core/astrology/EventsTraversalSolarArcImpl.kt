@@ -115,32 +115,37 @@ class EventsTraversalSolarArcImpl(
                   }
                 } else {
                   // Applying: aspect hasn't perfected yet, check if within orb at end of range
+                  // orb 為 null ＝ 不回報窗界標記（見 SolarArcConfig KDoc）—— 連 resolveArcTime 的數值搜尋都省下
                   val applyingOrb = requiredArc - toSolarArc.degreeMoved
-                  if (applyingOrb > 0 && applyingOrb <= config.solarArcConfig.applyingOrb) {
-                    val pattern = PointAspectPattern(listOf(saPoint, natalPoint), aspectDegree, AspectType.APPLYING, applyingOrb)
-                    // orb 在太陽弧中即時間：補上精準日期，避免讀者把 1.9° (≈2 年後) 誤讀為近期事件
-                    val perfectStr = resolveArcTime(model, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)
-                      ?.let { ", perfects ${it.ymd()}" } ?: ""
-                    yield(
-                      SaAspectEvent(
-                        AspectData(pattern, AspectType.APPLYING, applyingOrb, null, toGmtJulDay),
-                        " (applying, orb ${applyingOrb.truncateToString(2)}°$perfectStr)"
+                  val applyingMaxOrb = config.solarArcConfig.applyingOrb
+                  if (applyingMaxOrb != null && applyingOrb > 0 && applyingOrb <= applyingMaxOrb) {
+                    // orb 在太陽弧中即時間：一定要附精準日期，否則讀者無從判斷這是多久之後的事。
+                    // 解不出日期 (數值搜尋不收斂) 就整筆不回報 —— 「正在接近但不知何時」沒有資訊量。
+                    resolveArcTime(model, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)?.also { perfectTime ->
+                      val pattern = PointAspectPattern(listOf(saPoint, natalPoint), aspectDegree, AspectType.APPLYING, applyingOrb)
+                      yield(
+                        SaAspectEvent(
+                          AspectData(pattern, AspectType.APPLYING, applyingOrb, null, toGmtJulDay),
+                          " (applying, orb ${applyingOrb.truncateToString(2)}°, perfects ${perfectTime.ymd()})"
+                        )
                       )
-                    )
+                    }
                   }
 
                   // Separating: aspect perfected just before range start, check if still within orb
                   val separatingOrb = fromSolarArc.degreeMoved - requiredArc
-                  if (separatingOrb > 0 && separatingOrb <= config.solarArcConfig.separatingOrb) {
-                    val pattern = PointAspectPattern(listOf(saPoint, natalPoint), aspectDegree, AspectType.SEPARATING, separatingOrb)
-                    val perfectStr = resolveArcTime(model, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)
-                      ?.let { ", perfected ${it.ymd()}" } ?: ""
-                    yield(
-                      SaAspectEvent(
-                        AspectData(pattern, AspectType.SEPARATING, separatingOrb, null, fromGmtJulDay),
-                        " (separating, orb ${separatingOrb.truncateToString(2)}°$perfectStr)"
+                  val separatingMaxOrb = config.solarArcConfig.separatingOrb
+                  if (separatingMaxOrb != null && separatingOrb > 0 && separatingOrb <= separatingMaxOrb) {
+                    // 同 applying：解不出精準日期就整筆不回報。
+                    resolveArcTime(model, requiredArc, fromGmtJulDay, toGmtJulDay, hConfig)?.also { perfectTime ->
+                      val pattern = PointAspectPattern(listOf(saPoint, natalPoint), aspectDegree, AspectType.SEPARATING, separatingOrb)
+                      yield(
+                        SaAspectEvent(
+                          AspectData(pattern, AspectType.SEPARATING, separatingOrb, null, fromGmtJulDay),
+                          " (separating, orb ${separatingOrb.truncateToString(2)}°, perfected ${perfectTime.ymd()})"
+                        )
                       )
-                    )
+                    }
                   }
                 }
               }

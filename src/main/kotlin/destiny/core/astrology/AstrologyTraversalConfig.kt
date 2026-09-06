@@ -52,14 +52,37 @@ data class ProgressionConfig(
  * 注意：太陽弧年速約 0.99°，因此**容許度即時間**：
  *   0.10° ≈ ±37 天、0.15° ≈ ±55 天、0.50° ≈ ±半年、1.00° ≈ ±1 年、2.00° ≈ ±2 年。
  *
- * @param applyingOrb   相位在區間**結束之後**才會精準時，於區間尾端回報的容許度上限（2.0° ≈ 未來 2 年內）。
- * @param separatingOrb 相位在區間**開始之前**已經精準時，於區間開頭回報的容許度上限（1.0° ≈ 過去 1 年內）。
+ * ## 窗界標記（applying / separating）
+ *
+ * 除了「在區間內精準」的 EXACT 事件，本遍歷還會回報兩類**不在區間內精準**的相位。
+ * 它們的 `AspectData.gmtJulDay` 被蓋成**區間端點**（`toGmtJulDay` / `fromGmtJulDay`），
+ * 真正的精準日期只出現在描述文字裡（`perfects yyyy-MM-dd`）。
+ *
+ * 對**文字時間軸**這是有用的（「有個長期方向正在逼近」）；但對任何把 `gmtJulDay`
+ * 當**事件時刻**使用的消費端（分桶、排序、統計），它們是與人無關的假象 ——
+ * 落點完全由呼叫端怎麼設區間決定，且數量可能遠多於真正的精準交會。
+ *
+ * 因此兩個 orb 都可為 **null ＝ 不回報該類標記**（同時省下每筆標記的 `resolveArcTime` 數值搜尋）。
+ * orb 本身即開關，不另設 boolean —— 避免「flag=false 但 orb=2.0」這種自相矛盾的設定狀態。
+ *
+ * 沒有精準日期的標記（`resolveArcTime` 收斂失敗）一律不回報 —— 只說「正在接近」卻不說何時，無資訊量。
+ *
+ * @param applyingOrb   相位在區間**結束之後**才會精準時，於區間尾端回報的容許度上限；null = 不回報。
+ *                      預設 1.0° ≈ 未來 1 年內 —— 年度視野談「來年」合理，兩年後的事屬雜訊。
+ * @param separatingOrb 相位在區間**開始之前**已經精準時，於區間開頭回報的容許度上限；null = 不回報（預設）。
+ *                      已精準完的相位對「這段區間何時發生什麼」沒有貢獻；若要表達「剛精準、仍在高原期」，
+ *                      正確形式是讓它以 EXACT 被掃到並展開高原（`EventSourceConfig` 的 pastExt），而非一行 separating。
  */
 data class SolarArcConfig(
   val transitingPoints: Set<AstroPoint> = Planet.values.toSet() + LunarNode.values.toSet() + Axis.MERIDIAN + Axis.RISING,
-  val applyingOrb: Double = 2.0,
-  val separatingOrb: Double = 1.0,
-)
+  val applyingOrb: Double? = 1.0,
+  val separatingOrb: Double? = null,
+) {
+  companion object {
+    /** 只要區間內真正精準的交會 —— 給「把 convergentTime 當事件時刻」的消費端（如 YearMonth 引擎）。 */
+    val EXACT_ONLY = SolarArcConfig(applyingOrb = null, separatingOrb = null)
+  }
+}
 
 /**
  * 主限法 (Primary Direction) 遍歷設定。
