@@ -43,7 +43,10 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     val sourceWeight = config.sourceWeights[source] ?: return 0.0.toScore()
     val importanceWeight = config.importanceWeights[aspect.importance] ?: 0.0
     val maxOrb = config.maxOrbs[aspect] ?: config.defaultMaxOrb
+    // 指數 1.0 = 線性(預設)。注意相位通道的 orb 恆為 0 → orbFactor 恆為 1,
+    // 本指數實際只作用在帶真實 orb 的食/滯留接觸上(見 YearMonthScoringConfig.orbFalloffExponent)。
     val orbFactor = (1.0 - orb / maxOrb).coerceIn(0.0, 1.0)
+      .let { if (config.orbFalloffExponent == 1.0) it else Math.pow(it, config.orbFalloffExponent) }
     val applyingFactor = if (applying) config.applyingFactor else config.separatingFactor
     // 相位偏好(human lens 第三 dial);空 map / 查無 → 1.0(中性,不偏硬軟)。
     val aspectWeight = config.aspectWeights[aspect] ?: 1.0

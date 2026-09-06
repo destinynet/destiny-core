@@ -297,6 +297,21 @@ data class YearMonthScoringConfig(
     Aspect.SEXTILE to 5.0,
   ),
   val defaultMaxOrb: Double = 3.0,
+  /**
+   * orb 衰減的指數:`orbFactor = (1 - orb/maxOrb)^exponent`。**預設 1.0(線性,零回歸)**。
+   *
+   * 古典立場與能量衰減的類比都主張非線性 —— 4° 的合相與 0.2° 的合相不是差兩倍,是差一個數量級。
+   * 以 maxOrb=8° 為例,指數 3 時:0.1° → 0.96(幾乎不損)、4.0° → 0.125(暴跌 87.5%)。
+   *
+   * ⚠️ **但要知道它作用在哪裡**:traversal 找的是「相位精準的那一刻」,
+   * `AspectEvent` 的 `AspectData.orb` 恆為 **0.0**(見 `EventsTraversalTransitImpl` 與
+   * solar arc 的 EXACT 分支),故 orbFactor 對**相位通道恆為 1.0**,本指數對它沒有作用。
+   * 真正帶 orb 的是食與滯留對本命的接觸([SynastryAspect]),本指數只影響那一部分。
+   *
+   * 換句話說:主通道的「稀釋」不來自寬 orb 被算太重(引擎根本沒有寬 orb),
+   * 而來自**被掃描的(行運星 × 本命標的 × 相位)組合太多** —— 那要用縮小標的集合來解,不是調本指數。
+   */
+  val orbFalloffExponent: Double = 1.0,
   val applyingFactor: Double = 1.0,
   val separatingFactor: Double = 0.6,
   /** 各段層 [PeriodHit] 的乘數(落在啟動期間內的 [InstantHit] 才乘)。 */
