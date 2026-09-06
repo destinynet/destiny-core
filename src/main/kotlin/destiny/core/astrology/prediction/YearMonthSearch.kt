@@ -71,6 +71,28 @@ enum class Combine {
  */
 enum class AggregationMethod { PROBABILISTIC_OR, MAX, TOP_K_SUM, LOG_SUM }
 
+/**
+ * 桶內的 hit 要**一鍋聚合**,還是**逐推運法各自聚合再加權相加**。
+ *
+ * 問題:[AggregationMethod] 只管「一堆 hit 怎麼變成一個數」,不管那堆 hit 來自哪些推運法。
+ * 在 [POOLED] 下,事件數最多的 source 會靠**數量**把聚合值推到飽和,於是
+ * [YearMonthScoringConfig.sourceWeights] 這組名義權重形同虛設 ——
+ * 「一筆行運命中的量級上限是 0.7」在幾十筆一起 OR 之後不再有任何意義。
+ *
+ * [WEIGHTED_SUM] 讓每個推運法先在自己的層內聚合(層內仍會飽和,那是該層的事),
+ * 再依 `sourceWeights` 加權相加。效果有二:
+ *  - 事件數多的層不再霸佔聚合值,名義權重恢復作用;
+ *  - 多個**獨立技法**同時發動的月份會高於單一技法發動的月份(古典的多重證言,
+ *    但作用在推運法之間,與 [Combine.AND] 作用在 significator 之間正交)。
+ *
+ * 注意 `rawStrength` 本身已含一次 `sourceWeights`(單筆命中的量級上限);
+ * 此處的權重是**合併時的影響力配額**,語意不同但同源。
+ *
+ * 上限:`Σ sourceWeights`(預設三個來源時為 2.5),與 [AggregationMethod.TOP_K_SUM]/[LOG_SUM]
+ * 同樣不封在 1 —— [YearMonthWindow.strength] 本來就不 clamp。
+ */
+enum class SourceAggregation { POOLED, WEIGHTED_SUM }
+
 /** 搜尋粒度。封頂 MONTH;DAY/HOUR 屬擇日,交棒給既有 [destiny.core.electional.DayHourService]。 */
 enum class SearchGrain {
   YEAR,
@@ -345,6 +367,11 @@ data class YearMonthScoringConfig(
   val aggregation: AggregationMethod = AggregationMethod.PROBABILISTIC_OR,
   /** [AggregationMethod.TOP_K_SUM] 取最強的前幾個 hit。 */
   val aggregationTopK: Int = 3,
+  /**
+   * 桶內是否逐推運法各自聚合再加權相加。**預設 [SourceAggregation.POOLED]**(維持既有行為、零回歸)。
+   * 改用 [SourceAggregation.WEIGHTED_SUM] 可解「事件數最多的層靠數量霸佔聚合、名義權重失效」。
+   */
+  val sourceAggregation: SourceAggregation = SourceAggregation.POOLED,
 )
 
 /**

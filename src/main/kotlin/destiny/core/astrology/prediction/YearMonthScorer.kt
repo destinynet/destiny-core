@@ -74,6 +74,17 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
   }
 
   /**
+   * 桶內的 base:依 [YearMonthScoringConfig.sourceAggregation] 決定一鍋聚合或逐 source 加權相加。
+   * 見 [SourceAggregation] —— 前者會讓事件數最多的推運法靠數量霸佔飽和值。
+   */
+  fun aggregateBase(hits: List<InstantHit>): Double = when (config.sourceAggregation) {
+    SourceAggregation.POOLED -> aggregate(hits.map { it.rawStrength.value })
+    SourceAggregation.WEIGHTED_SUM -> hits.groupBy { it.source }.entries.sumOf { (source, hs) ->
+      (config.sourceWeights[source] ?: 0.0) * aggregate(hs.map { it.rawStrength.value })
+    }
+  }
+
+  /**
    * 從單一 [ITimeLineEvent] 抽出點層 hit(可 0..n 筆)。處理三種事件 × 兩條通道
    * (見 docs/timing-search-design.md §2.1（雙通道）):
    *  - [AstroEvent.AspectEvent] → 相位通道 → 0..1 筆 [InstantHit.AstroPointHit]。
@@ -409,7 +420,7 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     val perBucket: List<Pair<Int, YearMonthWindow>> = buckets.map { (key, hits) ->
       val distinctTargets = hits.map { it.target }.distinct().size
       val periodHits = periodHitsAt(key)
-      val base = aggregate(hits.map { it.rawStrength.value })
+      val base = aggregateBase(hits)
       // 同一 PeriodSource 內只取最強乘數(去同技法重複計數),跨源相乘後 cap 上限。
       val periodMultiplier = periodHits
         .groupBy { it.source }
