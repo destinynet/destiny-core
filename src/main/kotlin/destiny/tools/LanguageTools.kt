@@ -3,7 +3,6 @@
  */
 package destiny.tools
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.lang.reflect.ParameterizedType
@@ -74,7 +73,6 @@ fun <T : Any> Collection<T>.searchByGenericSuperclassStrict(type: Type): T? {
 }
 
 
-@OptIn(ExperimentalSerializationApi::class)
 inline fun <reified T : Enum<T>> parseJsonToMap(json: String): Map<T, String> {
   val keyToDomain = enumValues<T>().associateBy { it.name }
 
