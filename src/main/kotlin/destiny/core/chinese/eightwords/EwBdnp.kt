@@ -8,6 +8,7 @@ import destiny.core.IBirthDataNamePlace
 import destiny.core.RequestDto
 import destiny.core.Scale
 import destiny.core.astrology.ZodiacSign
+import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
@@ -43,8 +44,27 @@ data class EwBdnp(
   val risingStemBranch: StemBranch,
   @SerialName("上升星座")
   val risingSign: ZodiacSign,
+  /**
+   * 四柱。
+   *
+   * ## ⚠️ 型別是 [StemBranch] 而不是 `String`（2026-09-11 由 `String` 改）
+   *
+   * JSON **完全沒變** —— `StemBranch` 是 enum，序列化成常數名（`"己巳"`），
+   * 與先前 `it.year.toString()` 產出的字串逐字相同。已存的 body 照常反序列化，
+   * 不需要 migration。（同一個類別裡的 [FortuneLarge.stemBranch] 早就是
+   * `IStemBranch` 且存成純字串，這條路是走過的。）
+   *
+   * 🔴 **收具體的 `StemBranch` 而不是 `IStemBranch`（2026-09-11 使用者決定）**：
+   * 陰陽不配的組合（「甲丑」之類）雖有門派使用，但太罕見，一律不收。
+   * 代價是那種資料會在反序列化時就失敗 —— 那正是我們要的：
+   * 與其讓它靜靜地變成 `StemBranchUnconstrained` 混進語料，不如當場炸掉。
+   *
+   * ⚠️ 與 [ewDetails] 是**同一組四柱的兩種表示**（這裡是干支，那裡多帶十神與藏干）。
+   * 兩份存在同一個 body 裡是**現況不是設計** —— `ew` 可由 `ewDetails` 推出來，
+   * 但拿掉它會改變 JSON 形狀，那才是真的要 migration 的改動。
+   */
   @SerialName("八字")
-  val ew: Map<Scale, String>,
+  val ew: Map<Scale, StemBranch>,
   @SerialName("八字特徵")
   val notes: Set<EwEvent.EwIdentity>,
   @SerialName("納音")
@@ -62,7 +82,29 @@ data class EwBdnp(
   @SerialName("八分法解釋")
   val scoreDescription: String? = null,
   val recentYears: List<YearData>
-) : IBirthDataNamePlace {
+) : IBirthDataNamePlace, IEightWords {
+
+  /*
+   * ─────────────────────────────────────────── IEightWords（2026-09-11）
+   *
+   * ## 🔴 為什麼要實作它
+   *
+   * 為了讓「從四柱算簽章」這件事**只有一份實作**。
+   * `Signatures.of` 原本收 `EwBdnp`，於是古書命例（`ew-eightwords-v1`，
+   * 沒有 time/location，反序列化不成 EwBdnp）就進不了比對 ——
+   * 而替它們另寫一份簽章規則，正是 `Signatures` KDoc 紅字警告的那件事：
+   * 兩份分岔時查不到會自動退一階、照樣端得出人，沒有人會發現退錯階。
+   *
+   * ⇒ `Signatures.of` 改收 [IEightWords]，兩種來源共用同一支函式。
+   *
+   * ## ⚠️ 這四個是**衍生**的，不是新欄位
+   *
+   * 全部讀 [ew]，所以不進 JSON，也不可能與四柱本身分岔。
+   */
+  override val year: StemBranch get() = ew.getValue(Scale.YEAR)
+  override val month: IStemBranch get() = ew.getValue(Scale.MONTH)
+  override val day: StemBranch get() = ew.getValue(Scale.DAY)
+  override val hour: IStemBranch get() = ew.getValue(Scale.HOUR)
 
   @Serializable
   data class StemReaction(

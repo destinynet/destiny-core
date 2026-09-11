@@ -414,13 +414,25 @@ object Lmt {
   }
 }
 
-// 八字
-val ew: (IEightWords) -> Map<Scale, String> = {
+/**
+ * 八字四柱。
+ *
+ * ⚠️ [IEightWords] 的 `month` / `hour` 宣告成 [IStemBranch]（介面），
+ * 而 `year` / `day` 是具體的 [StemBranch] —— 這裡把前兩者收窄。
+ *
+ * 🔴 **陰陽不配的組合（`StemBranchUnconstrained`，「甲丑」之類）一律不收**
+ * （2026-09-11 決定）：雖有門派使用，但太罕見。與其讓它靜靜地混進語料，
+ * 不如在這裡就指出是哪一柱。
+ */
+val ew: (IEightWords) -> Map<Scale, StemBranch> = { eightWords ->
+  fun narrow(scale: Scale, sb: IStemBranch): StemBranch =
+    sb as? StemBranch ?: error("$scale 柱「$sb」不是六十甲子（陰陽不配），不予處理")
+
   mapOf(
-    Scale.YEAR to it.year.toString(),
-    Scale.MONTH to it.month.toString(),
-    Scale.DAY to it.day.toString(),
-    Scale.HOUR to it.hour.toString()
+    Scale.YEAR to eightWords.year,
+    Scale.MONTH to narrow(Scale.MONTH, eightWords.month),
+    Scale.DAY to eightWords.day,
+    Scale.HOUR to narrow(Scale.HOUR, eightWords.hour)
   )
 }
 
