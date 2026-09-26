@@ -237,6 +237,44 @@ class FlowDtoTransformerTest {
       assertEquals(expected, dtos)
     }
 
+    /**
+     * 同一種作用、但天干不同 —— 不得寫成「均為」。
+     *
+     * 月干甲、日干乙、時干乙都是木，對火的大運、流年都是「生/洩」。
+     * 舊版只依作用分組，印出「本命月干、日干、時干(均為 甲)」—— 日干與時干明明是乙。
+     * 這段文字會原樣餵進付費報告的 prompt（2026-09-26 離線實跑時由寫報告的 subagent 指出）。
+     */
+    @Test
+    fun 同作用不同天干_甲乙乙不得合併成均為甲() {
+      val ew = EightWords(丁亥, 甲辰, 乙丑, 乙酉)
+      val dtos = with(FlowLargeYearPatterns.affecting) {
+        ew.getPatterns(丙戌, 丙午).toSet()
+      }.map { it as FlowPattern.Affecting }
+        .toAffectingDtos()
+
+      val expected = setOf(
+        EwEvent.EwFlow.AffectingDto(
+          "本命年干(丁) 與 大運、流年五行相同",
+          NatalStems(setOf(YEAR), 丁),
+          Reacting.SAME,
+          setOf(FlowScale.LARGE, FlowScale.YEAR)
+        ),
+        EwEvent.EwFlow.AffectingDto(
+          "本命月干(甲) 生/洩 出大運、流年",
+          NatalStems(setOf(MONTH), 甲),
+          Reacting.PRODUCING,
+          setOf(FlowScale.LARGE, FlowScale.YEAR)
+        ),
+        EwEvent.EwFlow.AffectingDto(
+          "本命日干、時干(均為 乙) 生/洩 出大運、流年",
+          NatalStems(setOf(DAY, HOUR), 乙),
+          Reacting.PRODUCING,
+          setOf(FlowScale.LARGE, FlowScale.YEAR)
+        ),
+      )
+      assertEquals(expected, dtos)
+    }
+
     @Nested
     inner class 大運流年合住本命天干 {
 

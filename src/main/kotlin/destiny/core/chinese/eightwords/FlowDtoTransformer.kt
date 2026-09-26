@@ -51,8 +51,16 @@ object FlowDtoTransformer {
     }
   }
 
+  /**
+   * 🔴 分組鍵是**（作用, 天干）**，不是只看作用。
+   *
+   * 同一種作用可以來自不同的天干（甲、乙都是木，對火都是「生/洩」）。只依作用分組的話，
+   * [translateAffecting] 會印出「本命月干、日干、時干(均為 甲)」而日干、時干其實是乙，
+   * [EwEvent.NatalStems] 也只記得第一個天干 —— 這段文字會原樣餵進付費報告的 prompt。
+   */
   fun Iterable<Affecting>.toAffectingDtos() : Set<EwEvent.EwFlow.AffectingDto> {
-    return this.groupBy { it.reacting }.map { (reacting, patterns) ->
+    return this.groupBy { it.reacting to it.stem }.map { (key, patterns) ->
+      val reacting = key.first
       val description = (reacting to patterns).translateAffecting()
       val natalStems = NatalStems(patterns.map { it.pillar }.toSet(), patterns.first().stem)
       val flowScales: Set<FlowScale> = patterns.flatMap { it.flowScales }.toSet()
