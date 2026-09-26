@@ -5,6 +5,11 @@ package destiny.core.fengshui.sanyuan
 
 import destiny.core.fengshui.sanyuan.NineStar.*
 import kotlin.test.Test
+import destiny.tools.Lang
+import destiny.tools.getDescription
+import destiny.tools.getTitle
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertSame
 
 class NineStarTest {
@@ -106,6 +111,33 @@ class NineStarTest {
       assertSame(右弼, (-18).toStar())
       assertSame(右弼, (-180).toStar())
     }
+  }
+
+  /**
+   * title 是玄空飛星名（風水用），description 是九星気学名（matching 報告用）。
+   *
+   * 🔴 `getDescription` 查不到 key 會退回 `getTitle` —— 少了任何一行，
+   * 「貪狼」就會跑進日文報告（而日本讀者會把它當成紫微斗数的貪狼）。
+   */
+  @Test
+  fun description_isKigakuName_perLang() {
+    val expected = mapOf(
+      Lang.ZH_TW to "一白水星 二黑土星 三碧木星 四綠木星 五黃土星 六白金星 七赤金星 八白土星 九紫火星",
+      Lang.JA    to "一白水星 二黒土星 三碧木星 四緑木星 五黄土星 六白金星 七赤金星 八白土星 九紫火星",
+      Lang.ZH_CN to "一白水星 二黑土星 三碧木星 四绿木星 五黄土星 六白金星 七赤金星 八白土星 九紫火星",
+    )
+    expected.forEach { (lang, names) ->
+      assertEquals(names.split(" "), NineStar.entries.map { it.getDescription(lang) }, "lang=$lang")
+      NineStar.entries.forEach { star ->
+        assertNotEquals(star.getTitle(lang), star.getDescription(lang), "$star lang=$lang 的 description 退回了 title")
+      }
+    }
+  }
+
+  /** 繁中的 title 必須等於 enum 名 —— 既有的風水呼叫端靠它 */
+  @Test
+  fun title_zhTW_isEnumName() {
+    NineStar.entries.forEach { assertEquals(it.name, it.getTitle(Lang.ZH_TW)) }
   }
 
 
