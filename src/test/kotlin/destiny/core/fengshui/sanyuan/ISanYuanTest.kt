@@ -6,6 +6,8 @@ package destiny.core.fengshui.sanyuan
 import destiny.core.calendar.chinese.Yuan
 import destiny.core.chinese.StemBranch
 import destiny.core.fengshui.sanyuan.Period.Companion.toPeriod
+import destiny.tools.Lang
+import destiny.tools.getTitle
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -60,5 +62,13 @@ class ISanYuanTest {
     assertSame(Yuan.MID, ISanYuan.getYuan(-56)) // 西元前57年
 
     assertSame(Yuan.UP, ISanYuan.getYuan(-57)) // 西元前58年
+  }
+
+  /** 九星報告的三元說明要印它 —— 查不到會退回 enum 名（UP／MID／LOW）跑進報告 */
+  @Test
+  fun title_perLang() {
+    listOf(Lang.ZH_TW, Lang.JA, Lang.ZH_CN).forEach { lang ->
+      assertEquals(listOf("上元", "中元", "下元"), Yuan.entries.map { it.getTitle(lang) }, "lang=$lang")
+    }
   }
 }
