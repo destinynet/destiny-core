@@ -13,6 +13,8 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.eightwords.hazards.HazardItem
 import destiny.core.identityFieldsIn
+import destiny.tools.Lang
+import destiny.tools.getTitle
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
 import kotlin.test.Test
@@ -199,6 +201,35 @@ class EwChartDtoTest {
   private val viewJulDay = GmtJulDay(2439305.2)
   private val nextMajorBegin = GmtJulDay(2439330.4)
 
+  /** 三個點刻意落在三個不同星座，對錯位（上升拿到太陽的星座…）才測得出來 */
+  private fun modelWithSigns() = fakeModel().let { m ->
+    FakeEwModel(
+      m.eightWords, m.fortuneDataLarges, m.risingStemBranch, m.solarTermsTimePos, m.prevSolarSign, m.nextSolarSign, m.score,
+      starPosMap = mapOf(
+        Planet.SUN to PositionWithBranch(Pos(45.0, 0.0), StemBranch.甲子),    // 金牛 15°
+        Planet.MOON to PositionWithBranch(Pos(200.0, 0.0), StemBranch.甲子),  // 天秤 20°
+      ),
+      rsmiMap = mapOf(TransPoint.RISING to ZodiacDegree.of(ZodiacSign.CANCER, 10.0)),
+    )
+  }
+
+  @Test
+  fun signs_absentByDefault() {
+    val meta = modelWithSigns().toEwChartDto(ChartDensity.ALL).meta
+    assertNull(meta.risingSign)
+    assertNull(meta.sunSign)
+    assertNull(meta.moonSign)
+  }
+
+  @Test
+  fun signs_whenAskedFor_nameOnlyNoDegree() {
+    val meta = modelWithSigns().toEwChartDto(ChartDensity.FULL, withSigns = true).meta
+    assertEquals(
+      listOf(ZodiacSign.CANCER, ZodiacSign.TAURUS, ZodiacSign.LIBRA).map { it.getTitle<ZodiacSign>(Lang.ZH_TW) },
+      listOf(meta.risingSign, meta.sunSign, meta.moonSign),
+    )
+  }
+
   private fun fakeModel() = FakeEwModel(
     eightWords = EightWords("丙午", "丙申", "己未", "乙丑"),
     fortuneDataLarges = listOf(
@@ -244,6 +275,8 @@ private class FakeEwModel(
   override val prevSolarSign: Pair<ZodiacSign, GmtJulDay>,
   override val nextSolarSign: Pair<ZodiacSign, GmtJulDay>,
   override val score: Double,
+  override val starPosMap: Map<AstroPoint, PositionWithBranch> = emptyMap(),
+  override val rsmiMap: Map<TransPoint, ZodiacDegree> = emptyMap(),
 ) : IPersonContextModel {
   override val gender: Gender = Gender.M
   override val name: String? = "王小明"
@@ -253,9 +286,7 @@ private class FakeEwModel(
   override val chineseDate: ChineseDate = ChineseDate(78, StemBranch.丙午, 7, false, 1)
   override val dst: Boolean = false
   override val gmtMinuteOffset: Int = 480
-  override val starPosMap: Map<AstroPoint, PositionWithBranch> = emptyMap()
   override val houseMap: Map<Int, ZodiacDegree> = emptyMap()
-  override val rsmiMap: Map<TransPoint, ZodiacDegree> = emptyMap()
   override val aspectsDataSet: Set<IPointAspectPattern> = emptySet()
   override val fortuneDataSmalls: List<FortuneData> = emptyList()
   override val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = emptyMap()

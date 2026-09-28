@@ -20,6 +20,8 @@
  *
  * 另外刻意**不含**：小運（依需求排除）、`ageMap`（每歲起訖時刻）、
  * `starPosMap` / `houseMap` / `rsmiMap` / `aspectsDataSet`（黃道度數，且占星另有 lens）、
+ *   —— 唯一例外是上升／太陽／月亮的**星座名**（不含度數），且只在呼叫端明示 `withSigns` 時才有，
+ *   見 [EwMetaDto.risingSign]；盲測與比對不開，wire 上就不存在、
  * 排盤設定（真太陽時／換日／換年…屬 calcConfig，不是盤面內容）。
  *
  * ⚠️ 命名規則：本檔案內**不得出現名為 `name` / `time` / `place` / `location` 的欄位**。
@@ -30,6 +32,8 @@ package destiny.core.chinese.eightwords
 import destiny.core.ChartDensity
 import destiny.core.Gender
 import destiny.core.Scale
+import destiny.core.astrology.Planet
+import destiny.core.astrology.TransPoint
 import destiny.core.astrology.ZodiacSign
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.Reaction
@@ -133,6 +137,15 @@ data class EwMetaDto(
    * 而不是畫出空的大運列與跑不動的節氣進度條。
    */
   val pillarsOnly: Boolean,
+  /**
+   * 上升／太陽／月亮所在星座（繁中，如「牡羊」）—— 只有星座，沒有度數。
+   *
+   * 預設不給（`toEwChartDto(withSigns = false)`）：盲測時上升星座等於洩漏出生時辰的線索，
+   * 占星也另有 lens。commercial 的八字報告沿用舊命盤圖右側那一欄「升／日／月」才開。
+   */
+  val risingSign: String? = null,
+  val sunSign: String? = null,
+  val moonSign: String? = null,
 )
 
 @Serializable
@@ -223,6 +236,8 @@ fun IEightWords.toEwChartDto(
 fun IPersonContextModel.toEwChartDto(
   density: ChartDensity,
   hiddenStemsImpl: IHiddenStems = HiddenStemsStandardImpl(),
+  /** 帶上升／太陽／月亮的星座名（[EwMetaDto.risingSign]） */
+  withSigns: Boolean = false,
 ): EwChartDto {
   val compact = density == ChartDensity.COMPACT
   val all = density == ChartDensity.ALL
@@ -270,6 +285,9 @@ fun IPersonContextModel.toEwChartDto(
       dayEmpties = mapper.dayEmpties(density),
       score = if (compact) null else score,
       pillarsOnly = false,
+      risingSign = if (withSigns) rsmiMap[TransPoint.RISING]?.sign?.getTitle<ZodiacSign>(ZH) else null,
+      sunSign = if (withSigns) starPosMap[Planet.SUN]?.lngDeg?.sign?.getTitle<ZodiacSign>(ZH) else null,
+      moonSign = if (withSigns) starPosMap[Planet.MOON]?.lngDeg?.sign?.getTitle<ZodiacSign>(ZH) else null,
     ),
     pillars = mapper.pillars(density),
     fortunes = fortunes,
