@@ -7,6 +7,7 @@ import destiny.core.IBirthDataNamePlace
 import destiny.core.RequestDto
 import destiny.core.SynastryGrain
 import destiny.core.SynastryRelationship
+import destiny.core.astrology.classical.Overcoming
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import destiny.tools.serializers.IBirthDataNamePlaceSerializer
 import kotlinx.serialization.Serializable
@@ -31,7 +32,26 @@ class SynastryRequestDto(
   val aspects: List<SynastryAspect>,
   val midpointTrees: List<SynastryMidpointTree>,
   val houseOverlayMap: Map<Int, List<HouseOverlay>>,
+  /** 兩盤之間的居上關係 (僅古典七星) */
+  val overcomings: List<SynastryOvercoming> = emptyList(),
 )
+
+/**
+ * 合盤中的居上關係 : [overcoming] 的 superior 屬於 [superiorSide] 那一盤 , inferior 屬於另一盤
+ */
+@Serializable
+data class SynastryOvercoming(
+  val superiorSide: Side,
+  val overcoming: Overcoming,
+) {
+  enum class Side { INNER, OUTER }
+
+  val outerPoint: AstroPoint
+    get() = if (superiorSide == Side.OUTER) overcoming.superior else overcoming.inferior
+
+  val innerPoint: AstroPoint
+    get() = if (superiorSide == Side.INNER) overcoming.superior else overcoming.inferior
+}
 
 data class HouseOverlayRow(val point: AstroPoint, val inner: Int, val innerToOuter: Int, val outer : Int, val outerToInner: Int)
 

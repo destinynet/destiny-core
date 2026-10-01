@@ -1024,6 +1024,30 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
+  /**
+   * ====================================== for [Misc.Overcoming] ======================================
+   * 居上 / 凌駕 : 不列入 [essentialDignities] / [accidentalDignities] / [debilities] , 不計分 , 須自行加入 config
+   */
+  private class OvercomingFactory(private val overcomingImpl: IOvercoming) : IPlanetPatternFactory {
+    override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
+      val posMap = h.positionMap
+      val deg = posMap[planet]?.lngDeg ?: return emptyList()
+      return Planet.classicalList
+        .filter { it != planet }
+        .mapNotNull { other -> posMap[other]?.lngDeg?.let { overcomingImpl.getOvercoming(planet, deg, other, it) } }
+        .map { Misc.Overcoming(planet, it) }
+    }
+
+    override fun equals(other: Any?): Boolean = other is OvercomingFactory && overcomingImpl == other.overcomingImpl
+    override fun hashCode(): Int = overcomingImpl.hashCode()
+  }
+
+  /** 整宮（星座）版本 */
+  val overcomingBySign: IPlanetPatternFactory = OvercomingFactory(OvercomingSignImpl())
+
+  /** 度數版本 */
+  val overcomingByDegree: IPlanetPatternFactory = OvercomingFactory(OvercomingDegreeImpl())
+
   val essentialDignities: List<IPlanetPatternFactory> = listOf(ruler, exaltation, triplicity, term, face, beneficialMutualReception)
 
   val accidentalDignities: List<IPlanetPatternFactory> = listOf(house_1_10, house_4_7_11, house_2_5, house_9, house_3, direct, swift

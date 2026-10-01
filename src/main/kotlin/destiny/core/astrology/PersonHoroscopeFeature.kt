@@ -10,6 +10,8 @@ import destiny.core.innerGrain
 import destiny.core.outerGrain
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Axis.RISING
+import destiny.core.astrology.classical.IOvercoming
+import destiny.core.astrology.classical.OvercomingSignImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedPersonFeature
@@ -50,7 +52,8 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
     aspectCalculator: IAspectCalculator,
     midpointAspectCalculator: IAspectCalculator,
     grain: SynastryGrain = SynastryGrain.BOTH_FULL,
-    aspects: Set<Aspect> = Companion.getAspects(Importance.HIGH).toSet()
+    aspects: Set<Aspect> = Companion.getAspects(Importance.HIGH).toSet(),
+    overcomingImpl: IOvercoming = OvercomingSignImpl()
   ): SynastryRequestDto
 
 }
@@ -79,7 +82,8 @@ class PersonHoroscopeFeature(
     aspectCalculator: IAspectCalculator,
     midpointAspectCalculator: IAspectCalculator,
     grain: SynastryGrain,
-    aspects: Set<Aspect>
+    aspects: Set<Aspect>,
+    overcomingImpl: IOvercoming
   ): SynastryRequestDto {
     // 月亮日行 ~13°，正午 placeholder 誤差可達 ±6.6°，非 MINUTE 一律排除
     val innerPoints = modelInner.points.let { points ->
@@ -134,7 +138,20 @@ class PersonHoroscopeFeature(
       .sortedBy { it.orb }
       .toList()
 
-    return SynastryRequestDto(modelInner, modelOuter, grain, relationship, synastryAspects, midpointTrees, synastry.houseOverlayMap)
+    // 居上 : 只看古典七星 , 月亮同樣受 grain 限制
+    val overcomings: List<SynastryOvercoming> = Planet.classicalList.filter { outerPoints.contains(it) }.flatMap { pOuter ->
+      Planet.classicalList.filter { innerPoints.contains(it) }.mapNotNull { pInner ->
+        val degOuter = posMapOuter[pOuter]?.lngDeg ?: return@mapNotNull null
+        val degInner = posMapInner[pInner]?.lngDeg ?: return@mapNotNull null
+        overcomingImpl.getOvercoming(pOuter, degOuter, pInner, degInner)?.let { o ->
+          // pOuter 與 pInner 可能是同一顆星 , 故不比對 point , 而以「誰在黃道前方 (180 度內)」判斷 superior 屬哪一盤
+          val outerIsSuperior = IOvercoming.forward(degOuter, degInner) < 180
+          SynastryOvercoming(if (outerIsSuperior) SynastryOvercoming.Side.OUTER else SynastryOvercoming.Side.INNER, o)
+        }
+      }
+    }
+
+    return SynastryRequestDto(modelInner, modelOuter, grain, relationship, synastryAspects, midpointTrees, synastry.houseOverlayMap, overcomings)
   }
 
 

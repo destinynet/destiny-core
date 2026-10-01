@@ -141,6 +141,16 @@ sealed class Debility : IPlanetPattern {
 sealed class Misc : IPlanetPattern {
   override val ruleType: RuleType = RuleType.MISC
 
+  /**
+   * [planet] 參與的居上關係 (可能是居上者，也可能是被壓者)。
+   * 屬 [RuleType.MISC] , 不列入尊貴 / 無力的計分
+   */
+  data class Overcoming(override val planet: Planet, val overcoming: destiny.core.astrology.classical.Overcoming) : Misc() {
+    /** [planet] 是否為居上者 */
+    val superior: Boolean
+      get() = overcoming.superior == planet
+  }
+
   /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [exactAspectPrior] , 後一個準確交角資訊為 [exactAspectAfter]
    * */
   @Serializable
