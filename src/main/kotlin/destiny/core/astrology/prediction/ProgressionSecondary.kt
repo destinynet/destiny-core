@@ -32,9 +32,16 @@ class ProgressionSecondary(override val forward: Boolean = true) : AbstractProgr
 
   override val type: ProgressionType = ProgressionType.SECONDARY
 
-  /** SP (一日一年) , 分子是 一年  */
-  override val numerator: Double = Constants.SIDEREAL_YEAR_SECONDS
+  /**
+   * SP (一日一年) , 分子是 一回歸年。
+   *
+   * 採 Q2（標準）：一個平太陽日（24h）對一個回歸年 —— Solar Fire 稱之為
+   * "the rate that is in most common use by western astrologers"，Astrolog 的預設亦同（365.24219）。
+   * 舊版用「一恆星日 對 一恆星年」（≈ Q1 / Bija，比值 0.99723），36 歲時推運月亮會落後約 1.3°。
+   * 日後若依使用者派別開放 Q1，改由 config 注入分子分母，不在此處分支。
+   */
+  override val numerator: Double = Constants.TROPICAL_YEAR_SECONDS
 
-  /** SP (一日一年) , 分母是 一日  */
-  override val denominator: Double = Constants.SIDEREAL_DAY
+  /** SP (一日一年) , 分母是 一個平太陽日 (24h)  */
+  override val denominator: Double = Constants.MEAN_DAY
 }

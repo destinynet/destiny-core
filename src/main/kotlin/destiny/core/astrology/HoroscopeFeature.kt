@@ -355,7 +355,13 @@ class HoroscopeFeature(
         // inner : natal chart
         val posMapInner = model.positionMap
         // outer : progression chart
-        val posMapOuter = convergentModel.positionMap
+        // 推運（非行運）不取收斂盤的軸點：收斂時刻差一天 = 一年（三推是一月），
+        // 收斂盤的 ASC/MC 隨地球自轉一年轉一圈（即 Solar Fire 的 "Mean Quotidian"），不是一般意義的推運軸點。
+        // Arabic lots 由 ASC 導出，同理排除。本命側（inner）的軸點仍是有效的觸發標的。
+        val posMapOuter = if (param.type == ProgressionType.TRANSIT)
+          convergentModel.positionMap
+        else
+          convergentModel.positionMap.filterKeys { it !is Axis && it !is Arabic }
 
         // 2.4 hours later
         val later = progressionTime.plus(0.1)
@@ -371,7 +377,7 @@ class HoroscopeFeature(
           // laterForP2 應返回內盤星體「不變」的位置，以作為比較的基準點
           val laterForP2: (AstroPoint) -> IZodiacDegree? = { p -> posMapInner[p] }
 
-          val progressedAspects = config.points.asSequence().flatMap { p1 -> config.points.asSequence().map { p2 -> p1 to p2 } }
+          val progressedAspects = config.points.asSequence().filter { it in posMapOuter }.flatMap { p1 -> config.points.asSequence().map { p2 -> p1 to p2 } }
             .mapNotNull { (p1, p2) ->
               aspectCalculator.getAspectPattern(p1, p2, posMapOuter, posMapInner, laterForP1, laterForP2, aspects)
                 ?.let { p: IPointAspectPattern ->
