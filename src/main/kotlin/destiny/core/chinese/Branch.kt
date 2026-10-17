@@ -54,6 +54,19 @@ enum class Branch : ILoop<Branch> {
   val quads : Set<Branch>
     get() = setOf(this, next(3), next(6), next(9))
 
+  /** 取得 六害 的地支（子未、丑午、寅巳、卯辰、申亥、酉戌） */
+  val harmed: Branch
+    get() = Branch[(7 - index).mod(12)]
+
+  /**
+   * 兩支是否相刑（不分方向）：寅巳申、丑戌未兩組三刑任兩支、子卯相刑、辰午酉亥自刑。
+   * 三刑要三支全見才「成刑」，那是全卦層級的判斷，這裡只看兩兩之間。
+   */
+  fun isPunishedWith(other: Branch): Boolean {
+    if (this == other) return this in setOf(辰, 午, 酉, 亥)
+    return punishGroups.any { this in it && other in it }
+  }
+
   /**
    * 取得下 n 個地支為何
    * n = 0 : 傳回自己
@@ -103,6 +116,8 @@ enum class Branch : ILoop<Branch> {
     }
   }
 }
+
+private val punishGroups: List<Set<Branch>> = listOf(setOf(寅, 巳, 申), setOf(丑, 戌, 未), setOf(子, 卯))
 
 /** 兩地支「拱」哪個地支 */
 fun Collection<Branch?>.trine(): Branch? {

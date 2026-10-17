@@ -324,5 +324,29 @@ class BranchTest {
     assertNull(direction(亥, 子, 寅))
     assertNull(direction(亥, 子, 子))
   }
+  @Test
+  fun testHarmed() {
+    val pairs = listOf(子 to 未, 丑 to 午, 寅 to 巳, 卯 to 辰, 申 to 亥, 酉 to 戌)
+    pairs.forEach { (a, b) ->
+      assertSame(b, a.harmed)
+      assertSame(a, b.harmed)
+    }
+  }
+
+  @Test
+  fun testPunishedWith() {
+    // 三刑任兩支、子卯
+    assertTrue(寅.isPunishedWith(巳))
+    assertTrue(申.isPunishedWith(寅))
+    assertTrue(丑.isPunishedWith(戌))
+    assertTrue(未.isPunishedWith(丑))
+    assertTrue(子.isPunishedWith(卯))
+    // 自刑
+    listOf(辰, 午, 酉, 亥).forEach { assertTrue(it.isPunishedWith(it)) }
+    // 非刑
+    assertFalse(子.isPunishedWith(子))
+    assertFalse(寅.isPunishedWith(亥))
+    assertFalse(丑.isPunishedWith(辰))
+  }
 }
 
