@@ -18,7 +18,7 @@ object SampleTools {
    */
   fun sampleSteps(total: Double, step: Double): List<Double> {
     require(step > 0) { "step must be positive : $step" }
-    require(total >= 0) { "total must not be negative : $total" }
+    require(total.isFinite() && total >= 0) { "total must be finite and not negative : $total" }
     return buildList {
       add(0.0)
       var i = 1

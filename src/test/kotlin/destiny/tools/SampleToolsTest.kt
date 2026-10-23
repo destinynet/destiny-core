@@ -43,4 +43,12 @@ internal class SampleToolsTest {
     assertFailsWith<IllegalArgumentException> { sampleSteps(10.0, 0.0) }
     assertFailsWith<IllegalArgumentException> { sampleSteps(-1.0, 2.0) }
   }
+
+  @Test
+  fun rejectsNonFiniteInput() {
+    // +∞ 會讓取樣迴圈永遠跑不完
+    assertFailsWith<IllegalArgumentException> { sampleSteps(Double.POSITIVE_INFINITY, 2.0) }
+    assertFailsWith<IllegalArgumentException> { sampleSteps(Double.NaN, 2.0) }
+    assertFailsWith<IllegalArgumentException> { sampleSteps(10.0, Double.NaN) }
+  }
 }
