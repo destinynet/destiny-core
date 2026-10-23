@@ -30,7 +30,10 @@ data class SolarTimeDto(
   /** 午正時太陽視高度；極夜為負 */
   @KSerializable(with = DoubleTwoDecimalSerializer::class)
   val meridianAltDeg: Double,
-  /** 窗口內的日出／日落；極夜、永晝為 null */
+  /**
+   * 窗口內的日出／日落，兩者各自可能為 null：極夜、永晝時兩者皆無；
+   * 極區的過渡日（永晝開始／結束前後）可能只有其中一個
+   */
   val sunriseMs: Long? = null,
   val sunsetMs: Long? = null,
   /** 出生（或輸入）時刻；[SolarTimeDtoFactory.forDate] 為 null */
@@ -70,7 +73,7 @@ data class SolarTimeDto(
     @KSerializable(with = DoubleTwoDecimalSerializer::class) val altitudeDeg: Double,
     /** 直射點緯度 = 太陽赤緯 */
     @KSerializable(with = DoubleTwoDecimalSerializer::class) val subsolarLatDeg: Double,
-    /** 直射點經度（東經為正，[−180, 180)） */
+    /** 直射點經度（東經為正，(−180, 180]） */
     @KSerializable(with = DoubleTwoDecimalSerializer::class) val subsolarLngDeg: Double,
   ) : JSerializable
 }

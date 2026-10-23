@@ -16,11 +16,15 @@ import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.HourBranchConfig
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.chinese.Branch
+import destiny.tools.CircleTools.normalizeSigned
+import destiny.tools.SampleTools.sampleSteps
 import jakarta.inject.Named
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.Year
 import java.time.ZoneOffset
+import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import kotlin.math.roundToInt
 
@@ -43,9 +47,9 @@ class SolarTimeDtoFactory(
     return build(focus, focus, loc, place)
   }
 
-  /** 只給日期（時辰確認頁）：取包含該日民用 12:00 的太陽日，無 focus */
-  fun forDate(date: LocalDate, loc: ILocation, place: String? = null): SolarTimeDto =
-    build(date.atTime(12, 0).toGmtJulDay(loc), null, loc, place)
+  /** 只給日期（時辰確認頁）：取包含該日民用 12:00 的太陽日，無 focus；曆法同 [forMoment]（可傳儒略曆日期） */
+  fun forDate(date: ChronoLocalDate, loc: ILocation, place: String? = null): SolarTimeDto =
+    build(date.atTime(LocalTime.NOON).toGmtJulDay(loc), null, loc, place)
 
   private fun build(anchor: GmtJulDay, focus: GmtJulDay?, loc: ILocation, place: String?): SolarTimeDto {
     val (dayFrom, dayTo) = solarDayOf(anchor, loc)
@@ -80,14 +84,19 @@ class SolarTimeDtoFactory(
     )
   }
 
-  /** 包含 [t] 的太陽日：[前一個子正, 下一個子正) */
+  /**
+   * 包含 [t] 的太陽日：[前一個子正, 下一個子正)。
+   * 太陽日約 1440 ± 0.5 分，從 t − 1.1 天起找到的第一個子正必 ≤ t，至多再前進兩次就跨過 t；
+   * 超過 [MAX_DAY_STEPS] 次代表 [IRiseTrans] 違反「回傳 from 之後的下一次中天」的假設。
+   */
   private fun solarDayOf(t: GmtJulDay, loc: ILocation): Pair<GmtJulDay, GmtJulDay> {
-    var from = trans(t - 1.1, TransPoint.NADIR, loc) // 1.1 天內必有一次子正 → from ≤ t
-    while (true) {
+    var from = trans(t - 1.1, TransPoint.NADIR, loc)
+    repeat(MAX_DAY_STEPS) {
       val next = trans(from + SKIP, TransPoint.NADIR, loc)
       if (next > t) return from to next
       from = next
     }
+    error("no solar day containing $t at $loc after $MAX_DAY_STEPS nadir steps (last nadir = $from)")
   }
 
   private fun trans(from: GmtJulDay, point: TransPoint, loc: ILocation): GmtJulDay =
@@ -127,14 +136,7 @@ class SolarTimeDtoFactory(
   }
 
   private fun samples(dayFrom: GmtJulDay, totalMin: Double, loc: ILocation): List<SolarTimeDto.Sample> =
-    buildList {
-      var t = 0.0
-      while (t < totalMin) {
-        add(t)
-        t += SAMPLE_STEP_MINUTES
-      }
-      add(totalMin)
-    }.map { tMin ->
+    sampleSteps(totalMin, SAMPLE_STEP_MINUTES).map { tMin ->
       val gmt = dayFrom + tMin / 1440.0
       val pos = sunAt(gmt, loc)
       SolarTimeDto.Sample(tMin, pos.azimuthDeg, pos.apparentAltitude, pos.lat, subsolarLng(pos.lng, gmt))
@@ -155,9 +157,11 @@ class SolarTimeDtoFactory(
     private const val SKIP = 1.0 / 1440
     /** 起點子時的搜尋起點：子正前 90 分 */
     private const val LEAD_IN = 1.5 / 24
+    /** [solarDayOf] 往後找子正的上限次數 */
+    private const val MAX_DAY_STEPS = 3
 
-    /** 直射點經度 = 赤經 − 格林威治平恆星時（東經為正，正規化到 [−180, 180)） */
-    internal fun subsolarLng(raDeg: Double, gmt: GmtJulDay): Double =
-      (raDeg - Astronomical.gmst(gmt) * 15.0 + 180.0).mod(360.0) - 180.0
+    /** 直射點經度 = 赤經 − 格林威治平恆星時（東經為正，正規化到 (−180, 180]） */
+    private fun subsolarLng(raDeg: Double, gmt: GmtJulDay): Double =
+      (raDeg - Astronomical.gmst(gmt) * 15.0).normalizeSigned()
   }
 }

@@ -16,6 +16,7 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.toLmt
+import destiny.tools.SampleTools.sampleSteps
 import destiny.tools.location.IStaticMap
 import destiny.tools.location.MapType
 import jakarta.inject.Named
@@ -62,14 +63,7 @@ class StarMountainDtoFactory(
       (this.toLmt(loc, julDayResolver) as LocalDateTime).plusNanos(500_000_000).truncatedTo(ChronoUnit.SECONDS)
 
     // 星體位置密集取樣（步長 sampleStepMinutes，含區間終點）
-    val samples = buildList {
-      var t = 0.0
-      while (t < totalMin) {
-        add(t)
-        t += sampleStepMinutes
-      }
-      add(totalMin)
-    }.map { tMin ->
+    val samples = sampleSteps(totalMin, sampleStepMinutes).map { tMin ->
       val pos = starPosWithAzimuth.getPositionWithAzimuth(star, fromGmt + tMin / 1440.0, loc, Centric.GEO, Coordinate.ECLIPTIC)
       StarMountainDto.Sample(tMin, pos.azimuthDeg, pos.apparentAltitude)
     }
