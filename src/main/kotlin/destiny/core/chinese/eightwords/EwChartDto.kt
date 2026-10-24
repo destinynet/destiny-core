@@ -32,6 +32,8 @@ package destiny.core.chinese.eightwords
 import destiny.core.ChartDensity
 import destiny.core.Gender
 import destiny.core.Scale
+import destiny.core.astrology.BirthDataGrain
+import destiny.core.astrology.includeChineseHour
 import destiny.core.astrology.Planet
 import destiny.core.astrology.TransPoint
 import destiny.core.astrology.ZodiacSign
@@ -294,3 +296,14 @@ fun IPersonContextModel.toEwChartDto(
     solarTerms = solarTerms,
   )
 }
+
+/**
+ * 依出生時刻精度拿掉算不準的部分：沒有時辰（[BirthDataGrain.includeChineseHour] 為 false）⇒
+ * 時柱、命宮、上升星座。大運與其餘三柱只需要日期，照留。
+ */
+fun EwChartDto.gatedBy(grain: BirthDataGrain): EwChartDto =
+  if (grain.includeChineseHour) this
+  else copy(
+    pillars = pillars.filter { it.scale != Scale.HOUR.name },
+    meta = meta.copy(mingStemBranch = null, mingSign = null, risingSign = null),
+  )

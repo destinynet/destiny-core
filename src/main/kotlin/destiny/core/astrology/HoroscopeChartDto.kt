@@ -194,3 +194,25 @@ fun IPersonHoroscopeDtoV2.toHoroscopeChartDto(density: ChartDensity): HoroscopeC
     },
   )
 }
+
+/**
+ * 依出生時刻精度拿掉算不準的部分，判準同 [BirthDataGrain.allowsNatalTarget]：
+ * - 沒有分鐘（[BirthDataGrain.includeAxis] 為 false）⇒ 軸點、宮位、各點所在的宮位。
+ *   上升／天頂度數歸零 —— 0° 是 renderer 對「沒有上升」的退路，而不是一個捏造的上升。
+ * - 沒有時辰 ⇒ 再拿掉月亮。
+ *
+ * 相位只留兩端都還在的。
+ */
+fun HoroscopeChartDto.gatedBy(grain: BirthDataGrain): HoroscopeChartDto {
+  val gated: Set<String> = grain.gatedNatalTargets().map { it.nameKey }.toSet()
+  val kept = points.filter { it.point !in gated }
+  val keys = kept.map { it.point }.toSet()
+  val keptAspects = aspects.filter { it.from in keys && it.to in keys }
+  return if (grain.includeAxis) copy(points = kept, aspects = keptAspects)
+  else copy(
+    meta = meta.copy(ascDeg = 0.0, mcDeg = 0.0),
+    points = kept.map { it.copy(house = null) },
+    houses = emptyList(),
+    aspects = keptAspects,
+  )
+}
