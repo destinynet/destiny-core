@@ -47,13 +47,22 @@ data class ZiweiViewSettings(
   val showSmallRange: Boolean = false,
 
 
-  /** TODO : 是否顯示八字盤 , 應該與 [direction] 整合 */
+  /**
+   * 是否在紫微盤的**中宮**塞八字，讓懂八字的人合參。
+   * 這是「單一張盤面」的畫法；能並排兩張盤的呈現端（八字盤與紫微盤 split screen）可以忽略它與 [direction]。
+   */
   val showEightWords: Boolean = true,
 
-  /** 八字排盤，右至左 or 左至右 */
+  /** 中宮八字的排列，右至左 or 左至右（只在 [showEightWords] 時有意義） */
   val direction: Direction = Direction.R2L,
 
-  /** 顯示雜曜  */
+  /**
+   * 顯示雜曜（乙級星 [StarMinor]）。
+   *
+   * 以下五個 `show*` 是**純呈現**：應讓 [IZiweiConfig.stars] 保持全算，畫的時候才依這裡過濾 ——
+   * 若用這幾個開關去縮減 `stars`，「關掉顯示」就變成換了一張盤（計算層 config 不同）。
+   * 六吉六煞沒有開關，一律顯示。
+   */
   val showMinors: Boolean = true,
 
   /** 顯示博士12神煞  */
