@@ -427,7 +427,6 @@ object HouseFunctions {
 
     override fun getBranch(context: HouseCalContext): Branch {
       return context.run {
-        // 太乙派，沒有遷移宮
         val houseSeqImpl = HouseSeqDefaultImpl()
         val steps = houseSeqImpl.getAheadOf(House.遷移, House.命宮)
 
@@ -445,7 +444,6 @@ object HouseFunctions {
 
     override fun getBranch(context: HouseCalContext): Branch {
       return context.run {
-        // 太乙派，沒有遷移宮
         val houseSeqImpl = HouseSeqDefaultImpl()
         val steps = houseSeqImpl.getAheadOf(House.遷移, House.命宮)
         val 遷移宮地支 : Branch = predefinedMainHouse?.prev(steps) ?:Ziwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, houseSeqImpl)

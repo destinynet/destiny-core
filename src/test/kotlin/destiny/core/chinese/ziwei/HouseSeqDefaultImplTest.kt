@@ -70,11 +70,6 @@ class HouseSeqDefaultImplTest {
     assertEquals(9, impl.getAheadOf(田宅, 命宮))
     assertEquals(10, impl.getAheadOf(福德, 命宮))
     assertEquals(11, impl.getAheadOf(父母, 命宮))
-
-    assertEquals(-1, impl.getAheadOf(相貌, 命宮)) // 全書派，不存在 相貌宮
-    assertEquals(-1, impl.getAheadOf(命宮, 相貌)) // 全書派，不存在 相貌宮
-    assertEquals(-1, impl.getAheadOf(相貌, 兄弟)) // 全書派，不存在 相貌宮
-    assertEquals(-1, impl.getAheadOf(兄弟, 相貌)) // 全書派，不存在 相貌宮
   }
 
 

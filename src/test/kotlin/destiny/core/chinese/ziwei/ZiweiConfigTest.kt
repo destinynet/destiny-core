@@ -33,7 +33,7 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     MonthAlgo.MONTH_SOLAR_TERMS,
     MonthAlgo.MONTH_LEAP_SPLIT15,
     YearType.YEAR_SOLAR,
-    HouseSeq.Astro,
+    HouseSeq.Default,
     Tianyi.Ocean,
     FireBell.FIREBELL_COLLECT,
     SkyHorse.MONTH,
@@ -74,7 +74,7 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
           mainStarsAlgo = MonthAlgo.MONTH_SOLAR_TERMS
           monthStarsAlgo = MonthAlgo.MONTH_LEAP_SPLIT15
           yearType = YearType.YEAR_SOLAR
-          houseSeq = HouseSeq.Astro
+          houseSeq = HouseSeq.Default
           tianyi = Tianyi.Ocean
           fireBell = FireBell.FIREBELL_COLLECT
           skyHorse = SkyHorse.MONTH
@@ -101,7 +101,7 @@ internal class ZiweiConfigTest : AbstractConfigTest<ZiweiConfig>() {
     assertEquals("MONTH_SOLAR_TERMS", docCtx.read("$.mainStarsAlgo", String::class.java))
     assertEquals("MONTH_LEAP_SPLIT15", docCtx.read("$.monthStarsAlgo", String::class.java))
     assertEquals("YEAR_SOLAR", docCtx.read("$.yearType", String::class.java))
-    assertEquals("Astro", docCtx.read("$.houseSeq", String::class.java))
+    assertEquals("Default", docCtx.read("$.houseSeq", String::class.java))
     assertEquals("Ocean", docCtx.read("$.tianyi", String::class.java))
     assertEquals("FIREBELL_COLLECT", docCtx.read("$.fireBell", String::class.java))
     assertEquals("MONTH", docCtx.read("$.skyHorse", String::class.java))

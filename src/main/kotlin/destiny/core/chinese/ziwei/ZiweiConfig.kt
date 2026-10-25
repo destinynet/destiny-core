@@ -30,11 +30,9 @@ enum class PurpleStarBranch {
   LeapAccumDays
 }
 
-/** 宮位名字 */
+/** 宮位名字、順序 */
 enum class HouseSeq {
-  Default,
-  Astro,
-  Taiyi
+  Default
 }
 
 /** [StarUnlucky.火星] ,  [StarUnlucky.鈴星] 設定  */
