@@ -25,6 +25,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.ChartDensity
+import destiny.core.IntAgeNote
 import destiny.core.chinese.AgeType
 import destiny.core.getAbbreviation
 import destiny.tools.Lang
@@ -76,6 +77,8 @@ data class ZiweiHouseDto(
   val stars: List<ZiweiStarDto>,
   /** 此宮在各流運層叫什麼宮，例：{SECTION:"田宅", YEAR:"命宮"}；本命盤為空 */
   val flowHouseLabels: Map<FlowType, String> = emptyMap(),
+  /** 同上的傳統簡稱（[House.abbr]），例：{SECTION:"田", YEAR:"偶"} —— 夫妻是「偶」、交友是「奴」，不是取首字 */
+  val flowHouseAbbrs: Map<FlowType, String> = emptyMap(),
   /** 宮干四化（通常 4 筆）；自化 ＝ toBranch 是本宮、化入對宮 ＝ toBranch 是對宮 */
   val flies: List<ZiweiFlyDto> = emptyList(),
   /** 小限歲數 */
@@ -84,6 +87,10 @@ data class ZiweiHouseDto(
   val fortuneFromYear: Int? = null,
   /** 大限訖的西元年（同上） */
   val fortuneToYear: Int? = null,
+  /** [fortuneFromYear] 的各種年份註記（[IntAgeNote.noteOf]；不適用者不列，例：民國元年前沒有 Minguo） */
+  val fortuneFromNotes: Map<IntAgeNote, String> = emptyMap(),
+  /** [fortuneToYear] 的各種年份註記（同上） */
+  val fortuneToNotes: Map<IntAgeNote, String> = emptyMap(),
 )
 
 /** 疊加的一層流運 */
@@ -168,6 +175,8 @@ fun IPlate.toZiweiPlateDto(density: ChartDensity, yearsBy: AgeType? = null): Ziw
     AgeType.REAL    -> birthWestYear + age
     null            -> null
   }
+  fun notesOf(westYear: Int?): Map<IntAgeNote, String> =
+    westYear?.let { y -> IntAgeNote.entries.mapNotNull { n -> n.noteOf(y)?.let { n to it } }.toMap() } ?: emptyMap()
 
   return ZiweiPlateDto(
     meta = ZiweiMetaDto(
@@ -208,11 +217,14 @@ fun IPlate.toZiweiPlateDto(density: ChartDensity, yearsBy: AgeType? = null): Ziw
           )
         },
         flowHouseLabels = layers.mapNotNull { type -> houseData.flowHouseMap[type]?.let { type to it.value } }.toMap(),
+        flowHouseAbbrs = layers.mapNotNull { type -> houseData.flowHouseMap[type]?.let { type to it.abbr.toString() } }.toMap(),
         flies = houseData.flies.map { (v, star, branch) -> ZiweiFlyDto(v, star.pointToString(ZH), branch.name) }
           .sortedBy { it.value.ordinal },
         smallRanges = houseData.smallRanges,
         fortuneFromYear = westYearOfAge(houseData.rangeFromAge),
         fortuneToYear = westYearOfAge(houseData.rangeToAge),
+        fortuneFromNotes = notesOf(westYearOfAge(houseData.rangeFromAge)),
+        fortuneToNotes = notesOf(westYearOfAge(houseData.rangeToAge)),
       )
     },
     flows = layers.map { type ->

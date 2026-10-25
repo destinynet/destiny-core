@@ -29,6 +29,14 @@ interface IIntAgeNote : Descriptive {
 }
 
 enum class IntAgeNote {
-  WestYear,
-  Minguo
+  WestYear {
+    override fun noteOf(westYear: Int): String = westYear.toString()
+  },
+  /** 民國元年前不輸出 */
+  Minguo {
+    override fun noteOf(westYear: Int): String? = if (westYear >= 1912) "民" + (westYear - 1911) else null
+  };
+
+  /** 某個西元年的註記，例：1915、民4；不適用則 null */
+  abstract fun noteOf(westYear: Int): String?
 }

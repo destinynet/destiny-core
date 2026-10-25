@@ -19,12 +19,7 @@ class IntAgeNoteMinguoYearImpl(val julDayResolver: JulDayResolver) : IIntAgeNote
    */
   override fun getAgeNote(gmtJulDay: GmtJulDay): String? {
     val start = julDayResolver.getLocalDateTime(gmtJulDay)
-    val westYear = start.get(ChronoField.YEAR_OF_ERA)
-    return if (westYear >= 1912) {
-      "民" + (westYear - 1911)
-    } else {
-      null
-    }
+    return intAgeNote.noteOf(start.get(ChronoField.YEAR_OF_ERA))
   }
 
   override fun getAgeNote(startAndEnd: Pair<GmtJulDay, GmtJulDay>): String? {

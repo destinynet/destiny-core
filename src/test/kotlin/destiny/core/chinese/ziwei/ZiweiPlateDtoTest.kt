@@ -4,6 +4,8 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.ChartDensity
+import destiny.core.IntAgeNote
+import destiny.core.IntAgeNoteMinguoYearImpl
 import destiny.core.chinese.AgeType
 import destiny.core.DayNight
 import destiny.core.Gender
@@ -253,6 +255,41 @@ class ZiweiPlateDtoTest {
     assertEquals(1988 to 1997, h.fortuneFromYear to h.fortuneToYear)
   }
 
+  /** 年份註記由 core 給（[IntAgeNote.noteOf]），renderer 不自己算民國年 */
+  @Test
+  fun years_carryNotes() {
+    val h = twoHousePlate().toZiweiPlateDto(ChartDensity.FULL, yearsBy = AgeType.VIRTUAL).houses.first()
+    assertEquals(mapOf(IntAgeNote.WestYear to "1987", IntAgeNote.Minguo to "民76"), h.fortuneFromNotes)
+    assertEquals(mapOf(IntAgeNote.WestYear to "1996", IntAgeNote.Minguo to "民85"), h.fortuneToNotes)
+  }
+
+  @Test
+  fun years_noNotesByDefault() {
+    val h = twoHousePlate().toZiweiPlateDto(ChartDensity.FULL).houses.first()
+    assertEquals(emptyMap(), h.fortuneFromNotes)
+  }
+
+  /** 民國元年前不註記民國年（與 [IntAgeNoteMinguoYearImpl] 同一份規則） */
+  @Test
+  fun minguoNote_absentBefore1912() {
+    assertEquals(null, IntAgeNote.Minguo.noteOf(1911))
+    assertEquals("民1", IntAgeNote.Minguo.noteOf(1912))
+    assertEquals("1911", IntAgeNote.WestYear.noteOf(1911))
+  }
+
+  /** 流運宮名的簡稱取 [House.abbr]：夫妻＝偶、交友＝奴，不是取首字 */
+  @Test
+  fun flowHouseAbbrs_useTraditionalAbbr() {
+    val plate = plateOf(
+      houses = arrayOf(houseOf(House.命宮, StemBranch.甲子, StarMain.紫微,
+        flowHouseMap = mapOf(FlowType.MAIN to House.命宮, FlowType.SECTION to House.夫妻, FlowType.YEAR to House.交友))),
+      flowBranchMap = mapOf(FlowType.SECTION to StemBranch.乙丑, FlowType.YEAR to StemBranch.丙寅),
+    )
+    val h = plate.toZiweiPlateDto(ChartDensity.FULL).houses.single()
+    assertEquals(mapOf(FlowType.SECTION to "夫妻", FlowType.YEAR to "交友"), h.flowHouseLabels)
+    assertEquals(mapOf(FlowType.SECTION to "偶", FlowType.YEAR to "奴"), h.flowHouseAbbrs)
+  }
+
   /** 本命盤沒有流運層 */
   @Test
   fun natalPlate_hasNoFlows() {
@@ -314,7 +351,8 @@ class ZiweiPlateDtoTest {
     bodyHouse: StemBranch = StemBranch.甲子,
     houses: Array<HouseData>,
     transFours: Map<ZStar, Map<FlowType, T4Value>> = emptyMap(),
-    starStrengthMap: Map<ZStar, Int> = emptyMap()
+    starStrengthMap: Map<ZStar, Int> = emptyMap(),
+    flowBranchMap: Map<FlowType, StemBranch> = emptyMap(),
   ): IPlate = Plate(
     name = null,
     chineseDate = ChineseDate(78, StemBranch.甲子, 1, false, 1),
@@ -333,7 +371,7 @@ class ZiweiPlateDtoTest {
     state = 3,
     houseDataSet = houses.toSet(),
     transFours = transFours,
-    flowBranchMap = emptyMap(),
+    flowBranchMap = flowBranchMap,
     starStrengthMap = starStrengthMap,
     notes = emptyList(),
     vageMap = null,
