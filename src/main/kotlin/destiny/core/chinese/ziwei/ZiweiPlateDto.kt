@@ -15,6 +15,9 @@
  *
  * 星名與宮名一律為**繁體中文**（紫微斗數不做多語系）；簡稱取自既有的 `ZStar.properties`。
  *
+ * 大限起訖的西元年（[ZiweiHouseDto.fortuneFromYear]）只在呼叫端傳 `yearsBy` 時出現 ——
+ * 年份配上虛歲可推出確切出生年，盤面要公開時不帶。
+ *
  * ⚠️ 命名規則：本檔案內**不得出現名為 `name` 的欄位**，人可讀字串一律叫 `label`。
  * 這讓「DTO 不含身分欄位」可以用欄位名精確比對來自動驗證（見對應測試）——
  * 若星名也叫 `name`，驗證就得改成路徑判斷，複雜且易錯。
@@ -22,6 +25,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.ChartDensity
+import destiny.core.chinese.AgeType
 import destiny.core.getAbbreviation
 import destiny.tools.Lang
 import kotlinx.serialization.Serializable
@@ -42,9 +46,15 @@ data class ZiweiStarDto(
   val strength: Int?,
   /** 廟旺弱陷的文字（廟/旺/地/利/平/閒/陷），無資料為 null */
   val strengthLabel: String?,
-  /** 本命四化（祿/權/科/忌）；大限、流年四化不列入 */
-  val transFours: List<String>,
+  /** 本命四化（祿/權/科/忌）；流運四化見 [flowTransFours] */
+  val transFours: List<T4Value>,
+  /** 流運四化（只含 [ZiweiPlateDto.flows] 裡有的層），例：{SECTION:權, YEAR:科} */
+  val flowTransFours: Map<FlowType, T4Value> = emptyMap(),
 )
+
+/** 宮干四化的一筆：此宮宮干化 [value] 的是 [starLabel]，那顆星在 [toBranch] */
+@Serializable
+data class ZiweiFlyDto(val value: T4Value, val starLabel: String, val toBranch: String)
 
 @Serializable
 data class ZiweiHouseDto(
@@ -52,7 +62,7 @@ data class ZiweiHouseDto(
   val branch: String,
   /** 宮干支 */
   val stemBranch: String,
-  /** 宮名 */
+  /** 本命宮名（疊加流運時亦同，流運宮名見 [flowHouseLabels]） */
   val houseLabel: String,
   val isMing: Boolean,
   /** 身宮 */
@@ -64,6 +74,26 @@ data class ZiweiHouseDto(
   /** 大限訖（inclusive） */
   val fortuneToAge: Int,
   val stars: List<ZiweiStarDto>,
+  /** 此宮在各流運層叫什麼宮，例：{SECTION:"田宅", YEAR:"命宮"}；本命盤為空 */
+  val flowHouseLabels: Map<FlowType, String> = emptyMap(),
+  /** 宮干四化（通常 4 筆）；自化 ＝ toBranch 是本宮、化入對宮 ＝ toBranch 是對宮 */
+  val flies: List<ZiweiFlyDto> = emptyList(),
+  /** 小限歲數 */
+  val smallRanges: List<Int> = emptyList(),
+  /** 大限起的西元年（呼叫端要求才給，見 [toZiweiPlateDto] 的 yearsBy） */
+  val fortuneFromYear: Int? = null,
+  /** 大限訖的西元年（同上） */
+  val fortuneToYear: Int? = null,
+)
+
+/** 疊加的一層流運 */
+@Serializable
+data class ZiweiFlowDto(
+  /** SECTION（大限）| YEAR（流年） */
+  val type: FlowType,
+  val stemBranch: String,
+  /** 這一層的命宮落在哪個地支 */
+  val mingBranch: String,
 )
 
 /**
@@ -99,6 +129,8 @@ data class ZiweiPlateDto(
   val meta: ZiweiMetaDto,
   /** 12 宮。順序不保證，client 依 [ZiweiHouseDto.branch] 擺位 */
   val houses: List<ZiweiHouseDto>,
+  /** 疊加的流運層，由外而內（大限、流年）；本命盤為空 */
+  val flows: List<ZiweiFlowDto> = emptyList(),
 )
 
 /** [ZStar] 的 sealed 子型別 → 顯示分級標籤 */
@@ -121,7 +153,20 @@ private fun ZStar.visibleIn(density: ChartDensity): Boolean = when (density) {
   ChartDensity.ALL     -> true
 }
 
-fun IPlate.toZiweiPlateDto(density: ChartDensity): ZiweiPlateDto {
+/**
+ * @param yearsBy 要輸出大限的西元年時，給大限歲數的算法（虛歲／實歲，同 [IZiweiConfig.sectionAgeType]）；null ＝不輸出年份
+ */
+fun IPlate.toZiweiPlateDto(density: ChartDensity, yearsBy: AgeType? = null): ZiweiPlateDto {
+  // 疊加盤的 HouseData.house 是最後一層流運的宮名，本命一律取 flowHouseMap[MAIN]
+  fun HouseData.natal(): House = getHouse(FlowType.MAIN)
+  val layers: List<FlowType> = flowBranchMap.keys.filter { it != FlowType.MAIN }.sorted()
+  val birthWestYear = chineseDate.westYear
+  fun westYearOfAge(age: Int): Int? = when (yearsBy) {
+    AgeType.VIRTUAL -> birthWestYear + age - 1
+    AgeType.REAL    -> birthWestYear + age
+    null            -> null
+  }
+
   return ZiweiPlateDto(
     meta = ZiweiMetaDto(
       gender = gender.name,
@@ -132,15 +177,16 @@ fun IPlate.toZiweiPlateDto(density: ChartDensity): ZiweiPlateDto {
       state = state,
       mainStarLabel = mainStar.pointToString(ZH),
       bodyStarLabel = bodyStar.pointToString(ZH),
-      mingBranch = houseDataSet.firstOrNull { it.house == House.命宮 }?.stemBranch?.branch?.name ?: "",
+      mingBranch = houseDataSet.firstOrNull { it.natal() == House.命宮 }?.stemBranch?.branch?.name ?: "",
       bodyBranch = bodyHouse.branch.name,
     ),
     houses = houseDataSet.map { houseData ->
+      val natal = houseData.natal()
       ZiweiHouseDto(
         branch = houseData.stemBranch.branch.name,
         stemBranch = houseData.stemBranch.toString(),
-        houseLabel = houseData.house.value,
-        isMing = houseData.house == House.命宮,
+        houseLabel = natal.value,
+        isMing = natal == House.命宮,
         isBody = houseData.stemBranch == bodyHouse,
         // 主星有無決定空宮，不受 density 過濾影響
         isEmpty = houseData.stars.none { it is StarMain },
@@ -148,16 +194,31 @@ fun IPlate.toZiweiPlateDto(density: ChartDensity): ZiweiPlateDto {
         fortuneToAge = houseData.rangeToAge,
         stars = houseData.stars.filter { it.visibleIn(density) }.map { star ->
           val strength = starStrengthMap[star]
+          val t4 = transFours[star].orEmpty()
           ZiweiStarDto(
             label = star.pointToString(ZH),
             abbr = star.getAbbreviation(ZH),
             tier = star.tierLabel,
             strength = strength,
             strengthLabel = strength?.let { IStrength.getString(it, ZH) },
-            transFours = transFours[star]?.get(FlowType.MAIN)?.let { listOf(it.name) } ?: emptyList(),
+            transFours = t4[FlowType.MAIN]?.let { listOf(it) } ?: emptyList(),
+            flowTransFours = t4.filterKeys { it in layers },
           )
-        }
+        },
+        flowHouseLabels = layers.mapNotNull { type -> houseData.flowHouseMap[type]?.let { type to it.value } }.toMap(),
+        flies = houseData.flies.map { (v, star, branch) -> ZiweiFlyDto(v, star.pointToString(ZH), branch.name) }
+          .sortedBy { it.value.ordinal },
+        smallRanges = houseData.smallRanges,
+        fortuneFromYear = westYearOfAge(houseData.rangeFromAge),
+        fortuneToYear = westYearOfAge(houseData.rangeToAge),
       )
-    }
+    },
+    flows = layers.map { type ->
+      ZiweiFlowDto(
+        type = type,
+        stemBranch = flowBranchMap.getValue(type).toString(),
+        mingBranch = houseDataSet.firstOrNull { it.flowHouseMap[type] == House.命宮 }?.stemBranch?.branch?.name ?: "",
+      )
+    },
   )
 }

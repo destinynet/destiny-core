@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.ChartDensity
+import destiny.core.chinese.AgeType
 import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.calendar.chinese.ChineseDate
@@ -11,7 +12,9 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
 import destiny.core.identityFieldsIn
+import com.jayway.jsonpath.JsonPath
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -140,7 +143,7 @@ class ZiweiPlateDtoTest {
     val dto = decoratedPlate().toZiweiPlateDto(ChartDensity.FULL)
 
     val ziwei = dto.houses.single().stars.single { it.label == "紫微" }
-    assertEquals(listOf("祿"), ziwei.transFours)
+    assertEquals(listOf(T4Value.祿), ziwei.transFours)
   }
 
   /** 只取本命（[FlowType.MAIN]）四化 —— 大限/流年四化不屬於本命盤呈現 */
@@ -199,6 +202,72 @@ class ZiweiPlateDtoTest {
     )
   }
 
+  /** 疊加盤的 `house` 會被最後一層流運覆寫 —— 宮名與命宮判斷一律看本命（flowHouseMap[MAIN]） */
+  @Test
+  fun houseLabel_followsNatalHouseEvenWhenOverwritten() {
+    val plate = plateOf(houses = arrayOf(
+      houseOf(House.兄弟, StemBranch.甲子, StarMain.紫微, flowHouseMap = mapOf(FlowType.MAIN to House.命宮, FlowType.YEAR to House.兄弟))
+    ))
+    val h = plate.toZiweiPlateDto(ChartDensity.FULL).houses.single()
+    assertEquals("命宮", h.houseLabel)
+    assertEquals(true, h.isMing)
+    assertEquals("子", plate.toZiweiPlateDto(ChartDensity.FULL).meta.mingBranch)
+  }
+
+  @Test
+  fun houses_carryFlies() {
+    val plate = plateOf(houses = arrayOf(
+      houseOf(House.命宮, StemBranch.甲子, StarMain.紫微,
+              flies = setOf(Triple(T4Value.祿, StarMain.廉貞, Branch.寅), Triple(T4Value.忌, StarMain.太陽, Branch.子)))
+    ))
+    val flies = plate.toZiweiPlateDto(ChartDensity.FULL).houses.single().flies
+    assertEquals(
+      setOf(ZiweiFlyDto(T4Value.祿, "廉貞", "寅"), ZiweiFlyDto(T4Value.忌, "太陽", "子")),
+      flies.toSet()
+    )
+  }
+
+  @Test
+  fun houses_carrySmallRanges() {
+    val plate = plateOf(houses = arrayOf(houseOf(House.命宮, StemBranch.甲子, StarMain.紫微, smallRanges = listOf(1, 13, 25))))
+    assertEquals(listOf(1, 13, 25), plate.toZiweiPlateDto(ChartDensity.FULL).houses.single().smallRanges)
+  }
+
+  /** 不帶 yearsBy ＝不輸出任何年份（年份配虛歲可推出確切出生年） */
+  @Test
+  fun years_absentByDefault() {
+    val h = twoHousePlate().toZiweiPlateDto(ChartDensity.FULL).houses.first()
+    assertEquals(null to null, h.fortuneFromYear to h.fortuneToYear)
+  }
+
+  /** fixture 生年 = cycle 78 甲子 = 1984；大限 4–13 */
+  @Test
+  fun years_virtualAge() {
+    val h = twoHousePlate().toZiweiPlateDto(ChartDensity.FULL, yearsBy = AgeType.VIRTUAL).houses.first()
+    assertEquals(1987 to 1996, h.fortuneFromYear to h.fortuneToYear)
+  }
+
+  @Test
+  fun years_realAge() {
+    val h = twoHousePlate().toZiweiPlateDto(ChartDensity.FULL, yearsBy = AgeType.REAL).houses.first()
+    assertEquals(1988 to 1997, h.fortuneFromYear to h.fortuneToYear)
+  }
+
+  /** 本命盤沒有流運層 */
+  @Test
+  fun natalPlate_hasNoFlows() {
+    val dto = decoratedPlate().toZiweiPlateDto(ChartDensity.FULL)
+    assertEquals(emptyList(), dto.flows)
+    assertEquals(emptyMap(), dto.houses.single().stars.single { it.label == "文昌" }.flowTransFours)
+  }
+
+  /** enum 改型別後線上格式不變：四化仍是 "祿" 字串 */
+  @Test
+  fun transFours_wireFormatUnchanged() {
+    val text = Json.encodeToString(ZiweiPlateDto.serializer(), decoratedPlate().toZiweiPlateDto(ChartDensity.FULL))
+    assertEquals(listOf("祿"), JsonPath.read<List<String>>(text, "$.houses[0].stars[?(@.label=='紫微')].transFours[0]"))
+  }
+
   // ---- fixtures ----
 
   /** 一宮兩星，紫微帶本命化祿與廟旺值、文昌只帶大限四化（不該出現於本命） */
@@ -225,15 +294,20 @@ class ZiweiPlateDtoTest {
     )
   )
 
-  private fun houseOf(house: House, stemBranch: StemBranch, vararg stars: ZStar) = HouseData(
+  private fun houseOf(
+    house: House, stemBranch: StemBranch, vararg stars: ZStar,
+    flowHouseMap: Map<FlowType, House> = emptyMap(),
+    flies: Set<Triple<T4Value, ZStar, Branch>> = emptySet(),
+    smallRanges: List<Int> = emptyList(),
+  ) = HouseData(
     house = house,
     stemBranch = stemBranch,
     stars = stars.toSet(),
-    flowHouseMap = emptyMap(),
-    transFourFlyMap = emptySet(),
+    flowHouseMap = flowHouseMap,
+    transFourFlyMap = flies,
     rangeFromAge = 4,
     rangeToAge = 13,
-    smallRanges = emptyList()
+    smallRanges = smallRanges
   )
 
   private fun plateOf(
