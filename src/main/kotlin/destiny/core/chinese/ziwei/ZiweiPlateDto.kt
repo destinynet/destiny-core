@@ -89,7 +89,7 @@ data class ZiweiHouseDto(
 /** 疊加的一層流運 */
 @Serializable
 data class ZiweiFlowDto(
-  /** 疊加的流運層（目前呼叫端只疊 SECTION 大限、YEAR 流年；更深的流月／流日／流時若存在也會照列） */
+  /** 流運層別：SECTION（大限）、YEAR（流年）；盤上若疊了流月／流日／流時，也會照列 */
   val type: FlowType,
   val stemBranch: String,
   /** 這一層的命宮落在哪個地支 */
