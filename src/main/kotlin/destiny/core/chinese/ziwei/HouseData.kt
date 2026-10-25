@@ -42,6 +42,10 @@ data class HouseData(
   }
 
 
+  /** 宮干四化：此宮宮干化出的四顆星，各飛入哪個地支（自化、化入對宮皆由此判斷） */
+  val flies: Set<Triple<T4Value, ZStar, Branch>>
+    get() = transFourFlyMap
+
   /** 宮干自化 列表 , 0 <= 長度 <= 3 */
   val selfTransFoursWithStar: List<Pair<T4Value,ZStar>>
     get() = transFourFlyMap

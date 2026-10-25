@@ -39,7 +39,7 @@ interface IChineseDateModel {
    * 注意：只論 cycle + 年干支 , 以農曆為準 , 不考慮「西元過年」至「農曆過年」之間的 gap , 仍將其視為「西元」的前一年
    */
   val westYear: Int
-    get() = -2636 + (cycleOrZero - 1) * 60 + year.index
+    get() = ChineseDate.westYearOf(cycleOrZero, year)
 
   companion object {
 
@@ -77,7 +77,13 @@ data class ChineseDate(
   /** 是否是潤月  */
   override val leapMonth: Boolean,
   /** 日  */
-  override val day: Int) : IChineseDateModel, JSerializable
+  override val day: Int) : IChineseDateModel, JSerializable {
+
+  companion object {
+    /** 從 cycle + 年干支取得西元年份（以農曆為準，同 [IChineseDateModel.westYear]） */
+    fun westYearOf(cycle: Int, year: StemBranch): Int = -2636 + (cycle - 1) * 60 + year.index
+  }
+}
 
 fun Int.toChineseMonthString(): String {
   return buildString {
