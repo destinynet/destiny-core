@@ -89,7 +89,7 @@ data class ZiweiHouseDto(
 /** 疊加的一層流運 */
 @Serializable
 data class ZiweiFlowDto(
-  /** SECTION（大限）| YEAR（流年） */
+  /** 疊加的流運層（目前呼叫端只疊 SECTION 大限、YEAR 流年；更深的流月／流日／流時若存在也會照列） */
   val type: FlowType,
   val stemBranch: String,
   /** 這一層的命宮落在哪個地支 */
@@ -154,13 +154,15 @@ private fun ZStar.visibleIn(density: ChartDensity): Boolean = when (density) {
 }
 
 /**
- * @param yearsBy 要輸出大限的西元年時，給大限歲數的算法（虛歲／實歲，同 [IZiweiConfig.sectionAgeType]）；null ＝不輸出年份
+ * @param yearsBy 要輸出大限的西元年時，給大限歲數的算法（虛歲／實歲）；null ＝不輸出年份。
+ *   呼叫端須傳入起盤時所用的同一個 [IZiweiConfig.sectionAgeType]，否則年份會差一年
  */
 fun IPlate.toZiweiPlateDto(density: ChartDensity, yearsBy: AgeType? = null): ZiweiPlateDto {
   // 疊加盤的 HouseData.house 是最後一層流運的宮名，本命一律取 flowHouseMap[MAIN]
   fun HouseData.natal(): House = getHouse(FlowType.MAIN)
   val layers: List<FlowType> = flowBranchMap.keys.filter { it != FlowType.MAIN }.sorted()
   val birthWestYear = chineseDate.westYear
+  // 歲數 → 年份，與 IZiweiFeature.getYearsOfFlowSection 同規則：虛歲減一、實歲不減
   fun westYearOfAge(age: Int): Int? = when (yearsBy) {
     AgeType.VIRTUAL -> birthWestYear + age - 1
     AgeType.REAL    -> birthWestYear + age
