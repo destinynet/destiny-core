@@ -20,6 +20,8 @@
 package destiny.core.astrology
 
 import destiny.core.ChartDensity
+import destiny.core.Gender
+import destiny.core.getAbbreviation
 import destiny.tools.Lang
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import kotlinx.serialization.Serializable
@@ -49,6 +51,15 @@ data class HoroscopePointDto(
   val retrograde: Boolean,
   /** PLANET | NODE | ASTEROID | FIXED_STAR | LOT | AXIS | OTHER */
   val kind: String,
+  /** 縮寫（繁中，如 日、月、昇）—— 小空間的標籤用它，[label] 是全名 */
+  val abbr: String = "",
+  /** 英文縮寫（如 Su、Mo、AC；取自英文 bundle） */
+  val abbrEn: String = "",
+  /** 赤緯（度）；算不出時為 null */
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val declination: Double? = null,
+  /** 逆行階段（停滯前、逆行中、停滯後）；順行為 null。比 [retrograde] 細 */
+  val retrogradePhase: RetrogradePhase? = null,
 )
 
 @Serializable
@@ -84,6 +95,9 @@ data class HoroscopeAspectDto(
   val applying: Boolean?,
   /** 相位符號（[Aspect.glyph]：☌ ☍ □ △ ⚹…，次要相位為縮寫） */
   val glyph: String = "",
+  /** 相位強度（0–1，容許度內約 0.6 起跳；越緊越接近 1）；未知為 null */
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val score: Double? = null,
 )
 
 @Serializable
@@ -127,7 +141,15 @@ private fun AstroPoint.visibleIn(density: ChartDensity): Boolean = when (density
   ChartDensity.ALL          -> true
 }
 
-fun IPersonHoroscopeDtoV2.toHoroscopeChartDto(density: ChartDensity): HoroscopeChartDto {
+/** 有性別的盤（[Natal]／[NatalV2] 皆可） */
+fun IPersonHoroscopeDto.toHoroscopeChartDto(density: ChartDensity): HoroscopeChartDto =
+  toHoroscopeChartDto(density, gender)
+
+/**
+ * 只讀 [stars]、[houses]、[tightestAspects] —— V1 的 [IHoroscopeDto] 就夠，不必先轉 V2。
+ * 盤本身不帶性別時（非 person 的 [IHoroscopeDto]），由呼叫端給。
+ */
+fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): HoroscopeChartDto {
   val houseDtos = houses.map { h ->
     HoroscopeHouseDto(
       id = h.id,
@@ -160,6 +182,10 @@ fun IPersonHoroscopeDtoV2.toHoroscopeChartDto(density: ChartDensity): HoroscopeC
         house = info.house,
         retrograde = info.isRetrograde,
         kind = point.kindLabel,
+        abbr = point.getAbbreviation(ZH),
+        abbrEn = point.getAbbreviation(Lang.EN),
+        declination = info.declination,
+        retrogradePhase = info.retrogradePhase,
       )
     }
 
@@ -193,6 +219,7 @@ fun IPersonHoroscopeDtoV2.toHoroscopeChartDto(density: ChartDensity): HoroscopeC
         orb = pattern.orb,
         major = major,
         applying = pattern.aspectType?.let { it == IPointAspectPattern.AspectType.APPLYING },
+        score = pattern.score?.value,
       )
     },
   )

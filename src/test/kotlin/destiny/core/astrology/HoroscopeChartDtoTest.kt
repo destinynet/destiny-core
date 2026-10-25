@@ -34,6 +34,24 @@ class HoroscopeChartDtoTest {
     assertEquals(false, sun.retrograde)
   }
 
+  /** 3D viewer 用的欄位：縮寫（中／英）、赤緯、逆行階段 —— renderer 不再自維護行星表 */
+  @Test
+  fun points_carryAbbreviationsDeclinationAndRetrogradePhase() {
+    val dto = fakeNatal(extraStars = mapOf(
+      Planet.VENUS to starAt(50.0, house = 2).copy(declination = 24.123, retrogradePhase = RetrogradePhase.PREPARING),
+    )).toHoroscopeChartDto(ChartDensity.FULL)
+
+    val sun = dto.points.single { it.point == "Planet.SUN" }
+    assertEquals("日", sun.abbr)
+    assertEquals("Su", sun.abbrEn)
+    assertEquals(null, sun.declination)
+    assertEquals(null, sun.retrogradePhase)
+
+    val venus = dto.points.single { it.point == "Planet.VENUS" }
+    assertEquals(24.123, venus.declination)
+    assertEquals(RetrogradePhase.PREPARING, venus.retrogradePhase)
+  }
+
   @Test
   fun retrogradePoint_flagged() {
     val dto = fakeNatal().toHoroscopeChartDto(ChartDensity.FULL)
@@ -77,11 +95,12 @@ class HoroscopeChartDtoTest {
   fun aspects_carryAngleOrbAndMajorFlag() {
     val dto = fakeNatal(
       aspects = listOf(
-        PointAspectPattern(listOf(Planet.SUN, Planet.MERCURY), angle = 0.0, orb = 1.2),
+        PointAspectPattern(listOf(Planet.SUN, Planet.MERCURY), angle = 0.0, orb = 1.2, score = destiny.tools.Score(0.93)),
         PointAspectPattern(listOf(Planet.SUN, Planet.MARS), angle = 30.0, orb = 0.4),
       )
     ).toHoroscopeChartDto(ChartDensity.ALL)
 
+    assertEquals(0.93, dto.aspects.single { it.aspect == "CONJUNCTION" }.score, "3D 用 score 決定線寬")
     assertEquals(
       setOf(
         // 合相是主要相位 → 畫粗線

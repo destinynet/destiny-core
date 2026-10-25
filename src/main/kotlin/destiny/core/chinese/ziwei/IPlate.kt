@@ -1,5 +1,6 @@
 package destiny.core.chinese.ziwei
 
+import destiny.core.ChartIdentityDto
 import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.calendar.GmtJulDay
@@ -8,6 +9,7 @@ import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.chinese.*
 import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
+import java.time.temporal.ChronoField
 import java.util.*
 
 
@@ -341,4 +343,15 @@ interface IPlateDay : IPlateMonth {
 /** 流時盤 */
 interface IPlateHour : IPlateDay {
   val flowHour: StemBranch
+}
+
+/** 盤上的身分欄位 → 身分區（[ChartIdentityDto]）；沒有出生時刻的盤（[IPlate.localDateTime] 為 null）不印國曆 */
+fun IPlate.toChartIdentityDto(): ChartIdentityDto {
+  val t = localDateTime
+  return ChartIdentityDto.of(
+    name, gender,
+    t?.get(ChronoField.YEAR), t?.get(ChronoField.MONTH_OF_YEAR), t?.get(ChronoField.DAY_OF_MONTH),
+    t?.get(ChronoField.HOUR_OF_DAY), t?.get(ChronoField.MINUTE_OF_HOUR),
+    chineseDate, place,
+  )
 }
