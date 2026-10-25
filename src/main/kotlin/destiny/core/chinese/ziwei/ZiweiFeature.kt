@@ -167,6 +167,17 @@ interface IZiweiFeature : PersonFeature<IZiweiConfig, IPlate> {
 
   /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「歲數」各別是幾歲 */
   fun getYearsOfFlowSection(plate: IPlate, section: Branch, config: IZiweiConfig): List<Triple<Int, StemBranch, Int>>
+
+  /**
+   * 西元年 → 該年所在的（大限干支, 流年干支）；未入大限或超出大限範圍 ⇒ null。
+   * 年份以農曆年為準（同 [ChineseDate.westYear]），與 [getYearsOfFlowSection] 逐年列出流年的算法同源。
+   */
+  fun findFlowYear(plate: IPlate, westYear: Int, config: IZiweiConfig): Pair<StemBranch, StemBranch>? =
+    plate.flowSectionAgeMap.keys.firstNotNullOfOrNull { section ->
+      getYearsOfFlowSection(plate, section.branch, config)
+        .firstOrNull { (cycle, sb, _) -> ChineseDate.westYearOf(cycle, sb) == westYear }
+        ?.let { (_, sb, _) -> section to sb }
+    }
 }
 
 @Named
