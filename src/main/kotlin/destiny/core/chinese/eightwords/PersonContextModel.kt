@@ -48,7 +48,8 @@ interface IPersonContextModel : IEightWordsContextModel , IBirthDataNamePlace  {
     else fortuneDataLarges.firstOrNull { gmtJulDay > it.startFortuneGmtJulDay && it.endFortuneGmtJulDay > gmtJulDay }?.stemBranch
   }
 
-  private fun getAgeMapOfFortuneLarge(fortuneData: FortuneData): Map<Int, Pair<GmtJulDay, GmtJulDay>> {
+  /** 此步大運 [fortuneData] 所涵蓋流年歲數的起訖時刻（跨換運時刻的那一歲，前後兩步大運都會包含） */
+  fun getAgeMapOfFortuneLarge(fortuneData: FortuneData): Map<Int, Pair<GmtJulDay, GmtJulDay>> {
     return ageMap.filter { (_, pair) ->
       val (ageStart, ageEnd) = pair
       val head = ageStart < fortuneData.startFortuneGmtJulDay && ageEnd > fortuneData.startFortuneGmtJulDay

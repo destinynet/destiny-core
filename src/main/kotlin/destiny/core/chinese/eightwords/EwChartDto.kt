@@ -12,7 +12,9 @@
  *    需要顯示身分時，由呼叫端另外組一個並列的身分物件。
  * 2. **時刻要換算成歲數**：`FortuneData` 的起訖是 `GmtJulDay`，其
  *    `startFortuneAgeNotes` 的內容更直接就是「西元 2035 年」這類年份字串。
- *    大運只留歲數，年份一概不出現。節氣位置同理：只給名稱與已算好的進度，不給時刻。
+ *    大運預設只留歲數，年份不出現。節氣位置同理：只給名稱與已算好的進度，不給時刻。
+ *    唯一例外是呼叫端明示 `withYears` 時的逐年流年（[EwFortuneDto.years]）—— 年份配上歲數可推出出生年，
+ *    盤面要公開時不帶。
  * 3. **十神與藏干要在伺服器算完**：十神是「與日主的關係」，藏干還牽涉流派實作，
  *    都不該讓 client 自備對照表。
  *
@@ -37,14 +39,18 @@ import destiny.core.astrology.includeChineseHour
 import destiny.core.astrology.Planet
 import destiny.core.astrology.TransPoint
 import destiny.core.astrology.ZodiacSign
+import destiny.core.calendar.toInstant
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.Reaction
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.Stem
+import destiny.core.chinese.StemBranchYearTool
 import destiny.tools.Lang
 import destiny.tools.getTitle
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 
 /** 查表語系 —— 八字固定繁中，不對外開放為參數 */
@@ -79,7 +85,27 @@ data class EwPillarDto(
   val naYin: String?,
 )
 
-/** 一柱大運。只有歲數，沒有年份 */
+/**
+ * 大運之內的一個流年（一個八字歲：立春到立春，出生那一歲是出生到下一個立春）。
+ *
+ * ⚠️ 歲數欄位刻意不叫 `age`（身分欄位禁字），叫 [atAge]。
+ */
+@Serializable
+data class EwFortuneYearDto(
+  /** 該歲年柱所屬的西元年（以立春為界；出生在立春前者，第一歲屬前一年） */
+  val year: Int,
+  /** 歲數（與 [EwFortuneDto.fromAge] 同一套算法） */
+  val atAge: Int,
+  /** 流年天干 */
+  val stem: String,
+  /** 流年地支 */
+  val branch: String,
+  /** 流年天干對日主的十神 */
+  val stemReaction: String,
+  val stemReactionAbbr: String,
+)
+
+/** 一柱大運。預設只有歲數，沒有年份 */
 @Serializable
 data class EwFortuneDto(
   val stem: String,
@@ -92,6 +118,13 @@ data class EwFortuneDto(
   val stemReactionAbbr: String,
   /** 大運地支藏干，僅 [ChartDensity.ALL] */
   val hiddenStems: List<EwReactionDto>,
+  /**
+   * 此運涵蓋的流年，依歲數排列。只在 `toEwChartDto(withYears = true)` 時有值，否則為空（wire 上即空陣列）。
+   *
+   * 換運時刻通常不落在立春，交界那一歲會**同時**出現在前後兩步大運裡；加上大運長度依推算法略有出入，
+   * 一步大運通常有 10–12 個流年（未滿一歲的頭尾段除外）。
+   */
+  val years: List<EwFortuneYearDto> = emptyList(),
 )
 
 /**
@@ -148,6 +181,13 @@ data class EwMetaDto(
   val risingSign: String? = null,
   val sunSign: String? = null,
   val moonSign: String? = null,
+  /**
+   * 換用另一套時刻系統（真太陽時 ↔ 鐘錶時）排盤時的時支；與本盤時支相同時為 null。
+   *
+   * mapper 不知道排盤設定，由呼叫端另排一次後傳入（`toEwChartDto(altHourBranch = …)`）。
+   * 出生時刻接近時辰交界時，兩套算法可能落在不同時辰，renderer 據此提示。
+   */
+  val altHourBranch: String? = null,
 )
 
 @Serializable
@@ -240,6 +280,10 @@ fun IPersonContextModel.toEwChartDto(
   hiddenStemsImpl: IHiddenStems = HiddenStemsStandardImpl(),
   /** 帶上升／太陽／月亮的星座名（[EwMetaDto.risingSign]） */
   withSigns: Boolean = false,
+  /** 每步大運帶逐年流年（[EwFortuneDto.years]）；年份可推出出生年，盤面要公開時不帶 */
+  withYears: Boolean = false,
+  /** 另一套時刻系統下的時支（[EwMetaDto.altHourBranch]）；與本盤時支相同者視為 null */
+  altHourBranch: Branch? = null,
 ): EwChartDto {
   val compact = density == ChartDensity.COMPACT
   val all = density == ChartDensity.ALL
@@ -258,6 +302,7 @@ fun IPersonContextModel.toEwChartDto(
       stemReaction = reaction.name,
       stemReactionAbbr = reaction.getAbbreviation(ZH),
       hiddenStems = if (all) hiddenStemsOf(fortuneData.stemBranch.branch) else emptyList(),
+      years = if (withYears) fortuneYearsOf(fortuneData, ::reactionOf) else emptyList(),
     )
   }
 
@@ -290,6 +335,7 @@ fun IPersonContextModel.toEwChartDto(
       risingSign = if (withSigns) rsmiMap[TransPoint.RISING]?.sign?.getTitle<ZodiacSign>(ZH) else null,
       sunSign = if (withSigns) starPosMap[Planet.SUN]?.lngDeg?.sign?.getTitle<ZodiacSign>(ZH) else null,
       moonSign = if (withSigns) starPosMap[Planet.MOON]?.lngDeg?.sign?.getTitle<ZodiacSign>(ZH) else null,
+      altHourBranch = altHourBranch?.takeIf { it != eightWords.hour.branch }?.name,
     ),
     pillars = mapper.pillars(density),
     fortunes = fortunes,
@@ -298,12 +344,34 @@ fun IPersonContextModel.toEwChartDto(
 }
 
 /**
+ * 一步大運涵蓋的流年。
+ *
+ * 歲數表（[IPersonContextModel.ageMap]）每一歲止於立春，故「止點的西元年 − 1」即該歲年柱所屬的西元年
+ * （立春恆在二月初，不受時區影響）。年柱干支依西元年推（以立春為界），不受「冬至換年」設定影響 ——
+ * 該設定只用於本命年柱。
+ */
+private fun IPersonContextModel.fortuneYearsOf(fortuneData: FortuneData, reactionOf: (Stem) -> Reaction): List<EwFortuneYearDto> =
+  getAgeMapOfFortuneLarge(fortuneData).entries.sortedBy { it.key }.map { (age, range) ->
+    val year = range.second.toInstant().toLocalDateTime(TimeZone.UTC).year - 1
+    val sb = StemBranchYearTool.getYearStemBranch(year)
+    val reaction = reactionOf(sb.stem)
+    EwFortuneYearDto(
+      year = year,
+      atAge = age,
+      stem = sb.stem.name,
+      branch = sb.branch.name,
+      stemReaction = reaction.name,
+      stemReactionAbbr = reaction.getAbbreviation(ZH),
+    )
+  }
+
+/**
  * 依出生時刻精度拿掉算不準的部分：沒有時辰（[BirthDataGrain.includeChineseHour] 為 false）⇒
- * 時柱、命宮、上升星座。大運與其餘三柱只需要日期，照留。
+ * 時柱、命宮、上升星座、另一套時刻系統下的時支。大運與其餘三柱只需要日期，照留。
  */
 fun EwChartDto.gatedBy(grain: BirthDataGrain): EwChartDto =
   if (grain.includeChineseHour) this
   else copy(
     pillars = pillars.filter { it.scale != Scale.HOUR.name },
-    meta = meta.copy(mingStemBranch = null, mingSign = null, risingSign = null),
+    meta = meta.copy(mingStemBranch = null, mingSign = null, risingSign = null, altHourBranch = null),
   )

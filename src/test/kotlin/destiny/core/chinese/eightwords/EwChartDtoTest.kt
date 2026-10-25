@@ -10,6 +10,7 @@ import destiny.core.calendar.*
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.EightWords
 import destiny.core.calendar.eightwords.IEightWords
+import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.eightwords.hazards.HazardItem
 import destiny.core.identityFieldsIn
@@ -189,6 +190,66 @@ class EwChartDtoTest {
     assertEquals(listOf("子", "丑"), all.meta.dayEmpties)
   }
 
+  /** 流年年份配上歲數可推出出生年 —— 預設不帶 */
+  @Test
+  fun fortuneYears_absentByDefault() {
+    val dto = modelWithAges().toEwChartDto(ChartDensity.ALL)
+    assertTrue(dto.fortunes.isNotEmpty())
+    assertTrue(dto.fortunes.all { it.years.isEmpty() })
+  }
+
+  /**
+   * 每一歲止於立春；大運 1975-07 ～ 1985-07 涵蓋 10 歲（1975 立春起）到 20 歲（1985 立春起），
+   * 交界的兩歲各自也屬於前後那步大運。
+   */
+  @Test
+  fun fortuneYears_whenAskedFor_consecutiveYearsWithStemBranch() {
+    val dto = modelWithAges().toEwChartDto(ChartDensity.FULL, withYears = true)
+
+    val first = dto.fortunes.first()
+    assertEquals((10..20).toList(), first.years.map { it.atAge })
+    assertEquals((1975..1985).toList(), first.years.map { it.year })
+    first.years.first().also {
+      assertEquals("乙", it.stem)
+      assertEquals("卯", it.branch)
+      assertEquals("七殺", it.stemReaction)
+      assertEquals("殺", it.stemReactionAbbr)
+    }
+    assertEquals("甲子", first.years.single { it.year == 1984 }.let { it.stem + it.branch })
+
+    // 交界那一歲（20 歲）同時出現在下一步大運
+    val second = dto.fortunes[1]
+    assertEquals(20, second.years.first().atAge)
+    assertEquals(1985, second.years.first().year)
+  }
+
+  /** 出生在立春前：第一歲止於當年立春，年柱屬前一年 */
+  @Test
+  fun fortuneYears_bornBeforeLiChun_firstAgeBelongsToPreviousYear() {
+    val birth = jd(1966, 1, 20)
+    val ages = mapOf(1 to (birth to jd(1966, 2, 4)), 2 to (jd(1966, 2, 4) to jd(1967, 2, 4)))
+    val model = modelWithAges(ageMap = ages, larges = listOf(fortuneOf("丁酉", 1, 10, birth - 1, jd(1975, 7, 1))))
+    val years = model.toEwChartDto(ChartDensity.FULL, withYears = true).fortunes.first().years
+    assertEquals(listOf(1965, 1966), years.map { it.year })
+    assertEquals(listOf("乙巳", "丙午"), years.map { it.stem + it.branch })
+  }
+
+  @Test
+  fun altHourBranch_absentByDefault_andWhenSameAsChart() {
+    assertNull(fakeModel().toEwChartDto(ChartDensity.FULL).meta.altHourBranch)
+    // 本盤時支 丑
+    assertNull(fakeModel().toEwChartDto(ChartDensity.FULL, altHourBranch = Branch.丑).meta.altHourBranch)
+    assertEquals("子", fakeModel().toEwChartDto(ChartDensity.FULL, altHourBranch = Branch.子).meta.altHourBranch)
+  }
+
+  /** 沒有時辰的盤，「另一套時刻系統下的時辰」也無從談起 */
+  @Test
+  fun altHourBranch_droppedWithoutHour() {
+    val dto = fakeModel().toEwChartDto(ChartDensity.FULL, altHourBranch = Branch.子)
+    assertNull(dto.gatedBy(BirthDataGrain.DAY).meta.altHourBranch)
+    assertEquals("子", dto.gatedBy(BirthDataGrain.MINUTE).meta.altHourBranch)
+  }
+
   @Test
   fun ewChartDto_declaresNoIdentityField() {
     assertEquals(emptyList(), identityFieldsIn(EwChartDto.serializer().descriptor))
@@ -230,6 +291,24 @@ class EwChartDtoTest {
     )
   }
 
+  private fun jd(y: Int, m: Int, d: Int) = TimeTools.getGmtJulDay(LocalDateTime.of(y, m, d, 0, 0))
+
+  /** 1966-07-17 生；第 N 歲止於 (1966+N) 年 2/4（模擬立春） */
+  private val liChunAges: Map<Int, Pair<GmtJulDay, GmtJulDay>> = (1..40).associateWith { age ->
+    val start = if (age == 1) jd(1966, 7, 17) else jd(1965 + age, 2, 4)
+    start to jd(1966 + age, 2, 4)
+  }
+
+  private fun modelWithAges(
+    ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = liChunAges,
+    larges: List<FortuneData> = listOf(
+      fortuneOf("丁酉", 10, 19, jd(1975, 7, 1), jd(1985, 7, 1)),
+      fortuneOf("戊戌", 20, 29, jd(1985, 7, 1), jd(1995, 7, 1)),
+    ),
+  ) = fakeModel().let { m ->
+    FakeEwModel(m.eightWords, larges, m.risingStemBranch, m.solarTermsTimePos, m.prevSolarSign, m.nextSolarSign, m.score, ageMap = ageMap)
+  }
+
   private fun fakeModel() = FakeEwModel(
     eightWords = EightWords("丙午", "丙申", "己未", "乙丑"),
     fortuneDataLarges = listOf(
@@ -252,10 +331,13 @@ class EwChartDtoTest {
    * 起訖時刻與 [FortuneData.startFortuneAgeNotes] 刻意填入可辨識的值 ——
    * 前者是精確時刻、後者的內容就是「西元 2035」這類年份，兩者都不得進入 DTO。
    */
-  private fun fortuneOf(stemBranch: String, from: Int, to: Int) = FortuneData(
+  private fun fortuneOf(
+    stemBranch: String, from: Int, to: Int,
+    start: GmtJulDay = GmtJulDay(2442000.0), end: GmtJulDay = GmtJulDay(2445650.0),
+  ) = FortuneData(
     stemBranch = StemBranch[stemBranch],
-    startFortuneGmtJulDay = GmtJulDay(2442000.0),
-    endFortuneGmtJulDay = GmtJulDay(2445650.0),
+    startFortuneGmtJulDay = start,
+    endFortuneGmtJulDay = end,
     startFortuneAge = from,
     endFortuneAge = to,
     startFortuneAgeNotes = listOf("西元2035年"),
@@ -277,6 +359,7 @@ private class FakeEwModel(
   override val score: Double,
   override val starPosMap: Map<AstroPoint, PositionWithBranch> = emptyMap(),
   override val rsmiMap: Map<TransPoint, ZodiacDegree> = emptyMap(),
+  override val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = emptyMap(),
 ) : IPersonContextModel {
   override val gender: Gender = Gender.M
   override val name: String? = "王小明"
@@ -289,6 +372,5 @@ private class FakeEwModel(
   override val houseMap: Map<Int, ZodiacDegree> = emptyMap()
   override val aspectsDataSet: Set<IPointAspectPattern> = emptySet()
   override val fortuneDataSmalls: List<FortuneData> = emptyList()
-  override val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = emptyMap()
   override val childHazards: List<HazardItem> = emptyList()
 }
