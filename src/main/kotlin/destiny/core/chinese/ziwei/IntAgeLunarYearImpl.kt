@@ -48,10 +48,7 @@ class IntAgeLunarYearImpl(private val ageType: AgeType,
 
   private fun getRangeInner(prevResult: Pair<GmtJulDay, GmtJulDay>, count: Int): Pair<GmtJulDay, GmtJulDay> {
 
-    val startAge = when(ageType) {
-      AgeType.REAL -> 0
-      AgeType.VIRTUAL -> 1
-    }
+    val startAge = ageType.birthYearAge
 
     return if (count == startAge) {
       prevResult
@@ -63,10 +60,7 @@ class IntAgeLunarYearImpl(private val ageType: AgeType,
   }
 
   private fun getRangesInner(prevResults: MutableList<Pair<GmtJulDay, GmtJulDay>>, count: Int): List<Pair<GmtJulDay, GmtJulDay>> {
-    val startAge = when (ageType) {
-      AgeType.REAL    -> 0
-      AgeType.VIRTUAL -> 1
-    }
+    val startAge = ageType.birthYearAge
 
     return if (count == startAge) {
       prevResults

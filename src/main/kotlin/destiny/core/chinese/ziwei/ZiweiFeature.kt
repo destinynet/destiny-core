@@ -910,10 +910,7 @@ class ZiweiFeature(
             viewGmt in fromGmt..toGmt
           }?.key?.let { targetAge -> // target歲數
             val section: StemBranch? = plate.findSection(targetAge)
-            val flowYear: StemBranch = when (config.sectionAgeType) {
-              AgeType.VIRTUAL -> plate.year.next(targetAge - 1)
-              AgeType.REAL    -> plate.year.next(targetAge)
-            }
+            val flowYear: StemBranch = plate.year.next(config.sectionAgeType.yearsAfterBirth(targetAge))
             Flow(section, flowYear)
           }
         }
@@ -956,29 +953,16 @@ class ZiweiFeature(
     val (fromAge, toAge) = flowSectionImpl.getAgeRange(plate.getHouseDataOf(section).getHouse(FlowType.MAIN),
                                                        plate.state, birthYear.stem, plate.gender, houseSeqImplMap[config.houseSeq]!!)
 
-    return when(config.sectionAgeType) {
-      AgeType.VIRTUAL -> {
-        (fromAge..toAge).map { vAge ->
-          val sb = birthYear.next(vAge - 1) // 虛歲 (vAge) 轉換為年 , 要減一 .
-          val cycle: Int = if (sb.index >= birthYear.index) {
-            birthCycle + (vAge - 1) / 60
-          } else {
-            birthCycle + (vAge - 1) / 60 + 1
-          }
-          Triple(cycle, sb, vAge)
-        }.toList()
+    // 虛歲要減一、實歲不減（AgeType.yearsAfterBirth）
+    return (fromAge..toAge).map { age ->
+      val offset = config.sectionAgeType.yearsAfterBirth(age)
+      val sb = birthYear.next(offset)
+      val cycle: Int = if (sb.index >= birthYear.index) {
+        birthCycle + offset / 60
+      } else {
+        birthCycle + offset / 60 + 1
       }
-      AgeType.REAL -> {
-        (fromAge..toAge).map { rAge ->
-          val sb = birthYear.next(rAge) // 實歲 (rAge) 轉換為年 , 不需要減一 .
-          val cycle: Int = if (sb.index >= birthYear.index) {
-            birthCycle + (rAge) / 60
-          } else {
-            birthCycle + (rAge) / 60 + 1
-          }
-          Triple(cycle, sb, rAge)
-        }.toList()
-      }
+      Triple(cycle, sb, age)
     }
   }
 

@@ -169,12 +169,8 @@ fun IPlate.toZiweiPlateDto(density: ChartDensity, yearsBy: AgeType? = null): Ziw
   fun HouseData.natal(): House = getHouse(FlowType.MAIN)
   val layers: List<FlowType> = flowBranchMap.keys.filter { it != FlowType.MAIN }.sorted()
   val birthWestYear = chineseDate.westYear
-  // 歲數 → 年份，與 IZiweiFeature.getYearsOfFlowSection 同規則：虛歲減一、實歲不減
-  fun westYearOfAge(age: Int): Int? = when (yearsBy) {
-    AgeType.VIRTUAL -> birthWestYear + age - 1
-    AgeType.REAL    -> birthWestYear + age
-    null            -> null
-  }
+  // 歲數 → 年份，與 IZiweiFeature.getYearsOfFlowSection 同規則（AgeType.yearsAfterBirth）
+  fun westYearOfAge(age: Int): Int? = yearsBy?.let { birthWestYear + it.yearsAfterBirth(age) }
   fun notesOf(westYear: Int?): Map<IntAgeNote, String> =
     westYear?.let { y -> IntAgeNote.entries.mapNotNull { n -> n.noteOf(y)?.let { n to it } }.toMap() } ?: emptyMap()
 
