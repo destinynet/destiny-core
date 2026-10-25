@@ -107,6 +107,7 @@ class HoroscopeChartDtoTest {
     )
 
     assertEquals(listOf("CONJUNCTION"), natal.toHoroscopeChartDto(ChartDensity.COMPACT).aspects.map { it.aspect })
+    assertEquals(listOf("☌"), natal.toHoroscopeChartDto(ChartDensity.COMPACT).aspects.map { it.glyph }, "符號由 core 給，renderer 不另維護表")
     assertEquals(listOf("CONJUNCTION"), natal.toHoroscopeChartDto(ChartDensity.FULL).aspects.map { it.aspect })
     assertEquals(
       setOf("CONJUNCTION", "SEMISEXTILE"),

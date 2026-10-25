@@ -360,4 +360,10 @@ class AspectTest : EnumTest() {
     }
   }
 
+  /** 每個相位都有符號，而且互不重複（renderer 靠它在相位表區分） */
+  @Test
+  fun glyph_isUniquePerAspect() {
+    assertEquals(Aspect.entries.size, Aspect.entries.map { it.glyph }.toSet().size)
+    assertEquals("△", Aspect.TRINE.glyph)
+  }
 }

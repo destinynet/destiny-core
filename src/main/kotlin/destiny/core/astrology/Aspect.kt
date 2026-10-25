@@ -174,3 +174,30 @@ enum class Aspect(
 
   }
 }
+
+/**
+ * 相位的符號（☌ ☍ □ △ ⚹ …）。沒有通用 unicode 字形的（五分、七分、九分、十分相位系列）給慣用縮寫 ——
+ * 它們只在次要相位打開時出現，用的人看得懂縮寫。renderer 直接用它，不另維護對照表。
+ */
+val Aspect.glyph: String
+  get() = when (this) {
+    Aspect.CONJUNCTION    -> "☌"
+    Aspect.OPPOSITION     -> "☍"
+    Aspect.SQUARE         -> "□"
+    Aspect.TRINE          -> "△"
+    Aspect.SEXTILE        -> "⚹"
+    Aspect.SEMISEXTILE    -> "⚺"
+    Aspect.QUINCUNX       -> "⚻"
+    Aspect.SEMISQUARE     -> "∠"
+    Aspect.SESQUIQUADRATE -> "⚼"
+    Aspect.QUINTILE       -> "Q"
+    Aspect.BIQUINTILE     -> "bQ"
+    Aspect.SESQUIQUINTLE  -> "sQ"
+    Aspect.DECILE         -> "D"
+    Aspect.SEPTILE        -> "S7"
+    Aspect.BISEPTILE      -> "bS7"
+    Aspect.TRISEPTILE     -> "tS7"
+    Aspect.NOVILE         -> "N"
+    Aspect.BINOVILE       -> "bN"
+    Aspect.QUATRONOVILE   -> "qN"
+  }

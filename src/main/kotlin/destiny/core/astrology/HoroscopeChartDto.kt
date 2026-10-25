@@ -82,6 +82,8 @@ data class HoroscopeAspectDto(
   val major: Boolean,
   /** true=入相位、false=出相位、null=未知 */
   val applying: Boolean?,
+  /** 相位符號（[Aspect.glyph]：☌ ☍ □ △ ⚹…，次要相位為縮寫） */
+  val glyph: String = "",
 )
 
 @Serializable
@@ -186,6 +188,7 @@ fun IPersonHoroscopeDtoV2.toHoroscopeChartDto(density: ChartDensity): HoroscopeC
         from = ends[0].nameKey,
         to = ends[1].nameKey,
         aspect = aspect.name,
+        glyph = aspect.glyph,
         angle = aspect.degree,
         orb = pattern.orb,
         major = major,
