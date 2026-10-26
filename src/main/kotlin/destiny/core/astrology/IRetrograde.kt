@@ -60,7 +60,7 @@ data class RetrogradeCycle(
   val stationaries: List<Stationary> by lazy {
     listOf(
       Stationary(retrogradingGmt, star, DIRECT_TO_RETROGRADE, retrogradingPos),
-      Stationary(returningGmt, star, RETROGRADE_TO_DIRECT, retrogradingPos)
+      Stationary(returningGmt, star, RETROGRADE_TO_DIRECT, returningPos)
     )
   }
 }
