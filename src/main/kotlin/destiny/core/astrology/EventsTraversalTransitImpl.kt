@@ -8,6 +8,7 @@ import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.event.ILunations
 import destiny.core.electional.Impact
 import destiny.core.electional.Span
 import destiny.core.toString
@@ -26,6 +27,7 @@ class EventsTraversalTransitImpl(
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
   private val relativeTransitImpl: IRelativeTransit,
+  private val lunations: ILunations,
   private val eclipseImpl: IEclipseFactory,
   private val horoscopeFeature: IHoroscopeFeature,
   private val modernAspectCalculator: IAspectCalculator,
@@ -316,13 +318,9 @@ class EventsTraversalTransitImpl(
 
     // 月相 (只在 SUN 和 MOON 都被選中時計算)
     val lunarPhases = if (Planet.SUN in transitingStars && Planet.MOON in transitingStars) {
-      sequenceOf(
-        0.0 to LunarPhase.NEW,
-        90.0 to LunarPhase.FIRST_QUARTER,
-        180.0 to LunarPhase.FULL,
-        270.0 to LunarPhase.LAST_QUARTER
-      ).flatMap { (angle, phase) ->
-        relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(Planet.MOON, Planet.SUN, fromGmtJulDay, toGmtJulDay, angle, config.horoscopeConfig.starTypeOptions).map { gmtJulDay ->
+      // 逐相查詢（不是一次查四相）：輸出順序維持「先全部朔、再全部上弦…」，與改用 ILunations 之前相同
+      LunarPhase.entries.asSequence().flatMap { phase ->
+        lunations.lunations(fromGmtJulDay, toGmtJulDay, setOf(phase)).asSequence().map { it.anchor }.map { gmtJulDay ->
           val zodiacDegree = lngDegAt(gmtJulDay, Planet.MOON)
           // 月相是日月相對位置的事件 —— 兩顆各自對本命的接點都要（與互相位同款）
           val transitToNatalAspects: List<SynastryAspect> =

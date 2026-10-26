@@ -14,6 +14,7 @@ import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.astrology.eclipse.SolarType
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.IHourBranchFeature
+import destiny.core.calendar.event.ILunations
 import destiny.core.chinese.Branch
 import destiny.core.chinese.lunarStation.ILunarStationConfig
 import destiny.core.chinese.lunarStation.LunarStationConfig
@@ -69,6 +70,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
                          private val riseTransFeature: IRiseTransFeature,
                          private val solarTermsImpl: ISolarTerms,
                          private val relativeTransitImpl: IRelativeTransit,
+                         private val lunations: ILunations,
                          private val eclipseImpl: IEclipseFactory,
                          private val voidCourseFeature: VoidCourseFeature,
                          private val reverseGeocodingService: ReverseGeocodingService,
@@ -155,16 +157,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     }
 
     // 日月交角
-    val listSunMoonAngle: List<TimeDesc> = listOf(
-      0.0 to LunarPhase.NEW,
-      90.0 to LunarPhase.FIRST_QUARTER,
-      180.0 to LunarPhase.FULL,
-      270.0 to LunarPhase.LAST_QUARTER
-    ).flatMap { (deg, phase) ->
-      relativeTransitImpl.getPeriodRelativeTransitGmtJulDays(MOON, SUN, fromGmt, toGmt, deg, config.starTypeOptions)
-        .filter { day -> day in fromGmt .. toGmt }
-        .map { TimeDesc.TypeSunMoon(it, phase) }
-    }
+    val listSunMoonAngle: List<TimeDesc> = lunations.lunations(fromGmt, toGmt).map { TimeDesc.TypeSunMoon(it.anchor, it.phase) }
 
     set.addAll(listBranches)
     set.addAll(listTransPoints)

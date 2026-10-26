@@ -9,7 +9,9 @@ import destiny.core.astrology.RetrogradePhase.*
 import destiny.core.astrology.StationaryType.DIRECT_TO_RETROGRADE
 import destiny.core.astrology.StationaryType.RETROGRADE_TO_DIRECT
 import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.IAnchoredEvent
 import destiny.core.calendar.IEvent
+import destiny.core.calendar.IEventSpan
 import destiny.tools.KotlinLogging
 import kotlinx.serialization.Serializable
 
@@ -40,13 +42,23 @@ data class Stationary(val gmtJulDay: GmtJulDay,
 }
 
 
+/** 星體一次完整的順逆過程：進入陰影 → 停滯轉逆 → 停滯轉順 → 離開陰影。錨點是停滯轉逆 */
 data class RetrogradeCycle(
   val star: Star,
   val preparingGmt: GmtJulDay, val preparingPos: IPos,
   val retrogradingGmt: GmtJulDay, val retrogradingPos: IPos,
   val returningGmt: GmtJulDay, val returningPos: IPos,
   val leavingGmt: GmtJulDay, val leavingPos: IPos
-) {
+) : IEventSpan, IAnchoredEvent {
+
+  override val begin: GmtJulDay
+    get() = preparingGmt
+
+  override val end: GmtJulDay
+    get() = leavingGmt
+
+  override val anchor: GmtJulDay
+    get() = retrogradingGmt
 
   /** 星體順逆三相 Map */
   val phaseMap: Map<RetrogradePhase, RetrogradeSpan> by lazy {

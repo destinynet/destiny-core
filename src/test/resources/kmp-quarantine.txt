@@ -52,7 +52,6 @@ destiny/core/astrology/IApsis.kt
 destiny/core/astrology/IBesieged.kt
 destiny/core/astrology/IDayNight.kt
 destiny/core/astrology/IEventPointService.kt
-destiny/core/astrology/IEventSpanService.kt
 destiny/core/astrology/IHoroscopeModel.kt
 destiny/core/astrology/IPlanetaryHour.kt
 destiny/core/astrology/IPosition.kt

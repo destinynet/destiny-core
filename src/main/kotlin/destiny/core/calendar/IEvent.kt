@@ -22,6 +22,16 @@ interface IEvent : Comparable<IEvent> , Descriptive {
 }
 
 
+/**
+ * 有「定義性時刻」的事件：食甚、停滯轉逆、日月合沖 ……
+ * 它與 [begin] 不同（食從初虧開始、逆行週期從進入陰影開始），
+ * 事件的識別、排序、歸日都以 [anchor] 為準。
+ */
+interface IAnchoredEvent : IEvent {
+  val anchor: GmtJulDay
+}
+
+
 /** 時間範圍，有開始以及結束 */
 interface IEventSpan : IEvent {
   val end: GmtJulDay
