@@ -70,7 +70,7 @@ sealed interface IVoidCourse : Descriptive {
         getVoc(newGmt)?.takeIf { voc -> voc.begin in fromGmt..toGmt || voc.end in fromGmt..toGmt }
       } else
         null
-    }
+    }.mergeOverlapping()
   }
 
   fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, points: Set<AstroPoint>): Map<Planet, Misc.VoidCourseSpan> {
@@ -256,3 +256,25 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
       }
   }
 }
+
+/**
+ * 把重疊的空亡併成一筆（起點取早、終點取晚）。
+ *
+ * 月亮在下一個星座整段都不成主要相位時，[IVoidCourse.getVoidCourses] 的推進會先得到一段止於第一次換座的空亡；
+ * 從換座之後再問一次，又得到**同一個起點**、止於第二次換座的那一段。兩段是同一次空亡 ——
+ * 例：2026-01-04 07:44 起，分別止於 1/4 13:43（進獅子）與 1/6 16:56（進處女），正確的是後者那一整段。
+ */
+internal fun Sequence<Misc.VoidCourseSpan>.mergeOverlapping(): Sequence<Misc.VoidCourseSpan> = sequence {
+  var pending: Misc.VoidCourseSpan? = null
+  for (v in this@mergeOverlapping) {
+    val p = pending
+    pending = if (p != null && v.begin < p.end) {
+      if (v.end > p.end) p.copy(end = v.end, toPos = v.toPos, exactAspectAfter = v.exactAspectAfter) else p
+    } else {
+      p?.let { yield(it) }
+      v
+    }
+  }
+  pending?.let { yield(it) }
+}
+
