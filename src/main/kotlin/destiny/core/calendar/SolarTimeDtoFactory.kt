@@ -57,7 +57,7 @@ class SolarTimeDtoFactory(
     val dayFromMs = dayFrom.ms()
     val dayToMs = dayTo.ms()
     val meridianMs = meridian.ms()
-    val civil = civilOffsets(loc, dayFromMs, dayToMs)
+    val civil = civilOffsetsOf(loc, dayFromMs, dayToMs)
     val offsetAtMeridian = civil.last { it.fromMs <= meridianMs }.offsetSeconds
     val year = Instant.ofEpochMilli(meridianMs).atOffset(ZoneOffset.ofTotalSeconds(offsetAtMeridian)).year
 
@@ -106,21 +106,6 @@ class SolarTimeDtoFactory(
   private fun sunAt(gmt: GmtJulDay, loc: ILocation): IStarPositionWithAzimuth =
     starPosWithAzimuth.getPositionWithAzimuth(Planet.SUN, gmt, loc, Centric.GEO, Coordinate.EQUATORIAL)
 
-  private fun civilOffsets(loc: ILocation, fromMs: Long, toMs: Long): List<SolarTimeDto.CivilOffset> {
-    loc.minuteOffset?.let { return listOf(SolarTimeDto.CivilOffset(fromMs, it * 60, 0)) }
-    val rules = loc.zoneId.rules
-    fun seg(startMs: Long, at: Instant) =
-      SolarTimeDto.CivilOffset(startMs, rules.getOffset(at).totalSeconds, rules.getDaylightSavings(at).seconds.toInt())
-    return buildList {
-      add(seg(fromMs, Instant.ofEpochMilli(fromMs)))
-      var transition = rules.nextTransition(Instant.ofEpochMilli(fromMs))
-      while (transition != null && transition.instant.toEpochMilli() < toMs) {
-        add(seg(transition.instant.toEpochMilli(), transition.instant))
-        transition = rules.nextTransition(transition.instant)
-      }
-    }
-  }
-
   private fun standardOffsetSeconds(loc: ILocation, atMs: Long): Int =
     loc.minuteOffset?.let { it * 60 } ?: loc.zoneId.rules.getStandardOffset(Instant.ofEpochMilli(atMs)).totalSeconds
 
@@ -163,5 +148,24 @@ class SolarTimeDtoFactory(
     /** 直射點經度 = 赤經 − 格林威治平恆星時（東經為正，正規化到 (−180, 180]） */
     private fun subsolarLng(raDeg: Double, gmt: GmtJulDay): Double =
       (raDeg - Astronomical.gmst(gmt) * 15.0).normalizeSigned()
+  }
+}
+
+/**
+ * [fromMs, toMs) 之間的民用時差分段：第一段從 [fromMs] 起，之後每遇到一次時區規則的切換（夏令時）多一段。
+ * 自訂時差（[ILocation.minuteOffset]）只有一段。給前端以分段換算手錶時間，不必帶時區資料庫。
+ */
+fun civilOffsetsOf(loc: ILocation, fromMs: Long, toMs: Long): List<SolarTimeDto.CivilOffset> {
+  loc.minuteOffset?.let { return listOf(SolarTimeDto.CivilOffset(fromMs, it * 60, 0)) }
+  val rules = loc.zoneId.rules
+  fun seg(startMs: Long, at: Instant) =
+    SolarTimeDto.CivilOffset(startMs, rules.getOffset(at).totalSeconds, rules.getDaylightSavings(at).seconds.toInt())
+  return buildList {
+    add(seg(fromMs, Instant.ofEpochMilli(fromMs)))
+    var transition = rules.nextTransition(Instant.ofEpochMilli(fromMs))
+    while (transition != null && transition.instant.toEpochMilli() < toMs) {
+      add(seg(transition.instant.toEpochMilli(), transition.instant))
+      transition = rules.nextTransition(transition.instant)
+    }
   }
 }
