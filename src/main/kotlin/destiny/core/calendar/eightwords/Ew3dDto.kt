@@ -28,12 +28,17 @@ data class Ew3dDto(
   val sunLongitude: Double,
   /** 出生前後約一年節氣時刻表（遞增） */
   val solarTerms: List<SolarTermEventDto>,
-  /** 出生當日 12 時辰起點（HourSolarTransImpl，遞增） */
+  /** 出生當日 12 時辰起點（依 [hourImpl] 切割，遞增） */
   val hourBranches: List<HourBranchDto>,
   @Serializable(with = LocalDateTimeSerializer::class)
   val meridianTime: LocalDateTime,
   @Serializable(with = LocalDateTimeSerializer::class)
-  val nadirTime: LocalDateTime
+  val nadirTime: LocalDateTime,
+  /**
+   * 時辰的切法：[HourImpl.TST]＝真太陽時（時辰環對齊太陽時角）；[HourImpl.LMT]＝鐘錶時（23 點起每 2 小時），
+   * viewer 依 [hourBranches] 的子初把時辰環轉到對應的時角。預設值不輸出，舊的 viewer 照真太陽時畫。
+   */
+  val hourImpl: HourImpl = HourImpl.TST,
 ) : JSerializable {
 
   @Serializable

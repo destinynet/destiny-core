@@ -20,11 +20,15 @@ class Ew3dDtoFactory(
   private val solarTermsImpl: ISolarTerms,
   private val riseTransImpl: IRiseTrans,
   private val julDayResolver: JulDayResolver,
-  private val hourSolarTransImpl : IHour,
+  private val hourBranchFeature: IHourBranchFeature,
 ) {
 
 
-  fun IEightWordsContextModel.toEw3dDto(place: String? = null): Ew3dDto {
+  /**
+   * [hourBranchConfig] 要與排出這個 model 的設定相同（`EightWordsContextConfig` 裡的那份），
+   * 時辰環的切法才會與時柱一致；model 本身不帶設定，所以由呼叫端傳。
+   */
+  fun IEightWordsContextModel.toEw3dDto(place: String? = null, hourBranchConfig: HourBranchConfig = HourBranchConfig()): Ew3dDto {
     val lmt = time as LocalDateTime
     val gmtJulDay = lmt.toGmtJulDay(location)
     val sunLng = starPosMap[Planet.SUN]?.lngDeg?.value ?: error("SUN position absent")
@@ -37,7 +41,7 @@ class Ew3dDtoFactory(
       )
     }
 
-    val branches = hourSolarTransImpl.getDailyBranchStartMap(lmt.toLocalDate(), location, julDayResolver, HourBranchConfig())
+    val branches = hourBranchFeature.getDailyBranchStartMap(lmt.toLocalDate(), location, hourBranchConfig)
       .entries.sortedBy { it.value }
       .map { (b, t) -> Ew3dDto.HourBranchDto(b.toString(), t.fixError() as LocalDateTime) }
 
@@ -62,7 +66,8 @@ class Ew3dDtoFactory(
       solarTerms = terms,
       hourBranches = branches,
       meridianTime = trans(TransPoint.MERIDIAN),
-      nadirTime = trans(TransPoint.NADIR)
+      nadirTime = trans(TransPoint.NADIR),
+      hourImpl = hourBranchConfig.hourImpl,
     )
   }
 
