@@ -76,38 +76,18 @@ data class LunarEclipseDto(
     /** 這些接觸點發生時，月亮在當地的地平線上 */
     val visible: List<ContactKind>,
     /** 由 [visible] 歸納的結論（[visibilityOf]） */
-    val zone: Visibility,
+    val zone: EclipseVisibility,
   )
-
-  /** 某地看一次月食：以「看得出來的那一段」計 —— 有本影就是 U1–U4，半影食以 P1–P4 */
-  enum class Visibility {
-    /** 全程看得到 */
-    ALL,
-    /** 月出時已在食中 */
-    RISE,
-    /** 食到一半月落 */
-    SET,
-    /** 只看得到中段（高緯度才有） */
-    SOME,
-    /** 看不到 */
-    NONE,
-  }
 
   companion object {
     /**
+     * 以「看得出來的那一段」計 —— 有本影就是 U1–U4，半影食以 P1–P4。
      * @param contacts 這次月食的接觸點（依時間）
      * @param visible 其中月亮在地平線上的那些
      */
-    fun visibilityOf(contacts: List<ContactKind>, visible: Collection<ContactKind>): Visibility {
+    fun visibilityOf(contacts: List<ContactKind>, visible: Collection<ContactKind>): EclipseVisibility {
       val (from, to) = if (ContactKind.U1 in contacts) ContactKind.U1 to ContactKind.U4 else ContactKind.P1 to ContactKind.P4
-      val span = contacts.subList(contacts.indexOf(from), contacts.indexOf(to) + 1).map { it in visible }
-      return when {
-        span.all { it }                -> Visibility.ALL
-        span.none { it }               -> Visibility.NONE
-        !span.first() && span.last()   -> Visibility.RISE
-        span.first() && !span.last()   -> Visibility.SET
-        else                           -> Visibility.SOME
-      }
+      return EclipseVisibility.of(contacts.subList(contacts.indexOf(from), contacts.indexOf(to) + 1).map { it in visible })
     }
   }
 
