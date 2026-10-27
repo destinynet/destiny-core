@@ -93,13 +93,23 @@ interface IEclipseFactory {
   fun getEclipseCenterInfo(gmtJulDay: GmtJulDay) : Pair<ISolarEclipseObservation, Boolean>?
 
   // ================================== 月食觀測 ==================================
-  /** 若當下 gmtJulDay 有月食，傳出此地點觀測此月食的相關資料  */
+  /**
+   * 若當下 gmtJulDay 有月食，傳出此地點觀測此月食的相關資料；月亮在地平線下（視高度 ≤ 0）時為 null。
+   *
+   * ⚠️ 只描述「此刻」：回傳物件裡各接觸點的可見旗標（`maxVisible`、`penumbraBeginVisible`…）恆為 false。
+   * 要知道各接觸點在當地看不看得到，用 [getNextLunarEclipseAtLoc]。
+   */
   fun getLunarEclipseObservationAtLoc(gmtJulDay: GmtJulDay,
                                       lat: Lat,
                                       lng: Lng,
                                       alt: Double): AbstractLunarEclipseObservation?
 
-  /** 從此之後 , 此地點下次發生月食的資訊為何 (tuple.v1) , 以及， 該地能否見到 半影、偏食、全蝕、的起訖 (tuple.v2)  */
+  /**
+   * 從此之後 , 此地點下次「看得到」的月食，以及該地能否見到 半影、偏食、全蝕 的起訖。
+   *
+   * ⚠️ 食甚前就月落（或食甚後才月出）時，回傳的 `gmtJulDay` 是月落／月出那一刻，不是食甚；
+   * 要判斷是不是某一場，看它是否落在那一場的起訖之間。
+   */
   fun getNextLunarEclipseAtLoc(fromGmtJulDay: GmtJulDay,
                                lat: Lat,
                                lng: Lng,
