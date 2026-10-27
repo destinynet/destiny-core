@@ -45,7 +45,7 @@ data class SolarEclipseDto(
   val tanF1: Double,
   val tanF2: Double,
 
-  /** 「太陽在地平線上」的門檻：太陽中心的幾何高度大於這個值（度）＝視圓面上緣在地平線上 */
+  /** 「太陽在地平線上」的門檻：太陽中心的幾何高度大於這個值（度）＝整個視圓面都在地平線上（與 swisseph 判斷日食可見與否的定義相同） */
   val sunUpAltDeg: Double,
 
   /** 市場城市看這次日食的情形（swisseph 逐地計算，權威值） */
