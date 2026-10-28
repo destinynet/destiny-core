@@ -131,6 +131,59 @@ data class HoroscopeDispositorDto(
   val isolated: List<String>,
 )
 
+/** 格局的一條邊：兩端、相位與實際容許度（server 依兩星的黃經算好，renderer 不必自己算角距） */
+@Serializable
+data class HoroscopePatternLegDto(
+  val from: String,
+  val to: String,
+  /** [Aspect] 名稱 */
+  val aspect: String,
+  val glyph: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val orb: Double,
+)
+
+/**
+ * 格局（[AstroPattern] 的呈現層投影）。判定已在 server 做完（格局的容許度比 [HoroscopeChartDto.aspects] 寬，
+ * 所以邊不一定在 aspects 裡）；renderer 照 [legs] 畫線即可。恆星不參與（輪盤不畫恆星）。
+ */
+@Serializable
+data class HoroscopePatternDto(
+  /**
+   * GRAND_TRINE、KITE、T_SQUARE、YOD、BOOMERANG、GOLDEN_YOD、GRAND_CROSS、DOUBLE_T、HEXAGON、
+   * WEDGE、MYSTIC_RECTANGLE、PENTAGRAM、STELLIUM_SIGN、STELLIUM_HOUSE、CONFRONTATION
+   */
+  val type: String,
+  /** 全部成員（[AstroPoint.nameKey]） */
+  val points: List<String>,
+  /** 頂點：T 三角的四分點、Yod／回力鏢的頂點、黃金 Yod 的指向點、風箏的頭、楔形的調停者 */
+  val apex: String? = null,
+  /** 大三角的元素（[Element]） */
+  val element: String? = null,
+  /** 大十字的三方性（[Quality]） */
+  val quality: String? = null,
+  /** 星群的星座／宮位 */
+  val sign: String? = null,
+  val house: Int? = null,
+  val legs: List<HoroscopePatternLegDto>,
+  /** 組合格局（雙 T、六芒星、回力鏢）的組成：[HoroscopeChartDto.patterns] 的索引 */
+  val parts: List<Int> = emptyList(),
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val score: Double? = null,
+)
+
+/** 中點：[a]／[b] 的中點落在 [zDeg]，[focal] 就在那裡（容許度 [orb]） */
+@Serializable
+data class HoroscopeMidpointDto(
+  val a: String,
+  val b: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val zDeg: Double,
+  val focal: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val orb: Double,
+)
+
 @Serializable
 data class HoroscopeChartDto(
   val meta: HoroscopeMetaDto,
@@ -141,7 +194,116 @@ data class HoroscopeChartDto(
   val aspects: List<HoroscopeAspectDto>,
   /** 定位星關係；來源盤沒有算、或有星不在 [points] 內時為 null（舊的凍結 JSON 也沒有） */
   val dispositors: HoroscopeDispositorDto? = null,
+  /** 格局；成員都在 [points] 內 */
+  val patterns: List<HoroscopePatternDto> = emptyList(),
+  /** 有焦點星的中點；三顆都在 [points] 內 */
+  val midpoints: List<HoroscopeMidpointDto> = emptyList(),
 )
+
+/** 格局可能用到的相位；組合格局（雙 T、六芒星、回力鏢）另外併入組成部分的邊 */
+private val AstroPattern.legAspects: Set<Aspect>
+  get() = when (this) {
+    is AstroPattern.GrandTrine      -> setOf(Aspect.TRINE)
+    is AstroPattern.Kite            -> setOf(Aspect.TRINE, Aspect.OPPOSITION, Aspect.SEXTILE)
+    is AstroPattern.TSquared        -> setOf(Aspect.OPPOSITION, Aspect.SQUARE)
+    is AstroPattern.Yod             -> setOf(Aspect.SEXTILE, Aspect.QUINCUNX)
+    is AstroPattern.Boomerang       -> setOf(Aspect.OPPOSITION, Aspect.SEMISEXTILE)
+    is AstroPattern.GoldenYod       -> setOf(Aspect.QUINTILE, Aspect.BIQUINTILE)
+    is AstroPattern.GrandCross      -> setOf(Aspect.OPPOSITION, Aspect.SQUARE)
+    is AstroPattern.DoubleT         -> emptySet()
+    is AstroPattern.Hexagon         -> setOf(Aspect.SEXTILE, Aspect.OPPOSITION)
+    is AstroPattern.Wedge           -> setOf(Aspect.OPPOSITION, Aspect.TRINE, Aspect.SEXTILE)
+    is AstroPattern.MysticRectangle -> setOf(Aspect.OPPOSITION, Aspect.TRINE, Aspect.SEXTILE)
+    is AstroPattern.Pentagram       -> setOf(Aspect.QUINTILE, Aspect.BIQUINTILE)
+    is AstroPattern.StelliumSign,
+    is AstroPattern.StelliumHouse   -> emptySet()
+    is AstroPattern.Confrontation   -> setOf(Aspect.OPPOSITION)
+  }
+
+private val AstroPattern.typeKey: String
+  get() = when (this) {
+    is AstroPattern.GrandTrine      -> "GRAND_TRINE"
+    is AstroPattern.Kite            -> "KITE"
+    is AstroPattern.TSquared        -> "T_SQUARE"
+    is AstroPattern.Yod             -> "YOD"
+    is AstroPattern.Boomerang       -> "BOOMERANG"
+    is AstroPattern.GoldenYod       -> "GOLDEN_YOD"
+    is AstroPattern.GrandCross      -> "GRAND_CROSS"
+    is AstroPattern.DoubleT         -> "DOUBLE_T"
+    is AstroPattern.Hexagon         -> "HEXAGON"
+    is AstroPattern.Wedge           -> "WEDGE"
+    is AstroPattern.MysticRectangle -> "MYSTIC_RECTANGLE"
+    is AstroPattern.Pentagram       -> "PENTAGRAM"
+    is AstroPattern.StelliumSign    -> "STELLIUM_SIGN"
+    is AstroPattern.StelliumHouse   -> "STELLIUM_HOUSE"
+    is AstroPattern.Confrontation   -> "CONFRONTATION"
+  }
+
+private val AstroPattern.apexPoint: AstroPoint?
+  get() = when (this) {
+    is AstroPattern.TSquared  -> squared.point
+    is AstroPattern.Yod       -> apex.point
+    is AstroPattern.Boomerang -> oppoPoint.point
+    is AstroPattern.GoldenYod -> pointer.point
+    is AstroPattern.Kite      -> head.point
+    is AstroPattern.Wedge     -> mediator.point
+    else                      -> null
+  }
+
+private val AstroPattern.partPatterns: List<AstroPattern>
+  get() = when (this) {
+    is AstroPattern.DoubleT   -> tSquares.toList()
+    is AstroPattern.Hexagon   -> grandTrines.toList()
+    is AstroPattern.Boomerang -> listOf(yod)
+    else                      -> emptyList()
+  }
+
+/** 格局的邊判到哪一個相位時，允許實際角距偏離多少（格局的容許度上限之外再留餘裕） */
+private const val LEG_TOLERANCE = 12.0
+
+/** [patterns] → 呈現層投影；有成員不在盤上（或是恆星）的格局，連同用到它的組合格局一起略過 */
+private fun List<AstroPattern>.toPatternDtos(zDegOf: (AstroPoint) -> Double?, visibleKeys: Set<String>): List<HoroscopePatternDto> {
+  val out = mutableListOf<HoroscopePatternDto>()
+  val indexOf = mutableMapOf<AstroPattern, Int?>()
+
+  fun legsAmong(points: List<AstroPoint>, aspects: Set<Aspect>): List<HoroscopePatternLegDto> =
+    points.flatMapIndexed { i, a -> points.drop(i + 1).map { b -> a to b } }.mapNotNull { (a, b) ->
+      val za = zDegOf(a) ?: return@mapNotNull null
+      val zb = zDegOf(b) ?: return@mapNotNull null
+      val d = ((za - zb) % 360 + 360) % 360
+      val sep = minOf(d, 360 - d)
+      aspects.map { it to kotlin.math.abs(sep - it.degree) }
+        .filter { (_, orb) -> orb <= LEG_TOLERANCE }
+        .minByOrNull { (_, orb) -> orb }
+        ?.let { (aspect, orb) -> HoroscopePatternLegDto(a.nameKey, b.nameKey, aspect.name, aspect.glyph, orb) }
+    }
+
+  fun add(pattern: AstroPattern): Int? = indexOf.getOrPut(pattern) {
+    val members = pattern.points.toList()
+    if (members.any { it is FixedStar || it.nameKey !in visibleKeys }) return@getOrPut null
+    val parts = pattern.partPatterns.map { add(it) ?: return@getOrPut null }
+    val partLegs = parts.flatMap { out[it].legs }
+    val ownLegs = legsAmong(members, pattern.legAspects)
+      .filter { leg -> partLegs.none { setOf(it.from, it.to) == setOf(leg.from, leg.to) } }
+    out += HoroscopePatternDto(
+      type = pattern.typeKey,
+      points = members.map { it.nameKey },
+      apex = pattern.apexPoint?.nameKey,
+      element = (pattern as? AstroPattern.GrandTrine)?.element?.name,
+      quality = (pattern as? AstroPattern.GrandCross)?.quality?.name,
+      sign = (pattern as? AstroPattern.StelliumSign)?.sign?.name,
+      house = (pattern as? AstroPattern.StelliumHouse)?.house,
+      legs = partLegs + ownLegs,
+      parts = parts,
+      score = pattern.score?.value,
+    )
+    out.size - 1
+  }
+
+  forEach { add(it) }
+  return out
+}
+
 
 /** [Graph] → 呈現層投影；圖是空的（沒有算）或有星不在盤面上時回 null */
 private fun Graph<Planet>.toDispositorDto(visibleKeys: Set<String>): HoroscopeDispositorDto? {
@@ -256,6 +418,35 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
       )
     },
     dispositors = graphPatterns.toDispositorDto(visibleKeys),
+    patterns = astroPatterns.toPatternDtos({ stars[it]?.signDegree?.zDeg }, visibleKeys),
+    midpoints = midPoints
+      .filter { m -> (m.points + m.focal).all { it !is FixedStar && it.nameKey in visibleKeys } }
+      .map { m -> HoroscopeMidpointDto(m.p1.nameKey, m.p2.nameKey, m.degree.zDeg, m.focal.nameKey, m.orb) },
+  )
+}
+
+/**
+ * 只留 [keep] 的點位，並維持各欄位「成員都在 [HoroscopeChartDto.points] 內」的契約：
+ * 相位、中點只留端點都在的；格局有成員被拿掉就略過（用到它的組合格局一起略過，索引重排）；
+ * 定位星關係只要有一顆被拿掉就整個拿掉（星座不可靠，整張圖都不可靠）。
+ */
+fun HoroscopeChartDto.keepingPoints(keep: (HoroscopePointDto) -> Boolean): HoroscopeChartDto {
+  val kept = points.filter(keep)
+  val keys = kept.mapTo(HashSet()) { it.point }
+  val newIndex = mutableMapOf<Int, Int>()
+  val keptPatterns = mutableListOf<HoroscopePatternDto>()
+  patterns.forEachIndexed { i, p ->
+    if (p.points.all { it in keys } && p.parts.all { it in newIndex }) {
+      newIndex[i] = keptPatterns.size
+      keptPatterns += p.copy(parts = p.parts.map { newIndex.getValue(it) })
+    }
+  }
+  return copy(
+    points = kept,
+    aspects = aspects.filter { it.from in keys && it.to in keys },
+    dispositors = dispositors?.takeIf { d -> (d.circles.flatten() + d.paths.flatten() + d.terminals + d.isolated).all { it in keys } },
+    patterns = keptPatterns,
+    midpoints = midpoints.filter { it.a in keys && it.b in keys && it.focal in keys },
   )
 }
 
@@ -265,22 +456,17 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
  *   上升／天頂度數歸零 —— 0° 是 renderer 對「沒有上升」的退路，而不是一個捏造的上升。
  * - 沒有時辰 ⇒ 再拿掉月亮。
  *
- * 相位只留兩端都還在的；定位星關係只要有一顆被拿掉（月亮）就整個拿掉 —— 星座不可靠，整張圖都不可靠。
+ * 相位、格局、中點、定位星關係的連帶處理見 [keepingPoints]。
  */
 fun HoroscopeChartDto.gatedBy(grain: BirthDataGrain): HoroscopeChartDto {
   val gated: Set<String> = grain.gatedNatalTargets().map { it.nameKey }.toSet()
-  val kept = points.filter { it.point !in gated }
-  val keys = kept.map { it.point }.toSet()
-  val keptAspects = aspects.filter { it.from in keys && it.to in keys }
-  val keptDispositors = dispositors?.takeIf { d ->
-    (d.circles.flatten() + d.paths.flatten() + d.terminals + d.isolated).none { it in gated }
-  }
-  return if (grain.includeAxis) copy(points = kept, aspects = keptAspects, dispositors = keptDispositors)
-  else copy(
+  val kept = keepingPoints { it.point !in gated }
+  return if (grain.includeAxis) kept
+  else kept.copy(
     meta = meta.copy(ascDeg = 0.0, mcDeg = 0.0),
-    points = kept.map { it.copy(house = null) },
+    points = kept.points.map { it.copy(house = null) },
     houses = emptyList(),
-    aspects = keptAspects,
-    dispositors = keptDispositors,
+    // 星群的宮位與宮位星群本身都不可得
+    patterns = kept.patterns.map { it.copy(house = null) },
   )
 }

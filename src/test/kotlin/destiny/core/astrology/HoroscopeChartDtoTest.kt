@@ -19,6 +19,7 @@ import destiny.core.identityFieldsIn
 import java.time.LocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class HoroscopeChartDtoTest {
 
@@ -203,12 +204,107 @@ class HoroscopeChartDtoTest {
     assertEquals(null, missingJupiter.toHoroscopeChartDto(ChartDensity.FULL).dispositors)
   }
 
+  // ---- 格局 ----
+
+  /** T 三角：太陽 ☍ 木星，月亮在頂點；邊由兩星黃經算出（不必在 aspects 清單裡） */
+  private val tSquare = AstroPattern.TSquared(setOf(Planet.SUN, Planet.JUPITER), PointSignHouse(Planet.MOON, ZodiacSign.CANCER, 4))
+
+  private val withTSquare: Map<AstroPoint, StarPosInfo> = mapOf(
+    Planet.JUPITER to starAt(186.0, house = 7),
+    Planet.MOON to starAt(98.0, house = 4),
+  )
+
+  @Test
+  fun patterns_tSquareCarriesApexAndLegsWithOrbs() {
+    val dto = fakeNatal(extraStars = withTSquare, patterns = listOf(tSquare)).toHoroscopeChartDto(ChartDensity.FULL)
+
+    val p = dto.patterns.single()
+    assertEquals("T_SQUARE", p.type)
+    assertEquals("Planet.MOON", p.apex)
+    assertEquals(
+      setOf(
+        LegRow(setOf("Planet.SUN", "Planet.JUPITER"), "OPPOSITION", 4.0),
+        LegRow(setOf("Planet.SUN", "Planet.MOON"), "SQUARE", 2.0),
+        LegRow(setOf("Planet.JUPITER", "Planet.MOON"), "SQUARE", 2.0),
+      ),
+      p.legs.map { LegRow(setOf(it.from, it.to), it.aspect, it.orb) }.toSet()
+    )
+  }
+
+  /** 雙 T：組成部分另列，[HoroscopePatternDto.parts] 指回它們；邊是兩組 T 的聯集 */
+  @Test
+  fun patterns_doubleTPointsToItsParts() {
+    val second = AstroPattern.TSquared(setOf(Planet.MERCURY, Planet.SATURN), PointSignHouse(Planet.VENUS, ZodiacSign.CANCER, 4))
+    val stars = withTSquare + mapOf(Planet.SATURN to starAt(205.5, house = 7), Planet.VENUS to starAt(115.5, house = 4))
+    val dto = fakeNatal(extraStars = stars, patterns = listOf(AstroPattern.DoubleT(setOf(tSquare, second))))
+      .toHoroscopeChartDto(ChartDensity.FULL)
+
+    val doubleT = dto.patterns.single { it.type == "DOUBLE_T" }
+    assertEquals(2, doubleT.parts.size)
+    assertTrue(doubleT.parts.all { dto.patterns[it].type == "T_SQUARE" })
+    assertEquals(6, doubleT.legs.size)
+  }
+
+  @Test
+  fun patterns_skipFixedStarsAndOffChartMembers() {
+    val withStar = AstroPattern.StelliumSign(setOf(Planet.SUN, Planet.MERCURY, FixedStar.ALGOL), ARIES)
+    val offChart = AstroPattern.GrandTrine(setOf(Planet.SUN, Planet.PLUTO, Planet.NEPTUNE), FIRE)
+    val dto = fakeNatal(
+      extraStars = mapOf(FixedStar.ALGOL to starAt(26.0, house = 1)),
+      patterns = listOf(withStar, offChart)
+    ).toHoroscopeChartDto(ChartDensity.FULL)
+
+    assertEquals(emptyList(), dto.patterns)
+  }
+
+  // ---- 中點 ----
+
+  @Test
+  fun midpoints_projectFocalAndOrb() {
+    val mid = MidPointWithFocal(MidPoint(setOf(Planet.SUN, Planet.MARS), 25.0.toZodiacDegree(), 1), Planet.MERCURY, 0.5)
+    val dto = fakeNatal(midPoints = listOf(mid)).toHoroscopeChartDto(ChartDensity.FULL)
+
+    val m = dto.midpoints.single()
+    assertEquals(setOf("Planet.SUN", "Planet.MARS"), setOf(m.a, m.b))
+    assertEquals("Planet.MERCURY", m.focal)
+    assertEquals(25.0, m.zDeg)
+    assertEquals(0.5, m.orb)
+  }
+
+  // ---- keepingPoints ----
+
+  /** 拿掉一顆星：用到它的格局（連同組合格局）、中點、定位星關係一起拿掉，其餘的索引重排 */
+  @Test
+  fun keepingPoints_dropsDependentsAndReindexesParts() {
+    val second = AstroPattern.TSquared(setOf(Planet.MERCURY, Planet.SATURN), PointSignHouse(Planet.VENUS, ZodiacSign.CANCER, 4))
+    val stars = withTSquare + mapOf(Planet.SATURN to starAt(205.5, house = 7), Planet.VENUS to starAt(115.5, house = 4))
+    val mid = MidPointWithFocal(MidPoint(setOf(Planet.SUN, Planet.MOON), 54.0.toZodiacDegree(), 2), Planet.MARS, 0.5)
+    val dto = fakeNatal(
+      extraStars = stars,
+      patterns = listOf(tSquare, AstroPattern.DoubleT(setOf(tSquare, second)), second),
+      midPoints = listOf(mid),
+      graph = Graph(emptySet(), setOf(listOf(Planet.MOON, Planet.SUN)), emptySet(), setOf(Planet.SUN)),
+    ).toHoroscopeChartDto(ChartDensity.FULL)
+    assertEquals(3, dto.patterns.size)
+
+    val noMoon = dto.keepingPoints { it.point != "Planet.MOON" }
+    assertEquals(listOf("T_SQUARE"), noMoon.patterns.map { it.type }, "月亮那組 T 與雙 T 都拿掉")
+    assertEquals(setOf("Planet.MERCURY", "Planet.SATURN", "Planet.VENUS"), noMoon.patterns.single().points.toSet())
+    assertEquals(emptyList(), noMoon.midpoints)
+    assertEquals(null, noMoon.dispositors)
+
+    val all = dto.keepingPoints { true }
+    assertEquals(dto.patterns, all.patterns, "什麼都不拿掉時原樣保留（含 parts 索引）")
+  }
+
   @Test
   fun horoscopeChartDto_declaresNoIdentityField() {
     assertEquals(emptyList(), identityFieldsIn(HoroscopeChartDto.serializer().descriptor))
   }
 
   // ---- fixtures ----
+
+  private data class LegRow(val ends: Set<String>, val aspect: String, val orb: Double)
 
   /** 測試用的相位投影，避免逐欄位斷言 */
   private data class AspectRow(
@@ -220,6 +316,8 @@ class HoroscopeChartDtoTest {
     extraStars: Map<AstroPoint, StarPosInfo> = emptyMap(),
     aspects: List<IPointAspectPattern> = emptyList(),
     graph: Graph<Planet> = Graph(emptySet(), emptySet(), emptySet(), emptySet()),
+    patterns: List<AstroPattern> = emptyList(),
+    midPoints: List<IMidPointWithFocal> = emptyList(),
   ) = FakeNatal(
     stars = mapOf(
       Planet.SUN to starAt(10.0, house = 1),
@@ -231,6 +329,8 @@ class HoroscopeChartDtoTest {
     },
     tightestAspects = aspects,
     graphPatterns = graph,
+    astroPatterns = patterns,
+    midPoints = midPoints,
   )
 
   private fun starAt(zDeg: Double, house: Int?, motion: Motion = Motion.DIRECT) = StarPosInfo(
@@ -252,6 +352,8 @@ private class FakeNatal(
   override val houses: List<HouseDto>,
   override val tightestAspects: List<IPointAspectPattern> = emptyList(),
   override val graphPatterns: Graph<Planet> = Graph(emptySet(), emptySet(), emptySet(), emptySet()),
+  override val astroPatterns: List<AstroPattern> = emptyList(),
+  override val midPoints: List<IMidPointWithFocal> = emptyList(),
 ) : IPersonHoroscopeDtoV2 {
   override val gender: Gender = Gender.M
   override val name: String? = "王小明"
@@ -264,9 +366,7 @@ private class FakeNatal(
   override val houseStarDistribution: Map<HouseType, HouseStarDistribution> = emptyMap()
   override val elementPercentage: Map<Element, Double> = emptyMap()
   override val qualityPercentage: Map<Quality, Double> = emptyMap()
-  override val astroPatterns: List<AstroPattern> = emptyList()
   override val classicalAstrologyPatterns: List<String> = emptyList()
-  override val midPoints: List<IMidPointWithFocal> = emptyList()
   override val harmonics: Map<Int, Harmonic> = emptyMap()
   override val mundanePositions: Map<AstroPoint, MundanePosition> = emptyMap()
   override val arabicLots: Map<Arabic, ArabicLotInfo> = emptyMap()
