@@ -21,6 +21,7 @@ package destiny.core.astrology
 
 import destiny.core.ChartDensity
 import destiny.core.Gender
+import destiny.core.Graph
 import destiny.core.getAbbreviation
 import destiny.tools.Lang
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
@@ -112,6 +113,24 @@ data class HoroscopeMetaDto(
   val mcDeg: Double,
 )
 
+/**
+ * 定位星關係 —— [Graph] 的呈現層投影，星體一律是 [AstroPoint.nameKey]。只含傳統七星（[Planet.classicalList]）。
+ *
+ * 圖已在 server 算好（[IHoroscopeModel.getGraph]）；client 只需把相鄰兩顆連成箭頭，不必重跑圖演算法。
+ * 每條鏈與每個環都依**定位方向**排列：前一顆由後一顆定位（落在後一顆守護的星座）。
+ */
+@Serializable
+data class HoroscopeDispositorDto(
+  /** 循環：每顆由下一顆定位，最後一顆由第一顆定位 */
+  val circles: List<List<String>>,
+  /** 最長的定位鏈；終點是 [terminals] 之一，或某個 [circles] 上的星 */
+  val paths: List<List<String>>,
+  /** 最終定位星：落在自己守護的星座，鏈條在此收斂 */
+  val terminals: List<String>,
+  /** 落在自己守護的星座、但沒有其他星由它定位 */
+  val isolated: List<String>,
+)
+
 @Serializable
 data class HoroscopeChartDto(
   val meta: HoroscopeMetaDto,
@@ -120,7 +139,21 @@ data class HoroscopeChartDto(
   val houses: List<HoroscopeHouseDto>,
   /** 相位線。兩端點必定都在 [points] 內 */
   val aspects: List<HoroscopeAspectDto>,
+  /** 定位星關係；來源盤沒有算、或有星不在 [points] 內時為 null（舊的凍結 JSON 也沒有） */
+  val dispositors: HoroscopeDispositorDto? = null,
 )
+
+/** [Graph] → 呈現層投影；圖是空的（沒有算）或有星不在盤面上時回 null */
+private fun Graph<Planet>.toDispositorDto(visibleKeys: Set<String>): HoroscopeDispositorDto? {
+  val planets = circles.flatMap { it.toList() } + paths.flatten() + terminals + isolated
+  if (planets.isEmpty() || planets.any { it.nameKey !in visibleKeys }) return null
+  return HoroscopeDispositorDto(
+    circles = circles.map { c -> c.toList().map { it.nameKey } },
+    paths = paths.map { p -> p.map { it.nameKey } },
+    terminals = terminals.map { it.nameKey },
+    isolated = isolated.map { it.nameKey },
+  )
+}
 
 /** [AstroPoint] 的型別 → 分類標籤（供 renderer 分層與樣式） */
 private val AstroPoint.kindLabel: String
@@ -222,6 +255,7 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
         score = pattern.score?.value,
       )
     },
+    dispositors = graphPatterns.toDispositorDto(visibleKeys),
   )
 }
 
@@ -231,18 +265,22 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
  *   上升／天頂度數歸零 —— 0° 是 renderer 對「沒有上升」的退路，而不是一個捏造的上升。
  * - 沒有時辰 ⇒ 再拿掉月亮。
  *
- * 相位只留兩端都還在的。
+ * 相位只留兩端都還在的；定位星關係只要有一顆被拿掉（月亮）就整個拿掉 —— 星座不可靠，整張圖都不可靠。
  */
 fun HoroscopeChartDto.gatedBy(grain: BirthDataGrain): HoroscopeChartDto {
   val gated: Set<String> = grain.gatedNatalTargets().map { it.nameKey }.toSet()
   val kept = points.filter { it.point !in gated }
   val keys = kept.map { it.point }.toSet()
   val keptAspects = aspects.filter { it.from in keys && it.to in keys }
-  return if (grain.includeAxis) copy(points = kept, aspects = keptAspects)
+  val keptDispositors = dispositors?.takeIf { d ->
+    (d.circles.flatten() + d.paths.flatten() + d.terminals + d.isolated).none { it in gated }
+  }
+  return if (grain.includeAxis) copy(points = kept, aspects = keptAspects, dispositors = keptDispositors)
   else copy(
     meta = meta.copy(ascDeg = 0.0, mcDeg = 0.0),
     points = kept.map { it.copy(house = null) },
     houses = emptyList(),
     aspects = keptAspects,
+    dispositors = keptDispositors,
   )
 }

@@ -7,6 +7,7 @@ import destiny.core.astrology.Axis
 import destiny.core.astrology.BirthDataGrain
 import destiny.core.astrology.HoroscopeAspectDto
 import destiny.core.astrology.HoroscopeChartDto
+import destiny.core.astrology.HoroscopeDispositorDto
 import destiny.core.astrology.HoroscopeHouseDto
 import destiny.core.astrology.HoroscopeMetaDto
 import destiny.core.astrology.HoroscopePointDto
@@ -87,5 +88,15 @@ class GrainGatedChartDtoTest {
       assertEquals(listOf(sun), it.points.map { p -> p.point })
       assertTrue(it.aspects.isEmpty())
     }
+  }
+
+  private val withDispositors = horo.copy(
+    dispositors = HoroscopeDispositorDto(circles = emptyList(), paths = listOf(listOf(moon, sun)), terminals = listOf(sun), isolated = emptyList())
+  )
+
+  @Test
+  fun `占星：定位星關係 —— 只知時辰照留，只知日期（月亮沒了）整個拿掉`() {
+    assertEquals(withDispositors.dispositors, withDispositors.gatedBy(BirthDataGrain.HOUR2).dispositors)
+    assertNull(withDispositors.gatedBy(BirthDataGrain.DAY).dispositors)
   }
 }

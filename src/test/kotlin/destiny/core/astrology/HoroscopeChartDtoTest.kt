@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.ChartDensity
+import destiny.core.Circular
 import destiny.core.Gender
 import destiny.core.Graph
 import destiny.core.astrology.Element.FIRE
@@ -158,6 +159,50 @@ class HoroscopeChartDtoTest {
     assertEquals(1, natal.toHoroscopeChartDto(ChartDensity.FULL).aspects.size)
   }
 
+  /** 定位星的圖由 server 算好，DTO 只換成 nameKey —— 鏈與環的順序（定位方向）原樣保留 */
+  @Test
+  fun dispositors_projectGraphAsNameKeys() {
+    val natal = fakeNatal(
+      extraStars = mapOf(Planet.VENUS to starAt(50.0, house = 2)),
+      graph = Graph(
+        circles = setOf(Circular.of(Planet.VENUS, Planet.MARS)),
+        paths = setOf(listOf(Planet.SUN, Planet.MARS), listOf(Planet.MERCURY, Planet.VENUS)),
+        isolated = emptySet(),
+        terminals = emptySet(),
+      )
+    )
+
+    val d = natal.toHoroscopeChartDto(ChartDensity.FULL).dispositors!!
+    assertEquals(listOf(listOf("Planet.VENUS", "Planet.MARS")), d.circles)
+    assertEquals(setOf(listOf("Planet.SUN", "Planet.MARS"), listOf("Planet.MERCURY", "Planet.VENUS")), d.paths.toSet())
+    assertEquals(emptyList(), d.terminals)
+  }
+
+  @Test
+  fun dispositors_terminalAndIsolated() {
+    val natal = fakeNatal(graph = Graph(
+      circles = emptySet(),
+      paths = setOf(listOf(Planet.MERCURY, Planet.SUN)),
+      isolated = setOf(Planet.MARS),
+      terminals = setOf(Planet.SUN),
+    ))
+
+    val d = natal.toHoroscopeChartDto(ChartDensity.COMPACT).dispositors!!
+    assertEquals(listOf("Planet.SUN"), d.terminals)
+    assertEquals(listOf("Planet.MARS"), d.isolated)
+  }
+
+  /** 沒有算（空圖），或圖裡有星不在盤面上 —— 寧可不給，也不給一張連到空氣的圖 */
+  @Test
+  fun dispositors_nullWhenGraphEmptyOrPlanetMissing() {
+    assertEquals(null, fakeNatal().toHoroscopeChartDto(ChartDensity.FULL).dispositors)
+
+    val missingJupiter = fakeNatal(graph = Graph(
+      circles = emptySet(), paths = setOf(listOf(Planet.SUN, Planet.JUPITER)), isolated = emptySet(), terminals = setOf(Planet.JUPITER),
+    ))
+    assertEquals(null, missingJupiter.toHoroscopeChartDto(ChartDensity.FULL).dispositors)
+  }
+
   @Test
   fun horoscopeChartDto_declaresNoIdentityField() {
     assertEquals(emptyList(), identityFieldsIn(HoroscopeChartDto.serializer().descriptor))
@@ -173,7 +218,8 @@ class HoroscopeChartDtoTest {
 
   private fun fakeNatal(
     extraStars: Map<AstroPoint, StarPosInfo> = emptyMap(),
-    aspects: List<IPointAspectPattern> = emptyList()
+    aspects: List<IPointAspectPattern> = emptyList(),
+    graph: Graph<Planet> = Graph(emptySet(), emptySet(), emptySet(), emptySet()),
   ) = FakeNatal(
     stars = mapOf(
       Planet.SUN to starAt(10.0, house = 1),
@@ -183,7 +229,8 @@ class HoroscopeChartDtoTest {
     houses = (1..12).map { id ->
       HouseDto(id = id, cusp = ((id - 1) * 30.0).toZodiacDegree(), ruler = Planet.MARS)
     },
-    tightestAspects = aspects
+    tightestAspects = aspects,
+    graphPatterns = graph,
   )
 
   private fun starAt(zDeg: Double, house: Int?, motion: Motion = Motion.DIRECT) = StarPosInfo(
@@ -204,6 +251,7 @@ private class FakeNatal(
   override val stars: Map<AstroPoint, StarPosInfo>,
   override val houses: List<HouseDto>,
   override val tightestAspects: List<IPointAspectPattern> = emptyList(),
+  override val graphPatterns: Graph<Planet> = Graph(emptySet(), emptySet(), emptySet(), emptySet()),
 ) : IPersonHoroscopeDtoV2 {
   override val gender: Gender = Gender.M
   override val name: String? = "王小明"
@@ -218,7 +266,6 @@ private class FakeNatal(
   override val qualityPercentage: Map<Quality, Double> = emptyMap()
   override val astroPatterns: List<AstroPattern> = emptyList()
   override val classicalAstrologyPatterns: List<String> = emptyList()
-  override val graphPatterns: Graph<Planet> = Graph(emptySet(), emptySet(), emptySet(), emptySet())
   override val midPoints: List<IMidPointWithFocal> = emptyList()
   override val harmonics: Map<Int, Harmonic> = emptyMap()
   override val mundanePositions: Map<AstroPoint, MundanePosition> = emptyMap()
