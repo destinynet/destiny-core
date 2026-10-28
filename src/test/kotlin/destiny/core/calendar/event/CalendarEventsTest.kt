@@ -10,6 +10,7 @@ import destiny.core.astrology.eclipse.LunarType
 import destiny.core.astrology.eclipse.SolarType
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.SolarTerms
+import destiny.tools.Lang
 import kotlinx.serialization.json.Json
 import kotlin.test.*
 
@@ -79,6 +80,26 @@ class CalendarEventsTest {
     assertEquals(300.0, firstQuarter.sunLng.value, 1e-9)
   }
 
+  /** 2026 冥王星往南出界（數值為示意） */
+  private val pluto = OutOfBoundsEvent(
+    Planet.PLUTO,
+    GmtJulDay(2461263.5), 303.9.toZodiacDegree(),
+    GmtJulDay(2461320.5), -23.93, 23.436, 303.4.toZodiacDegree(),
+    GmtJulDay(2461384.5), 303.6.toZodiacDegree(),
+  )
+
+  @Test
+  fun outOfBounds_anchorIsEntering() {
+    assertEquals(pluto.begin, pluto.anchor)
+    assertEquals(CalendarEventType.OutOfBounds(Planet.PLUTO), pluto.type)
+    assertFalse(pluto.north)
+    assertEquals(0.494, pluto.depth, 1e-9)
+    assertEquals(pluto.begin, pluto.at(OutOfBoundsPhase.ENTERING))
+    assertEquals(pluto.peak, pluto.at(OutOfBoundsPhase.PEAK))
+    assertEquals(pluto.end, pluto.at(OutOfBoundsPhase.LEAVING))
+    assertEquals("冥王星出界", pluto.getTitle(Lang.ZH_TW))
+  }
+
   @Test
   fun everyEvent_jsonRoundTrip() {
     val events: List<ICalendarEvent> = listOf(
@@ -90,6 +111,7 @@ class CalendarEventsTest {
       SolarTermEvent(SolarTerms.立冬, GmtJulDay(2461351.1), GmtJulDay(2461366.0)),
       VoidOfCourseEvent(Planet.MOON, VoidCourseImpl.Medieval, GmtJulDay(2461340.1), 28.0.toZodiacDegree(),
         GmtJulDay(2461340.4), 30.0.toZodiacDegree(), Aspect.TRINE, Planet.SATURN),
+      pluto,
     )
     events.forEach { e ->
       val json = Json.encodeToString(ICalendarEvent.serializer(), e)

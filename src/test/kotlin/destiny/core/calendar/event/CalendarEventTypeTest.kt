@@ -22,8 +22,8 @@ class CalendarEventTypeTest {
   @Test
   fun defaults_coverEveryKind() {
     assertEquals(CalendarEventKind.entries.toSet(), CalendarEventType.defaults.map { it.kind }.toSet())
-    // 8 逆行 + 2 食 + 4 月相 + 24 節氣 + 1 空亡
-    assertEquals(39, CalendarEventType.defaults.size)
+    // 8 逆行 + 2 食 + 4 月相 + 24 節氣 + 1 空亡 + 8 出界
+    assertEquals(47, CalendarEventType.defaults.size)
   }
 
   @Test
@@ -33,6 +33,7 @@ class CalendarEventTypeTest {
     assertEquals("LUNATION:FULL", CalendarEventType.Lunation(LunarPhase.FULL).code)
     assertEquals("SOLAR_TERM:立冬", CalendarEventType.SolarTerm(SolarTerms.立冬).code)
     assertEquals("VOID_OF_COURSE:Planet.MOON:Medieval", CalendarEventType.VoidOfCourse().code)
+    assertEquals("OUT_OF_BOUNDS:Planet.PLUTO", CalendarEventType.OutOfBounds(Planet.PLUTO).code)
   }
 
   @Test
@@ -48,7 +49,8 @@ class CalendarEventTypeTest {
   fun ofCode_rejectsGarbage() {
     listOf(
       "", "FOO", "RETROGRADE", "RETROGRADE:Planet.XXX", "RETROGRADE:Planet.SUN",
-      "SOLAR_ECLIPSE:extra", "LUNATION:HALF", "SOLAR_TERM:立冬:x", "VOID_OF_COURSE:Planet.MOON"
+      "SOLAR_ECLIPSE:extra", "LUNATION:HALF", "SOLAR_TERM:立冬:x", "VOID_OF_COURSE:Planet.MOON",
+      "OUT_OF_BOUNDS", "OUT_OF_BOUNDS:Planet.SUN", "OUT_OF_BOUNDS:Planet.PLUTO:x"
     ).forEach { assertNull(CalendarEventType.ofCode(it), "'$it' should not parse") }
   }
 
@@ -56,6 +58,15 @@ class CalendarEventTypeTest {
   fun sunAndMoon_doNotRetrograde() {
     assertFailsWith<IllegalArgumentException> { CalendarEventType.Retrograde(Planet.SUN) }
     assertFailsWith<IllegalArgumentException> { CalendarEventType.Retrograde(Planet.MOON) }
+  }
+
+  /** 太陽的赤緯就是邊界；月亮會出界，型別允許、預設不收 */
+  @Test
+  fun outOfBounds_sunRejected_moonAllowedButNotDefault() {
+    assertFailsWith<IllegalArgumentException> { CalendarEventType.OutOfBounds(Planet.SUN) }
+    val moon = CalendarEventType.OutOfBounds(Planet.MOON)
+    assertEquals(moon, CalendarEventType.ofCode(moon.code))
+    assertFalse(moon in CalendarEventType.defaults)
   }
 
   @Test

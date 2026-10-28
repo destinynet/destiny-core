@@ -27,6 +27,7 @@ enum class CalendarEventKind(val domain: CalendarDomain) {
   LUNATION(CalendarDomain.ASTRO),
   SOLAR_TERM(CalendarDomain.ASTRO),
   VOID_OF_COURSE(CalendarDomain.ASTRO),
+  OUT_OF_BOUNDS(CalendarDomain.ASTRO),
 }
 
 /**
@@ -96,6 +97,21 @@ sealed interface CalendarEventType {
     override val code: String get() = "${kind.name}$SEP${planet.nameKey}$SEP${impl.name}"
   }
 
+  /**
+   * 星體出界：地心赤緯的絕對值超過當時的黃赤交角。
+   * 太陽的赤緯就是交角本身，不會出界；月亮會出界，型別允許，但不在 [defaults]。
+   */
+  @Serializable
+  @SerialName("OUT_OF_BOUNDS")
+  data class OutOfBounds(@Serializable(with = PlanetSerializer::class) val planet: Planet) : CalendarEventType {
+    init {
+      require(planet != Planet.SUN) { "the Sun defines the bounds" }
+    }
+
+    override val kind: CalendarEventKind get() = CalendarEventKind.OUT_OF_BOUNDS
+    override val code: String get() = "${kind.name}$SEP${planet.nameKey}"
+  }
+
   companion object {
     private const val SEP = ':'
 
@@ -104,7 +120,12 @@ sealed interface CalendarEventType {
       Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN, Planet.URANUS, Planet.NEPTUNE, Planet.PLUTO
     )
 
-    /** 事件曆預設收錄的系列：八星逆行、日月食、四種月相、二十四節氣、月亮空亡（中世紀派） */
+    /** 預設收錄出界的星體：水星到冥王星（月亮一年最多二十幾次，性質近似空亡，不收） */
+    val OUT_OF_BOUNDS_PLANETS: List<Planet> = listOf(
+      Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN, Planet.URANUS, Planet.NEPTUNE, Planet.PLUTO
+    )
+
+    /** 事件曆預設收錄的系列：八星逆行、日月食、四種月相、二十四節氣、月亮空亡（中世紀派）、八星出界 */
     val defaults: Set<CalendarEventType> by lazy {
       buildSet {
         RETROGRADE_PLANETS.forEach { add(Retrograde(it)) }
@@ -113,6 +134,7 @@ sealed interface CalendarEventType {
         LunarPhase.entries.forEach { add(Lunation(it)) }
         SolarTerms.entries.forEach { add(SolarTerm(it)) }
         add(VoidOfCourse())
+        OUT_OF_BOUNDS_PLANETS.forEach { add(OutOfBounds(it)) }
       }
     }
 
@@ -130,6 +152,7 @@ sealed interface CalendarEventType {
           CalendarEventKind.VOID_OF_COURSE -> parts.takeIf { it.size == 3 }?.let { p ->
             Planet.valueOf(p[1])?.let { VoidOfCourse(it, VoidCourseImpl.valueOf(p[2])) }
           }
+          CalendarEventKind.OUT_OF_BOUNDS  -> parts.takeIf { it.size == 2 }?.let { Planet.valueOf(it[1]) }?.let { OutOfBounds(it) }
         }
       }.getOrNull()
     }

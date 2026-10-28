@@ -2,7 +2,7 @@
  * Created by smallufo on 2026-03-07.
  *
  * Finds the exact GMT times when a star's equatorial declination crosses
- * the obliquity threshold (±23.44°), i.e., enters or leaves Out of Bounds.
+ * the obliquity threshold (±23.44° by default), i.e., enters or leaves Out of Bounds.
  *
  * Uses bisection on [IStarPosition] with [Coordinate.EQUATORIAL].
  */
@@ -17,7 +17,19 @@ data class OobCrossing(
   val entering: Boolean,
   /** declination at the crossing moment (approx ±obliquity) */
   val declination: Double,
+  /** the threshold at the crossing moment */
+  val obliquity: Double = OobCrossingFinder.OBLIQUITY,
 )
+
+/** The three moments of one Out-of-Bounds span */
+enum class OutOfBoundsPhase {
+  /** |declination| rises above the obliquity */
+  ENTERING,
+  /** |declination| is at its maximum */
+  PEAK,
+  /** |declination| falls back within the obliquity */
+  LEAVING
+}
 
 object OobCrossingFinder {
 
@@ -43,7 +55,8 @@ object OobCrossingFinder {
    * @param fromGmt       Range start (GMT Julian Day)
    * @param toGmt         Range end (GMT Julian Day)
    * @param options       Star type options (for LunarNode TRUE/MEAN)
-   * @param obliquity     Threshold in degrees (default 23.44°)
+   * @param obliquity     Threshold in degrees at a given moment (default: the fixed mean value 23.44°).
+   *                      Pass [IObliquityCalculator.getObliquity] to follow the obliquity of date.
    * @param stepDays      Sampling interval in days (default 1.0; use 0.25 for Moon)
    */
   fun findCrossings(
@@ -52,7 +65,7 @@ object OobCrossingFinder {
     fromGmt: GmtJulDay,
     toGmt: GmtJulDay,
     options: StarTypeOptions = StarTypeOptions.MEAN,
-    obliquity: Double = OBLIQUITY,
+    obliquity: (GmtJulDay) -> Double = { OBLIQUITY },
     stepDays: Double = DEFAULT_STEP_DAYS,
   ): Sequence<OobCrossing> {
 
@@ -61,44 +74,40 @@ object OobCrossingFinder {
     }
 
     /** signed distance: positive = OOB, negative = in-bounds */
-    fun oobDistance(decl: Double): Double = kotlin.math.abs(decl) - obliquity
+    fun oobDistance(decl: Double, gmt: GmtJulDay): Double = kotlin.math.abs(decl) - obliquity(gmt)
 
     return sequence {
       var t = fromGmt
-      var prevDecl = declAt(t)
-      var prevDist = oobDistance(prevDecl)
+      var prevDist = oobDistance(declAt(t), t)
 
       while (t < toGmt) {
         val nextT = minOf(t + stepDays, toGmt)
-        val nextDecl = declAt(nextT)
-        val nextDist = oobDistance(nextDecl)
+        val nextDist = oobDistance(declAt(nextT), nextT)
 
         // Sign change in oobDistance means a crossing happened
         if (prevDist * nextDist < 0) {
+          val entering = prevDist < 0 // was in-bounds, now OOB
+
           // Bisect to find precise crossing
           var lo = t
           var hi = nextT
+          var loDist = prevDist
           while ((hi.value - lo.value) > TOLERANCE_DAYS) {
             val mid = GmtJulDay((lo.value + hi.value) / 2.0)
-            val midDecl = declAt(mid)
-            val midDist = oobDistance(midDecl)
-            if (prevDist * midDist <= 0) {
+            val midDist = oobDistance(declAt(mid), mid)
+            if (loDist * midDist <= 0) {
               hi = mid
             } else {
               lo = mid
-              prevDist = midDist
+              loDist = midDist
             }
           }
 
           val crossingTime = GmtJulDay((lo.value + hi.value) / 2.0)
-          val crossingDecl = declAt(crossingTime)
-          val entering = oobDistance(prevDecl) < 0 // was in-bounds, now OOB
-
-          yield(OobCrossing(star, crossingTime, entering, crossingDecl))
+          yield(OobCrossing(star, crossingTime, entering, declAt(crossingTime), obliquity(crossingTime)))
         }
 
         t = nextT
-        prevDecl = nextDecl
         prevDist = nextDist
       }
     }

@@ -5,6 +5,7 @@ package destiny.core.calendar.event
 
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.LunarPhase
+import destiny.core.astrology.OutOfBoundsPhase
 import destiny.core.astrology.Planet
 import destiny.core.astrology.RetrogradeCycle
 import destiny.core.astrology.RetrogradePhase
@@ -185,4 +186,46 @@ data class VoidOfCourseEvent(
 ) : ICalendarEvent, IEventSpan {
   override val type: CalendarEventType get() = CalendarEventType.VoidOfCourse(planet, impl)
   override val anchor: GmtJulDay get() = begin
+}
+
+/**
+ * 一次出界：赤緯越過黃赤交角 → 最深 → 回到交角之內。錨點是出界。
+ *
+ * 赤緯帶正負號：正＝北、負＝南。[peakObliquity] 是最深那一刻的交角，所以 [depth] 不必再查交角。
+ * 經度只存黃經（同逆行）。
+ */
+@Serializable
+@SerialName("OutOfBounds")
+data class OutOfBoundsEvent(
+  @Serializable(with = PlanetSerializer::class)
+  val planet: Planet,
+  /** 出界 */
+  override val begin: GmtJulDay,
+  val beginLng: ZodiacDegree,
+  /** |赤緯| 最大 */
+  val peak: GmtJulDay,
+  val peakDeclination: Double,
+  val peakObliquity: Double,
+  val peakLng: ZodiacDegree,
+  /** 回界 */
+  override val end: GmtJulDay,
+  val endLng: ZodiacDegree,
+) : ICalendarEvent, IEventSpan {
+  override val type: CalendarEventType get() = CalendarEventType.OutOfBounds(planet)
+  override val anchor: GmtJulDay get() = begin
+
+  /** 往北（赤緯為正）出界 */
+  val north: Boolean get() = peakDeclination > 0
+
+  /** 最深時超出交角多少度 */
+  val depth: Double get() = kotlin.math.abs(peakDeclination) - peakObliquity
+
+  /** 某一相的時刻 */
+  fun at(phase: OutOfBoundsPhase): GmtJulDay = when (phase) {
+    OutOfBoundsPhase.ENTERING -> begin
+    OutOfBoundsPhase.PEAK     -> peak
+    OutOfBoundsPhase.LEAVING  -> end
+  }
+
+  override fun getTitle(lang: Lang): String = planet.toString(lang) + OutOfBoundsPhase.ENTERING.getTitle(lang)
 }
