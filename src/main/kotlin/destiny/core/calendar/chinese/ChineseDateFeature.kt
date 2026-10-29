@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.chinese
 
+import destiny.core.calendar.ConversionException
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -47,6 +48,31 @@ interface IChineseDateFeature : Feature<ChineseDateConfig, ChineseDate> {
    * 回的是前一晚的子初或子正（依 `changeDay`），真太陽時的話隨經度與均時差移動。
    */
   fun dayStart(day: LocalDate, loc: ILocation, config: ChineseDateConfig = defaultConfig): GmtJulDay
+
+  /** 此瞬間所在的農曆月；月名與 [getModel] 一致 */
+  fun monthOf(gmtJulDay: GmtJulDay, loc: ILocation, config: ChineseDateConfig = defaultConfig): LunarMonth {
+    val date = getModel(gmtJulDay, loc, config)
+    val year = date.westYear
+    return monthsOf(year, loc, config).firstOrNull { it.number == date.month && it.leap == date.leapMonth }
+      ?: throw ConversionException("$year 年找不到 $date 所在的月")
+  }
+
+  /** [month] 的下一個月 */
+  fun nextMonthOf(month: LunarMonth, loc: ILocation, config: ChineseDateConfig = defaultConfig): LunarMonth {
+    val months = monthsOf(month.year, loc, config)
+    val i = months.indexOfFirst { it.number == month.number && it.leap == month.leap }
+    return months.getOrNull(i + 1) ?: monthsOf(month.year + 1, loc, config).first()
+  }
+
+  /**
+   * [month] 在此設定下從哪一刻開始：[MonthBoundary.INSTANT] 是朔的瞬間；[MonthBoundary.DAY] 是初一那天在本設定日界下的起點。
+   * [MonthTable.CIVIL] 的初一是萬年曆的日期。
+   */
+  fun monthStart(month: LunarMonth, loc: ILocation, config: ChineseDateConfig = defaultConfig): GmtJulDay =
+    when (config.lunisolar.monthBoundary) {
+      MonthBoundary.INSTANT -> month.newMoon
+      MonthBoundary.DAY -> dayStart(month.firstDay, loc, config)
+    }
 }
 
 /**
