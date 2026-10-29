@@ -985,7 +985,7 @@ class ZiweiFeature(
     val (dst , duration) = TimeTools.getDstAndOffset(lmt, loc)
     val minuteOffset = duration.inWholeMinutes
 
-    val cDate = chineseDateFeature.getModel(lmt, loc)
+    val cDate = chineseDateFeature.getModel(lmt, loc, ChineseDateConfig(config.lunisolar, config.ewConfig.dayHourConfig))
     val cycle = cDate.cycleOrZero
     val yinYear = cDate.year
 

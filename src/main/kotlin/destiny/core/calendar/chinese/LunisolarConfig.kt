@@ -73,3 +73,36 @@ data class ChineseDateConfig(
   val lunisolar: LunisolarConfig = LunisolarConfig(),
   val dayHourConfig: DayHourConfig = DayHourConfig(),
 )
+
+/**
+ * 給使用者選的幾種組合（UI 只給這幾種，不讓三個欄位任意組合）。
+ * 只決定日界／月界／月表；[LunisolarConfig.civil] 由市場決定，[applyTo] 不動它。
+ */
+enum class LunisolarPreset(
+  val dayBoundary: DayBoundary,
+  val monthBoundary: MonthBoundary,
+  val monthTable: MonthTable,
+) {
+  /** 萬年曆（預設）：子時依日柱換日，再查萬年曆 */
+  CIVIL(DayBoundary.DAY_HOUR, MonthBoundary.DAY, MonthTable.CIVIL),
+
+  /** 初一隨當地日界（含合朔那一刻的那一天是初一），月名照萬年曆 */
+  LOCAL_DAY(DayBoundary.DAY_HOUR, MonthBoundary.DAY, MonthTable.CIVIL_NAMES),
+
+  /** 合朔那一刻換月，月名照萬年曆 */
+  INSTANT(DayBoundary.DAY_HOUR, MonthBoundary.INSTANT, MonthTable.CIVIL),
+
+  /** 合朔那一刻換月，置閏也依合朔瞬間重算；部分年份月名與萬年曆不同 */
+  INSTANT_DERIVED(DayBoundary.DAY_HOUR, MonthBoundary.INSTANT, MonthTable.DERIVED);
+
+  fun applyTo(config: LunisolarConfig): LunisolarConfig =
+    config.copy(dayBoundary = dayBoundary, monthBoundary = monthBoundary, monthTable = monthTable)
+
+  companion object {
+    /** 此設定對應的組合；不是 UI 給的組合則回 null。`INSTANT` 下 `CIVIL` 與 `CIVIL_NAMES` 相同，都算 [INSTANT] */
+    fun of(config: LunisolarConfig): LunisolarPreset? {
+      val table = if (config.monthBoundary == MonthBoundary.INSTANT && config.monthTable == MonthTable.CIVIL_NAMES) MonthTable.CIVIL else config.monthTable
+      return entries.firstOrNull { it.dayBoundary == config.dayBoundary && it.monthBoundary == config.monthBoundary && it.monthTable == table }
+    }
+  }
+}
