@@ -223,6 +223,21 @@ class EwChartDtoTest {
     assertEquals(1985, second.years.first().year)
   }
 
+  /** 大運與流年的藏干：FULL 預設不帶，明示 fortuneHiddenStems 才帶（流年跟著同一個開關） */
+  @Test
+  fun fortuneHiddenStems_offByDefaultInFull_onWhenAskedFor() {
+    val plain = modelWithAges().toEwChartDto(ChartDensity.FULL, withYears = true)
+    assertTrue(plain.fortunes.all { f -> f.hiddenStems.isEmpty() && f.years.all { it.hiddenStems.isEmpty() } })
+
+    val dto = modelWithAges().toEwChartDto(ChartDensity.FULL, withYears = true, fortuneHiddenStems = true)
+    assertTrue(dto.fortunes.all { it.hiddenStems.isNotEmpty() })
+    // 1975 乙卯：卯藏乙，日主見乙為七殺
+    dto.fortunes.first().years.first().hiddenStems.also {
+      assertEquals(listOf("乙"), it.map { h -> h.stem })
+      assertEquals("七殺", it.first().reaction)
+    }
+  }
+
   /** 出生在立春前：第一歲止於當年立春，年柱屬前一年 */
   @Test
   fun fortuneYears_bornBeforeLiChun_firstAgeBelongsToPreviousYear() {

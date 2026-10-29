@@ -103,6 +103,8 @@ data class EwFortuneYearDto(
   /** 流年天干對日主的十神 */
   val stemReaction: String,
   val stemReactionAbbr: String,
+  /** 流年地支藏干，與 [EwFortuneDto.hiddenStems] 同一個開關 */
+  val hiddenStems: List<EwReactionDto> = emptyList(),
 )
 
 /** 一柱大運。預設只有歲數，沒有年份 */
@@ -116,7 +118,7 @@ data class EwFortuneDto(
   val toAge: Int,
   val stemReaction: String,
   val stemReactionAbbr: String,
-  /** 大運地支藏干，僅 [ChartDensity.ALL] */
+  /** 大運地支藏干，預設僅 [ChartDensity.ALL]（`toEwChartDto(fortuneHiddenStems = …)` 可另開） */
   val hiddenStems: List<EwReactionDto>,
   /**
    * 此運涵蓋的流年，依歲數排列。只在 `toEwChartDto(withYears = true)` 時有值，否則為空（wire 上即空陣列）。
@@ -284,13 +286,14 @@ fun IPersonContextModel.toEwChartDto(
   withYears: Boolean = false,
   /** 另一套時刻系統下的時支（[EwMetaDto.altHourBranch]）；與本盤時支相同者視為 null */
   altHourBranch: Branch? = null,
+  /** 大運（與 [withYears] 的流年）帶地支藏干；預設跟著 [ChartDensity.ALL] */
+  fortuneHiddenStems: Boolean = density == ChartDensity.ALL,
 ): EwChartDto {
   val compact = density == ChartDensity.COMPACT
-  val all = density == ChartDensity.ALL
   val mapper = PillarMapper(eightWords, hiddenStemsImpl)
 
   fun reactionOf(stem: Stem) = mapper.reactionOf(stem)
-  fun hiddenStemsOf(branch: Branch) = mapper.hiddenStemsOf(branch)
+  fun fortuneHiddenStemsOf(branch: Branch) = if (fortuneHiddenStems) mapper.hiddenStemsOf(branch) else emptyList()
 
   val fortunes = if (compact) emptyList() else fortuneDataLarges.map { fortuneData ->
     val reaction = reactionOf(fortuneData.stemBranch.stem)
@@ -301,8 +304,8 @@ fun IPersonContextModel.toEwChartDto(
       toAge = fortuneData.endFortuneAge,
       stemReaction = reaction.name,
       stemReactionAbbr = reaction.getAbbreviation(ZH),
-      hiddenStems = if (all) hiddenStemsOf(fortuneData.stemBranch.branch) else emptyList(),
-      years = if (withYears) fortuneYearsOf(fortuneData, ::reactionOf) else emptyList(),
+      hiddenStems = fortuneHiddenStemsOf(fortuneData.stemBranch.branch),
+      years = if (withYears) fortuneYearsOf(fortuneData, ::reactionOf, ::fortuneHiddenStemsOf) else emptyList(),
     )
   }
 
@@ -350,7 +353,11 @@ fun IPersonContextModel.toEwChartDto(
  * （立春恆在二月初，不受時區影響）。年柱干支依西元年推（以立春為界），不受「冬至換年」設定影響 ——
  * 該設定只用於本命年柱。
  */
-private fun IPersonContextModel.fortuneYearsOf(fortuneData: FortuneData, reactionOf: (Stem) -> Reaction): List<EwFortuneYearDto> =
+private fun IPersonContextModel.fortuneYearsOf(
+  fortuneData: FortuneData,
+  reactionOf: (Stem) -> Reaction,
+  hiddenStemsOf: (Branch) -> List<EwReactionDto>,
+): List<EwFortuneYearDto> =
   getAgeMapOfFortuneLarge(fortuneData).entries.sortedBy { it.key }.map { (age, range) ->
     val year = range.second.toInstant().toLocalDateTime(TimeZone.UTC).year - 1
     val sb = StemBranchYearTool.getYearStemBranch(year)
@@ -362,6 +369,7 @@ private fun IPersonContextModel.fortuneYearsOf(fortuneData: FortuneData, reactio
       branch = sb.branch.name,
       stemReaction = reaction.name,
       stemReactionAbbr = reaction.getAbbreviation(ZH),
+      hiddenStems = hiddenStemsOf(sb.branch),
     )
   }
 
