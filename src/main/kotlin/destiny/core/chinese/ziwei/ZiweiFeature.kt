@@ -12,6 +12,7 @@ import destiny.core.astrology.*
 import destiny.core.calendar.*
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.chinese.ChineseDate
+import destiny.core.calendar.chinese.ChineseDateConfig
 import destiny.core.calendar.chinese.IChineseDateFeature
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.chinese.MonthAlgo
@@ -236,7 +237,7 @@ class ZiweiFeature(
   override fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IZiweiConfig): Triple<Branch, Branch, Int?> {
     return when (config.mainBodyHouse) {
       MainBodyHouse.Trad  -> {
-        val cDate: ChineseDate = chineseDateFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig)
+        val cDate: ChineseDate = chineseDateFeature.getModel(lmt, loc, ChineseDateConfig(config.lunisolar, config.ewConfig.dayHourConfig))
 
         val monthBranch = yearMonthFeature.getModel(lmt, loc, config.ewConfig.yearMonthConfig).branch
 

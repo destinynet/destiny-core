@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.lunarStation
 
+import destiny.core.calendar.chinese.ChineseDateConfig
 import destiny.core.Scale
 import destiny.core.astrology.LunarStation
 import destiny.core.astrology.Planet
@@ -197,7 +198,7 @@ class LunarStationFeature(
         Scale.MONTH -> {
           val yearlyStation: LunarStation = yearlyFeature.getModel(lmt, loc, config).station
           val monthBranch = eightWordsFeature.getModel(lmt, loc, ewConfig).month.branch
-          val chineseDate = chineseDateFeature.getModel(lmt, loc, config)
+          val chineseDate = chineseDateFeature.getModel(lmt, loc, ChineseDateConfig(dayHourConfig = config.dayHourConfig))
           val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
             chineseDate.month, chineseDate.leapMonth, monthBranch, chineseDate.day, config.monthAlgo
           )

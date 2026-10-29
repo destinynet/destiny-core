@@ -4,6 +4,7 @@ import destiny.core.IPresentConfig
 import destiny.core.astrology.DayNightConfig
 import destiny.core.astrology.DayNightConfigBuilder
 import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.chinese.LunisolarConfig
 import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.IEightWordsConfig
@@ -119,10 +120,6 @@ enum class BigRange {
   SkipMain
 }
 
-enum class ChineseDateImpl {
-  Civil
-}
-
 interface IZiweiConfig : IEightWordsConfig , JSerializable {
   val stars: Set<@Serializable(with = ZStarSerializer::class) ZStar>
   /** 命宮、身宮 演算法  */
@@ -191,8 +188,8 @@ interface IZiweiConfig : IEightWordsConfig , JSerializable {
   /** 晝夜區分 */
   val dayNightConfig: DayNightConfig
 
-  /** 曆法 */
-  var chineseDateImpl: ChineseDateImpl
+  /** 陰陽曆規則（月界、月名、日界）；日界用的八字日柱設定取自 [ewConfig] */
+  var lunisolar: LunisolarConfig
 
   /** 紫微強制地支 */
   var purpleFixedBranch: Branch?
@@ -221,7 +218,7 @@ interface IZiweiConfig : IEightWordsConfig , JSerializable {
       sectionAgeType,
       ewConfig,
       dayNightConfig,
-      chineseDateImpl,
+      lunisolar,
       purpleFixedBranch
     )
 }
@@ -277,8 +274,8 @@ data class ZiweiConfig(
   override val ewConfig: EightWordsConfig = EightWordsConfig(),
   /** 晝夜區分 */
   override val dayNightConfig: DayNightConfig = DayNightConfig(),
-  /** 曆法 */
-  override var chineseDateImpl: ChineseDateImpl = ChineseDateImpl.Civil,
+  /** 陰陽曆規則（月界、月名、日界） */
+  override var lunisolar: LunisolarConfig = LunisolarConfig(),
   /** 紫微強制地支 */
   override var purpleFixedBranch : Branch? = null
 ) : IZiweiConfig , IEightWordsConfig by ewConfig
@@ -360,7 +357,7 @@ class ZiweiConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<ZiweiConfi
     }
   }
 
-  var chineseDateImpl: ChineseDateImpl = defaultConfig.chineseDateImpl
+  var lunisolar: LunisolarConfig = defaultConfig.lunisolar
 
   var purpleFixedBranch: Branch? = defaultConfig.purpleFixedBranch
 
@@ -388,7 +385,7 @@ class ZiweiConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<ZiweiConfi
       sectionAgeType,
       iEwConfig.ewConfig,
       dayNightConfig,
-      chineseDateImpl,
+      lunisolar,
       purpleFixedBranch
     )
   }

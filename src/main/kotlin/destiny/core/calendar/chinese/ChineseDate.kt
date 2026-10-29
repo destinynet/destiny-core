@@ -107,6 +107,7 @@ fun Int.toChineseDayString(appendDay : Boolean = false): String {
       20 -> append("二十")
       in 21..29 -> append("廿").append(digitToChinese(value - 20))
       30 -> append("三十")
+      31 -> append("卅一") // 合朔那一刻換月時，合朔當天在合朔前仍屬上個月，日序數可到 31
       else -> throw IllegalArgumentException("No such day : $value")
     }
     if (appendDay && value > 10)

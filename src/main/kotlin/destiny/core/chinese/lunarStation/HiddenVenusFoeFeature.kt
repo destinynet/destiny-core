@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.lunarStation
 
+import destiny.core.calendar.chinese.ChineseDateConfig
 import destiny.core.Scale
 import destiny.core.astrology.LunarStation
 import destiny.core.astrology.LunarStation.*
@@ -50,7 +51,7 @@ class HiddenVenusFoeFeature(private val yearlyFeature: LunarStationYearlyFeature
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: ILunarStationConfig): Set<Pair<Scale, Scale>> {
     val yearly = yearlyFeature.getModel(lmt, loc, config).station
     val ew: IEightWords = eightWordsFeature.getModel(lmt, loc, config.ewConfig)
-    val chineseDate = chineseDateFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig)
+    val chineseDate = chineseDateFeature.getModel(lmt, loc, ChineseDateConfig(dayHourConfig = config.ewConfig.dayHourConfig))
     val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
       chineseDate.month,
       chineseDate.leapMonth,

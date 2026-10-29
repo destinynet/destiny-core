@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.chinese.ChineseDateConfig
 import destiny.core.astrology.*
 import destiny.core.calendar.*
 import destiny.core.calendar.TimeTools.toGmtJulDay
@@ -77,7 +78,7 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
 
     val eightWords = eightWordsFeature.getModel(lmt, loc, config.eightWordsConfig)
 
-    val chineseDate = chineseDateFeature.getModel(lmt, loc, config.eightWordsConfig.dayHourConfig)
+    val chineseDate = chineseDateFeature.getModel(lmt, loc, ChineseDateConfig(dayHourConfig = config.eightWordsConfig.dayHourConfig))
 
     // 命宮地支
     val risingBranch = risingSignFeature.getModel(lmt, loc, config.risingSignConfig).branch

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.lunarStation
 
+import destiny.core.calendar.chinese.ChineseDateConfig
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -46,9 +47,9 @@ class LunarStationYearlyFeature(private val yearFeature: YearFeature,
       val dayHourConfig = config.dayHourConfig
 
       // 陰曆初一換年
-      val yearSb = chineseDateFeature.getModel(lmt, loc, dayHourConfig).year
+      val yearSb = chineseDateFeature.getModel(lmt, loc, ChineseDateConfig(dayHourConfig = dayHourConfig)).year
       // 以七月再算一次 年干支
-      val yearSb2: StemBranch = chineseDateFeature.getModel(lmt.with(ChronoField.MONTH_OF_YEAR, 7), loc, dayHourConfig).year
+      val yearSb2: StemBranch = chineseDateFeature.getModel(lmt.with(ChronoField.MONTH_OF_YEAR, 7), loc, ChineseDateConfig(dayHourConfig = dayHourConfig)).year
       yearSb to yearSb2
     }
 
