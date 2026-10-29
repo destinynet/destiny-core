@@ -47,6 +47,8 @@ internal class ChineseDateKtTest {
     assertEquals("廿一", 21.toChineseDayString())
     assertEquals("廿九", 29.toChineseDayString())
     assertEquals("三十", 30.toChineseDayString())
+    // 合朔那一刻換月時日序數可到 31
+    assertEquals("卅一", 31.toChineseDayString())
     try {
       0.toChineseDayString()
       fail()
@@ -54,10 +56,10 @@ internal class ChineseDateKtTest {
       assertEquals("No such day : 0" , e.message)
     }
     try {
-      31.toChineseDayString()
+      32.toChineseDayString()
       fail()
     } catch (e: IllegalArgumentException) {
-      assertEquals("No such day : 31" , e.message)
+      assertEquals("No such day : 32" , e.message)
     }
   }
 
@@ -71,6 +73,7 @@ internal class ChineseDateKtTest {
     assertEquals("廿一日", 21.toChineseDayString(true))
     assertEquals("廿九日", 29.toChineseDayString(true))
     assertEquals("三十日", 30.toChineseDayString(true))
+    assertEquals("卅一日", 31.toChineseDayString(true))
     try {
       0.toChineseDayString()
       fail()
@@ -78,10 +81,10 @@ internal class ChineseDateKtTest {
       assertEquals("No such day : 0" , e.message)
     }
     try {
-      31.toChineseDayString()
+      32.toChineseDayString()
       fail()
     } catch (e: IllegalArgumentException) {
-      assertEquals("No such day : 31" , e.message)
+      assertEquals("No such day : 32" , e.message)
     }
   }
 
