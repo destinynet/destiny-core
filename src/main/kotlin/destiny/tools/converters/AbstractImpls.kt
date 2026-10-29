@@ -61,7 +61,7 @@ abstract class EnumMapConverterWithDefault<T : Enum<T>>(override val key: String
 
   override fun getContext(map: Map<String, String>): T? {
     return map[key]?.trim()?.let { s ->
-      defaultImpl::class.java.enumConstants.firstOrNull { it.name.equals(s , true)}
+      defaultImpl.declaringJavaClass.enumConstants.firstOrNull { it.name.equals(s, true) }
     }
   }
 }
