@@ -43,8 +43,9 @@ enum class CivilStandard {
   },
 
   /**
-   * 越南的âm lịch：北越 1967-08-08 第 121-CP 號決定把曆法的標準時由 UTC+8 改為 UTC+7，此後全國依 UTC+7。
-   * 之前沿用中國曆書（[CHINA]）。1985 年春節中越差一個月、1968 年春節南北越不同天，都是這條切換造成的。
+   * 越南的âm lịch：北越 1967-08-08 第 121-CP 號決定把曆法的標準時由 UTC+8 改為 UTC+7，自 1968 年起依 UTC+7（1975 後全國）。
+   * 1967 年底以前沿用中國曆書（[CHINA]）：1967-12-01 16:09 UTC 的朔，Hồ Ngọc Đức 的年表仍歸 12-02（UTC+8）。
+   * 1985 年春節中越差一個月、1968 年春節南北越不同天，都是這條切換造成的。
    */
   VIETNAM {
     override fun zone(gmt: GmtJulDay): ZoneOffset =
@@ -82,8 +83,8 @@ enum class CivilStandard {
 
     private val JAPAN_SWITCHES = switches(LocalDateTime.of(1888, 1, 1, 0, 0) to UTC9, before = TOKYO_LMT)
 
-    /** 1967-08-08 00:00 UTC+8 */
-    private val VIETNAM_SWITCH: LocalDateTime = LocalDateTime.of(1967, 8, 7, 16, 0)
+    /** 1968-01-01 00:00 UTC+8 */
+    private val VIETNAM_SWITCH: LocalDateTime = LocalDateTime.of(1967, 12, 31, 16, 0)
 
     /** [switches] 是 UTC 的切換瞬間 */
     private fun timeline(gmt: GmtJulDay, before: ZoneOffset, switches: List<Pair<LocalDateTime, ZoneOffset>>): ZoneOffset {
