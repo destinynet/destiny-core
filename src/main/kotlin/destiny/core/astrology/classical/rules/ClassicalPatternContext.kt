@@ -30,6 +30,16 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val applicationOutcomeImpl: IApplicationOutcome
 ) {
 
+  /**
+   * 全盤的古典事實（判斷層之前的那一層）：光線傳遞、光線收集、受阻的入相位（臨陣退縮／插隊／撲空）、包夾。
+   * 判準與本 context 的格局相同（同一組 Impl、同一份 [OutcomeOptions]）。成形的入相位不列 —— 那就是一般的入相位
+   */
+  fun classicalFacts(h: IHoroscopeModel): List<ClassicalFact> =
+    translationOfLightImpl.getResults(h) +
+      collectionOfLightImpl.getResults(h) +
+      applicationOutcomeImpl.getOutcomes(h).filterNot { it is ApplicationOutcome.Perfected } +
+      besiegementImpl.getResults(h)
+
   /** 本命／卜卦的 prompt 預設帶的古典格局 */
   val defaultFactories: List<IPlanetPatternFactory> by lazy {
     listOf(

@@ -387,7 +387,8 @@ fun HoroscopeChartDto.withClassicalFacts(facts: List<destiny.core.astrology.clas
   return copy(classicalFacts = facts.mapNotNull { it.toChartDto() }.filter { f -> f.members.all { it in keys } })
 }
 
-private fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassicalFactDto? = when (this) {
+/** 呈現層投影；成形（[destiny.core.astrology.classical.ApplicationOutcome.Perfected]）沒有投影，回 null */
+fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassicalFactDto? = when (this) {
   is destiny.core.astrology.classical.TranslationOfLight -> HoroscopeTranslationDto(
     by = translator.nameKey,
     from = from.nameKey, fromAspect = separating.aspect.name, fromOrb = separating.orb,
@@ -441,6 +442,14 @@ private fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): Horosco
     before = HoroscopeBesiegeSideDto(before.by.nameKey, before.aspect?.name, before.distance),
     after = HoroscopeBesiegeSideDto(after.by.nameKey, after.aspect?.name, after.distance),
   )
+}
+
+/** 拿掉動畫軌跡（存表、查詢用不到，一條 49 點） */
+fun HoroscopeClassicalFactDto.withoutTrack(): HoroscopeClassicalFactDto = when (this) {
+  is HoroscopeRefranationDto -> copy(track = emptyList())
+  is HoroscopeProhibitionDto -> copy(track = emptyList())
+  is HoroscopeFrustrationDto -> copy(track = emptyList())
+  is HoroscopeTranslationDto, is HoroscopeCollectionDto, is HoroscopeBesiegementDto -> this
 }
 
 /** 格局可能用到的相位；組合格局（雙 T、六芒星、回力鏢）另外併入組成部分的邊 */
