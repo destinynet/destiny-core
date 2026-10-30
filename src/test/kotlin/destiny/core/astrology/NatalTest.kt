@@ -108,9 +108,6 @@ class NatalTest {
         GrandTrine(setOf(SUN, JUPITER, VENUS), Element.WATER, 0.91.toScore()),
         Wedge(setOf(MARS, SATURN), PointSignHouse(JUPITER, LEO, 1), 0.95.toScore())
       ),
-      listOf(
-        "pending"
-      ),
       Graph(
         setOf(
           Circular(listOf(MOON, SATURN))

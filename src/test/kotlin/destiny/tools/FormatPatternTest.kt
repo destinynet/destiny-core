@@ -62,8 +62,8 @@ class FormatPatternTest {
     }
 
     println("formatPattern 與 MessageFormat 比對了 $checked 個 pattern")
-    // 308 個含佔位符的 value（其中共 1,093 個 {n}）。數字變動請確認是刻意新增的 pattern。
-    assertEquals(308, checked, "含佔位符的 value 數變了")
+    // 317 個含佔位符的 value（其中共 1,147 個 {n}；2026-10-31 加入 Misc.properties 的插隊／撲空三語系 9 個）。數字變動請確認是刻意新增的 pattern。
+    assertEquals(317, checked, "含佔位符的 value 數變了")
   }
 
   /**
