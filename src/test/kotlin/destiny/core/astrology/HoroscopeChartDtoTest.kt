@@ -15,7 +15,10 @@ import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign.ARIES
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
+import destiny.core.astrology.classical.Besiegement
 import destiny.core.identityFieldsIn
+import com.jayway.jsonpath.JsonPath
+import kotlinx.serialization.json.Json
 import java.time.LocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -295,6 +298,27 @@ class HoroscopeChartDtoTest {
 
     val all = dto.keepingPoints { true }
     assertEquals(dto.patterns, all.patterns, "什麼都不拿掉時原樣保留（含 parts 索引）")
+  }
+
+  /** 古典事實以 `kind` 區分種類；有星不在盤上就不附，拿掉一顆星時牽涉它的也一起拿掉 */
+  @Test
+  fun classicalFacts_kindDiscriminatorAndMemberFiltering() {
+    val besieged = Besiegement(
+      Planet.MERCURY,
+      before = Besiegement.Side(Planet.SUN, null, 5.5),
+      after = Besiegement.Side(Planet.MARS, Aspect.SQUARE, 4.5),
+    )
+    val offChart = Besiegement(Planet.MERCURY, Besiegement.Side(Planet.SATURN, null, 1.0), Besiegement.Side(Planet.MARS, null, 1.0))
+    val dto = fakeNatal().toHoroscopeChartDto(ChartDensity.FULL).withClassicalFacts(listOf(besieged, offChart))
+    assertEquals(1, dto.classicalFacts.size, "土星不在盤上，那一筆不附")
+
+    val json = Json.encodeToString(HoroscopeChartDto.serializer(), dto)
+    assertEquals("besiegement", JsonPath.read<String>(json, "$.classicalFacts[0].kind"))
+    assertEquals("Planet.MERCURY", JsonPath.read<String>(json, "$.classicalFacts[0].planet"))
+    assertEquals("SQUARE", JsonPath.read<String>(json, "$.classicalFacts[0].after.aspect"))
+    assertEquals(dto, Json.decodeFromString(HoroscopeChartDto.serializer(), json), "來回不失真")
+
+    assertEquals(emptyList(), dto.keepingPoints { it.point != "Planet.MARS" }.classicalFacts)
   }
 
   @Test

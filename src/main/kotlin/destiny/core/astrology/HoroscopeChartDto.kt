@@ -25,7 +25,10 @@ import destiny.core.Graph
 import destiny.core.getAbbreviation
 import destiny.tools.Lang
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonClassDiscriminator
 import destiny.core.toString as pointToString
 
 /** 星名的查表語系 —— 固定繁中，不對外開放為參數 */
@@ -187,11 +190,23 @@ data class HoroscopeMidpointDto(
 )
 
 /**
- * 光線傳遞（[destiny.core.astrology.classical.TranslationOfLight] 的呈現層投影）：
+ * 古典占星的結構化事實（[destiny.core.astrology.classical.ClassicalFact]）的呈現層投影。JSON 以 `kind` 區分種類。
+ * [members]：牽涉到的點（[HoroscopePointDto.point]），全部在盤上才會出現
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@Serializable
+@JsonClassDiscriminator("kind")
+sealed interface HoroscopeClassicalFactDto {
+  val members: List<String>
+}
+
+/**
+ * 光線傳遞（[destiny.core.astrology.classical.TranslationOfLight]）：
  * [by] 剛離開 [from] 的 [fromAspect]（出相位 [fromOrb]），下一個成形的是與 [to] 的 [toAspect]（入相位 [toOrb]）。
- * [between]：[from] 與 [to] 本身的相位，null ＝ 彼此不成相位
+ * [between]：[from] 與 [to] 本身的相位，null ＝ 彼此不成相位；[arrivalDays]：光在幾天後送到（引擎判定時才有）
  */
 @Serializable
+@SerialName("translation")
 data class HoroscopeTranslationDto(
   val by: String,
   val from: String,
@@ -203,13 +218,18 @@ data class HoroscopeTranslationDto(
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val toOrb: Double,
   val between: String? = null,
-)
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val arrivalDays: Double? = null,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(by, from, to)
+}
 
 /**
- * 光線收集（[destiny.core.astrology.classical.CollectionOfLight] 的呈現層投影）：[a]、[b] 彼此不相見，都入相位到比較慢的 [by]。
+ * 光線收集（[destiny.core.astrology.classical.CollectionOfLight]）：[a]、[b] 彼此不相見，都入相位到比較慢的 [by]。
  * [between]：[a] 與 [b] 本身的相位，null ＝ 不成相位；[aReception]／[bReception]：以哪一種 [destiny.core.astrology.classical.Dignity] 接納 [by]，null ＝ 不接納
  */
 @Serializable
+@SerialName("collection")
 data class HoroscopeCollectionDto(
   val by: String,
   val a: String,
@@ -223,7 +243,9 @@ data class HoroscopeCollectionDto(
   val between: String? = null,
   val aReception: String? = null,
   val bReception: String? = null,
-)
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(by, a, b)
+}
 
 /** 臨陣退縮軌跡的一個取樣點：盤面時刻後 [days] 日，退縮者 [byLng] 與對方 [otherLng] 的黃經 */
 @Serializable
@@ -237,11 +259,12 @@ data class HoroscopeRefranationSampleDto(
 )
 
 /**
- * 臨陣退縮（[destiny.core.astrology.classical.ApplicationOutcome.Refranation] 的呈現層投影）：[by] 與 [other] 正以 [aspect] 入相位（盤面容許度 [orb]），
+ * 臨陣退縮（[destiny.core.astrology.classical.ApplicationOutcome.Refranation]）：[by] 與 [other] 正以 [aspect] 入相位（盤面容許度 [orb]），
  * 成形前 [by] 在 [stationDays] 日後停滯（[station]：[StationaryType]），[closestDays] 日後最接近、仍差 [closestOrb] 度。
- * [track]：到兩星再度拉開為止的黃經等距取樣
+ * [track]：到兩星再度拉開為止的黃經等距取樣；[ingress]：事件之前換星座的那顆
  */
 @Serializable
+@SerialName("refranation")
 data class HoroscopeRefranationDto(
   val by: String,
   val other: String,
@@ -256,7 +279,86 @@ data class HoroscopeRefranationDto(
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val closestOrb: Double,
   val track: List<HoroscopeRefranationSampleDto>,
+  val ingress: String? = null,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(by, other)
+}
+
+/** 入相位軌跡的一個取樣點：盤面時刻後 [days] 日，追的那顆 [applyingLng] 與被追的那顆 [appliedLng] 的黃經 */
+@Serializable
+data class HoroscopeOutcomeSampleDto(
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val days: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val applyingLng: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val appliedLng: Double,
 )
+
+/**
+ * 插隊（[destiny.core.astrology.classical.ApplicationOutcome.Prohibition]）：[applying] 正以 [aspect] 入相位 [applied]（盤面容許度 [orb]），
+ * 成形之前 [by] 先以 [byAspect] 與 [with] 成形（[eventDays] 日後）。[byAspect] 為 CONJUNCTION ＝ 以星體攔截，否則透過光線
+ */
+@Serializable
+@SerialName("prohibition")
+data class HoroscopeProhibitionDto(
+  val applying: String,
+  val applied: String,
+  val aspect: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val orb: Double,
+  val by: String,
+  val with: String,
+  val byAspect: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val eventDays: Double,
+  val track: List<HoroscopeOutcomeSampleDto>,
+  val ingress: String? = null,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(applying, applied, by)
+}
+
+/**
+ * 撲空（[destiny.core.astrology.classical.ApplicationOutcome.Frustration]）：[applying] 正以 [aspect] 入相位 [applied]（盤面容許度 [orb]），
+ * 成形之前 [applied] 先以 [byAspect] 與更慢的 [by] 成形然後離開（[eventDays] 日後）
+ */
+@Serializable
+@SerialName("frustration")
+data class HoroscopeFrustrationDto(
+  val applying: String,
+  val applied: String,
+  val aspect: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val orb: Double,
+  val by: String,
+  val byAspect: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val eventDays: Double,
+  val track: List<HoroscopeOutcomeSampleDto>,
+  val ingress: String? = null,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(applying, applied, by)
+}
+
+/** 包夾的一側：[by] 的星體（[aspect] 為 null）或以 [aspect] 投射的光線，離被夾的星 [distance] 度 */
+@Serializable
+data class HoroscopeBesiegeSideDto(
+  val by: String,
+  val aspect: String? = null,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val distance: Double,
+)
+
+/** 包夾（[destiny.core.astrology.classical.Besiegement]）：[planet] 被 [before]（黃經較小的一側）與 [after] 夾住 */
+@Serializable
+@SerialName("besiegement")
+data class HoroscopeBesiegementDto(
+  val planet: String,
+  val before: HoroscopeBesiegeSideDto,
+  val after: HoroscopeBesiegeSideDto,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(planet, before.by, after.by)
+}
 
 @Serializable
 data class HoroscopeChartDto(
@@ -272,64 +374,73 @@ data class HoroscopeChartDto(
   val patterns: List<HoroscopePatternDto> = emptyList(),
   /** 有焦點星的中點；三顆都在 [points] 內 */
   val midpoints: List<HoroscopeMidpointDto> = emptyList(),
-  /** 光線傳遞；三顆都在 [points] 內。由呼叫端以 [withTranslations] 附上 */
-  val translations: List<HoroscopeTranslationDto> = emptyList(),
-  /** 光線收集；三顆都在 [points] 內。由呼叫端以 [withCollections] 附上 */
-  val collections: List<HoroscopeCollectionDto> = emptyList(),
-  /** 臨陣退縮；兩顆都在 [points] 內。由呼叫端以 [withRefranations] 附上 */
-  val refranations: List<HoroscopeRefranationDto> = emptyList(),
+  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
+  val classicalFacts: List<HoroscopeClassicalFactDto> = emptyList(),
 )
 
-/** 附上臨陣退縮（[destiny.core.astrology.classical.ApplicationOutcomeImpl] 的結果中的退縮）；有星不在盤上的略過 */
-fun HoroscopeChartDto.withRefranations(list: List<destiny.core.astrology.classical.ApplicationOutcome.Refranation>): HoroscopeChartDto {
+/**
+ * 附上古典占星的結構化事實（[destiny.core.astrology.classical.ClassicalFact]）；有星不在盤上的略過。
+ * 成形（[destiny.core.astrology.classical.ApplicationOutcome.Perfected]）不附 —— 那就是一般的入相位，相位線已經畫了
+ */
+fun HoroscopeChartDto.withClassicalFacts(facts: List<destiny.core.astrology.classical.ClassicalFact>): HoroscopeChartDto {
   val keys = points.mapTo(HashSet()) { it.point }
-  return copy(refranations = list
-    .filter { r -> r.refranator.nameKey in keys && r.other.nameKey in keys }
-    .map { r ->
-      HoroscopeRefranationDto(
-        by = r.refranator.nameKey, other = r.other.nameKey,
-        aspect = r.pattern.aspect.name, orb = r.pattern.orb,
-        station = r.stationary.type.name, stationDays = r.stationDays,
-        closestDays = r.closestDays, closestOrb = r.closestOrb,
-        track = r.track.map {
-          if (r.refranator === r.applying) HoroscopeRefranationSampleDto(it.days, it.applyingLng, it.appliedLng)
-          else HoroscopeRefranationSampleDto(it.days, it.appliedLng, it.applyingLng)
-        },
-      )
-    })
+  return copy(classicalFacts = facts.mapNotNull { it.toChartDto() }.filter { f -> f.members.all { it in keys } })
 }
 
-/** 附上光線收集（[destiny.core.astrology.classical.CollectionOfLightImpl] 的結果）；有星不在盤上的略過 */
-fun HoroscopeChartDto.withCollections(list: List<destiny.core.astrology.classical.CollectionOfLight>): HoroscopeChartDto {
-  val keys = points.mapTo(HashSet()) { it.point }
-  return copy(collections = list
-    .filter { c -> (c.planets + c.collector).all { it.nameKey in keys } }
-    .map { c ->
-      val (pa, pb) = c.planets
-      HoroscopeCollectionDto(
-        by = c.collector.nameKey,
-        a = pa.nameKey, aAspect = c.first.aspect.name, aOrb = c.first.orb,
-        b = pb.nameKey, bAspect = c.second.aspect.name, bOrb = c.second.orb,
-        between = c.between?.aspect?.name,
-        aReception = c.firstReception?.name,
-        bReception = c.secondReception?.name,
-      )
-    })
-}
+private fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassicalFactDto? = when (this) {
+  is destiny.core.astrology.classical.TranslationOfLight -> HoroscopeTranslationDto(
+    by = translator.nameKey,
+    from = from.nameKey, fromAspect = separating.aspect.name, fromOrb = separating.orb,
+    to = to.nameKey, toAspect = applying.aspect.name, toOrb = applying.orb,
+    between = between?.aspect?.name,
+    arrivalDays = arrival?.eventDays,
+  )
 
-/** 附上光線傳遞（[destiny.core.astrology.classical.TranslationOfLightImpl] 的結果）；有星不在盤上的略過 */
-fun HoroscopeChartDto.withTranslations(list: List<destiny.core.astrology.classical.TranslationOfLight>): HoroscopeChartDto {
-  val keys = points.mapTo(HashSet()) { it.point }
-  return copy(translations = list
-    .filter { t -> listOf(t.translator, t.from, t.to).all { it.nameKey in keys } }
-    .map { t ->
-      HoroscopeTranslationDto(
-        by = t.translator.nameKey,
-        from = t.from.nameKey, fromAspect = t.separating.aspect.name, fromOrb = t.separating.orb,
-        to = t.to.nameKey, toAspect = t.applying.aspect.name, toOrb = t.applying.orb,
-        between = t.between?.aspect?.name,
-      )
-    })
+  is destiny.core.astrology.classical.CollectionOfLight -> {
+    val (pa, pb) = planets
+    HoroscopeCollectionDto(
+      by = collector.nameKey,
+      a = pa.nameKey, aAspect = first.aspect.name, aOrb = first.orb,
+      b = pb.nameKey, bAspect = second.aspect.name, bOrb = second.orb,
+      between = between?.aspect?.name,
+      aReception = firstReception?.name,
+      bReception = secondReception?.name,
+    )
+  }
+
+  is destiny.core.astrology.classical.ApplicationOutcome.Perfected -> null
+
+  is destiny.core.astrology.classical.ApplicationOutcome.Refranation -> HoroscopeRefranationDto(
+    by = refranator.nameKey, other = other.nameKey,
+    aspect = pattern.aspect.name, orb = pattern.orb,
+    station = stationary.type.name, stationDays = stationDays,
+    closestDays = closestDays, closestOrb = closestOrb,
+    track = track.map {
+      if (refranator === applying) HoroscopeRefranationSampleDto(it.days, it.applyingLng, it.appliedLng)
+      else HoroscopeRefranationSampleDto(it.days, it.appliedLng, it.applyingLng)
+    },
+    ingress = ingress?.nameKey,
+  )
+
+  is destiny.core.astrology.classical.ApplicationOutcome.Prohibition -> HoroscopeProhibitionDto(
+    applying = applying.nameKey, applied = applied.nameKey, aspect = pattern.aspect.name, orb = pattern.orb,
+    by = prohibitor.nameKey, with = with.nameKey, byAspect = interruption.aspect.name, eventDays = eventDays,
+    track = track.map { HoroscopeOutcomeSampleDto(it.days, it.applyingLng, it.appliedLng) },
+    ingress = ingress?.nameKey,
+  )
+
+  is destiny.core.astrology.classical.ApplicationOutcome.Frustration -> HoroscopeFrustrationDto(
+    applying = applying.nameKey, applied = applied.nameKey, aspect = pattern.aspect.name, orb = pattern.orb,
+    by = frustrator.nameKey, byAspect = interruption.aspect.name, eventDays = eventDays,
+    track = track.map { HoroscopeOutcomeSampleDto(it.days, it.applyingLng, it.appliedLng) },
+    ingress = ingress?.nameKey,
+  )
+
+  is destiny.core.astrology.classical.Besiegement -> HoroscopeBesiegementDto(
+    planet = planet.nameKey,
+    before = HoroscopeBesiegeSideDto(before.by.nameKey, before.aspect?.name, before.distance),
+    after = HoroscopeBesiegeSideDto(after.by.nameKey, after.aspect?.name, after.distance),
+  )
 }
 
 /** 格局可能用到的相位；組合格局（雙 T、六芒星、回力鏢）另外併入組成部分的邊 */
@@ -580,9 +691,7 @@ fun HoroscopeChartDto.keepingPoints(keep: (HoroscopePointDto) -> Boolean): Horos
     dispositors = dispositors?.takeIf { d -> (d.circles.flatten() + d.paths.flatten() + d.terminals + d.isolated).all { it in keys } },
     patterns = keptPatterns,
     midpoints = midpoints.filter { it.a in keys && it.b in keys && it.focal in keys },
-    translations = translations.filter { it.by in keys && it.from in keys && it.to in keys },
-    collections = collections.filter { it.by in keys && it.a in keys && it.b in keys },
-    refranations = refranations.filter { it.by in keys && it.other in keys },
+    classicalFacts = classicalFacts.filter { f -> f.members.all { it in keys } },
   )
 }
 

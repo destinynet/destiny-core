@@ -71,4 +71,10 @@ interface IBesiegement {
 
   /** [planet] 是否被 [enclosers]（兩顆星，例：火土）包夾；沒有則為 null */
   fun getBesiegement(h: IHoroscopeModel, planet: Planet, enclosers: Set<Planet>): Besiegement?
+
+  /** 全盤：七顆古典行星被火土、被金木的包夾 */
+  fun getResults(h: IHoroscopeModel): List<Besiegement> =
+    listOf(setOf(Planet.MARS, Planet.SATURN), setOf(Planet.VENUS, Planet.JUPITER)).flatMap { enclosers ->
+      Planet.classicalList.mapNotNull { getBesiegement(h, it, enclosers) }
+    }
 }
