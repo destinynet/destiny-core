@@ -34,7 +34,6 @@ interface IHoroscopeDto {
   val qualityPercentage: Map<Quality, Double>
   val tightestAspects: List<IPointAspectPattern>
   val astroPatterns: List<AstroPattern>
-  val classicalAstrologyPatterns: List<String>
   val graphPatterns: Graph<Planet>
   val midPoints: List<IMidPointWithFocal>
   val harmonics: Map<Int, Harmonic>
@@ -59,7 +58,6 @@ data class HoroscopeDto(
   override val qualityPercentage: Map<Quality, @Serializable(with = DoubleTwoDecimalSerializer::class) Double>,
   override val tightestAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern>,
   override val astroPatterns: List<AstroPattern> = emptyList(),
-  override val classicalAstrologyPatterns: List<String> = emptyList(),
   @Serializable(with = GraphPlanetSerializer::class)
   override val graphPatterns: Graph<Planet>,
   override val midPoints: List<@Serializable(with = IMidPointWithFocalSerializer::class) IMidPointWithFocal> = emptyList(),
@@ -94,7 +92,6 @@ data class Natal(
   override val qualityPercentage: Map<Quality, @Serializable(with = DoubleTwoDecimalSerializer::class) Double>,
   override val tightestAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern>,
   override val astroPatterns: List<AstroPattern>,
-  override val classicalAstrologyPatterns: List<String>,
   @Serializable(with = GraphPlanetSerializer::class)
   override val graphPatterns: Graph<Planet>,
   override val midPoints: List<@Serializable(with = IMidPointWithFocalSerializer::class) IMidPointWithFocal>,
@@ -106,7 +103,7 @@ data class Natal(
       dto.time, dto.utc, dto.location, dto.place, dto.signs, dto.houses,
       dto.stars, dto.axisStars,
       dto.houseStarDistribution, dto.elementPercentage, dto.qualityPercentage,
-      dto.tightestAspects, dto.astroPatterns, dto.classicalAstrologyPatterns, dto.graphPatterns, dto.midPoints,
+      dto.tightestAspects, dto.astroPatterns, dto.graphPatterns, dto.midPoints,
       dto.harmonics
     )
 

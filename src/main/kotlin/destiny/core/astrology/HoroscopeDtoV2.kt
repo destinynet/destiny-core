@@ -84,7 +84,7 @@ interface IPersonHoroscopeDtoV2 : IHoroscopeDtoV2, IPersonHoroscopeDto
 
 @Serializable
 data class HoroscopeDtoV2(
-  // ===== V1 既有 17 個 field（必須全部 override） =====
+  // ===== V1 既有 16 個 field（必須全部 override） =====
   @Serializable(with = LocalDateTimeSerializer::class)
   override val time: LocalDateTime,
   @Serializable(with = LocalDateTimeSerializer::class)
@@ -101,7 +101,6 @@ data class HoroscopeDtoV2(
   override val qualityPercentage: Map<Quality, @Serializable(with = DoubleTwoDecimalSerializer::class) Double>,
   override val tightestAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern>,
   override val astroPatterns: List<AstroPattern> = emptyList(),
-  override val classicalAstrologyPatterns: List<String> = emptyList(),
   @Serializable(with = GraphPlanetSerializer::class)
   override val graphPatterns: Graph<Planet>,
   override val midPoints: List<@Serializable(with = IMidPointWithFocalSerializer::class) IMidPointWithFocal> = emptyList(),
@@ -122,7 +121,7 @@ data class HoroscopeDtoV2(
     v1.time, v1.utc, v1.location, v1.place,
     v1.signs, v1.houses, v1.stars, v1.axisStars,
     v1.houseStarDistribution, v1.elementPercentage, v1.qualityPercentage,
-    v1.tightestAspects, v1.astroPatterns, v1.classicalAstrologyPatterns,
+    v1.tightestAspects, v1.astroPatterns,
     v1.graphPatterns, v1.midPoints, v1.harmonics,
     mundanePositions, arabicLots, antiscia,
   )
@@ -155,7 +154,6 @@ data class NatalV2(
   override val qualityPercentage: Map<Quality, @Serializable(with = DoubleTwoDecimalSerializer::class) Double>,
   override val tightestAspects: List<@Serializable(with = IPointAspectPatternSerializer::class) IPointAspectPattern>,
   override val astroPatterns: List<AstroPattern>,
-  override val classicalAstrologyPatterns: List<String>,
   @Serializable(with = GraphPlanetSerializer::class)
   override val graphPatterns: Graph<Planet>,
   override val midPoints: List<@Serializable(with = IMidPointWithFocalSerializer::class) IMidPointWithFocal>,
@@ -176,7 +174,7 @@ data class NatalV2(
     v1.time, v1.utc, v1.location, v1.place,
     v1.signs, v1.houses, v1.stars, v1.axisStars,
     v1.houseStarDistribution, v1.elementPercentage, v1.qualityPercentage,
-    v1.tightestAspects, v1.astroPatterns, v1.classicalAstrologyPatterns,
+    v1.tightestAspects, v1.astroPatterns,
     v1.graphPatterns, v1.midPoints, v1.harmonics,
     mundanePositions, arabicLots, antiscia,
   )

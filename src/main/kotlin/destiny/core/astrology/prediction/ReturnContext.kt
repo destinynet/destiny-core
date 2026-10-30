@@ -42,7 +42,6 @@ interface IReturnContext : Conversable, IDiscrete {
     config: IHoroscopeConfig,
     nowPlace: String?,
     threshold: Double?,
-    includeClassical: Boolean
   ): IReturnDto
 
   fun getRangedReturns(
@@ -52,10 +51,9 @@ interface IReturnContext : Conversable, IDiscrete {
     aspectCalculator: IAspectCalculator,
     config: IHoroscopeConfig,
     threshold: Double?,
-    returnChartIncludeClassical: Boolean
   ): List<IReturnDto> {
     return getReturns(
-      model , grain, listOf(Pair(fromTime, toTime)) , aspectEffective, aspectCalculator, config, threshold, returnChartIncludeClassical
+      model , grain, listOf(Pair(fromTime, toTime)) , aspectEffective, aspectCalculator, config, threshold
     )
   }
 
@@ -69,7 +67,6 @@ interface IReturnContext : Conversable, IDiscrete {
     aspectCalculator: IAspectCalculator,
     config: IHoroscopeConfig,
     threshold: Double?,
-    returnChartIncludeClassical: Boolean
   ): List<IReturnDto> {
     if (periods.isEmpty()) {
       return emptyList()
@@ -103,7 +100,7 @@ interface IReturnContext : Conversable, IDiscrete {
           grain, periodFrom,
           model.location,
           aspectEffective, aspectCalculator, config,
-          model.place, threshold, returnChartIncludeClassical
+          model.place, threshold
         )
       }
 
@@ -124,7 +121,7 @@ interface IReturnContext : Conversable, IDiscrete {
             grain, nextSrStartTime,
             model.location,
             aspectEffective, aspectCalculator, config,
-            model.place, threshold, returnChartIncludeClassical
+            model.place, threshold
           )
         }
       }.forEach { sr ->
@@ -242,13 +239,12 @@ class ReturnContext(
     config: IHoroscopeConfig,
     nowPlace: String?,
     threshold: Double?,
-    includeClassical: Boolean
   ): IReturnDto {
     logger.debug { "[$planet] getReturnDto , nowGmtJulDay = $nowGmtJulDay (${nowGmtJulDay.toLmt(this.location, JulDayResolver1582CutoverImpl()).fixError()})" }
     val returnModel: ReturnModel = getReturnHoroscope(this, nowGmtJulDay, nowLoc)
 
     val returnChart: IHoroscopeDto = with(dtoFactory) {
-      returnModel.horoscope.toHoroscopeDto(grain, rulerImpl, aspectEffective, aspectCalculator, config, includeClassical, nowPlace)
+      returnModel.horoscope.toHoroscopeDto(grain, rulerImpl, aspectEffective, aspectCalculator, config, nowPlace)
     }.let { it as HoroscopeDto }
 
       // 移除以下 fields，畢竟這在 return chart 參考度不高

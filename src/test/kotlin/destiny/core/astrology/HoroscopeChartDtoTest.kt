@@ -366,7 +366,6 @@ private class FakeNatal(
   override val houseStarDistribution: Map<HouseType, HouseStarDistribution> = emptyMap()
   override val elementPercentage: Map<Element, Double> = emptyMap()
   override val qualityPercentage: Map<Quality, Double> = emptyMap()
-  override val classicalAstrologyPatterns: List<String> = emptyList()
   override val harmonics: Map<Int, Harmonic> = emptyMap()
   override val mundanePositions: Map<AstroPoint, MundanePosition> = emptyMap()
   override val arabicLots: Map<Arabic, ArabicLotInfo> = emptyMap()

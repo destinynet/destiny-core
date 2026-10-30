@@ -20,7 +20,6 @@ import destiny.tools.Score.Companion.toScore
 import jakarta.inject.Named
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.*
 
 @Named
 class DtoFactory(
@@ -36,7 +35,6 @@ class DtoFactory(
     aspectAffective: IAspectEffective,
     aspectCalculator: IAspectCalculator,
     horoConfig: IHoroscopeConfig,
-    includeClassical: Boolean,
     place: String? = null
   ): IHoroscopeDto {
     val bySign: Map<ZodiacSign, List<AstroPoint>> =
@@ -114,26 +112,6 @@ class DtoFactory(
       }
     }
 
-    val classicalConfig: IClassicalConfig = ClassicalConfig(classicalFactories)
-    val cfg = classicalConfig to horoConfig
-
-    val classicalPatterns  = if (includeClassical) {
-      classicalFeature.getModel(gmtJulDay, location, cfg).flatMap { (_, list: List<IPlanetPattern>) ->
-        list
-          .filterNot { pattern ->
-            // 沒有精確出生時辰時，得時/不得時 (Hayz / Out of Sect) 依賴晝夜「與」星體在地平面上下 ——
-            // 後者需要精確時刻，故即使知晝夜 (DAY_NIGHT)，以正午 placeholder 推算仍不可採信，濾除。
-            !grain.includeAxis &&
-              (pattern is AccidentalDignity.Hayz || pattern is Debility.Out_of_Sect)
-          }
-          .map {
-            PatternTranslator.getDescriptor(it).getDescription(Locale.ENGLISH)
-          }
-      }
-    } else {
-      emptyList()
-    }
-
     val tightestAspects = getTightAspects(aspectCalculator, threshold, grain)
       .filterNot { pattern -> pattern.points.all { it is FixedStar } }
 
@@ -181,11 +159,28 @@ class DtoFactory(
       qualityDistribution(),
       tightestAspects,
       astroPatterns,
-      classicalPatterns,
       getGraph(rulerImpl),
       midPoints,
       harmonics
     )
+  }
+
+  /**
+   * 本命盤的古典格局（尊貴、偶然尊貴、debility…），不放進 DTO：格局是衍生資料，用的時候由 model 現算，
+   * 給 LLM 時再以 [PatternTranslator] 翻成文字。
+   *
+   * 沒有精確出生時刻時，濾掉得時／不得時（[AccidentalDignity.Hayz]／[Debility.Out_of_Sect]）。
+   */
+  fun IHoroscopeModel.getClassicalPatterns(grain: BirthDataGrain, horoConfig: IHoroscopeConfig): List<IPlanetPattern> {
+    val cfg = ClassicalConfig(classicalFactories) to horoConfig
+    return classicalFeature.getModel(gmtJulDay, location, cfg).flatMap { (_, list: List<IPlanetPattern>) ->
+      list.filterNot { pattern ->
+        // 得時／不得時依賴晝夜「與」星體在地平面上下 —— 後者需要精確時刻，
+        // 故即使知晝夜（DAY_NIGHT），以正午 placeholder 推算仍不可採信，濾除。
+        !grain.includeAxis &&
+          (pattern is AccidentalDignity.Hayz || pattern is Debility.Out_of_Sect)
+      }
+    }
   }
 
   private fun IPersonHoroscopeModel.getAge(viewGmt: GmtJulDay): Int {
@@ -200,7 +195,7 @@ class DtoFactory(
     aspectCalculator: IAspectCalculator,
     horoConfig: IHoroscopeConfig
   ): IPersonHoroscopeDto {
-    val horoscopeDto: IHoroscopeDto = this.toHoroscopeDto(grain, rulerImpl, aspectAffective, aspectCalculator, horoConfig, true, this.place)
+    val horoscopeDto: IHoroscopeDto = this.toHoroscopeDto(grain, rulerImpl, aspectAffective, aspectCalculator, horoConfig, this.place)
     val age = this.getAge(viewGmt)
 
     return Natal(gender, age, name, horoscopeDto)
