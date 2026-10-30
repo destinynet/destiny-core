@@ -61,6 +61,8 @@ data class HoroscopePointDto(
   val declination: Double? = null,
   /** 逆行階段（停滯前、逆行中、停滯後）；順行為 null。比 [retrograde] 細 */
   val retrogradePhase: RetrogradePhase? = null,
+  /** 黃經速度（度／日，逆行為負）；軸點與虛點為 null */
+  val speed: Double? = null,
 )
 
 @Serializable
@@ -184,6 +186,25 @@ data class HoroscopeMidpointDto(
   val orb: Double,
 )
 
+/**
+ * 光線傳遞（[destiny.core.astrology.classical.TranslationOfLight] 的呈現層投影）：
+ * [by] 剛離開 [from] 的 [fromAspect]（出相位 [fromOrb]），下一個成形的是與 [to] 的 [toAspect]（入相位 [toOrb]）。
+ * [between]：[from] 與 [to] 本身的相位，null ＝ 彼此不成相位
+ */
+@Serializable
+data class HoroscopeTranslationDto(
+  val by: String,
+  val from: String,
+  val fromAspect: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val fromOrb: Double,
+  val to: String,
+  val toAspect: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val toOrb: Double,
+  val between: String? = null,
+)
+
 @Serializable
 data class HoroscopeChartDto(
   val meta: HoroscopeMetaDto,
@@ -198,7 +219,24 @@ data class HoroscopeChartDto(
   val patterns: List<HoroscopePatternDto> = emptyList(),
   /** 有焦點星的中點；三顆都在 [points] 內 */
   val midpoints: List<HoroscopeMidpointDto> = emptyList(),
+  /** 光線傳遞；三顆都在 [points] 內。由呼叫端以 [withTranslations] 附上 */
+  val translations: List<HoroscopeTranslationDto> = emptyList(),
 )
+
+/** 附上光線傳遞（[destiny.core.astrology.classical.TranslationOfLightImpl] 的結果）；有星不在盤上的略過 */
+fun HoroscopeChartDto.withTranslations(list: List<destiny.core.astrology.classical.TranslationOfLight>): HoroscopeChartDto {
+  val keys = points.mapTo(HashSet()) { it.point }
+  return copy(translations = list
+    .filter { t -> listOf(t.translator, t.from, t.to).all { it.nameKey in keys } }
+    .map { t ->
+      HoroscopeTranslationDto(
+        by = t.translator.nameKey,
+        from = t.from.nameKey, fromAspect = t.fromAspect.name, fromOrb = t.fromOrb,
+        to = t.to.nameKey, toAspect = t.toAspect.name, toOrb = t.toOrb,
+        between = t.between?.first?.name,
+      )
+    })
+}
 
 /** 格局可能用到的相位；組合格局（雙 T、六芒星、回力鏢）另外併入組成部分的邊 */
 private val AstroPattern.legAspects: Set<Aspect>
@@ -381,6 +419,7 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
         abbrEn = point.getAbbreviation(Lang.EN),
         declination = info.declination,
         retrogradePhase = info.retrogradePhase,
+        speed = info.speed,
       )
     }
 
@@ -447,6 +486,7 @@ fun HoroscopeChartDto.keepingPoints(keep: (HoroscopePointDto) -> Boolean): Horos
     dispositors = dispositors?.takeIf { d -> (d.circles.flatten() + d.paths.flatten() + d.terminals + d.isolated).all { it in keys } },
     patterns = keptPatterns,
     midpoints = midpoints.filter { it.a in keys && it.b in keys && it.focal in keys },
+    translations = translations.filter { it.by in keys && it.from in keys && it.to in keys },
   )
 }
 

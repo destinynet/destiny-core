@@ -3,85 +3,34 @@
  */
 package destiny.core.astrology.classical
 
-import destiny.core.astrology.*
-import destiny.tools.KotlinLogging
-import destiny.tools.JSerializable
-import kotlin.math.abs
+import destiny.core.astrology.Aspect
+import destiny.core.astrology.IHoroscopeModel
+import destiny.core.astrology.IPointAspectPattern.AspectType
+import destiny.core.astrology.Planet
+
+/**
+ * 一次光線傳遞：[translator] 剛離開 [from] 的 [fromAspect]（出相位，差 [fromOrb] 度），
+ * 下一個要成形的是與 [to] 的 [toAspect]（入相位，差 [toOrb] 度），把 [from] 的光帶給 [to]。
+ *
+ * [between]：[from] 與 [to] 本身的交角（null ＝ 彼此不成相位，最典型的傳遞）
+ */
+data class TranslationOfLight(
+  val translator: Planet,
+  val from: Planet,
+  val fromAspect: Aspect,
+  val fromOrb: Double,
+  val to: Planet,
+  val toAspect: Aspect,
+  val toOrb: Double,
+  val between: Pair<Aspect, AspectType?>?,
+)
 
 interface ITranslationOfLight {
 
-  /**
-   * 此星盤中 , planet 是否有傳遞光線 , 若有的話 , 從哪顆星 (triple.first) 傳遞到 哪顆星 (triple.second) , 以及 , 這兩顆星是否有形成什麼交角 (可能為null)
-   */
-  fun getResult(planet: Planet, h: IHoroscopeModel): Triple<Planet, Planet, IPointAspectPattern.AspectType?>?
-}
+  /** 此星盤中，[planet] 是否在傳遞光線；沒有則為 null */
+  fun getResult(planet: Planet, h: IHoroscopeModel): TranslationOfLight?
 
-
-/**
- * Translation of Light 的定義以及演算法 :
- * 根據此文的定義
- * https://destiny.to/ubbthreads/ubbthreads.php/posts/6999
- * 「(1)某行星運行速度快於兩個徵象星,
- * 且(2)該行星與一個徵象星有出相位, 與另一個有入相位,
- *   (3)而這兩個徵象星彼此是出相位」
- *
- * 比對各家說法
- * https://www.astrologyweekly.com/special-horary/translation-of-light.php
- *
- *
- * 目前演算法，先求出「夾」此星體的其他兩顆星體
- * 再比較三顆星的速度 , 如果中間的 planet 比較快 (至此已經符合第一個條件)
- *
- * 再比較 planet 與 前後兩顆星是否分別形成入相位以及出相位
- *
- * 最後，包夾此行星的兩顆星，是否要形成「出相位」，我認為「不一定」，因為意義不同，應該可以設為選項
- */
-class TranslationOfLightImpl(private val aspectCalculator: IAspectCalculator,
-                             private val besiegedImpl: IBesieged) : ITranslationOfLight, JSerializable {
-
-  override fun getResult(planet: Planet, h: IHoroscopeModel): Triple<Planet, Planet, IPointAspectPattern.AspectType?>? {
-    // 不考慮合相的交角
-    val aspects = setOf(Aspect.SEXTILE, Aspect.SQUARE, Aspect.TRINE, Aspect.OPPOSITION)
-
-    val (p1, p2) = besiegedImpl.getBesiegingPlanets(planet, h.gmtJulDay, true, aspects).iterator().let {
-      it.next() to it.next()
-    }
-
-    return h.getStarPosition(planet)?.speedLng?.let { planetSpeed ->
-      h.getStarPosition(p1)?.speedLng?.let { p1Speed ->
-        h.getStarPosition(p2)?.speedLng?.takeIf { p2Speed ->
-          // 中間被夾的星，速度比較快
-          abs(planetSpeed) > abs(p1Speed) && abs(planetSpeed) > abs(p2Speed)
-        }?.let { _ ->
-          //2008-11-05 新增規則： 第三顆星需與這兩顆星分別形成出相位以及入相位 , 從 出相位 傳遞光線 到 入相位
-
-          with(aspectCalculator) {
-            mapOf(
-              p1 to h.getAspectType(planet, p1, Aspect.getAspects(Aspect.Importance.HIGH).toSet()),
-              p2 to h.getAspectType(planet, p2, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
-            ).takeIf { map -> map.values.all { it != null } }?.mapValues { (_, maybeAspectType) -> maybeAspectType!! }?.takeIf { map ->
-                // 分別形成 出相位 以及 入相位
-                map.values.toSet() == setOf(IPointAspectPattern.AspectType.APPLYING, IPointAspectPattern.AspectType.SEPARATING)
-              }?.let { map: Map<Planet, IPointAspectPattern.AspectType> ->
-
-                // p1 , p2 不一定有交角
-                val aspectTypeOptional: IPointAspectPattern.AspectType? = h.getAspectType(p1, p2, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
-
-                // 出相位
-                val separatingPoint = map.keys.first { p -> map.getValue(p) === IPointAspectPattern.AspectType.SEPARATING }
-                // 入相位
-                val applyingPoint = map.keys.minus(separatingPoint).first()
-
-                Triple(separatingPoint, applyingPoint, aspectTypeOptional)
-              }
-          }
-
-        }
-      }
-    }
-  }
-
-  companion object {
-    val logger = KotlinLogging.logger { }
-  }
+  /** 全盤的光線傳遞（傳遞者只看七顆古典行星） */
+  fun getResults(h: IHoroscopeModel): List<TranslationOfLight> =
+    Planet.classicalList.mapNotNull { getResult(it, h) }
 }

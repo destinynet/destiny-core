@@ -256,6 +256,7 @@ fun IHoroscopeModel.getByStarMap(
       dispositors,
       astroPoint.getAspects(this, threshold, aspectCalculator, grain),
       declination = declinationMap[astroPoint],
+      speed = (astroPoint as? Star)?.let { getStarPosition(it)?.speedLng },
     )
   }
 }

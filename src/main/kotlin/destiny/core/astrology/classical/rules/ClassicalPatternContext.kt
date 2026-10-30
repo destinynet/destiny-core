@@ -583,11 +583,11 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   val translationOfLight = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return translationOfLightImpl.getResult(planet, h)
-        ?.let { (from, to, aspectType) ->
-          val deg = h.getAngle(from, to)
+        ?.let { t ->
+          val deg = h.getAngle(t.from, t.to)
           // {0} 從 {1} 傳遞光線到 {2} ，{1} 與 {2} 交角 {3} 度，相位為 {4} 。 (入相位 or 出相位)
           // {0} 從 {1} 傳遞光線到 {2} ，{1} 與 {2} 交角 {3} 度，未形成相位
-          AccidentalDignity.Translation_of_Light(planet, from, to, deg, aspectType)
+          AccidentalDignity.Translation_of_Light(planet, t.from, t.to, deg, t.between?.second)
         }
         ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }

@@ -127,6 +127,8 @@ data class Natal(
     /** 赤緯 (degrees)，由赤道座標系計算 */
     @Serializable(with = DoubleTwoDecimalSerializer::class)
     override val declination: Double? = null,
+    /** 黃經速度（度／日，逆行為負）；非星體（軸點、虛點）為 null */
+    val speed: Double? = null,
   ) : IStarSummary {
     override val sign: ZodiacSign get() = signDegree.sign
     override val degree: Double get() = signDegree.signDegree.second
