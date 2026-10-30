@@ -205,6 +205,25 @@ data class HoroscopeTranslationDto(
   val between: String? = null,
 )
 
+/**
+ * 光線收集（[destiny.core.astrology.classical.CollectionOfLight] 的呈現層投影）：[a]、[b] 彼此不相見，都入相位到比較慢的 [by]。
+ * [between]：[a] 與 [b] 本身的相位，null ＝ 不成相位；[type]：DIGNITIES／DEBILITIES／ALL（兩者如何接納 [by]）
+ */
+@Serializable
+data class HoroscopeCollectionDto(
+  val by: String,
+  val a: String,
+  val aAspect: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val aOrb: Double,
+  val b: String,
+  val bAspect: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val bOrb: Double,
+  val between: String? = null,
+  val type: String,
+)
+
 @Serializable
 data class HoroscopeChartDto(
   val meta: HoroscopeMetaDto,
@@ -221,7 +240,26 @@ data class HoroscopeChartDto(
   val midpoints: List<HoroscopeMidpointDto> = emptyList(),
   /** 光線傳遞；三顆都在 [points] 內。由呼叫端以 [withTranslations] 附上 */
   val translations: List<HoroscopeTranslationDto> = emptyList(),
+  /** 光線收集；三顆都在 [points] 內。由呼叫端以 [withCollections] 附上 */
+  val collections: List<HoroscopeCollectionDto> = emptyList(),
 )
+
+/** 附上光線收集（[destiny.core.astrology.classical.CollectionOfLightImpl] 的結果）；有星不在盤上的略過 */
+fun HoroscopeChartDto.withCollections(list: List<destiny.core.astrology.classical.CollectionOfLight>): HoroscopeChartDto {
+  val keys = points.mapTo(HashSet()) { it.point }
+  return copy(collections = list
+    .filter { c -> (c.planets + c.collector).all { it.nameKey in keys } }
+    .map { c ->
+      val (pa, pb) = c.planets
+      HoroscopeCollectionDto(
+        by = c.collector.nameKey,
+        a = pa.nameKey, aAspect = c.first.aspect.name, aOrb = c.first.orb,
+        b = pb.nameKey, bAspect = c.second.aspect.name, bOrb = c.second.orb,
+        between = c.between?.aspect?.name,
+        type = c.type.name,
+      )
+    })
+}
 
 /** 附上光線傳遞（[destiny.core.astrology.classical.TranslationOfLightImpl] 的結果）；有星不在盤上的略過 */
 fun HoroscopeChartDto.withTranslations(list: List<destiny.core.astrology.classical.TranslationOfLight>): HoroscopeChartDto {
@@ -487,6 +525,7 @@ fun HoroscopeChartDto.keepingPoints(keep: (HoroscopePointDto) -> Boolean): Horos
     patterns = keptPatterns,
     midpoints = midpoints.filter { it.a in keys && it.b in keys && it.focal in keys },
     translations = translations.filter { it.by in keys && it.from in keys && it.to in keys },
+    collections = collections.filter { it.by in keys && it.a in keys && it.b in keys },
   )
 }
 
