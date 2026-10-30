@@ -14,6 +14,10 @@ import destiny.tools.JSerializable
  * 互容的變形，兩星都處與落陷，又互容→互相扯後腿<br></br>
  * 例如： 水星到雙魚 , 木星到處女<br></br>
  * 水星在雙魚為 Detriment/Fall , 雙魚的 Ruler 為木星 , 木星到處女為 Detriment
+ *
+ * 2026-10-31 評估：目前沒有呼叫端。與 [ClassicalPatternContext.mutualDeception]（以 debility 互相「接納」，傳統上沒有依據）不同，
+ * 這個版本的前提是**真正的互容**（廟或旺），有學理依據 —— 傳統討論裡把它看成「兩個落魄的人互相扶持」，
+ * 爭議只在互容能抵銷多少落陷。它比較適合當成互容本身的屬性（雙方皆落陷／入弱），而不是獨立的 debility。
  */
 @Deprecated("似乎不實用")
 class MutualDeception(private val essentialImpl: IEssential) {

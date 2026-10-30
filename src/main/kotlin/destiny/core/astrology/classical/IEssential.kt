@@ -230,14 +230,17 @@ interface IEssential {
   fun getTriplicityPoint(sign: ZodiacSign, dayNight: DayNight): AstroPoint
 
 
-  /** [this] 是否 接納 receivee by Essential Debilities (Detriment/Fall)  */
-  fun AstroPoint.isReceivingFromDebilities(receivee: AstroPoint, h: IHoroscopeModel): Boolean
-
   /**
-   * [this] 是否 接納 [receivee] by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br></br>
-   * 主人是 [this] , 客人是 [receivee] , 如果客人進入了主人的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「主人接納客人」、「客人接收到主人的 Dignity」
+   * [this] 以哪一種 Essential Dignity 接納 [receivee]（取最強的：廟 > 旺 > 三分性 > 界 > 面）；沒有接納為 null <br></br>
+   * 主人是 [this] , 客人是 [receivee] , 如果客人進入了主人的地盤 ( 廟 / 旺 / 三分 / Terms / Faces ) , 則「主人接納客人」、「客人接收到主人的 Dignity」
+   *
+   * 傳統的接納只走 dignities；落陷、入弱不算接納
    */
-  fun AstroPoint.isReceivingFromDignities(receivee: AstroPoint, h: IHoroscopeModel): Boolean
+  fun AstroPoint.receivingDignityOf(receivee: AstroPoint, h: IHoroscopeModel): Dignity?
+
+  /** [this] 是否以任一種 Essential Dignity 接納 [receivee]（見 [receivingDignityOf]） */
+  fun AstroPoint.isReceivingFromDignities(receivee: AstroPoint, h: IHoroscopeModel): Boolean =
+    receivingDignityOf(receivee, h) != null
 
   /** 如果 兩顆星都處於 [Dignity.RULER] 或是  [Dignity.EXALTATION] , 則為 true  */
   fun isBothInGoodSituation(p1: AstroPoint, sign1: ZodiacSign, p2: AstroPoint, sign2: ZodiacSign): Boolean

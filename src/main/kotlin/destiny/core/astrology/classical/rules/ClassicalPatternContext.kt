@@ -598,7 +598,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    */
   val collectionOfLight = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
-      return collectionOfLightImpl.getResult(planet, h, ICollectionOfLight.CollectType.DIGNITIES)?.let { c ->
+      return collectionOfLightImpl.getResult(planet, h, receivedOnly = true)?.let { c ->
         // {0} 從 {1} 與 {2} 收集光線。 {1} 與 {2} 交角 {3} 度。
         AccidentalDignity.Collection_of_Light(planet, c.planets, h.getAngle(c.planets[0], c.planets[1]))
       }
@@ -1001,6 +1001,17 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * Reception by Debility
    * DD / FF / DF 互陷
    * 兩顆行星互相進入對方的失勢之地（Detriment/Fall）
+   *
+   * ⚠️ 2026-10-31 評估：傳統占星找不到依據，**不列入 [debilities]**，程式保留供參考。
+   * - 接納（reception）的前提是「主人」：客人落在主人有 dignity（廟、旺、三分性、界、面）的地方，主人才對客人負責。
+   *   A 落在 B 落陷／入弱的星座，只代表 B 在那裡很弱 —— 那裡不是 B 的地盤，B 根本不是 A 的主人。
+   *   例：月亮在牡羊，主人是火星（廟）與太陽（旺）；土星在牡羊入弱，與月亮無關。兩邊都不接納，也就談不上「互」。
+   * - Lilly 的 dignity／debility 計分表裡沒有這一項；所知的傳統文獻也沒有「以 debility 互相接納」的技法。
+   *   與已拿掉的「以落陷入弱接納」（光線收集的 DEBILITIES）是同一個問題。
+   * - 象徵上可以聯想成「各自待在對方最不舒服的地方、本質互斥」，但那只是聯想，不是技法，不宜計入 debility 分數。
+   *
+   * 有依據的是另一種情形：兩星**真正互容**（廟或旺），同時兩者都落陷／入弱（例：水星在雙魚、木星在處女）——
+   * 那是互容的一種，該當成互容的屬性（雙方皆弱）來描述，見 [MutualDeception]（2008 年的版本）。
    *  */
   val mutualDeception = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
@@ -1057,7 +1068,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
   val debilities: List<IPlanetPatternFactory> = listOf(detriment, fall, peregrine, house_12, house_6_8, retrograde, slower
     , occidentalBad, orientalBad, moonDecreaseLight, combustion, sunbeam, partileConjMarsSaturn, partileConjSouthNode
-    , besiegedMarsSaturn, partileOppoMarsSaturn, partileSquareMarsSaturn, conjAlgol, outOfSect, refrainFromVenusJupiter , mutualDeception)
+    , besiegedMarsSaturn, partileOppoMarsSaturn, partileSquareMarsSaturn, conjAlgol, outOfSect, refrainFromVenusJupiter)
+  // mutualDeception 刻意不列入：傳統上沒有「以 debility 互相接納」，理由見 [mutualDeception]
 
 
   companion object {

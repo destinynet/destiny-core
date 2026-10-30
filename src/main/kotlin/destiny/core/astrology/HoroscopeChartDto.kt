@@ -207,7 +207,7 @@ data class HoroscopeTranslationDto(
 
 /**
  * 光線收集（[destiny.core.astrology.classical.CollectionOfLight] 的呈現層投影）：[a]、[b] 彼此不相見，都入相位到比較慢的 [by]。
- * [between]：[a] 與 [b] 本身的相位，null ＝ 不成相位；[type]：DIGNITIES／DEBILITIES／ALL（兩者如何接納 [by]）
+ * [between]：[a] 與 [b] 本身的相位，null ＝ 不成相位；[aReception]／[bReception]：以哪一種 [destiny.core.astrology.classical.Dignity] 接納 [by]，null ＝ 不接納
  */
 @Serializable
 data class HoroscopeCollectionDto(
@@ -221,7 +221,8 @@ data class HoroscopeCollectionDto(
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val bOrb: Double,
   val between: String? = null,
-  val type: String,
+  val aReception: String? = null,
+  val bReception: String? = null,
 )
 
 @Serializable
@@ -256,7 +257,8 @@ fun HoroscopeChartDto.withCollections(list: List<destiny.core.astrology.classica
         a = pa.nameKey, aAspect = c.first.aspect.name, aOrb = c.first.orb,
         b = pb.nameKey, bAspect = c.second.aspect.name, bOrb = c.second.orb,
         between = c.between?.aspect?.name,
-        type = c.type.name,
+        aReception = c.firstReception?.name,
+        bReception = c.secondReception?.name,
       )
     })
 }

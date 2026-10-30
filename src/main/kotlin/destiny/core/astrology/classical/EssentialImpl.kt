@@ -151,51 +151,20 @@ class EssentialImpl(private val rulerImpl: IRuler,
     return with(triplicityImpl) { sign.getTriplicityPoint(dayNight) }
   }
 
-  /**
-   * [this] 是否 接納 [receivee] by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br></br>
-   * 主人是 [this] , 客人是 [receivee] , 如果客人進入了主人的地盤 ( 廟 / 旺 / 三分 / Terms / Faces ) , 則「主人接納客人」、「客人接收到主人的 Dignity」
-   */
-  override fun AstroPoint.isReceivingFromDignities(receivee: AstroPoint, h: IHoroscopeModel): Boolean {
-    return h.getZodiacSign(receivee)?.let { receiveeSign ->
-      return when (this) {
-        getPoint(receiveeSign, Dignity.RULER) -> {
-          logger.debug("{} 透過 {} 接納 {}", this, Dignity.RULER, receivee)
-          true
+  override fun AstroPoint.receivingDignityOf(receivee: AstroPoint, h: IHoroscopeModel): Dignity? {
+    val sign = h.getZodiacSign(receivee) ?: return null
+    return when (this) {
+      getPoint(sign, Dignity.RULER)                                                                  -> Dignity.RULER
+      getPoint(sign, Dignity.EXALTATION)                                                             -> Dignity.EXALTATION
+      with(triplicityImpl) { sign.getTriplicityPoint(dayNightDifferentiator.getDayNight(h.lmt, h.location)) } -> Dignity.TRIPLICITY
+      else -> h.getPosition(receivee)?.lngDeg?.let { lngDegree ->
+        when (this) {
+          termImpl.getPoint(lngDegree) -> Dignity.TERM
+          faceImpl.getPoint(lngDegree) -> Dignity.FACE
+          else                         -> null
         }
-        getPoint(receiveeSign, Dignity.EXALTATION) -> {
-          logger.debug("{} 透過 {} 接納 {}", this, Dignity.EXALTATION, receivee)
-          true
-        }
-        with(triplicityImpl) { receiveeSign.getTriplicityPoint(dayNightDifferentiator.getDayNight(h.lmt, h.location)) } -> {
-          logger.debug("{} 透過 Triplicity 接納 {}", this, receivee)
-          true
-        }
-        else -> {
-          return h.getPosition(receivee)?.lngDeg?.let { lngDegree ->
-            return when (this) {
-              termImpl.getPoint(lngDegree) -> {
-                logger.debug("{} 透過 TERMS 接納 {}", this, receivee)
-                true
-              }
-              faceImpl.getPoint(lngDegree) -> {
-                logger.debug("{} 透過 FACE 接納 {}", this, receivee)
-                true
-              }
-              else -> false
-            }
-          } ?: false
-        } // else
       }
-    } ?: false
-  }
-
-  /** [this] 是否 接納 receivee by Essential Debilities (Detriment/Fall)  */
-  override fun AstroPoint.isReceivingFromDebilities(receivee: AstroPoint, h: IHoroscopeModel): Boolean {
-    // 看的是客人（receivee）落在哪個星座：主人在那裡落陷或入弱，就是以 debility 接納
-    return h.getZodiacSign(receivee)?.let { receiveeSign ->
-      this === getPoint(receiveeSign, Dignity.DETRIMENT) ||
-        this === getPoint(receiveeSign, Dignity.FALL)
-    } ?: false
+    }?.also { logger.debug("{} 透過 {} 接納 {}", this, it, receivee) }
   }
 
   /** 如果 兩顆星都處於 [Dignity.RULER] 或是  [Dignity.EXALTATION] , 則為 true  */
