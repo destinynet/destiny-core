@@ -142,6 +142,26 @@ sealed class Misc : IPlanetPattern {
   override val ruleType: RuleType = RuleType.MISC
 
   /**
+   * [planet] 正以 [aspect] 入相位 [applied]，成形之前 [prohibitor] 先以 [interruption] 與 [with] 成形（插隊，
+   * [destiny.core.astrology.classical.ApplicationOutcome.Prohibition]）。[byBody]：以合相插隊（實體攔截），否則是透過光線
+   */
+  data class Prohibited(
+    override val planet: Planet, val applied: Planet, val aspect: Aspect,
+    val prohibitor: Planet, val with: Planet, val interruption: Aspect,
+  ) : Misc() {
+    val byBody: Boolean get() = interruption == Aspect.CONJUNCTION
+  }
+
+  /**
+   * [planet] 正以 [aspect] 入相位 [applied]，成形之前 [applied] 先以 [interruption] 與更慢的 [frustrator] 成形然後離開（撲空，
+   * [destiny.core.astrology.classical.ApplicationOutcome.Frustration]）
+   */
+  data class Frustrated(
+    override val planet: Planet, val applied: Planet, val aspect: Aspect,
+    val frustrator: Planet, val interruption: Aspect,
+  ) : Misc()
+
+  /**
    * [planet] 參與的居上關係 (可能是居上者，也可能是被壓者)。
    * 屬 [RuleType.MISC] , 不列入尊貴 / 無力的計分
    */

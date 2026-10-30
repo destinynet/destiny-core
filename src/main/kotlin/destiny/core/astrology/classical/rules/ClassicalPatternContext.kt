@@ -42,6 +42,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       conjAlgol,
       outOfSect,
       refrainFromVenusJupiter,
+      prohibited,
+      frustrated,
     )
   }
 
@@ -1089,6 +1091,32 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     , besiegedMarsSaturn, partileOppoMarsSaturn, partileSquareMarsSaturn, conjAlgol, outOfSect, refrainFromVenusJupiter)
   // mutualDeception 刻意不列入：傳統上沒有「以 debility 互相接納」，理由見 [mutualDeception]
 
+
+  /**
+   * ====================================== for [Misc]：入相位的結局 ======================================
+   * 只從追的那顆（[ApplicationOutcome.applying]）的角度記，同一筆不會出現兩次。
+   * 月亮算不算插隊者由 [applicationOutcomeImpl] 的 [OutcomeOptions] 決定（本命 [OutcomeOptions.NATAL_DB] 不算、卜卦算）
+   */
+
+  /** [planet] 的入相位被第三顆星插隊 */
+  val prohibited = object : IPlanetPatternFactory {
+    override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> =
+      Planet.classicalList.filter { it !== planet }.mapNotNull { other ->
+        (applicationOutcomeImpl.getOutcome(h, planet, other) as? ApplicationOutcome.Prohibition)
+          ?.takeIf { it.applying === planet }
+          ?.let { o -> Misc.Prohibited(planet, o.applied, o.pattern.aspect, o.prohibitor, o.with, o.interruption.aspect) }
+      }
+  }
+
+  /** [planet] 的入相位撲空：被追的那顆先與更慢的星成形 */
+  val frustrated = object : IPlanetPatternFactory {
+    override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> =
+      Planet.classicalList.filter { it !== planet }.mapNotNull { other ->
+        (applicationOutcomeImpl.getOutcome(h, planet, other) as? ApplicationOutcome.Frustration)
+          ?.takeIf { it.applying === planet }
+          ?.let { o -> Misc.Frustrated(planet, o.applied, o.pattern.aspect, o.frustrator, o.interruption.aspect) }
+      }
+  }
 
   companion object {
     private val logger = KotlinLogging.logger { }

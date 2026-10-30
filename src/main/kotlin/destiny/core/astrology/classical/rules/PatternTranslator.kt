@@ -37,6 +37,11 @@ class DebilityDescriptor(rule: Debility, key: String, parameters: List<Any>) : A
   override val resource: String = "destiny.core.astrology.classical.rules.Debilities"
 }
 
+class MiscDescriptor(rule: Misc, key: String, parameters: List<Any>) : AbstractPlanetPatternDescriptor<Misc>(
+  rule, key, parameters) , JSerializable {
+  override val resource: String = "destiny.core.astrology.classical.rules.Misc"
+}
+
 object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
 
   override fun getDescriptor(pattern: IPlanetPattern): Descriptive {
@@ -122,6 +127,11 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
         is Debility.Refrain_from_Venus_Jupiter -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.venusOrJupiter, pattern.aspect))
         is Debility.MutualDeception -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign1, pattern.dig2, pattern.p2, pattern.sign2, pattern.dig1, pattern.dig2))
       }
+      is Misc.Prohibited ->
+        MiscDescriptor(pattern, if (pattern.byBody) "commentBody" else "commentRays",
+          listOf(pattern.planet, pattern.applied, pattern.aspect, pattern.prohibitor, pattern.with, pattern.interruption))
+      is Misc.Frustrated ->
+        MiscDescriptor(pattern, "comment", listOf(pattern.planet, pattern.applied, pattern.aspect, pattern.frustrator, pattern.interruption))
       else -> {
         throw IllegalArgumentException("Not Supported : $pattern")
       }
