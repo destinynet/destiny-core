@@ -883,8 +883,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
       return planet.takeIf { arrayOf(SUN, MOON, MERCURY, VENUS).contains(it) }
         ?.takeIf {
-          //火土夾制，只考量「硬」角度
-          besiegementImpl.getBesiegement(h, it, setOf(MARS, SATURN), setOf(Aspect.SQUARE, Aspect.OPPOSITION)) != null
+          //火土夾制，光線只考量「硬」角度（BesiegementOptions.maleficRays）
+          besiegementImpl.getBesiegement(h, it, setOf(MARS, SATURN)) != null
         }?.let {
           Debility.Besieged_Mars_Saturn(planet)
         }

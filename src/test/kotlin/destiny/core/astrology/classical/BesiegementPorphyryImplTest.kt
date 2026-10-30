@@ -72,8 +72,9 @@ class BesiegementPorphyryImplTest {
       assertSame(Aspect.SQUARE, b.after.aspect)
       assertEquals(3.0, b.after.distance, 1e-9)
     }
-    // 只算對分時，火星的四分光線不算
-    assertNull(impl.getBesiegement(h, VENUS, maleficEnclosers, setOf(Aspect.OPPOSITION)))
+    // 凶星光線只算對分時，火星的四分光線不算；只算星體時也不算
+    assertNull(BesiegementPorphyryImpl(BesiegementOptions(maleficRays = setOf(Aspect.OPPOSITION))).getBesiegement(h, VENUS, maleficEnclosers))
+    assertNull(BesiegementPorphyryImpl(BesiegementOptions(byRays = false)).getBesiegement(h, VENUS, maleficEnclosers))
   }
 
   /** 中間有第三顆星就破了：土 1°、金 3°、月 5°、火 7°，金與月都不算被夾 */
@@ -98,6 +99,14 @@ class BesiegementPorphyryImplTest {
     assertNotNull(b)
     assertSame(SATURN, b.before.by)
     assertEquals(4.0, b.before.distance, 1e-9)
+  }
+
+  /** 要求同星座時，跨星座的那一側不算：土星在雙魚 28°、金星在牡羊 1°、火星在牡羊 4° */
+  @Test
+  fun sameSign() {
+    val h = chart(SATURN to 358.0, VENUS to 1.0, MARS to 4.0)
+    assertNotNull(impl.getBesiegement(h, VENUS, maleficEnclosers))
+    assertNull(BesiegementPorphyryImpl(BesiegementOptions(sameSign = true)).getBesiegement(h, VENUS, maleficEnclosers))
   }
 
   /** 兩側必須是不同的包夾星 */
