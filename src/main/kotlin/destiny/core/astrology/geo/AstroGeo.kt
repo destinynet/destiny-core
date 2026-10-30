@@ -21,6 +21,7 @@ import destiny.core.calendar.LatLng
 import destiny.core.calendar.Lng.Companion.toLng
 import destiny.tools.CircleTools.normalize
 import destiny.tools.CircleTools.normalizeSigned
+import destiny.tools.ExtremumTools
 import kotlin.math.absoluteValue
 import kotlin.math.acos
 import kotlin.math.asin
@@ -173,14 +174,8 @@ private fun AstroGeoContext.ascDescDistanceDeg(loc: ILatLng, pos: EquatorialPos,
   if (bestLat.isNaN())
     return null
 
-  var lo = maxOf(bestLat - step, -maxLat)
-  var hi = minOf(bestLat + step, maxLat)
-  repeat(80) {
-    val m1 = lo + (hi - lo) / 3
-    val m2 = hi - (hi - lo) / 3
-    if (distAt(m1) <= distAt(m2)) hi = m2 else lo = m1
-  }
-  return distAt((lo + hi) / 2).coerceAtMost(bestDist)
+  val (_, refined) = ExtremumTools.minimize(maxOf(bestLat - step, -maxLat), minOf(bestLat + step, maxLat), 1e-9, ::distAt)
+  return refined.coerceAtMost(bestDist)
 }
 
 /** 兩點間大圓角距（度），haversine */

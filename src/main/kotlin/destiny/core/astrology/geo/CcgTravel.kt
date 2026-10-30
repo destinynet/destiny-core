@@ -6,6 +6,7 @@ package destiny.core.astrology.geo
 
 import destiny.core.astrology.Planet
 import destiny.core.calendar.GmtJulDay
+import destiny.tools.ExtremumTools
 
 /**
  * 行運線壓過某城市的一段時間窗口（設計 doc 5.4）。
@@ -57,15 +58,10 @@ fun segmentHits(
 
     // 峰值：run 內最低樣本的鄰域做三分法
     val k = (i..j).minBy { ds[it] }
-    var lo = grid[(k - 1).coerceAtLeast(0)].value
-    var hi = grid[(k + 1).coerceAtMost(grid.size - 1)].value
-    repeat(80) {
-      val m1 = lo + (hi - lo) / 3
-      val m2 = hi - (hi - lo) / 3
-      if (d(GmtJulDay(m1)) <= d(GmtJulDay(m2))) hi = m2 else lo = m1
-    }
-    val refined = GmtJulDay((lo + hi) / 2)
-    val (peak, peakOrb) = if (d(refined) <= ds[k]) refined to d(refined) else grid[k] to ds[k]
+    val (refined, refinedOrb) = ExtremumTools.minimize(
+      grid[(k - 1).coerceAtLeast(0)].value, grid[(k + 1).coerceAtMost(grid.size - 1)].value, 1e-7
+    ) { d(GmtJulDay(it)) }
+    val (peak, peakOrb) = if (refinedOrb <= ds[k]) GmtJulDay(refined) to refinedOrb else grid[k] to ds[k]
 
     hits.add(TransitLineHit(planet, angle, enter, exit, peak, peakOrb))
     i = j + 1
