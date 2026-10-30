@@ -13,7 +13,6 @@ import destiny.core.astrology.classical.*
 import destiny.core.chinese.YinYang
 import destiny.tools.KotlinLogging
 import destiny.tools.getTitle
-import destiny.tools.JSerializable
 import java.util.*
 
 
@@ -29,7 +28,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val translationOfLightImpl: ITranslationOfLight,
                               private val collectionOfLightImpl: ICollectionOfLight,
                               private val refranationImpl: IRefranation
-) : JSerializable {
+) {
 
   private val essentialImpl: IEssential =
     EssentialImpl(rulerImpl, exaltImpl, fallImpl, detrimentImpl, triplicityImpl, termImpl, faceImpl,
@@ -615,14 +614,14 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
         ?.let {
 
           planet.takeIf { it !== MARS }?.let {
-            refranationImpl.getImportantResult(h, planet, MARS)?.let { pair ->
-              val aspect = pair.second
+            refranationImpl.getResult(h, planet, MARS)?.let { r ->
+              val aspect = r.applying.aspect
               logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, MARS, aspect)
               AccidentalDignity.Refrain_from_Mars_Saturn(planet, MARS, aspect)
             }
           } ?: planet.takeIf { it !== SATURN }?.let {
-            refranationImpl.getImportantResult(h, planet, SATURN)?.let { pair ->
-              val aspect = pair.second
+            refranationImpl.getResult(h, planet, SATURN)?.let { r ->
+              val aspect = r.applying.aspect
               logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, SATURN, aspect)
               AccidentalDignity.Refrain_from_Mars_Saturn(planet, SATURN, aspect)
             }
@@ -979,15 +978,17 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       return planet.takeIf { it !== SUN && it !== MOON }?.let {
 
         val refrainFromVenus = planet.takeIf { it !== VENUS }?.let {
-          refranationImpl.getImportantResult(h, planet, VENUS)
-        }?.let { (_, aspect) ->
+          refranationImpl.getResult(h, planet, VENUS)
+        }?.let { r ->
+          val aspect = r.applying.aspect
           logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, VENUS, aspect)
           Debility.Refrain_from_Venus_Jupiter(planet, VENUS, aspect)
         }
 
         val refrainFromJupiter = planet.takeIf { it !== JUPITER }?.let {
-          refranationImpl.getImportantResult(h, planet, JUPITER)
-        }?.let { (_, aspect) ->
+          refranationImpl.getResult(h, planet, JUPITER)
+        }?.let { r ->
+          val aspect = r.applying.aspect
           logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, JUPITER, aspect)
           Debility.Refrain_from_Venus_Jupiter(planet, JUPITER, aspect)
         }

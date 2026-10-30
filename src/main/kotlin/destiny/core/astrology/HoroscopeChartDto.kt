@@ -225,6 +225,39 @@ data class HoroscopeCollectionDto(
   val bReception: String? = null,
 )
 
+/** 臨陣退縮軌跡的一個取樣點：盤面時刻後 [days] 日，退縮者 [byLng] 與對方 [otherLng] 的黃經 */
+@Serializable
+data class HoroscopeRefranationSampleDto(
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val days: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val byLng: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val otherLng: Double,
+)
+
+/**
+ * 臨陣退縮（[destiny.core.astrology.classical.Refranation] 的呈現層投影）：[by] 與 [other] 正以 [aspect] 入相位（盤面容許度 [orb]），
+ * 成形前 [by] 在 [stationDays] 日後停滯（[station]：[StationaryType]），[closestDays] 日後最接近、仍差 [closestOrb] 度。
+ * [track]：到兩星再度拉開為止的黃經等距取樣
+ */
+@Serializable
+data class HoroscopeRefranationDto(
+  val by: String,
+  val other: String,
+  val aspect: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val orb: Double,
+  val station: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val stationDays: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val closestDays: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val closestOrb: Double,
+  val track: List<HoroscopeRefranationSampleDto>,
+)
+
 @Serializable
 data class HoroscopeChartDto(
   val meta: HoroscopeMetaDto,
@@ -243,7 +276,25 @@ data class HoroscopeChartDto(
   val translations: List<HoroscopeTranslationDto> = emptyList(),
   /** 光線收集；三顆都在 [points] 內。由呼叫端以 [withCollections] 附上 */
   val collections: List<HoroscopeCollectionDto> = emptyList(),
+  /** 臨陣退縮；兩顆都在 [points] 內。由呼叫端以 [withRefranations] 附上 */
+  val refranations: List<HoroscopeRefranationDto> = emptyList(),
 )
+
+/** 附上臨陣退縮（[destiny.core.astrology.classical.RefranationImpl] 的結果）；有星不在盤上的略過 */
+fun HoroscopeChartDto.withRefranations(list: List<destiny.core.astrology.classical.Refranation>): HoroscopeChartDto {
+  val keys = points.mapTo(HashSet()) { it.point }
+  return copy(refranations = list
+    .filter { r -> r.refranator.nameKey in keys && r.other.nameKey in keys }
+    .map { r ->
+      HoroscopeRefranationDto(
+        by = r.refranator.nameKey, other = r.other.nameKey,
+        aspect = r.applying.aspect.name, orb = r.applying.orb,
+        station = r.stationary.type.name, stationDays = r.stationDays,
+        closestDays = r.closestDays, closestOrb = r.closestOrb,
+        track = r.track.map { HoroscopeRefranationSampleDto(it.days, it.refranatorLng, it.otherLng) },
+      )
+    })
+}
 
 /** 附上光線收集（[destiny.core.astrology.classical.CollectionOfLightImpl] 的結果）；有星不在盤上的略過 */
 fun HoroscopeChartDto.withCollections(list: List<destiny.core.astrology.classical.CollectionOfLight>): HoroscopeChartDto {
@@ -528,6 +579,7 @@ fun HoroscopeChartDto.keepingPoints(keep: (HoroscopePointDto) -> Boolean): Horos
     midpoints = midpoints.filter { it.a in keys && it.b in keys && it.focal in keys },
     translations = translations.filter { it.by in keys && it.from in keys && it.to in keys },
     collections = collections.filter { it.by in keys && it.a in keys && it.b in keys },
+    refranations = refranations.filter { it.by in keys && it.other in keys },
   )
 }
 

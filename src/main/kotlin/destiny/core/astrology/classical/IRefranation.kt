@@ -3,109 +3,57 @@
  */
 package destiny.core.astrology.classical
 
-import destiny.core.astrology.*
-import destiny.tools.KotlinLogging
-import destiny.tools.JSerializable
+import destiny.core.astrology.IHoroscopeModel
+import destiny.core.astrology.IPointAspectPattern
+import destiny.core.astrology.Planet
+import destiny.core.astrology.Stationary
+
+/** 臨陣退縮軌跡的一個取樣點：盤面時刻後 [days] 日，退縮者與對方的黃經 */
+data class RefranationSample(
+  val days: Double,
+  val refranatorLng: Double,
+  val otherLng: Double,
+)
+
+/**
+ * 一次臨陣退縮（Refranation）：盤面時刻 [refranator] 與 [other] 正以 [applying] 入相位，
+ * 成形之前 [refranator] 停滯轉向（[stationary]），兩星在 [closestDays] 日後最接近、仍差 [closestOrb] 度，之後漸行漸遠。
+ *
+ * [track]：自盤面時刻起到兩星再度拉開為止的黃經取樣（等距），給動畫重演用
+ */
+data class Refranation(
+  val refranator: Planet,
+  val other: Planet,
+  val applying: IPointAspectPattern,
+  val stationary: Stationary,
+  val stationDays: Double,
+  val closestDays: Double,
+  val closestOrb: Double,
+  val track: List<RefranationSample>,
+)
 
 /**
  * Refranation 定義：返回、臨陣脫逃
  * 這是六種 Denials of Perfection 之一 ，定義於此：
  * http://www.skyscript.co.uk/tobyn2.html#ref
- * 當兩顆星正在 apply 某交角，在形成 Perfect 之前，其中一顆轉為逆行
+ * 當兩顆星正在 apply 某交角，在形成 Perfect 之前，其中一顆轉為逆行（或逆轉順），相位因此沒有成形
  *
- * 此程式必須能正確判斷以下兩種情形
- * 1. 本星即將 apply 他星，而在 perfect 前，本星逆行，代表自我退縮。
- * 2. 本星即將 apply 他星，而在 perfect 前，他星逆行，代表對方退縮。
+ * 兩種情形：
+ * 1. 快星即將 apply 他星，而在 perfect 前，快星停滯轉向，代表自我退縮。
+ * 2. 快星即將 apply 他星，而在 perfect 前，他星停滯轉向、走得比快星還遠，代表對方退縮。
  *
- * TODO : 應該加上演算法：如果星體順轉逆（或逆轉順），並且逃離了 aspect 的有效範圍，才是真的「臨陣脫逃」
+ * 對方停滯轉向、反而迎上來的（例：月亮入相位土星，土星轉逆往月亮走），相位照樣成形，不算。
  *
  * TODO : antiscia / antiscion (映點) 臨陣退縮
  */
 interface IRefranation {
 
-  /**
-   * return Pair<Point, Aspect>
-   *   「先」臨陣脫逃者，是哪顆星
-   *   以及，他們原本要形成什麼交角
-   */
-  fun getResult(horoscope: IHoroscopeModel, planet: Planet, otherPoint: AstroPoint, aspects: Set<Aspect>): Pair<AstroPoint, Aspect>?
+  /** [p1] 與 [p2] 是否臨陣退縮（不分順序）；沒有則為 null */
+  fun getResult(h: IHoroscopeModel, p1: Planet, p2: Planet): Refranation?
 
-  /** 取得重要交角 [Aspect.Importance.HIGH] 的結果 */
-  fun getImportantResult(horoscope: IHoroscopeModel, planet: Planet, otherPoint: AstroPoint): Pair<AstroPoint, Aspect>? {
-    return getResult(horoscope, planet, otherPoint, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
-  }
-
-}
-
-
-
-class RefranationImpl(private val aspectCalculator: IAspectCalculator,
-                      private val relativeTransitImpl: IRelativeTransit,
-                      private val retrogradeImpl: IRetrograde) : IRefranation, JSerializable {
-
-
-  override fun getResult(horoscope: IHoroscopeModel,
-                         planet: Planet,
-                         otherPoint: AstroPoint,
-                         aspects: Set<Aspect>): Pair<AstroPoint, Aspect>? {
-
-    return aspects.asSequence().map { aspect ->
-      /** 此兩星正在 apply 哪個交角  */
-      aspect to with(aspectCalculator) { horoscope.getAspectType(planet, otherPoint, aspect) }
-    }.firstOrNull { (_, type) -> type === IPointAspectPattern.AspectType.APPLYING }
-      ?.let { (applyingAspect, _) -> applyingAspect }
-      ?.let { applyingAspect ->
-        logger.debug("兩星 : {} {} 正在接近此角度 {}", planet, otherPoint, applyingAspect)
-
-        /** 「先」臨陣脫逃者，是誰，這裡強調「先」，因為有可能在 Perfect 交角之前，雙方都臨陣脫逃。 */
-        val refranator: AstroPoint? = relativeTransitImpl.getRelativeTransit(
-          planet,
-          otherPoint as Star,
-          applyingAspect.degree,
-          horoscope.gmtJulDay,
-          true,
-          StarTypeOptions.MEAN
-        )?.let { perfectAspectGmt1 ->
-          if (applyingAspect.degree == 0.0 || applyingAspect.degree == 180.0) {
-            // 衝/合 只會有一個時刻，不用算「補角」
-            perfectAspectGmt1
-          } else {
-            // 額外計算 「補角」（360-degree）的時刻
-            relativeTransitImpl.getRelativeTransit(
-              planet, otherPoint, 360 - applyingAspect.degree,
-              horoscope.gmtJulDay, true, StarTypeOptions.MEAN
-            )!!.let { perfectAspectGmt2 ->
-              if (perfectAspectGmt1 > perfectAspectGmt2)
-                perfectAspectGmt2
-              else
-                perfectAspectGmt1
-            }
-          }
-        }?.let { perfectAspectGmt ->
-          perfectAspectGmt.let {
-            logger.debug("準確形成交角 ({}) 度 於 {}", applyingAspect.degree, perfectAspectGmt)
-
-            val nextStationaryGmtJulDay1 = retrogradeImpl.getNextStationary(planet, horoscope.gmtJulDay, true)
-            val nextStationaryGmtJulDay2 = retrogradeImpl.getNextStationary(otherPoint, horoscope.gmtJulDay, true)
-
-
-            // 如果這兩個 GMT 時間，有任何一個早於 (prior to) perfectAspectGmt，則代表有一顆星臨陣脫逃
-            when {
-              nextStationaryGmtJulDay1 < perfectAspectGmt -> planet
-              nextStationaryGmtJulDay2 < perfectAspectGmt -> otherPoint
-              else -> null // 沒有臨陣脫逃者
-            }
-          }
-        }
-
-        refranator?.let {
-          it to applyingAspect
-        }
-      }
-  }
-
-  companion object {
-    private val logger = KotlinLogging.logger { }
-  }
-
+  /** 全盤（七顆古典行星兩兩之間）的臨陣退縮 */
+  fun getResults(h: IHoroscopeModel): List<Refranation> =
+    Planet.classicalList.flatMapIndexed { i, p1 ->
+      Planet.classicalList.drop(i + 1).mapNotNull { p2 -> getResult(h, p1, p2) }
+    }
 }
