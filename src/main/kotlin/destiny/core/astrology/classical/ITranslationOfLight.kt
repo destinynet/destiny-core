@@ -18,7 +18,7 @@ data class TranslationOfLight(
   val separating: IPointAspectPattern,
   val applying: IPointAspectPattern,
   val between: IPointAspectPattern?,
-) {
+) : ClassicalFact {
   val from: Planet get() = separating.points.first { it != translator } as Planet
   val to: Planet get() = applying.points.first { it != translator } as Planet
 }

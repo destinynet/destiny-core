@@ -20,7 +20,7 @@ data class CollectionOfLight(
   val between: IPointAspectPattern?,
   val firstReception: Dignity?,
   val secondReception: Dignity?,
-) {
+) : ClassicalFact {
   /** 兩顆快星都接納收集者 —— Lilly 的定義要求這一點，沒有接納的收集不會成就事情 */
   val received: Boolean get() = firstReception != null && secondReception != null
 

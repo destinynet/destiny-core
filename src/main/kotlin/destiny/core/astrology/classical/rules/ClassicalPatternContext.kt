@@ -27,7 +27,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val besiegedImpl: IBesieged,
                               private val translationOfLightImpl: ITranslationOfLight,
                               private val collectionOfLightImpl: ICollectionOfLight,
-                              private val refranationImpl: IRefranation
+                              private val applicationOutcomeImpl: IApplicationOutcome
 ) {
 
   private val essentialImpl: IEssential =
@@ -605,6 +605,10 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
+  /** [planet] 與 [other] 的入相位，結局是臨陣退縮時才回傳（不論退縮者是哪一顆） */
+  private fun refranation(h: IHoroscopeModel, planet: Planet, other: Planet): ApplicationOutcome.Refranation? =
+    applicationOutcomeImpl.getOutcome(h, planet, other) as? ApplicationOutcome.Refranation
+
   /**
    * 在與火星或土星形成交角之前，臨陣退縮，代表避免厄運
    */
@@ -614,14 +618,14 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
         ?.let {
 
           planet.takeIf { it !== MARS }?.let {
-            refranationImpl.getResult(h, planet, MARS)?.let { r ->
-              val aspect = r.applying.aspect
+            refranation(h, planet, MARS)?.let { r ->
+              val aspect = r.pattern.aspect
               logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, MARS, aspect)
               AccidentalDignity.Refrain_from_Mars_Saturn(planet, MARS, aspect)
             }
           } ?: planet.takeIf { it !== SATURN }?.let {
-            refranationImpl.getResult(h, planet, SATURN)?.let { r ->
-              val aspect = r.applying.aspect
+            refranation(h, planet, SATURN)?.let { r ->
+              val aspect = r.pattern.aspect
               logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, SATURN, aspect)
               AccidentalDignity.Refrain_from_Mars_Saturn(planet, SATURN, aspect)
             }
@@ -978,17 +982,17 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       return planet.takeIf { it !== SUN && it !== MOON }?.let {
 
         val refrainFromVenus = planet.takeIf { it !== VENUS }?.let {
-          refranationImpl.getResult(h, planet, VENUS)
+          refranation(h, planet, VENUS)
         }?.let { r ->
-          val aspect = r.applying.aspect
+          val aspect = r.pattern.aspect
           logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, VENUS, aspect)
           Debility.Refrain_from_Venus_Jupiter(planet, VENUS, aspect)
         }
 
         val refrainFromJupiter = planet.takeIf { it !== JUPITER }?.let {
-          refranationImpl.getResult(h, planet, JUPITER)
+          refranation(h, planet, JUPITER)
         }?.let { r ->
-          val aspect = r.applying.aspect
+          val aspect = r.pattern.aspect
           logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, JUPITER, aspect)
           Debility.Refrain_from_Venus_Jupiter(planet, JUPITER, aspect)
         }

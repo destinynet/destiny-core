@@ -237,7 +237,7 @@ data class HoroscopeRefranationSampleDto(
 )
 
 /**
- * 臨陣退縮（[destiny.core.astrology.classical.Refranation] 的呈現層投影）：[by] 與 [other] 正以 [aspect] 入相位（盤面容許度 [orb]），
+ * 臨陣退縮（[destiny.core.astrology.classical.ApplicationOutcome.Refranation] 的呈現層投影）：[by] 與 [other] 正以 [aspect] 入相位（盤面容許度 [orb]），
  * 成形前 [by] 在 [stationDays] 日後停滯（[station]：[StationaryType]），[closestDays] 日後最接近、仍差 [closestOrb] 度。
  * [track]：到兩星再度拉開為止的黃經等距取樣
  */
@@ -280,18 +280,21 @@ data class HoroscopeChartDto(
   val refranations: List<HoroscopeRefranationDto> = emptyList(),
 )
 
-/** 附上臨陣退縮（[destiny.core.astrology.classical.RefranationImpl] 的結果）；有星不在盤上的略過 */
-fun HoroscopeChartDto.withRefranations(list: List<destiny.core.astrology.classical.Refranation>): HoroscopeChartDto {
+/** 附上臨陣退縮（[destiny.core.astrology.classical.ApplicationOutcomeImpl] 的結果中的退縮）；有星不在盤上的略過 */
+fun HoroscopeChartDto.withRefranations(list: List<destiny.core.astrology.classical.ApplicationOutcome.Refranation>): HoroscopeChartDto {
   val keys = points.mapTo(HashSet()) { it.point }
   return copy(refranations = list
     .filter { r -> r.refranator.nameKey in keys && r.other.nameKey in keys }
     .map { r ->
       HoroscopeRefranationDto(
         by = r.refranator.nameKey, other = r.other.nameKey,
-        aspect = r.applying.aspect.name, orb = r.applying.orb,
+        aspect = r.pattern.aspect.name, orb = r.pattern.orb,
         station = r.stationary.type.name, stationDays = r.stationDays,
         closestDays = r.closestDays, closestOrb = r.closestOrb,
-        track = r.track.map { HoroscopeRefranationSampleDto(it.days, it.refranatorLng, it.otherLng) },
+        track = r.track.map {
+          if (r.refranator === r.applying) HoroscopeRefranationSampleDto(it.days, it.applyingLng, it.appliedLng)
+          else HoroscopeRefranationSampleDto(it.days, it.appliedLng, it.applyingLng)
+        },
       )
     })
 }
