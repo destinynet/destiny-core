@@ -5,23 +5,14 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.KotlinLogging
-import destiny.tools.JSerializable
 
 
-class BesiegedImpl(private val relativeTransitImpl: IRelativeTransit) : IBesieged, JSerializable {
+class AspectNeighborsImpl(private val relativeTransitImpl: IRelativeTransit) : IAspectNeighbors {
 
-  /**
-   * 最 Generalized 的介面
-   * @param planet 計算此顆行星，被哪兩顆行星所夾角
-   * @param gmtJulDay GMT 時間
-   * @param otherPlanets 其他行星
-   * @param angles 欲計算的交角角度
-   * @return 前者為「之前」形成交角者。後者為「之後」形成交角者
-   */
-  override fun getBesiegingPlanetsByDegrees(planet: Planet,
-                                            gmtJulDay: GmtJulDay,
-                                            otherPlanets: Set<Planet>,
-                                            angles: Set<Double>): Pair<IAngleData?, IAngleData?> {
+  override fun getNeighborsByDegrees(planet: Planet,
+                                     gmtJulDay: GmtJulDay,
+                                     otherPlanets: Set<Planet>,
+                                     angles: Set<Double>): Pair<IAngleData?, IAngleData?> {
 
     /**
      * 先逆推，計算此 planet 「之前」與其他行星呈現 交角的最近時間

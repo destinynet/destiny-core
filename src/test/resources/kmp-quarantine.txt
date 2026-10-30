@@ -49,7 +49,6 @@ destiny/core/astrology/HoroscopeModel.kt
 destiny/core/astrology/HouseCuspFeature.kt
 destiny/core/astrology/HouseSystem.kt
 destiny/core/astrology/IApsis.kt
-destiny/core/astrology/IBesieged.kt
 destiny/core/astrology/IDayNight.kt
 destiny/core/astrology/IEventPointService.kt
 destiny/core/astrology/IHoroscopeModel.kt

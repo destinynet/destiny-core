@@ -97,14 +97,14 @@ sealed interface IVoidCourse : Descriptive {
  * The Moon does not complete an exact Ptolemaic aspect with any planet within the next 30 degrees.
  */
 class VoidCourseHellenistic(
-  private val besiegedImpl: IBesieged,
+  private val aspectNeighborsImpl: IAspectNeighbors,
   private val starPositionImpl: IStarPosition<*>
 ) : IVoidCourse, JSerializable {
   override fun getVoidCourse(
     gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, planet: Planet, centric: Centric, starTypeOptions: StarTypeOptions
   ): Misc.VoidCourseSpan? {
 
-    return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalSet, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
+    return aspectNeighborsImpl.getNeighborsByAspects(planet, gmtJulDay, Planet.classicalSet, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->
@@ -154,7 +154,7 @@ class VoidCourseHellenistic(
  * 直到碰到 p2 - (月半徑/2 + p2半徑/2) 點，就會進入 p2 交角勢力範圍 , VOC 結束
  *
  */
-class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
+class VoidCourseWilliamLilly(private val aspectNeighborsImpl: IAspectNeighbors,
                              private val starPositionImpl: IStarPosition<*>,
                              private val starTransitImpl: IStarTransit) : IVoidCourse, JSerializable {
 
@@ -163,7 +163,7 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
   override fun getVoidCourse(
     gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, planet: Planet, centric: Centric, starTypeOptions: StarTypeOptions
   ): Misc.VoidCourseSpan? {
-    return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalSet, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
+    return aspectNeighborsImpl.getNeighborsByAspects(planet, gmtJulDay, Planet.classicalSet, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->
@@ -223,14 +223,14 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
  *
  * (最常出現)
  */
-class VoidCourseMedieval(private val besiegedImpl: IBesieged,
+class VoidCourseMedieval(private val aspectNeighborsImpl: IAspectNeighbors,
                          private val starPositionImpl: IStarPosition<*>,
                          private val starTransitImpl: IStarTransit) : IVoidCourse, JSerializable {
   override fun getVoidCourse(
     gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, planet: Planet, centric: Centric, starTypeOptions: StarTypeOptions
   ): Misc.VoidCourseSpan? {
 
-    return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalSet, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
+    return aspectNeighborsImpl.getNeighborsByAspects(planet, gmtJulDay, Planet.classicalSet, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->

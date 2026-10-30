@@ -24,7 +24,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val termImpl: ITerm,
                               private val faceImpl: IFace,
                               private val dayNightImpl: IDayNight,
-                              private val besiegedImpl: IBesieged,
+                              private val besiegementImpl: IBesiegement,
                               private val translationOfLightImpl: ITranslationOfLight,
                               private val collectionOfLightImpl: ICollectionOfLight,
                               private val applicationOutcomeImpl: IApplicationOutcome
@@ -564,14 +564,13 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
   /**
    * 夾輔 : 被金星木星包夾 , 是很幸運的情形
-   * 角度考量 0/60/90/120/180
-   * 中間不能與其他行星形成角度
+   * 星體或 60/90/120/180 的光線，兩側各在 7° 內，中間沒有別的星介入（[BesiegementPorphyryImpl]）
    */
   val besiegedJupiterVenus = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return planet.takeIf { arrayOf(SUN, MOON, MERCURY, MARS, SATURN).contains(it) }?.takeIf {
-        besiegedImpl.isBesieged(it, VENUS, JUPITER, h.gmtJulDay, classicalPlanets = true, onlyHardAspects = false)
+        besiegementImpl.getBesiegement(h, it, setOf(VENUS, JUPITER)) != null
       }?.let {
         AccidentalDignity.Besieged_Jupiter_Venus(planet)
       }
@@ -862,16 +861,15 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * Besieged between Mars and Saturn.
    * 被火土夾制，只有日月水金，這四星有可能發生
-   * 前一個角度與火土之一形成 0/90/180 , 後一個角度又與火土另一顆形成 0/90/180
-   * 中間不能與其他行星形成角度
+   * 星體或 90/180 的光線，兩側各在 7° 內，中間沒有別的星介入（[BesiegementPorphyryImpl]）
    */
   val besiegedMarsSaturn = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return planet.takeIf { arrayOf(SUN, MOON, MERCURY, VENUS).contains(it) }
         ?.takeIf {
-          //火土夾制，只考量「硬」角度 , 所以最後一個參數設成 true
-          besiegedImpl.isBesieged(it, MARS, SATURN, h.gmtJulDay, classicalPlanets = true, onlyHardAspects = true)
+          //火土夾制，只考量「硬」角度
+          besiegementImpl.getBesiegement(h, it, setOf(MARS, SATURN), setOf(Aspect.SQUARE, Aspect.OPPOSITION)) != null
         }?.let {
           Debility.Besieged_Mars_Saturn(planet)
         }
