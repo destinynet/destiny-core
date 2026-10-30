@@ -587,7 +587,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
           val deg = h.getAngle(t.from, t.to)
           // {0} 從 {1} 傳遞光線到 {2} ，{1} 與 {2} 交角 {3} 度，相位為 {4} 。 (入相位 or 出相位)
           // {0} 從 {1} 傳遞光線到 {2} ，{1} 與 {2} 交角 {3} 度，未形成相位
-          AccidentalDignity.Translation_of_Light(planet, t.from, t.to, deg, t.between?.second)
+          AccidentalDignity.Translation_of_Light(planet, t.from, t.to, deg, t.between?.aspectType)
         }
         ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
@@ -598,9 +598,9 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    */
   val collectionOfLight = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
-      return collectionOfLightImpl.getResult(planet, h, ICollectionOfLight.CollectType.DIGNITIES)?.let { twoPlanets ->
+      return collectionOfLightImpl.getResult(planet, h, ICollectionOfLight.CollectType.DIGNITIES)?.let { c ->
         // {0} 從 {1} 與 {2} 收集光線。 {1} 與 {2} 交角 {3} 度。
-        AccidentalDignity.Collection_of_Light(planet, twoPlanets, h.getAngle(twoPlanets[0], twoPlanets[1]))
+        AccidentalDignity.Collection_of_Light(planet, c.planets, h.getAngle(c.planets[0], c.planets[1]))
       }
         ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }

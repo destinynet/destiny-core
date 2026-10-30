@@ -23,7 +23,7 @@ import kotlin.math.abs
  * - 不排除「兩個徵象星彼此本來就入相位」（例：火星六合土星 0.6° 入相位，太陽夾在中間也被算成傳遞）
  *
  * 本版只在當下的容許度內找，前後順序依「離成形還要／已經多久」（容許度 ÷ 兩星的相對速度）排，不必做時間搜尋；
- * 結果帶出兩邊的交角與容許度（[TranslationOfLight]）
+ * 結果直接帶出兩邊的 [IPointAspectPattern]（相位、容許度、出入相位）
  */
 class TranslationOfLightImpl(
   private val aspectCalculator: IAspectCalculator,
@@ -57,11 +57,6 @@ class TranslationOfLightImpl(
     }
     if (between?.aspectType == APPLYING && !allowBetweenApplying) return null
 
-    return TranslationOfLight(
-      translator = planet,
-      from = from.other, fromAspect = from.pattern.aspect, fromOrb = from.pattern.orb,
-      to = to.other, toAspect = to.pattern.aspect, toOrb = to.pattern.orb,
-      between = between?.let { it.aspect to it.aspectType },
-    )
+    return TranslationOfLight(planet, separating = from.pattern, applying = to.pattern, between = between)
   }
 }

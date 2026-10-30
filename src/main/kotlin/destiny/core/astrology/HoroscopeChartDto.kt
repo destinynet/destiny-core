@@ -231,9 +231,9 @@ fun HoroscopeChartDto.withTranslations(list: List<destiny.core.astrology.classic
     .map { t ->
       HoroscopeTranslationDto(
         by = t.translator.nameKey,
-        from = t.from.nameKey, fromAspect = t.fromAspect.name, fromOrb = t.fromOrb,
-        to = t.to.nameKey, toAspect = t.toAspect.name, toOrb = t.toOrb,
-        between = t.between?.first?.name,
+        from = t.from.nameKey, fromAspect = t.separating.aspect.name, fromOrb = t.separating.orb,
+        to = t.to.nameKey, toAspect = t.applying.aspect.name, toOrb = t.applying.orb,
+        between = t.between?.aspect?.name,
       )
     })
 }

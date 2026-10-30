@@ -191,7 +191,8 @@ class EssentialImpl(private val rulerImpl: IRuler,
 
   /** [this] 是否 接納 receivee by Essential Debilities (Detriment/Fall)  */
   override fun AstroPoint.isReceivingFromDebilities(receivee: AstroPoint, h: IHoroscopeModel): Boolean {
-    return h.getZodiacSign(this)?.let { receiveeSign ->
+    // 看的是客人（receivee）落在哪個星座：主人在那裡落陷或入弱，就是以 debility 接納
+    return h.getZodiacSign(receivee)?.let { receiveeSign ->
       this === getPoint(receiveeSign, Dignity.DETRIMENT) ||
         this === getPoint(receiveeSign, Dignity.FALL)
     } ?: false
