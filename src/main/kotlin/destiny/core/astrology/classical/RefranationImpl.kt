@@ -39,9 +39,8 @@ class RefranationImpl(
 
     val t0 = h.gmtJulDay
     // 日月不會停滯；兩顆都不會停滯就不可能退縮
-    val stations = listOf(p1, p2).filter { it !== Planet.SUN && it !== Planet.MOON }
-      .map { retrogradeImpl.getNextStationary(it, t0, true, starPositionImpl) }
-    if (stations.isEmpty()) return null
+    val stationers = listOf(p1, p2).filter { it !== Planet.SUN && it !== Planet.MOON }
+    if (stationers.isEmpty()) return null
 
     fun pos(p: Planet, t: GmtJulDay) = starPositionImpl.getPosition(p, t, GEO, ECLIPTIC, StarTypeOptions.MEAN)
 
@@ -87,8 +86,9 @@ class RefranationImpl(
       samples += sample(samples.last().t + step(samples.last()))
     }
 
-    // 4. 退縮者：這段期間內停滯、而且離最接近時刻最近的那顆
-    val stationary = stations
+    // 4. 退縮者：這段期間內停滯、而且離最接近時刻最近的那顆。
+    //    停滯的搜尋最貴，放到確定「沒成形就拉開」之後才做 —— 大部分入相位在步驟 1 就成形了
+    val stationary = stationers.map { retrogradeImpl.getNextStationary(it, t0, true, starPositionImpl) }
       .filter { it.gmtJulDay > t0 && it.gmtJulDay <= samples.last().t }
       .minByOrNull { abs(it.gmtJulDay - closestT) } ?: return null
     val refranator = stationary.star as Planet
