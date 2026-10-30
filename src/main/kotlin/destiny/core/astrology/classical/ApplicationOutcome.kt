@@ -8,6 +8,35 @@ import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.IPointAspectPattern
 import destiny.core.astrology.Planet
 import destiny.core.astrology.Stationary
+import kotlinx.serialization.Serializable
+
+/**
+ * [IApplicationOutcome] 的判準選項。預設值是卜卦的通行做法（[HORARY]）；本命盤存表用 [NATAL_DB]。
+ *
+ * 會影響「最先發生的事件」的選項只能在引擎裡改，不能事後過濾：拿掉一個插隊之後，那個入相位會繼續往後追，
+ * 結局可能變成退縮、別的插隊或成形，事後濾掉只會讓它整筆消失。
+ */
+@Serializable
+data class OutcomeOptions(
+  /**
+   * 不當插隊者的星。卜卦照算（空集合）；本命統計建議排除月亮 —— 月亮一天內就與容許度內的星成形，全庫約六成的人有月亮插隊。
+   * 撲空不受影響：撲空者比被追的那顆更慢，月亮不可能是撲空者
+   */
+  val excludedInterrupters: Set<Planet> = emptySet(),
+  /**
+   * 只算第三顆星先碰到**被追的那顆**（Lilly：A 到達之前，別的星先碰到 B）。
+   * 關掉會連「先碰到追的那顆」也算：全庫有插隊的人從 64% 升到 84%，臨陣退縮多半被蓋掉，教科書的地震盤也被判成月亮插隊
+   */
+  val targetAppliedOnly: Boolean = true,
+) {
+  companion object {
+    /** 卜卦：不排除任何插隊者 */
+    val HORARY = OutcomeOptions()
+
+    /** 本命盤存表：排除月亮插隊 */
+    val NATAL_DB = OutcomeOptions(excludedInterrupters = setOf(Planet.MOON))
+  }
+}
 
 /** 入相位軌跡的一個取樣點：盤面時刻後 [days] 日，[ApplicationOutcome.applying] 與 [ApplicationOutcome.applied] 的黃經 */
 data class OutcomeSample(
@@ -70,8 +99,8 @@ sealed interface ApplicationOutcome : ClassicalFact {
   }
 
   /**
-   * 插隊（prohibition）：成形之前，比 [applied] 快的第三顆星 [prohibitor] 先追上 [applied]、與它成形（[interruption] 是盤面時刻兩者的入相位）。
-   * 第三顆星先與 [applying] 成形不算插隊（快星一天內就會與容許度內的星成形，那樣幾乎每個慢星對都被插隊）。
+   * 插隊（prohibition）：成形之前，第三顆星 [prohibitor] 先與 [with] 成形（[interruption] 是盤面時刻兩者的入相位）。
+   * [with] 預設一定是 [applied]（比它快的第三顆星先追上它）；[OutcomeOptions.targetAppliedOnly] 關掉時也可能是 [applying]。
    * [byBody]：以合相插隊 —— Lilly 最嚴格的 prohibition，實體上的攔截；其餘是透過光芒（by rays），交角在 [interruption] 裡。
    *
    * Cutting off light（abscission）幾何上是它的變體，不另立結局，由翻譯層依幾何改用那個說法。
@@ -84,6 +113,7 @@ sealed interface ApplicationOutcome : ClassicalFact {
     override val ingress: Planet?,
     override val track: List<OutcomeSample>,
     val prohibitor: Planet,
+    val with: Planet,
     val interruption: IPointAspectPattern,
   ) : ApplicationOutcome {
     val byBody: Boolean get() = interruption.aspect == Aspect.CONJUNCTION

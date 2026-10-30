@@ -22,9 +22,11 @@ import kotlin.math.sign
  *    期間內沒有停滯（只是快星減速、被慢星甩開）→ 沒有結局（null）
  * 3. 在 1／2 之前，第三顆星先與**被追的那顆**成形 → [ApplicationOutcome.Prohibition] 或 [ApplicationOutcome.Frustration]
  *
- * 插隊只看被追的那顆（B）：Lilly 的 prohibition 是「A 到達之前，別的星先碰到 B」。第三顆星先與快星 A 成形不算 ——
+ * 插隊預設只看被追的那顆（B）：Lilly 的 prohibition 是「A 到達之前，別的星先碰到 B」。第三顆星先與快星 A 成形不算 ——
  * 快星（尤其月亮）一天內就會與容許度內的星成形，若連 A 也算，幾乎每個慢星對都被「插隊」，臨陣退縮也被蓋掉。
- * 插隊者只考慮**盤面時刻就已在容許度內入相位 B** 的古典行星（與光線傳遞「只看當下容許度」一致）。
+ * 插隊者只考慮**盤面時刻就已在容許度內入相位**的古典行星（與光線傳遞「只看當下容許度」一致）。
+ *
+ * 判準的選項（排除哪些插隊者、要不要連 A 也算）在 [options]，見 [OutcomeOptions]。
  *
  * 2026-10-30 由同日改寫的 RefranationImpl（臨陣退縮）擴充而來：判準 2 不變，多了判準 1 的結果與判準 3 的插隊。
  * 2014 年的舊版（比「下次停滯」是否早於「下次成形」）的問題：
@@ -37,6 +39,7 @@ class ApplicationOutcomeImpl(
   private val starPositionImpl: IStarPosition<*>,
   private val retrogradeImpl: IRetrograde,
   private val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet(),
+  private val options: OutcomeOptions = OutcomeOptions.HORARY,
 ) : IApplicationOutcome {
 
   private fun pos(p: Planet, t: GmtJulDay) = starPositionImpl.getPosition(p, t, GEO, ECLIPTIC, StarTypeOptions.MEAN)
@@ -91,17 +94,20 @@ class ApplicationOutcomeImpl(
     return if (gap < PERFECT_ORB) Approach.Perfects(GmtJulDay(t)) else Approach.TurnsAway(GmtJulDay(t), gap)
   }
 
-  /** 插隊：第三顆星 [by] 在 [t] 先與被追的那顆成形（[pattern] 是盤面時刻兩者的入相位） */
-  private data class Interruption(val by: Planet, val pattern: IPointAspectPattern, val t: GmtJulDay)
+  /** 插隊：第三顆星 [by] 在 [t] 先與 [with] 成形（[pattern] 是盤面時刻兩者的入相位） */
+  private data class Interruption(val by: Planet, val with: Planet, val pattern: IPointAspectPattern, val t: GmtJulDay)
 
-  /** 盤面時刻在容許度內與 [b] 入相位的第三顆星中，在 [before] 之前最先成形的那個（[a] 除外） */
+  /** 盤面時刻在容許度內入相位 [b]（[OutcomeOptions.targetAppliedOnly] 關掉時也含 [a]）的第三顆星中，在 [before] 之前最先成形的那個 */
   private fun interruption(h: IHoroscopeModel, a: Planet, b: Planet, t0: GmtJulDay, before: GmtJulDay): Interruption? =
     with(aspectCalculator) {
-      Planet.classicalList.filter { it !== a && it !== b }.mapNotNull { c ->
-        val p = h.getAspectPattern(setOf(c, b), aspects)?.takeIf { it.aspectType == APPLYING } ?: return@mapNotNull null
-        (approach(Gap(c, b, p.aspect.degree, t0), t0, mutableListOf(), before) as? Approach.Perfects)
-          ?.takeIf { it.t < before }
-          ?.let { Interruption(c, p, it.t) }
+      val targets = if (options.targetAppliedOnly) listOf(b) else listOf(a, b)
+      Planet.classicalList.filter { it !== a && it !== b && it !in options.excludedInterrupters }.flatMap { c ->
+        targets.mapNotNull { x ->
+          val p = h.getAspectPattern(setOf(c, x), aspects)?.takeIf { it.aspectType == APPLYING } ?: return@mapNotNull null
+          (approach(Gap(c, x, p.aspect.degree, t0), t0, mutableListOf(), before) as? Approach.Perfects)
+            ?.takeIf { it.t < before }
+            ?.let { Interruption(c, x, p, it.t) }
+        }
       }.minByOrNull { it.t }
     }
 
@@ -142,7 +148,7 @@ class ApplicationOutcomeImpl(
       is Approach.TurnsAway -> approach.closestT
     }
 
-    // 3. 在那之前有沒有第三顆星先碰到被追的那顆
+    // 3. 在那之前有沒有第三顆星先碰到被追的那顆（選項可放寬到追的那顆）
     val cut = interruption(h, a, b, t0, eventT)
     val decidedT = cut?.t ?: eventT
 
@@ -157,11 +163,11 @@ class ApplicationOutcomeImpl(
     }
 
     return when {
-      cut != null && speedOf(b) > speedOf(cut.by) ->
+      cut != null && cut.with === b && speedOf(b) > speedOf(cut.by) ->
         ApplicationOutcome.Frustration(a, b, pattern, cut.t - t0, ingress, track, frustrator = cut.by, interruption = cut.pattern)
 
       cut != null ->
-        ApplicationOutcome.Prohibition(a, b, pattern, cut.t - t0, ingress, track, prohibitor = cut.by, interruption = cut.pattern)
+        ApplicationOutcome.Prohibition(a, b, pattern, cut.t - t0, ingress, track, prohibitor = cut.by, with = cut.with, interruption = cut.pattern)
 
       refrain != null ->
         ApplicationOutcome.Refranation(

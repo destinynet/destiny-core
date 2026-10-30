@@ -22,13 +22,18 @@ import kotlin.math.abs
  *   不會再往後找比它慢的那顆。七顆古典行星的本命盤裡，這是兩版差異的大宗
  * - 不排除「兩個徵象星彼此本來就入相位」（例：火星六合土星 0.6° 入相位，太陽夾在中間也被算成傳遞）
  *
- * 本版只在當下的容許度內找，前後順序依「離成形還要／已經多久」（容許度 ÷ 兩星的相對速度）排，不必做時間搜尋；
+ * 本版只在當下的容許度內找，前後順序依「離成形還要／已經多久」（容許度 ÷ 兩星的相對速度）排；
  * 結果直接帶出兩邊的 [IPointAspectPattern]（相位、容許度、出入相位）
+ *
+ * [applicationOutcome]：給了的話，「下一個要成形的」改由入相位引擎往後追蹤判定 —— 傳遞者與它的入相位結局必須是
+ * [ApplicationOutcome.Perfected]（途中被插隊、撲空、退縮，光就沒送到），取最先成形的那顆。
+ * 沒給就用估算（只要盤面時刻，不需要星曆）：估算是靜態幾何，看不到傳遞者途中被別的星截走的情形
  */
 class TranslationOfLightImpl(
   private val aspectCalculator: IAspectCalculator,
   private val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet(),
   private val allowBetweenApplying: Boolean = false,
+  private val applicationOutcome: IApplicationOutcome? = null,
 ) : ITranslationOfLight {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): TranslationOfLight? {
@@ -50,13 +55,20 @@ class TranslationOfLightImpl(
     }
 
     val from = contacts.filter { it.pattern.aspectType == SEPARATING }.minByOrNull { it.days } ?: return null
-    val to = contacts.filter { it.pattern.aspectType == APPLYING }.minByOrNull { it.days } ?: return null
+    val applyingContacts = contacts.filter { it.pattern.aspectType == APPLYING }
+    val (to, arrival) = if (applicationOutcome == null) {
+      (applyingContacts.minByOrNull { it.days } ?: return null) to null
+    } else {
+      applyingContacts.mapNotNull { c ->
+        (applicationOutcome.getOutcome(h, planet, c.other) as? ApplicationOutcome.Perfected)?.let { c to it }
+      }.minByOrNull { (_, perfected) -> perfected.eventDays } ?: return null
+    }
 
     val between = with(aspectCalculator) {
       h.getAspectPattern(setOf(from.other, to.other), aspects)
     }
     if (between?.aspectType == APPLYING && !allowBetweenApplying) return null
 
-    return TranslationOfLight(planet, separating = from.pattern, applying = to.pattern, between = between)
+    return TranslationOfLight(planet, separating = from.pattern, applying = to.pattern, between = between, arrival = arrival)
   }
 }
