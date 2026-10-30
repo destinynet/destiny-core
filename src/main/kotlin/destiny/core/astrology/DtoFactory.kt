@@ -169,10 +169,14 @@ class DtoFactory(
    * 本命盤的古典格局（尊貴、偶然尊貴、debility…），不放進 DTO：格局是衍生資料，用的時候由 model 現算，
    * 給 LLM 時再以 [PatternTranslator] 翻成文字。
    *
+   * 用哪些格局：[horoConfig] 若帶著 [IClassicalConfig]（例：[HoroscopePresentConfig]）就用它的 factories
+   * （卜卦與本命的判準不同，見 `OutcomeOptions`），否則用注入的預設清單。
+   *
    * 沒有精確出生時刻時，濾掉得時／不得時（[AccidentalDignity.Hayz]／[Debility.Out_of_Sect]）。
    */
   fun IHoroscopeModel.getClassicalPatterns(grain: BirthDataGrain, horoConfig: IHoroscopeConfig): List<IPlanetPattern> {
-    val cfg = ClassicalConfig(classicalFactories) to horoConfig
+    val factories = (horoConfig as? IClassicalConfig)?.factories ?: classicalFactories
+    val cfg = ClassicalConfig(factories) to horoConfig
     return classicalFeature.getModel(gmtJulDay, location, cfg).flatMap { (_, list: List<IPlanetPattern>) ->
       list.filterNot { pattern ->
         // 得時／不得時依賴晝夜「與」星體在地平面上下 —— 後者需要精確時刻，

@@ -30,6 +30,21 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val applicationOutcomeImpl: IApplicationOutcome
 ) {
 
+  /** 本命／卜卦的 prompt 預設帶的古典格局 */
+  val defaultFactories: List<IPlanetPatternFactory> by lazy {
+    listOf(
+      beneficialMutualReception,
+      hayz,
+      besiegedJupiterVenus,
+      translationOfLight,
+      collectionOfLight,
+      besiegedMarsSaturn,
+      conjAlgol,
+      outOfSect,
+      refrainFromVenusJupiter,
+    )
+  }
+
   private val essentialImpl: IEssential =
     EssentialImpl(rulerImpl, exaltImpl, fallImpl, detrimentImpl, triplicityImpl, termImpl, faceImpl,
       dayNightImpl)
