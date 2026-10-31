@@ -28,13 +28,26 @@ data class OutcomeOptions(
    * 關掉會連「先碰到追的那顆」也算：全庫有插隊的人從 64% 升到 84%，臨陣退縮多半被蓋掉，教科書的地震盤也被判成月亮插隊
    */
   val targetAppliedOnly: Boolean = true,
+  /**
+   * 哪些相位算「兩星正在入相位」—— 不在這裡的交角整個不判（沒有結局）。預設托勒密五相位（[Aspect.Importance.HIGH]）
+   */
+  val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet(),
+  /**
+   * 第三顆星以哪些相位插隊／造成撲空。與 [aspects] 分開：卜卦常見的「只算實體攔截」是 `setOf(Aspect.CONJUNCTION)`，
+   * 而兩顆徵象星之間仍照 [aspects] 判斷。預設托勒密五相位
+   */
+  val interruptionAspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet(),
 ) {
   companion object {
     /** 卜卦：不排除任何插隊者 */
     val HORARY = OutcomeOptions()
 
-    /** 本命盤存表：排除月亮插隊 */
-    val NATAL_DB = OutcomeOptions(excludedInterrupters = setOf(Planet.MOON))
+    /** 本命盤存表：排除月亮插隊；相位明寫托勒密五相位（引擎可以更寬，存表固定這個子集） */
+    val NATAL_DB = OutcomeOptions(
+      excludedInterrupters = setOf(Planet.MOON),
+      aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet(),
+      interruptionAspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet(),
+    )
   }
 }
 

@@ -26,7 +26,7 @@ import kotlin.math.sign
  * 快星（尤其月亮）一天內就會與容許度內的星成形，若連 A 也算，幾乎每個慢星對都被「插隊」，臨陣退縮也被蓋掉。
  * 插隊者只考慮**盤面時刻就已在容許度內入相位**的古典行星（與光線傳遞「只看當下容許度」一致）。
  *
- * 判準的選項（排除哪些插隊者、要不要連 A 也算）在 [options]，見 [OutcomeOptions]。
+ * 判準的選項（哪些相位算入相位、哪些相位能插隊、排除哪些插隊者、要不要連 A 也算）在 [options]，見 [OutcomeOptions]。
  *
  * 2026-10-30 由同日改寫的 RefranationImpl（臨陣退縮）擴充而來：判準 2 不變，多了判準 1 的結果與判準 3 的插隊。
  * 2014 年的舊版（比「下次停滯」是否早於「下次成形」）的問題：
@@ -38,7 +38,6 @@ class ApplicationOutcomeImpl(
   private val aspectCalculator: IAspectCalculator,
   private val starPositionImpl: IStarPosition<*>,
   private val retrogradeImpl: IRetrograde,
-  private val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet(),
   private val options: OutcomeOptions = OutcomeOptions.HORARY,
 ) : IApplicationOutcome {
 
@@ -103,7 +102,7 @@ class ApplicationOutcomeImpl(
       val targets = if (options.targetAppliedOnly) listOf(b) else listOf(a, b)
       Planet.classicalList.filter { it !== a && it !== b && it !in options.excludedInterrupters }.flatMap { c ->
         targets.mapNotNull { x ->
-          val p = h.getAspectPattern(setOf(c, x), aspects)?.takeIf { it.aspectType == APPLYING } ?: return@mapNotNull null
+          val p = h.getAspectPattern(setOf(c, x), options.interruptionAspects)?.takeIf { it.aspectType == APPLYING } ?: return@mapNotNull null
           (approach(Gap(c, x, p.aspect.degree, t0), t0, mutableListOf(), before) as? Approach.Perfects)
             ?.takeIf { it.t < before }
             ?.let { Interruption(c, x, p, it.t) }
@@ -113,7 +112,7 @@ class ApplicationOutcomeImpl(
 
   override fun getOutcome(h: IHoroscopeModel, p1: Planet, p2: Planet): ApplicationOutcome? {
     if (p1 === p2) return null
-    val pattern = with(aspectCalculator) { h.getAspectPattern(setOf(p1, p2), aspects) }
+    val pattern = with(aspectCalculator) { h.getAspectPattern(setOf(p1, p2), options.aspects) }
       ?.takeIf { it.aspectType == APPLYING } ?: return null
 
     val speedOf = { p: Planet -> abs(h.getStarPosition(p)?.speedLng ?: 0.0) }
