@@ -15,7 +15,9 @@ import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign.ARIES
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
+import destiny.core.astrology.classical.ApplicationOutcome
 import destiny.core.astrology.classical.Besiegement
+import destiny.core.astrology.classical.OutcomeSample
 import destiny.core.identityFieldsIn
 import com.jayway.jsonpath.JsonPath
 import kotlinx.serialization.json.Json
@@ -319,6 +321,24 @@ class HoroscopeChartDtoTest {
     assertEquals(dto, Json.decodeFromString(HoroscopeChartDto.serializer(), json), "來回不失真")
 
     assertEquals(emptyList(), dto.keepingPoints { it.point != "Planet.MARS" }.classicalFacts)
+  }
+
+  /** 插隊的軌跡帶第三顆星（`by`）的黃經 —— 導演要靠它讓插隊者一起動 */
+  @Test
+  fun classicalFacts_prohibitionTrackCarriesByLng() {
+    val prohibition = ApplicationOutcome.Prohibition(
+      applying = Planet.MERCURY, applied = Planet.SUN,
+      pattern = PointAspectPattern.of(Planet.MERCURY, Planet.SUN, Aspect.CONJUNCTION, IPointAspectPattern.AspectType.APPLYING, 3.0),
+      eventDays = 1.0, ingress = null,
+      track = listOf(OutcomeSample(0.0, 10.0, 13.0, 20.0), OutcomeSample(1.0, 11.5, 14.0, 14.0)),
+      prohibitor = Planet.MARS, with = Planet.SUN,
+      interruption = PointAspectPattern.of(Planet.MARS, Planet.SUN, Aspect.CONJUNCTION, IPointAspectPattern.AspectType.APPLYING, 7.0),
+    )
+    val dto = fakeNatal().toHoroscopeChartDto(ChartDensity.FULL).withClassicalFacts(listOf(prohibition))
+    val json = Json.encodeToString(HoroscopeChartDto.serializer(), dto)
+    assertEquals("prohibition", JsonPath.read<String>(json, "$.classicalFacts[0].kind"))
+    assertEquals(listOf(20.0, 14.0), JsonPath.read<List<Double>>(json, "$.classicalFacts[0].track[*].byLng"))
+    assertEquals(dto, Json.decodeFromString(HoroscopeChartDto.serializer(), json), "來回不失真")
   }
 
   @Test

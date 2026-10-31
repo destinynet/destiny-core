@@ -157,9 +157,10 @@ class ApplicationOutcomeImpl(
     // 動畫用的軌跡：與搜尋的步長脫鉤，等距取樣。退縮演到兩星再度拉開；其餘演到決定結局的那一刻
     val trackEnd = if (refrain != null && cut == null) samples.last().t else decidedT
     val span = trackEnd - t0
+    // 插隊／撲空另帶第三顆星的位置：插隊者可能比被追的那顆快，不能當成不動
     val track = (0..TRACK_SAMPLES).map { i ->
       val s = gap.sample(t0 + span * i / TRACK_SAMPLES)
-      OutcomeSample(s.t - t0, s.lng1, s.lng2)
+      OutcomeSample(s.t - t0, s.lng1, s.lng2, cut?.let { pos(it.by, s.t).lng })
     }
 
     return when {

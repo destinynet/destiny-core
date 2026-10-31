@@ -284,7 +284,10 @@ data class HoroscopeRefranationDto(
   override val members: List<String> get() = listOf(by, other)
 }
 
-/** 入相位軌跡的一個取樣點：盤面時刻後 [days] 日，追的那顆 [applyingLng] 與被追的那顆 [appliedLng] 的黃經 */
+/**
+ * 插隊／撲空軌跡的一個取樣點：盤面時刻後 [days] 日，追的那顆 [applyingLng]、被追的那顆 [appliedLng]
+ * 與第三顆星（插隊者／撲空者，即事實的 `by`）[byLng] 的黃經
+ */
 @Serializable
 data class HoroscopeOutcomeSampleDto(
   @Serializable(with = DoubleTwoDecimalSerializer::class)
@@ -293,6 +296,8 @@ data class HoroscopeOutcomeSampleDto(
   val applyingLng: Double,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val appliedLng: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val byLng: Double,
 )
 
 /**
@@ -426,14 +431,14 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
   is destiny.core.astrology.classical.ApplicationOutcome.Prohibition -> HoroscopeProhibitionDto(
     applying = applying.nameKey, applied = applied.nameKey, aspect = pattern.aspect.name, orb = pattern.orb,
     by = prohibitor.nameKey, with = with.nameKey, byAspect = interruption.aspect.name, eventDays = eventDays,
-    track = track.map { HoroscopeOutcomeSampleDto(it.days, it.applyingLng, it.appliedLng) },
+    track = track.map { it.toChartDto() },
     ingress = ingress?.nameKey,
   )
 
   is destiny.core.astrology.classical.ApplicationOutcome.Frustration -> HoroscopeFrustrationDto(
     applying = applying.nameKey, applied = applied.nameKey, aspect = pattern.aspect.name, orb = pattern.orb,
     by = frustrator.nameKey, byAspect = interruption.aspect.name, eventDays = eventDays,
-    track = track.map { HoroscopeOutcomeSampleDto(it.days, it.applyingLng, it.appliedLng) },
+    track = track.map { it.toChartDto() },
     ingress = ingress?.nameKey,
   )
 
@@ -443,6 +448,10 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
     after = HoroscopeBesiegeSideDto(after.by.nameKey, after.aspect?.name, after.distance),
   )
 }
+
+/** 插隊／撲空的取樣點；這兩種結局的軌跡一定帶第三顆星的位置 */
+private fun destiny.core.astrology.classical.OutcomeSample.toChartDto() =
+  HoroscopeOutcomeSampleDto(days, applyingLng, appliedLng, checkNotNull(interrupterLng) { "插隊／撲空的軌跡缺第三顆星的黃經" })
 
 /** 拿掉動畫軌跡（存表、查詢用不到，一條 49 點） */
 fun HoroscopeClassicalFactDto.withoutTrack(): HoroscopeClassicalFactDto = when (this) {

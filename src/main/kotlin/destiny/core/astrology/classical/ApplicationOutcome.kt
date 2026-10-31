@@ -38,11 +38,16 @@ data class OutcomeOptions(
   }
 }
 
-/** 入相位軌跡的一個取樣點：盤面時刻後 [days] 日，[ApplicationOutcome.applying] 與 [ApplicationOutcome.applied] 的黃經 */
+/**
+ * 入相位軌跡的一個取樣點：盤面時刻後 [days] 日，[ApplicationOutcome.applying] 與 [ApplicationOutcome.applied] 的黃經。
+ * [interrupterLng]：第三顆星（[ApplicationOutcome.Prohibition.prohibitor]／[ApplicationOutcome.Frustration.frustrator]）的黃經，
+ * 只有這兩種結局有；成形與臨陣退縮為 null
+ */
 data class OutcomeSample(
   val days: Double,
   val applyingLng: Double,
   val appliedLng: Double,
+  val interrupterLng: Double? = null,
 )
 
 /**
