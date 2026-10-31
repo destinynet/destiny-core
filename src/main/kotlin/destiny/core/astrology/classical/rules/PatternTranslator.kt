@@ -128,10 +128,11 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
         is Debility.MutualDeception -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign1, pattern.dig2, pattern.p2, pattern.sign2, pattern.dig1, pattern.dig2))
       }
       is Misc.Prohibited ->
-        MiscDescriptor(pattern, if (pattern.byBody) "commentBody" else "commentRays",
-          listOf(pattern.planet, pattern.applied, pattern.aspect, pattern.prohibitor, pattern.with, pattern.interruption))
+        MiscDescriptor(pattern, (if (pattern.byBody) "commentBody" else "commentRays") + (if (pattern.ingress != null) "Ingress" else ""),
+          listOfNotNull(pattern.planet, pattern.applied, pattern.aspect, pattern.prohibitor, pattern.with, pattern.interruption, pattern.ingress))
       is Misc.Frustrated ->
-        MiscDescriptor(pattern, "comment", listOf(pattern.planet, pattern.applied, pattern.aspect, pattern.frustrator, pattern.interruption))
+        MiscDescriptor(pattern, if (pattern.ingress != null) "commentIngress" else "comment",
+          listOfNotNull(pattern.planet, pattern.applied, pattern.aspect, pattern.frustrator, pattern.interruption, pattern.ingress))
       else -> {
         throw IllegalArgumentException("Not Supported : $pattern")
       }

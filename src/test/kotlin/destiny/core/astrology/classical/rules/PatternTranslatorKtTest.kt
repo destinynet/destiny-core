@@ -4,7 +4,10 @@
 package destiny.core.astrology.classical.rules
 
 import destiny.core.DayNight
+import destiny.core.astrology.Aspect.CONJUNCTION
 import destiny.core.astrology.Aspect.OPPOSITION
+import destiny.core.astrology.Aspect.SEXTILE
+import destiny.core.astrology.Aspect.SQUARE
 import destiny.core.astrology.Aspect.TRINE
 import destiny.core.astrology.IPointAspectPattern
 import destiny.core.astrology.LunarNode
@@ -347,6 +350,28 @@ class PatternTranslatorKtTest {
     MutualDeception(MOON, ARIES, DETRIMENT, SATURN, CAPRICORN, FALL).also {
       assertEquals("互陷", it.title)
       assertEquals("月亮 位於 牡羊 , 與其 落 (土星) 飛至 摩羯 , 形成 陷落互陷", it.twDesc)
+    }
+  }
+
+  /** 入相位的結局：有 [Misc.Prohibited.ingress]／[Misc.Frustrated.ingress] 的才多一句換星座 */
+  @Test
+  fun misc() {
+    Misc.Prohibited(SUN, SATURN, CONJUNCTION, MERCURY, SATURN, CONJUNCTION).also {
+      assertEquals("插隊", it.title)
+      logger.info { "${it.twDesc} / ${it.enDesc} / ${it.jaDesc}" }
+      assertEquals("太陽 正朝 土星 入相位（合），成形之前 水星 先以合相碰到 土星，搶先一步（Prohibition，以星體攔截）", it.twDesc)
+      assertEquals("Sun applies to Saturn by Conjunction, but before it perfects, Mercury reaches Saturn first by conjunction. (Prohibition by body)", it.enDesc)
+      assertEquals("太陽はコンジャンクションで土星に接近中ですが、完成前に水星がコンジャンクションで先に土星と重なります（プロヒビション、天体による阻止）。", it.jaDesc)
+    }
+    Misc.Prohibited(MERCURY, SATURN, OPPOSITION, SUN, SATURN, SQUARE, ingress = MERCURY).also {
+      logger.info { "${it.twDesc} / ${it.enDesc} / ${it.jaDesc}" }
+      assertEquals("水星 正朝 土星 入相位（沖），成形之前 太陽 先與 土星 形成 刑；在此之前 水星 已先換星座（Prohibition，透過光線攔截）", it.twDesc)
+      assertEquals("Mercury applies to Saturn by Opposition, but before it perfects, Sun reaches Saturn first by Square; Mercury has already changed sign by then. (Prohibition by rays)", it.enDesc)
+    }
+    Misc.Frustrated(SUN, MARS, SEXTILE, SATURN, SEXTILE, ingress = MARS).also {
+      assertEquals("撲空", it.title)
+      logger.info { "${it.twDesc} / ${it.enDesc} / ${it.jaDesc}" }
+      assertEquals("太陽 正朝 火星 入相位（六合），成形之前 火星 先與更慢的 土星 形成 六合 後離開，太陽 撲空；在此之前 火星 已先換星座（Frustration）", it.twDesc)
     }
   }
 }

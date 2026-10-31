@@ -143,22 +143,25 @@ sealed class Misc : IPlanetPattern {
 
   /**
    * [planet] 正以 [aspect] 入相位 [applied]，成形之前 [prohibitor] 先以 [interruption] 與 [with] 成形（插隊，
-   * [destiny.core.astrology.classical.ApplicationOutcome.Prohibition]）。[byBody]：以合相插隊（實體攔截），否則是透過光線
+   * [destiny.core.astrology.classical.ApplicationOutcome.Prohibition]）。[byBody]：以合相插隊（實體攔截），否則是透過光線。
+   * [ingress]：插隊之前已換星座的那顆（[destiny.core.astrology.classical.ApplicationOutcome.ingress]）
    */
   data class Prohibited(
     override val planet: Planet, val applied: Planet, val aspect: Aspect,
     val prohibitor: Planet, val with: Planet, val interruption: Aspect,
+    val ingress: Planet? = null,
   ) : Misc() {
     val byBody: Boolean get() = interruption == Aspect.CONJUNCTION
   }
 
   /**
    * [planet] 正以 [aspect] 入相位 [applied]，成形之前 [applied] 先以 [interruption] 與更慢的 [frustrator] 成形然後離開（撲空，
-   * [destiny.core.astrology.classical.ApplicationOutcome.Frustration]）
+   * [destiny.core.astrology.classical.ApplicationOutcome.Frustration]）。[ingress]：撲空之前已換星座的那顆
    */
   data class Frustrated(
     override val planet: Planet, val applied: Planet, val aspect: Aspect,
     val frustrator: Planet, val interruption: Aspect,
+    val ingress: Planet? = null,
   ) : Misc()
 
   /**

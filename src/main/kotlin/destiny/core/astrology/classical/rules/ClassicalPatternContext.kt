@@ -1114,7 +1114,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       Planet.classicalList.filter { it !== planet }.mapNotNull { other ->
         (applicationOutcomeImpl.getOutcome(h, planet, other) as? ApplicationOutcome.Prohibition)
           ?.takeIf { it.applying === planet }
-          ?.let { o -> Misc.Prohibited(planet, o.applied, o.pattern.aspect, o.prohibitor, o.with, o.interruption.aspect) }
+          ?.let { o -> Misc.Prohibited(planet, o.applied, o.pattern.aspect, o.prohibitor, o.with, o.interruption.aspect, o.ingress) }
       }
   }
 
@@ -1124,7 +1124,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       Planet.classicalList.filter { it !== planet }.mapNotNull { other ->
         (applicationOutcomeImpl.getOutcome(h, planet, other) as? ApplicationOutcome.Frustration)
           ?.takeIf { it.applying === planet }
-          ?.let { o -> Misc.Frustrated(planet, o.applied, o.pattern.aspect, o.frustrator, o.interruption.aspect) }
+          ?.let { o -> Misc.Frustrated(planet, o.applied, o.pattern.aspect, o.frustrator, o.interruption.aspect, o.ingress) }
       }
   }
 
