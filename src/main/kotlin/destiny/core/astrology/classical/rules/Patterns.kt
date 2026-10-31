@@ -165,6 +165,28 @@ sealed class Misc : IPlanetPattern {
   ) : Misc()
 
   /**
+   * [planet] 正以 [aspect] 入相位 [applied]，成形之前 [refranator]（兩者之一）停滯轉向（[retrograde]：轉逆行，否則轉順行），
+   * 兩星最接近時仍差 [closestOrb] 度，之後漸行漸遠（臨陣退縮，[destiny.core.astrology.classical.ApplicationOutcome.Refranation]）。
+   * 不限哪兩顆星；只與金木、火土有關的計分判斷另見 [Debility.Refrain_from_Venus_Jupiter]、[AccidentalDignity.Refrain_from_Mars_Saturn]
+   */
+  data class Refrained(
+    override val planet: Planet, val applied: Planet, val aspect: Aspect,
+    val refranator: Planet, val retrograde: Boolean, val closestOrb: Double,
+    val ingress: Planet? = null,
+  ) : Misc()
+
+  /**
+   * [planet] 被 [before]（黃經較小的一側）與 [after] 包夾（[destiny.core.astrology.classical.Besiegement]）。
+   * 每一側是星體本身（aspect 為 null）或該星以 aspect 投射的光線，distance 是與 [planet] 的度數差。
+   * 計分判斷另見 [Debility.Besieged_Mars_Saturn]、[AccidentalDignity.Besieged_Jupiter_Venus]
+   */
+  data class Besieged(
+    override val planet: Planet,
+    val before: Planet, val beforeAspect: Aspect?, val beforeDistance: Double,
+    val after: Planet, val afterAspect: Aspect?, val afterDistance: Double,
+  ) : Misc()
+
+  /**
    * [planet] 參與的居上關係 (可能是居上者，也可能是被壓者)。
    * 屬 [RuleType.MISC] , 不列入尊貴 / 無力的計分
    */

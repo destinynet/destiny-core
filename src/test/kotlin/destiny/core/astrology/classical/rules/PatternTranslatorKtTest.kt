@@ -374,4 +374,24 @@ class PatternTranslatorKtTest {
       assertEquals("太陽 正朝 火星 入相位（六合），成形之前 火星 先與更慢的 土星 形成 六合 後離開，太陽 撲空；在此之前 火星 已先換星座（Frustration）", it.twDesc)
     }
   }
+
+  /** 一般化的臨陣退縮與包夾 */
+  @Test
+  fun miscRefrainedBesieged() {
+    Misc.Refrained(MERCURY, SATURN, OPPOSITION, MERCURY, retrograde = false, closestOrb = 4.15).also {
+      assertEquals("臨陣退縮", it.title)
+      assertEquals("水星 正朝 土星 入相位（沖），成形之前 水星 停滯轉順行，兩星最近仍差 4.2 度便漸行漸遠，臨陣退縮（Refranation）", it.twDesc)
+      assertEquals("Mercury applies to Saturn by Opposition, but before it perfects, Mercury stations direct; they come within 4.2 degrees and then separate. (Refranation)", it.enDesc)
+    }
+    Misc.Refrained(VENUS, JUPITER, TRINE, VENUS, retrograde = true, closestOrb = 1.0, ingress = VENUS).also {
+      assertEquals("金星 正朝 木星 入相位（三合），成形之前 金星 停滯轉逆行，兩星最近仍差 1.0 度便漸行漸遠，臨陣退縮；在此之前 金星 已先換星座（Refranation）", it.twDesc)
+    }
+    Misc.Besieged(JUPITER, MARS, SQUARE, 5.13, SATURN, null, 6.08).also {
+      assertEquals("包夾", it.title)
+      logger.info { "${it.twDesc} / ${it.enDesc} / ${it.jaDesc}" }
+      assertEquals("木星 被 火星 與 土星 前後包夾（火星 以 刑 光線、相距 5.1 度；土星 以星體、相距 6.1 度），中間沒有其他星介入（Besiegement）", it.twDesc)
+      assertEquals("Jupiter is besieged between Mars and Saturn (Mars by Square rays, 5.1 degrees away; Saturn by body, 6.1 degrees away), with no planet intervening. (Besiegement)", it.enDesc)
+      assertEquals("木星は火星と土星に挟まれ（火星はスクエアの光線で5.1度、土星は天体そのもので6.1度）、間に他の天体は入っていません（ビシージメント）。", it.jaDesc)
+    }
+  }
 }

@@ -45,13 +45,14 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     listOf(
       beneficialMutualReception,
       hayz,
-      besiegedJupiterVenus,
       translationOfLight,
       collectionOfLight,
-      besiegedMarsSaturn,
       conjAlgol,
       outOfSect,
-      refrainFromVenusJupiter,
+      // 臨陣退縮、包夾送一般化的 Misc 句子（不限金木／火土的組合，帶細節）；
+      // 只看金木／火土的計分判斷（besiegedJupiterVenus、besiegedMarsSaturn、refrainFromVenusJupiter）不再列入，否則同一件事出現兩行
+      refrained,
+      besieged,
       prohibited,
       frustrated,
     )
@@ -1125,6 +1126,29 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
         (applicationOutcomeImpl.getOutcome(h, planet, other) as? ApplicationOutcome.Frustration)
           ?.takeIf { it.applying === planet }
           ?.let { o -> Misc.Frustrated(planet, o.applied, o.pattern.aspect, o.frustrator, o.interruption.aspect, o.ingress) }
+      }
+  }
+
+  /** [planet] 的入相位臨陣退縮（不限哪兩顆星） */
+  val refrained = object : IPlanetPatternFactory {
+    override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> =
+      Planet.classicalList.filter { it !== planet }.mapNotNull { other ->
+        refranation(h, planet, other)
+          ?.takeIf { it.applying === planet }
+          ?.let { r ->
+            Misc.Refrained(planet, r.applied, r.pattern.aspect, r.refranator,
+              r.stationary.type == StationaryType.DIRECT_TO_RETROGRADE, r.closestOrb, r.ingress)
+          }
+      }
+  }
+
+  /** [planet] 被火土、被金木包夾（[IBesiegement.getResults] 的同一組） */
+  val besieged = object : IPlanetPatternFactory {
+    override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> =
+      listOf(setOf(MARS, SATURN), setOf(VENUS, JUPITER)).mapNotNull { enclosers ->
+        besiegementImpl.getBesiegement(h, planet, enclosers)?.let { b ->
+          Misc.Besieged(planet, b.before.by, b.before.aspect, b.before.distance, b.after.by, b.after.aspect, b.after.distance)
+        }
       }
   }
 

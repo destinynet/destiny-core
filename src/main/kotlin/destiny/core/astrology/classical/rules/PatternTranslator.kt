@@ -133,6 +133,13 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
       is Misc.Frustrated ->
         MiscDescriptor(pattern, if (pattern.ingress != null) "commentIngress" else "comment",
           listOfNotNull(pattern.planet, pattern.applied, pattern.aspect, pattern.frustrator, pattern.interruption, pattern.ingress))
+      is Misc.Refrained ->
+        MiscDescriptor(pattern, (if (pattern.retrograde) "commentRetrograde" else "commentDirect") + (if (pattern.ingress != null) "Ingress" else ""),
+          listOfNotNull(pattern.planet, pattern.applied, pattern.aspect, pattern.refranator, pattern.closestOrb, pattern.ingress))
+      is Misc.Besieged ->
+        // 星體那一側沒有交角；佔位符位置固定，所以放空字串而不是拿掉
+        MiscDescriptor(pattern, "comment" + (if (pattern.beforeAspect == null) "Body" else "Rays") + (if (pattern.afterAspect == null) "Body" else "Rays"),
+          listOf(pattern.planet, pattern.before, pattern.beforeAspect ?: "", pattern.beforeDistance, pattern.after, pattern.afterAspect ?: "", pattern.afterDistance))
       else -> {
         throw IllegalArgumentException("Not Supported : $pattern")
       }
