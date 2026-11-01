@@ -30,6 +30,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonClassDiscriminator
 import destiny.core.toString as pointToString
+import destiny.core.astrology.classical.Dignity
+import destiny.core.astrology.classical.toString as dignityToString
 
 /** 星名的查表語系 —— 固定繁中，不對外開放為參數 */
 private val ZH = Lang.ZH_TW
@@ -77,9 +79,51 @@ data class HoroscopeHouseDto(
   val cuspDeg: Double,
   /** 宮頭所在星座 */
   val cuspSign: String,
-  /** 宮主星 */
+  /** 宮主星（傳統七星） */
   val ruler: String,
   val rulerLabel: String,
+  /** 現代的共同主星（水瓶：天王星、雙魚：海王星、天蠍：冥王星）；其他星座為 null */
+  val coRuler: String? = null,
+  val coRulerLabel: String? = null,
+)
+
+/**
+ * 入相位的預告：[planet] 照目前的行進方向（逆行就往回走），在離開所在星座之前，會與 [to] 形成 [aspect]，
+ * 還要走 [degrees] 度。對方視為不動 —— 卜卦以「還差幾度」論應期的慣例；不是實際的成形時刻。
+ * 已經在容許度內的入相位也會列出（[degrees] 就是距離精準還差多少）。
+ */
+@Serializable
+data class HoroscopeApplicationDto(
+  val planet: String,
+  val to: String,
+  val aspect: String,
+  val glyph: String? = null,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val degrees: Double,
+)
+
+/** [planet] 照目前的行進方向，離開所在星座之前會越過第 [house] 宮的宮頭，還要走 [degrees] 度（宮頭視為不動） */
+@Serializable
+data class HoroscopeCuspIngressDto(
+  val planet: String,
+  val house: Int,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val degrees: Double,
+)
+
+/**
+ * 互相接納（含混合接納）：[a] 落在 [b] 以 [aIn] 主管的位置（例：[Dignity.TERM] ＝ a 在 b 的界內），
+ * [b] 落在 [a] 以 [bIn] 主管的位置（例：[Dignity.RULER] ＝ b 在 a 主管的星座）
+ */
+@Serializable
+data class HoroscopeReceptionDto(
+  val a: String,
+  val aIn: Dignity,
+  val b: String,
+  val bIn: Dignity,
+  /** [aIn]／[bIn] 的顯示文字，語系由 [withReceptions] 的 lang 決定（繁中：廟、旺、界…；英文：Ruler、Term…） */
+  val aInLabel: String,
+  val bInLabel: String,
 )
 
 @Serializable
@@ -381,7 +425,41 @@ data class HoroscopeChartDto(
   val midpoints: List<HoroscopeMidpointDto> = emptyList(),
   /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
   val classicalFacts: List<HoroscopeClassicalFactDto> = emptyList(),
+  /** 各行星離開所在星座前的入相位（依 planet、再依 degrees 排序）；兩端都在 [points] 內，不含 LOT */
+  val applications: List<HoroscopeApplicationDto> = emptyList(),
+  /** 各行星離開所在星座前會越過的宮頭（依 planet、再依 degrees 排序）；沒有宮位時為空 */
+  val cuspIngresses: List<HoroscopeCuspIngressDto> = emptyList(),
+  /** 行星之間的互相接納；由呼叫端以 [withReceptions] 附上 */
+  val receptions: List<HoroscopeReceptionDto> = emptyList(),
 )
+
+/**
+ * 附上行星之間的互相接納（[dignities] 之內，含不同 dignity 的混合接納）；有星不在盤上的略過。
+ * [positions] 是各點的黃道位置；界（TERM）要靠度數，所以不能只給星座。[lang] 決定 [HoroscopeReceptionDto.aInLabel]／[HoroscopeReceptionDto.bInLabel] 的語系
+ */
+fun HoroscopeChartDto.withReceptions(
+  essential: destiny.core.astrology.classical.IEssential,
+  positions: Map<AstroPoint, ZodiacDegree>,
+  dignities: Set<Dignity> = setOf(Dignity.RULER, Dignity.EXALTATION, Dignity.TERM),
+  lang: Lang = ZH,
+): HoroscopeChartDto {
+  val keys = points.mapTo(HashSet()) { it.point }
+  val planets = positions.filterKeys { it is Planet && it.nameKey in keys }
+  val list = essential.getMutualReceptionMap(planets, null, dignities)
+    .map { md ->
+      // MutualData：p 以 dignityMap[p] 接納另一顆 ⇒ 另一顆落在 p 的那個 dignity 裡
+      val (p1, p2) = md.twoPoints.sortedBy { it.nameKey }
+      val aIn = md.getDignityOf(p2)
+      val bIn = md.getDignityOf(p1)
+      HoroscopeReceptionDto(
+        a = p1.nameKey, aIn = aIn, b = p2.nameKey, bIn = bIn,
+        aInLabel = aIn.dignityToString(lang), bInLabel = bIn.dignityToString(lang),
+      )
+    }
+    .distinct()
+    .sortedWith(compareBy({ it.a }, { it.b }, { it.aIn }, { it.bIn }))
+  return copy(receptions = list)
+}
 
 /**
  * 附上古典占星的結構化事實（[destiny.core.astrology.classical.ClassicalFact]）；有星不在盤上的略過。
@@ -613,6 +691,8 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
       cuspSign = h.cusp.sign.name,
       ruler = h.ruler.nameKey,
       rulerLabel = h.ruler.pointToString(ZH),
+      coRuler = MODERN_CO_RULER[h.cusp.sign]?.nameKey,
+      coRulerLabel = MODERN_CO_RULER[h.cusp.sign]?.pointToString(ZH),
     )
   }
 
@@ -684,8 +764,51 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
     midpoints = midPoints
       .filter { m -> (m.points + m.focal).all { it !is FixedStar && it.nameKey in visibleKeys } }
       .map { m -> HoroscopeMidpointDto(m.p1.nameKey, m.p2.nameKey, m.degree.zDeg, m.focal.nameKey, m.orb) },
+    applications = applicationsOf(pointDtos),
+    cuspIngresses = cuspIngressesOf(pointDtos, houseDtos),
   )
 }
+
+/** 現代的共同主星 */
+private val MODERN_CO_RULER: Map<ZodiacSign, Planet> =
+  mapOf(ZodiacSign.AQUARIUS to Planet.URANUS, ZodiacSign.PISCES to Planet.NEPTUNE, ZodiacSign.SCORPIO to Planet.PLUTO)
+
+/** 主要相位的角度（合、六合、四分、三分、對沖） */
+private val MAJOR_ANGLES: List<Aspect> = listOf(Aspect.CONJUNCTION, Aspect.SEXTILE, Aspect.SQUARE, Aspect.TRINE, Aspect.OPPOSITION)
+
+/** 會走的星：行星，且有速度 */
+private fun movers(points: List<HoroscopePointDto>) =
+  points.filter { it.kind == "PLANET" && (it.speed ?: 0.0) != 0.0 }
+
+/**
+ * [p] 沿行進方向走到黃經 [target] 要幾度；超過所在星座的邊界（順行到 30°、逆行到 0°）就是 null。
+ * 正好在 [target] 上（還不到 0.005°）也算 null —— 那是已經成形，不是「還要走」
+ */
+private fun degreesAhead(p: HoroscopePointDto, target: Double): Double? {
+  val forward = (p.speed ?: 0.0) > 0
+  val d = if (forward) ((target - p.zDeg) % 360 + 360) % 360 else ((p.zDeg - target) % 360 + 360) % 360
+  val room = if (forward) 30 - p.signDegree else p.signDegree
+  return d.takeIf { it > 0.005 && it <= room }
+}
+
+private fun applicationsOf(points: List<HoroscopePointDto>): List<HoroscopeApplicationDto> {
+  val targets = points.filter { it.kind == "PLANET" || it.kind == "NODE" || it.kind == "AXIS" }
+  return movers(points).flatMap { m ->
+    targets.filter { it.point != m.point }.flatMap { t ->
+      MAJOR_ANGLES.flatMap { aspect ->
+        // 合相與對沖的兩個方向是同一點：先正規化再去重
+        setOf(t.zDeg + aspect.degree, t.zDeg - aspect.degree).map { ((it % 360) + 360) % 360 }.toSet().mapNotNull { c ->
+          degreesAhead(m, c)?.let { HoroscopeApplicationDto(m.point, t.point, aspect.name, aspect.glyph, it) }
+        }
+      }
+    }.sortedBy { it.degrees }
+  }
+}
+
+private fun cuspIngressesOf(points: List<HoroscopePointDto>, houses: List<HoroscopeHouseDto>): List<HoroscopeCuspIngressDto> =
+  movers(points).flatMap { m ->
+    houses.mapNotNull { h -> degreesAhead(m, h.cuspDeg)?.let { HoroscopeCuspIngressDto(m.point, h.id, it) } }.sortedBy { it.degrees }
+  }
 
 /**
  * 只留 [keep] 的點位，並維持各欄位「成員都在 [HoroscopeChartDto.points] 內」的契約：
@@ -710,6 +833,9 @@ fun HoroscopeChartDto.keepingPoints(keep: (HoroscopePointDto) -> Boolean): Horos
     patterns = keptPatterns,
     midpoints = midpoints.filter { it.a in keys && it.b in keys && it.focal in keys },
     classicalFacts = classicalFacts.filter { f -> f.members.all { it in keys } },
+    applications = applications.filter { it.planet in keys && it.to in keys },
+    cuspIngresses = cuspIngresses.filter { it.planet in keys },
+    receptions = receptions.filter { it.a in keys && it.b in keys },
   )
 }
 
@@ -729,6 +855,7 @@ fun HoroscopeChartDto.gatedBy(grain: BirthDataGrain): HoroscopeChartDto {
     meta = meta.copy(ascDeg = 0.0, mcDeg = 0.0),
     points = kept.points.map { it.copy(house = null) },
     houses = emptyList(),
+    cuspIngresses = emptyList(),
     // 星群的宮位與宮位星群本身都不可得
     patterns = kept.patterns.map { it.copy(house = null) },
   )
