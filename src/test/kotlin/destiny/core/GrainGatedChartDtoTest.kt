@@ -6,6 +6,7 @@ package destiny.core
 import destiny.core.astrology.Axis
 import destiny.core.astrology.BirthDataGrain
 import destiny.core.astrology.HoroscopeAspectDto
+import destiny.core.astrology.PointKind
 import destiny.core.astrology.HoroscopeChartDto
 import destiny.core.astrology.HoroscopeDispositorDto
 import destiny.core.astrology.HoroscopeHouseDto
@@ -49,7 +50,7 @@ class GrainGatedChartDtoTest {
     }
   }
 
-  private fun point(key: String, kind: String) = HoroscopePointDto(
+  private fun point(key: String, kind: PointKind) = HoroscopePointDto(
     point = key, label = key, glyph = null, zDeg = 10.0, sign = "ARIES", signDegree = 10.0, house = 1, retrograde = false, kind = kind)
 
   private fun aspect(from: String, to: String) = HoroscopeAspectDto(from, to, "CONJUNCTION", 0.0, 1.0, true, null)
@@ -60,7 +61,7 @@ class GrainGatedChartDtoTest {
 
   private val horo = HoroscopeChartDto(
     meta = HoroscopeMetaDto(gender = "F", ascDeg = 123.0, mcDeg = 33.0),
-    points = listOf(point(sun, "PLANET"), point(moon, "PLANET"), point(rising, "AXIS")),
+    points = listOf(point(sun, PointKind.PLANET), point(moon, PointKind.PLANET), point(rising, PointKind.AXIS)),
     houses = listOf(HoroscopeHouseDto(1, 123.0, "LEO", "SUN", "太陽")),
     aspects = listOf(aspect(sun, moon), aspect(sun, rising)),
   )

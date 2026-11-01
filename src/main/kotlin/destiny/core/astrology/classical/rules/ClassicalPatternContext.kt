@@ -77,104 +77,83 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * A planet in its own sign
    */
-  val ruler = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return h.getZodiacSign(planet)?.takeIf { sign ->
-        (planet === with(rulerImpl) { sign.getRulerPoint() })
-      }?.let { sign ->
-        logger.debug("{} 位於 {} , 為其 {}", planet, sign, Dignity.RULER)
-        EssentialDignity.Ruler(planet, sign)
-      }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
+  val ruler = IPlanetPatternFactory.single { planet, h ->
+    h.getZodiacSign(planet)?.takeIf { sign ->
+      (planet === with(rulerImpl) { sign.getRulerPoint() })
+    }?.let { sign ->
+      logger.debug("{} 位於 {} , 為其 {}", planet, sign, Dignity.RULER)
+      EssentialDignity.Ruler(planet, sign)
     }
   }
 
   /** A planet in its exaltation */
-  val exaltation = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return h.getZodiacSign(planet)?.takeIf { sign ->
-        (planet === with(exaltImpl) { sign.getExaltPoint() })
-      }?.let { sign ->
-        logger.debug("{} 位於其 {} 的星座 {}", planet, Dignity.EXALTATION, sign)
-        EssentialDignity.Exaltation(planet, sign)
-      }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
+  val exaltation = IPlanetPatternFactory.single { planet, h ->
+    h.getZodiacSign(planet)?.takeIf { sign ->
+      (planet === with(exaltImpl) { sign.getExaltPoint() })
+    }?.let { sign ->
+      logger.debug("{} 位於其 {} 的星座 {}", planet, Dignity.EXALTATION, sign)
+      EssentialDignity.Exaltation(planet, sign)
     }
   }
 
   /**
    * A planet in its own day or night triplicity (not to be confused with the modern triplicities).
    */
-  val triplicity = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      val dayNight = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
-      return h.getZodiacSign(planet)?.takeIf { sign ->
-        with(triplicityImpl) {
-          (dayNight == DAY && planet === sign.getTriplicityPoint(DAY) ||
-            dayNight == NIGHT && planet === sign.getTriplicityPoint(NIGHT))
-        }
-      }?.let { sign ->
-        logger.debug("{} 位於 {} 為其 {} 之 Triplicity", planet, sign, dayNight)
-        EssentialDignity.Triplicity(planet, sign, dayNight)
+  val triplicity = IPlanetPatternFactory.single { planet, h ->
+    val dayNight = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
+    h.getZodiacSign(planet)?.takeIf { sign ->
+      with(triplicityImpl) {
+        (dayNight == DAY && planet === sign.getTriplicityPoint(DAY) ||
+          dayNight == NIGHT && planet === sign.getTriplicityPoint(NIGHT))
       }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-
+    }?.let { sign ->
+      logger.debug("{} 位於 {} 為其 {} 之 Triplicity", planet, sign, dayNight)
+      EssentialDignity.Triplicity(planet, sign, dayNight)
     }
   }
 
   /**
    * A planet in itw own term.
    * */
-  val term = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getPosition(planet)?.lngDeg?.takeIf { lngDeg ->
-        (planet === termImpl.getPoint(lngDeg))
-      }?.let { lngDeg ->
-        EssentialDignity.Term(planet, lngDeg)
-      }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
+  val term = IPlanetPatternFactory.single { planet, h ->
+    h.getPosition(planet)?.lngDeg?.takeIf { lngDeg ->
+      (planet === termImpl.getPoint(lngDeg))
+    }?.let { lngDeg ->
+      EssentialDignity.Term(planet, lngDeg)
     }
   }
 
   /**
    * A planet in its own Chaldean decanate or face.
    * */
-  val face = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getPosition(planet)?.lngDeg?.takeIf { lngDeg ->
-        (planet === faceImpl.getPoint(lngDeg))
-      }?.let { lngDeg ->
-        EssentialDignity.Face(planet, lngDeg)
-      }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
+  val face = IPlanetPatternFactory.single { planet, h ->
+    h.getPosition(planet)?.lngDeg?.takeIf { lngDeg ->
+      (planet === faceImpl.getPoint(lngDeg))
+    }?.let { lngDeg ->
+      EssentialDignity.Face(planet, lngDeg)
     }
   }
 
   /**
    * RR / EE / RE 互容
    */
-  val beneficialMutualReception = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return with(essentialImpl) {
-        planet.getMutualData(h.pointDegreeMap , null , setOf(Dignity.RULER , Dignity.EXALTATION))
-          .map { mutualData ->
-            val sign1 = h.getZodiacSign(planet)!!
-            val p2 = mutualData.getAnotherPoint(planet)
-            val sign2 = h.getZodiacSign(p2)!!
-            logger.debug("mutualData = {}", mutualData)
-            logger.debug("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 互容",
-              planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
-              planet, sign1)
-            EssentialDignity.MutualReception(
-              planet, sign1, mutualData.getDignityOf(planet),
-              p2, sign2, mutualData.getDignityOf(p2)
-            )
-          }.toList()
-      }
+  val beneficialMutualReception = IPlanetPatternFactory { planet, h ->
+    with(essentialImpl) {
+      planet.getMutualData(h.pointDegreeMap , null , setOf(Dignity.RULER , Dignity.EXALTATION))
+        .map { mutualData ->
+          val sign1 = h.getZodiacSign(planet)!!
+          val p2 = mutualData.getAnotherPoint(planet)
+          val sign2 = h.getZodiacSign(p2)!!
+          logger.debug("mutualData = {}", mutualData)
+          logger.debug("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 互容",
+            planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
+            planet, sign1)
+          EssentialDignity.MutualReception(
+            planet, sign1, mutualData.getDignityOf(planet),
+            p2, sign2, mutualData.getDignityOf(p2)
+          )
+        }.toList()
+    }
 
 
 //      val rulerMutual = with((essentialImpl)) {
@@ -219,99 +198,77 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 //      }
 //
 //      return listOfNotNull(rulerMutual, exaltMutual, mixedMutual)
-    }
   } // beneficialMutualReception
 
   /**
    * ====================================== for [AccidentalDignity] ======================================
    */
 
-  val house_1_10 = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getHouse(planet)
-        ?.takeIf { it == 1 || it == 10 }
-        ?.let { house ->
-          AccidentalDignity.House_1_10(planet, house)
-        }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val house_1_10 = IPlanetPatternFactory.single { planet, h ->
+    h.getHouse(planet)
+      ?.takeIf { it == 1 || it == 10 }
+      ?.let { house ->
+        AccidentalDignity.House_1_10(planet, house)
+      }
   }
 
-  val house_4_7_11 = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getHouse(planet)
-        ?.takeIf { intArrayOf(4, 7, 11).contains(it) }
-        ?.let { house ->
-          AccidentalDignity.House_4_7_11(planet, house)
-        }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val house_4_7_11 = IPlanetPatternFactory.single { planet, h ->
+    h.getHouse(planet)
+      ?.takeIf { intArrayOf(4, 7, 11).contains(it) }
+      ?.let { house ->
+        AccidentalDignity.House_4_7_11(planet, house)
+      }
   }
 
-  val house_2_5 = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getHouse(planet)
-        ?.takeIf { it == 2 || it == 5 }
-        ?.let { house ->
-          AccidentalDignity.House_2_5(planet, house)
-        }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val house_2_5 = IPlanetPatternFactory.single { planet, h ->
+    h.getHouse(planet)
+      ?.takeIf { it == 2 || it == 5 }
+      ?.let { house ->
+        AccidentalDignity.House_2_5(planet, house)
+      }
   }
 
-  val house_9 = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getHouse(planet)
-        ?.takeIf { it == 9 }
-        ?.let {
-          AccidentalDignity.House_9(planet)
-        }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val house_9 = IPlanetPatternFactory.single { planet, h ->
+    h.getHouse(planet)
+      ?.takeIf { it == 9 }
+      ?.let {
+        AccidentalDignity.House_9(planet)
+      }
   }
 
 
-  val house_3 = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getHouse(planet)
-        ?.takeIf { it == 3 }
-        ?.let {
-          AccidentalDignity.House_3(planet)
-        }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val house_3 = IPlanetPatternFactory.single { planet, h ->
+    h.getHouse(planet)
+      ?.takeIf { it == 3 }
+      ?.let {
+        AccidentalDignity.House_3(planet)
+      }
   }
 
   /**
    * Direct in motion (does not apply to Sun and Moon).
    */
-  val direct = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return planet.takeIf { it !== SUN && it !== MOON }
-        ?.let { h.getStarPosition(it) }
-        ?.speedLng
-        ?.takeIf { it > 0 }
-        ?.let {
-          AccidentalDignity.Direct(planet)
-        }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val direct = IPlanetPatternFactory.single { planet, h ->
+    planet.takeIf { it !== SUN && it !== MOON }
+      ?.let { h.getStarPosition(it) }
+      ?.speedLng
+      ?.takeIf { it > 0 }
+      ?.let {
+        AccidentalDignity.Direct(planet)
+      }
   }
 
   /**
    * Swift in motion (faster than average).
    * */
-  val swift = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return AverageDailyMotionMap.getAvgDailySpeed(planet)?.takeIf { dailyDeg ->
-        h.getStarPosition(planet)
-          ?.speedLng?.let { speedLng ->
-          speedLng > dailyDeg
-        } ?: false
-      }?.let {
-        AccidentalDignity.Swift(planet)
-      }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
+  val swift = IPlanetPatternFactory.single { planet, h ->
+    AverageDailyMotionMap.getAvgDailySpeed(planet)?.takeIf { dailyDeg ->
+      h.getStarPosition(planet)
+        ?.speedLng?.let { speedLng ->
+        speedLng > dailyDeg
+      } ?: false
+    }?.let {
+      AccidentalDignity.Swift(planet)
     }
   }
 
@@ -319,218 +276,179 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * Mars, Jupiter, or Saturn oriental of (rising before) the Sun.
    * 火星、木星、土星 是否 東出 於 太陽
    */
-  val orientalGood = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return arrayOf(MARS, JUPITER, SATURN)
-        .takeIf { it.contains(planet) }
-        ?.let { h.getPosition(planet) }?.lngDeg
-        ?.let { planetDegree ->
-          h.getPosition(SUN)?.lngDeg?.takeIf { sunDegree ->
-            planetDegree.isOriental(sunDegree)
-          }
-        }?.let {
-          AccidentalDignity.Oriental(planet)
+  val orientalGood = IPlanetPatternFactory.single { planet, h ->
+    arrayOf(MARS, JUPITER, SATURN)
+      .takeIf { it.contains(planet) }
+      ?.let { h.getPosition(planet) }?.lngDeg
+      ?.let { planetDegree ->
+        h.getPosition(SUN)?.lngDeg?.takeIf { sunDegree ->
+          planetDegree.isOriental(sunDegree)
         }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+      }?.let {
+        AccidentalDignity.Oriental(planet)
+      }
   }
 
   /**
    * Mercury, or Venus occidental of (rising after) the Sun.
    * */
-  val occidentalGood = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return planet.takeIf { it === MERCURY || it === VENUS }
-        ?.let { h.getPosition(it) }?.lngDeg?.let { planetDeg ->
-        h.getPosition(SUN)?.lngDeg?.takeIf { sunDeg ->
-          planetDeg.isOccidental(sunDeg)
-        }?.let {
-          AccidentalDignity.Occidental(planet)
-        }
+  val occidentalGood = IPlanetPatternFactory.single { planet, h ->
+    planet.takeIf { it === MERCURY || it === VENUS }
+      ?.let { h.getPosition(it) }?.lngDeg?.let { planetDeg ->
+      h.getPosition(SUN)?.lngDeg?.takeIf { sunDeg ->
+        planetDeg.isOccidental(sunDeg)
+      }?.let {
+        AccidentalDignity.Occidental(planet)
       }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
   }
 
   /**
    * Moon increasing in light (月增光/上弦月) , or occidental of the Sun.
    * */
-  val moonIncreaseLight = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return planet.takeIf { it === MOON }?.let { h.getPosition(it) }?.lngDeg?.let { moonDeg ->
-          h.getPosition(SUN)?.lngDeg?.takeIf { sunDeg ->
-            moonDeg.isOccidental(sunDeg)
-          }?.let {
-            AccidentalDignity.Moon_Increase_Light
-          }
-        }?.let { pattern -> listOf(pattern) } ?: emptyList()
-
-    }
+  val moonIncreaseLight = IPlanetPatternFactory.single { planet, h ->
+    planet.takeIf { it === MOON }?.let { h.getPosition(it) }?.lngDeg?.let { moonDeg ->
+        h.getPosition(SUN)?.lngDeg?.takeIf { sunDeg ->
+          moonDeg.isOccidental(sunDeg)
+        }?.let {
+          AccidentalDignity.Moon_Increase_Light
+        }
+      }
   }
 
   /**
    * Free from combustion and the Sun's rays. 只要脫離了太陽左右 17度，就算 Free Combustion !?
    * TODO : refine the definition , it is too broad
    */
-  val freeCombustion = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return planet.takeIf { it !== SUN }
-        ?.takeIf { h.getAngle(it, SUN) > 17 }
-        ?.let {
-          AccidentalDignity.Free_Combustion(planet)
-        }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val freeCombustion = IPlanetPatternFactory.single { planet, h ->
+    planet.takeIf { it !== SUN }
+      ?.takeIf { h.getAngle(it, SUN) > 17 }
+      ?.let {
+        AccidentalDignity.Free_Combustion(planet)
+      }
   }
 
   /**
    * Cazimi (within 17 minutes of the Sun).
    * */
-  val cazimi = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return planet.takeIf { it !== SUN }
-        ?.takeIf { h.getAngle(it, SUN) < 17.0 / 60.0 }
-        ?.let { AccidentalDignity.Cazimi(planet) }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val cazimi = IPlanetPatternFactory.single { planet, h ->
+    planet.takeIf { it !== SUN }
+      ?.takeIf { h.getAngle(it, SUN) < 17.0 / 60.0 }
+      ?.let { AccidentalDignity.Cazimi(planet) }
   }
 
   /**
    * Partile conjunction with Jupiter or Venus.
    * 和金星或木星合相，交角 1 度內
    * */
-  val partileConjJupiterVenus = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      val planetDeg = h.getPosition(planet)?.lngDeg
-      val jupiterDeg = h.getPosition(JUPITER)?.lngDeg
-      val venusDeg = h.getPosition(VENUS)?.lngDeg
+  val partileConjJupiterVenus = IPlanetPatternFactory.single { planet, h ->
+    val planetDeg = h.getPosition(planet)?.lngDeg
+    val jupiterDeg = h.getPosition(JUPITER)?.lngDeg
+    val venusDeg = h.getPosition(VENUS)?.lngDeg
 
-      return planetDeg?.let {
+    planetDeg?.let {
 
-        jupiterDeg
-          ?.takeIf { planet !== JUPITER && planetDeg.getAngle(jupiterDeg) <= 1 }
-          ?.let { AccidentalDignity.Partile_Conj_Jupiter_Venus(planet, JUPITER) }
-          ?: venusDeg?.takeIf { planet !== VENUS && planetDeg.getAngle(venusDeg) <= 1 }
-            ?.let { AccidentalDignity.Partile_Conj_Jupiter_Venus(planet, VENUS) }
+      jupiterDeg
+        ?.takeIf { planet !== JUPITER && planetDeg.getAngle(jupiterDeg) <= 1 }
+        ?.let { AccidentalDignity.Partile_Conj_Jupiter_Venus(planet, JUPITER) }
+        ?: venusDeg?.takeIf { planet !== VENUS && planetDeg.getAngle(venusDeg) <= 1 }
+          ?.let { AccidentalDignity.Partile_Conj_Jupiter_Venus(planet, VENUS) }
 
 
-      }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
   }
 
   /**
    * Partile aspect with Dragon's Head (Moon's North Node).
    */
-  val partileConjNorthNode = object : IPlanetPatternFactory {
+  /** 內定採用 [NodeType.MEAN] */
+  private val northNode: LunarNode = LunarNode.of(News.NorthSouth.NORTH)
 
-    /** 內定採用 [NodeType.MEAN] */
-    val north: LunarNode = LunarNode.of(News.NorthSouth.NORTH)
-
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
-        h.getPosition(north)?.lngDeg?.takeIf { northDeg ->
-          planetDeg.getAngle(northDeg) <= 1
-        }?.let {
-          logger.debug("{} 與 {} 形成 {}", planet, north, CONJUNCTION)
-          AccidentalDignity.Partile_Conj_North_Node(planet, north)
-        }
+  val partileConjNorthNode = IPlanetPatternFactory.single { planet, h ->
+    h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+      h.getPosition(northNode)?.lngDeg?.takeIf { northDeg ->
+        planetDeg.getAngle(northDeg) <= 1
+      }?.let {
+        logger.debug("{} 與 {} 形成 {}", planet, northNode, CONJUNCTION)
+        AccidentalDignity.Partile_Conj_North_Node(planet, northNode)
       }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-
     }
   }
 
   /**
    * Partile trine Jupiter or Venus.
    */
-  val partileTrineJupiterVenus = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      val planetDeg = h.getPosition(planet)?.lngDeg
-      val jupiterDeg = h.getPosition(JUPITER)?.lngDeg
-      val venusDeg = h.getPosition(VENUS)?.lngDeg
+  val partileTrineJupiterVenus = IPlanetPatternFactory { planet, h ->
+    val planetDeg = h.getPosition(planet)?.lngDeg
+    val jupiterDeg = h.getPosition(JUPITER)?.lngDeg
+    val venusDeg = h.getPosition(VENUS)?.lngDeg
 
 
-      return planetDeg?.let {
+    planetDeg?.let {
 
-        val trineJupiter = jupiterDeg?.takeIf {
-          planet !== JUPITER && AspectEffectiveModern.isEffective(planetDeg, jupiterDeg, TRINE, 1.0)
-        }?.let {
-          AccidentalDignity.Partile_Trine_Jupiter_Venus(planet, JUPITER)
-        }
+      val trineJupiter = jupiterDeg?.takeIf {
+        planet !== JUPITER && AspectEffectiveModern.isEffective(planetDeg, jupiterDeg, TRINE, 1.0)
+      }?.let {
+        AccidentalDignity.Partile_Trine_Jupiter_Venus(planet, JUPITER)
+      }
 
-        val trineVenus = venusDeg?.takeIf {
-          planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, TRINE, 1.0)
-        }?.let {
-          AccidentalDignity.Partile_Trine_Jupiter_Venus(planet, VENUS)
-        }
+      val trineVenus = venusDeg?.takeIf {
+        planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, TRINE, 1.0)
+      }?.let {
+        AccidentalDignity.Partile_Trine_Jupiter_Venus(planet, VENUS)
+      }
 
-        listOfNotNull(trineJupiter, trineVenus)
+      listOfNotNull(trineJupiter, trineVenus)
 
-      } ?: emptyList()
-    }
+    } ?: emptyList()
   }
 
   /**
    * Partile aspect Jupiter or Venus.
    */
-  val partileSextileJupiterVenus = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      val planetDeg = h.getPosition(planet)?.lngDeg
-      val jupiterDeg = h.getPosition(JUPITER)?.lngDeg
-      val venusDeg = h.getPosition(VENUS)?.lngDeg
+  val partileSextileJupiterVenus = IPlanetPatternFactory { planet, h ->
+    val planetDeg = h.getPosition(planet)?.lngDeg
+    val jupiterDeg = h.getPosition(JUPITER)?.lngDeg
+    val venusDeg = h.getPosition(VENUS)?.lngDeg
 
-      return planetDeg?.let {
+    planetDeg?.let {
 
-        val sextileJupiter = jupiterDeg
-          ?.takeIf { planet !== JUPITER && AspectEffectiveModern.isEffective(planetDeg, jupiterDeg, SEXTILE, 1.0) }
-          ?.let { AccidentalDignity.Partile_Sextile_Jupiter_Venus(planet, JUPITER) }
+      val sextileJupiter = jupiterDeg
+        ?.takeIf { planet !== JUPITER && AspectEffectiveModern.isEffective(planetDeg, jupiterDeg, SEXTILE, 1.0) }
+        ?.let { AccidentalDignity.Partile_Sextile_Jupiter_Venus(planet, JUPITER) }
 
-        val sextileVenus = venusDeg
-          ?.takeIf { planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, SEXTILE, 1.0) }
-          ?.let { AccidentalDignity.Partile_Sextile_Jupiter_Venus(planet, VENUS) }
+      val sextileVenus = venusDeg
+        ?.takeIf { planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, SEXTILE, 1.0) }
+        ?.let { AccidentalDignity.Partile_Sextile_Jupiter_Venus(planet, VENUS) }
 
-        listOfNotNull(sextileJupiter, sextileVenus)
-      } ?: emptyList()
-    }
+      listOfNotNull(sextileJupiter, sextileVenus)
+    } ?: emptyList()
   }
 
   /**
    * Partile conjunct Cor Leonis (Regulus) at 29deg50' Leo in January 2000.
    * */
-  val partileConjRegulus = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
-        h.getPosition(FixedStar.REGULUS)?.lngDeg?.takeIf { regulusDeg ->
-          AspectEffectiveModern.isEffective(planetDeg, regulusDeg, CONJUNCTION, 1.0)
-        }?.let {
-          AccidentalDignity.Partile_Conj_Regulus(planet)
-        }
+  val partileConjRegulus = IPlanetPatternFactory.single { planet, h ->
+    h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+      h.getPosition(FixedStar.REGULUS)?.lngDeg?.takeIf { regulusDeg ->
+        AspectEffectiveModern.isEffective(planetDeg, regulusDeg, CONJUNCTION, 1.0)
+      }?.let {
+        AccidentalDignity.Partile_Conj_Regulus(planet)
       }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
   }
 
   /**
    * Partile conjunct Spica at 23deg50' Libra in January 2000.
    * */
-  val partileConjSpica = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
-        h.getPosition(FixedStar.SPICA)?.lngDeg?.takeIf { spicaDeg ->
-          AspectEffectiveModern.isEffective(planetDeg, spicaDeg, CONJUNCTION, 1.0)
-        }?.let {
-          logger.debug("{} 與 {} 形成 {}", planet, FixedStar.SPICA, CONJUNCTION)
-          AccidentalDignity.Partile_Conj_Spica(planet)
-        }
+  val partileConjSpica = IPlanetPatternFactory.single { planet, h ->
+    h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+      h.getPosition(FixedStar.SPICA)?.lngDeg?.takeIf { spicaDeg ->
+        AspectEffectiveModern.isEffective(planetDeg, spicaDeg, CONJUNCTION, 1.0)
+      }?.let {
+        logger.debug("{} 與 {} 形成 {}", planet, FixedStar.SPICA, CONJUNCTION)
+        AccidentalDignity.Partile_Conj_Spica(planet)
       }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
   }
 
@@ -544,22 +462,17 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * Jupiter in 11th.
    * Saturn in 12th.
    */
-  val joyHouse = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return h.getHouse(planet)?.takeIf { house ->
-        (planet === MERCURY && house == 1 ||
-          planet === MOON && house == 3 ||
-          planet === VENUS && house == 5 ||
-          planet === MARS && house == 6 ||
-          planet === SUN && house == 9 ||
-          planet === JUPITER && house == 11 ||
-          planet === SATURN && house == 12)
-      }?.let { house ->
-        AccidentalDignity.JoyHouse(planet, house)
-      }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-
+  val joyHouse = IPlanetPatternFactory.single { planet, h ->
+    h.getHouse(planet)?.takeIf { house ->
+      (planet === MERCURY && house == 1 ||
+        planet === MOON && house == 3 ||
+        planet === VENUS && house == 5 ||
+        planet === MARS && house == 6 ||
+        planet === SUN && house == 9 ||
+        planet === JUPITER && house == 11 ||
+        planet === SATURN && house == 12)
+    }?.let { house ->
+      AccidentalDignity.JoyHouse(planet, house)
     }
   }
 
@@ -571,30 +484,26 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * 相對於得時的，是「不得時」 [outOfSect]
    *
    */
-  val hayz = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
+  val hayz = IPlanetPatternFactory.single { planet, h ->
+    val dayNight = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
 
-      val dayNight = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
-
-      return h.getZodiacSign(planet)?.let { sign ->
-        h.getHouse(planet)?.let { house ->
-          when (dayNight) {
-            DAY -> planet.takeIf { arrayOf(SUN, JUPITER, SATURN).contains(it) }
-              ?.takeIf { house >= 7 && sign.booleanValue }
-              ?.let {
-                logger.debug("晝星 {} 於白天在地平面上，落入陽性星座 {} , 得時", planet, sign)
-                AccidentalDignity.Hayz(planet, dayNight, YinYang.陽, sign)
-              }
-            NIGHT -> planet.takeIf { arrayOf(MOON, VENUS, MARS).contains(it) }
-              ?.takeIf { house >= 7 && !sign.booleanValue }
-              ?.let {
-                logger.debug("夜星 {} 於夜晚在地平面上，落入陰性星座 {} , 得時", planet, sign)
-                AccidentalDignity.Hayz(planet, dayNight, YinYang.陰, sign)
-              }
-          }
+    h.getZodiacSign(planet)?.let { sign ->
+      h.getHouse(planet)?.let { house ->
+        when (dayNight) {
+          DAY -> planet.takeIf { it.sect == DAY }
+            ?.takeIf { house >= 7 && sign.booleanValue }
+            ?.let {
+              logger.debug("晝星 {} 於白天在地平面上，落入陽性星座 {} , 得時", planet, sign)
+              AccidentalDignity.Hayz(planet, dayNight, YinYang.陽, sign)
+            }
+          NIGHT -> planet.takeIf { it.sect == NIGHT }
+            ?.takeIf { house >= 7 && !sign.booleanValue }
+            ?.let {
+              logger.debug("夜星 {} 於夜晚在地平面上，落入陰性星座 {} , 得時", planet, sign)
+              AccidentalDignity.Hayz(planet, dayNight, YinYang.陰, sign)
+            }
         }
       }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
   }
 
@@ -602,41 +511,31 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * 夾輔 : 被金星木星包夾 , 是很幸運的情形
    * 星體或 60/90/120/180 的光線，兩側各在 7° 內，中間沒有別的星介入（[BesiegementPorphyryImpl]）
    */
-  val besiegedJupiterVenus = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return planet.takeIf { arrayOf(SUN, MOON, MERCURY, MARS, SATURN).contains(it) }?.takeIf {
-        besiegementImpl.getBesiegement(h, it, setOf(VENUS, JUPITER)) != null
-      }?.let {
-        AccidentalDignity.Besieged_Jupiter_Venus(planet)
-      }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
+  val besiegedJupiterVenus = IPlanetPatternFactory.single { planet, h ->
+    planet.takeIf { arrayOf(SUN, MOON, MERCURY, MARS, SATURN).contains(it) }?.takeIf {
+      besiegementImpl.getBesiegement(h, it, setOf(VENUS, JUPITER)) != null
+    }?.let {
+      AccidentalDignity.Besieged_Jupiter_Venus(planet)
     }
   }
 
-  val translationOfLight = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return translationOfLightImpl.getResult(planet, h)
-        ?.let { t ->
-          val deg = h.getAngle(t.from, t.to)
-          // {0} 從 {1} 傳遞光線到 {2} ，{1} 與 {2} 交角 {3} 度，相位為 {4} 。 (入相位 or 出相位)
-          // {0} 從 {1} 傳遞光線到 {2} ，{1} 與 {2} 交角 {3} 度，未形成相位
-          AccidentalDignity.Translation_of_Light(planet, t.from, t.to, deg, t.between?.aspectType)
-        }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val translationOfLight = IPlanetPatternFactory.single { planet, h ->
+    translationOfLightImpl.getResult(planet, h)
+      ?.let { t ->
+        val deg = h.getAngle(t.from, t.to)
+        // {0} 從 {1} 傳遞光線到 {2} ，{1} 與 {2} 交角 {3} 度，相位為 {4} 。 (入相位 or 出相位)
+        // {0} 從 {1} 傳遞光線到 {2} ，{1} 與 {2} 交角 {3} 度，未形成相位
+        AccidentalDignity.Translation_of_Light(planet, t.from, t.to, deg, t.between?.aspectType)
+      }
   }
 
   /**
    * 目前只將「收集好光 (DIGNITIES) 」視為 Collection of Light ，而「蒐集穢光 (DEBILITIES) 」不納入考慮
    */
-  val collectionOfLight = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return collectionOfLightImpl.getResult(planet, h, receivedOnly = true)?.let { c ->
-        // {0} 從 {1} 與 {2} 收集光線。 {1} 與 {2} 交角 {3} 度。
-        AccidentalDignity.Collection_of_Light(planet, c.planets, h.getAngle(c.planets[0], c.planets[1]))
-      }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
+  val collectionOfLight = IPlanetPatternFactory.single { planet, h ->
+    collectionOfLightImpl.getResult(planet, h, receivedOnly = true)?.let { c ->
+      // {0} 從 {1} 與 {2} 收集光線。 {1} 與 {2} 交角 {3} 度。
+      AccidentalDignity.Collection_of_Light(planet, c.planets, h.getAngle(c.planets[0], c.planets[1]))
     }
   }
 
@@ -651,28 +550,23 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /**
    * 在與火星或土星形成交角之前，臨陣退縮，代表避免厄運
    */
-  val refrainFromMarsSaturn = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return planet.takeIf { it !== MOON && it !== SUN }
-        ?.let {
-
-          planet.takeIf { it !== MARS }?.let {
-            refranation(h, planet, MARS)?.let { r ->
-              val aspect = r.pattern.aspect
-              logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, MARS, aspect)
-              AccidentalDignity.Refrain_from_Mars_Saturn(planet, MARS, aspect)
-            }
-          } ?: planet.takeIf { it !== SATURN }?.let {
-            refranation(h, planet, SATURN)?.let { r ->
-              val aspect = r.pattern.aspect
-              logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, SATURN, aspect)
-              AccidentalDignity.Refrain_from_Mars_Saturn(planet, SATURN, aspect)
-            }
+  val refrainFromMarsSaturn = IPlanetPatternFactory.single { planet, h ->
+    planet.takeIf { it !== MOON && it !== SUN }
+      ?.let {
+        planet.takeIf { it !== MARS }?.let {
+          refranation(h, planet, MARS)?.let { r ->
+            val aspect = r.pattern.aspect
+            logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, MARS, aspect)
+            AccidentalDignity.Refrain_from_Mars_Saturn(planet, MARS, aspect)
+          }
+        } ?: planet.takeIf { it !== SATURN }?.let {
+          refranation(h, planet, SATURN)?.let { r ->
+            val aspect = r.pattern.aspect
+            logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, SATURN, aspect)
+            AccidentalDignity.Refrain_from_Mars_Saturn(planet, SATURN, aspect)
           }
         }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
-
+      }
   }
 
   /**
@@ -680,114 +574,87 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * */
 
   /** In Detriment */
-  val detriment = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getZodiacSign(planet)?.let { sign ->
-        sign.takeIf { planet === with(detrimentImpl) { sign.getDetrimentPoint() } }
-          ?.let { Debility.Detriment(planet, sign) }
-      }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
+  val detriment = IPlanetPatternFactory.single { planet, h ->
+    h.getZodiacSign(planet)?.let { sign ->
+      sign.takeIf { planet === with(detrimentImpl) { sign.getDetrimentPoint() } }
+        ?.let { Debility.Detriment(planet, sign) }
     }
   }
 
   /** In Fall */
-  val fall = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getZodiacSign(planet)?.let { sign ->
-        sign.takeIf { planet === with(fallImpl) { sign.getFallPoint() } }
-          ?.let { Debility.Fall(planet, sign) }
-      }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
+  val fall = IPlanetPatternFactory.single { planet, h ->
+    h.getZodiacSign(planet)?.let { sign ->
+      sign.takeIf { planet === with(fallImpl) { sign.getFallPoint() } }
+        ?.let { Debility.Fall(planet, sign) }
     }
   }
 
   /**
    * Peregrine : 漂泊、茫游、外出狀態
    */
-  val peregrine = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
+  val peregrine = IPlanetPatternFactory.single { planet, h ->
+    h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+      val dayNight = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
+      h.getZodiacSign(planet)?.takeIf { sign ->
 
-      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
-        val dayNight = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
-        h.getZodiacSign(planet)?.takeIf { sign ->
-
-          planet !== with(rulerImpl) { sign.getRulerPoint() } &&
-            planet !== with(exaltImpl) { sign.getExaltPoint() } &&
-            planet !== with(detrimentImpl) { sign.getDetrimentPoint() } &&
-            planet !== with(fallImpl) { sign.getFallPoint() } &&
-            planet !== termImpl.getPoint(planetDeg) &&  // 絕對度數：不可用 sign.getTermPoint（收星座內度數）
-            planet !== faceImpl.getPoint(planetDeg)
-        }?.takeIf { sign ->
-          with(triplicityImpl) {
-            (!(dayNight == DAY && planet === sign.getTriplicityPoint(DAY))
-              && !(dayNight == NIGHT && planet === sign.getTriplicityPoint(NIGHT)))
-          }
-        }?.let {
-          Debility.Peregrine(planet)
+        planet !== with(rulerImpl) { sign.getRulerPoint() } &&
+          planet !== with(exaltImpl) { sign.getExaltPoint() } &&
+          planet !== with(detrimentImpl) { sign.getDetrimentPoint() } &&
+          planet !== with(fallImpl) { sign.getFallPoint() } &&
+          planet !== termImpl.getPoint(planetDeg) &&  // 絕對度數：不可用 sign.getTermPoint（收星座內度數）
+          planet !== faceImpl.getPoint(planetDeg)
+      }?.takeIf { sign ->
+        with(triplicityImpl) {
+          (!(dayNight == DAY && planet === sign.getTriplicityPoint(DAY))
+            && !(dayNight == NIGHT && planet === sign.getTriplicityPoint(NIGHT)))
         }
+      }?.let {
+        Debility.Peregrine(planet)
       }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-
-
     }
   }
 
-  val house_12 = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getHouse(planet)
-        ?.takeIf { it == 12 }
-        ?.let { Debility.House_12(planet) }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val house_12 = IPlanetPatternFactory.single { planet, h ->
+    h.getHouse(planet)
+      ?.takeIf { it == 12 }
+      ?.let { Debility.House_12(planet) }
   }
 
-  val house_6_8 = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getHouse(planet)
-        ?.takeIf { it == 6 || it == 8 }
-        ?.let { Debility.House_6_8(planet, it) }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val house_6_8 = IPlanetPatternFactory.single { planet, h ->
+    h.getHouse(planet)
+      ?.takeIf { it == 6 || it == 8 }
+      ?.let { Debility.House_6_8(planet, it) }
   }
 
-  val retrograde = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getStarPosition(planet)
-        ?.speedLng
-        ?.takeIf { it < 0 }
-        ?.let { Debility.Retrograde(planet) }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val retrograde = IPlanetPatternFactory.single { planet, h ->
+    h.getStarPosition(planet)
+      ?.speedLng
+      ?.takeIf { it < 0 }
+      ?.let { Debility.Retrograde(planet) }
   }
 
-  val slower = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return AverageDailyMotionMap.getAvgDailySpeed(planet)
-        ?.takeIf { dailyDeg ->
-          h.getStarPosition(planet)
-            ?.speedLng?.let { speedLng ->
-            speedLng < dailyDeg
-          } ?: false
-        }?.let { Debility.Slower(planet) }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val slower = IPlanetPatternFactory.single { planet, h ->
+    AverageDailyMotionMap.getAvgDailySpeed(planet)
+      ?.takeIf { dailyDeg ->
+        h.getStarPosition(planet)
+          ?.speedLng?.let { speedLng ->
+          speedLng < dailyDeg
+        } ?: false
+      }?.let { Debility.Slower(planet) }
   }
 
   /**
    * 火星、木星、或土星，在太陽西方
    */
-  val occidentalBad = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return arrayOf(MARS, JUPITER, SATURN)
-        .takeIf { it.contains(planet) }
-        ?.let { h.getPosition(planet) }?.lngDeg?.let { planetDegree ->
-        h.getPosition(SUN)?.lngDeg?.takeIf { sunDegree ->
-          planetDegree.isOccidental(sunDegree)
-        }?.let {
-          Debility.Occidental(planet)
-        }
+  val occidentalBad = IPlanetPatternFactory.single { planet, h ->
+    arrayOf(MARS, JUPITER, SATURN)
+      .takeIf { it.contains(planet) }
+      ?.let { h.getPosition(planet) }?.lngDeg?.let { planetDegree ->
+      h.getPosition(SUN)?.lngDeg?.takeIf { sunDegree ->
+        planetDegree.isOccidental(sunDegree)
+      }?.let {
+        Debility.Occidental(planet)
       }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
   }
 
@@ -796,105 +663,84 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * 金星、水星，是否 東出 於 太陽
    *
    */
-  val orientalBad = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return arrayOf(MERCURY, VENUS)
-        .takeIf { it.contains(planet) }
-        ?.let { h.getPosition(planet) }?.lngDeg?.let { planetDegree ->
-        h.getPosition(SUN)?.lngDeg?.takeIf { sunDegree ->
-          planetDegree.isOriental(sunDegree)
-        }?.let {
-          Debility.Oriental(planet)
-        }
+  val orientalBad = IPlanetPatternFactory.single { planet, h ->
+    arrayOf(MERCURY, VENUS)
+      .takeIf { it.contains(planet) }
+      ?.let { h.getPosition(planet) }?.lngDeg?.let { planetDegree ->
+      h.getPosition(SUN)?.lngDeg?.takeIf { sunDegree ->
+        planetDegree.isOriental(sunDegree)
+      }?.let {
+        Debility.Oriental(planet)
       }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
   }
 
   /**
    * Moon decreasing in light.
    * */
-  val moonDecreaseLight = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return planet
-        .takeIf { it === MOON }
-        ?.let { h.getPosition(it) }?.lngDeg?.let { moonDegree ->
-        h.getPosition(SUN)?.lngDeg?.takeIf { sunDegree ->
-          moonDegree.isOriental(sunDegree)
-        }?.let {
-          Debility.Moon_Decrease_Light
-        }
+  val moonDecreaseLight = IPlanetPatternFactory.single { planet, h ->
+    planet
+      .takeIf { it === MOON }
+      ?.let { h.getPosition(it) }?.lngDeg?.let { moonDegree ->
+      h.getPosition(SUN)?.lngDeg?.takeIf { sunDegree ->
+        moonDegree.isOriental(sunDegree)
+      }?.let {
+        Debility.Moon_Decrease_Light
       }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
   }
 
   /**
    * Combust the Sun (between 17' and 8.5 from Sol).
    */
-  val combustion = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return planet.takeIf { it !== SUN }
-        ?.takeIf { h.getAngle(planet, SUN) > 17.0 / 60.0 && h.getAngle(planet, SUN) <= 8.5 }
-        ?.let { Debility.Combustion(planet) }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val combustion = IPlanetPatternFactory.single { planet, h ->
+    planet.takeIf { it !== SUN }
+      ?.takeIf { h.getAngle(planet, SUN) > 17.0 / 60.0 && h.getAngle(planet, SUN) <= 8.5 }
+      ?.let { Debility.Combustion(planet) }
   }
 
   /**
    * Under the Sunbeams (between 8.5 and 17 from Sol).
    */
-  val sunbeam = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return planet.takeIf { it !== SUN }
-        ?.takeIf { h.getAngle(it, SUN) > 8.5 && h.getAngle(it, SUN) <= 17.0 }
-        ?.let { Debility.Sunbeam(planet) }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val sunbeam = IPlanetPatternFactory.single { planet, h ->
+    planet.takeIf { it !== SUN }
+      ?.takeIf { h.getAngle(it, SUN) > 8.5 && h.getAngle(it, SUN) <= 17.0 }
+      ?.let { Debility.Sunbeam(planet) }
   }
 
-  val partileConjMarsSaturn = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
+  val partileConjMarsSaturn = IPlanetPatternFactory { planet, h ->
+    h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+      val marsDeg = h.getPosition(MARS)?.lngDeg
+      val saturnDeg = h.getPosition(SATURN)?.lngDeg
 
-      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
-        val marsDeg = h.getPosition(MARS)?.lngDeg
-        val saturnDeg = h.getPosition(SATURN)?.lngDeg
+      val conjMars = marsDeg?.takeIf {
+        planet !== MARS && planetDeg.getAngle(marsDeg) <= 1
+      }?.let { Debility.Partile_Conj_Mars_Saturn(planet, MARS) }
 
-        val conjMars = marsDeg?.takeIf {
-          planet !== MARS && planetDeg.getAngle(marsDeg) <= 1
-        }?.let { Debility.Partile_Conj_Mars_Saturn(planet, MARS) }
+      val conjSat = saturnDeg?.takeIf {
+        planet != SATURN && planetDeg.getAngle(saturnDeg) <= 1
+      }?.let { Debility.Partile_Conj_Mars_Saturn(planet, SATURN) }
 
-        val conjSat = saturnDeg?.takeIf {
-          planet != SATURN && planetDeg.getAngle(saturnDeg) <= 1
-        }?.let { Debility.Partile_Conj_Mars_Saturn(planet, SATURN) }
+      listOfNotNull(conjMars, conjSat)
 
-        listOfNotNull(conjMars, conjSat)
-
-      } ?: emptyList()
-    }
+    } ?: emptyList()
   }
 
 
   /**
    * Partile conjunction with Dragon's Tail (Moon's South Node).
    * */
-  val partileConjSouthNode = object : IPlanetPatternFactory {
+  /** 內定採用 [NodeType.MEAN] */
+  private val southNode: LunarNode = LunarNode.of(News.NorthSouth.SOUTH)
 
-    /** 內定採用 [NodeType.MEAN]  */
-    val south = LunarNode.of(News.NorthSouth.SOUTH)
-
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
-
-        h.getPosition(south)?.lngDeg?.takeIf { southDeg ->
-          planetDeg.getAngle(southDeg) <= 1
-        }?.let {
-          logger.debug("{} 與 {} 形成 {}", planet, south, CONJUNCTION)
-          Debility.Partile_Conj_South_Node(planet)
-        }
+  val partileConjSouthNode = IPlanetPatternFactory.single { planet, h ->
+    h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+      h.getPosition(southNode)?.lngDeg?.takeIf { southDeg ->
+        planetDeg.getAngle(southDeg) <= 1
+      }?.let {
+        logger.debug("{} 與 {} 形成 {}", planet, southNode, CONJUNCTION)
+        Debility.Partile_Conj_South_Node(planet)
       }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
   }
 
@@ -903,82 +749,71 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * 被火土夾制，只有日月水金，這四星有可能發生
    * 星體或 90/180 的光線，兩側各在 7° 內，中間沒有別的星介入（[BesiegementPorphyryImpl]）
    */
-  val besiegedMarsSaturn = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return planet.takeIf { arrayOf(SUN, MOON, MERCURY, VENUS).contains(it) }
-        ?.takeIf {
-          //火土夾制，光線只考量「硬」角度（BesiegementOptions.maleficRays）
-          besiegementImpl.getBesiegement(h, it, setOf(MARS, SATURN)) != null
-        }?.let {
-          Debility.Besieged_Mars_Saturn(planet)
-        }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
-    }
+  val besiegedMarsSaturn = IPlanetPatternFactory.single { planet, h ->
+    planet.takeIf { arrayOf(SUN, MOON, MERCURY, VENUS).contains(it) }
+      ?.takeIf {
+        //火土夾制，光線只考量「硬」角度（BesiegementOptions.maleficRays）
+        besiegementImpl.getBesiegement(h, it, setOf(MARS, SATURN)) != null
+      }?.let {
+        Debility.Besieged_Mars_Saturn(planet)
+      }
   }
 
   /**
    * Partile opposite Mars or Saturn.
    */
-  val partileOppoMarsSaturn = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+  val partileOppoMarsSaturn = IPlanetPatternFactory { planet, h ->
+    h.getPosition(planet)?.lngDeg?.let { planetDeg ->
 
-        val oppoMars = h.getPosition(MARS)?.lngDeg?.takeIf { marsDeg ->
-          planet !== MARS && AspectEffectiveModern.isEffective(planetDeg, marsDeg, OPPOSITION, 1.0)
-        }?.let {
-          Debility.Partile_Oppo_Mars_Saturn(planet, MARS)
-        }
+      val oppoMars = h.getPosition(MARS)?.lngDeg?.takeIf { marsDeg ->
+        planet !== MARS && AspectEffectiveModern.isEffective(planetDeg, marsDeg, OPPOSITION, 1.0)
+      }?.let {
+        Debility.Partile_Oppo_Mars_Saturn(planet, MARS)
+      }
 
-        val oppoSat = h.getPosition(SATURN)?.lngDeg?.takeIf { saturnDeg ->
-          planet != SATURN && AspectEffectiveModern.isEffective(planetDeg, saturnDeg, OPPOSITION, 1.0)
-        }?.let {
-          Debility.Partile_Oppo_Mars_Saturn(planet, SATURN)
-        }
+      val oppoSat = h.getPosition(SATURN)?.lngDeg?.takeIf { saturnDeg ->
+        planet != SATURN && AspectEffectiveModern.isEffective(planetDeg, saturnDeg, OPPOSITION, 1.0)
+      }?.let {
+        Debility.Partile_Oppo_Mars_Saturn(planet, SATURN)
+      }
 
-        listOfNotNull(oppoMars, oppoSat)
-      } ?: emptyList()
-    }
+      listOfNotNull(oppoMars, oppoSat)
+    } ?: emptyList()
   }
 
   /**
    * Partile square Mars or Saturn.
    * */
-  val partileSquareMarsSaturn = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+  val partileSquareMarsSaturn = IPlanetPatternFactory { planet, h ->
+    h.getPosition(planet)?.lngDeg?.let { planetDeg ->
 
-        val squareMars = h.getPosition(MARS)?.lngDeg?.takeIf { marsDeg ->
-          planet !== MARS && AspectEffectiveModern.isEffective(planetDeg, marsDeg, SQUARE, 1.0)
-        }?.let {
-          Debility.Partile_Square_Mars_Saturn(planet, MARS)
-        }
+      val squareMars = h.getPosition(MARS)?.lngDeg?.takeIf { marsDeg ->
+        planet !== MARS && AspectEffectiveModern.isEffective(planetDeg, marsDeg, SQUARE, 1.0)
+      }?.let {
+        Debility.Partile_Square_Mars_Saturn(planet, MARS)
+      }
 
-        val squareSat = h.getPosition(SATURN)?.lngDeg?.takeIf { saturnDeg ->
-          planet != SATURN && AspectEffectiveModern.isEffective(planetDeg, saturnDeg, SQUARE, 1.0)
-        }?.let {
-          Debility.Partile_Square_Mars_Saturn(planet, SATURN)
-        }
+      val squareSat = h.getPosition(SATURN)?.lngDeg?.takeIf { saturnDeg ->
+        planet != SATURN && AspectEffectiveModern.isEffective(planetDeg, saturnDeg, SQUARE, 1.0)
+      }?.let {
+        Debility.Partile_Square_Mars_Saturn(planet, SATURN)
+      }
 
-        listOfNotNull(squareMars, squareSat)
-      } ?: emptyList()
-    }
+      listOfNotNull(squareMars, squareSat)
+    } ?: emptyList()
   }
 
   /**
    * Within 5 deg of Caput Algol at 26 deg 10' Taurus in January 2000.
    * */
-  val conjAlgol = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
-        h.getPosition(FixedStar.ALGOL)?.lngDeg?.takeIf { algolDeg ->
-          AspectEffectiveModern.isEffective(planetDeg, algolDeg, CONJUNCTION, 5.0)
-        }?.let {
-          logger.debug("{} 與 {} 形成 {}", planet, FixedStar.ALGOL, CONJUNCTION)
-          Debility.Conj_Algol(planet)
-        }
+  val conjAlgol = IPlanetPatternFactory.single { planet, h ->
+    h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+      h.getPosition(FixedStar.ALGOL)?.lngDeg?.takeIf { algolDeg ->
+        AspectEffectiveModern.isEffective(planetDeg, algolDeg, CONJUNCTION, 5.0)
+      }?.let {
+        logger.debug("{} 與 {} 形成 {}", planet, FixedStar.ALGOL, CONJUNCTION)
+        Debility.Conj_Algol(planet)
       }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
   }
 
@@ -989,55 +824,49 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    *
    * 相對於不得時的，是「得時」 [hayz]
    */
-  val outOfSect = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-
-      return h.getZodiacSign(planet)?.let { sign ->
-        h.getHouse(planet)?.let { house ->
-          when (val dayNight = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)) {
-            DAY -> if (arrayOf(MOON, VENUS, MARS).contains(planet) && house >= 7 && sign.booleanValue) {
-              logger.debug("夜星 {} 於白天在地平面上，落入陽性星座 {} , 不得時", planet, sign.getTitle(Locale.TAIWAN))
-              Debility.Out_of_Sect(planet, dayNight, YinYang.陽, sign)
-            } else {
-              null
-            }
-            NIGHT -> if (arrayOf(SUN, JUPITER, SATURN).contains(planet) && house >= 7 && !sign.booleanValue) {
-              logger.debug("晝星 {} 於夜晚在地平面上，落入陰性星座 {} , 不得時", planet, sign.getTitle(Locale.TAIWAN))
-              Debility.Out_of_Sect(planet, dayNight, YinYang.陰, sign)
-            } else {
-              null
-            }
+  val outOfSect = IPlanetPatternFactory.single { planet, h ->
+    h.getZodiacSign(planet)?.let { sign ->
+      h.getHouse(planet)?.let { house ->
+        when (val dayNight = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)) {
+          DAY -> if (planet.sect == NIGHT && house >= 7 && sign.booleanValue) {
+            logger.debug("夜星 {} 於白天在地平面上，落入陽性星座 {} , 不得時", planet, sign.getTitle(Locale.TAIWAN))
+            Debility.Out_of_Sect(planet, dayNight, YinYang.陽, sign)
+          } else {
+            null
+          }
+          NIGHT -> if (planet.sect == DAY && house >= 7 && !sign.booleanValue) {
+            logger.debug("晝星 {} 於夜晚在地平面上，落入陰性星座 {} , 不得時", planet, sign.getTitle(Locale.TAIWAN))
+            Debility.Out_of_Sect(planet, dayNight, YinYang.陰, sign)
+          } else {
+            null
           }
         }
       }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
   }
 
-  val refrainFromVenusJupiter = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      // 太陽 / 月亮不會逆行
-      return planet.takeIf { it !== SUN && it !== MOON }?.let {
+  val refrainFromVenusJupiter = IPlanetPatternFactory { planet, h ->
+    // 太陽 / 月亮不會逆行
+    planet.takeIf { it !== SUN && it !== MOON }?.let {
 
-        val refrainFromVenus = planet.takeIf { it !== VENUS }?.let {
-          refranation(h, planet, VENUS)
-        }?.let { r ->
-          val aspect = r.pattern.aspect
-          logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, VENUS, aspect)
-          Debility.Refrain_from_Venus_Jupiter(planet, VENUS, aspect)
-        }
+      val refrainFromVenus = planet.takeIf { it !== VENUS }?.let {
+        refranation(h, planet, VENUS)
+      }?.let { r ->
+        val aspect = r.pattern.aspect
+        logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, VENUS, aspect)
+        Debility.Refrain_from_Venus_Jupiter(planet, VENUS, aspect)
+      }
 
-        val refrainFromJupiter = planet.takeIf { it !== JUPITER }?.let {
-          refranation(h, planet, JUPITER)
-        }?.let { r ->
-          val aspect = r.pattern.aspect
-          logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, JUPITER, aspect)
-          Debility.Refrain_from_Venus_Jupiter(planet, JUPITER, aspect)
-        }
+      val refrainFromJupiter = planet.takeIf { it !== JUPITER }?.let {
+        refranation(h, planet, JUPITER)
+      }?.let { r ->
+        val aspect = r.pattern.aspect
+        logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, JUPITER, aspect)
+        Debility.Refrain_from_Venus_Jupiter(planet, JUPITER, aspect)
+      }
 
-        listOfNotNull(refrainFromVenus, refrainFromJupiter)
-      } ?: emptyList()
-    }
+      listOfNotNull(refrainFromVenus, refrainFromJupiter)
+    } ?: emptyList()
   }
 
   /**
@@ -1056,25 +885,23 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * 有依據的是另一種情形：兩星**真正互容**（廟或旺），同時兩者都落陷／入弱（例：水星在雙魚、木星在處女）——
    * 那是互容的一種，該當成互容的屬性（雙方皆弱）來描述，見 [MutualDeception]（2008 年的版本）。
    *  */
-  val mutualDeception = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> {
-      return with(essentialImpl) {
+  val mutualDeception = IPlanetPatternFactory { planet, h ->
+    with(essentialImpl) {
 
-        planet.getMutualData(h.pointDegreeMap, null, setOf(Dignity.DETRIMENT, Dignity.FALL))
-          .map { mutualData ->
-            val sign1 = h.getZodiacSign(planet)!!
-            val p2 = mutualData.getAnotherPoint(planet)
-            val sign2 = h.getZodiacSign(p2)!!
-            logger.debug { "[mutualDeception] : $mutualData" }
-            logger.debug("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 互陷害",
-                         planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
-                         planet, sign1)
-            Debility.MutualDeception(
-              planet, sign1, mutualData.getDignityOf(planet),
-              p2, sign2, mutualData.getDignityOf(p2)
-            )
-          }.toList()
-      }
+      planet.getMutualData(h.pointDegreeMap, null, setOf(Dignity.DETRIMENT, Dignity.FALL))
+        .map { mutualData ->
+          val sign1 = h.getZodiacSign(planet)!!
+          val p2 = mutualData.getAnotherPoint(planet)
+          val sign2 = h.getZodiacSign(p2)!!
+          logger.debug { "[mutualDeception] : $mutualData" }
+          logger.debug("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 互陷害",
+                       planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
+                       planet, sign1)
+          Debility.MutualDeception(
+            planet, sign1, mutualData.getDignityOf(planet),
+            p2, sign2, mutualData.getDignityOf(p2)
+          )
+        }.toList()
     }
   }
 
@@ -1122,29 +949,25 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    */
 
   /** [planet] 的入相位被第三顆星插隊 */
-  val prohibited = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> =
-      h.outcomesApplying<ApplicationOutcome.Prohibition>(planet).map { Misc.Prohibited(planet, it) }
+  val prohibited = IPlanetPatternFactory { planet, h ->
+    h.outcomesApplying<ApplicationOutcome.Prohibition>(planet).map { Misc.Prohibited(planet, it) }
   }
 
   /** [planet] 的入相位撲空：被追的那顆先與更慢的星成形 */
-  val frustrated = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> =
-      h.outcomesApplying<ApplicationOutcome.Frustration>(planet).map { Misc.Frustrated(planet, it) }
+  val frustrated = IPlanetPatternFactory { planet, h ->
+    h.outcomesApplying<ApplicationOutcome.Frustration>(planet).map { Misc.Frustrated(planet, it) }
   }
 
   /** [planet] 的入相位臨陣退縮（不限哪兩顆星） */
-  val refrained = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> =
-      h.outcomesApplying<ApplicationOutcome.Refranation>(planet).map { Misc.Refrained(planet, it) }
+  val refrained = IPlanetPatternFactory { planet, h ->
+    h.outcomesApplying<ApplicationOutcome.Refranation>(planet).map { Misc.Refrained(planet, it) }
   }
 
   /** [planet] 被火土、被金木包夾（[IBesiegement.getResults] 的同一組） */
-  val besieged = object : IPlanetPatternFactory {
-    override fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern> =
-      IBesiegement.ENCLOSER_PAIRS.mapNotNull { enclosers ->
-        besiegementImpl.getBesiegement(h, planet, enclosers)?.let { Misc.Besieged(planet, it) }
-      }
+  val besieged = IPlanetPatternFactory { planet, h ->
+    IBesiegement.ENCLOSER_PAIRS.mapNotNull { enclosers ->
+      besiegementImpl.getBesiegement(h, planet, enclosers)?.let { Misc.Besieged(planet, it) }
+    }
   }
 
   companion object {

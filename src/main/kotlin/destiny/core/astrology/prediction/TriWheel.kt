@@ -17,7 +17,12 @@ import kotlinx.serialization.Serializable
  * 三環盤的一層。內環 [NATAL]、中環 [SOLAR_ARC] 或 [SECONDARY] 擇一、外環 [TRANSIT]。
  */
 @Serializable
-enum class TriWheelLayer { NATAL, SOLAR_ARC, SECONDARY, TRANSIT }
+enum class TriWheelLayer {
+  NATAL, SOLAR_ARC, SECONDARY, TRANSIT;
+
+  /** 能不能當中環：推進的兩種（太陽弧、次限） */
+  val canBeMiddle: Boolean get() = this == SOLAR_ARC || this == SECONDARY
+}
 
 /**
  * 三環盤：本命（內）、推進（中）、行運（外）。**給 LLM 分析用，不是畫盤用** —— 不帶宮頭、相位線座標。
@@ -50,7 +55,7 @@ data class TriWheelDto(
   val filter: TriWheelFilter,
 ) {
   init {
-    require(middle == TriWheelLayer.SOLAR_ARC || middle == TriWheelLayer.SECONDARY) { "middle must be SOLAR_ARC or SECONDARY : $middle" }
+    require(middle.canBeMiddle) { "middle must be SOLAR_ARC or SECONDARY : $middle" }
   }
 }
 

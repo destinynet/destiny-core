@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class ClassicalConfig(
-  override var factories: List<IPlanetPatternFactory>,
+  override val factories: List<IPlanetPatternFactory>,
   override val sect: DayNight? = null,
 ) : IClassicalConfig
 

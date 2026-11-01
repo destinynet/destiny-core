@@ -32,6 +32,18 @@ import kotlin.reflect.KClass
  */
 @Serializable(with = AstroPointSerializer::class)
 abstract class AstroPoint(nameKey: String, resource: String, abbrKey: String?, val unicode: Char? = null) : Point(nameKey, resource, abbrKey) {
+  /** 分類（[PointKind]）：呈現層以它分層與套樣式，不要用類別名或 nameKey 的字串比對 */
+  val kind: PointKind
+    get() = when (this) {
+      is Planet    -> PointKind.PLANET
+      is LunarNode -> PointKind.NODE
+      is Asteroid  -> PointKind.ASTEROID
+      is FixedStar -> PointKind.FIXED_STAR
+      is Arabic    -> PointKind.LOT
+      is Axis      -> PointKind.AXIS
+      else         -> PointKind.OTHER
+    }
+
   companion object : IPoints<AstroPoint> {
 
     override val type: KClass<out Point> = AstroPoint::class
@@ -46,3 +58,7 @@ abstract class AstroPoint(nameKey: String, resource: String, abbrKey: String?, v
 
   }
 }
+
+/** [AstroPoint] 的分類；JSON 以名稱輸出（PLANET、NODE、ASTEROID、FIXED_STAR、LOT、AXIS、OTHER），TS 端的 `PointKind` 是它的鏡像 */
+@Serializable
+enum class PointKind { PLANET, NODE, ASTEROID, FIXED_STAR, LOT, AXIS, OTHER }

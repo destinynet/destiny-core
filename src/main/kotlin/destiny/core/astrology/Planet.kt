@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.DayNight
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.toString
@@ -36,6 +37,14 @@ sealed class Planet(nameKey: String,
   /** 會不會停滯、逆行：日月不會。不依日夜盤而變，所以放在型別上（吉凶星則不然，見 Relocation） */
   val isStationaryPossible: Boolean
     get() = this !== SUN && this !== MOON
+
+  /** 古典的晝夜歸屬：日木土為晝星、月金火為夜星，水星兩可（null）。固定不變，所以放在型別上；得時／不得時拿它對照盤的日夜 */
+  val sect: DayNight?
+    get() = when (this) {
+      SUN, JUPITER, SATURN -> DayNight.DAY
+      MOON, VENUS, MARS    -> DayNight.NIGHT
+      else                 -> null
+    }
 
   companion object : IPoints<Planet> {
 

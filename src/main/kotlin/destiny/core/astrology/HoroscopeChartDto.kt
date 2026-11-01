@@ -57,8 +57,8 @@ data class HoroscopePointDto(
   /** 宮位 1–12，無法判定為 null */
   val house: Int?,
   val retrograde: Boolean,
-  /** PLANET | NODE | ASTEROID | FIXED_STAR | LOT | AXIS | OTHER */
-  val kind: String,
+  /** 分類（[PointKind]）：renderer 以它分層 */
+  val kind: PointKind,
   /** 縮寫（繁中，如 日、月、昇）—— 小空間的標籤用它，[label] 是全名 */
   val abbr: String = "",
   /** 英文縮寫（如 Su、Mo、AC；取自英文 bundle） */
@@ -683,18 +683,6 @@ private fun Graph<Planet>.toDispositorDto(visibleKeys: Set<String>): HoroscopeDi
   )
 }
 
-/** [AstroPoint] 的型別 → 分類標籤（供 renderer 分層與樣式） */
-private val AstroPoint.kindLabel: String
-  get() = when (this) {
-    is Planet     -> "PLANET"
-    is LunarNode  -> "NODE"
-    is Asteroid   -> "ASTEROID"
-    is FixedStar  -> "FIXED_STAR"
-    is Arabic     -> "LOT"
-    is Axis       -> "AXIS"
-    else          -> "OTHER"
-  }
-
 /** 該點位是否在此密度下呈現 */
 private fun AstroPoint.visibleIn(density: ChartDensity): Boolean = when (density) {
   ChartDensity.COMPACT      -> this is Planet
@@ -744,7 +732,7 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
         signDegree = info.signDegree.signDegree.second,
         house = info.house,
         retrograde = info.isRetrograde,
-        kind = point.kindLabel,
+        kind = point.kind,
         abbr = point.getAbbreviation(ZH),
         abbrEn = point.getAbbreviation(Lang.EN),
         declination = info.declination,
@@ -803,9 +791,12 @@ private val MODERN_CO_RULER: Map<ZodiacSign, Planet> =
 /** 主要相位（合、六合、四分、三分、對沖） */
 private val MAJOR_ANGLES: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH)
 
+/** 入相位的標的：行星、交點、軸點（恆星、小行星、阿拉伯點不算） */
+private val APPLICATION_TARGET_KINDS: Set<PointKind> = setOf(PointKind.PLANET, PointKind.NODE, PointKind.AXIS)
+
 /** 會走的星：行星，且有速度 */
 private fun movers(points: List<HoroscopePointDto>) =
-  points.filter { it.kind == "PLANET" && (it.speed ?: 0.0) != 0.0 }
+  points.filter { it.kind == PointKind.PLANET && (it.speed ?: 0.0) != 0.0 }
 
 /**
  * [p] 沿行進方向走到黃經 [target] 要幾度；超過所在星座的邊界（順行到 30°、逆行到 0°）就是 null。
@@ -819,7 +810,7 @@ private fun degreesAhead(p: HoroscopePointDto, target: Double): Double? {
 }
 
 private fun applicationsOf(points: List<HoroscopePointDto>): List<HoroscopeApplicationDto> {
-  val targets = points.filter { it.kind == "PLANET" || it.kind == "NODE" || it.kind == "AXIS" }
+  val targets = points.filter { it.kind in APPLICATION_TARGET_KINDS }
   return movers(points).flatMap { m ->
     targets.filter { it.point != m.point }.flatMap { t ->
       MAJOR_ANGLES.flatMap { aspect ->

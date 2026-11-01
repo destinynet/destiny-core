@@ -24,7 +24,7 @@ interface IHoroscopeConfig : JSerializable {
 }
 
 interface IClassicalConfig : JSerializable {
-  var factories: List<IPlanetPatternFactory>
+  val factories: List<IPlanetPatternFactory>
   /** 呼叫端已判定的日夜盤；null ＝ 由 factory 現算（見 [ClassicalConfig.sect]） */
   val sect: DayNight? get() = null
   val classicalConfig: ClassicalConfig

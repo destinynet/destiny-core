@@ -9,7 +9,6 @@ import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
 import destiny.core.astrology.classical.ApplicationOutcome
 import destiny.core.astrology.classical.IApplicationOutcome
-import destiny.tools.JSerializable
 
 interface IClassicalPattern : IPattern
 
@@ -53,7 +52,11 @@ class ClassicalInput(
     outcomes(engine).firstOrNull { (it.applying === p1 && it.applied === p2) || (it.applying === p2 && it.applied === p1) }
 }
 
-interface IPlanetPatternFactory : JSerializable {
+/**
+ * 一條古典判斷：對 [Planet] 在 [ClassicalInput] 上判出零到多個格局。SAM：`IPlanetPatternFactory { planet, h -> … }`，
+ * 最多判出一個的用 [single]。不是 Java-serializable：匿名 factory 捕捉的是帶 service impl 的 context，快取（classicalRulesCache）也只在 heap
+ */
+fun interface IPlanetPatternFactory {
 
   fun getPatterns(planet: Planet, h: ClassicalInput): List<IPlanetPattern>
 
@@ -61,4 +64,9 @@ interface IPlanetPatternFactory : JSerializable {
   fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> =
     getPatterns(planet, h as? ClassicalInput ?: ClassicalInput(h))
 
+  companion object {
+    /** 最多判出一個格局的 factory：[block] 回 null 代表沒有 */
+    fun single(block: (planet: Planet, h: ClassicalInput) -> IPlanetPattern?): IPlanetPatternFactory =
+      IPlanetPatternFactory { planet, h -> listOfNotNull(block(planet, h)) }
+  }
 }
