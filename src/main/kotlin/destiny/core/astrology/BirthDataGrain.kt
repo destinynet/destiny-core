@@ -147,6 +147,26 @@ val BirthDataGrain.includeAxis: Boolean
   get() = this == BirthDataGrain.MINUTE
 
 /**
+ * 出生時刻的**容許誤差半寬**（小時）—— 用來判斷某個點的星座或落宮會不會因為時刻誤差而改變（壓線警示）。
+ *
+ * | grain | 半寬 | 理由 |
+ * |---|---|---|
+ * | [BirthDataGrain.DAY] | 12 小時 | 一整天，儲存的是正午 |
+ * | [BirthDataGrain.DayNightOnly] | 7 小時 | 白晝或黑夜約 10～14 小時，取較長的一半 |
+ * | [BirthDataGrain.HOUR2] | 1 小時 | 時辰兩小時，儲存的是中點 |
+ * | [BirthDataGrain.MINUTE] | 4 分鐘 | 抄錄與四捨五入的誤差；天球自轉 4 分鐘約 1°，即上升點與宮頭約 1° |
+ *
+ * 一個點的位置誤差 ≈ 它的速度 × 這個半寬：行星用黃經日速度，軸點與宮頭用天球自轉（約 15°／小時）。
+ */
+val BirthDataGrain.timeToleranceHours: Double
+  get() = when (this) {
+    BirthDataGrain.DAY             -> 12.0
+    is BirthDataGrain.DayNightOnly -> 7.0
+    BirthDataGrain.HOUR2           -> 1.0
+    BirthDataGrain.MINUTE          -> 4.0 / 60
+  }
+
+/**
  * 是否計算 Profection (小限)
  * Profection 需要宮位資訊，因此需要精確時間
  */

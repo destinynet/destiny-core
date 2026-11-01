@@ -8,6 +8,7 @@ import destiny.core.astrology.classical.ClassicalFeature
 import destiny.core.astrology.classical.IRuler
 import destiny.core.astrology.classical.rules.AccidentalDignity
 import destiny.core.astrology.classical.rules.Debility
+import destiny.core.astrology.classical.rules.EssentialDignity
 import destiny.core.astrology.classical.rules.IPlanetPattern
 import destiny.core.astrology.classical.rules.IPlanetPatternFactory
 import destiny.core.astrology.classical.rules.PatternTranslator
@@ -173,16 +174,28 @@ class DtoFactory(
    * （卜卦與本命的判準不同，見 `OutcomeOptions`），否則用注入的預設清單。
    *
    * 沒有精確出生時刻時，濾掉得時／不得時（[AccidentalDignity.Hayz]／[Debility.Out_of_Sect]）。
+   *
+   * 判不出日夜盤時（[sectDeterminable] = false），再濾掉三分性（[EssentialDignity.Triplicity]）與外來（[Debility.Peregrine]）：
+   * 格局是拿**儲存的時刻**判日夜的，而 [BirthDataGrain.DAY] 的時刻是捏造的正午、
+   * 跨日出日落的 [BirthDataGrain.HOUR2] 存的是時辰中點 —— 判出來的日夜沒有根據，三分性（與依賴它的外來）也就跟著沒有根據。
+   * 判得出來時，儲存的時刻依 grain 的儲存規則必與已知的日夜相容，現算的結果可直接採用。
+   *
+   * @param sectDeterminable 日夜盤判不判得出來。預設只由 grain 決定：[BirthDataGrain.MINUTE] 與 [BirthDataGrain.DayNightOnly] 判得出來；
+   *   [BirthDataGrain.HOUR2] 要看時辰是否跨日出日落，預設保守視為判不出來 —— 能判定的呼叫端請自行傳入。
    */
-  fun IHoroscopeModel.getClassicalPatterns(grain: BirthDataGrain, horoConfig: IHoroscopeConfig): List<IPlanetPattern> {
+  fun IHoroscopeModel.getClassicalPatterns(
+    grain: BirthDataGrain,
+    horoConfig: IHoroscopeConfig,
+    sectDeterminable: Boolean = grain == BirthDataGrain.MINUTE || grain is BirthDataGrain.DayNightOnly,
+  ): List<IPlanetPattern> {
     val factories = (horoConfig as? IClassicalConfig)?.factories ?: classicalFactories
     val cfg = ClassicalConfig(factories) to horoConfig
     return classicalFeature.getModel(gmtJulDay, location, cfg).flatMap { (_, list: List<IPlanetPattern>) ->
       list.filterNot { pattern ->
         // 得時／不得時依賴晝夜「與」星體在地平面上下 —— 後者需要精確時刻，
         // 故即使知晝夜（DAY_NIGHT），以正午 placeholder 推算仍不可採信，濾除。
-        !grain.includeAxis &&
-          (pattern is AccidentalDignity.Hayz || pattern is Debility.Out_of_Sect)
+        (!grain.includeAxis && (pattern is AccidentalDignity.Hayz || pattern is Debility.Out_of_Sect)) ||
+          (!sectDeterminable && (pattern is EssentialDignity.Triplicity || pattern is Debility.Peregrine))
       }
     }
   }

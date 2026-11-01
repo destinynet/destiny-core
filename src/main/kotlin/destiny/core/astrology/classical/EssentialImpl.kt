@@ -6,8 +6,8 @@ package destiny.core.astrology.classical
 
 import destiny.core.DayNight
 import destiny.core.astrology.*
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.KotlinLogging
-import destiny.tools.JSerializable
 
 /** Facade Class of Ptolemy's Table of Essential Dignities and Debilities  */
 class EssentialImpl(private val rulerImpl: IRuler,
@@ -17,7 +17,7 @@ class EssentialImpl(private val rulerImpl: IRuler,
                     private val triplicityImpl: ITriplicity,
                     private val termImpl: ITerm,
                     private val faceImpl: IFace,
-                    private val dayNightDifferentiator: IDayNight) : IEssential, JSerializable {
+                    private val dayNightDifferentiator: IDayNight) : IEssential {
 
 
   override fun AstroPoint.getDignitiesFromSignMap(map: Map<AstroPoint, ZodiacSign>, dayNight: DayNight?): List<Dignity> {
@@ -61,16 +61,15 @@ class EssentialImpl(private val rulerImpl: IRuler,
    */
   override fun AstroPoint.getDignities(map: Map<AstroPoint, Double>, dayNight: DayNight?): List<Dignity> {
     return map[this]?.let { deg: Double ->
-      val sign = ZodiacSign.of(deg)
-      this.getDignitiesFromSignMap(mapOf(this to sign)).toMutableSet().apply {
-        with(termImpl) {
-          if (this@getDignities === sign.getTermPoint(deg))
-            add(Dignity.TERM)
-          with(faceImpl) {
-            if (this@getDignities === sign.getFacePoint(deg))
-              add(Dignity.FACE)
-          }
-        }
+      val zDeg = deg.toZodiacDegree()
+      val sign = zDeg.sign
+      this.getDignitiesFromSignMap(mapOf(this to sign), dayNight).toMutableSet().apply {
+        // map 的值是**黃道絕對度數**（0–360）；用 getPoint(ZodiacDegree)。
+        // 不可用 `sign.getTermPoint(deg)`：那個版本收的是星座內度數（0–30），餵絕對度數會再加一次星座起點，落到別的星座去
+        if (this@getDignities === termImpl.getPoint(zDeg))
+          add(Dignity.TERM)
+        if (this@getDignities === faceImpl.getPoint(zDeg))
+          add(Dignity.FACE)
       }.toSortedSet().toList()
     } ?: emptyList()
   }

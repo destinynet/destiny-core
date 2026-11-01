@@ -599,4 +599,31 @@ class EssentialImplTest {
     }
 
   }
+
+  /**
+   * 度數版要把日夜傳給星座版 —— 否則三分性永遠不判（只剩日夜同一顆主星的星座）。
+   * 太陽在牡羊 14°：旺、面（10°–20° 屬太陽）；火象三分性日間主星是太陽，夜間是木星。
+   */
+  @Test
+  fun testGetDignities_passesDayNightToTriplicity() {
+    with(essentialImpl) {
+      val map = mapOf<AstroPoint, Double>(SUN to 14.24)
+      assertEquals(setOf(EXALTATION, TRIPLICITY, FACE), SUN.getDignities(map, DAY).toSet())
+      assertEquals(setOf(EXALTATION, FACE), SUN.getDignities(map, NIGHT).toSet())
+      assertEquals(setOf(EXALTATION, FACE), SUN.getDignities(map, null).toSet())
+    }
+  }
+
+  /**
+   * map 的值是黃道絕對度數。牡羊以外的星座才驗得出「把絕對度數當星座內度數」的錯：
+   * 水星 347.2°＝雙魚 17.2° → 托勒密界 14°–20° 屬水星、面 10°–20° 屬木星；同時陷、弱。
+   * （誤當星座內度數會變成 330+347.2 → 水瓶 17.2°，面成了水星、界成了別人。）
+   */
+  @Test
+  fun testGetDignities_absoluteDegreeOutsideAries() {
+    with(essentialImpl) {
+      val map = mapOf<AstroPoint, Double>(MERCURY to 347.2)
+      assertEquals(setOf(TERM, DETRIMENT, FALL), MERCURY.getDignities(map, NIGHT).toSet())
+    }
+  }
 }

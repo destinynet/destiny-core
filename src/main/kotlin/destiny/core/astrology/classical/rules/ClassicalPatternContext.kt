@@ -703,7 +703,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
             planet !== with(exaltImpl) { sign.getExaltPoint() } &&
             planet !== with(detrimentImpl) { sign.getDetrimentPoint() } &&
             planet !== with(fallImpl) { sign.getFallPoint() } &&
-            planet !== with(termImpl) { sign.getTermPoint(planetDeg.value) } &&
+            planet !== termImpl.getPoint(planetDeg) &&  // 絕對度數：不可用 sign.getTermPoint（收星座內度數）
             planet !== faceImpl.getPoint(planetDeg)
         }?.takeIf { sign ->
           with(triplicityImpl) {
