@@ -356,6 +356,17 @@ class HoroscopeChartDtoTest {
     val angle: Double, val orb: Double, val major: Boolean
   )
 
+  /** sect 由呼叫端填入；mapper 不判，未填為 null */
+  @Test
+  fun withSect_setsMetaAndSerializes() {
+    val dto = fakeNatal().toHoroscopeChartDto(ChartDensity.FULL)
+    assertEquals(null, dto.meta.sect)
+
+    val json = Json.encodeToString(HoroscopeChartDto.serializer(), dto.withSect(destiny.core.DayNight.NIGHT))
+    assertEquals("NIGHT", JsonPath.read<String>(json, "$.meta.sect"))
+    assertEquals(null, dto.withSect(destiny.core.DayNight.NIGHT).withSect(null).meta.sect)
+  }
+
   private fun fakeNatal(
     extraStars: Map<AstroPoint, StarPosInfo> = emptyMap(),
     aspects: List<IPointAspectPattern> = emptyList(),
@@ -414,4 +425,5 @@ private class FakeNatal(
   override val mundanePositions: Map<AstroPoint, MundanePosition> = emptyMap()
   override val arabicLots: Map<Arabic, ArabicLotInfo> = emptyMap()
   override val antiscia: Map<AstroPoint, AntisciaPair> = emptyMap()
+
 }

@@ -20,6 +20,7 @@
 package destiny.core.astrology
 
 import destiny.core.ChartDensity
+import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.Graph
 import destiny.core.getAbbreviation
@@ -160,7 +161,17 @@ data class HoroscopeMetaDto(
   /** 天頂的絕對黃經 */
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val mcDeg: Double,
+  /**
+   * 日夜盤；判不出來（只知日期、或時辰橫跨日出日落）為 null。
+   *
+   * mapper 本身不判：判定要看出生時刻精度與太陽視高度，由呼叫端算好以 [withSect] 填入。
+   * **不可**由 client 以「太陽在第 7–12 宮」自行推導 —— 沒有宮位時那個推導根本沒有輸入。
+   */
+  val sect: DayNight? = null,
 )
+
+/** 填入日夜盤（[HoroscopeMetaDto.sect]）。 */
+fun HoroscopeChartDto.withSect(sect: DayNight?): HoroscopeChartDto = copy(meta = meta.copy(sect = sect))
 
 /**
  * 定位星關係 —— [Graph] 的呈現層投影，星體一律是 [AstroPoint.nameKey]。只含傳統七星（[Planet.classicalList]）。
