@@ -228,3 +228,43 @@ sealed class Misc : IPlanetPattern {
   }
 
 }
+
+/**
+ * 這個格局牽涉到的星 —— 主角 [IPlanetPattern.planet] 加上格局裡的另一方（傳遞光線的兩端、包夾的兩側、互容的對象…）。
+ *
+ * 用途：某顆星的位置不可信時，判斷哪些格局跟著不可信。
+ * 只列格局**本身記錄**的星；固定的參照（太陽之於焦傷、恆星之於 Algol）不算。
+ */
+val IPlanetPattern.participants: Set<AstroPoint>
+  get() = setOf<AstroPoint>(planet) + when (this) {
+    is EssentialDignity.MutualReception          -> setOf(p2)
+    is Debility.MutualDeception                  -> setOf(p2)
+    is AccidentalDignity.Translation_of_Light    -> setOf(from, to)
+    is AccidentalDignity.Collection_of_Light     -> twoPlanets.toSet()
+    is AccidentalDignity.Refrain_from_Mars_Saturn -> setOf(marsOrSaturn)
+    is Debility.Refrain_from_Venus_Jupiter       -> setOf(venusOrJupiter)
+    is AccidentalDignity.Partile_Conj_Jupiter_Venus    -> setOf(venusOrJupiter)
+    is AccidentalDignity.Partile_Trine_Jupiter_Venus   -> setOf(venusOrJupiter)
+    is AccidentalDignity.Partile_Sextile_Jupiter_Venus -> setOf(venusOrJupiter)
+    is AccidentalDignity.Partile_Conj_North_Node -> setOf(node)
+    is Debility.Partile_Conj_Mars_Saturn         -> setOf(marsOrSaturn)
+    is Debility.Partile_Oppo_Mars_Saturn         -> setOf(marsOrSaturn)
+    is Debility.Partile_Square_Mars_Saturn       -> setOf(marsOrSaturn)
+    is Misc.Prohibited                           -> setOfNotNull(applied, prohibitor, with, ingress)
+    is Misc.Frustrated                           -> setOfNotNull(applied, frustrator, ingress)
+    is Misc.Refrained                            -> setOfNotNull(applied, refranator, ingress)
+    is Misc.Besieged                             -> setOf(before, after)
+    is Misc.Overcoming                           -> setOf(overcoming.superior, overcoming.inferior)
+    else                                         -> emptySet()
+  }
+
+/**
+ * 只看**星座**就判得出來的格局 —— 星的度數差幾度也不變（除非換了星座）。
+ *
+ * 入廟、入旺、三分性、落陷、入弱，以及互容與互陷（雙方各在對方守護的星座）。
+ * 界、面、相位、離太陽多遠、包夾…都要看度數，不在此列。
+ */
+val IPlanetPattern.signBased: Boolean
+  get() = this is EssentialDignity.Ruler || this is EssentialDignity.Exaltation || this is EssentialDignity.Triplicity ||
+    this is Debility.Detriment || this is Debility.Fall ||
+    this is EssentialDignity.MutualReception || this is Debility.MutualDeception

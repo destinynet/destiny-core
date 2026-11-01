@@ -55,6 +55,14 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       besieged,
       prohibited,
       frustrated,
+      // 離太陽多近、在太陽哪一側：不看宮位，只知日期也大多判得出來（日輪內例外，見 DtoFactory.getClassicalPatterns）
+      cazimi,
+      combustion,
+      sunbeam,
+      orientalGood,
+      occidentalGood,
+      orientalBad,
+      occidentalBad,
     )
   }
 

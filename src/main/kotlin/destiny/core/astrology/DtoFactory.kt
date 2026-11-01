@@ -9,6 +9,8 @@ import destiny.core.astrology.classical.IRuler
 import destiny.core.astrology.classical.rules.AccidentalDignity
 import destiny.core.astrology.classical.rules.Debility
 import destiny.core.astrology.classical.rules.EssentialDignity
+import destiny.core.astrology.classical.rules.participants
+import destiny.core.astrology.classical.rules.signBased
 import destiny.core.astrology.classical.rules.IPlanetPattern
 import destiny.core.astrology.classical.rules.IPlanetPatternFactory
 import destiny.core.astrology.classical.rules.PatternTranslator
@@ -180,6 +182,12 @@ class DtoFactory(
    * 跨日出日落的 [BirthDataGrain.HOUR2] 存的是時辰中點 —— 判出來的日夜沒有根據，三分性（與依賴它的外來）也就跟著沒有根據。
    * 判得出來時，儲存的時刻依 grain 的儲存規則必與已知的日夜相容，現算的結果可直接採用。
    *
+   * 位置不可信的星（[BirthDataGrain.allowsNatalTarget] 為 false，例如只知日期時的月亮）牽涉到的格局一併濾掉，
+   * 只留只看星座的（[signBased]）—— 度數誤差數度，相位、包夾、焦傷都可能整個不同。
+   *
+   * 日輪內（[AccidentalDignity.Cazimi]，離太陽 17′ 內）只在 [BirthDataGrain.MINUTE]／[BirthDataGrain.HOUR2] 留下：
+   * 晝夜級 ±7 小時，水星、金星相對太陽就可差到約 0.7°。
+   *
    * @param sectDeterminable 日夜盤判不判得出來。預設只由 grain 決定：[BirthDataGrain.MINUTE] 與 [BirthDataGrain.DayNightOnly] 判得出來；
    *   [BirthDataGrain.HOUR2] 要看時辰是否跨日出日落，預設保守視為判不出來 —— 能判定的呼叫端請自行傳入。
    */
@@ -195,7 +203,9 @@ class DtoFactory(
         // 得時／不得時依賴晝夜「與」星體在地平面上下 —— 後者需要精確時刻，
         // 故即使知晝夜（DAY_NIGHT），以正午 placeholder 推算仍不可採信，濾除。
         (!grain.includeAxis && (pattern is AccidentalDignity.Hayz || pattern is Debility.Out_of_Sect)) ||
-          (!sectDeterminable && (pattern is EssentialDignity.Triplicity || pattern is Debility.Peregrine))
+          (!sectDeterminable && (pattern is EssentialDignity.Triplicity || pattern is Debility.Peregrine)) ||
+          (!pattern.signBased && pattern.participants.any { !grain.allowsNatalTarget(it) }) ||
+          (pattern is AccidentalDignity.Cazimi && grain != BirthDataGrain.MINUTE && grain != BirthDataGrain.HOUR2)
       }
     }
   }
