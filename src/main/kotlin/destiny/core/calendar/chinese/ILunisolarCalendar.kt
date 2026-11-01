@@ -6,6 +6,7 @@ package destiny.core.calendar.chinese
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.toLocalDate
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 /**
  * 「某個瞬間屬於哪一天」。
@@ -41,6 +42,9 @@ data class LunarMonth(
   val lastDay: LocalDate,
 ) {
   operator fun contains(date: LocalDate): Boolean = date >= firstDay && date <= lastDay
+
+  /** [date] 是本月的第幾日（初一 ＝ 1）；呼叫端自行確認 [date] 在本月內 */
+  fun dayOf(date: LocalDate): Int = ChronoUnit.DAYS.between(firstDay, date).toInt() + 1
 }
 
 /**

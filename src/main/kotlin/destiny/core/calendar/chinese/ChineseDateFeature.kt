@@ -111,14 +111,15 @@ class ChineseDateFeature(private val calendar: ILunisolarCalendar,
       }
       DayBoundary.DAY_HOUR -> {
         // 前一天中午之後的第一個換日點，就是這一天的起點
-        val lmt = day.minusDays(1).atTime(12, 0)
-        val boundary: ChronoLocalDateTime<*> = when (config.dayHourConfig.changeDay) {
-          ChangeDay.ZI_BEGIN -> hourBranchFeature.getLmtNextStartOf(lmt, loc, Branch.子, config.dayHourConfig.hourBranchConfig)
-          ChangeDay.ZI_MIDDLE -> TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config.dayHourConfig.dayConfig), loc, julDayResolver)
-        }
-        TimeTools.getGmtJulDay(boundary, loc)
+        TimeTools.getGmtJulDay(nextDayBoundary(day.minusDays(1).atTime(12, 0), loc, config.dayHourConfig), loc)
       }
     }
+  }
+
+  /** [lmt] 之後的下一個換日點（依 [config] 是子初或子正），回當地時間 */
+  private fun nextDayBoundary(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayHourConfig): ChronoLocalDateTime<*> = when (config.changeDay) {
+    ChangeDay.ZI_BEGIN  -> hourBranchFeature.getLmtNextStartOf(lmt, loc, Branch.子, config.hourBranchConfig)
+    ChangeDay.ZI_MIDDLE -> TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config.dayConfig), loc, julDayResolver)
   }
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: ChineseDateConfig): ChineseDate {
@@ -138,11 +139,7 @@ class ChineseDateFeature(private val calendar: ILunisolarCalendar,
   private inner class DayHourDayOf(private val loc: ILocation, private val config: DayHourConfig) : DayOf {
 
     override fun dayOf(gmt: GmtJulDay): LocalDate {
-      val lmt = TimeTools.getLmtFromGmt(gmt, loc, julDayResolver)
-      val boundary: ChronoLocalDateTime<*> = when (config.changeDay) {
-        ChangeDay.ZI_BEGIN -> hourBranchFeature.getLmtNextStartOf(lmt, loc, Branch.子, config.hourBranchConfig)
-        ChangeDay.ZI_MIDDLE -> TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config.dayConfig), loc, julDayResolver)
-      }
+      val boundary = nextDayBoundary(TimeTools.getLmtFromGmt(gmt, loc, julDayResolver), loc, config)
       val date = LocalDate.from(boundary.toLocalDate())
       return if (boundary.get(ChronoField.HOUR_OF_DAY) >= 12) date else date.minusDays(1)
     }

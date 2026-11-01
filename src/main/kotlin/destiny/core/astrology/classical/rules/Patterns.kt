@@ -5,6 +5,8 @@ package destiny.core.astrology.classical.rules
 
 import destiny.core.DayNight
 import destiny.core.astrology.*
+import destiny.core.astrology.classical.ApplicationOutcome
+import destiny.core.astrology.classical.Besiegement
 import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.MutualDataWithSign
 import destiny.core.calendar.GmtJulDay
@@ -142,49 +144,58 @@ sealed class Misc : IPlanetPattern {
   override val ruleType: RuleType = RuleType.MISC
 
   /**
-   * [planet] 正以 [aspect] 入相位 [applied]，成形之前 [prohibitor] 先以 [interruption] 與 [with] 成形（插隊，
-   * [destiny.core.astrology.classical.ApplicationOutcome.Prohibition]）。[byBody]：以合相插隊（實體攔截），否則是透過光線。
-   * [ingress]：插隊之前已換星座的那顆（[destiny.core.astrology.classical.ApplicationOutcome.ingress]）
+   * 插隊：[planet]（追的那顆）的入相位在成形之前被第三顆星先碰到被追的那顆。
+   * 判斷層只**持有**事實 [outcome]（[ApplicationOutcome.Prohibition]），不另抄一份欄位；下面的屬性都是給翻譯層的捷徑。
+   * [byBody]：以合相插隊（實體攔截），否則是透過光線；[ingress]：插隊之前已換星座的那顆
    */
-  data class Prohibited(
-    override val planet: Planet, val applied: Planet, val aspect: Aspect,
-    val prohibitor: Planet, val with: Planet, val interruption: Aspect,
-    val ingress: Planet? = null,
-  ) : Misc() {
-    val byBody: Boolean get() = interruption == Aspect.CONJUNCTION
+  data class Prohibited(override val planet: Planet, val outcome: ApplicationOutcome.Prohibition) : Misc() {
+    val applied: Planet get() = outcome.applied
+    val aspect: Aspect get() = outcome.pattern.aspect
+    val prohibitor: Planet get() = outcome.prohibitor
+    val with: Planet get() = outcome.with
+    val interruption: Aspect get() = outcome.interruption.aspect
+    val ingress: Planet? get() = outcome.ingress
+    val byBody: Boolean get() = outcome.byBody
   }
 
   /**
-   * [planet] 正以 [aspect] 入相位 [applied]，成形之前 [applied] 先以 [interruption] 與更慢的 [frustrator] 成形然後離開（撲空，
-   * [destiny.core.astrology.classical.ApplicationOutcome.Frustration]）。[ingress]：撲空之前已換星座的那顆
+   * 撲空：[planet]（追的那顆）的入相位在成形之前，被追的那顆先與更慢的星成形然後離開（[ApplicationOutcome.Frustration]）。
+   * 判斷層只持有事實 [outcome]；[ingress]：撲空之前已換星座的那顆
    */
-  data class Frustrated(
-    override val planet: Planet, val applied: Planet, val aspect: Aspect,
-    val frustrator: Planet, val interruption: Aspect,
-    val ingress: Planet? = null,
-  ) : Misc()
+  data class Frustrated(override val planet: Planet, val outcome: ApplicationOutcome.Frustration) : Misc() {
+    val applied: Planet get() = outcome.applied
+    val aspect: Aspect get() = outcome.pattern.aspect
+    val frustrator: Planet get() = outcome.frustrator
+    val interruption: Aspect get() = outcome.interruption.aspect
+    val ingress: Planet? get() = outcome.ingress
+  }
 
   /**
-   * [planet] 正以 [aspect] 入相位 [applied]，成形之前 [refranator]（兩者之一）停滯轉向（[retrograde]：轉逆行，否則轉順行），
-   * 兩星最接近時仍差 [closestOrb] 度，之後漸行漸遠（臨陣退縮，[destiny.core.astrology.classical.ApplicationOutcome.Refranation]）。
+   * 臨陣退縮：[planet]（追的那顆）的入相位在成形之前，兩者之一停滯轉向（[stationary]），兩星最接近時仍差 [closestOrb] 度便漸行漸遠
+   * （[ApplicationOutcome.Refranation]）。判斷層只持有事實 [outcome]。
    * 不限哪兩顆星；只與金木、火土有關的計分判斷另見 [Debility.Refrain_from_Venus_Jupiter]、[AccidentalDignity.Refrain_from_Mars_Saturn]
    */
-  data class Refrained(
-    override val planet: Planet, val applied: Planet, val aspect: Aspect,
-    val refranator: Planet, val retrograde: Boolean, val closestOrb: Double,
-    val ingress: Planet? = null,
-  ) : Misc()
+  data class Refrained(override val planet: Planet, val outcome: ApplicationOutcome.Refranation) : Misc() {
+    val applied: Planet get() = outcome.applied
+    val aspect: Aspect get() = outcome.pattern.aspect
+    val refranator: Planet get() = outcome.refranator
+    val stationary: StationaryType get() = outcome.stationary.type
+    val closestOrb: Double get() = outcome.closestOrb
+    val ingress: Planet? get() = outcome.ingress
+  }
 
   /**
-   * [planet] 被 [before]（黃經較小的一側）與 [after] 包夾（[destiny.core.astrology.classical.Besiegement]）。
-   * 每一側是星體本身（aspect 為 null）或該星以 aspect 投射的光線，distance 是與 [planet] 的度數差。
+   * 包夾：[planet] 被兩側夾住（[Besiegement]：每一側是星體本身或投射的光線）。判斷層只持有事實 [besiegement]。
    * 計分判斷另見 [Debility.Besieged_Mars_Saturn]、[AccidentalDignity.Besieged_Jupiter_Venus]
    */
-  data class Besieged(
-    override val planet: Planet,
-    val before: Planet, val beforeAspect: Aspect?, val beforeDistance: Double,
-    val after: Planet, val afterAspect: Aspect?, val afterDistance: Double,
-  ) : Misc()
+  data class Besieged(override val planet: Planet, val besiegement: Besiegement) : Misc() {
+    val before: Planet get() = besiegement.before.by
+    val beforeAspect: Aspect? get() = besiegement.before.aspect
+    val beforeDistance: Double get() = besiegement.before.distance
+    val after: Planet get() = besiegement.after.by
+    val afterAspect: Aspect? get() = besiegement.after.aspect
+    val afterDistance: Double get() = besiegement.after.distance
+  }
 
   /**
    * [planet] 參與的居上關係 (可能是居上者，也可能是被壓者)。
@@ -256,6 +267,38 @@ val IPlanetPattern.participants: Set<AstroPoint>
     is Misc.Besieged                             -> setOf(before, after)
     is Misc.Overcoming                           -> setOf(overcoming.superior, overcoming.inferior)
     else                                         -> emptySet()
+  }
+
+/**
+ * 一種格局要成立，出生資料得提供什麼。精度不夠時由 `DtoFactory.getClassicalPatterns` 依此濾掉，
+ * 「哪種格局需要什麼」只在 [requirements] 一處宣告，不散在過濾器的 if 鏈裡
+ */
+enum class PatternRequirement {
+  /** 要軸點／宮位（精確時刻）：星體在地平面上下 */
+  AXIS,
+  /** 要判得出日夜盤 */
+  SECT,
+  /** 要離太陽的細距離（時辰級以內）：日輪內 17′ 這種尺度，晝夜級 ±7 小時水星金星就差到 0.7° */
+  SUN_DISTANCE_FINE;
+
+  /** 這份出生資料（精度 [grain]、日夜盤 [sect]，null ＝ 判不出）供不供得起 */
+  fun isMetBy(grain: BirthDataGrain, sect: DayNight?): Boolean = when (this) {
+    AXIS              -> grain.includeAxis
+    SECT              -> sect != null
+    SUN_DISTANCE_FINE -> grain.timeToleranceHours <= 1.0
+  }
+}
+
+/**
+ * 這個格局需要出生資料提供什麼（[PatternRequirement]）。得時／不得時同時看日夜與地平面上下；三分性與依賴它的外來看日夜；
+ * 日輪內看離太陽的細距離。其餘格局只要位置本身可信（[participants] 配合 `BirthDataGrain.allowsNatalTarget`）
+ */
+val IPlanetPattern.requirements: Set<PatternRequirement>
+  get() = when (this) {
+    is AccidentalDignity.Hayz, is Debility.Out_of_Sect    -> setOf(PatternRequirement.AXIS, PatternRequirement.SECT)
+    is EssentialDignity.Triplicity, is Debility.Peregrine -> setOf(PatternRequirement.SECT)
+    is AccidentalDignity.Cazimi                           -> setOf(PatternRequirement.SUN_DISTANCE_FINE)
+    else                                                  -> emptySet()
   }
 
 /**

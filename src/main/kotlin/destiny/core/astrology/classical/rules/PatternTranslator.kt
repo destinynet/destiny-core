@@ -7,6 +7,7 @@ import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.FixedStar
 import destiny.core.astrology.LunarNode
 import destiny.core.astrology.Planet.*
+import destiny.core.astrology.StationaryType
 import destiny.tools.AbstractPropertyBasedPatternDescriptor
 import destiny.tools.getTitle
 import destiny.tools.JSerializable
@@ -127,19 +128,25 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
         is Debility.Refrain_from_Venus_Jupiter -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.venusOrJupiter, pattern.aspect))
         is Debility.MutualDeception -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign1, pattern.dig2, pattern.p2, pattern.sign2, pattern.dig1, pattern.dig2))
       }
-      is Misc.Prohibited ->
-        MiscDescriptor(pattern, (if (pattern.byBody) "commentBody" else "commentRays") + (if (pattern.ingress != null) "Ingress" else ""),
-          listOfNotNull(pattern.planet, pattern.applied, pattern.aspect, pattern.prohibitor, pattern.with, pattern.interruption, pattern.ingress))
-      is Misc.Frustrated ->
-        MiscDescriptor(pattern, if (pattern.ingress != null) "commentIngress" else "comment",
-          listOfNotNull(pattern.planet, pattern.applied, pattern.aspect, pattern.frustrator, pattern.interruption, pattern.ingress))
-      is Misc.Refrained ->
-        MiscDescriptor(pattern, (if (pattern.retrograde) "commentRetrograde" else "commentDirect") + (if (pattern.ingress != null) "Ingress" else ""),
-          listOfNotNull(pattern.planet, pattern.applied, pattern.aspect, pattern.refranator, pattern.closestOrb, pattern.ingress))
-      is Misc.Besieged ->
-        // 星體那一側沒有交角；佔位符位置固定，所以放空字串而不是拿掉
-        MiscDescriptor(pattern, "comment" + (if (pattern.beforeAspect == null) "Body" else "Rays") + (if (pattern.afterAspect == null) "Body" else "Rays"),
-          listOf(pattern.planet, pattern.before, pattern.beforeAspect ?: "", pattern.beforeDistance, pattern.after, pattern.afterAspect ?: "", pattern.afterDistance))
+      // Misc 是 sealed：這裡窮舉，新增一種 Misc 而沒給翻譯會是編譯錯誤，不是執行期才炸
+      is Misc -> when (pattern) {
+        is Misc.Prohibited ->
+          MiscDescriptor(pattern, (if (pattern.byBody) "commentBody" else "commentRays") + (if (pattern.ingress != null) "Ingress" else ""),
+            listOfNotNull(pattern.planet, pattern.applied, pattern.aspect, pattern.prohibitor, pattern.with, pattern.interruption, pattern.ingress))
+        is Misc.Frustrated ->
+          MiscDescriptor(pattern, if (pattern.ingress != null) "commentIngress" else "comment",
+            listOfNotNull(pattern.planet, pattern.applied, pattern.aspect, pattern.frustrator, pattern.interruption, pattern.ingress))
+        is Misc.Refrained ->
+          MiscDescriptor(pattern, (if (pattern.stationary == StationaryType.DIRECT_TO_RETROGRADE) "commentRetrograde" else "commentDirect") + (if (pattern.ingress != null) "Ingress" else ""),
+            listOfNotNull(pattern.planet, pattern.applied, pattern.aspect, pattern.refranator, pattern.closestOrb, pattern.ingress))
+        is Misc.Besieged ->
+          // 星體那一側沒有交角；佔位符位置固定，所以放空字串而不是拿掉
+          MiscDescriptor(pattern, "comment" + (if (pattern.beforeAspect == null) "Body" else "Rays") + (if (pattern.afterAspect == null) "Body" else "Rays"),
+            listOf(pattern.planet, pattern.before, pattern.beforeAspect ?: "", pattern.beforeDistance, pattern.after, pattern.afterAspect ?: "", pattern.afterDistance))
+        // 居上與空亡沒有 Misc.properties 的句子（居上有自己的呈現、空亡是時間區段），刻意不翻譯
+        is Misc.Overcoming, is Misc.VoidCourseSpan ->
+          throw IllegalArgumentException("No description for : $pattern")
+      }
       else -> {
         throw IllegalArgumentException("Not Supported : $pattern")
       }

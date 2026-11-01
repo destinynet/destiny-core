@@ -57,9 +57,6 @@ class EventsTraversalTransitImpl(
     const val MUTUAL_NATAL_MAX_ORB: Double = 3.0
   }
 
-  private val Planet.isStationaryPossible: Boolean
-    get() = this != Planet.SUN && this != Planet.MOON
-
   override fun traverse(
     model: IHoroscopeModel,
     fromGmtJulDay: GmtJulDay,
@@ -93,7 +90,7 @@ class EventsTraversalTransitImpl(
     }.toMap()
 
     /** 天象事件的本命接點用哪些相位 —— 與滯留的處置同款（HIGH importance）。 */
-    val skyEventNatalAspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet()
+    val skyEventNatalAspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH)
 
     /**
      * ⭐ **天象事件 → 對本命的接點**：互相位與三個 ingress 共用的唯一實作。

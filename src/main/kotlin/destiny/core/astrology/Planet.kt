@@ -33,6 +33,10 @@ sealed class Planet(nameKey: String,
     return values.indexOf(this) - values.indexOf(other)
   }
 
+  /** 會不會停滯、逆行：日月不會。不依日夜盤而變，所以放在型別上（吉凶星則不然，見 Relocation） */
+  val isStationaryPossible: Boolean
+    get() = this !== SUN && this !== MOON
+
   companion object : IPoints<Planet> {
 
     override val type: KClass<out Point> = Planet::class
@@ -44,6 +48,9 @@ sealed class Planet(nameKey: String,
     override val values by lazy { arrayOf(*classicalArray, URANUS, NEPTUNE, PLUTO) }
     val list by lazy { listOf(*values) }
     val planetSet by lazy { setOf(*values) }
+
+    /** 外行星（木土天海冥）：慢星，推運與行運的容許度常以此分組 */
+    val outerSet by lazy { setOf(JUPITER, SATURN, URANUS, NEPTUNE, PLUTO) }
 
     private val weekPlanets by lazy {
       arrayOf(SUN, MOON, MARS, MERCURY, JUPITER, VENUS, SATURN)

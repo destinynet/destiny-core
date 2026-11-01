@@ -4,6 +4,7 @@
 package destiny.core.astrology.classical
 
 import destiny.core.astrology.*
+import destiny.core.astrology.classical.rules.ClassicalInput
 import destiny.core.astrology.classical.rules.ClassicalPatternContext
 import destiny.core.astrology.classical.rules.IPlanetPattern
 import destiny.core.calendar.GmtJulDay
@@ -35,10 +36,12 @@ class ClassicalFeature(private val horoscopeFeature: HoroscopeFeature,
     val (classicalConfig, horoscopeConfig) = config
 
     val h = horoscopeFeature.getModel(gmtJulDay, loc, horoscopeConfig)
+    // 一張盤一份輸入：呼叫端判定的日夜盤、以及各 factory 共用的入相位引擎結果
+    val input = ClassicalInput(h, classicalConfig.sect)
 
     return Planet.classicalList.associateWith { planet ->
       classicalConfig.factories.flatMap { factory ->
-        factory.getPatterns(planet, h)
+        factory.getPatterns(planet, input)
       }
     }
   }

@@ -33,7 +33,7 @@ sealed interface IVoidCourse : Descriptive {
   ): Sequence<Misc.VoidCourseSpan> {
 
     val planets = Planet.classicalSet
-    val aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()
+    val aspects = Aspect.getAspects(Aspect.Importance.HIGH)
 
     fun getNextVoc(gmt: GmtJulDay): Misc.VoidCourseSpan? {
 
@@ -104,7 +104,7 @@ class VoidCourseHellenistic(
     gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, planet: Planet, centric: Centric, starTypeOptions: StarTypeOptions
   ): Misc.VoidCourseSpan? {
 
-    return aspectNeighborsImpl.getNeighborsByAspects(planet, gmtJulDay, Planet.classicalSet, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
+    return aspectNeighborsImpl.getNeighborsByAspects(planet, gmtJulDay, Planet.classicalSet, Aspect.getAspects(Aspect.Importance.HIGH))
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->
@@ -163,7 +163,7 @@ class VoidCourseWilliamLilly(private val aspectNeighborsImpl: IAspectNeighbors,
   override fun getVoidCourse(
     gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, planet: Planet, centric: Centric, starTypeOptions: StarTypeOptions
   ): Misc.VoidCourseSpan? {
-    return aspectNeighborsImpl.getNeighborsByAspects(planet, gmtJulDay, Planet.classicalSet, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
+    return aspectNeighborsImpl.getNeighborsByAspects(planet, gmtJulDay, Planet.classicalSet, Aspect.getAspects(Aspect.Importance.HIGH))
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->
@@ -230,7 +230,7 @@ class VoidCourseMedieval(private val aspectNeighborsImpl: IAspectNeighbors,
     gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<AstroPoint, IPosition<*>>, planet: Planet, centric: Centric, starTypeOptions: StarTypeOptions
   ): Misc.VoidCourseSpan? {
 
-    return aspectNeighborsImpl.getNeighborsByAspects(planet, gmtJulDay, Planet.classicalSet, Aspect.getAspects(Aspect.Importance.HIGH).toSet())
+    return aspectNeighborsImpl.getNeighborsByAspects(planet, gmtJulDay, Planet.classicalSet, Aspect.getAspects(Aspect.Importance.HIGH))
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->

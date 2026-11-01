@@ -39,7 +39,7 @@ fun IHoroscopeFeature.getPrimaryDirection(
   forward: Boolean = true,
   obliquityCalculator: IObliquityCalculator = Astronomical,
   threshold: Double? = null,
-  aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
+  aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH),
 ): IPrimaryDirectionModel {
 
   require(viewTime >= model.gmtJulDay) { "viewTime ($viewTime) should be after model.gmtJulDay (${model.gmtJulDay})" }

@@ -31,7 +31,7 @@ import kotlin.math.abs
  */
 class TranslationOfLightImpl(
   private val aspectCalculator: IAspectCalculator,
-  private val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet(),
+  private val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
   private val allowBetweenApplying: Boolean = false,
   private val applicationOutcome: IApplicationOutcome? = null,
 ) : ITranslationOfLight {

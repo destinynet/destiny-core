@@ -24,7 +24,7 @@ import kotlin.math.abs
 class CollectionOfLightImpl(
   private val essentialImpl: IEssential,
   private val aspectCalculator: IAspectCalculator,
-  private val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet(),
+  private val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
 ) : ICollectionOfLight {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel, receivedOnly: Boolean): CollectionOfLight? {

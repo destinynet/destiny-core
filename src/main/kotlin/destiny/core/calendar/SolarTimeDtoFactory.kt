@@ -54,16 +54,16 @@ class SolarTimeDtoFactory(
   private fun build(anchor: GmtJulDay, focus: GmtJulDay?, loc: ILocation, place: String?): SolarTimeDto {
     val (dayFrom, dayTo) = solarDayOf(anchor, loc)
     val meridian = trans(dayFrom + SKIP, TransPoint.MERIDIAN, loc)
-    val dayFromMs = dayFrom.ms()
-    val dayToMs = dayTo.ms()
-    val meridianMs = meridian.ms()
+    val dayFromMs = dayFrom.toEpochMilliseconds()
+    val dayToMs = dayTo.toEpochMilliseconds()
+    val meridianMs = meridian.toEpochMilliseconds()
     val civil = civilOffsetsOf(loc, dayFromMs, dayToMs)
     val offsetAtMeridian = civil.last { it.fromMs <= meridianMs }.offsetSeconds
     val year = Instant.ofEpochMilli(meridianMs).atOffset(ZoneOffset.ofTotalSeconds(offsetAtMeridian)).year
 
     /** 窗口內的升／落；極夜、永晝（或落在窗口外）為 null */
     fun inWindow(point: TransPoint): Long? =
-      riseTransImpl.getGmtTransJulDay(dayFrom, Planet.SUN, point, loc)?.takeIf { it < dayTo }?.ms()
+      riseTransImpl.getGmtTransJulDay(dayFrom, Planet.SUN, point, loc)?.takeIf { it < dayTo }?.toEpochMilliseconds()
 
     return SolarTimeDto(
       location = loc,
@@ -74,7 +74,7 @@ class SolarTimeDtoFactory(
       meridianAltDeg = sunAt(meridian, loc).apparentAltitude,
       sunriseMs = inWindow(TransPoint.RISING),
       sunsetMs = inWindow(TransPoint.SETTING),
-      focusMs = focus?.ms(),
+      focusMs = focus?.toEpochMilliseconds(),
       standardOffsetSeconds = standardOffsetSeconds(loc, meridianMs),
       eotSecondsAtMeridian = trueSolarTimeImpl.getEquationSecs(meridian),
       civilOffsets = civil,
@@ -115,7 +115,7 @@ class SolarTimeDtoFactory(
     for (i in 0..12) {
       val branch = Branch[i % 12]
       val start = hourSolarTransImpl.getGmtNextStartOf(cursor, loc, branch, HourBranchConfig())
-      add(SolarTimeDto.HourStart(branch.name, start.ms()))
+      add(SolarTimeDto.HourStart(branch.name, start.toEpochMilliseconds()))
       cursor = start + SKIP
     }
   }
@@ -124,7 +124,7 @@ class SolarTimeDtoFactory(
     sampleSteps(totalMin, SAMPLE_STEP_MINUTES).map { tMin ->
       val gmt = dayFrom + tMin / 1440.0
       val pos = sunAt(gmt, loc)
-      SolarTimeDto.Sample(tMin, pos.azimuthDeg, pos.apparentAltitude, pos.lat, subsolarLng(pos.lng, gmt))
+      SolarTimeDto.Sample(tMin, pos.azimuthDeg, pos.apparentAltitude, pos.lat, subpointLng(pos.lng, gmt))
     }
 
   /** 每天 12:00 UTC 的均時差（分鐘，四捨五入兩位小數） */
@@ -132,8 +132,6 @@ class SolarTimeDtoFactory(
     val noon = TimeTools.getJulDay(LocalDate.ofYearDay(year, day).atTime(12, 0).toInstant(ZoneOffset.UTC))
     (trueSolarTimeImpl.getEquationSecs(noon) / 60.0 * 100).roundToInt() / 100.0
   }
-
-  private fun GmtJulDay.ms(): Long = toInstant().toEpochMilliseconds()
 
   companion object {
     /** 動畫平滑度：一日約 720 點 */
@@ -144,10 +142,6 @@ class SolarTimeDtoFactory(
     private const val LEAD_IN = 1.5 / 24
     /** [solarDayOf] 往後找子正的上限次數 */
     private const val MAX_DAY_STEPS = 3
-
-    /** 直射點經度 = 赤經 − 格林威治平恆星時（東經為正，正規化到 (−180, 180]） */
-    private fun subsolarLng(raDeg: Double, gmt: GmtJulDay): Double =
-      (raDeg - Astronomical.gmst(gmt) * 15.0).normalizeSigned()
   }
 }
 
@@ -169,3 +163,9 @@ fun civilOffsetsOf(loc: ILocation, fromMs: Long, toMs: Long): List<SolarTimeDto.
     }
   }
 }
+
+/**
+ * 星下點（直射點）的地理經度：赤經 [raDeg] 減去格林威治平恆星時，東經為正、正規化到 (−180, 180]。
+ * 太陽給直射點（真太陽時 3D）、月亮給月下點（月食動畫）都是這一條
+ */
+fun subpointLng(raDeg: Double, gmt: GmtJulDay): Double = (raDeg - Astronomical.gmst(gmt) * 15.0).normalizeSigned()

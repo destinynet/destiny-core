@@ -9,9 +9,18 @@ import destiny.core.astrology.Aspect.OPPOSITION
 import destiny.core.astrology.Aspect.SEXTILE
 import destiny.core.astrology.Aspect.SQUARE
 import destiny.core.astrology.Aspect.TRINE
+import destiny.core.astrology.Aspect
 import destiny.core.astrology.IPointAspectPattern
 import destiny.core.astrology.LunarNode
+import destiny.core.astrology.Planet
 import destiny.core.astrology.Planet.*
+import destiny.core.astrology.PointAspectPattern
+import destiny.core.astrology.Pos
+import destiny.core.astrology.Stationary
+import destiny.core.astrology.StationaryType
+import destiny.core.astrology.classical.ApplicationOutcome
+import destiny.core.astrology.classical.Besiegement
+import destiny.core.calendar.GmtJulDay
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.astrology.classical.Dignity.*
@@ -354,21 +363,35 @@ class PatternTranslatorKtTest {
   }
 
   /** 入相位的結局：有 [Misc.Prohibited.ingress]／[Misc.Frustrated.ingress] 的才多一句換星座 */
+  private fun applying(a: Planet, b: Planet, aspect: Aspect) = PointAspectPattern.of(a, b, aspect, IPointAspectPattern.AspectType.APPLYING, 1.0)
+
+  private fun prohibited(applying: Planet, applied: Planet, aspect: Aspect, prohibitor: Planet, with: Planet, interruption: Aspect, ingress: Planet? = null) =
+    Misc.Prohibited(applying, ApplicationOutcome.Prohibition(applying, applied, applying(applying, applied, aspect), 1.0, ingress, emptyList(),
+      prohibitor, with, applying(prohibitor, with, interruption)))
+
+  private fun frustrated(applying: Planet, applied: Planet, aspect: Aspect, frustrator: Planet, interruption: Aspect, ingress: Planet? = null) =
+    Misc.Frustrated(applying, ApplicationOutcome.Frustration(applying, applied, applying(applying, applied, aspect), 1.0, ingress, emptyList(),
+      frustrator, applying(applied, frustrator, interruption)))
+
+  private fun refrained(applying: Planet, applied: Planet, aspect: Aspect, refranator: Planet, type: StationaryType, closestOrb: Double, ingress: Planet? = null) =
+    Misc.Refrained(applying, ApplicationOutcome.Refranation(applying, applied, applying(applying, applied, aspect), ingress, emptyList(),
+      refranator, Stationary(GmtJulDay(2451545.0), refranator, type, Pos(0.0, 0.0)), 1.0, 2.0, closestOrb))
+
   @Test
   fun misc() {
-    Misc.Prohibited(SUN, SATURN, CONJUNCTION, MERCURY, SATURN, CONJUNCTION).also {
+    prohibited(SUN, SATURN, CONJUNCTION, MERCURY, SATURN, CONJUNCTION).also {
       assertEquals("插隊", it.title)
       logger.info { "${it.twDesc} / ${it.enDesc} / ${it.jaDesc}" }
       assertEquals("太陽 正朝 土星 入相位（合），成形之前 水星 先以合相碰到 土星，搶先一步（Prohibition，以星體攔截）", it.twDesc)
       assertEquals("Sun applies to Saturn by Conjunction, but before it perfects, Mercury reaches Saturn first by conjunction. (Prohibition by body)", it.enDesc)
       assertEquals("太陽はコンジャンクションで土星に接近中ですが、完成前に水星がコンジャンクションで先に土星と重なります（プロヒビション、天体による阻止）。", it.jaDesc)
     }
-    Misc.Prohibited(MERCURY, SATURN, OPPOSITION, SUN, SATURN, SQUARE, ingress = MERCURY).also {
+    prohibited(MERCURY, SATURN, OPPOSITION, SUN, SATURN, SQUARE, ingress = MERCURY).also {
       logger.info { "${it.twDesc} / ${it.enDesc} / ${it.jaDesc}" }
       assertEquals("水星 正朝 土星 入相位（沖），成形之前 太陽 先與 土星 形成 刑；在此之前 水星 已先換星座（Prohibition，透過光線攔截）", it.twDesc)
       assertEquals("Mercury applies to Saturn by Opposition, but before it perfects, Sun reaches Saturn first by Square; Mercury has already changed sign by then. (Prohibition by rays)", it.enDesc)
     }
-    Misc.Frustrated(SUN, MARS, SEXTILE, SATURN, SEXTILE, ingress = MARS).also {
+    frustrated(SUN, MARS, SEXTILE, SATURN, SEXTILE, ingress = MARS).also {
       assertEquals("撲空", it.title)
       logger.info { "${it.twDesc} / ${it.enDesc} / ${it.jaDesc}" }
       assertEquals("太陽 正朝 火星 入相位（六合），成形之前 火星 先與更慢的 土星 形成 六合 後離開，太陽 撲空；在此之前 火星 已先換星座（Frustration）", it.twDesc)
@@ -378,15 +401,15 @@ class PatternTranslatorKtTest {
   /** 一般化的臨陣退縮與包夾 */
   @Test
   fun miscRefrainedBesieged() {
-    Misc.Refrained(MERCURY, SATURN, OPPOSITION, MERCURY, retrograde = false, closestOrb = 4.15).also {
+    refrained(MERCURY, SATURN, OPPOSITION, MERCURY, StationaryType.RETROGRADE_TO_DIRECT, closestOrb = 4.15).also {
       assertEquals("臨陣退縮", it.title)
       assertEquals("水星 正朝 土星 入相位（沖），成形之前 水星 停滯轉順行，兩星最近仍差 4.2 度便漸行漸遠，臨陣退縮（Refranation）", it.twDesc)
       assertEquals("Mercury applies to Saturn by Opposition, but before it perfects, Mercury stations direct; they come within 4.2 degrees and then separate. (Refranation)", it.enDesc)
     }
-    Misc.Refrained(VENUS, JUPITER, TRINE, VENUS, retrograde = true, closestOrb = 1.0, ingress = VENUS).also {
+    refrained(VENUS, JUPITER, TRINE, VENUS, StationaryType.DIRECT_TO_RETROGRADE, closestOrb = 1.0, ingress = VENUS).also {
       assertEquals("金星 正朝 木星 入相位（三合），成形之前 金星 停滯轉逆行，兩星最近仍差 1.0 度便漸行漸遠，臨陣退縮；在此之前 金星 已先換星座（Refranation）", it.twDesc)
     }
-    Misc.Besieged(JUPITER, MARS, SQUARE, 5.13, SATURN, null, 6.08).also {
+    Misc.Besieged(JUPITER, Besiegement(JUPITER, Besiegement.Side(MARS, SQUARE, 5.13), Besiegement.Side(SATURN, null, 6.08))).also {
       assertEquals("包夾", it.title)
       logger.info { "${it.twDesc} / ${it.enDesc} / ${it.jaDesc}" }
       assertEquals("木星 被 火星 與 土星 前後包夾（火星 以 刑 光線、相距 5.1 度；土星 以星體、相距 6.1 度），中間沒有其他星介入（Besiegement）", it.twDesc)

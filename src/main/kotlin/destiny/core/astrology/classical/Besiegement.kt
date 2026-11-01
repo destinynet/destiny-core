@@ -48,16 +48,14 @@ data class BesiegementOptions(
 ) {
   /** 被 [enclosers] 包夾時，光線算哪些交角 */
   fun raysFor(enclosers: Set<Planet>): Set<Aspect> = when {
-    !byRays                -> emptySet()
-    enclosers == MALEFICS -> maleficRays
-    else                   -> beneficRays
+    !byRays                            -> emptySet()
+    enclosers == IBesiegement.MALEFICS -> maleficRays
+    else                               -> beneficRays
   }
 
   companion object {
     /** 托勒密相位的光線：六合、四分、三分、對分 */
     val PTOLEMAIC_RAYS: Set<Aspect> = setOf(Aspect.SEXTILE, Aspect.SQUARE, Aspect.TRINE, Aspect.OPPOSITION)
-
-    private val MALEFICS: Set<Planet> = setOf(Planet.MARS, Planet.SATURN)
 
     /** Porphyry, *Introduction* 15：兩側各 7° 內、星體或光線、不要求同星座 */
     val PORPHYRY = BesiegementOptions()
@@ -72,9 +70,19 @@ interface IBesiegement {
   /** [planet] 是否被 [enclosers]（兩顆星，例：火土）包夾；沒有則為 null */
   fun getBesiegement(h: IHoroscopeModel, planet: Planet, enclosers: Set<Planet>): Besiegement?
 
-  /** 全盤：七顆古典行星被火土、被金木的包夾 */
+  /** 全盤：七顆古典行星被火土、被金木（[ENCLOSER_PAIRS]）的包夾 */
   fun getResults(h: IHoroscopeModel): List<Besiegement> =
-    listOf(setOf(Planet.MARS, Planet.SATURN), setOf(Planet.VENUS, Planet.JUPITER)).flatMap { enclosers ->
+    ENCLOSER_PAIRS.flatMap { enclosers ->
       Planet.classicalList.mapNotNull { getBesiegement(h, it, enclosers) }
     }
+
+  companion object {
+    /**
+     * 包夾的兩組：兩凶（火土）、兩吉（金木）。只限包夾這個技法用 —— 吉凶星本身依日夜盤而變，
+     * 所以不做成 [Planet] 的全域屬性（見 destiny.core.astrology.geo.Relocation 的說明）
+     */
+    val MALEFICS: Set<Planet> = setOf(Planet.MARS, Planet.SATURN)
+    val BENEFICS: Set<Planet> = setOf(Planet.VENUS, Planet.JUPITER)
+    val ENCLOSER_PAIRS: List<Set<Planet>> = listOf(MALEFICS, BENEFICS)
+  }
 }

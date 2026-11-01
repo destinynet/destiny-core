@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.DayNight
 import destiny.core.astrology.classical.ClassicalConfig
 import destiny.core.astrology.classical.ClassicalFeature
 import destiny.core.astrology.classical.IRuler
@@ -10,6 +11,7 @@ import destiny.core.astrology.classical.rules.AccidentalDignity
 import destiny.core.astrology.classical.rules.Debility
 import destiny.core.astrology.classical.rules.EssentialDignity
 import destiny.core.astrology.classical.rules.participants
+import destiny.core.astrology.classical.rules.requirements
 import destiny.core.astrology.classical.rules.signBased
 import destiny.core.astrology.classical.rules.IPlanetPattern
 import destiny.core.astrology.classical.rules.IPlanetPatternFactory
@@ -177,10 +179,11 @@ class DtoFactory(
    *
    * 沒有精確出生時刻時，濾掉得時／不得時（[AccidentalDignity.Hayz]／[Debility.Out_of_Sect]）。
    *
-   * 判不出日夜盤時（[sectDeterminable] = false），再濾掉三分性（[EssentialDignity.Triplicity]）與外來（[Debility.Peregrine]）：
-   * 格局是拿**儲存的時刻**判日夜的，而 [BirthDataGrain.DAY] 的時刻是捏造的正午、
-   * 跨日出日落的 [BirthDataGrain.HOUR2] 存的是時辰中點 —— 判出來的日夜沒有根據，三分性（與依賴它的外來）也就跟著沒有根據。
-   * 判得出來時，儲存的時刻依 grain 的儲存規則必與已知的日夜相容，現算的結果可直接採用。
+   * 日夜盤 [sect] 由呼叫端依出生時刻精度判定（core-impl `DayNightSourceResolver.resolveSect`），**傳進格局引擎**：
+   * 三分性、外來、得時／不得時都以它為準，不再各自以儲存的時刻現算（[ClassicalConfig.sect]）。
+   * 判不出來（null）時濾掉三分性（[EssentialDignity.Triplicity]）與外來（[Debility.Peregrine]）：
+   * [BirthDataGrain.DAY] 的時刻是捏造的正午、跨日出日落的 [BirthDataGrain.HOUR2] 存的是時辰中點 ——
+   * 以它們現算的日夜沒有根據，三分性（與依賴它的外來）也就跟著沒有根據。
    *
    * 位置不可信的星（[BirthDataGrain.allowsNatalTarget] 為 false，例如只知日期時的月亮）牽涉到的格局一併濾掉，
    * 只留只看星座的（[signBased]）—— 度數誤差數度，相位、包夾、焦傷都可能整個不同。
@@ -188,24 +191,22 @@ class DtoFactory(
    * 日輪內（[AccidentalDignity.Cazimi]，離太陽 17′ 內）只在 [BirthDataGrain.MINUTE]／[BirthDataGrain.HOUR2] 留下：
    * 晝夜級 ±7 小時，水星、金星相對太陽就可差到約 0.7°。
    *
-   * @param sectDeterminable 日夜盤判不判得出來。預設只由 grain 決定：[BirthDataGrain.MINUTE] 與 [BirthDataGrain.DayNightOnly] 判得出來；
-   *   [BirthDataGrain.HOUR2] 要看時辰是否跨日出日落，預設保守視為判不出來 —— 能判定的呼叫端請自行傳入。
+   * @param sect 這張盤的日夜盤；null ＝ 判不出來（只知日期、或時辰跨日出日落）。
+   *   沒有排好的 model 也能判（只要時刻與地點），所以這裡不提供預設值 —— 呼叫端一定要自己判，不要猜
    */
   fun IHoroscopeModel.getClassicalPatterns(
     grain: BirthDataGrain,
     horoConfig: IHoroscopeConfig,
-    sectDeterminable: Boolean = grain == BirthDataGrain.MINUTE || grain is BirthDataGrain.DayNightOnly,
+    sect: DayNight?,
   ): List<IPlanetPattern> {
     val factories = (horoConfig as? IClassicalConfig)?.factories ?: classicalFactories
-    val cfg = ClassicalConfig(factories) to horoConfig
+    val cfg = ClassicalConfig(factories, sect) to horoConfig
     return classicalFeature.getModel(gmtJulDay, location, cfg).flatMap { (_, list: List<IPlanetPattern>) ->
       list.filterNot { pattern ->
-        // 得時／不得時依賴晝夜「與」星體在地平面上下 —— 後者需要精確時刻，
-        // 故即使知晝夜（DAY_NIGHT），以正午 placeholder 推算仍不可採信，濾除。
-        (!grain.includeAxis && (pattern is AccidentalDignity.Hayz || pattern is Debility.Out_of_Sect)) ||
-          (!sectDeterminable && (pattern is EssentialDignity.Triplicity || pattern is Debility.Peregrine)) ||
-          (!pattern.signBased && pattern.participants.any { !grain.allowsNatalTarget(it) }) ||
-          (pattern is AccidentalDignity.Cazimi && grain != BirthDataGrain.MINUTE && grain != BirthDataGrain.HOUR2)
+        // 這種格局需要的輸入（軸點、日夜盤、離太陽的細距離）這份資料供不起 —— 需要什麼宣告在 IPlanetPattern.requirements
+        pattern.requirements.any { !it.isMetBy(grain, sect) } ||
+          // 牽涉到位置不可信的星（只知日期時的月亮…），而且不是只看星座就能判的
+          (!pattern.signBased && pattern.participants.any { !grain.allowsNatalTarget(it) })
       }
     }
   }

@@ -33,6 +33,9 @@ enum class OutOfBoundsPhase {
 
 object OobCrossingFinder {
 
+  /** 出界多深（帶號）：赤緯絕對值減去當時的黃赤交角；正＝出界、負＝界內。事件的 depth 與掃描都用這一個定義 */
+  fun oobDistance(declination: Double, obliquity: Double): Double = kotlin.math.abs(declination) - obliquity
+
   /** Mean obliquity of the ecliptic (degrees) */
   const val OBLIQUITY = 23.44
 
@@ -73,8 +76,7 @@ object OobCrossingFinder {
       return starPosition.calculate(star, gmt, Centric.GEO, Coordinate.EQUATORIAL, options).lat
     }
 
-    /** signed distance: positive = OOB, negative = in-bounds */
-    fun oobDistance(decl: Double, gmt: GmtJulDay): Double = kotlin.math.abs(decl) - obliquity(gmt)
+    fun oobDistance(decl: Double, gmt: GmtJulDay): Double = oobDistance(decl, obliquity(gmt))
 
     return sequence {
       var t = fromGmt

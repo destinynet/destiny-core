@@ -80,7 +80,7 @@ class EventsTraversalSolarArcImpl(
     /** 將 [GmtJulDay] 格式化為當地日期 (yyyy-MM-dd)，供描述文字使用 */
     fun GmtJulDay.ymd(): String = this.toLocalDateTime(loc.zoneId).toLocalDate().toString()
 
-    fun searchPersonalEvents(aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet()): Sequence<SaAspectEvent> {
+    fun searchPersonalEvents(aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH)): Sequence<SaAspectEvent> {
 
       /**
        * map of
@@ -217,7 +217,7 @@ class EventsTraversalSolarArcImpl(
     return sequence {
       if (config.personalAspect) {
         // SA to Natal 相位事件
-        val personalAspects = searchPersonalEvents(Aspect.getAspects(Aspect.Importance.HIGH).toSet()).map { (aspectData, suffix) ->
+        val personalAspects = searchPersonalEvents(Aspect.getAspects(Aspect.Importance.HIGH)).map { (aspectData, suffix) ->
           val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
           val description = buildString {
             append("[SA ${outerStar.asLocaleString().getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.asLocaleString().getTitle(Locale.ENGLISH)}]")

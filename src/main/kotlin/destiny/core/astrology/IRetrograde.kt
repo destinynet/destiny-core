@@ -42,23 +42,41 @@ data class Stationary(val gmtJulDay: GmtJulDay,
 }
 
 
-/** 星體一次完整的順逆過程：進入陰影 → 停滯轉逆 → 停滯轉順 → 離開陰影。錨點是停滯轉逆 */
+/**
+ * 一次順逆過程的四個時刻：進入陰影 → 停滯轉逆 → 停滯轉順 → 離開陰影。錨點是停滯轉逆。
+ *
+ * 三相的判定只在這裡（[phaseAt]），帶位置的 [RetrogradeCycle] 與只帶黃經的事件曆 `RetrogradeCycleEvent` 共用：
+ * 區間一律**半開** `[begin, end)`，所以停滯那一刻屬於它開啟的那一相（轉逆那一刻已是 [RetrogradePhase.RETROGRADING]），
+ * 離開陰影那一刻已在週期之外。
+ */
+interface IRetrogradeCycle : IEventSpan, IAnchoredEvent {
+  val preparingGmt: GmtJulDay
+  val retrogradingGmt: GmtJulDay
+  val returningGmt: GmtJulDay
+  val leavingGmt: GmtJulDay
+
+  override val begin: GmtJulDay get() = preparingGmt
+  override val end: GmtJulDay get() = leavingGmt
+  override val anchor: GmtJulDay get() = retrogradingGmt
+
+  /** [gmtJulDay] 落在週期的哪一相；週期之外回 null */
+  fun phaseAt(gmtJulDay: GmtJulDay): RetrogradePhase? = when {
+    gmtJulDay < preparingGmt    -> null
+    gmtJulDay < retrogradingGmt -> PREPARING
+    gmtJulDay < returningGmt    -> RETROGRADING
+    gmtJulDay < leavingGmt      -> LEAVING
+    else                        -> null
+  }
+}
+
+/** 星體一次完整的順逆過程（含各時刻的位置）。三相判定見 [IRetrogradeCycle.phaseAt] */
 data class RetrogradeCycle(
   val star: Star,
-  val preparingGmt: GmtJulDay, val preparingPos: IPos,
-  val retrogradingGmt: GmtJulDay, val retrogradingPos: IPos,
-  val returningGmt: GmtJulDay, val returningPos: IPos,
-  val leavingGmt: GmtJulDay, val leavingPos: IPos
-) : IEventSpan, IAnchoredEvent {
-
-  override val begin: GmtJulDay
-    get() = preparingGmt
-
-  override val end: GmtJulDay
-    get() = leavingGmt
-
-  override val anchor: GmtJulDay
-    get() = retrogradingGmt
+  override val preparingGmt: GmtJulDay, val preparingPos: IPos,
+  override val retrogradingGmt: GmtJulDay, val retrogradingPos: IPos,
+  override val returningGmt: GmtJulDay, val returningPos: IPos,
+  override val leavingGmt: GmtJulDay, val leavingPos: IPos
+) : IRetrogradeCycle {
 
   /** 星體順逆三相 Map */
   val phaseMap: Map<RetrogradePhase, RetrogradeSpan> by lazy {
@@ -103,7 +121,7 @@ interface IRetrograde {
 
   private fun getNextStationaryPosType(star: Star, fromGmt: GmtJulDay, forward: Boolean, starPositionImpl: IStarPosition<*>): Triple<GmtJulDay, IPos, StationaryType>? {
     val logger = KotlinLogging.logger { }
-    return if(star is Planet.SUN || star is Planet.MOON || star is LunarPoint) {
+    return if((star is Planet && !star.isStationaryPossible) || star is LunarPoint) {
       null
     } else {
       val (nextStationary, nextPos) = getNextStationaryPos(star, fromGmt, forward, starPositionImpl)
@@ -353,7 +371,8 @@ interface IRetrograde {
       "toGmt ($toGmt) should >= fromGmt($fromGmt)"
     }
 
-    return stars.filter { it != Planet.MOON }.flatMap { star ->
+    // 日月不停滯；非行星（月交點等）照算
+    return stars.filter { it !is Planet || it.isStationaryPossible }.flatMap { star ->
       generateSequence(getNextStationaryCycle(star, fromGmt, starPositionImpl, transit, true)) {
         getNextStationaryCycle(star, it.leavingGmt + 1, starPositionImpl, transit, true)
       }.takeWhile {
@@ -385,17 +404,10 @@ interface IRetrograde {
 
   fun getRetrogradePhase(star: Star, gmtJulDay: GmtJulDay, starPositionImpl: IStarPosition<*>, transit: IStarTransit): RetrogradePhase? {
 
+    // 判定只有一份（IRetrogradeCycle.phaseAt，半開區間）；前後兩個週期哪個包含此刻就用哪個
     return getNextStationaryCycle(star, gmtJulDay, starPositionImpl, transit, false)?.let { prev ->
       getNextStationaryCycle(star, gmtJulDay, starPositionImpl, transit, true)?.let { next ->
-        when (gmtJulDay) {
-          in prev.preparingGmt..prev.retrogradingGmt -> PREPARING
-          in next.preparingGmt..next.retrogradingGmt -> PREPARING
-          in prev.retrogradingGmt..prev.returningGmt -> RETROGRADING
-          in next.retrogradingGmt..next.returningGmt -> RETROGRADING
-          in prev.returningGmt..prev.leavingGmt      -> LEAVING
-          in next.returningGmt..next.leavingGmt      -> LEAVING
-          else                                       -> null
-        }
+        prev.phaseAt(gmtJulDay) ?: next.phaseAt(gmtJulDay)
       }
     }
   }

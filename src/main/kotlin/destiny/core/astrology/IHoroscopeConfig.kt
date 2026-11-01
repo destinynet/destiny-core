@@ -1,5 +1,6 @@
 package destiny.core.astrology
 
+import destiny.core.DayNight
 import destiny.core.IPresentConfig
 import destiny.core.astrology.classical.ClassicalConfig
 import destiny.core.astrology.classical.VoidCourseImpl
@@ -24,8 +25,10 @@ interface IHoroscopeConfig : JSerializable {
 
 interface IClassicalConfig : JSerializable {
   var factories: List<IPlanetPatternFactory>
+  /** 呼叫端已判定的日夜盤；null ＝ 由 factory 現算（見 [ClassicalConfig.sect]） */
+  val sect: DayNight? get() = null
   val classicalConfig: ClassicalConfig
-    get() = ClassicalConfig(factories)
+    get() = ClassicalConfig(factories, sect)
 }
 
 interface IPersonHoroscopeConfig : IHoroscopeConfig {

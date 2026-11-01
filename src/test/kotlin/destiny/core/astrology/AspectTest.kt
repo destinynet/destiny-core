@@ -186,7 +186,7 @@ class AspectTest : EnumTest() {
 
     @Test
     fun `expand full high importance aspects`() {
-      val aspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()
+      val aspects = Aspect.getAspects(Aspect.Importance.HIGH)
       val expanded = aspects.expandMulti()
 
       val expectedDegrees = setOf(0.0, 60.0, 90.0, 120.0, 180.0, 240.0, 270.0, 300.0)
@@ -229,7 +229,7 @@ class AspectTest : EnumTest() {
           270.0 to Aspect.SQUARE,
           300.0 to Aspect.SEXTILE,
         ),
-        Aspect.getAspects(Aspect.Importance.HIGH).toSet().expand()
+        Aspect.getAspects(Aspect.Importance.HIGH).expand()
       )
     }
 

@@ -24,6 +24,7 @@ import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.Graph
 import destiny.core.getAbbreviation
+import destiny.tools.CircleTools.aheadOf
 import destiny.tools.Lang
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -189,7 +190,10 @@ data class HoroscopeDispositorDto(
   val terminals: List<String>,
   /** 落在自己守護的星座、但沒有其他星由它定位 */
   val isolated: List<String>,
-)
+) {
+  /** 圖上出現的每一顆星 */
+  val allPoints: List<String> get() = circles.flatten() + paths.flatten() + terminals + isolated
+}
 
 /** 格局的一條邊：兩端、相位與實際容許度（server 依兩星的黃經算好，renderer 不必自己算角距） */
 @Serializable
@@ -266,13 +270,17 @@ data class HoroscopeTranslationDto(
   val by: String,
   val from: String,
   val fromAspect: String,
+  /** [fromAspect] 的符號（[Aspect.glyph]） */
+  val fromGlyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val fromOrb: Double,
   val to: String,
   val toAspect: String,
+  val toGlyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val toOrb: Double,
   val between: String? = null,
+  val betweenGlyph: String? = null,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val arrivalDays: Double? = null,
 ) : HoroscopeClassicalFactDto {
@@ -289,13 +297,16 @@ data class HoroscopeCollectionDto(
   val by: String,
   val a: String,
   val aAspect: String,
+  val aGlyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val aOrb: Double,
   val b: String,
   val bAspect: String,
+  val bGlyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val bOrb: Double,
   val between: String? = null,
+  val betweenGlyph: String? = null,
   val aReception: String? = null,
   val bReception: String? = null,
 ) : HoroscopeClassicalFactDto {
@@ -324,6 +335,7 @@ data class HoroscopeRefranationDto(
   val by: String,
   val other: String,
   val aspect: String,
+  val glyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val orb: Double,
   val station: String,
@@ -365,11 +377,13 @@ data class HoroscopeProhibitionDto(
   val applying: String,
   val applied: String,
   val aspect: String,
+  val glyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val orb: Double,
   val by: String,
   val with: String,
   val byAspect: String,
+  val byGlyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val eventDays: Double,
   val track: List<HoroscopeOutcomeSampleDto>,
@@ -388,10 +402,12 @@ data class HoroscopeFrustrationDto(
   val applying: String,
   val applied: String,
   val aspect: String,
+  val glyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val orb: Double,
   val by: String,
   val byAspect: String,
+  val byGlyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val eventDays: Double,
   val track: List<HoroscopeOutcomeSampleDto>,
@@ -405,6 +421,8 @@ data class HoroscopeFrustrationDto(
 data class HoroscopeBesiegeSideDto(
   val by: String,
   val aspect: String? = null,
+  /** [aspect] 的符號；星體那一側為 null */
+  val glyph: String? = null,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val distance: Double,
 )
@@ -485,9 +503,9 @@ fun HoroscopeChartDto.withClassicalFacts(facts: List<destiny.core.astrology.clas
 fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassicalFactDto? = when (this) {
   is destiny.core.astrology.classical.TranslationOfLight -> HoroscopeTranslationDto(
     by = translator.nameKey,
-    from = from.nameKey, fromAspect = separating.aspect.name, fromOrb = separating.orb,
-    to = to.nameKey, toAspect = applying.aspect.name, toOrb = applying.orb,
-    between = between?.aspect?.name,
+    from = from.nameKey, fromAspect = separating.aspect.name, fromGlyph = separating.aspect.glyph, fromOrb = separating.orb,
+    to = to.nameKey, toAspect = applying.aspect.name, toGlyph = applying.aspect.glyph, toOrb = applying.orb,
+    between = between?.aspect?.name, betweenGlyph = between?.aspect?.glyph,
     arrivalDays = arrival?.eventDays,
   )
 
@@ -495,9 +513,9 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
     val (pa, pb) = planets
     HoroscopeCollectionDto(
       by = collector.nameKey,
-      a = pa.nameKey, aAspect = first.aspect.name, aOrb = first.orb,
-      b = pb.nameKey, bAspect = second.aspect.name, bOrb = second.orb,
-      between = between?.aspect?.name,
+      a = pa.nameKey, aAspect = first.aspect.name, aGlyph = first.aspect.glyph, aOrb = first.orb,
+      b = pb.nameKey, bAspect = second.aspect.name, bGlyph = second.aspect.glyph, bOrb = second.orb,
+      between = between?.aspect?.name, betweenGlyph = between?.aspect?.glyph,
       aReception = firstReception?.name,
       bReception = secondReception?.name,
     )
@@ -507,7 +525,7 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
 
   is destiny.core.astrology.classical.ApplicationOutcome.Refranation -> HoroscopeRefranationDto(
     by = refranator.nameKey, other = other.nameKey,
-    aspect = pattern.aspect.name, orb = pattern.orb,
+    aspect = pattern.aspect.name, glyph = pattern.aspect.glyph, orb = pattern.orb,
     station = stationary.type.name, stationDays = stationDays,
     closestDays = closestDays, closestOrb = closestOrb,
     track = track.map {
@@ -518,23 +536,23 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
   )
 
   is destiny.core.astrology.classical.ApplicationOutcome.Prohibition -> HoroscopeProhibitionDto(
-    applying = applying.nameKey, applied = applied.nameKey, aspect = pattern.aspect.name, orb = pattern.orb,
-    by = prohibitor.nameKey, with = with.nameKey, byAspect = interruption.aspect.name, eventDays = eventDays,
+    applying = applying.nameKey, applied = applied.nameKey, aspect = pattern.aspect.name, glyph = pattern.aspect.glyph, orb = pattern.orb,
+    by = prohibitor.nameKey, with = with.nameKey, byAspect = interruption.aspect.name, byGlyph = interruption.aspect.glyph, eventDays = eventDays,
     track = track.map { it.toChartDto() },
     ingress = ingress?.nameKey,
   )
 
   is destiny.core.astrology.classical.ApplicationOutcome.Frustration -> HoroscopeFrustrationDto(
-    applying = applying.nameKey, applied = applied.nameKey, aspect = pattern.aspect.name, orb = pattern.orb,
-    by = frustrator.nameKey, byAspect = interruption.aspect.name, eventDays = eventDays,
+    applying = applying.nameKey, applied = applied.nameKey, aspect = pattern.aspect.name, glyph = pattern.aspect.glyph, orb = pattern.orb,
+    by = frustrator.nameKey, byAspect = interruption.aspect.name, byGlyph = interruption.aspect.glyph, eventDays = eventDays,
     track = track.map { it.toChartDto() },
     ingress = ingress?.nameKey,
   )
 
   is destiny.core.astrology.classical.Besiegement -> HoroscopeBesiegementDto(
     planet = planet.nameKey,
-    before = HoroscopeBesiegeSideDto(before.by.nameKey, before.aspect?.name, before.distance),
-    after = HoroscopeBesiegeSideDto(after.by.nameKey, after.aspect?.name, after.distance),
+    before = HoroscopeBesiegeSideDto(before.by.nameKey, before.aspect?.name, before.aspect?.glyph, before.distance),
+    after = HoroscopeBesiegeSideDto(after.by.nameKey, after.aspect?.name, after.aspect?.glyph, after.distance),
   )
 }
 
@@ -620,9 +638,7 @@ private fun List<AstroPattern>.toPatternDtos(zDegOf: (AstroPoint) -> Double?, vi
     points.flatMapIndexed { i, a -> points.drop(i + 1).map { b -> a to b } }.mapNotNull { (a, b) ->
       val za = zDegOf(a) ?: return@mapNotNull null
       val zb = zDegOf(b) ?: return@mapNotNull null
-      val d = ((za - zb) % 360 + 360) % 360
-      val sep = minOf(d, 360 - d)
-      aspects.map { it to kotlin.math.abs(sep - it.degree) }
+      aspects.map { it to it.orbOf(za, zb) }
         .filter { (_, orb) -> orb <= LEG_TOLERANCE }
         .minByOrNull { (_, orb) -> orb }
         ?.let { (aspect, orb) -> HoroscopePatternLegDto(a.nameKey, b.nameKey, aspect.name, aspect.glyph, orb) }
@@ -737,7 +753,7 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
       )
     }
 
-  val majorAspects = Aspect.getAspects(Aspect.Importance.HIGH).toSet()
+  val majorAspects = Aspect.getAspects(Aspect.Importance.HIGH)
   val visibleKeys = pointDtos.map { it.point }.toSet()
 
   return HoroscopeChartDto(
@@ -784,8 +800,8 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
 private val MODERN_CO_RULER: Map<ZodiacSign, Planet> =
   mapOf(ZodiacSign.AQUARIUS to Planet.URANUS, ZodiacSign.PISCES to Planet.NEPTUNE, ZodiacSign.SCORPIO to Planet.PLUTO)
 
-/** 主要相位的角度（合、六合、四分、三分、對沖） */
-private val MAJOR_ANGLES: List<Aspect> = listOf(Aspect.CONJUNCTION, Aspect.SEXTILE, Aspect.SQUARE, Aspect.TRINE, Aspect.OPPOSITION)
+/** 主要相位（合、六合、四分、三分、對沖） */
+private val MAJOR_ANGLES: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH)
 
 /** 會走的星：行星，且有速度 */
 private fun movers(points: List<HoroscopePointDto>) =
@@ -797,7 +813,7 @@ private fun movers(points: List<HoroscopePointDto>) =
  */
 private fun degreesAhead(p: HoroscopePointDto, target: Double): Double? {
   val forward = (p.speed ?: 0.0) > 0
-  val d = if (forward) ((target - p.zDeg) % 360 + 360) % 360 else ((p.zDeg - target) % 360 + 360) % 360
+  val d = if (forward) target.aheadOf(p.zDeg) else p.zDeg.aheadOf(target)
   val room = if (forward) 30 - p.signDegree else p.signDegree
   return d.takeIf { it > 0.005 && it <= room }
 }
@@ -807,8 +823,7 @@ private fun applicationsOf(points: List<HoroscopePointDto>): List<HoroscopeAppli
   return movers(points).flatMap { m ->
     targets.filter { it.point != m.point }.flatMap { t ->
       MAJOR_ANGLES.flatMap { aspect ->
-        // 合相與對沖的兩個方向是同一點：先正規化再去重
-        setOf(t.zDeg + aspect.degree, t.zDeg - aspect.degree).map { ((it % 360) + 360) % 360 }.toSet().mapNotNull { c ->
+        aspect.rays(t.zDeg).mapNotNull { c ->
           degreesAhead(m, c)?.let { HoroscopeApplicationDto(m.point, t.point, aspect.name, aspect.glyph, it) }
         }
       }
@@ -840,7 +855,7 @@ fun HoroscopeChartDto.keepingPoints(keep: (HoroscopePointDto) -> Boolean): Horos
   return copy(
     points = kept,
     aspects = aspects.filter { it.from in keys && it.to in keys },
-    dispositors = dispositors?.takeIf { d -> (d.circles.flatten() + d.paths.flatten() + d.terminals + d.isolated).all { it in keys } },
+    dispositors = dispositors?.takeIf { d -> d.allPoints.all { it in keys } },
     patterns = keptPatterns,
     midpoints = midpoints.filter { it.a in keys && it.b in keys && it.focal in keys },
     classicalFacts = classicalFacts.filter { f -> f.members.all { it in keys } },

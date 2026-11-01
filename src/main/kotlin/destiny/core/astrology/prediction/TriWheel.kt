@@ -5,6 +5,7 @@ package destiny.core.astrology.prediction
 
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.AstroPoint
+import destiny.core.astrology.Axis
 import destiny.core.astrology.BirthDataGrain
 import destiny.core.astrology.Planet
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
@@ -135,5 +136,22 @@ data class TriWheelFilter(
   val middleTriggerOrb: Double = 1.5,
   /** 判定 [TriWheelHit.generational] 的出生日前後天數 */
   val cohortDays: Int = 30,
-  val aspects: Set<Aspect> = setOf(Aspect.CONJUNCTION, Aspect.SEXTILE, Aspect.SQUARE, Aspect.TRINE, Aspect.OPPOSITION),
-)
+  val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
+) {
+  /**
+   * 外環 [mover] 打本命 [target] 時適用的容許度；null ＝ 這一對不列（快星只看打到 [fastTargets]）。
+   * 依 mover 的類別分級：月亮與軸點（事件時刻級）、外行星、火星、日水金
+   */
+  fun triggerOrb(mover: AstroPoint, target: AstroPoint): Double? = when {
+    mover == Planet.MOON || mover is Axis         -> momentOrb
+    mover in Planet.outerSet                      -> slowOrb
+    mover == Planet.MARS                          -> marsOrb
+    mover in FAST_MOVERS && target in fastTargets -> fastOrb
+    else                                          -> null
+  }
+
+  companion object {
+    /** 外環的快星：日、水、金 */
+    val FAST_MOVERS: Set<Planet> = setOf(Planet.SUN, Planet.MERCURY, Planet.VENUS)
+  }
+}

@@ -5,8 +5,10 @@ package destiny.core.calendar.event
 
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.LunarPhase
+import destiny.core.astrology.OobCrossingFinder
 import destiny.core.astrology.OutOfBoundsPhase
 import destiny.core.astrology.Planet
+import destiny.core.astrology.IRetrogradeCycle
 import destiny.core.astrology.RetrogradeCycle
 import destiny.core.astrology.RetrogradePhase
 import destiny.core.astrology.ZodiacDegree
@@ -57,21 +59,16 @@ data class RetrogradeCycleEvent(
   /** 離開陰影 */
   val leaving: GmtJulDay,
   val leavingLng: ZodiacDegree,
-) : ICalendarEvent, IEventSpan {
+) : ICalendarEvent, IRetrogradeCycle {
 
   override val type: CalendarEventType get() = CalendarEventType.Retrograde(planet)
-  override val begin: GmtJulDay get() = preparing
-  override val end: GmtJulDay get() = leaving
   override val anchor: GmtJulDay get() = retrograding
 
-  /** [gmtJulDay] 落在週期的哪一相；週期之外回 null */
-  fun phaseAt(gmtJulDay: GmtJulDay): RetrogradePhase? = when {
-    gmtJulDay < preparing    -> null
-    gmtJulDay < retrograding -> RetrogradePhase.PREPARING
-    gmtJulDay < returning    -> RetrogradePhase.RETROGRADING
-    gmtJulDay < leaving      -> RetrogradePhase.LEAVING
-    else                     -> null
-  }
+  // 三相判定（phaseAt）在 IRetrogradeCycle，與 RetrogradeCycle 同一份
+  override val preparingGmt: GmtJulDay get() = preparing
+  override val retrogradingGmt: GmtJulDay get() = retrograding
+  override val returningGmt: GmtJulDay get() = returning
+  override val leavingGmt: GmtJulDay get() = leaving
 
   /**
    * 黃經 [lng] 是否落在陰影區（停滯轉順的度數 ～ 停滯轉逆的度數）。
@@ -218,7 +215,7 @@ data class OutOfBoundsEvent(
   val north: Boolean get() = peakDeclination > 0
 
   /** 最深時超出交角多少度 */
-  val depth: Double get() = kotlin.math.abs(peakDeclination) - peakObliquity
+  val depth: Double get() = OobCrossingFinder.oobDistance(peakDeclination, peakObliquity)
 
   /** 某一相的時刻 */
   fun at(phase: OutOfBoundsPhase): GmtJulDay = when (phase) {

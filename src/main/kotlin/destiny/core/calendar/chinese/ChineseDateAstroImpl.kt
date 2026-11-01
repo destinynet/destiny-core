@@ -15,6 +15,7 @@ import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.event.ILunations
 import destiny.core.chinese.StemBranch
+import destiny.core.chinese.StemBranchYearTool
 import destiny.tools.Lang
 import org.threeten.extra.chrono.JulianDate
 import java.time.LocalDate
@@ -135,7 +136,7 @@ class ChineseDateAstroImpl(
   }
 
   private fun LunarMonth.toChineseDate(day: Int): ChineseDate =
-    ChineseDate(IChineseDate.getCycleOfYear(year), StemBranch[(year - 1984).mod(60)], number, leap, day)
+    ChineseDate(IChineseDate.getCycleOfYear(year), StemBranchYearTool.getYearStemBranch(year), number, leap, day)
 
   // =============== ILunisolarCalendar ===============
 
@@ -145,18 +146,18 @@ class ChineseDateAstroImpl(
     return when (lunisolar.monthBoundary) {
       MonthBoundary.DAY -> when (lunisolar.monthTable) {
         // 民曆的月表：這一天（依日界歸出來的日期）在萬年曆上是幾月幾日
-        MonthTable.CIVIL -> daySpanAt(civilDayOf, day).month.let { it.toChineseDate(DAYS.between(it.firstDay, day).toInt() + 1) }
+        MonthTable.CIVIL -> daySpanAt(civilDayOf, day).month.let { it.toChineseDate(it.dayOf(day)) }
         // 初一依本日界（含合朔那一天），月名以同一個朔對回萬年曆
         MonthTable.CIVIL_NAMES -> daySpanAt(dayOf, day).month.let { m ->
-          civilMonthOfNewMoon(m.newMoon, civilDayOf).toChineseDate(DAYS.between(m.firstDay, day).toInt() + 1)
+          civilMonthOfNewMoon(m.newMoon, civilDayOf).toChineseDate(m.dayOf(day))
         }
-        MonthTable.DERIVED -> daySpanAt(dayOf, day).month.let { it.toChineseDate(DAYS.between(it.firstDay, day).toInt() + 1) }
+        MonthTable.DERIVED -> daySpanAt(dayOf, day).month.let { it.toChineseDate(it.dayOf(day)) }
       }
 
       MonthBoundary.INSTANT -> {
         val span = spanAt(Kind.INSTANT, dayOf, gmt.value, day.year - 1)
         val named = if (lunisolar.monthTable == MonthTable.DERIVED) span.month else civilMonthOfNewMoon(span.month.newMoon, civilDayOf)
-        named.toChineseDate(DAYS.between(span.month.firstDay, day).toInt() + 1)
+        named.toChineseDate(span.month.dayOf(day))
       }
     }
   }
@@ -201,7 +202,7 @@ class ChineseDateAstroImpl(
 
   override fun getChineseDate(localDate: LocalDate): ChineseDate {
     val month = monthOf(localDate)
-    return month.toChineseDate(DAYS.between(month.firstDay, localDate).toInt() + 1)
+    return month.toChineseDate(month.dayOf(localDate))
   }
 
   override fun getYangDate(cycle: Int, year: StemBranch, leap: Boolean, month: Int, day: Int): ChronoLocalDate {

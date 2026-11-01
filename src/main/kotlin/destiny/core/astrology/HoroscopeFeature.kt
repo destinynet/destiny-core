@@ -136,7 +136,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     threshold: Double?,
     innerGrain: BirthDataGrain,
     outerGrain: BirthDataGrain,
-    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
+    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH),
     laterForOuter: ((AstroPoint) -> IZodiacDegree?)? = null,
     laterForInner: ((AstroPoint) -> IZodiacDegree?)? = null
   ): Synastry {
@@ -180,7 +180,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     laterForInner: ((AstroPoint) -> IZodiacDegree?)?,
     aspectCalculator: IAspectCalculator,
     threshold: Double?,
-    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
+    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH)
   ): List<SynastryAspect> {
     return outer.keys.asSequence().flatMap { pOuter -> inner.positionMap.keys.asSequence().map { pInner -> pOuter to pInner } }
       .mapNotNull { (pOuter, pInner) ->
@@ -214,7 +214,7 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     laterForInner: ((AstroPoint) -> IZodiacDegree?)?,
     aspectCalculator: IAspectCalculator,
     threshold: Double?,
-    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
+    aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH),
   ): List<SynastryAspect> {
     return outer.keys.asSequence().flatMap { pOuter -> inner.keys.asSequence().map { pInner -> pOuter to pInner } }
       .mapNotNull { (pOuter, pInner) ->
@@ -471,7 +471,7 @@ class HoroscopeFeature(
       .mapValues { (_, pos) -> (pos.zDeg * n).toZodiacDegree() }
 
     // 在新的泛音盤星體位置上，計算行星之間的相位
-    val highImportanceAspects = Aspect.getAspects(Importance.HIGH).toSet()
+    val highImportanceAspects = Aspect.getAspects(Importance.HIGH)
 
     // 遍歷所有行星配對來尋找相位
     val aspects = Sets.combinations(harmonicStarPosMap.keys, 2)

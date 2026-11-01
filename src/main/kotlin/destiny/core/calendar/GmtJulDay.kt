@@ -160,3 +160,6 @@ fun GmtJulDay.absDuration(lmt: kotlinx.datetime.LocalDateTime, zoneId: ZoneId): 
 fun GmtJulDay.absDuration(gmt: GmtJulDay): Duration {
   return ((this - gmt).absoluteValue * SECONDS_OF_DAY).toDuration(DurationUnit.SECONDS)
 }
+
+/** Unix epoch 毫秒（動畫 DTO 的時間軸用；與 [toInstant] 同一套換算） */
+fun GmtJulDay.toEpochMilliseconds(): Long = toInstant().toEpochMilliseconds()

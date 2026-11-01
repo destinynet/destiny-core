@@ -116,14 +116,10 @@ sealed interface CalendarEventType {
     private const val SEP = ':'
 
     /** 會逆行的星體（日月不逆行） */
-    val RETROGRADE_PLANETS: List<Planet> = listOf(
-      Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN, Planet.URANUS, Planet.NEPTUNE, Planet.PLUTO
-    )
+    val RETROGRADE_PLANETS: List<Planet> = Planet.list.filter { it.isStationaryPossible }
 
-    /** 預設收錄出界的星體：水星到冥王星（月亮一年最多二十幾次，性質近似空亡，不收） */
-    val OUT_OF_BOUNDS_PLANETS: List<Planet> = listOf(
-      Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN, Planet.URANUS, Planet.NEPTUNE, Planet.PLUTO
-    )
+    /** 預設收錄出界的星體：水星到冥王星。太陽定義邊界、不會出界；月亮會（一年最多二十幾次，性質近似空亡），刻意不收 */
+    val OUT_OF_BOUNDS_PLANETS: List<Planet> = Planet.list - Planet.SUN - Planet.MOON
 
     /** 事件曆預設收錄的系列：八星逆行、日月食、四種月相、二十四節氣、月亮空亡（中世紀派）、八星出界 */
     val defaults: Set<CalendarEventType> by lazy {

@@ -52,7 +52,7 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
     aspectCalculator: IAspectCalculator,
     midpointAspectCalculator: IAspectCalculator,
     grain: SynastryGrain = SynastryGrain.BOTH_FULL,
-    aspects: Set<Aspect> = Companion.getAspects(Importance.HIGH).toSet(),
+    aspects: Set<Aspect> = Companion.getAspects(Importance.HIGH),
     overcomingImpl: IOvercoming = OvercomingSignImpl()
   ): SynastryRequestDto
 

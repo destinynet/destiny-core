@@ -135,7 +135,7 @@ class ApplicationOutcomeImpl(
         samples += gap.sample(samples.last().t + gap.step(samples.last()))
       }
       // 這段期間內停滯、而且離最接近時刻最近的那顆；日月不會停滯
-      listOf(a, b).filter { it !== Planet.SUN && it !== Planet.MOON }
+      listOf(a, b).filter { it.isStationaryPossible }
         .map { retrogradeImpl.getNextStationary(it, t0, true, starPositionImpl) }
         .filter { it.gmtJulDay > t0 && it.gmtJulDay <= samples.last().t }
         .minByOrNull { abs(it.gmtJulDay - away.closestT) }

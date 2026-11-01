@@ -97,7 +97,7 @@ data class SolarArcConfig(
 data class PrimaryDirectionConfig(
   val significators: Set<AstroPoint> = setOf(Axis.RISING, Axis.MERIDIAN, SUN, MOON),
   val promissors: Set<AstroPoint> = Planet.classicalSet,
-  val aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet(),
+  val aspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH),
   val method: PrimaryDirectionMethod = PrimaryDirectionMethod.Zodiacal(),
   val forward: Boolean = true,
   val timeKey: ITimeKey = PtolemyKey,
@@ -173,15 +173,15 @@ data class AstrologyTraversalConfig(
 
   companion object {
     /** 所有可能滯留的行星（排除 Sun, Moon） */
-    val allStationaryCapable: Set<Planet> = Planet.planetSet - setOf(SUN, MOON)
+    val allStationaryCapable: Set<Planet> = Planet.planetSet.filterTo(LinkedHashSet()) { it.isStationaryPossible }
 
-    val outerPlanets: Set<Planet> = setOf(JUPITER, SATURN, URANUS, NEPTUNE, PLUTO)
+    val outerPlanets: Set<Planet> = Planet.outerSet
 
     /** 容易 OOB 的行星（Mercury, Venus, Mars）— Sun/Moon 排除 */
     val allOobCapable: Set<Planet> = setOf(MERCURY, VENUS, MARS)
 
     /** 主要相位：合、衝、刑、三合、六合 */
-    val majorAspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH).toSet()
+    val majorAspects: Set<Aspect> = Aspect.getAspects(Importance.HIGH)
 
     /**
      * 年度預測預設：僅外行星行運，含日食月食與滯留，不含月相、換座、換宮。

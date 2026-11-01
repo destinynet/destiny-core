@@ -105,7 +105,7 @@ interface IPrimaryDirection {
     natalChart: IHoroscopeModel,
     significators: Set<AstroPoint>,
     promissors: Set<AstroPoint>,
-    aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH).toSet(),
+    aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
     method: PrimaryDirectionMethod = PrimaryDirectionMethod.Zodiacal(),
     forward: Boolean = true,
     timeKey: ITimeKey = PtolemyKey,

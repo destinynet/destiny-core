@@ -5,6 +5,7 @@
 package destiny.core.astrology
 
 import destiny.core.astrology.Aspect.Importance.*
+import destiny.tools.CircleTools.normalize
 import destiny.tools.gcd
 import destiny.tools.getTitle
 import kotlinx.serialization.Serializable
@@ -100,7 +101,7 @@ enum class Aspect(
 
   companion object {
 
-    private val importanceAngles: Map<Importance, List<Aspect>> = entries.groupBy { it.importance }
+    private val importanceAspects: Map<Importance, Set<Aspect>> = entries.groupBy { it.importance }.mapValues { it.value.toSet() }
 
     /** 從「英文」的 aspect name 來反找 Aspect , 找不到則傳回 null  */
     fun getAspectFromName(value: String): Aspect? {
@@ -108,14 +109,10 @@ enum class Aspect(
     }
 
     /**
-     * 取得某類重要度 (高/中/低) 的角度列表
+     * 某類重要度（高／中／低）的相位。回 Set：呼叫端一律當集合用（哪些交角算數），依宣告順序迭代
      */
-    fun getAspects(importance: Importance): List<Aspect> {
-      return importanceAngles.getValue(importance)
-    }
-
-    fun getAngles(importance: Importance): List<Double> {
-      return getAspects(importance).map { it.degree }
+    fun getAspects(importance: Importance): Set<Aspect> {
+      return importanceAspects.getValue(importance)
     }
 
     fun Set<Aspect>.expandMulti(): Map<Double, List<Aspect>> {
@@ -201,3 +198,12 @@ val Aspect.glyph: String
     Aspect.BINOVILE       -> "bN"
     Aspect.QUATRONOVILE   -> "qN"
   }
+
+/** 兩個黃經以此相位看，差幾度才成形：最短角距與交角之差（0 起算，不帶號） */
+fun Aspect.orbOf(lng1: Double, lng2: Double): Double = abs(ZodiacDegree.getAngle(lng1, lng2) - degree)
+
+/**
+ * 此相位自黃經 [lng] 投射到的度數（光線落點，已正規化到 0–360）：一般是前後各一個；合相與對分只有一個，不重複
+ */
+fun Aspect.rays(lng: Double): List<Double> =
+  if (degree == 0.0 || degree == 180.0) listOf((lng + degree).normalize()) else listOf((lng + degree).normalize(), (lng - degree).normalize())
