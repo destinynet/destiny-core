@@ -220,6 +220,12 @@ sealed class Misc : IPlanetPattern {
       get() = overcoming.superior == planet
   }
 
+  /**
+   * 不相見（[destiny.core.astrology.classical.Aversion]，以星座計）：[planet] 與它所在星座的主人、或（命主星）與上升彼此看不到。
+   * 屬 [RuleType.MISC]，不計分
+   */
+  data class Aversion(override val planet: Planet, val aversion: destiny.core.astrology.classical.Aversion) : Misc()
+
   /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [exactAspectPrior] , 後一個準確交角資訊為 [exactAspectAfter]
    * */
   @Serializable
@@ -279,6 +285,7 @@ val IPlanetPattern.participants: Set<AstroPoint>
     is Misc.Refrained                            -> setOfNotNull(applied, refranator, ingress)
     is Misc.Besieged                             -> setOf(before, after)
     is Misc.Overcoming                           -> setOf(overcoming.superior, overcoming.inferior)
+    is Misc.Aversion                             -> setOf(aversion.from)
     else                                         -> emptySet()
   }
 
@@ -332,6 +339,8 @@ val IPlanetPattern.requirements: Set<PatternRequirement>
     is EssentialDignity.Triplicity, is Debility.Peregrine -> setOf(PatternRequirement.SECT)
     is AccidentalDignity.Cazimi                           -> setOf(PatternRequirement.SUN_DISTANCE_FINE)
     is Misc.Overcoming                                    -> if (ascRuler) setOf(PatternRequirement.AXIS) else emptySet()
+    is Misc.Aversion                                      ->
+      if (aversion.basis == destiny.core.astrology.classical.Aversion.Basis.ASCENDANT) setOf(PatternRequirement.AXIS) else emptySet()
     else                                                  -> emptySet()
   }
 

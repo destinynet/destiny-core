@@ -156,6 +156,11 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
           MiscDescriptor(pattern, key, listOf(o.inferior, o.superior, o.aspect,
             OvercomingClause.superior(pattern), OvercomingClause.inferior(pattern)))
         }
+        is Misc.Aversion -> {
+          val a = pattern.aversion
+          val key = if (a.basis == destiny.core.astrology.classical.Aversion.Basis.ASCENDANT) "commentAscendant" else "commentRuler"
+          MiscDescriptor(pattern, key, listOf(a.planet, a.from, SignPlace(a.place)))
+        }
         // 空亡是時間區段，沒有 Misc.properties 的句子，刻意不翻譯
         is Misc.VoidCourseSpan ->
           throw IllegalArgumentException("No description for : $pattern")
@@ -164,6 +169,15 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
         throw IllegalArgumentException("Not Supported : $pattern")
       }
     }
+  }
+}
+
+/** 「從某星座起算的第 n 個星座」：zh／ja 用中文數詞的寫法，en 用序數 */
+internal class SignPlace(private val n: Int) : ILocaleString {
+  override fun getTitle(lang: Lang): String = when (lang.language) {
+    "en" -> n.toString() + when { n % 100 in 11..13 -> "th"; n % 10 == 1 -> "st"; n % 10 == 2 -> "nd"; n % 10 == 3 -> "rd"; else -> "th" }
+    "ja" -> "${n}番目"
+    else -> "第 $n 個"
   }
 }
 

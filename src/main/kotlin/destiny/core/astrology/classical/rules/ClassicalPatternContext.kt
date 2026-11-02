@@ -41,7 +41,31 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       collectionOfLightImpl.getResults(h) +
       applicationOutcomeImpl.getOutcomes(h).filterNot { it is ApplicationOutcome.Perfected } +
       besiegementImpl.getResults(h) +
-      natalOvercomings(h).map { it.overcoming }
+      natalOvercomings(h).map { it.overcoming } +
+      aversions(h)
+
+  /**
+   * 不相見（以星座計，[Aversion]）：七顆古典行星各自與所在星座的主人（托勒密守護）不相見、命主星與上升不相見。
+   * 在自己守護的星座裡的星沒有「主人」可言，不列；盤沒有宮位時不判上升那一種
+   */
+  fun aversions(h: IHoroscopeModel): List<Aversion> {
+    val signOf = { p: AstroPoint -> h.positionMap[p]?.lngDeg?.sign }
+    val byRuler = Planet.classicalList.mapNotNull { p ->
+      val sign = signOf(p) ?: return@mapNotNull null
+      val lord = with(rulerImpl) { sign.getRulerPoint() } as? Planet ?: return@mapNotNull null
+      if (lord === p) return@mapNotNull null
+      val lordSign = signOf(lord) ?: return@mapNotNull null
+      Aversion.placeOf(lordSign.index, sign.index).takeIf { it in Aversion.AVERSE_PLACES }
+        ?.let { Aversion(p, lord, it, Aversion.Basis.RULER) }
+    }
+    val byAscendant = h.cuspDegreeMap[1]?.let { asc ->
+      val ruler = ascendantRuler(h) ?: return@let null
+      val sign = signOf(ruler) ?: return@let null
+      Aversion.placeOf(asc.sign.index, sign.index).takeIf { it in Aversion.AVERSE_PLACES }
+        ?.let { Aversion(ruler, Axis.RISING, it, Aversion.Basis.ASCENDANT) }
+    }
+    return byRuler + listOfNotNull(byAscendant)
+  }
 
   /**
    * 本命看的居上（以星座計，[OvercomingSignImpl]）：只收古典在本命真正讀的那幾種，不列全部兩兩配對（幾乎每對星都有星座關係）。
@@ -99,6 +123,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       orientalBad,
       occidentalBad,
       overcome.takeIf { overcomingImpl != null },
+      averse,
     )
   }
 
@@ -980,6 +1005,11 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       superiorHouse = h.getHouse(superior) ?: return null, superiorRules = rules(superior),
       inferiorHouse = h.getHouse(inferior) ?: return null, inferiorRules = rules(inferior),
     )
+  }
+
+  /** 不相見（[aversions] 的判斷層）：對不相見的那顆列一行 */
+  val averse = IPlanetPatternFactory { planet, h ->
+    aversions(h).filter { it.planet === planet }.map { Misc.Aversion(planet, it) }
   }
 
   /** 整宮（星座）版本 */

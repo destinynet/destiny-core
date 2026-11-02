@@ -456,6 +456,21 @@ data class HoroscopeOvercomingDto(
   override val members: List<String> get() = listOf(superior, inferior)
 }
 
+/**
+ * 不相見（[destiny.core.astrology.classical.Aversion]，以星座計）：[planet] 落在 [from] 所在星座起算的第 [place] 個星座（2、6、8、12），彼此看不到。
+ * [basis]：RULER ＝ [from] 是 [planet] 所在星座的主人；ASCENDANT ＝ [planet] 是命主星、[from] 是上升點
+ */
+@Serializable
+@SerialName("aversion")
+data class HoroscopeAversionDto(
+  val planet: String,
+  val from: String,
+  val place: Int,
+  val basis: destiny.core.astrology.classical.Aversion.Basis,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(planet, from)
+}
+
 @Serializable
 data class HoroscopeChartDto(
   val meta: HoroscopeMetaDto,
@@ -470,7 +485,7 @@ data class HoroscopeChartDto(
   val patterns: List<HoroscopePatternDto> = emptyList(),
   /** 有焦點星的中點；三顆都在 [points] 內 */
   val midpoints: List<HoroscopeMidpointDto> = emptyList(),
-  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
+  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上、不相見）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
   val classicalFacts: List<HoroscopeClassicalFactDto> = emptyList(),
   /** 各行星離開所在星座前的入相位（依 planet、再依 degrees 排序）；兩端都在 [points] 內，不含 LOT */
   val applications: List<HoroscopeApplicationDto> = emptyList(),
@@ -573,6 +588,8 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
     after = HoroscopeBesiegeSideDto(after.by.nameKey, after.aspect?.name, after.aspect?.glyph, after.distance),
   )
 
+  is destiny.core.astrology.classical.Aversion -> HoroscopeAversionDto(planet.nameKey, from.nameKey, place, basis)
+
   is destiny.core.astrology.classical.Overcoming -> HoroscopeOvercomingDto(
     superior = superior.nameKey, inferior = inferior.nameKey,
     aspect = aspect.name, glyph = aspect.glyph, orb = orb, byDegree = byDegree,
@@ -588,7 +605,7 @@ fun HoroscopeClassicalFactDto.withoutTrack(): HoroscopeClassicalFactDto = when (
   is HoroscopeRefranationDto -> copy(track = emptyList())
   is HoroscopeProhibitionDto -> copy(track = emptyList())
   is HoroscopeFrustrationDto -> copy(track = emptyList())
-  is HoroscopeTranslationDto, is HoroscopeCollectionDto, is HoroscopeBesiegementDto, is HoroscopeOvercomingDto -> this
+  is HoroscopeTranslationDto, is HoroscopeCollectionDto, is HoroscopeBesiegementDto, is HoroscopeOvercomingDto, is HoroscopeAversionDto -> this
 }
 
 /** 格局可能用到的相位；組合格局（雙 T、六芒星、回力鏢）另外併入組成部分的邊 */
