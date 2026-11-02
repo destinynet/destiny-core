@@ -471,6 +471,23 @@ data class HoroscopeAversionDto(
   override val members: List<String> get() = listOf(planet, from)
 }
 
+/**
+ * 持矛者（[destiny.core.astrology.classical.Doryphoria]）：[bearer] 護衛光體 [light]，相距 [distance] 度；
+ * [preceding]：在光體前方（先升起）；[inSect]：與盤同區分（水星或日夜不明為 null）
+ */
+@Serializable
+@SerialName("doryphoria")
+data class HoroscopeDoryphoriaDto(
+  val light: String,
+  val bearer: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val distance: Double,
+  val preceding: Boolean,
+  val inSect: Boolean? = null,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(light, bearer)
+}
+
 /** 受剋／受扶的一條條件；JSON 以 `type` 區分 */
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -538,7 +555,7 @@ data class HoroscopeChartDto(
   val patterns: List<HoroscopePatternDto> = emptyList(),
   /** 有焦點星的中點；三顆都在 [points] 內 */
   val midpoints: List<HoroscopeMidpointDto> = emptyList(),
-  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上、不相見、受剋、受扶）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
+  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上、不相見、受剋、受扶、持矛者）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
   val classicalFacts: List<HoroscopeClassicalFactDto> = emptyList(),
   /** 各行星離開所在星座前的入相位（依 planet、再依 degrees 排序）；兩端都在 [points] 內，不含 LOT */
   val applications: List<HoroscopeApplicationDto> = emptyList(),
@@ -643,6 +660,8 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
 
   is destiny.core.astrology.classical.Aversion -> HoroscopeAversionDto(planet.nameKey, from.nameKey, place, basis)
 
+  is destiny.core.astrology.classical.Doryphoria -> HoroscopeDoryphoriaDto(light.nameKey, bearer.nameKey, distance, preceding, inSect)
+
   is destiny.core.astrology.classical.Maltreatment -> {
     val list = conditions.map { it.toChartDto() }
     if (polarity == destiny.core.astrology.classical.Maltreatment.Polarity.MALTREATMENT) HoroscopeMaltreatmentDto(planet.nameKey, list)
@@ -678,7 +697,7 @@ fun HoroscopeClassicalFactDto.withoutTrack(): HoroscopeClassicalFactDto = when (
   is HoroscopeProhibitionDto -> copy(track = emptyList())
   is HoroscopeFrustrationDto -> copy(track = emptyList())
   is HoroscopeTranslationDto, is HoroscopeCollectionDto, is HoroscopeBesiegementDto, is HoroscopeOvercomingDto, is HoroscopeAversionDto,
-  is HoroscopeMaltreatmentDto, is HoroscopeBonificationDto -> this
+  is HoroscopeMaltreatmentDto, is HoroscopeBonificationDto, is HoroscopeDoryphoriaDto -> this
 }
 
 /** 格局可能用到的相位；組合格局（雙 T、六芒星、回力鏢）另外併入組成部分的邊 */

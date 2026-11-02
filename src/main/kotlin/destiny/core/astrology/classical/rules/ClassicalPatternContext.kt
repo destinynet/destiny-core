@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical.rules
 
+import destiny.core.DayNight
 import destiny.core.DayNight.DAY
 import destiny.core.DayNight.NIGHT
 import destiny.core.News
@@ -32,6 +33,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val overcomingImpl: IOvercoming? = null,
                               /** 受剋與受扶（[maltreated]）；null ＝ 這份 context 不判（卜卦） */
                               private val maltreatmentImpl: IMaltreatment? = null,
+                              /** 持矛者（[spearBearing]）；null ＝ 這份 context 不判（卜卦） */
+                              private val doryphoriaImpl: IDoryphoria? = null,
 ) {
 
   /**
@@ -45,7 +48,11 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       besiegementImpl.getResults(h) +
       natalOvercomings(h).map { it.overcoming } +
       aversions(h) +
-      maltreatmentImpl?.getResults(h).orEmpty()
+      maltreatmentImpl?.getResults(h).orEmpty() +
+      doryphoriaImpl?.getResults(h, sectOf(h)).orEmpty()
+
+  /** 盤的日夜：呼叫端給的（[ClassicalInput.sect]）優先，否則以盤面時刻現算 */
+  private fun sectOf(h: IHoroscopeModel): DayNight = (h as? ClassicalInput)?.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
 
   /**
    * 不相見（以星座計，[Aversion]）：七顆古典行星各自與所在星座的主人（托勒密守護）不相見、命主星與上升不相見。
@@ -128,6 +135,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       overcome.takeIf { overcomingImpl != null },
       averse,
       maltreated.takeIf { maltreatmentImpl != null },
+      spearBearing.takeIf { doryphoriaImpl != null },
     )
   }
 
@@ -1009,6 +1017,14 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       superiorHouse = h.getHouse(superior) ?: return null, superiorRules = rules(superior),
       inferiorHouse = h.getHouse(inferior) ?: return null, inferiorRules = rules(inferior),
     )
+  }
+
+  /** 持矛者（[IDoryphoria] 的判斷層）：每個光體一行，列出它的全部持矛者；這份 context 沒有 [doryphoriaImpl] 時為空 */
+  val spearBearing = IPlanetPatternFactory { planet, h ->
+    val impl = doryphoriaImpl ?: return@IPlanetPatternFactory emptyList()
+    if (planet !== SUN && planet !== MOON) return@IPlanetPatternFactory emptyList()
+    val sect = sectOf(h)
+    impl.getBearers(h, planet, sect).takeIf { it.isNotEmpty() }?.let { listOf(Misc.SpearBearing(planet, it, sect)) }.orEmpty()
   }
 
   /** 受剋與受扶（[IMaltreatment] 的判斷層）：受剋、受扶各一行；這份 context 沒有 [maltreatmentImpl] 時為空 */

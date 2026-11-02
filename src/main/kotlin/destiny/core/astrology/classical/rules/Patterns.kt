@@ -232,6 +232,12 @@ sealed class Misc : IPlanetPattern {
    */
   data class Maltreated(override val planet: Planet, val maltreatment: destiny.core.astrology.classical.Maltreatment) : Misc()
 
+  /**
+   * 光體 [planet]（太陽或月亮）有持矛者 [bearers]（[destiny.core.astrology.classical.Doryphoria]）；[sect] 是盤的日夜（給「同區分」的判讀，精度不夠時由 [trimmedFor] 拿掉）。
+   * 屬 [RuleType.MISC]，不計分
+   */
+  data class SpearBearing(override val planet: Planet, val bearers: List<destiny.core.astrology.classical.Doryphoria>, val sect: DayNight? = null) : Misc()
+
   /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [exactAspectPrior] , 後一個準確交角資訊為 [exactAspectAfter]
    * */
   @Serializable
@@ -293,6 +299,7 @@ val IPlanetPattern.participants: Set<AstroPoint>
     is Misc.Overcoming                           -> setOf(overcoming.superior, overcoming.inferior)
     is Misc.Aversion                             -> setOf(aversion.from)
     is Misc.Maltreated                           -> maltreatment.sources
+    is Misc.SpearBearing                         -> bearers.map { it.bearer }.toSet()
     else                                         -> emptySet()
   }
 
@@ -313,6 +320,7 @@ fun IPlanetPattern.trimmedFor(grain: BirthDataGrain, sect: DayNight?): IPlanetPa
     houses = houses.takeIf { PatternRequirement.AXIS.isMetBy(grain, sect) },
     sect = this.sect.takeIf { PatternRequirement.SECT.isMetBy(grain, sect) },
   )
+  is Misc.SpearBearing -> if (PatternRequirement.SECT.isMetBy(grain, sect)) this else copy(sect = null, bearers = bearers.map { it.copy(inSect = null) })
   else -> this
 }
 

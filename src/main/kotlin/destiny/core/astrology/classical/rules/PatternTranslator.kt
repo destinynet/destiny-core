@@ -157,6 +157,7 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
           MiscDescriptor(pattern, key, listOf(o.inferior, o.superior, o.aspect,
             OvercomingClause.superior(pattern), OvercomingClause.inferior(pattern)))
         }
+        is Misc.SpearBearing -> MiscDescriptor(pattern, "comment", listOf(pattern.planet, SpearBearers(pattern.planet, pattern.bearers, pattern.sect)))
         is Misc.Maltreated -> {
           val m = pattern.maltreatment
           val key = if (m.polarity == destiny.core.astrology.classical.Maltreatment.Polarity.MALTREATMENT) "commentMaltreatment" else "commentBonification"
@@ -173,6 +174,31 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
       }
       else -> {
         throw IllegalArgumentException("Not Supported : $pattern")
+      }
+    }
+  }
+}
+
+/** 持矛者清單：「水星（先於太陽升起，相距 25.53°，與日盤同區分）」 */
+internal class SpearBearers(
+  private val light: destiny.core.astrology.Planet,
+  private val bearers: List<destiny.core.astrology.classical.Doryphoria>,
+  private val sect: DayNight?,
+) : ILocaleString {
+  override fun getTitle(lang: Lang): String {
+    val lightName = light.toString(lang)
+    return bearers.joinToString(if (lang.language == "en") "; " else "、") { d ->
+      val name = d.bearer.toString(lang)
+      val dist = "%.2f°".format(d.distance)
+      val sectWord = if (sect == null || d.inSect == null) null else when (lang.language) {
+        "en" -> (if (d.inSect) "of the sect" else "contrary to the sect") + " of this ${if (sect == DayNight.DAY) "day" else "night"} chart"
+        "ja" -> (if (sect == DayNight.DAY) "昼" else "夜") + "の生まれで" + (if (d.inSect) "同じセクト" else "異なるセクト")
+        else -> "與" + (if (sect == DayNight.DAY) "日" else "夜") + "盤" + (if (d.inSect) "同區分" else "異區分")
+      }
+      when (lang.language) {
+        "en" -> "$name (" + listOfNotNull((if (d.preceding) "rising before the $lightName" else "rising after the $lightName") + ", $dist away", sectWord).joinToString("; ") + ")"
+        "ja" -> "$name（" + listOfNotNull("${lightName}より" + (if (d.preceding) "先に" else "後に") + "昇る、$dist", sectWord).joinToString("、") + "）"
+        else -> "$name（" + listOfNotNull((if (d.preceding) "先於$lightName" else "在${lightName}之後") + "升起，相距 $dist", sectWord).joinToString("，") + "）"
       }
     }
   }
