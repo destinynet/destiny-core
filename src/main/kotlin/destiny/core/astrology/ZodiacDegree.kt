@@ -83,6 +83,14 @@ value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree 
     return value.aheadOf(other.value)
   }
 
+  /** 映點（antiscion）：以夏至、冬至軸（巨蟹 0°／摩羯 0°）對稱的度數，180° − λ */
+  val antiscion: ZodiacDegree
+    get() = (180.0 - value).toZodiacDegree()
+
+  /** 反映點（contra-antiscion）：以春分、秋分軸（牡羊 0°／天秤 0°）對稱的度數，360° − λ；也是映點的對沖點 */
+  val contraAntiscion: ZodiacDegree
+    get() = (360.0 - value).toZodiacDegree()
+
   /**
    * 此度數是否被 [from] 與 [to] 包圍 ( 180度(不含) 以內)
    * 其中 oriental 者 inclusive , 另一邊 exclusive

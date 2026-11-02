@@ -35,6 +35,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val maltreatmentImpl: IMaltreatment? = null,
                               /** 持矛者（[spearBearing]）；null ＝ 這份 context 不判（卜卦） */
                               private val doryphoriaImpl: IDoryphoria? = null,
+                              /** 映點（[antiscion]）；null ＝ 這份 context 不判 */
+                              private val antisciaImpl: IAntiscia? = null,
 ) {
 
   /**
@@ -49,7 +51,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       natalOvercomings(h).map { it.overcoming } +
       aversions(h) +
       maltreatmentImpl?.getResults(h).orEmpty() +
-      doryphoriaImpl?.getResults(h, sectOf(h)).orEmpty()
+      doryphoriaImpl?.getResults(h, sectOf(h)).orEmpty() +
+      antisciaImpl?.getResults(h).orEmpty()
 
   /** 盤的日夜：呼叫端給的（[ClassicalInput.sect]）優先，否則以盤面時刻現算 */
   private fun sectOf(h: IHoroscopeModel): DayNight = (h as? ClassicalInput)?.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
@@ -136,6 +139,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       averse,
       maltreated.takeIf { maltreatmentImpl != null },
       spearBearing.takeIf { doryphoriaImpl != null },
+      antiscion.takeIf { antisciaImpl != null },
     )
   }
 
@@ -1017,6 +1021,11 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       superiorHouse = h.getHouse(superior) ?: return null, superiorRules = rules(superior),
       inferiorHouse = h.getHouse(inferior) ?: return null, inferiorRules = rules(inferior),
     )
+  }
+
+  /** 映點（[IAntiscia] 的判斷層）：一對星一行，掛在 [Antiscion.planet] 上；這份 context 沒有 [antisciaImpl] 時為空 */
+  val antiscion = IPlanetPatternFactory { planet, h ->
+    antisciaImpl?.getResults(h).orEmpty().filter { it.planet === planet }.map { Misc.InAntiscia(planet, it) }
   }
 
   /** 持矛者（[IDoryphoria] 的判斷層）：每個光體一行，列出它的全部持矛者；這份 context 沒有 [doryphoriaImpl] 時為空 */

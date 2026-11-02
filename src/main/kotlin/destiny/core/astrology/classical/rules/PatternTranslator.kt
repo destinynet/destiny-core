@@ -157,6 +157,8 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
           MiscDescriptor(pattern, key, listOf(o.inferior, o.superior, o.aspect,
             OvercomingClause.superior(pattern), OvercomingClause.inferior(pattern)))
         }
+        is Misc.InAntiscia -> MiscDescriptor(pattern, if (pattern.antiscion.contra) "commentContra" else "comment",
+          listOf(pattern.antiscion.planet, pattern.antiscion.other, "%.2f°".format(pattern.antiscion.orb)))
         is Misc.SpearBearing -> MiscDescriptor(pattern, "comment", listOf(pattern.planet, SpearBearers(pattern.planet, pattern.bearers, pattern.sect)))
         is Misc.Maltreated -> {
           val m = pattern.maltreatment

@@ -238,6 +238,9 @@ sealed class Misc : IPlanetPattern {
    */
   data class SpearBearing(override val planet: Planet, val bearers: List<destiny.core.astrology.classical.Doryphoria>, val sect: DayNight? = null) : Misc()
 
+  /** [planet] 與另一顆星互為映點或反映點（[destiny.core.astrology.classical.Antiscion]）。屬 [RuleType.MISC]，不計分 */
+  data class InAntiscia(override val planet: Planet, val antiscion: destiny.core.astrology.classical.Antiscion) : Misc()
+
   /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [exactAspectPrior] , 後一個準確交角資訊為 [exactAspectAfter]
    * */
   @Serializable
@@ -300,6 +303,7 @@ val IPlanetPattern.participants: Set<AstroPoint>
     is Misc.Aversion                             -> setOf(aversion.from)
     is Misc.Maltreated                           -> maltreatment.sources
     is Misc.SpearBearing                         -> bearers.map { it.bearer }.toSet()
+    is Misc.InAntiscia                           -> setOf(antiscion.other)
     else                                         -> emptySet()
   }
 
