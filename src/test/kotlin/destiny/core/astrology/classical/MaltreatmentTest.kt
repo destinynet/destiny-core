@@ -41,7 +41,11 @@ class MaltreatmentTest {
     val mal = impl.getMaltreatment(h, SUN, Polarity.MALTREATMENT)!!
     assertEquals(setOf(SATURN, MARS), mal.sources)
     assertTrue(mal.conditions.any { it is Condition.Overcome && it.overcoming.superior == SATURN && it.overcoming.aspect == SQUARE })
-    assertTrue(mal.conditions.any { it is Condition.RayHurled && it.source == SATURN && it.aspect == SQUARE && !it.dexter && abs1(it.orb) })
+    // 土星的四分光線是 sinister，預設只算 dexter ⇒ 不列；改成 EITHER 才列
+    assertFalse(mal.conditions.any { it is Condition.RayHurled && it.source == SATURN })
+    val either = MaltreatmentAntiochusImpl(noBesiegement, options = MaltreatmentOptions(rayDirection = RayDirection.EITHER))
+    assertTrue(either.getMaltreatment(h, SUN, Polarity.MALTREATMENT)!!.conditions
+      .any { it is Condition.RayHurled && it.source == SATURN && it.aspect == SQUARE && !it.dexter && abs1(it.orb) })
     assertTrue(mal.conditions.any { it is Condition.Opposed && it.source == MARS })
     // 對沖已列，不再以對沖光線重複
     assertFalse(mal.conditions.any { it is Condition.RayHurled && it.source == MARS })
@@ -54,14 +58,14 @@ class MaltreatmentTest {
     assertTrue(ben.conditions.any { it is Condition.RayHurled && it.source == VENUS && it.dexter })
 
     val zh = PatternTranslator.getDescriptor(Misc.Maltreated(SUN, mal)).getDescription(Locale.TAIWAN)
-    assertTrue("太陽 受剋" in zh && "被 土星 四分居上" in zh && "與 火星 對沖" in zh && "被 土星 以四分光線射中" in zh, zh)
+    assertTrue("太陽 受剋" in zh && "被 土星 四分居上" in zh && "與 火星 對沖" in zh, zh)
     val en = PatternTranslator.getDescriptor(Misc.Maltreated(SUN, ben)).getDescription(Locale.ENGLISH)
     assertTrue("Sun is bonified" in en && "in adherence with Jupiter" in en, en)
   }
 
   @Test
   fun `選項 光線只算 dexter 對沖改看度數`() {
-    val impl = MaltreatmentAntiochusImpl(noBesiegement, options = MaltreatmentOptions(rayDirection = RayDirection.DEXTER, oppositionOrb = 0.5))
+    val impl = MaltreatmentAntiochusImpl(noBesiegement, options = MaltreatmentOptions(oppositionOrb = 0.5))
     val mal = impl.getMaltreatment(h, SUN, Polarity.MALTREATMENT)!!
     assertFalse(mal.conditions.any { it is Condition.RayHurled && it.source == SATURN }, "土星的光線是 sinister")
     assertFalse(mal.conditions.any { it is Condition.Opposed }, "火星對沖差 1°，超過 0.5°")

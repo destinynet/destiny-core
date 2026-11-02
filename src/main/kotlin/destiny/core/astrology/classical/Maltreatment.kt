@@ -62,7 +62,7 @@ data class Maltreatment(
 
 /**
  * 放射光線算哪一個方向：[DEXTER] ＝ 施予者在黃道後方（度數較大），以逆黃道方向的光線打到這顆星；[SINISTER] 相反；[EITHER] 兩者都算。
- * 傳本與現代譯者對 aktinobolia 的方向說法不一，所以做成選項
+ * 傳本與現代譯者對 aktinobolia 的方向說法不一，所以做成選項；預設 [DEXTER]（使用者 2026-11-02 定）
  */
 enum class RayDirection { DEXTER, SINISTER, EITHER }
 
@@ -87,7 +87,7 @@ data class MaltreatmentOptions(
   val rayOrb: Double = 3.0,
   val maleficRays: Set<Aspect> = setOf(Aspect.SQUARE, Aspect.OPPOSITION),
   val beneficRays: Set<Aspect> = setOf(Aspect.SEXTILE, Aspect.TRINE),
-  val rayDirection: RayDirection = RayDirection.EITHER,
+  val rayDirection: RayDirection = RayDirection.DEXTER,
   val maleficConditions: Set<ConditionType> = ConditionType.entries.toSet(),
   val beneficConditions: Set<ConditionType> = ConditionType.entries.toSet() - ConditionType.OPPOSED,
 ) {
