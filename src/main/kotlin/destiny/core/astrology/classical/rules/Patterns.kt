@@ -200,13 +200,21 @@ sealed class Misc : IPlanetPattern {
   /**
    * [planet] 參與的居上關係 (可能是居上者，也可能是被壓者)。
    * 屬 [RuleType.MISC] , 不列入尊貴 / 無力的計分。
-   * [ascRuler]：被居上的那顆是命主星（上升星座的主星）—— 本命篩選（[ClassicalPatternContext.overcome]）才會標，判定要靠上升點
+   * [ascRuler]：被居上的那顆是命主星（上升星座的主星）—— 本命篩選（[ClassicalPatternContext.overcome]）才會標，判定要靠上升點。
+   * [houses]：兩顆星各落哪一宮、守護哪幾宮（盤本身的宮制）；[sect]：盤的日夜。兩者都是給判讀的細節，
+   * 精度供不起時由 [trimmedFor] 拿掉，格局本身（只看星座）仍成立
    */
   data class Overcoming(
     override val planet: Planet,
     val overcoming: destiny.core.astrology.classical.Overcoming,
     val ascRuler: Boolean = false,
+    val houses: OvercomingHouses? = null,
+    val sect: DayNight? = null,
   ) : Misc() {
+    /** 居上者與盤的日夜同區分（夜盤的火星、日盤的木星…）；水星或日夜不明為 null */
+    val superiorInSect: Boolean?
+      get() = (overcoming.superior as? Planet)?.sect?.let { s -> sect?.let { it == s } }
+
     /** [planet] 是否為居上者 */
     val superior: Boolean
       get() = overcoming.superior == planet
@@ -273,6 +281,26 @@ val IPlanetPattern.participants: Set<AstroPoint>
     is Misc.Overcoming                           -> setOf(overcoming.superior, overcoming.inferior)
     else                                         -> emptySet()
   }
+
+/** 居上的兩顆星各落哪一宮（[superiorHouse]／[inferiorHouse]）、守護哪幾宮（宮頭落在它守護的星座；象限宮制下被劫奪的星座不算） */
+data class OvercomingHouses(
+  val superiorHouse: Int,
+  val superiorRules: List<Int>,
+  val inferiorHouse: Int,
+  val inferiorRules: List<Int>,
+)
+
+/**
+ * 精度供不起時，拿掉格局裡要靠軸點／日夜盤的**細節**（格局本身仍成立、照樣列出）。
+ * 與 [requirements] 不同：那邊是整個格局不成立就濾掉，這裡是格局成立、只是有些附帶資訊不可信
+ */
+fun IPlanetPattern.trimmedFor(grain: BirthDataGrain, sect: DayNight?): IPlanetPattern = when (this) {
+  is Misc.Overcoming -> copy(
+    houses = houses.takeIf { PatternRequirement.AXIS.isMetBy(grain, sect) },
+    sect = this.sect.takeIf { PatternRequirement.SECT.isMetBy(grain, sect) },
+  )
+  else -> this
+}
 
 /**
  * 一種格局要成立，出生資料得提供什麼。精度不夠時由 `DtoFactory.getClassicalPatterns` 依此濾掉，

@@ -241,16 +241,21 @@ class OvercomingTest {
     assertEquals(ctx.natalOvercomings(h).map { it.overcoming }, ctx.classicalFacts(h).filterIsInstance<Overcoming>())
     assertTrue(ctx.overcome in ctx.defaultFactories)
 
-    val venus = ctx.overcome.getPatterns(VENUS, h).filterIsInstance<Misc.Overcoming>().single()
+    // 正式呼叫端都帶日夜盤（ClassicalInput）；mock 盤沒有出生時刻，不能讓 factory 現算
+    val night = destiny.core.astrology.classical.rules.ClassicalInput(h, destiny.core.DayNight.NIGHT)
+    val venus = ctx.overcome.getPatterns(VENUS, night).filterIsInstance<Misc.Overcoming>().single()
     assertTrue(venus.ascRuler)
     assertEquals(setOf(destiny.core.astrology.classical.rules.PatternRequirement.AXIS),
       venus.requirements)
     // 居上者不另列一行
-    assertTrue(ctx.overcome.getPatterns(SATURN, h).isEmpty())
+    assertTrue(ctx.overcome.getPatterns(SATURN, night).isEmpty())
+    // 盤只有上升點、沒有 12 宮：宮位細節為 null；木星是晝星、這是夜盤 ⇒ 異區分
+    assertNull(venus.houses)
+    assertEquals(false, venus.superiorInSect)
 
     val zh = destiny.core.astrology.classical.rules.PatternTranslator.getDescriptor(venus).getDescription(java.util.Locale.TAIWAN)
-    assertTrue("命主星" in zh && "督促" in zh, zh)
-    val sun = ctx.overcome.getPatterns(SUN, h).filterIsInstance<Misc.Overcoming>()
+    assertTrue("命主星" in zh && "督促" in zh && "與夜盤異區分" in zh, zh)
+    val sun = ctx.overcome.getPatterns(SUN, night).filterIsInstance<Misc.Overcoming>()
     assertEquals(2, sun.size)
     val en = sun.map { destiny.core.astrology.classical.rules.PatternTranslator.getDescriptor(it).getDescription(java.util.Locale.ENGLISH) }
     assertTrue(en.any { "decimation" in it && "held down" in it }, en.toString())

@@ -964,7 +964,22 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * 這份 context 沒有 [overcomingImpl] 時一律為空
    */
   val overcome = IPlanetPatternFactory { planet, h ->
-    natalOvercomings(h).filter { it.target === planet }.map { Misc.Overcoming(planet, it.overcoming, it.ascRuler) }
+    val list = natalOvercomings(h).filter { it.target === planet }
+    if (list.isEmpty()) return@IPlanetPatternFactory emptyList()
+    val sect = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
+    list.map { n ->
+      Misc.Overcoming(planet, n.overcoming, n.ascRuler, overcomingHouses(h, n.overcoming.superior as Planet, planet), sect)
+    }
+  }
+
+  /** 兩顆星各落哪一宮、守護哪幾宮（盤本身的宮制）；盤沒有宮位時為 null */
+  private fun overcomingHouses(h: IHoroscopeModel, superior: Planet, inferior: Planet): OvercomingHouses? {
+    if (h.cuspDegreeMap.size < 12) return null
+    val rules = { p: Planet -> (1..12).filter { i -> with(rulerImpl) { h.getCuspDegree(i).sign.getRulerPoint() } === p } }
+    return OvercomingHouses(
+      superiorHouse = h.getHouse(superior) ?: return null, superiorRules = rules(superior),
+      inferiorHouse = h.getHouse(inferior) ?: return null, inferiorRules = rules(inferior),
+    )
   }
 
   /** 整宮（星座）版本 */

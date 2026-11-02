@@ -9,6 +9,8 @@ import destiny.core.astrology.LunarNode
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.StationaryType
 import destiny.tools.AbstractPropertyBasedPatternDescriptor
+import destiny.tools.ILocaleString
+import destiny.tools.Lang
 import destiny.tools.getTitle
 import destiny.tools.JSerializable
 import java.util.*
@@ -151,7 +153,8 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
             VENUS, JUPITER -> if (o.aspect == SQUARE) "commentBeneficSquare" else "commentBenefic"
             else           -> "comment"
           }.let { if (pattern.ascRuler && it != "comment") it + "AscRuler" else it }
-          MiscDescriptor(pattern, key, listOf(o.inferior, o.superior, o.aspect))
+          MiscDescriptor(pattern, key, listOf(o.inferior, o.superior, o.aspect,
+            OvercomingClause.superior(pattern), OvercomingClause.inferior(pattern)))
         }
         // 空亡是時間區段，沒有 Misc.properties 的句子，刻意不翻譯
         is Misc.VoidCourseSpan ->
@@ -160,6 +163,55 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
       else -> {
         throw IllegalArgumentException("Not Supported : $pattern")
       }
+    }
+  }
+}
+
+/**
+ * 居上句子裡跟在星名後面的括號：落哪一宮、守護哪幾宮、（居上者）與盤的日夜同不同區分。沒有細節（精度不夠、盤沒有宮位）時為空字串。
+ * 「同區分」只比對星的晝夜歸屬與盤的日夜，不是 [AccidentalDignity.Hayz] 那種還要看地平線與星座陰陽的得時
+ */
+internal class OvercomingClause private constructor(
+  private val house: Int?,
+  private val rules: List<Int>,
+  private val sect: DayNight?,
+  private val inSect: Boolean?,
+) : ILocaleString {
+
+  override fun getTitle(lang: Lang): String {
+    val ja = lang.language == "ja"
+    val en = lang.language == "en"
+    val parts = buildList {
+      house?.let { add(when { en -> "in the ${ordinal(it)} house"; ja -> "第${it}ハウス"; else -> "第 $it 宮" }) }
+      if (house != null && rules.isNotEmpty()) add(when {
+        en -> "ruling the " + rules.joinToString(" and ") { ordinal(it) }
+        ja -> "第" + rules.joinToString("・") + "ハウスの支配星"
+        else -> "守護第 " + rules.joinToString("、") + " 宮"
+      })
+      if (sect != null && inSect != null) add(when {
+        en -> (if (inSect) "of the sect" else "contrary to the sect") + " of this ${if (sect == DayNight.DAY) "day" else "night"} chart"
+        ja -> (if (sect == DayNight.DAY) "昼" else "夜") + "の生まれで" + (if (inSect) "同じセクト" else "異なるセクト")
+        else -> "與" + (if (sect == DayNight.DAY) "日" else "夜") + "盤" + (if (inSect) "同區分" else "異區分")
+      })
+    }
+    if (parts.isEmpty()) return ""
+    return when {
+      en -> " (" + parts.joinToString("; ") + ")"
+      ja -> "（" + parts.joinToString("、") + "）"
+      else -> "（" + parts.joinToString("，") + "）"
+    }
+  }
+
+  companion object {
+    fun superior(p: Misc.Overcoming) = OvercomingClause(p.houses?.superiorHouse, p.houses?.superiorRules.orEmpty(), p.sect, p.superiorInSect)
+    fun inferior(p: Misc.Overcoming) = OvercomingClause(p.houses?.inferiorHouse, p.houses?.inferiorRules.orEmpty(), null, null)
+
+    private fun ordinal(n: Int): String = n.toString() + when {
+      n % 100 in 11..13 -> "th"
+      n % 10 == 1 -> "st"
+      n % 10 == 2 -> "nd"
+      n % 10 == 3 -> "rd"
+      else -> "th"
     }
   }
 }

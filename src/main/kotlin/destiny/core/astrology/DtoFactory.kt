@@ -13,6 +13,7 @@ import destiny.core.astrology.classical.rules.EssentialDignity
 import destiny.core.astrology.classical.rules.participants
 import destiny.core.astrology.classical.rules.requirements
 import destiny.core.astrology.classical.rules.signBased
+import destiny.core.astrology.classical.rules.trimmedFor
 import destiny.core.astrology.classical.rules.IPlanetPattern
 import destiny.core.astrology.classical.rules.IPlanetPatternFactory
 import destiny.core.astrology.classical.rules.PatternTranslator
@@ -202,7 +203,7 @@ class DtoFactory(
     val factories = (horoConfig as? IClassicalConfig)?.factories ?: classicalFactories
     val cfg = ClassicalConfig(factories, sect) to horoConfig
     return classicalFeature.getModel(gmtJulDay, location, cfg).flatMap { (_, list: List<IPlanetPattern>) ->
-      list.filterNot { pattern ->
+      list.map { it.trimmedFor(grain, sect) }.filterNot { pattern ->
         // 這種格局需要的輸入（軸點、日夜盤、離太陽的細距離）這份資料供不起 —— 需要什麼宣告在 IPlanetPattern.requirements
         pattern.requirements.any { !it.isMetBy(grain, sect) } ||
           // 牽涉到位置不可信的星（只知日期時的月亮…），而且不是只看星座就能判的
