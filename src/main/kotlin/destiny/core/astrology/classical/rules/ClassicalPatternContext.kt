@@ -65,13 +65,13 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       val lord = with(rulerImpl) { sign.getRulerPoint() } as? Planet ?: return@mapNotNull null
       if (lord === p) return@mapNotNull null
       val lordSign = signOf(lord) ?: return@mapNotNull null
-      Aversion.placeOf(lordSign.index, sign.index).takeIf { it in Aversion.AVERSE_PLACES }
+      sign.placeFrom(lordSign).takeIf { it in Aversion.AVERSE_PLACES }
         ?.let { Aversion(p, lord, it, Aversion.Basis.RULER) }
     }
     val byAscendant = h.cuspDegreeMap[1]?.let { asc ->
       val ruler = ascendantRuler(h) ?: return@let null
       val sign = signOf(ruler) ?: return@let null
-      Aversion.placeOf(asc.sign.index, sign.index).takeIf { it in Aversion.AVERSE_PLACES }
+      sign.placeFrom(asc.sign).takeIf { it in Aversion.AVERSE_PLACES }
         ?.let { Aversion(ruler, Axis.RISING, it, Aversion.Basis.ASCENDANT) }
     }
     return byRuler + listOfNotNull(byAscendant)

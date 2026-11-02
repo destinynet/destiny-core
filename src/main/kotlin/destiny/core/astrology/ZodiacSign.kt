@@ -93,6 +93,12 @@ enum class ZodiacSign(val abbrKey: String,
     return get(ordinal + n)
   }
 
+  /**
+   * 以 [from] 為第 1 個星座，順黃道數到本星座是第幾個（1–12）—— 整宮制的「從某星座起算第幾宮」。
+   * 居上（右方第 9／10／11 個）、不相見（第 2／6／8／12 個）、對沖（第 7 個）、黃道釋放的角宮都用它
+   */
+  fun placeFrom(from: ZodiacSign): Int = (index - from.index).mod(12) + 1
+
   override val booleanValue: Boolean
     get() = yinYang
 

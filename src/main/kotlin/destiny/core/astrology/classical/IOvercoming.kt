@@ -84,17 +84,15 @@ interface IOvercoming {
 
   companion object {
 
-    /** 由 inferior 往前（逆黃道）數的星座差 → 居上相位 */
-    internal val signStepsMap: Map<Int, Aspect> = mapOf(2 to SEXTILE, 3 to SQUARE, 4 to TRINE)
+    /** 居上者在被居上者起算的第幾個星座（[ZodiacSign.placeFrom]）→ 居上相位 */
+    internal val placeAspectMap: Map<Int, Aspect> = mapOf(11 to SEXTILE, 10 to SQUARE, 9 to TRINE)
 
     internal val overcomingAspects: List<Aspect> = listOf(SEXTILE, SQUARE, TRINE)
 
-    /** 由 [from] 順黃道走到 [to] 的角度 , [0, 360) */
-    internal fun forward(from: ZodiacDegree, to: ZodiacDegree): Double = (to.value - from.value).mod(360.0)
 
     /** [superior] 星座 往後數到 [inferior] 星座 的步數 , 對應的居上相位 */
     internal fun signAspect(superior: ZodiacDegree, inferior: ZodiacDegree): Aspect? =
-      signStepsMap[(inferior.sign.index - superior.sign.index).mod(12)]
+      placeAspectMap[superior.sign.placeFrom(inferior.sign)]
   }
 }
 
@@ -118,7 +116,7 @@ class OvercomingSignImpl(
             inferior = infP,
             aspect = aspect,
             basis = basis,
-            orb = abs(IOvercoming.forward(supDeg, infDeg) - aspect.degree),
+            orb = abs(infDeg.aheadOf(supDeg) - aspect.degree),
             bySign = true,
             byDegree = errorAndScore != null,
             score = errorAndScore?.second
@@ -147,14 +145,14 @@ class OvercomingDegreeImpl(
   override val basis: OvercomingBasis = OvercomingBasis.DEGREE
 
   override fun getOvercoming(p1: AstroPoint, deg1: ZodiacDegree, p2: AstroPoint, deg2: ZodiacDegree): Overcoming? {
-    val fwd = IOvercoming.forward(deg1, deg2)
+    val fwd = deg2.aheadOf(deg1)
     // 順黃道走 180 度以內抵達對方者，在對方之右 , 居上
     val (sup, supDeg, infP, infDeg) = when {
       fwd > 0 && fwd < 180 -> Quad(p1, deg1, p2, deg2)
       fwd > 180            -> Quad(p2, deg2, p1, deg1)
       else                 -> return null
     }
-    val angle = IOvercoming.forward(supDeg, infDeg)
+    val angle = infDeg.aheadOf(supDeg)
 
     return IOvercoming.overcomingAspects
       .mapNotNull { aspect ->

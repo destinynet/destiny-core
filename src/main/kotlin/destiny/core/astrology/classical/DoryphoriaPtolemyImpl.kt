@@ -20,11 +20,11 @@ class DoryphoriaPtolemyImpl(
     val wantPreceding = if (light === Planet.SUN) options.sunPreceding else options.moonPreceding
     return (options.bearers - light).mapNotNull { p ->
       val deg = h.positionMap[p]?.lngDeg ?: return@mapNotNull null
-      // p 在光體前方 ＝ 從 p 順黃道走到光體的距離在 (0, 180)
-      val behindLight = (lightDeg.value - deg.value).mod(360.0)
-      val preceding = behindLight in 0.0..180.0 && behindLight > 0.0
-      val distance = if (preceding) behindLight else 360.0 - behindLight
-      if (preceding != wantPreceding || distance > options.maxDistance) return@mapNotNull null
+      // 前方 ＝ 東邊（黃經較小、先升起）；合相與正對沖兩邊都不算
+      val preceding = deg.isOriental(lightDeg)
+      if (!(if (wantPreceding) preceding else deg.isOccidental(lightDeg))) return@mapNotNull null
+      val distance = deg.getAngle(lightDeg)
+      if (distance > options.maxDistance) return@mapNotNull null
       val inSect = p.sect?.let { s -> sect?.let { it == s } }
       if (options.sameSectOnly && inSect != true) return@mapNotNull null
       Doryphoria(light, p, distance, preceding, inSect)

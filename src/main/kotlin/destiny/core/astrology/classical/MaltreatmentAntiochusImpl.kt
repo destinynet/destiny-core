@@ -42,7 +42,7 @@ class MaltreatmentAntiochusImpl(
 
         val opposed = ConditionType.OPPOSED in on && run {
           val orb = abs(180 - angle)
-          (options.oppositionOrb?.let { orb <= it } ?: ((srcDeg.sign.index - deg.sign.index).mod(12) == 6))
+          (options.oppositionOrb?.let { orb <= it } ?: (srcDeg.sign.placeFrom(deg.sign) == 7))
             .also { if (it) add(Maltreatment.Condition.Opposed(src, orb)) }
         }
 
@@ -70,7 +70,7 @@ class MaltreatmentAntiochusImpl(
    * dexter：[src] 在黃道後方（[target] 順黃道走 aspect 度就到 [src]），光線逆黃道方向投射回 [target]
    */
   private fun hurledRay(src: Planet, srcDeg: ZodiacDegree, target: ZodiacDegree, aspects: Set<Aspect>): Maltreatment.Condition.RayHurled? {
-    val ahead = (srcDeg.value - target.value).mod(360.0)   // target → src 順黃道的距離
+    val ahead = srcDeg.aheadOf(target)   // target → src 順黃道的距離
     return aspects.firstNotNullOfOrNull { aspect ->
       val dexterOrb = abs(ahead - aspect.degree)
       val sinisterOrb = abs((360 - ahead) - aspect.degree)

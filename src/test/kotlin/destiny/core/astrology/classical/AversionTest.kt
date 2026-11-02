@@ -9,6 +9,7 @@ import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.IPosWithAzimuth
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
+import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.classical.rules.ClassicalPatternContext
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.classical.rules.PatternRequirement
@@ -67,11 +68,12 @@ class AversionTest {
     assertTrue("命主星 火星 與上升不相見" in PatternTranslator.getDescriptor(mars).getDescription(Locale.TAIWAN))
   }
 
+  /** 不相見的位置數法與 [destiny.core.astrology.ZodiacSign.placeFrom] 一致（起算的星座算第 1 個） */
   @Test
-  fun placeOf() {
-    assertEquals(2, Aversion.placeOf(0, 1))
-    assertEquals(12, Aversion.placeOf(1, 0))
-    assertEquals(8, Aversion.placeOf(7, 2))
-    assertEquals(1, Aversion.placeOf(5, 5))
+  fun placeFrom() {
+    assertEquals(2, ZodiacSign.TAURUS.placeFrom(ZodiacSign.ARIES))
+    assertEquals(12, ZodiacSign.ARIES.placeFrom(ZodiacSign.TAURUS))
+    assertEquals(8, ZodiacSign.GEMINI.placeFrom(ZodiacSign.SCORPIO))
+    assertEquals(1, ZodiacSign.VIRGO.placeFrom(ZodiacSign.VIRGO))
   }
 }

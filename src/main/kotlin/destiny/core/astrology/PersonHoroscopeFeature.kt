@@ -145,7 +145,7 @@ class PersonHoroscopeFeature(
         val degInner = posMapInner[pInner]?.lngDeg ?: return@mapNotNull null
         overcomingImpl.getOvercoming(pOuter, degOuter, pInner, degInner)?.let { o ->
           // pOuter 與 pInner 可能是同一顆星 , 故不比對 point , 而以「誰在黃道前方 (180 度內)」判斷 superior 屬哪一盤
-          val outerIsSuperior = IOvercoming.forward(degOuter, degInner) < 180
+          val outerIsSuperior = degInner.aheadOf(degOuter) < 180
           SynastryOvercoming(if (outerIsSuperior) SynastryOvercoming.Side.OUTER else SynastryOvercoming.Side.INNER, o)
         }
       }

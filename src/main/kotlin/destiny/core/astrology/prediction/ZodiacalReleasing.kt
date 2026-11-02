@@ -232,13 +232,6 @@ fun generateZodiacalReleasing(
 }
 
 /**
- * Whole-sign "house" distance (1..12) from [lotSign] to [periodSign],
- * counting [lotSign] itself as 1.
- */
-fun signHouseFrom(lotSign: ZodiacSign, periodSign: ZodiacSign): Int =
-  ((periodSign.index - lotSign.index + 12) % 12) + 1
-
-/**
  * Angularity of a Zodiacal Releasing period's sign relative to the Lot it was released from.
  *
  * Hellenistic doctrine (Valens / Brennan): periods angular to the releasing Lot are
@@ -248,7 +241,7 @@ fun signHouseFrom(lotSign: ZodiacSign, periodSign: ZodiacSign): Int =
 enum class ZrAngularity { PEAK, ANGULAR, SUCCEDENT, CADENT }
 
 fun zrAngularity(lotSign: ZodiacSign, periodSign: ZodiacSign): ZrAngularity =
-  when (signHouseFrom(lotSign, periodSign)) {
+  when (periodSign.placeFrom(lotSign)) {
     10          -> ZrAngularity.PEAK
     1, 4, 7     -> ZrAngularity.ANGULAR
     2, 5, 8, 11 -> ZrAngularity.SUCCEDENT

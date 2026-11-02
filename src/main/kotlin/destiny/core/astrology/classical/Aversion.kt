@@ -14,7 +14,7 @@ import destiny.core.astrology.Planet
  * - [Basis.RULER]：[planet] 與它所在星座的主人 [from] 不相見 —— 主人照應不到它
  * - [Basis.ASCENDANT]：命主星 [planet] 與上升（[from] ＝ 上升點）不相見 —— 代表本人的星看不到自己的第一宮
  *
- * [place]：[planet] 落在 [from] 所在星座起算的第幾個星座（2、6、8、12）。
+ * [place]：[planet] 落在 [from] 所在星座起算的第幾個星座（2、6、8、12；[destiny.core.astrology.ZodiacSign.placeFrom]）。
  * 經由映點相連的星座（「看得見」「聽得見」的星座對）不在此處理
  */
 data class Aversion(
@@ -29,8 +29,5 @@ data class Aversion(
   companion object {
     /** 起算的星座算第 1 個：相隔第 2、6、8、12 個星座即不相見 */
     val AVERSE_PLACES: Set<Int> = setOf(2, 6, 8, 12)
-
-    /** [to] 的星座從 [from] 的星座起算是第幾個（1–12） */
-    fun placeOf(fromSignIndex: Int, toSignIndex: Int): Int = ((toSignIndex - fromSignIndex).mod(12)) + 1
   }
 }

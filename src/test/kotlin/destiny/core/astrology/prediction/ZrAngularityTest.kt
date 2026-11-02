@@ -10,18 +10,18 @@ class ZrAngularityTest {
 
   /** house-distance from Lot's sign, whole-sign, Lot itself = 1 */
   @Test
-  fun `signHouseFrom counts whole-sign distance with Lot as 1`() {
-    assertEquals(1, signHouseFrom(CAPRICORN, CAPRICORN))   // Lot itself
-    assertEquals(4, signHouseFrom(CAPRICORN, ARIES))       // 4th
-    assertEquals(7, signHouseFrom(CAPRICORN, CANCER))      // 7th (opposite)
-    assertEquals(10, signHouseFrom(CAPRICORN, LIBRA))      // 10th
+  fun `placeFrom counts whole-sign distance with Lot as 1`() {
+    assertEquals(1, CAPRICORN.placeFrom(CAPRICORN))   // Lot itself
+    assertEquals(4, ARIES.placeFrom(CAPRICORN))       // 4th
+    assertEquals(7, CANCER.placeFrom(CAPRICORN))      // 7th (opposite)
+    assertEquals(10, LIBRA.placeFrom(CAPRICORN))      // 10th
   }
 
   /** modular wrap-around must be correct when Lot is late in the zodiac */
   @Test
-  fun `signHouseFrom wraps around the zodiac`() {
-    assertEquals(4, signHouseFrom(PISCES, GEMINI))         // Pisces->Aries(2)->Taurus(3)->Gemini(4)
-    assertEquals(10, signHouseFrom(PISCES, SAGITTARIUS))   // 10th from Pisces
+  fun `placeFrom wraps around the zodiac`() {
+    assertEquals(4, GEMINI.placeFrom(PISCES))         // Pisces->Aries(2)->Taurus(3)->Gemini(4)
+    assertEquals(10, SAGITTARIUS.placeFrom(PISCES))   // 10th from Pisces
   }
 
   /** the 10th sign from the Lot is the life PEAK for that Lot's topic */
