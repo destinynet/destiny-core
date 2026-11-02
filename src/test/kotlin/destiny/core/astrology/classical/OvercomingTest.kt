@@ -10,6 +10,7 @@ import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.rules.ClassicalPatternContext
 import destiny.core.astrology.classical.rules.Misc
+import destiny.core.astrology.classical.rules.requirements
 import io.mockk.every
 import io.mockk.mockk
 import kotlin.test.*
@@ -203,4 +204,68 @@ class OvercomingTest {
     assertEquals(so.overcoming.bySign, back.overcoming.bySign)
     assertEquals(so.overcoming.byDegree, back.overcoming.byDegree)
   }
+
+  /**
+   * 本命篩選：凶星只收四分、吉星收六分／四分／三分；被居上的限日、月、命主星。
+   * 盤：上升天秤（命主金星）；土星牡羊、火星金牛、金星雙子、太陽巨蟹、月亮處女、木星雙魚
+   */
+  @Test
+  fun `本命居上 凶星只收四分 吉星全收 被居上限日月命主星`() {
+    val posMap: Map<destiny.core.astrology.AstroPoint, IPosWithAzimuth> = mapOf(
+      SATURN to deg(0, 10.0),
+      MARS to deg(1, 10.0),
+      VENUS to deg(2, 10.0),
+      SUN to deg(3, 10.0),
+      MOON to deg(5, 10.0),
+      JUPITER to deg(11, 10.0),
+    ).mapValues { (_, d) -> mockk<IPosWithAzimuth> { every { lngDeg } returns d } }
+    val h = mockk<IHoroscopeModel> {
+      every { positionMap } returns posMap
+      every { cuspDegreeMap } returns mapOf(1 to deg(6, 5.0))
+    }
+    val ctx = natalContext(OvercomingSignImpl())
+
+    val found = ctx.natalOvercomings(h).map { Triple(it.overcoming.superior, it.target, it.overcoming.aspect) to it.ascRuler }.toSet()
+    assertEquals(
+      setOf(
+        Triple(SATURN, SUN, SQUARE) to false,     // 凶星四分：收
+        Triple(JUPITER, SUN, TRINE) to false,     // 吉星三分：收
+        Triple(VENUS, MOON, SQUARE) to false,     // 吉星四分：收
+        Triple(JUPITER, VENUS, SQUARE) to true,   // 命主星金星被木星四分居上
+      ),
+      found
+    )
+    // 不收：火星三分居上月亮（凶星非四分）、土星六分居上金星（凶星非四分）
+
+    // 事實層與判斷層一致
+    assertEquals(ctx.natalOvercomings(h).map { it.overcoming }, ctx.classicalFacts(h).filterIsInstance<Overcoming>())
+    assertTrue(ctx.overcome in ctx.defaultFactories)
+
+    val venus = ctx.overcome.getPatterns(VENUS, h).filterIsInstance<Misc.Overcoming>().single()
+    assertTrue(venus.ascRuler)
+    assertEquals(setOf(destiny.core.astrology.classical.rules.PatternRequirement.AXIS),
+      venus.requirements)
+    // 居上者不另列一行
+    assertTrue(ctx.overcome.getPatterns(SATURN, h).isEmpty())
+
+    val zh = destiny.core.astrology.classical.rules.PatternTranslator.getDescriptor(venus).getDescription(java.util.Locale.TAIWAN)
+    assertTrue("命主星" in zh && "督促" in zh, zh)
+    val sun = ctx.overcome.getPatterns(SUN, h).filterIsInstance<Misc.Overcoming>()
+    assertEquals(2, sun.size)
+    val en = sun.map { destiny.core.astrology.classical.rules.PatternTranslator.getDescriptor(it).getDescription(java.util.Locale.ENGLISH) }
+    assertTrue(en.any { "decimation" in it && "held down" in it }, en.toString())
+  }
+
+  @Test
+  fun `沒有 overcomingImpl 的 context 不判居上`() {
+    val ctx = natalContext(null)
+    assertFalse(ctx.overcome in ctx.defaultFactories)
+  }
+
+  private fun natalContext(overcomingImpl: IOvercoming?) = ClassicalPatternContext(
+    RulerPtolemyImpl, mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true),
+    mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true),
+    mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true),
+    overcomingImpl,
+  )
 }

@@ -323,6 +323,20 @@ class HoroscopeChartDtoTest {
     assertEquals(emptyList(), dto.keepingPoints { it.point != "Planet.MARS" }.classicalFacts)
   }
 
+  /** 居上投影成 `kind = overcoming`；居上者、被居上者都要在盤上 */
+  @Test
+  fun classicalFacts_overcoming() {
+    val o = destiny.core.astrology.classical.OvercomingSignImpl()
+      .getOvercoming(Planet.MARS, 10.0.toZodiacDegree(), Planet.SUN, 100.0.toZodiacDegree())!!
+    val dto = fakeNatal().toHoroscopeChartDto(ChartDensity.FULL).withClassicalFacts(listOf(o))
+    val json = Json.encodeToString(HoroscopeChartDto.serializer(), dto)
+    assertEquals("overcoming", JsonPath.read<String>(json, "$.classicalFacts[0].kind"))
+    assertEquals("Planet.MARS", JsonPath.read<String>(json, "$.classicalFacts[0].superior"))
+    assertEquals("Planet.SUN", JsonPath.read<String>(json, "$.classicalFacts[0].inferior"))
+    assertEquals("SQUARE", JsonPath.read<String>(json, "$.classicalFacts[0].aspect"))
+    assertEquals(dto, Json.decodeFromString(HoroscopeChartDto.serializer(), json), "來回不失真")
+  }
+
   /** 插隊的軌跡帶第三顆星（`by`）的黃經 —— 導演要靠它讓插隊者一起動 */
   @Test
   fun classicalFacts_prohibitionTrackCarriesByLng() {

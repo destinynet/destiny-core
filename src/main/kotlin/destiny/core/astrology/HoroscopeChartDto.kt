@@ -438,6 +438,24 @@ data class HoroscopeBesiegementDto(
   override val members: List<String> get() = listOf(planet, before.by, after.by)
 }
 
+/**
+ * 居上（[destiny.core.astrology.classical.Overcoming]，以星座計）：[superior] 在 [inferior] 的右方，以 [aspect] 居上；
+ * 四分（SQUARE）即 decimation。[orb]：實際角距與 [aspect] 標準角度的差；[byDegree]：度數上也在容許度內成相位
+ */
+@Serializable
+@SerialName("overcoming")
+data class HoroscopeOvercomingDto(
+  val superior: String,
+  val inferior: String,
+  val aspect: String,
+  val glyph: String? = null,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val orb: Double,
+  val byDegree: Boolean,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(superior, inferior)
+}
+
 @Serializable
 data class HoroscopeChartDto(
   val meta: HoroscopeMetaDto,
@@ -452,7 +470,7 @@ data class HoroscopeChartDto(
   val patterns: List<HoroscopePatternDto> = emptyList(),
   /** 有焦點星的中點；三顆都在 [points] 內 */
   val midpoints: List<HoroscopeMidpointDto> = emptyList(),
-  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
+  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
   val classicalFacts: List<HoroscopeClassicalFactDto> = emptyList(),
   /** 各行星離開所在星座前的入相位（依 planet、再依 degrees 排序）；兩端都在 [points] 內，不含 LOT */
   val applications: List<HoroscopeApplicationDto> = emptyList(),
@@ -554,6 +572,11 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
     before = HoroscopeBesiegeSideDto(before.by.nameKey, before.aspect?.name, before.aspect?.glyph, before.distance),
     after = HoroscopeBesiegeSideDto(after.by.nameKey, after.aspect?.name, after.aspect?.glyph, after.distance),
   )
+
+  is destiny.core.astrology.classical.Overcoming -> HoroscopeOvercomingDto(
+    superior = superior.nameKey, inferior = inferior.nameKey,
+    aspect = aspect.name, glyph = aspect.glyph, orb = orb, byDegree = byDegree,
+  )
 }
 
 /** 插隊／撲空的取樣點；這兩種結局的軌跡一定帶第三顆星的位置 */
@@ -565,7 +588,7 @@ fun HoroscopeClassicalFactDto.withoutTrack(): HoroscopeClassicalFactDto = when (
   is HoroscopeRefranationDto -> copy(track = emptyList())
   is HoroscopeProhibitionDto -> copy(track = emptyList())
   is HoroscopeFrustrationDto -> copy(track = emptyList())
-  is HoroscopeTranslationDto, is HoroscopeCollectionDto, is HoroscopeBesiegementDto -> this
+  is HoroscopeTranslationDto, is HoroscopeCollectionDto, is HoroscopeBesiegementDto, is HoroscopeOvercomingDto -> this
 }
 
 /** 格局可能用到的相位；組合格局（雙 T、六芒星、回力鏢）另外併入組成部分的邊 */

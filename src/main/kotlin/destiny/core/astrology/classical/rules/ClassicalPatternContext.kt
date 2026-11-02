@@ -27,22 +27,57 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val besiegementImpl: IBesiegement,
                               private val translationOfLightImpl: ITranslationOfLight,
                               private val collectionOfLightImpl: ICollectionOfLight,
-                              private val applicationOutcomeImpl: IApplicationOutcome
+                              private val applicationOutcomeImpl: IApplicationOutcome,
+                              /** 本命的居上（[overcome]）；null ＝ 這份 context 不判居上（卜卦：Lilly 一系不用這個技法） */
+                              private val overcomingImpl: IOvercoming? = null,
 ) {
 
   /**
-   * 全盤的古典事實（判斷層之前的那一層）：光線傳遞、光線收集、受阻的入相位（臨陣退縮／插隊／撲空）、包夾。
+   * 全盤的古典事實（判斷層之前的那一層）：光線傳遞、光線收集、受阻的入相位（臨陣退縮／插隊／撲空）、包夾、本命的居上（[natalOvercomings]）。
    * 判準與本 context 的格局相同（同一組 Impl、同一份 [OutcomeOptions]）。成形的入相位不列 —— 那就是一般的入相位
    */
   fun classicalFacts(h: IHoroscopeModel): List<ClassicalFact> =
     translationOfLightImpl.getResults(h) +
       collectionOfLightImpl.getResults(h) +
       applicationOutcomeImpl.getOutcomes(h).filterNot { it is ApplicationOutcome.Perfected } +
-      besiegementImpl.getResults(h)
+      besiegementImpl.getResults(h) +
+      natalOvercomings(h).map { it.overcoming }
 
-  /** 本命／卜卦的 prompt 預設帶的古典格局 */
+  /**
+   * 本命看的居上（以星座計，[OvercomingSignImpl]）：只收古典在本命真正讀的那幾種，不列全部兩兩配對（幾乎每對星都有星座關係）。
+   *
+   * - 居上者是凶星（火土）：只收四分居上（decimation，居上者落在被壓者起算的第十個星座）—— 凶星以三分、六分居上，古典視為緩和
+   * - 居上者是吉星（金木）：六分、四分、三分都收；四分是最強的提攜
+   * - 被居上的：日、月、命主星（[ascendantRuler]）。福點等非行星的點不在此列
+   *
+   * 吉凶星依日夜盤而變的細節（得時的凶星較輕）不在這裡篩，交給判讀
+   */
+  fun natalOvercomings(h: IHoroscopeModel): List<NatalOvercoming> {
+    val impl = overcomingImpl ?: return emptyList()
+    val ascRuler = ascendantRuler(h)
+    val targets = listOfNotNull(SUN, MOON, ascRuler).distinct()
+    return targets.flatMap { target ->
+      val targetDeg = h.positionMap[target]?.lngDeg ?: return@flatMap emptyList()
+      NATAL_OVERCOMING_ASPECTS.mapNotNull { (sup, aspects) ->
+        if (sup === target) return@mapNotNull null
+        val supDeg = h.positionMap[sup]?.lngDeg ?: return@mapNotNull null
+        impl.getOvercoming(sup, supDeg, target, targetDeg)
+          ?.takeIf { it.superior === sup && it.aspect in aspects }
+          ?.let { NatalOvercoming(target, it, ascRuler = target === ascRuler) }
+      }
+    }
+  }
+
+  /** 上升星座的主星（托勒密守護）；盤沒有宮位時為 null */
+  private fun ascendantRuler(h: IHoroscopeModel): Planet? =
+    h.cuspDegreeMap[1]?.let { asc -> with(rulerImpl) { asc.sign.getRulerPoint() } } as? Planet
+
+  /** [natalOvercomings] 的一筆：[target] 被居上；[ascRuler] ＝ [target] 是命主星 */
+  data class NatalOvercoming(val target: Planet, val overcoming: Overcoming, val ascRuler: Boolean)
+
+  /** 本命／卜卦的 prompt 預設帶的古典格局；居上（[overcome]）只在有 [overcomingImpl] 的 context（本命）才列 */
   val defaultFactories: List<IPlanetPatternFactory> by lazy {
-    listOf(
+    listOfNotNull(
       beneficialMutualReception,
       hayz,
       translationOfLight,
@@ -63,6 +98,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       occidentalGood,
       orientalBad,
       occidentalBad,
+      overcome.takeIf { overcomingImpl != null },
     )
   }
 
@@ -923,6 +959,14 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     override fun hashCode(): Int = overcomingImpl.hashCode()
   }
 
+  /**
+   * 本命的居上（[natalOvercomings] 的判斷層）：只對**被居上的那顆**列一行，居上者不另列，同一件事不出現兩行。
+   * 這份 context 沒有 [overcomingImpl] 時一律為空
+   */
+  val overcome = IPlanetPatternFactory { planet, h ->
+    natalOvercomings(h).filter { it.target === planet }.map { Misc.Overcoming(planet, it.overcoming, it.ascRuler) }
+  }
+
   /** 整宮（星座）版本 */
   val overcomingBySign: IPlanetPatternFactory = OvercomingFactory(OvercomingSignImpl())
 
@@ -972,5 +1016,13 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
   companion object {
     private val logger = KotlinLogging.logger { }
+
+    /** 本命居上：居上者 → 收哪些居上相位（[natalOvercomings]） */
+    private val NATAL_OVERCOMING_ASPECTS: List<Pair<Planet, Set<Aspect>>> = listOf(
+      MARS to setOf(SQUARE),
+      SATURN to setOf(SQUARE),
+      VENUS to setOf(SEXTILE, SQUARE, TRINE),
+      JUPITER to setOf(SEXTILE, SQUARE, TRINE),
+    )
   }
 }

@@ -199,9 +199,14 @@ sealed class Misc : IPlanetPattern {
 
   /**
    * [planet] 參與的居上關係 (可能是居上者，也可能是被壓者)。
-   * 屬 [RuleType.MISC] , 不列入尊貴 / 無力的計分
+   * 屬 [RuleType.MISC] , 不列入尊貴 / 無力的計分。
+   * [ascRuler]：被居上的那顆是命主星（上升星座的主星）—— 本命篩選（[ClassicalPatternContext.overcome]）才會標，判定要靠上升點
    */
-  data class Overcoming(override val planet: Planet, val overcoming: destiny.core.astrology.classical.Overcoming) : Misc() {
+  data class Overcoming(
+    override val planet: Planet,
+    val overcoming: destiny.core.astrology.classical.Overcoming,
+    val ascRuler: Boolean = false,
+  ) : Misc() {
     /** [planet] 是否為居上者 */
     val superior: Boolean
       get() = overcoming.superior == planet
@@ -298,6 +303,7 @@ val IPlanetPattern.requirements: Set<PatternRequirement>
     is AccidentalDignity.Hayz, is Debility.Out_of_Sect    -> setOf(PatternRequirement.AXIS, PatternRequirement.SECT)
     is EssentialDignity.Triplicity, is Debility.Peregrine -> setOf(PatternRequirement.SECT)
     is AccidentalDignity.Cazimi                           -> setOf(PatternRequirement.SUN_DISTANCE_FINE)
+    is Misc.Overcoming                                    -> if (ascRuler) setOf(PatternRequirement.AXIS) else emptySet()
     else                                                  -> emptySet()
   }
 

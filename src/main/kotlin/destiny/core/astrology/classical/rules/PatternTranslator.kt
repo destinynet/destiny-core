@@ -143,8 +143,18 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
           // 星體那一側沒有交角；佔位符位置固定，所以放空字串而不是拿掉
           MiscDescriptor(pattern, "comment" + (if (pattern.beforeAspect == null) "Body" else "Rays") + (if (pattern.afterAspect == null) "Body" else "Rays"),
             listOf(pattern.planet, pattern.before, pattern.beforeAspect ?: "", pattern.beforeDistance, pattern.after, pattern.afterAspect ?: "", pattern.afterDistance))
-        // 居上與空亡沒有 Misc.properties 的句子（居上有自己的呈現、空亡是時間區段），刻意不翻譯
-        is Misc.Overcoming, is Misc.VoidCourseSpan ->
+        // 居上：句子以被居上的那顆為主語；凶星只會是四分（本命篩選），吉星分四分（督促）與六分／三分（順勢支持）
+        is Misc.Overcoming -> {
+          val o = pattern.overcoming
+          val key = when (o.superior) {
+            MARS, SATURN   -> if (o.aspect == SQUARE) "commentMalefic" else "comment"
+            VENUS, JUPITER -> if (o.aspect == SQUARE) "commentBeneficSquare" else "commentBenefic"
+            else           -> "comment"
+          }.let { if (pattern.ascRuler && it != "comment") it + "AscRuler" else it }
+          MiscDescriptor(pattern, key, listOf(o.inferior, o.superior, o.aspect))
+        }
+        // 空亡是時間區段，沒有 Misc.properties 的句子，刻意不翻譯
+        is Misc.VoidCourseSpan ->
           throw IllegalArgumentException("No description for : $pattern")
       }
       else -> {

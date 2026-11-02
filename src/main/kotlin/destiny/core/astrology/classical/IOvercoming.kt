@@ -52,7 +52,7 @@ data class Overcoming(
   /** 度數交角評分 ; 度數上未成相位則為 null */
   @Serializable(with = ScoreTwoDecimalSerializer::class)
   val score: Score? = null
-) : JSerializable {
+) : ClassicalFact {
 
   /** 四分居上（第 10 個星座）, 最強 */
   val decimation: Boolean
