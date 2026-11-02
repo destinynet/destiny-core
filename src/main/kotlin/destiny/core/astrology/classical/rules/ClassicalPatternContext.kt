@@ -30,6 +30,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val applicationOutcomeImpl: IApplicationOutcome,
                               /** 本命的居上（[overcome]）；null ＝ 這份 context 不判居上（卜卦：Lilly 一系不用這個技法） */
                               private val overcomingImpl: IOvercoming? = null,
+                              /** 受剋與受扶（[maltreated]）；null ＝ 這份 context 不判（卜卦） */
+                              private val maltreatmentImpl: IMaltreatment? = null,
 ) {
 
   /**
@@ -42,7 +44,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       applicationOutcomeImpl.getOutcomes(h).filterNot { it is ApplicationOutcome.Perfected } +
       besiegementImpl.getResults(h) +
       natalOvercomings(h).map { it.overcoming } +
-      aversions(h)
+      aversions(h) +
+      maltreatmentImpl?.getResults(h).orEmpty()
 
   /**
    * 不相見（以星座計，[Aversion]）：七顆古典行星各自與所在星座的主人（托勒密守護）不相見、命主星與上升不相見。
@@ -124,6 +127,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       occidentalBad,
       overcome.takeIf { overcomingImpl != null },
       averse,
+      maltreated.takeIf { maltreatmentImpl != null },
     )
   }
 
@@ -1005,6 +1009,12 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       superiorHouse = h.getHouse(superior) ?: return null, superiorRules = rules(superior),
       inferiorHouse = h.getHouse(inferior) ?: return null, inferiorRules = rules(inferior),
     )
+  }
+
+  /** 受剋與受扶（[IMaltreatment] 的判斷層）：受剋、受扶各一行；這份 context 沒有 [maltreatmentImpl] 時為空 */
+  val maltreated = IPlanetPatternFactory { planet, h ->
+    val impl = maltreatmentImpl ?: return@IPlanetPatternFactory emptyList()
+    Maltreatment.Polarity.entries.mapNotNull { impl.getMaltreatment(h, planet, it) }.map { Misc.Maltreated(planet, it) }
   }
 
   /** 不相見（[aversions] 的判斷層）：對不相見的那顆列一行 */

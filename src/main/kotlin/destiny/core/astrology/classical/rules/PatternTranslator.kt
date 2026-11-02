@@ -2,6 +2,7 @@ package destiny.core.astrology.classical.rules
 
 import destiny.core.DayNight
 import destiny.core.Descriptive
+import destiny.core.toString
 import destiny.core.IPatternDescriptor
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.FixedStar
@@ -156,6 +157,11 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
           MiscDescriptor(pattern, key, listOf(o.inferior, o.superior, o.aspect,
             OvercomingClause.superior(pattern), OvercomingClause.inferior(pattern)))
         }
+        is Misc.Maltreated -> {
+          val m = pattern.maltreatment
+          val key = if (m.polarity == destiny.core.astrology.classical.Maltreatment.Polarity.MALTREATMENT) "commentMaltreatment" else "commentBonification"
+          MiscDescriptor(pattern, key, listOf(m.planet, MaltreatmentConditions(m.conditions)))
+        }
         is Misc.Aversion -> {
           val a = pattern.aversion
           val key = if (a.basis == destiny.core.astrology.classical.Aversion.Basis.ASCENDANT) "commentAscendant" else "commentRuler"
@@ -167,6 +173,45 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
       }
       else -> {
         throw IllegalArgumentException("Not Supported : $pattern")
+      }
+    }
+  }
+}
+
+/** 受剋／受扶的條件清單，依語言組成一串（zh「被 土星 四分居上、與 火星 對沖」） */
+internal class MaltreatmentConditions(private val conditions: List<destiny.core.astrology.classical.Maltreatment.Condition>) : ILocaleString {
+
+  override fun getTitle(lang: Lang): String {
+    val name = { p: destiny.core.astrology.AstroPoint -> p.toString(lang) }
+    val deg = { d: Double -> "%.2f°".format(d) }
+    val zhAspect = mapOf(SEXTILE to "六分", SQUARE to "四分", TRINE to "三分", OPPOSITION to "對沖", CONJUNCTION to "合")
+    return conditions.joinToString(when (lang.language) { "en" -> "; "; else -> "、" }) { c ->
+      when (c) {
+        is destiny.core.astrology.classical.Maltreatment.Condition.Overcome -> when (lang.language) {
+          "en" -> "overcome by ${name(c.overcoming.superior)} by ${c.overcoming.aspect.getTitle(lang).lowercase()}"
+          "ja" -> "${name(c.overcoming.superior)}に${c.overcoming.aspect.getTitle(lang)}でオーバーカミングされる"
+          else -> "被 ${name(c.overcoming.superior)} ${zhAspect[c.overcoming.aspect]}居上"
+        }
+        is destiny.core.astrology.classical.Maltreatment.Condition.Opposed -> when (lang.language) {
+          "en" -> "opposed by ${name(c.source)}"
+          "ja" -> "${name(c.source)}とオポジション"
+          else -> "與 ${name(c.source)} 對沖"
+        }
+        is destiny.core.astrology.classical.Maltreatment.Condition.Adherence -> when (lang.language) {
+          "en" -> "in adherence with ${name(c.source)} (conjunction, ${deg(c.orb)} apart)"
+          "ja" -> "${name(c.source)}と密着（コンジャンクション、${deg(c.orb)}）"
+          else -> "與 ${name(c.source)} 貼合（合相，相距 ${deg(c.orb)}）"
+        }
+        is destiny.core.astrology.classical.Maltreatment.Condition.RayHurled -> when (lang.language) {
+          "en" -> "struck by the ${c.aspect.getTitle(lang).lowercase()} ray of ${name(c.source)} (${deg(c.orb)} off)"
+          "ja" -> "${name(c.source)}の${c.aspect.getTitle(lang)}の光線を受ける（${deg(c.orb)}）"
+          else -> "被 ${name(c.source)} 以${zhAspect[c.aspect]}光線射中（差 ${deg(c.orb)}）"
+        }
+        is destiny.core.astrology.classical.Maltreatment.Condition.Besieged -> when (lang.language) {
+          "en" -> "besieged between ${name(c.besiegement.before.by)} and ${name(c.besiegement.after.by)}"
+          "ja" -> "${name(c.besiegement.before.by)}と${name(c.besiegement.after.by)}に挟まれる"
+          else -> "被 ${name(c.besiegement.before.by)} 與 ${name(c.besiegement.after.by)} 包夾"
+        }
       }
     }
   }

@@ -471,6 +471,59 @@ data class HoroscopeAversionDto(
   override val members: List<String> get() = listOf(planet, from)
 }
 
+/** 受剋／受扶的一條條件；JSON 以 `type` 區分 */
+@OptIn(ExperimentalSerializationApi::class)
+@Serializable
+@JsonClassDiscriminator("type")
+sealed interface HoroscopeMaltreatmentConditionDto {
+  val by: List<String>
+
+  /** 被 [superior] 以 [aspect] 居上 */
+  @Serializable @SerialName("overcome")
+  data class Overcome(val superior: String, val aspect: String, val glyph: String? = null) : HoroscopeMaltreatmentConditionDto {
+    override val by: List<String> get() = listOf(superior)
+  }
+
+  /** 與 [source] 對沖；[orb]：與 180° 的差 */
+  @Serializable @SerialName("opposed")
+  data class Opposed(val source: String, @Serializable(with = DoubleTwoDecimalSerializer::class) val orb: Double) : HoroscopeMaltreatmentConditionDto {
+    override val by: List<String> get() = listOf(source)
+  }
+
+  /** 與 [source] 貼合（合相） */
+  @Serializable @SerialName("adherence")
+  data class Adherence(val source: String, @Serializable(with = DoubleTwoDecimalSerializer::class) val orb: Double) : HoroscopeMaltreatmentConditionDto {
+    override val by: List<String> get() = listOf(source)
+  }
+
+  /** 被 [source] 以 [aspect] 的光線打中；[dexter]：光線逆黃道方向投射 */
+  @Serializable @SerialName("ray")
+  data class Ray(val source: String, val aspect: String, val glyph: String? = null,
+                 @Serializable(with = DoubleTwoDecimalSerializer::class) val orb: Double, val dexter: Boolean) : HoroscopeMaltreatmentConditionDto {
+    override val by: List<String> get() = listOf(source)
+  }
+
+  /** 被 [before]、[after] 包夾 */
+  @Serializable @SerialName("besieged")
+  data class Besieged(val before: HoroscopeBesiegeSideDto, val after: HoroscopeBesiegeSideDto) : HoroscopeMaltreatmentConditionDto {
+    override val by: List<String> get() = listOf(before.by, after.by)
+  }
+}
+
+/** 受剋（[destiny.core.astrology.classical.Maltreatment]，施予者是凶星）：[planet] 符合的 [conditions] */
+@Serializable
+@SerialName("maltreatment")
+data class HoroscopeMaltreatmentDto(val planet: String, val conditions: List<HoroscopeMaltreatmentConditionDto>) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = (listOf(planet) + conditions.flatMap { it.by }).distinct()
+}
+
+/** 受扶（施予者是吉星）：與 [HoroscopeMaltreatmentDto] 同一套條件 */
+@Serializable
+@SerialName("bonification")
+data class HoroscopeBonificationDto(val planet: String, val conditions: List<HoroscopeMaltreatmentConditionDto>) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = (listOf(planet) + conditions.flatMap { it.by }).distinct()
+}
+
 @Serializable
 data class HoroscopeChartDto(
   val meta: HoroscopeMetaDto,
@@ -485,7 +538,7 @@ data class HoroscopeChartDto(
   val patterns: List<HoroscopePatternDto> = emptyList(),
   /** 有焦點星的中點；三顆都在 [points] 內 */
   val midpoints: List<HoroscopeMidpointDto> = emptyList(),
-  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上、不相見）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
+  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上、不相見、受剋、受扶）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
   val classicalFacts: List<HoroscopeClassicalFactDto> = emptyList(),
   /** 各行星離開所在星座前的入相位（依 planet、再依 degrees 排序）；兩端都在 [points] 內，不含 LOT */
   val applications: List<HoroscopeApplicationDto> = emptyList(),
@@ -590,9 +643,28 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
 
   is destiny.core.astrology.classical.Aversion -> HoroscopeAversionDto(planet.nameKey, from.nameKey, place, basis)
 
+  is destiny.core.astrology.classical.Maltreatment -> {
+    val list = conditions.map { it.toChartDto() }
+    if (polarity == destiny.core.astrology.classical.Maltreatment.Polarity.MALTREATMENT) HoroscopeMaltreatmentDto(planet.nameKey, list)
+    else HoroscopeBonificationDto(planet.nameKey, list)
+  }
+
   is destiny.core.astrology.classical.Overcoming -> HoroscopeOvercomingDto(
     superior = superior.nameKey, inferior = inferior.nameKey,
     aspect = aspect.name, glyph = aspect.glyph, orb = orb, byDegree = byDegree,
+  )
+}
+
+private fun destiny.core.astrology.classical.Maltreatment.Condition.toChartDto(): HoroscopeMaltreatmentConditionDto = when (this) {
+  is destiny.core.astrology.classical.Maltreatment.Condition.Overcome ->
+    HoroscopeMaltreatmentConditionDto.Overcome(overcoming.superior.nameKey, overcoming.aspect.name, overcoming.aspect.glyph)
+  is destiny.core.astrology.classical.Maltreatment.Condition.Opposed -> HoroscopeMaltreatmentConditionDto.Opposed(source.nameKey, orb)
+  is destiny.core.astrology.classical.Maltreatment.Condition.Adherence -> HoroscopeMaltreatmentConditionDto.Adherence(source.nameKey, orb)
+  is destiny.core.astrology.classical.Maltreatment.Condition.RayHurled ->
+    HoroscopeMaltreatmentConditionDto.Ray(source.nameKey, aspect.name, aspect.glyph, orb, dexter)
+  is destiny.core.astrology.classical.Maltreatment.Condition.Besieged -> HoroscopeMaltreatmentConditionDto.Besieged(
+    HoroscopeBesiegeSideDto(besiegement.before.by.nameKey, besiegement.before.aspect?.name, besiegement.before.aspect?.glyph, besiegement.before.distance),
+    HoroscopeBesiegeSideDto(besiegement.after.by.nameKey, besiegement.after.aspect?.name, besiegement.after.aspect?.glyph, besiegement.after.distance),
   )
 }
 
@@ -605,7 +677,8 @@ fun HoroscopeClassicalFactDto.withoutTrack(): HoroscopeClassicalFactDto = when (
   is HoroscopeRefranationDto -> copy(track = emptyList())
   is HoroscopeProhibitionDto -> copy(track = emptyList())
   is HoroscopeFrustrationDto -> copy(track = emptyList())
-  is HoroscopeTranslationDto, is HoroscopeCollectionDto, is HoroscopeBesiegementDto, is HoroscopeOvercomingDto, is HoroscopeAversionDto -> this
+  is HoroscopeTranslationDto, is HoroscopeCollectionDto, is HoroscopeBesiegementDto, is HoroscopeOvercomingDto, is HoroscopeAversionDto,
+  is HoroscopeMaltreatmentDto, is HoroscopeBonificationDto -> this
 }
 
 /** 格局可能用到的相位；組合格局（雙 T、六芒星、回力鏢）另外併入組成部分的邊 */

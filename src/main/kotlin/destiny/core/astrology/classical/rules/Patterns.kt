@@ -226,6 +226,12 @@ sealed class Misc : IPlanetPattern {
    */
   data class Aversion(override val planet: Planet, val aversion: destiny.core.astrology.classical.Aversion) : Misc()
 
+  /**
+   * 受剋或受扶（[destiny.core.astrology.classical.Maltreatment]）：[planet] 被凶星（或吉星）以一到多條 Antiochus／Porphyry 的條件處置。
+   * 屬 [RuleType.MISC]，不計分；被居上、被包夾那幾條另有自己的格局（[Overcoming]、[Besieged]），這裡是彙總的判斷
+   */
+  data class Maltreated(override val planet: Planet, val maltreatment: destiny.core.astrology.classical.Maltreatment) : Misc()
+
   /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [exactAspectPrior] , 後一個準確交角資訊為 [exactAspectAfter]
    * */
   @Serializable
@@ -286,6 +292,7 @@ val IPlanetPattern.participants: Set<AstroPoint>
     is Misc.Besieged                             -> setOf(before, after)
     is Misc.Overcoming                           -> setOf(overcoming.superior, overcoming.inferior)
     is Misc.Aversion                             -> setOf(aversion.from)
+    is Misc.Maltreated                           -> maltreatment.sources
     else                                         -> emptySet()
   }
 
