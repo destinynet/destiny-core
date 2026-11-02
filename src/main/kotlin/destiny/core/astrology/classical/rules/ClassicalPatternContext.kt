@@ -37,6 +37,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val doryphoriaImpl: IDoryphoria? = null,
                               /** 映點（[antiscion]）；null ＝ 這份 context 不判 */
                               private val antisciaImpl: IAntiscia? = null,
+                              /** 不相見；null ＝ 用預設（[AversionSignImpl]、[AversionOptions.DEFAULT]）—— 本命、卜卦都判 */
+                              aversionImpl: IAversion? = null,
 ) {
 
   /**
@@ -57,28 +59,10 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /** 盤的日夜：呼叫端給的（[ClassicalInput.sect]）優先，否則以盤面時刻現算 */
   private fun sectOf(h: IHoroscopeModel): DayNight = (h as? ClassicalInput)?.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
 
-  /**
-   * 不相見（以星座計，[Aversion]）：七顆古典行星各自與所在星座的主人（托勒密守護）不相見、命主星與上升不相見。
-   * 在自己守護的星座裡的星沒有「主人」可言，不列；盤沒有宮位時不判上升那一種
-   */
-  fun aversions(h: IHoroscopeModel): List<Aversion> {
-    val signOf = { p: AstroPoint -> h.positionMap[p]?.lngDeg?.sign }
-    val byRuler = Planet.classicalList.mapNotNull { p ->
-      val sign = signOf(p) ?: return@mapNotNull null
-      val lord = with(rulerImpl) { sign.getRulerPoint() } as? Planet ?: return@mapNotNull null
-      if (lord === p) return@mapNotNull null
-      val lordSign = signOf(lord) ?: return@mapNotNull null
-      sign.placeFrom(lordSign).takeIf { it in Aversion.AVERSE_PLACES }
-        ?.let { Aversion(p, lord, it, Aversion.Basis.RULER) }
-    }
-    val byAscendant = h.cuspDegreeMap[1]?.let { asc ->
-      val ruler = ascendantRuler(h) ?: return@let null
-      val sign = signOf(ruler) ?: return@let null
-      sign.placeFrom(asc.sign).takeIf { it in Aversion.AVERSE_PLACES }
-        ?.let { Aversion(ruler, Axis.RISING, it, Aversion.Basis.ASCENDANT) }
-    }
-    return byRuler + listOfNotNull(byAscendant)
-  }
+  /** 不相見（[IAversion]；預設以星座計、行星與入廟主、命主星與上升，見 [AversionOptions.DEFAULT]） */
+  fun aversions(h: IHoroscopeModel): List<Aversion> = aversion.getResults(h)
+
+  private val aversion: IAversion = aversionImpl ?: AversionSignImpl(rulerImpl, exaltImpl)
 
   /**
    * 本命看的居上（以星座計，[OvercomingSignImpl]）：只收古典在本命真正讀的那幾種，不列全部兩兩配對（幾乎每對星都有星座關係）。
@@ -106,8 +90,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   }
 
   /** 上升星座的主星（托勒密守護）；盤沒有宮位時為 null */
-  private fun ascendantRuler(h: IHoroscopeModel): Planet? =
-    h.cuspDegreeMap[1]?.let { asc -> with(rulerImpl) { asc.sign.getRulerPoint() } } as? Planet
+  private fun ascendantRuler(h: IHoroscopeModel): Planet? = h.ascendantRuler(rulerImpl)
 
   /** [natalOvercomings] 的一筆：[target] 被居上；[ascRuler] ＝ [target] 是命主星 */
   data class NatalOvercoming(val target: Planet, val overcoming: Overcoming, val ascRuler: Boolean)

@@ -112,3 +112,7 @@ interface IFace {
   /** 取得某星座某度，其 Face 是哪顆星 , 0<=degree<30  */
   fun ZodiacSign.getFacePoint(degree: Double): AstroPoint
 }
+
+/** 命主星：上升星座的主人（[rulerImpl] 的入廟主）；盤沒有宮位、或主人不是行星時為 null */
+fun destiny.core.astrology.IHoroscopeModel.ascendantRuler(rulerImpl: IRuler): destiny.core.astrology.Planet? =
+  cuspDegreeMap[1]?.let { asc -> with(rulerImpl) { asc.sign.getRulerPoint() } } as? destiny.core.astrology.Planet

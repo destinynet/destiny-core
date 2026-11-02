@@ -167,7 +167,11 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
         }
         is Misc.Aversion -> {
           val a = pattern.aversion
-          val key = if (a.basis == destiny.core.astrology.classical.Aversion.Basis.ASCENDANT) "commentAscendant" else "commentRuler"
+          val key = when (a.basis) {
+            destiny.core.astrology.classical.Aversion.Basis.RULER      -> "commentRuler"
+            destiny.core.astrology.classical.Aversion.Basis.EXALTATION -> "commentExaltation"
+            destiny.core.astrology.classical.Aversion.Basis.ASCENDANT  -> "commentAscendant"
+          }
           MiscDescriptor(pattern, key, listOf(a.planet, a.from, SignPlace(a.place)))
         }
         // 空亡是時間區段，沒有 Misc.properties 的句子，刻意不翻譯

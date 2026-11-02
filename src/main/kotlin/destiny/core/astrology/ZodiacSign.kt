@@ -99,6 +99,14 @@ enum class ZodiacSign(val abbrKey: String,
    */
   fun placeFrom(from: ZodiacSign): Int = (index - from.index).mod(12) + 1
 
+  /** 映點星座：以巨蟹／摩羯軸對稱（雙子↔巨蟹、金牛↔獅子…），古典說這兩個星座彼此「看得見」（beholding）；度數版見 [ZodiacDegree.antiscion] */
+  val antiscionSign: ZodiacSign
+    get() = get(5 - index)
+
+  /** 反映點星座：以牡羊／天秤軸對稱（牡羊↔雙魚、金牛↔水瓶…），古典說這兩個星座「命令與服從」（commanding／obeying）；度數版見 [ZodiacDegree.contraAntiscion] */
+  val contraAntiscionSign: ZodiacSign
+    get() = get(11 - index)
+
   override val booleanValue: Boolean
     get() = yinYang
 
