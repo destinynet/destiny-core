@@ -57,6 +57,18 @@ data class Maltreatment(
     data class Besieged(val besiegement: Besiegement) : Condition {
       override val by: List<Planet> get() = listOf(besiegement.before.by, besiegement.after.by)
     }
+
+    /**
+     * 離開一顆、迎上另一顆（Abu Ma'shar《大緒論》：「離開一顆凶星，迎上另一顆凶星」；吉祥那一段同樣列「離開一顆吉星，迎上另一顆吉星」）：
+     * 這顆星最近一次離開的相位是與 [from] 的 [fromAspect]（已過 [fromOrb] 度），下一個迎上的是與 [to] 的 [toAspect]（還差 [toOrb] 度）。
+     * 「最近一次」與「下一個」是在其餘古典行星裡算的，所以中間沒有別的星介入
+     */
+    data class Sequence(
+      val from: Planet, val fromAspect: Aspect, val fromOrb: Double,
+      val to: Planet, val toAspect: Aspect, val toOrb: Double,
+    ) : Condition {
+      override val by: List<Planet> get() = listOf(from, to)
+    }
   }
 }
 
@@ -76,6 +88,8 @@ enum class RayDirection { DEXTER, SINISTER, EITHER }
  * - [adherenceOrb]、[adherenceSameSign]：貼合（合相）的容許度、是否要同星座
  * - [rayOrb]、[maleficRays]／[beneficRays]、[rayDirection]：放射光線的容許度、交角、方向
  * - [maleficConditions]／[beneficConditions]：受剋、受扶各判哪些條件。受扶預設不含對沖 —— 對沖本身是不和的配置，與吉星對沖不算受扶
+ * - [sequenceAspects]、[sequenceSameSign]、[aspectEffective]：離開一顆、迎上另一顆（[Maltreatment.Condition.Sequence]）算哪些相位、兩次準確時這顆星是否都還在同一星座
+ *   （Abu Ma'shar 的「在同一星座裡」）、相位的容許度（兩星星芒半徑相加，與古典格局其餘判斷同一份）
  */
 data class MaltreatmentOptions(
   val malefics: Set<Planet> = setOf(Planet.MARS, Planet.SATURN),
@@ -92,8 +106,11 @@ data class MaltreatmentOptions(
   val rayDirection: RayDirection = RayDirection.DEXTER,
   val maleficConditions: Set<ConditionType> = ConditionType.entries.toSet(),
   val beneficConditions: Set<ConditionType> = ConditionType.entries.toSet() - ConditionType.OPPOSED,
+  val sequenceAspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
+  val sequenceSameSign: Boolean = true,
+  val aspectEffective: AspectEffectiveClassical = AspectEffectiveClassical(),
 ) {
-  enum class ConditionType { OVERCOME, OPPOSED, ADHERENCE, RAY, BESIEGED }
+  enum class ConditionType { OVERCOME, OPPOSED, ADHERENCE, RAY, BESIEGED, SEQUENCE }
 
   companion object {
     /** 以星座計（居上、對沖只看星座；貼合、放射光線本來就看度數）。實務上用這一組 */

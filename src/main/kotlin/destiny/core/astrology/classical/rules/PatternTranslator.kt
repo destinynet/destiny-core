@@ -271,6 +271,11 @@ internal class MaltreatmentConditions(private val conditions: List<destiny.core.
           "ja" -> "${name(c.besiegement.before.by)}と${name(c.besiegement.after.by)}に挟まれる"
           else -> "被 ${name(c.besiegement.before.by)} 與 ${name(c.besiegement.after.by)} 包夾"
         }
+        is destiny.core.astrology.classical.Maltreatment.Condition.Sequence -> when (lang.language) {
+          "en" -> "separating from the ${c.fromAspect.getTitle(lang).lowercase()} of ${name(c.from)} (${deg(c.fromOrb)} past) and applying to the ${c.toAspect.getTitle(lang).lowercase()} of ${name(c.to)} (${deg(c.toOrb)} to go)"
+          "ja" -> "${name(c.from)}との${c.fromAspect.getTitle(lang)}から離れ（${deg(c.fromOrb)}）、${name(c.to)}との${c.toAspect.getTitle(lang)}へ接近する（${deg(c.toOrb)}）"
+          else -> "離開 ${name(c.from)} 的${zhAspect[c.fromAspect]}（已過 ${deg(c.fromOrb)}）、迎上 ${name(c.to)} 的${zhAspect[c.toAspect]}（還差 ${deg(c.toOrb)}）"
+        }
       }
     }
   }

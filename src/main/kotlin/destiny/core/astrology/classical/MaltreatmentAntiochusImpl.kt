@@ -7,11 +7,12 @@ import destiny.core.astrology.Aspect
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacDegree
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.MaltreatmentOptions.ConditionType
 import kotlin.math.abs
 
 /**
- * Antiochus／Porphyry 的受剋（與對應的受扶）條件：被居上、對沖、包夾、貼合、放射光線。只看盤面時刻的位置，不需要星曆。
+ * Antiochus／Porphyry 的受剋（與對應的受扶）條件：被居上、對沖、包夾、貼合、放射光線，加上 Abu Ma'shar 的「離開一顆、迎上另一顆」。只看盤面時刻的位置與速度，不需要星曆。
  *
  * 居上的基準（星座或度數）由注入的 [overcomingImpl] 決定，必須與 [MaltreatmentOptions.overcomingBasis] 相同；包夾由 [besiegementImpl]；其餘細節見 [MaltreatmentOptions]。
  * 施予者本身不會被自己處置；包夾要兩顆施予者都不是這顆星
@@ -67,8 +68,44 @@ class MaltreatmentAntiochusImpl(
       if (ConditionType.BESIEGED in on && sources.size == 2) {
         besiegementImpl.getBesiegement(h, planet, sources)?.let { add(Maltreatment.Condition.Besieged(it)) }
       }
+      if (ConditionType.SEQUENCE in on && sources.size == 2) {
+        sequence(h, planet, deg, sources)?.let { add(it) }
+      }
     }
     return conditions.takeIf { it.isNotEmpty() }?.let { Maltreatment(planet, polarity, it) }
+  }
+
+  /** 黃經速度；速度不明時用平均日速 */
+  private fun speed(h: IHoroscopeModel, p: Planet): Double? = h.getStarPosition(p)?.speedLng ?: AverageDailyMotionMap.getAvgDailySpeed(p)
+
+  /**
+   * 離開一顆、迎上另一顆：在其餘古典行星裡，找 [planet] 容許度內（[MaltreatmentOptions.aspectEffective]）最近一次離開與下一個迎上的相位，
+   * 兩者分別是 [sources] 裡不同的兩顆才成立。離合以兩星的黃經速度線性外推（只看盤面附近幾天，不需要星曆）；
+   * [MaltreatmentOptions.sequenceSameSign]：兩次準確時這顆星都還在目前的星座
+   */
+  private fun sequence(h: IHoroscopeModel, planet: Planet, deg: ZodiacDegree, sources: Set<Planet>): Maltreatment.Condition.Sequence? {
+    val v = speed(h, planet) ?: return null
+    data class Hit(val other: Planet, val aspect: Aspect, val orb: Double, val days: Double)
+    val hits = (Planet.classicalList - planet).flatMap { o ->
+      val oDeg = h.positionMap[o]?.lngDeg ?: return@flatMap emptyList()
+      val rel = v - (speed(h, o) ?: return@flatMap emptyList())
+      if (rel == 0.0) return@flatMap emptyList()
+      val r = (deg.value - oDeg.value).mod(360.0)
+      options.sequenceAspects.filter { options.aspectEffective.isEffective(planet, deg, o, oDeg, it) }.map { a ->
+        val targets = if (a.degree == 0.0 || a.degree == 180.0) listOf(a.degree) else listOf(a.degree, 360 - a.degree)
+        val signed = targets.map { t -> (r - t + 540).mod(360.0) - 180 }.minBy { abs(it) }
+        // signed 以 rel 的速度變化：準確的時刻是 -signed / rel（負數 ＝ 已經過去 ＝ 離開）
+        Hit(o, a, abs(signed), -signed / rel)
+      }
+    }
+    val sep = hits.filter { it.days < 0 }.maxByOrNull { it.days } ?: return null
+    val app = hits.filter { it.days > 0 }.minByOrNull { it.days } ?: return null
+    if (sep.other == app.other || sep.other !in sources || app.other !in sources) return null
+    if (options.sequenceSameSign) {
+      val signAt = { days: Double -> (deg.value + v * days).toZodiacDegree().sign }
+      if (signAt(sep.days) != deg.sign || signAt(app.days) != deg.sign) return null
+    }
+    return Maltreatment.Condition.Sequence(sep.other, sep.aspect, sep.orb, app.other, app.aspect, app.orb)
   }
 
   /**

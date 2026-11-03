@@ -33,8 +33,10 @@ data class Besiegement(
  *
  * - [maxDistance]：兩側各自離被夾的星不超過幾度
  * - [byRays]：度數光線也算一側；false ＝ 只算星體本身
- * - [sameSign]：三顆星要在同一星座
- * - [maleficRays]／[beneficRays]：被凶星（火土）／其他星包夾時，光線算哪些交角。凶星預設只算四分、對分（舊判準的「只考量硬角度」；原典是否如此未查證）
+ * - [sameSign]：每一側的落點（星體或光線）要與被夾的星在同一星座 —— 不允許換星座
+ * - [maleficRays]／[beneficRays]：被凶星（火土）／其他星包夾時，光線算哪些交角
+ *
+ * 預設值就是 [STRICT]（存表與本命用的那一組）。
  *
  * 介入（第三顆星落在中間就破除）一律以星體加托勒密四種光線判斷，不受這些選項影響。
  */
@@ -42,8 +44,8 @@ data class Besiegement(
 data class BesiegementOptions(
   val maxDistance: Double = 7.0,
   val byRays: Boolean = true,
-  val sameSign: Boolean = false,
-  val maleficRays: Set<Aspect> = setOf(Aspect.SQUARE, Aspect.OPPOSITION),
+  val sameSign: Boolean = true,
+  val maleficRays: Set<Aspect> = PTOLEMAIC_RAYS,
   val beneficRays: Set<Aspect> = PTOLEMAIC_RAYS,
 ) {
   /** 被 [enclosers] 包夾時，光線算哪些交角 */
@@ -57,8 +59,17 @@ data class BesiegementOptions(
     /** 托勒密相位的光線：六合、四分、三分、對分 */
     val PTOLEMAIC_RAYS: Set<Aspect> = setOf(Aspect.SEXTILE, Aspect.SQUARE, Aspect.TRINE, Aspect.OPPOSITION)
 
-    /** Porphyry, *Introduction* 15：兩側各 7° 內、星體或光線、不要求同星座 */
-    val PORPHYRY = BesiegementOptions()
+    /**
+     * 嚴格版：Porphyry 的「兩側各 7° 內」與 Abu Ma'shar 的「在同一星座裡」取交集；凶星、吉星的光線都算托勒密四種相位
+     * （Hephaistio《Apotelesmatics》I.15 的例子是火星以三分、對沖的光線夾住月亮，所以凶星不限硬相位）。存表與本命用這一組（使用者 2026-11-04 定）
+     */
+    val STRICT = BesiegementOptions()
+
+    /**
+     * Porphyry, *Introduction* 15：兩側各 7° 內、星體或光線、不要求同星座。凶星的光線只算四分、對分，沿用舊判準 ——
+     * 這一點原典未查證，而且 Hephaistio 的例子用到三分；卜卦目前用這一組
+     */
+    val PORPHYRY = BesiegementOptions(sameSign = false, maleficRays = setOf(Aspect.SQUARE, Aspect.OPPOSITION))
   }
 }
 

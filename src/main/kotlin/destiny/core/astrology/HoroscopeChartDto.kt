@@ -686,6 +686,17 @@ sealed interface HoroscopeMaltreatmentConditionDto {
   data class Besieged(val before: HoroscopeBesiegeSideDto, val after: HoroscopeBesiegeSideDto) : HoroscopeMaltreatmentConditionDto {
     override val by: List<AstroPoint> get() = listOf(before.by, after.by)
   }
+
+  /** 最近一次離開與 [from] 的 [fromAspect]（已過 [fromOrb] 度），下一個迎上與 [to] 的 [toAspect]（還差 [toOrb] 度） */
+  @Serializable @SerialName("sequence")
+  data class Sequence(
+    val from: AstroPoint, val fromAspect: Aspect, val fromGlyph: String? = null,
+    @Serializable(with = DoubleTwoDecimalSerializer::class) val fromOrb: Double,
+    val to: AstroPoint, val toAspect: Aspect, val toGlyph: String? = null,
+    @Serializable(with = DoubleTwoDecimalSerializer::class) val toOrb: Double,
+  ) : HoroscopeMaltreatmentConditionDto {
+    override val by: List<AstroPoint> get() = listOf(from, to)
+  }
 }
 
 /** 受剋（[destiny.core.astrology.classical.Maltreatment]，施予者是凶星）：[planet] 符合的 [conditions] */
@@ -881,6 +892,8 @@ private fun destiny.core.astrology.classical.Maltreatment.Condition.toChartDto()
     HoroscopeBesiegeSideDto(besiegement.before.by, besiegement.before.aspect, besiegement.before.aspect?.glyph, besiegement.before.distance),
     HoroscopeBesiegeSideDto(besiegement.after.by, besiegement.after.aspect, besiegement.after.aspect?.glyph, besiegement.after.distance),
   )
+  is destiny.core.astrology.classical.Maltreatment.Condition.Sequence ->
+    HoroscopeMaltreatmentConditionDto.Sequence(from, fromAspect, fromAspect.glyph, fromOrb, to, toAspect, toAspect.glyph, toOrb)
 }
 
 /** 插隊／撲空的取樣點；這兩種結局的軌跡一定帶第三顆星的位置 */

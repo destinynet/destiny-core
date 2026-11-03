@@ -78,8 +78,8 @@ class BesiegementPorphyryImplTest {
       assertEquals(3.0, b.after.distance, 1e-9)
     }
     // 凶星光線只算對分時，火星的四分光線不算；只算星體時也不算
-    assertNull(BesiegementPorphyryImpl(BesiegementOptions(maleficRays = setOf(Aspect.OPPOSITION))).getBesiegement(h, VENUS, maleficEnclosers))
-    assertNull(BesiegementPorphyryImpl(BesiegementOptions(byRays = false)).getBesiegement(h, VENUS, maleficEnclosers))
+    assertNull(BesiegementPorphyryImpl(BesiegementOptions.PORPHYRY.copy(maleficRays = setOf(Aspect.OPPOSITION))).getBesiegement(h, VENUS, maleficEnclosers))
+    assertNull(BesiegementPorphyryImpl(BesiegementOptions.PORPHYRY.copy(byRays = false)).getBesiegement(h, VENUS, maleficEnclosers))
   }
 
   /** 中間有第三顆星就破了：土 1°、金 3°、月 5°、火 7°，金與月都不算被夾 */
@@ -111,7 +111,7 @@ class BesiegementPorphyryImplTest {
   fun sameSign() {
     val h = chart(SATURN to 358.0, VENUS to 1.0, MARS to 4.0)
     assertNotNull(impl.getBesiegement(h, VENUS, maleficEnclosers))
-    assertNull(BesiegementPorphyryImpl(BesiegementOptions(sameSign = true)).getBesiegement(h, VENUS, maleficEnclosers))
+    assertNull(BesiegementPorphyryImpl(BesiegementOptions.PORPHYRY.copy(sameSign = true)).getBesiegement(h, VENUS, maleficEnclosers))
   }
 
   /** 兩側必須是不同的包夾星 */
@@ -153,7 +153,7 @@ class BesiegementPorphyryImplTest {
    */
   @Test
   fun encloserOrderDoesNotMatter() {
-    val wide = BesiegementPorphyryImpl(BesiegementOptions(maxDistance = 20.0, maleficRays = BesiegementOptions.PTOLEMAIC_RAYS))
+    val wide = BesiegementPorphyryImpl(BesiegementOptions.PORPHYRY.copy(maxDistance = 20.0, maleficRays = BesiegementOptions.PTOLEMAIC_RAYS))
     val h = fullChart(mapOf(SATURN to 0.0, MARS to 0.0, VENUS to 100.0, SUN to 65.0, MOON to 70.0, MERCURY to 245.0, JUPITER to 250.0))
     val a = wide.getBesiegement(h, VENUS, linkedSetOf(MARS, SATURN))
     val b = wide.getBesiegement(h, VENUS, linkedSetOf(SATURN, MARS))

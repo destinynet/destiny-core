@@ -29,7 +29,7 @@ class MaltreatmentTest {
       SUN to 40.0, SATURN to 311.0, MARS to 221.0, JUPITER to 42.0, VENUS to 100.0,
       MOON to 160.0, MERCURY to 75.0,
     ).mapValues { (_, d) -> mockk<IPosWithAzimuth> { every { lngDeg } returns d.toZodiacDegree() } }
-    mockk { every { positionMap } returns posMap }
+    mockk { every { positionMap } returns posMap; every { getStarPosition(any()) } returns null }
   }
 
   private val noBesiegement = mockk<IBesiegement> { every { getBesiegement(any(), any(), any()) } returns null }
@@ -86,7 +86,7 @@ class MaltreatmentTest {
   fun `與吉星對沖預設不算受扶`() {
     val posMap: Map<AstroPoint, IPosWithAzimuth> = mapOf(MOON to 132.0, JUPITER to 322.0)
       .mapValues { (_, d) -> mockk<IPosWithAzimuth> { every { lngDeg } returns d.toZodiacDegree() } }
-    val chart = mockk<IHoroscopeModel> { every { positionMap } returns posMap }
+    val chart = mockk<IHoroscopeModel> { every { positionMap } returns posMap; every { getStarPosition(any()) } returns null }
     assertNull(MaltreatmentAntiochusImpl(noBesiegement).getMaltreatment(chart, MOON, Polarity.BONIFICATION))
     val withOpposition = MaltreatmentOptions(beneficConditions = MaltreatmentOptions.ConditionType.entries.toSet())
     assertNotNull(MaltreatmentAntiochusImpl(noBesiegement, options = withOpposition).getMaltreatment(chart, MOON, Polarity.BONIFICATION))

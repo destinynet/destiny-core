@@ -15,7 +15,7 @@ import destiny.tools.CircleTools.normalizeSigned
  * - 兩側各是一顆包夾星的**星體**，或它投射到的**度數光線**（交角見 [BesiegementOptions.raysFor]）；一側星體、一側光線也算
  * - 兩側**各自**離被夾的星不超過 [BesiegementOptions.maxDistance] 度（Porphyry 的 7° 是對光線講的，星體套用同一個上限）
  * - 中間不能有別的星：任何第三顆古典行星的星體或光線落在被夾的星與任一側之間，包夾就破了（mesembolesis，介入）
- * - 預設不要求同星座（[BesiegementOptions.sameSign]）
+ * - 同星座與否見 [BesiegementOptions.sameSign]（[BesiegementOptions.STRICT] 要求、[BesiegementOptions.PORPHYRY] 不要求）
  *
  * 邊界：每一側的距離 0 < d ≤ [BesiegementOptions.maxDistance]（正好 7° 算；與被夾的星同度不算一側）；
  * 介入要嚴格落在中間（第三顆星正好落在某一側的落點上，不算介入）。
