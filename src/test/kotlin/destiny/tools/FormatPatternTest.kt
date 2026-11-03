@@ -62,8 +62,9 @@ class FormatPatternTest {
     }
 
     println("formatPattern 與 MessageFormat 比對了 $checked 個 pattern")
-    // 350 個含佔位符的 value（其中共 1,372 個 {n}；2026-10-31 加入 Misc.properties：插隊／撲空三語系 9 個、換星座的變體 9 個、一般化的臨陣退縮與包夾 24 個）。數字變動請確認是刻意新增的 pattern。
-    assertEquals(350, checked, "含佔位符的 value 數變了")
+    // 395 個含佔位符的 value；2026-10-31 時是 350 個（其中共 1,372 個 {n}；2026-10-31 加入 Misc.properties：插隊／撲空三語系 9 個、換星座的變體 9 個、一般化的臨陣退縮與包夾 24 個）。
+    // 2026-11-02 → 395：Misc 三語系各加 15 個（本命居上、不相見、受剋與受扶、持矛者、映點）。數字變動請確認是刻意新增的 pattern。
+    assertEquals(395, checked, "含佔位符的 value 數變了")
   }
 
   /**
