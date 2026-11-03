@@ -297,6 +297,15 @@ class EventsTraversalSolarArcImpl(
     return findGmtJulDayForArcInterpolated(inner, targetArc, fromGmt, toGmt, hConfig)
   }
 
+  /**
+   * 解出 [fromGmt]~[toGmt] 之間「太陽弧推進到 [targetArc]」的時刻；不在區間內回傳 null。
+   *
+   * 用 Illinois 版的試位法（regula falsi）：太陽弧對時間近乎線性，通常幾輪就收斂。
+   * 純試位法在曲線稍有彎曲時，每次猜點都落在目標同一側，於是只有一端在動、另一端永遠停在起點；
+   * 若最後回傳那個沒動過的端點，就差了一整個區間（一年的區間約 1°），事件因此被丟掉。
+   * Illinois 修正在同一側連續落點時把另一端的權重減半，猜點出界則退回二分法；
+   * 最後回傳的是目前最接近目標的那一點，而不是某個固定端點。
+   */
   fun findGmtJulDayForArcInterpolated(
     inner: IHoroscopeModel,
     targetArc: Double,
@@ -304,71 +313,68 @@ class EventsTraversalSolarArcImpl(
     toGmt: GmtJulDay,
     hConfig: HoroscopeConfig
   ): GmtJulDay? {
-    // 1. 粗略估算檢查，確保目標弧度在時間範圍內，這是一個重要的初步過濾
-    val (arcAtLow, arcAtHigh) = with(horoscopeFeature) {
-      inner.getSolarArc(fromGmt, MINUTE, modernAspectCalculator, null, hConfig).degreeMoved to
-        inner.getSolarArc(toGmt, MINUTE, modernAspectCalculator, null, hConfig).degreeMoved
+    fun arcAt(gmt: GmtJulDay): Double = with(horoscopeFeature) {
+      inner.getSolarArc(gmt, MINUTE, modernAspectCalculator, null, hConfig).degreeMoved
     }
 
-    // 檢查 targetArc 是否真的在範圍內
+    // 1. 確保目標弧度在時間範圍內（容許端點外一點點的浮點誤差）
+    val arcAtLow = arcAt(fromGmt)
+    val arcAtHigh = arcAt(toGmt)
     val tolerance = 0.01
     if (targetArc < (arcAtLow - tolerance) || targetArc > (arcAtHigh + tolerance)) {
       logger.trace { "Target arc $targetArc is outside the range [$arcAtLow, $arcAtHigh]" }
       return null
     }
 
-    // 2. 實作內插搜尋法 (Interpolation Search / Secant Method)
+    // f(t) = arc(t) - targetArc，單調遞增；low 端 f ≤ 0、high 端 f ≥ 0
     var lowGmt = fromGmt
     var highGmt = toGmt
-    var currentArcAtLow = arcAtLow
-    var currentArcAtHigh = arcAtHigh
+    var fLow = arcAtLow - targetArc
+    var fHigh = arcAtHigh - targetArc
 
-    for (round in 1..15) { // 使用 for 迴圈取代 while，設定一個最大迭代次數以防止無限迴圈
+    var bestGmt = if (abs(fLow) <= abs(fHigh)) lowGmt else highGmt
+    var bestErr = minOf(abs(fLow), abs(fHigh))
 
-      // 檢查時間間隔或弧度差是否已經足夠小
-      if ((highGmt - lowGmt) < 0.00001 || abs(currentArcAtHigh - currentArcAtLow) < 0.0001) {
-        break
+    // 目標落在端點外（容許範圍內）：最近的端點就是答案
+    if (fLow >= 0 || fHigh <= 0) {
+      return bestGmt.takeIf { bestErr < tolerance }
+    }
+
+    var lastSide = 0
+    for (round in 1..60) {
+      if (bestErr < ARC_EPSILON || (highGmt - lowGmt) < TIME_EPSILON_DAYS) break
+
+      // 試位法猜點；出界（或分母退化）就改用二分
+      var midGmt = lowGmt + (highGmt - lowGmt) * (-fLow) / (fHigh - fLow)
+      if (!(midGmt > lowGmt && midGmt < highGmt)) {
+        midGmt = lowGmt + (highGmt - lowGmt) / 2
       }
 
-      // --- 內插法核心公式 ---
-      // 根據目標弧度在當前弧度範圍內的比例，來估算下一個時間點
-      val midGmt = lowGmt + (highGmt - lowGmt) * (targetArc - currentArcAtLow) / (currentArcAtHigh - currentArcAtLow)
-
-      // 防止因浮點數計算導致猜測超出範圍
-      if (midGmt <= lowGmt || midGmt >= highGmt) {
-        logger.warn("Interpolation guess is out of bounds, falling back to binary search.")
-        // 若發生異常，可退回至二分法以確保穩健性
-        // midGmt = lowGmt + (highGmt - lowGmt) / 2
-        break
+      val fMid = arcAt(midGmt) - targetArc
+      if (abs(fMid) < bestErr) {
+        bestErr = abs(fMid)
+        bestGmt = midGmt
       }
 
-      val arcAtMid = with(horoscopeFeature) { inner.getSolarArc(midGmt, MINUTE, modernAspectCalculator, null, hConfig).degreeMoved }
+      logger.trace { "[$round] f = ${fMid.truncateToString(8)} , lowGmt = ${lowGmt.value.truncateToString(6)} , highGmt = ${highGmt.value.truncateToString(6)}" }
 
-      logger.trace {
-        "[$round] currentArc = ${arcAtMid.truncateToString(4)} , targetArc = ${targetArc.truncateToString(4)} , lowGmt = ${lowGmt.value.truncateToString(4)} , highGmt = ${
-          highGmt.value.truncateToString(
-            4
-          )
-        }"
-      }
-
-      // 根據猜測結果，縮小搜尋範圍
-      if (arcAtMid < targetArc) {
+      if (fMid < 0) {
         lowGmt = midGmt
-        currentArcAtLow = arcAtMid
+        fLow = fMid
+        if (lastSide == -1) fHigh /= 2 // Illinois：連續落在同一側，壓低另一端的權重
+        lastSide = -1
       } else {
         highGmt = midGmt
-        currentArcAtHigh = arcAtMid
+        fHigh = fMid
+        if (lastSide == 1) fLow /= 2
+        lastSide = 1
       }
     }
 
-    // 3. 最終檢查 lowGmt 是否滿足條件且誤差夠小
-    val finalArc = with(horoscopeFeature) { inner.getSolarArc(lowGmt, MINUTE, modernAspectCalculator, null, hConfig).degreeMoved }
-    return if (abs(finalArc - targetArc) < 0.01) { // 容許的最終誤差
-      lowGmt
+    return if (bestErr < tolerance) {
+      bestGmt
     } else {
-      // 如果收斂失敗，可以回傳 null 或記錄一個更詳細的錯誤
-      logger.error("Failed to converge for targetArc $targetArc. Final arc: $finalArc")
+      logger.error { "Failed to converge for targetArc $targetArc. Best arc error: $bestErr" }
       null
     }
   }
@@ -435,5 +441,11 @@ class EventsTraversalSolarArcImpl(
 
   companion object {
     private val logger = KotlinLogging.logger { }
+
+    /** 收斂判準：弧度誤差（太陽弧一年約 1°，1e-6° 約半分鐘） */
+    private const val ARC_EPSILON = 1e-6
+
+    /** 收斂判準：搜尋區間寬度（天） */
+    private const val TIME_EPSILON_DAYS = 1e-5
   }
 }
