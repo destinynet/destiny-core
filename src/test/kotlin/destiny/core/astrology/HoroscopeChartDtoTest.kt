@@ -16,6 +16,7 @@ import destiny.core.astrology.ZodiacSign.ARIES
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.astrology.classical.ApplicationOutcome
+import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.Besiegement
 import destiny.core.astrology.classical.OutcomeSample
 import destiny.core.identityFieldsIn
@@ -379,6 +380,38 @@ class HoroscopeChartDtoTest {
     val json = Json.encodeToString(HoroscopeChartDto.serializer(), dto.withSect(destiny.core.DayNight.NIGHT))
     assertEquals("NIGHT", JsonPath.read<String>(json, "$.meta.sect"))
     assertEquals(null, dto.withSect(destiny.core.DayNight.NIGHT).withSect(null).meta.sect)
+  }
+
+  /**
+   * 本質尊貴（[withDignities]）：太陽牡羊 10°（旺；日盤加三分性；10° 起是太陽的面）、水星牡羊 25.5°（火星的界，沒有尊貴）、火星金牛 10°（陷）。
+   * 判準用托勒密那一組（與本命的 @Primary 設定相同）
+   */
+  @Test
+  fun dignities() {
+    val essential = destiny.core.astrology.classical.EssentialImpl(
+      destiny.core.astrology.classical.RulerPtolemyImpl, destiny.core.astrology.classical.ExaltationPtolemyImpl,
+      destiny.core.astrology.classical.FallPtolemyImpl, destiny.core.astrology.classical.DetrimentPtolemyImpl,
+      destiny.core.astrology.classical.TriplicityWilliamImpl, destiny.core.astrology.classical.TermPtolomyImpl,
+      destiny.core.astrology.classical.FacePtolomyImpl, DayNightSimpleImpl(destiny.core.calendar.JulDayResolver1582CutoverImpl()),
+    )
+    val positions: Map<AstroPoint, ZodiacDegree> = mapOf(Planet.SUN to 10.0, Planet.MERCURY to 25.5, Planet.MARS to 40.0).mapValues { (_, d) -> d.toZodiacDegree() }
+    val base = fakeNatal().toHoroscopeChartDto(ChartDensity.FULL)
+    fun of(dto: HoroscopeChartDto, p: Planet) = dto.points.single { it.point == p.nameKey }.dignities
+    val day = base.withDignities(essential, positions, destiny.core.DayNight.DAY)
+    val night = base.withDignities(essential, positions, destiny.core.DayNight.NIGHT)
+    assertEquals(listOf(Dignity.EXALTATION, Dignity.TRIPLICITY, Dignity.FACE), of(day, Planet.SUN))
+    assertEquals(listOf(Dignity.EXALTATION, Dignity.FACE), of(night, Planet.SUN), "夜盤牡羊的三分主星不是太陽")
+    assertEquals(emptyList(), of(day, Planet.MERCURY))
+    assertEquals(listOf(Dignity.DETRIMENT), of(day, Planet.MARS))
+    assertEquals(day, base.withSect(destiny.core.DayNight.DAY).withDignities(essential, positions).copy(meta = base.meta), "sect 預設取 meta.sect")
+
+    // 空清單不輸出（連 encodeDefaults = true 也一樣）；沒附的 DTO 一個都沒有
+    val loud = Json { encodeDefaults = true }
+    val dayJson = loud.encodeToString(HoroscopeChartDto.serializer(), day)
+    assertEquals(listOf(listOf("EXALTATION", "TRIPLICITY", "FACE")), JsonPath.read<List<List<String>>>(dayJson, "$.points[?(@.point == 'Planet.SUN')].dignities"))
+    assertEquals(emptyList(), JsonPath.read<List<Any>>(dayJson, "$.points[?(@.point == 'Planet.MERCURY')].dignities"))
+    assertEquals(emptyList(), JsonPath.read<List<Any>>(loud.encodeToString(HoroscopeChartDto.serializer(), base), "$.points[*].dignities"))
+    assertEquals(day, Json.decodeFromString(HoroscopeChartDto.serializer(), dayJson))
   }
 
   private fun fakeNatal(

@@ -27,6 +27,7 @@ import destiny.core.getAbbreviation
 import destiny.tools.CircleTools.aheadOf
 import destiny.tools.Lang
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
+import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -70,6 +71,13 @@ data class HoroscopePointDto(
   val retrogradePhase: RetrogradePhase? = null,
   /** 黃經速度（度／日，逆行為負）；軸點與虛點為 null */
   val speed: Double? = null,
+  /**
+   * 本質尊貴（七顆古典行星才有；其餘點位為空）：廟、旺、三分性、界、面，以及落、陷 —— 由強到弱，可能同時有幾種（處女座的水星是廟也是旺）。
+   * 由呼叫端以 [withDignities] 附上，判準跟著傳入的 [destiny.core.astrology.classical.IEssential]。空清單不輸出（不論 Json 設定），沒附的 DTO 與舊的凍結 JSON 不變
+   */
+  @OptIn(ExperimentalSerializationApi::class)
+  @EncodeDefault(EncodeDefault.Mode.NEVER)
+  val dignities: List<Dignity> = emptyList(),
 )
 
 @Serializable
@@ -604,6 +612,23 @@ fun HoroscopeChartDto.withReceptions(
     .distinct()
     .sortedWith(compareBy({ it.a }, { it.b }, { it.aIn }, { it.bIn }))
   return copy(receptions = list)
+}
+
+/**
+ * 附上七顆古典行星的本質尊貴（[HoroscopePointDto.dignities]）。判準由 [essential] 決定（本命用的那一份：托勒密的廟旺落陷、三分性、界、面）；
+ * [positions] 是各點的黃道位置（界、面要看度數）；三分性要看日夜，取 [sect]（預設 [HoroscopeMetaDto.sect]）。
+ * 兩者都沒有時，只有日夜同一顆主星的三分性才算（見 [destiny.core.astrology.classical.IEssential.getDignities]）
+ */
+fun HoroscopeChartDto.withDignities(
+  essential: destiny.core.astrology.classical.IEssential,
+  positions: Map<AstroPoint, ZodiacDegree>,
+  sect: DayNight? = meta.sect,
+): HoroscopeChartDto {
+  val degrees: Map<AstroPoint, Double> = positions.mapValues { (_, d) -> d.value }
+  return copy(points = points.map { p ->
+    val planet = Planet.classicalList.firstOrNull { it.nameKey == p.point } ?: return@map p
+    p.copy(dignities = with(essential) { planet.getDignities(degrees, sect) })
+  })
 }
 
 /**
