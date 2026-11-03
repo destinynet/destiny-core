@@ -509,6 +509,29 @@ data class HoroscopeDoryphoriaDto(
   override val members: List<String> get() = listOf(light, bearer)
 }
 
+/**
+ * 灼傷（[destiny.core.astrology.classical.Combustion]）：[planet] 與太陽相距 [distance]，落在 [zone] 這一圈
+ * （日心 CAZIMI、灼傷 COMBUST、光束下 UNDER_BEAMS）；[approaching]：正往太陽靠近為 true、正在遠離為 false，速度不明為 null。
+ * [cazimiLimit]／[combustLimit]／[beamsLimit]：判定時用的三圈外緣（度）—— renderer 照它畫三圈，不要自己寫死數字
+ */
+@Serializable
+@SerialName("combustion")
+data class HoroscopeCombustionDto(
+  val planet: String,
+  val zone: destiny.core.astrology.classical.Combustion.Zone,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val distance: Double,
+  val approaching: Boolean? = null,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val cazimiLimit: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val combustLimit: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val beamsLimit: Double,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(planet, Planet.SUN.nameKey)
+}
+
 /** 受剋／受扶的一條條件；JSON 以 `type` 區分 */
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -576,7 +599,7 @@ data class HoroscopeChartDto(
   val patterns: List<HoroscopePatternDto> = emptyList(),
   /** 有焦點星的中點；三顆都在 [points] 內 */
   val midpoints: List<HoroscopeMidpointDto> = emptyList(),
-  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上、不相見、受剋、受扶、持矛者、映點）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
+  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上、不相見、受剋、受扶、持矛者、映點、灼傷）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
   val classicalFacts: List<HoroscopeClassicalFactDto> = emptyList(),
   /** 各行星離開所在星座前的入相位（依 planet、再依 degrees 排序）；兩端都在 [points] 內，不含 LOT */
   val applications: List<HoroscopeApplicationDto> = emptyList(),
@@ -702,6 +725,8 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
 
   is destiny.core.astrology.classical.Doryphoria -> HoroscopeDoryphoriaDto(light.nameKey, bearer.nameKey, distance, preceding, inSect)
 
+  is destiny.core.astrology.classical.Combustion -> HoroscopeCombustionDto(planet.nameKey, zone, distance, approaching, limits.cazimi, limits.combust, limits.underBeams)
+
   is destiny.core.astrology.classical.Maltreatment -> {
     val list = conditions.map { it.toChartDto() }
     if (polarity == destiny.core.astrology.classical.Maltreatment.Polarity.MALTREATMENT) HoroscopeMaltreatmentDto(planet.nameKey, list)
@@ -737,7 +762,7 @@ fun HoroscopeClassicalFactDto.withoutTrack(): HoroscopeClassicalFactDto = when (
   is HoroscopeProhibitionDto -> copy(track = emptyList())
   is HoroscopeFrustrationDto -> copy(track = emptyList())
   is HoroscopeTranslationDto, is HoroscopeCollectionDto, is HoroscopeBesiegementDto, is HoroscopeOvercomingDto, is HoroscopeAversionDto,
-  is HoroscopeMaltreatmentDto, is HoroscopeBonificationDto, is HoroscopeDoryphoriaDto, is HoroscopeAntisciaDto -> this
+  is HoroscopeMaltreatmentDto, is HoroscopeBonificationDto, is HoroscopeDoryphoriaDto, is HoroscopeAntisciaDto, is HoroscopeCombustionDto -> this
 }
 
 /** 格局可能用到的相位；組合格局（雙 T、六芒星、回力鏢）另外併入組成部分的邊 */

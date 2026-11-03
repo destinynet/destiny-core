@@ -39,13 +39,15 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val antisciaImpl: IAntiscia? = null,
                               /** 不相見（[averse]）；null ＝ 這份 context 不判 */
                               private val aversionImpl: IAversion? = null,
+                              /** 灼傷（[ICombustion]）：古典事實列不列由它決定（null ＝ 不列）；prompt 的日心／灼傷／光束下判斷一律用它，null 時用 [CombustionOptions.LILLY] */
+                              private val combustionImpl: ICombustion? = null,
                               /** 本命居上收哪幾種（[natalOvercomings]）；只在有 [overcomingImpl] 時有作用 */
                               private val natalOvercomingOptions: NatalOvercomingOptions = NatalOvercomingOptions.DEFAULT,
 ) {
 
   /**
    * 全盤的古典事實（判斷層之前的那一層）：光線傳遞、光線收集、受阻的入相位（臨陣退縮／插隊／撲空）、包夾、本命的居上（[natalOvercomings]）、
-   * 不相見、受剋與受扶、持矛者、映點（後四種只在這份 context 有對應的 Impl 時）。
+   * 不相見、受剋與受扶、持矛者、映點、灼傷（後五種只在這份 context 有對應的 Impl 時）。
    * 判準與本 context 的格局相同（同一組 Impl、同一份 [OutcomeOptions]）。成形的入相位不列 —— 那就是一般的入相位
    */
   fun classicalFacts(h: IHoroscopeModel): List<ClassicalFact> =
@@ -57,7 +59,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       aversions(h) +
       maltreatmentImpl?.getResults(h).orEmpty() +
       doryphoriaImpl?.getResults(h, sectOf(h)).orEmpty() +
-      antisciaImpl?.getResults(h).orEmpty()
+      antisciaImpl?.getResults(h).orEmpty() +
+      combustionImpl?.getResults(h).orEmpty()
 
   /** 盤的日夜：呼叫端給的（[ClassicalInput.sect]）優先，否則以盤面時刻現算 */
   private fun sectOf(h: IHoroscopeModel): DayNight = (h as? ClassicalInput)?.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
@@ -387,13 +390,14 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       }
   }
 
+  /** 日心／灼傷／光束下的判法（prompt 的三個判斷共用；門檻只在 [CombustionOptions]） */
+  private val combustionJudge: ICombustion = combustionImpl ?: CombustionImpl(CombustionOptions.LILLY)
+
   /**
-   * Cazimi (within 17 minutes of the Sun).
+   * Cazimi（日心，預設 17 角分內，見 [CombustionOptions]）
    * */
   val cazimi = IPlanetPatternFactory.single { planet, h ->
-    planet.takeIf { it !== SUN }
-      ?.takeIf { h.getAngle(it, SUN) < 17.0 / 60.0 }
-      ?.let { AccidentalDignity.Cazimi(planet) }
+    combustionJudge.getCombustion(h, planet)?.takeIf { it.zone == Combustion.Zone.CAZIMI }?.let { AccidentalDignity.Cazimi(planet) }
   }
 
   /**
@@ -750,21 +754,17 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   }
 
   /**
-   * Combust the Sun (between 17' and 8.5 from Sol).
+   * Combust the Sun（灼傷，預設 17 角分到 8.5° 之間，見 [CombustionOptions]）
    */
   val combustion = IPlanetPatternFactory.single { planet, h ->
-    planet.takeIf { it !== SUN }
-      ?.takeIf { h.getAngle(planet, SUN) > 17.0 / 60.0 && h.getAngle(planet, SUN) <= 8.5 }
-      ?.let { Debility.Combustion(planet) }
+    combustionJudge.getCombustion(h, planet)?.takeIf { it.zone == Combustion.Zone.COMBUST }?.let { Debility.Combustion(planet) }
   }
 
   /**
-   * Under the Sunbeams (between 8.5 and 17 from Sol).
+   * Under the Sunbeams（光束下，預設 8.5° 到 17° 之間，見 [CombustionOptions]）
    */
   val sunbeam = IPlanetPatternFactory.single { planet, h ->
-    planet.takeIf { it !== SUN }
-      ?.takeIf { h.getAngle(it, SUN) > 8.5 && h.getAngle(it, SUN) <= 17.0 }
-      ?.let { Debility.Sunbeam(planet) }
+    combustionJudge.getCombustion(h, planet)?.takeIf { it.zone == Combustion.Zone.UNDER_BEAMS }?.let { Debility.Sunbeam(planet) }
   }
 
   val partileConjMarsSaturn = IPlanetPatternFactory { planet, h ->
