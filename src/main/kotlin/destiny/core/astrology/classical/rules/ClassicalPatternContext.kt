@@ -37,12 +37,15 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val doryphoriaImpl: IDoryphoria? = null,
                               /** 映點（[antiscion]）；null ＝ 這份 context 不判 */
                               private val antisciaImpl: IAntiscia? = null,
-                              /** 不相見；null ＝ 用預設（[AversionSignImpl]、[AversionOptions.DEFAULT]）—— 本命、卜卦都判 */
-                              aversionImpl: IAversion? = null,
+                              /** 不相見（[averse]）；null ＝ 這份 context 不判 */
+                              private val aversionImpl: IAversion? = null,
+                              /** 本命居上收哪幾種（[natalOvercomings]）；只在有 [overcomingImpl] 時有作用 */
+                              private val natalOvercomingOptions: NatalOvercomingOptions = NatalOvercomingOptions.DEFAULT,
 ) {
 
   /**
-   * 全盤的古典事實（判斷層之前的那一層）：光線傳遞、光線收集、受阻的入相位（臨陣退縮／插隊／撲空）、包夾、本命的居上（[natalOvercomings]）。
+   * 全盤的古典事實（判斷層之前的那一層）：光線傳遞、光線收集、受阻的入相位（臨陣退縮／插隊／撲空）、包夾、本命的居上（[natalOvercomings]）、
+   * 不相見、受剋與受扶、持矛者、映點（後四種只在這份 context 有對應的 Impl 時）。
    * 判準與本 context 的格局相同（同一組 Impl、同一份 [OutcomeOptions]）。成形的入相位不列 —— 那就是一般的入相位
    */
   fun classicalFacts(h: IHoroscopeModel): List<ClassicalFact> =
@@ -59,27 +62,23 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /** 盤的日夜：呼叫端給的（[ClassicalInput.sect]）優先，否則以盤面時刻現算 */
   private fun sectOf(h: IHoroscopeModel): DayNight = (h as? ClassicalInput)?.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
 
-  /** 不相見（[IAversion]；預設以星座計、行星與入廟主、命主星與上升，見 [AversionOptions.DEFAULT]） */
-  fun aversions(h: IHoroscopeModel): List<Aversion> = aversion.getResults(h)
-
-  private val aversion: IAversion = aversionImpl ?: AversionSignImpl(rulerImpl, exaltImpl)
+  /** 不相見（[IAversion]）；這份 context 沒有 [aversionImpl] 時為空 */
+  fun aversions(h: IHoroscopeModel): List<Aversion> = aversionImpl?.getResults(h).orEmpty()
 
   /**
-   * 本命看的居上（以星座計，[OvercomingSignImpl]）：只收古典在本命真正讀的那幾種，不列全部兩兩配對（幾乎每對星都有星座關係）。
-   *
-   * - 居上者是凶星（火土）：只收四分居上（decimation，居上者落在被壓者起算的第十個星座）—— 凶星以三分、六分居上，古典視為緩和
-   * - 居上者是吉星（金木）：六分、四分、三分都收；四分是最強的提攜
-   * - 被居上的：日、月、命主星（[ascendantRuler]）。福點等非行星的點不在此列
-   *
-   * 吉凶星依日夜盤而變的細節（得時的凶星較輕）不在這裡篩，交給判讀
+   * 本命看的居上（基準由 [overcomingImpl] 決定，本命用星座版 [OvercomingSignImpl]）：
+   * 只收 [natalOvercomingOptions] 列的那幾種（預設凶星四分、吉星六分／四分／三分居上日、月、命主星，見 [NatalOvercomingOptions]）
    */
   fun natalOvercomings(h: IHoroscopeModel): List<NatalOvercoming> {
     val impl = overcomingImpl ?: return emptyList()
+    val opts = natalOvercomingOptions
     val ascRuler = ascendantRuler(h)
-    val targets = listOfNotNull(SUN, MOON, ascRuler).distinct()
+    val targets = listOfNotNull(
+      SUN.takeIf { opts.lights }, MOON.takeIf { opts.lights }, ascRuler.takeIf { opts.ascendantRuler }
+    ).distinct()
     return targets.flatMap { target ->
       val targetDeg = h.positionMap[target]?.lngDeg ?: return@flatMap emptyList()
-      NATAL_OVERCOMING_ASPECTS.mapNotNull { (sup, aspects) ->
+      opts.superiors.mapNotNull { (sup, aspects) ->
         if (sup === target) return@mapNotNull null
         val supDeg = h.positionMap[sup]?.lngDeg ?: return@mapNotNull null
         impl.getOvercoming(sup, supDeg, target, targetDeg)
@@ -119,7 +118,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       orientalBad,
       occidentalBad,
       overcome.takeIf { overcomingImpl != null },
-      averse,
+      averse.takeIf { aversionImpl != null },
       maltreated.takeIf { maltreatmentImpl != null },
       spearBearing.takeIf { doryphoriaImpl != null },
       antiscion.takeIf { antisciaImpl != null },
@@ -1025,7 +1024,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     Maltreatment.Polarity.entries.mapNotNull { impl.getMaltreatment(h, planet, it) }.map { Misc.Maltreated(planet, it) }
   }
 
-  /** 不相見（[aversions] 的判斷層）：對不相見的那顆列一行 */
+  /** 不相見（[aversions] 的判斷層）：對不相見的那顆列一行；這份 context 沒有 [aversionImpl] 時為空 */
   val averse = IPlanetPatternFactory { planet, h ->
     aversions(h).filter { it.planet === planet }.map { Misc.Aversion(planet, it) }
   }
@@ -1079,13 +1078,5 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
   companion object {
     private val logger = KotlinLogging.logger { }
-
-    /** 本命居上：居上者 → 收哪些居上相位（[natalOvercomings]） */
-    private val NATAL_OVERCOMING_ASPECTS: List<Pair<Planet, Set<Aspect>>> = listOf(
-      MARS to setOf(SQUARE),
-      SATURN to setOf(SQUARE),
-      VENUS to setOf(SEXTILE, SQUARE, TRINE),
-      JUPITER to setOf(SEXTILE, SQUARE, TRINE),
-    )
   }
 }

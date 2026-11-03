@@ -28,6 +28,7 @@ class AversionTest {
     RulerPtolemyImpl, mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true),
     mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true),
     mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true),
+    aversionImpl = AversionSignImpl(RulerPtolemyImpl, mockk(relaxed = true)),
   )
 
   /**

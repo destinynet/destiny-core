@@ -25,24 +25,26 @@ import kotlin.math.abs
  * 本版只在當下的容許度內找，前後順序依「離成形還要／已經多久」（容許度 ÷ 兩星的相對速度）排；
  * 結果直接帶出兩邊的 [IPointAspectPattern]（相位、容許度、出入相位）
  *
- * [applicationOutcome]：給了的話，「下一個要成形的」改由入相位引擎往後追蹤判定 —— 傳遞者與它的入相位結局必須是
- * [ApplicationOutcome.Perfected]（途中被插隊、撲空、退縮，光就沒送到），取最先成形的那顆。
- * 沒給就用估算（只要盤面時刻，不需要星曆）：估算是靜態幾何，看不到傳遞者途中被別的星截走的情形
+ * 「下一個要成形的」是哪一顆，由子類別決定（[pickApplying]）：
+ * - [TranslationOfLightStaticImpl]：估算（容許度 ÷ 相對速度），只要盤面時刻，不需要星曆；看不到傳遞者途中被別的星截走的情形
+ * - [TranslationOfLightEphemerisImpl]：由入相位引擎往後追蹤，傳遞者的入相位結局必須是 [ApplicationOutcome.Perfected]
  */
-class TranslationOfLightImpl(
-  private val aspectCalculator: IAspectCalculator,
-  private val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
+abstract class AbstractTranslationOfLight(
+  protected val aspectCalculator: IAspectCalculator,
+  protected val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
   private val allowBetweenApplying: Boolean = false,
-  private val applicationOutcome: IApplicationOutcome? = null,
 ) : ITranslationOfLight {
+
+  /** 在容許度內、比傳遞者慢的一顆古典行星；[days] ＝ 離成形（入相位）或離開成形（出相位）的估算日數 ＝ 容許度 ÷ 相對速度 */
+  protected data class Contact(val other: Planet, val pattern: IPointAspectPattern, val days: Double)
+
+  /** 從入相位的 [applying] 中挑「下一個要成形的」；連帶回傳引擎追蹤到的成形（估算版為 null）。都不成立則 null */
+  protected abstract fun pickApplying(planet: Planet, h: IHoroscopeModel, applying: List<Contact>): Pair<Contact, ApplicationOutcome.Perfected?>?
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): TranslationOfLight? {
     if (planet !in Planet.classicalSet) return null
     val speedOf = { p: Planet -> h.getStarPosition(p)?.speedLng }
     val speed = speedOf(planet) ?: return null
-
-    // 在容許度內、且比傳遞者慢的古典行星；每一顆附上「離成形的時間（日）」＝ 容許度 ÷ 相對速度
-    data class Contact(val other: Planet, val pattern: IPointAspectPattern, val days: Double)
 
     val contacts = with(aspectCalculator) {
       Planet.classicalList.filter { it !== planet }.mapNotNull { other ->
@@ -55,14 +57,7 @@ class TranslationOfLightImpl(
     }
 
     val from = contacts.filter { it.pattern.aspectType == SEPARATING }.minByOrNull { it.days } ?: return null
-    val applyingContacts = contacts.filter { it.pattern.aspectType == APPLYING }
-    val (to, arrival) = if (applicationOutcome == null) {
-      (applyingContacts.minByOrNull { it.days } ?: return null) to null
-    } else {
-      applyingContacts.mapNotNull { c ->
-        (applicationOutcome.getOutcome(h, planet, c.other) as? ApplicationOutcome.Perfected)?.let { c to it }
-      }.minByOrNull { (_, perfected) -> perfected.eventDays } ?: return null
-    }
+    val (to, arrival) = pickApplying(planet, h, contacts.filter { it.pattern.aspectType == APPLYING }) ?: return null
 
     val between = with(aspectCalculator) {
       h.getAspectPattern(setOf(from.other, to.other), aspects)

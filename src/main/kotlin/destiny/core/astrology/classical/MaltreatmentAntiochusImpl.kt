@@ -13,7 +13,7 @@ import kotlin.math.abs
 /**
  * Antiochus／Porphyry 的受剋（與對應的受扶）條件：被居上、對沖、包夾、貼合、放射光線。只看盤面時刻的位置，不需要星曆。
  *
- * 居上的基準（星座或度數）由注入的 [overcomingImpl] 決定、包夾由 [besiegementImpl]；其餘細節見 [MaltreatmentOptions]。
+ * 居上的基準（星座或度數）由注入的 [overcomingImpl] 決定，必須與 [MaltreatmentOptions.overcomingBasis] 相同；包夾由 [besiegementImpl]；其餘細節見 [MaltreatmentOptions]。
  * 施予者本身不會被自己處置；包夾要兩顆施予者都不是這顆星
  */
 class MaltreatmentAntiochusImpl(
@@ -21,6 +21,12 @@ class MaltreatmentAntiochusImpl(
   private val overcomingImpl: IOvercoming = OvercomingSignImpl(),
   val options: MaltreatmentOptions = MaltreatmentOptions.BY_SIGN,
 ) : IMaltreatment {
+
+  init {
+    require(overcomingImpl.basis == options.overcomingBasis) {
+      "居上的基準不一致：options.overcomingBasis=${options.overcomingBasis}，注入的 IOvercoming 是 ${overcomingImpl.basis}"
+    }
+  }
 
   override fun getMaltreatment(h: IHoroscopeModel, planet: Planet, polarity: Maltreatment.Polarity): Maltreatment? {
     val deg = h.positionMap[planet]?.lngDeg ?: return null

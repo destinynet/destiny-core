@@ -92,5 +92,15 @@ class MaltreatmentTest {
     assertNotNull(MaltreatmentAntiochusImpl(noBesiegement, options = withOpposition).getMaltreatment(chart, MOON, Polarity.BONIFICATION))
   }
 
+  /** 選項的居上基準與注入的 [IOvercoming] 不一致時，建構就失敗（BY_DEGREE 配星座版居上，會默默以星座判） */
+  @Test
+  fun `居上基準與注入的 IOvercoming 不一致時建構失敗`() {
+    assertFailsWith<IllegalArgumentException> {
+      MaltreatmentAntiochusImpl(noBesiegement, OvercomingSignImpl(), MaltreatmentOptions.BY_DEGREE)
+    }
+    MaltreatmentAntiochusImpl(noBesiegement, OvercomingDegreeImpl(), MaltreatmentOptions.BY_DEGREE)
+    MaltreatmentAntiochusImpl(noBesiegement, OvercomingSignImpl(), MaltreatmentOptions.BY_SIGN)
+  }
+
   private fun abs1(orb: Double) = orb in 0.99..1.01
 }
