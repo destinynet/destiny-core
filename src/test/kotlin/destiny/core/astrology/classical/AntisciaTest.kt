@@ -14,6 +14,7 @@ import destiny.core.astrology.classical.rules.PatternTranslator
 import io.mockk.every
 import io.mockk.mockk
 import java.util.*
+import kotlin.random.Random
 import kotlin.test.*
 
 class AntisciaTest {
@@ -61,5 +62,56 @@ class AntisciaTest {
     assertTrue(zh.any { "太陽 與 金星 互為映點（相差 0.50°）" in it } && zh.any { "太陽 與 火星 互為反映點" in it }, zh.toString())
     val en = PatternTranslator.getDescriptor(sun.first { !it.antiscion.contra }).getDescription(Locale.ENGLISH)
     assertTrue("Sun and Venus are in antiscia (0.50° off)" in en, en)
+  }
+
+  /**
+   * 映點、反映點的數學性質（固定種子的隨機度數）：
+   * 對合（映點的映點、反映點的反映點都回到原處）、反映點 ＝ 映點的對沖點、
+   * 對稱（A 的映點與 B 的差距 ＝ B 的映點與 A 的差距 —— [AntisciaImpl] 一對星只判一次，就靠這一條）
+   */
+  @Test
+  fun `映點與反映點的性質`() {
+    val rnd = Random(20261103)
+    repeat(5000) {
+      val a = (rnd.nextDouble() * 360).toZodiacDegree()
+      val b = (rnd.nextDouble() * 360).toZodiacDegree()
+      assertEquals(0.0, a.antiscion.antiscion.getAngle(a), 1e-9, "映點對合 $a")
+      assertEquals(0.0, a.contraAntiscion.contraAntiscion.getAngle(a), 1e-9, "反映點對合 $a")
+      assertEquals(180.0, a.antiscion.getAngle(a.contraAntiscion), 1e-9, "反映點是映點的對沖點 $a")
+      assertEquals(a.antiscion.getAngle(b), b.antiscion.getAngle(a), 1e-9, "映點對稱 $a $b")
+      assertEquals(a.contraAntiscion.getAngle(b), b.contraAntiscion.getAngle(a), 1e-9, "反映點對稱 $a $b")
+    }
+  }
+
+  /**
+   * 實作層的對稱：[AntisciaOptions.points] 反過來排，找到的星對（不分前後）、種類與差距都一樣。
+   * 度數取 0.25° 的倍數（浮點精確，容許度邊界不會因誤差翻轉），並刻意把一部分星放在別顆的映點、反映點附近
+   */
+  @Test
+  fun `星的順序不影響結果`() {
+    val rnd = Random(20261103)
+    fun quarter(range: Int) = rnd.nextInt(range * 4) / 4.0
+    val points = AntisciaOptions.DEFAULT.points
+    val forward = AntisciaImpl()
+    val backward = AntisciaImpl(AntisciaOptions(points = points.reversed()))
+    var found = 0
+    repeat(1000) {
+      val lngs = mutableMapOf<AstroPoint, Double>()
+      points.forEach { p ->
+        val anchor = lngs.values.randomOrNull(rnd)
+        lngs[p] = if (anchor != null && rnd.nextBoolean()) {
+          val mirror = if (rnd.nextBoolean()) 180.0 - anchor else 360.0 - anchor
+          ((mirror + quarter(3) - 1.5) % 360 + 360) % 360
+        } else quarter(360)
+      }
+      val posMap: Map<AstroPoint, IPosWithAzimuth> = lngs.mapValues { (_, d) -> mockk<IPosWithAzimuth> { every { lngDeg } returns d.toZodiacDegree() } }
+      val chart = mockk<IHoroscopeModel> { every { positionMap } returns posMap }
+      fun IAntiscia.normalized(): Set<Triple<Set<AstroPoint>, Boolean, Double>> =
+        getResults(chart).map { Triple(setOf(it.planet, it.other), it.contra, it.orb) }.toSet()
+      val f = forward.normalized()
+      assertEquals(f, backward.normalized(), "lngs=$lngs")
+      found += f.size
+    }
+    assertTrue(found > 500, "隨機盤要有夠多的映點，測試才有意義：$found")
   }
 }

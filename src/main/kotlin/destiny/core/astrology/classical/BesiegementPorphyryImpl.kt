@@ -17,6 +17,16 @@ import destiny.tools.CircleTools.normalizeSigned
  * - 中間不能有別的星：任何第三顆古典行星的星體或光線落在被夾的星與任一側之間，包夾就破了（mesembolesis，介入）
  * - 預設不要求同星座（[BesiegementOptions.sameSign]）
  *
+ * 邊界：每一側的距離 0 < d ≤ [BesiegementOptions.maxDistance]（正好 7° 算；與被夾的星同度不算一側）；
+ * 介入要嚴格落在中間（第三顆星正好落在某一側的落點上，不算介入）。
+ *
+ * 每一側只取包夾星「最近」的落點再判介入，不會漏判：同一側上，遠落點與被夾的星之間的區間包含近落點的區間，
+ * 近的被介入、遠的必然也被介入。何況以預設判準，一顆星的星體與托勒密光線彼此至少差 30°，
+ * ±7° 的範圍內最多只有它的一個落點（要 [BesiegementOptions.maxDistance] ≥ 15° 或加次要相位才可能有兩個）。
+ *
+ * 兩種指派（e1 在前／e2 在後、反過來）都成立時取兩側距離和較小的；再平手時依 [Planet.classicalList] 的順序取 before，
+ * 結果與 enclosers 的迭代順序無關。同上，以預設判準兩種指派不會同時成立
+ *
  * 2026-10-31 取代 2017 年的舊版（依時間上前一次、後一次成形的交角判斷包夾）。舊版的問題：
  * 不看容許度、不限距離，前一次成形的相位可能是幾個月前的事
  */
@@ -61,6 +71,6 @@ class BesiegementPorphyryImpl(
           (d < 0 && -d < c.before.distance) || (d > 0 && d < c.after.distance)
         }
       }
-    }.minByOrNull { it.before.distance + it.after.distance }
+    }.minWithOrNull(compareBy<Besiegement>({ it.before.distance + it.after.distance }, { Planet.classicalList.indexOf(it.before.by) }))
   }
 }
