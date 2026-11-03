@@ -95,7 +95,7 @@ class NewClassicalSentencesTest {
 
   @Test
   fun `燃燒路`() {
-    val (zh, en, ja) = assertSentences(Misc.ViaCombusta(MOON, ViaCombusta(MOON, 200.0.toZodiacDegree())))
+    val (zh, en, ja) = assertSentences(Misc.ViaCombusta(MOON, ViaCombusta(MOON, 200.0.toZodiacDegree(), 195.0, 225.0)))
     assertTrue("月亮 在燃燒路" in zh, zh)
     assertTrue("Moon is in the via combusta" in en, en)
     assertTrue("ヴィア・コンバスタ" in ja, ja)

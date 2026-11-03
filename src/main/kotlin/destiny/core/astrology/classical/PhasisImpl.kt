@@ -101,7 +101,7 @@ class PhasisImpl(
   private fun phasis(planet: Planet, type: Phasis.Type, t: GmtJulDay, t0: GmtJulDay): Phasis {
     val deg = pos(planet, t).lng.toZodiacDegree()
     val sun = pos(Planet.SUN, t).lng.toZodiacDegree()
-    return Phasis(planet, type, t - t0, deg, deg.isOriental(sun))
+    return Phasis(planet, type, t - t0, deg, deg.isOriental(sun), beams = if (type == Phasis.Type.EMERGING || type == Phasis.Type.SINKING) options.beams else null)
   }
 
   companion object {

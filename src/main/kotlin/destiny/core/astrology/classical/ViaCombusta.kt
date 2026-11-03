@@ -9,11 +9,13 @@ import destiny.core.astrology.ZodiacDegree
 
 /**
  * 燃燒路（via combusta）：[planet]（通常只看月亮）落在天秤後半到天蠍前半這一段黃道 —— 古典視為月亮受損的地方，卜卦常見。
- * [lngDeg]：它的黃經
+ * [lngDeg]：它的黃經；[from]／[to]：判定用的區段（黃經，含起不含訖）—— 畫面照它畫，不另外寫死一份數字
  */
 data class ViaCombusta(
   val planet: Planet,
   val lngDeg: ZodiacDegree,
+  val from: Double,
+  val to: Double,
 ) : ClassicalFact
 
 /**
@@ -53,7 +55,7 @@ class ViaCombustaImpl(
   override fun getViaCombusta(h: IHoroscopeModel, planet: Planet): ViaCombusta? {
     if (planet !in options.planets) return null
     val deg = h.positionMap[planet]?.lngDeg ?: return null
-    return deg.takeIf { it.value >= options.from && it.value < options.to }?.let { ViaCombusta(planet, it) }
+    return deg.takeIf { it.value >= options.from && it.value < options.to }?.let { ViaCombusta(planet, it, options.from, options.to) }
   }
 
   override fun getResults(h: IHoroscopeModel): List<ViaCombusta> =

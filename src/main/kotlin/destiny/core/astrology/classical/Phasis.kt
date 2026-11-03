@@ -18,6 +18,7 @@ import destiny.core.astrology.ZodiacDegree
  *
  * [days]：轉折的時刻減出生時刻（日）；負數 ＝ 出生前。[lngDeg]：轉折那一刻這顆星的黃經。
  * [oriental]：轉折那一刻在太陽的東方（先於太陽升起，晨星）為 true，西方（昏星）為 false。
+ * [beams]：出入光束時判定用的光束半徑（與太陽的黃經距離，度）；停滯為 null —— 畫面照它畫光束，不另外寫死一份數字
  *
  * 吉凶由判斷層依流派決定，事實本身不帶評價：希臘化只說「顯著」；中世紀（Bonatti 一系）視轉逆如病之始、轉順如病之癒
  */
@@ -27,6 +28,7 @@ data class Phasis(
   val days: Double,
   val lngDeg: ZodiacDegree,
   val oriental: Boolean,
+  val beams: Double? = null,
 ) : ClassicalFact {
   enum class Type { STATION_RETROGRADE, STATION_DIRECT, EMERGING, SINKING }
 

@@ -101,7 +101,7 @@ class FeralLunarViaCombustaTest {
   @Test
   fun `燃燒路 天秤 15 到天蠍 15`() {
     val impl = ViaCombustaImpl()
-    assertEquals(ViaCombusta(MOON, 195.0.toZodiacDegree()), impl.getViaCombusta(model(mapOf(MOON to 195.0)), MOON), "天秤 15° 含")
+    assertEquals(ViaCombusta(MOON, 195.0.toZodiacDegree(), 195.0, 225.0), impl.getViaCombusta(model(mapOf(MOON to 195.0)), MOON), "天秤 15° 含")
     assertNull(impl.getViaCombusta(model(mapOf(MOON to 225.0)), MOON), "天蠍 15° 不含")
     assertNull(impl.getViaCombusta(model(mapOf(MARS to 200.0)), MARS), "預設只判月亮")
     assertNull(ViaCombustaImpl(ViaCombustaOptions.AL_BIRUNI).getViaCombusta(model(mapOf(MOON to 196.0)), MOON), "Al-Biruni 從天秤 19° 起")
@@ -115,7 +115,7 @@ class FeralLunarViaCombustaTest {
       Phasis(MERCURY, Phasis.Type.STATION_RETROGRADE, 4.25, 231.0.toZodiacDegree(), true),
       Feral(MARS, FeralOptions.Basis.BY_ORB),
       LunarConnection(LunarConnection.Link(SATURN, Aspect.CONJUNCTION, 15.0, 1.25), LunarConnection.Link(VENUS, Aspect.TRINE, 5.0, 0.5)),
-      ViaCombusta(MOON, 200.0.toZodiacDegree()),
+      ViaCombusta(MOON, 200.0.toZodiacDegree(), 195.0, 225.0),
     )
     val kinds = facts.map { f ->
       val dto = f.toChartDto()!!.withoutTrack()
@@ -124,6 +124,11 @@ class FeralLunarViaCombustaTest {
       Json.parseToJsonElement(json).let { (it as kotlinx.serialization.json.JsonObject).getValue("kind").toString().trim('"') }
     }
     assertEquals(listOf("phasis", "feral", "lunar_connection", "via_combusta"), kinds)
+    // 畫面要的界線由 core 給：出入光束帶光束半徑、停滯不帶；燃燒路帶起訖
+    val emerging = Phasis(VENUS, Phasis.Type.EMERGING, 1.0, 10.0.toZodiacDegree(), true, beams = 15.0).toChartDto() as HoroscopePhasisDto
+    assertEquals(15.0, emerging.beams)
+    assertEquals(null, (facts[0].toChartDto() as HoroscopePhasisDto).beams)
+    assertEquals(195.0 to 225.0, (facts[3].toChartDto() as HoroscopeViaCombustaDto).let { it.from to it.to })
     assertEquals(listOf(Planet.MOON, Planet.SATURN, Planet.VENUS), facts[2].toChartDto()!!.members)
   }
 }

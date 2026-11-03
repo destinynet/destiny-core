@@ -584,7 +584,7 @@ data class HoroscopeHayzDto(
 
 /**
  * 顯現（[destiny.core.astrology.classical.Phasis]）：[planet] 在出生前後 [days] 天（負數 ＝ 出生前）有一次 [type] 的轉折，
- * 那一刻在黃經 [lng]，位於太陽東方（晨星）為 [oriental]
+ * 那一刻在黃經 [lng]，位於太陽東方（晨星）為 [oriental]；[beams]：出入光束時的光束半徑（度），停滯為 null
  */
 @Serializable
 @SerialName("phasis")
@@ -596,6 +596,8 @@ data class HoroscopePhasisDto(
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val lng: Double,
   val oriental: Boolean,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val beams: Double? = null,
 ) : HoroscopeClassicalFactDto {
   override val members: List<AstroPoint> get() = listOf(planet)
 }
@@ -632,13 +634,17 @@ data class HoroscopeLunarConnectionDto(
   override val members: List<AstroPoint> get() = listOf(Planet.MOON) + listOfNotNull(separating?.planet, applying?.planet)
 }
 
-/** 燃燒路（[destiny.core.astrology.classical.ViaCombusta]）：[planet] 在黃經 [lng]，落在天秤後半到天蠍前半那一段 */
+/** 燃燒路（[destiny.core.astrology.classical.ViaCombusta]）：[planet] 在黃經 [lng]，落在 [from]（含）到 [to]（不含）那一段（天秤後半到天蠍前半） */
 @Serializable
 @SerialName("via_combusta")
 data class HoroscopeViaCombustaDto(
   val planet: AstroPoint,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val lng: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val from: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val to: Double,
 ) : HoroscopeClassicalFactDto {
   override val members: List<AstroPoint> get() = listOf(planet)
 }
@@ -844,13 +850,13 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
 
   is destiny.core.astrology.classical.Combustion -> HoroscopeCombustionDto(planet, zone, distance, approaching, limits.cazimi, limits.combust, limits.underBeams)
 
-  is destiny.core.astrology.classical.Phasis -> HoroscopePhasisDto(planet, type, days, lngDeg.value, oriental)
+  is destiny.core.astrology.classical.Phasis -> HoroscopePhasisDto(planet, type, days, lngDeg.value, oriental, beams)
 
   is destiny.core.astrology.classical.Feral -> HoroscopeFeralDto(planet, basis)
 
   is destiny.core.astrology.classical.LunarConnection -> HoroscopeLunarConnectionDto(separating?.toChartDto(), applying?.toChartDto())
 
-  is destiny.core.astrology.classical.ViaCombusta -> HoroscopeViaCombustaDto(planet, lngDeg.value)
+  is destiny.core.astrology.classical.ViaCombusta -> HoroscopeViaCombustaDto(planet, lngDeg.value, from, to)
 
   is destiny.core.astrology.classical.Maltreatment -> {
     val list = conditions.map { it.toChartDto() }
