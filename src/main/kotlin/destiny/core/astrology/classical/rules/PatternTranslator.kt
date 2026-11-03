@@ -13,7 +13,6 @@ import destiny.tools.AbstractPropertyBasedPatternDescriptor
 import destiny.tools.ILocaleString
 import destiny.tools.Lang
 import destiny.tools.getTitle
-import destiny.tools.JSerializable
 import java.util.*
 
 
@@ -27,22 +26,22 @@ abstract class AbstractPlanetPatternDescriptor<out T : IPlanetPattern>(pattern: 
 
 
 class EssentialDignityDescriptor(rule: EssentialDignity, key: String, parameters: List<Any>) :
-  AbstractPlanetPatternDescriptor<EssentialDignity>(rule, key, parameters), JSerializable {
+  AbstractPlanetPatternDescriptor<EssentialDignity>(rule, key, parameters) {
   override val resource: String = "destiny.core.astrology.classical.rules.EssentialDignities"
 }
 
 class AccidentalDignityDescriptor(rule: AccidentalDignity, key: String, parameters: List<Any>) :
-  AbstractPlanetPatternDescriptor<AccidentalDignity>(rule, key, parameters), JSerializable {
+  AbstractPlanetPatternDescriptor<AccidentalDignity>(rule, key, parameters) {
   override val resource: String = "destiny.core.astrology.classical.rules.AccidentalDignities"
 }
 
 class DebilityDescriptor(rule: Debility, key: String, parameters: List<Any>) : AbstractPlanetPatternDescriptor<Debility>(
-  rule, key, parameters) , JSerializable {
+  rule, key, parameters) {
   override val resource: String = "destiny.core.astrology.classical.rules.Debilities"
 }
 
 class MiscDescriptor(rule: Misc, key: String, parameters: List<Any>) : AbstractPlanetPatternDescriptor<Misc>(
-  rule, key, parameters) , JSerializable {
+  rule, key, parameters) {
   override val resource: String = "destiny.core.astrology.classical.rules.Misc"
 }
 
@@ -174,6 +173,34 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
           }
           MiscDescriptor(pattern, key, listOf(a.planet, a.from, SignPlace(a.place)))
         }
+        is Misc.Phasis -> {
+          val f = pattern.phasis
+          val key = when (f.type) {
+            destiny.core.astrology.classical.Phasis.Type.STATION_RETROGRADE -> "commentStationRetrograde"
+            destiny.core.astrology.classical.Phasis.Type.STATION_DIRECT     -> "commentStationDirect"
+            destiny.core.astrology.classical.Phasis.Type.EMERGING           -> "commentEmerging"
+            destiny.core.astrology.classical.Phasis.Type.SINKING            -> "commentSinking"
+          }
+          MiscDescriptor(pattern, key, listOf(f.planet, FromBirth(f.days), MorningEvening(f.oriental)))
+        }
+        is Misc.Feral -> MiscDescriptor(pattern,
+          if (pattern.feral.basis == destiny.core.astrology.classical.FeralOptions.Basis.BY_SIGN) "commentBySign" else "commentByOrb",
+          listOf(pattern.planet))
+        is Misc.LunarConnection -> {
+          val sep = pattern.connection.separating
+          val app = pattern.connection.applying
+          val key = when {
+            sep != null && app != null -> "comment"
+            sep != null                -> "commentSeparating"
+            else                       -> "commentApplying"
+          }
+          // 句子依 key 只用到其中一端的三個參數；另一端缺時以空字串佔位，位置不變
+          MiscDescriptor(pattern, key, listOf(
+            sep?.planet ?: "", sep?.aspect?.let(::AspectWord) ?: "", sep?.let { LinkWhen(it.days, past = true) } ?: "",
+            app?.planet ?: "", app?.aspect?.let(::AspectWord) ?: "", app?.let { LinkWhen(it.days, past = false) } ?: "",
+          ))
+        }
+        is Misc.ViaCombusta -> MiscDescriptor(pattern, "comment", listOf(pattern.planet))
         // 空亡是時間區段，沒有 Misc.properties 的句子，刻意不翻譯
         is Misc.VoidCourseSpan ->
           throw IllegalArgumentException("No description for : $pattern")
@@ -304,5 +331,47 @@ internal class OvercomingClause private constructor(
       n % 10 == 3 -> "rd"
       else -> "th"
     }
+  }
+}
+
+/** 顯現的時間：出生前／後幾天（一位小數）；不到 0.05 天算出生當下 */
+internal class FromBirth(private val days: Double) : ILocaleString {
+  override fun getTitle(lang: Lang): String {
+    val d = "%.1f".format(kotlin.math.abs(days))
+    val now = kotlin.math.abs(days) < 0.05
+    return when (lang.language) {
+      "en" -> if (now) "at birth" else if (days < 0) "$d days before birth" else "$d days after birth"
+      "ja" -> if (now) "出生時" else if (days < 0) "出生の${d}日前" else "出生の${d}日後"
+      else -> if (now) "出生當下" else if (days < 0) "出生前 $d 天" else "出生後 $d 天"
+    }
+  }
+}
+
+/** 出入光束那一刻在太陽哪一側：東方是晨星（先於太陽升起），西方是昏星 */
+internal class MorningEvening(private val oriental: Boolean) : ILocaleString {
+  override fun getTitle(lang: Lang): String = when (lang.language) {
+    "en" -> if (oriental) "as a morning star" else "as an evening star"
+    "ja" -> if (oriental) "明けの星" else "宵の星"
+    else -> if (oriental) "晨星，在太陽東方" else "昏星，在太陽西方"
+  }
+}
+
+/** 月亮離合的時間：幾天前離開、幾天後成形（一位小數） */
+internal class LinkWhen(private val days: Double, private val past: Boolean) : ILocaleString {
+  override fun getTitle(lang: Lang): String {
+    val d = "%.1f".format(days)
+    return when (lang.language) {
+      "en" -> if (past) "$d days ago" else "in $d days"
+      "ja" -> if (past) "${d}日前" else "${d}日後"
+      else -> if (past) "$d 天前" else "$d 天後"
+    }
+  }
+}
+
+/** 句中的相位名稱：英文連冠詞一起、小寫（a trine、an opposition），其餘語系照相位的名稱 */
+internal class AspectWord(private val aspect: destiny.core.astrology.Aspect) : ILocaleString {
+  override fun getTitle(lang: Lang): String = aspect.getTitle(lang).let { t ->
+    if (lang.language != "en") t
+    else t.lowercase().let { w -> (if (w.first() in "aeiou") "an " else "a ") + w }
   }
 }

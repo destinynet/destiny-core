@@ -147,6 +147,10 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       maltreated.takeIf { maltreatmentImpl != null },
       spearBearing.takeIf { doryphoriaImpl != null },
       antiscion.takeIf { antisciaImpl != null },
+      phasis.takeIf { phasisImpl != null },
+      feral.takeIf { feralImpl != null },
+      lunarConnection.takeIf { lunarConnectionImpl != null },
+      viaCombusta.takeIf { viaCombustaImpl != null },
     )
   }
 
@@ -1030,6 +1034,26 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   /** 映點（[IAntiscia] 的判斷層）：一對星一行，掛在 [Antiscion.planet] 上；這份 context 沒有 [antisciaImpl] 時為空 */
   val antiscion = IPlanetPatternFactory { planet, h ->
     antisciaImpl?.getResults(h).orEmpty().filter { it.planet === planet }.map { Misc.InAntiscia(planet, it) }
+  }
+
+  /** 顯現（[IPhasis] 的判斷層）：一次轉折一行；這份 context 沒有 [phasisImpl] 時為空 */
+  val phasis = IPlanetPatternFactory { planet, h ->
+    phasisImpl?.getPhases(h, planet).orEmpty().map { Misc.Phasis(planet, it) }
+  }
+
+  /** 野生（[IFeral] 的判斷層）；這份 context 沒有 [feralImpl] 時為空 */
+  val feral = IPlanetPatternFactory.single { planet, h ->
+    feralImpl?.getFeral(h, planet)?.let { Misc.Feral(planet, it) }
+  }
+
+  /** 月亮的離與合（[ILunarConnection] 的判斷層）：只掛在月亮上；這份 context 沒有 [lunarConnectionImpl] 時為空 */
+  val lunarConnection = IPlanetPatternFactory.single { planet, h ->
+    planet.takeIf { it === MOON }?.let { lunarConnectionImpl?.getConnection(h) }?.let { Misc.LunarConnection(planet, it) }
+  }
+
+  /** 燃燒路（[IViaCombusta] 的判斷層）；這份 context 沒有 [viaCombustaImpl] 時為空 */
+  val viaCombusta = IPlanetPatternFactory.single { planet, h ->
+    viaCombustaImpl?.getViaCombusta(h, planet)?.let { Misc.ViaCombusta(planet, it) }
   }
 
   /** 持矛者（[IDoryphoria] 的判斷層）：每個光體一行，列出它的全部持矛者；這份 context 沒有 [doryphoriaImpl] 時為空 */

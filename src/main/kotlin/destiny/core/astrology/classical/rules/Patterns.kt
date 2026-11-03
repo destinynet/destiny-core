@@ -241,6 +241,21 @@ sealed class Misc : IPlanetPattern {
   /** [planet] 與另一顆星互為映點或反映點（[destiny.core.astrology.classical.Antiscion]）。屬 [RuleType.MISC]，不計分 */
   data class InAntiscia(override val planet: Planet, val antiscion: destiny.core.astrology.classical.Antiscion) : Misc()
 
+  /**
+   * 顯現（[destiny.core.astrology.classical.Phasis]）：[planet] 在出生前後不久停滯，或出入太陽光束。屬 [RuleType.MISC]，不計分 ——
+   * 希臘化只說主題顯著；中世紀對轉逆、轉順的吉凶另有說法，句子照預設流派（希臘化）寫
+   */
+  data class Phasis(override val planet: Planet, val phasis: destiny.core.astrology.classical.Phasis) : Misc()
+
+  /** 野生（[destiny.core.astrology.classical.Feral]）：[planet] 與其餘古典行星都沒有相位。屬 [RuleType.MISC]，不計分 */
+  data class Feral(override val planet: Planet, val feral: destiny.core.astrology.classical.Feral) : Misc()
+
+  /** 月亮的離與合（[destiny.core.astrology.classical.LunarConnection]）：[planet] 一律是月亮。屬 [RuleType.MISC]，不計分 */
+  data class LunarConnection(override val planet: Planet, val connection: destiny.core.astrology.classical.LunarConnection) : Misc()
+
+  /** 燃燒路（[destiny.core.astrology.classical.ViaCombusta]）：[planet]（通常是月亮）在天秤後半到天蠍前半。屬 [RuleType.MISC]，不計分 */
+  data class ViaCombusta(override val planet: Planet, val viaCombusta: destiny.core.astrology.classical.ViaCombusta) : Misc()
+
   /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [exactAspectPrior] , 後一個準確交角資訊為 [exactAspectAfter]
    * */
   @Serializable
@@ -304,6 +319,9 @@ val IPlanetPattern.participants: Set<AstroPoint>
     is Misc.Maltreated                           -> maltreatment.sources
     is Misc.SpearBearing                         -> bearers.map { it.bearer }.toSet()
     is Misc.InAntiscia                           -> setOf(antiscion.other)
+    // 「沒有任何相位」要看每一顆古典行星的位置：任何一顆不可信（只知日期時的月亮），這個判斷就不成立
+    is Misc.Feral                                -> Planet.classicalSet
+    is Misc.LunarConnection                      -> setOfNotNull(connection.separating?.planet, connection.applying?.planet)
     else                                         -> emptySet()
   }
 
