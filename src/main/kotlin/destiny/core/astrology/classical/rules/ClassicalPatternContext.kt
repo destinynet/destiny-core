@@ -41,13 +41,15 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val aversionImpl: IAversion? = null,
                               /** 灼傷（[ICombustion]）：古典事實列不列由它決定（null ＝ 不列）；prompt 的日心／灼傷／光束下判斷一律用它，null 時用 [CombustionOptions.LILLY] */
                               private val combustionImpl: ICombustion? = null,
+                              /** 區分與得時（[ISect]）：古典事實列不列由它決定（null ＝ 不列）。prompt 的得時（[hayz]）尚未改用它，仍是舊判法 */
+                              private val sectImpl: ISect? = null,
                               /** 本命居上收哪幾種（[natalOvercomings]）；只在有 [overcomingImpl] 時有作用 */
                               private val natalOvercomingOptions: NatalOvercomingOptions = NatalOvercomingOptions.DEFAULT,
 ) {
 
   /**
    * 全盤的古典事實（判斷層之前的那一層）：光線傳遞、光線收集、受阻的入相位（臨陣退縮／插隊／撲空）、包夾、本命的居上（[natalOvercomings]）、
-   * 不相見、受剋與受扶、持矛者、映點、灼傷（後五種只在這份 context 有對應的 Impl 時）。
+   * 不相見、受剋與受扶、持矛者、映點、灼傷、區分與得時（後六種只在這份 context 有對應的 Impl 時）。
    * 判準與本 context 的格局相同（同一組 Impl、同一份 [OutcomeOptions]）。成形的入相位不列 —— 那就是一般的入相位
    */
   fun classicalFacts(h: IHoroscopeModel): List<ClassicalFact> =
@@ -60,7 +62,15 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       maltreatmentImpl?.getResults(h).orEmpty() +
       doryphoriaImpl?.getResults(h, sectOf(h)).orEmpty() +
       antisciaImpl?.getResults(h).orEmpty() +
-      combustionImpl?.getResults(h).orEmpty()
+      combustionImpl?.getResults(h).orEmpty() +
+      sectFacts(h)
+
+  /** 區分（一筆）與得時；這份 context 沒有 [sectImpl] 時為空 */
+  private fun sectFacts(h: IHoroscopeModel): List<ClassicalFact> {
+    val impl = sectImpl ?: return emptyList()
+    val sect = sectOf(h)
+    return listOfNotNull(impl.getSect(h, sect)) + impl.getHayzResults(h, sect)
+  }
 
   /** 盤的日夜：呼叫端給的（[ClassicalInput.sect]）優先，否則以盤面時刻現算 */
   private fun sectOf(h: IHoroscopeModel): DayNight = (h as? ClassicalInput)?.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)

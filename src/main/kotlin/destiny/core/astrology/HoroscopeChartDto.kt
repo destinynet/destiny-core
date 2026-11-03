@@ -78,6 +78,10 @@ data class HoroscopePointDto(
   @OptIn(ExperimentalSerializationApi::class)
   @EncodeDefault(EncodeDefault.Mode.NEVER)
   val dignities: List<Dignity> = emptyList(),
+  /** [dignities] 的顯示名（同順序；語系由 [withDignities] 的 lang 決定，例：廟、旺、三、界、面、落、陷）。空清單不輸出 */
+  @OptIn(ExperimentalSerializationApi::class)
+  @EncodeDefault(EncodeDefault.Mode.NEVER)
+  val dignityLabels: List<String> = emptyList(),
 )
 
 @Serializable
@@ -532,6 +536,41 @@ data class HoroscopeCombustionDto(
   override val members: List<String> get() = listOf(planet, Planet.SUN.nameKey)
 }
 
+/**
+ * 區分（[destiny.core.astrology.classical.Sect]）：盤的日夜 [sect]、區分光體 [light]、同隊 [inSect]／異隊 [contrary]（含光體；水星依東出西入歸隊），
+ * 同區分的吉星 [beneficOfSect]、異區分的凶星 [maleficContrary]。一張盤至多一筆，盤的日夜不明時不出現
+ */
+@Serializable
+@SerialName("sect")
+data class HoroscopeSectDto(
+  val sect: DayNight,
+  val light: String,
+  val inSect: List<String>,
+  val contrary: List<String>,
+  val beneficOfSect: String,
+  val maleficContrary: String,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = inSect + contrary
+}
+
+/**
+ * 得時（[destiny.core.astrology.classical.Hayz]）：[planet] 的晝夜歸屬 [planetSect]、在地平線上（[aboveHorizon]，以上升點黃經判）、
+ * 所在星座的陰陽（[masculineSign]）三者都合宜。[chartSect]：盤的日夜；[wantMasculine]：這顆星要的陰陽
+ */
+@Serializable
+@SerialName("hayz")
+data class HoroscopeHayzDto(
+  val planet: String,
+  val chartSect: DayNight,
+  val planetSect: DayNight,
+  val aboveHorizon: Boolean,
+  val sign: ZodiacSign,
+  val masculineSign: Boolean,
+  val wantMasculine: Boolean,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(planet)
+}
+
 /** 受剋／受扶的一條條件；JSON 以 `type` 區分 */
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -599,7 +638,7 @@ data class HoroscopeChartDto(
   val patterns: List<HoroscopePatternDto> = emptyList(),
   /** 有焦點星的中點；三顆都在 [points] 內 */
   val midpoints: List<HoroscopeMidpointDto> = emptyList(),
-  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上、不相見、受剋、受扶、持矛者、映點、灼傷）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
+  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上、不相見、受剋、受扶、持矛者、映點、灼傷、區分、得時）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
   val classicalFacts: List<HoroscopeClassicalFactDto> = emptyList(),
   /** 各行星離開所在星座前的入相位（依 planet、再依 degrees 排序）；兩端都在 [points] 內，不含 LOT */
   val applications: List<HoroscopeApplicationDto> = emptyList(),
@@ -640,17 +679,19 @@ fun HoroscopeChartDto.withReceptions(
 /**
  * 附上七顆古典行星的本質尊貴（[HoroscopePointDto.dignities]）。判準由 [essential] 決定（本命用的那一份：托勒密的廟旺落陷、三分性、界、面）；
  * [positions] 是各點的黃道位置（界、面要看度數）；三分性要看日夜，取 [sect]（預設 [HoroscopeMetaDto.sect]）。
- * 兩者都沒有時，只有日夜同一顆主星的三分性才算（見 [destiny.core.astrology.classical.IEssential.getDignities]）
+ * 兩者都沒有時，只有日夜同一顆主星的三分性才算（見 [destiny.core.astrology.classical.IEssential.getDignities]）。[lang] 決定 [HoroscopePointDto.dignityLabels] 的語系
  */
 fun HoroscopeChartDto.withDignities(
   essential: destiny.core.astrology.classical.IEssential,
   positions: Map<AstroPoint, ZodiacDegree>,
   sect: DayNight? = meta.sect,
+  lang: Lang = ZH,
 ): HoroscopeChartDto {
   val degrees: Map<AstroPoint, Double> = positions.mapValues { (_, d) -> d.value }
   return copy(points = points.map { p ->
     val planet = Planet.classicalList.firstOrNull { it.nameKey == p.point } ?: return@map p
-    p.copy(dignities = with(essential) { planet.getDignities(degrees, sect) })
+    val dignities = with(essential) { planet.getDignities(degrees, sect) }
+    p.copy(dignities = dignities, dignityLabels = dignities.map { it.dignityToString(lang) })
   })
 }
 
@@ -725,6 +766,10 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
 
   is destiny.core.astrology.classical.Doryphoria -> HoroscopeDoryphoriaDto(light.nameKey, bearer.nameKey, distance, preceding, inSect)
 
+  is destiny.core.astrology.classical.Sect -> HoroscopeSectDto(sect, light.nameKey, inSect.map { it.nameKey }, contrary.map { it.nameKey }, beneficOfSect.nameKey, maleficContrary.nameKey)
+
+  is destiny.core.astrology.classical.Hayz -> HoroscopeHayzDto(planet.nameKey, chartSect, planetSect, aboveHorizon, sign, masculineSign, wantMasculine)
+
   is destiny.core.astrology.classical.Combustion -> HoroscopeCombustionDto(planet.nameKey, zone, distance, approaching, limits.cazimi, limits.combust, limits.underBeams)
 
   is destiny.core.astrology.classical.Maltreatment -> {
@@ -762,7 +807,8 @@ fun HoroscopeClassicalFactDto.withoutTrack(): HoroscopeClassicalFactDto = when (
   is HoroscopeProhibitionDto -> copy(track = emptyList())
   is HoroscopeFrustrationDto -> copy(track = emptyList())
   is HoroscopeTranslationDto, is HoroscopeCollectionDto, is HoroscopeBesiegementDto, is HoroscopeOvercomingDto, is HoroscopeAversionDto,
-  is HoroscopeMaltreatmentDto, is HoroscopeBonificationDto, is HoroscopeDoryphoriaDto, is HoroscopeAntisciaDto, is HoroscopeCombustionDto -> this
+  is HoroscopeMaltreatmentDto, is HoroscopeBonificationDto, is HoroscopeDoryphoriaDto, is HoroscopeAntisciaDto, is HoroscopeCombustionDto,
+  is HoroscopeSectDto, is HoroscopeHayzDto -> this
 }
 
 /** 格局可能用到的相位；組合格局（雙 T、六芒星、回力鏢）另外併入組成部分的邊 */
