@@ -33,10 +33,10 @@ class HoroscopeChartDtoTest {
   fun points_carryAbsoluteDegreeGlyphSignAndHouse() {
     val dto = fakeNatal().toHoroscopeChartDto(ChartDensity.FULL)
 
-    val sun = dto.points.single { it.point == "Planet.SUN" }
+    val sun = dto.points.single { it.point == Planet.SUN }
     assertEquals(10.0, sun.zDeg)
     assertEquals("☉", sun.glyph)
-    assertEquals("ARIES", sun.sign)
+    assertEquals(ZodiacSign.ARIES, sun.sign)
     assertEquals(10.0, sun.signDegree)
     assertEquals(1, sun.house)
     assertEquals(false, sun.retrograde)
@@ -49,13 +49,13 @@ class HoroscopeChartDtoTest {
       Planet.VENUS to starAt(50.0, house = 2).copy(declination = 24.123, retrogradePhase = RetrogradePhase.PREPARING),
     )).toHoroscopeChartDto(ChartDensity.FULL)
 
-    val sun = dto.points.single { it.point == "Planet.SUN" }
+    val sun = dto.points.single { it.point == Planet.SUN }
     assertEquals("日", sun.abbr)
     assertEquals("Su", sun.abbrEn)
     assertEquals(null, sun.declination)
     assertEquals(null, sun.retrogradePhase)
 
-    val venus = dto.points.single { it.point == "Planet.VENUS" }
+    val venus = dto.points.single { it.point == Planet.VENUS }
     assertEquals(24.123, venus.declination)
     assertEquals(RetrogradePhase.PREPARING, venus.retrogradePhase)
   }
@@ -64,7 +64,7 @@ class HoroscopeChartDtoTest {
   fun retrogradePoint_flagged() {
     val dto = fakeNatal().toHoroscopeChartDto(ChartDensity.FULL)
 
-    assertEquals(true, dto.points.single { it.point == "Planet.MERCURY" }.retrograde)
+    assertEquals(true, dto.points.single { it.point == Planet.MERCURY }.retrograde)
   }
 
   @Test
@@ -108,13 +108,13 @@ class HoroscopeChartDtoTest {
       )
     ).toHoroscopeChartDto(ChartDensity.ALL)
 
-    assertEquals(0.93, dto.aspects.single { it.aspect == "CONJUNCTION" }.score, "3D 用 score 決定線寬")
+    assertEquals(0.93, dto.aspects.single { it.aspect == Aspect.CONJUNCTION }.score, "3D 用 score 決定線寬")
     assertEquals(
       setOf(
         // 合相是主要相位 → 畫粗線
-        AspectRow("Planet.SUN", "Planet.MERCURY", "CONJUNCTION", 0.0, 1.2, true),
+        AspectRow(Planet.SUN, Planet.MERCURY, Aspect.CONJUNCTION, 0.0, 1.2, true),
         // 十二分相不是 → 細線
-        AspectRow("Planet.SUN", "Planet.MARS", "SEMISEXTILE", 30.0, 0.4, false),
+        AspectRow(Planet.SUN, Planet.MARS, Aspect.SEMISEXTILE, 30.0, 0.4, false),
       ),
       dto.aspects.map { AspectRow(it.from, it.to, it.aspect, it.angle, it.orb, it.major) }.toSet()
     )
@@ -133,11 +133,11 @@ class HoroscopeChartDtoTest {
       )
     )
 
-    assertEquals(listOf("CONJUNCTION"), natal.toHoroscopeChartDto(ChartDensity.COMPACT).aspects.map { it.aspect })
+    assertEquals(listOf(Aspect.CONJUNCTION), natal.toHoroscopeChartDto(ChartDensity.COMPACT).aspects.map { it.aspect })
     assertEquals(listOf("☌"), natal.toHoroscopeChartDto(ChartDensity.COMPACT).aspects.map { it.glyph }, "符號由 core 給，renderer 不另維護表")
-    assertEquals(listOf("CONJUNCTION"), natal.toHoroscopeChartDto(ChartDensity.FULL).aspects.map { it.aspect })
+    assertEquals(listOf(Aspect.CONJUNCTION), natal.toHoroscopeChartDto(ChartDensity.FULL).aspects.map { it.aspect })
     assertEquals(
-      setOf("CONJUNCTION", "SEMISEXTILE"),
+      setOf(Aspect.CONJUNCTION, Aspect.SEMISEXTILE),
       natal.toHoroscopeChartDto(ChartDensity.ALL).aspects.map { it.aspect }.toSet()
     )
   }
@@ -148,7 +148,7 @@ class HoroscopeChartDtoTest {
     val natal = fakeNatal(extraStars = mapOf(LunarNode.NORTH to starAt(88.0, house = 3)))
 
     assertEquals(
-      setOf("Planet.SUN", "Planet.MERCURY", "Planet.MARS"),
+      setOf(Planet.SUN, Planet.MERCURY, Planet.MARS),
       natal.toHoroscopeChartDto(ChartDensity.COMPACT).points.map { it.point }.toSet()
     )
     assertEquals(4, natal.toHoroscopeChartDto(ChartDensity.FULL).points.size)
@@ -180,8 +180,8 @@ class HoroscopeChartDtoTest {
     )
 
     val d = natal.toHoroscopeChartDto(ChartDensity.FULL).dispositors!!
-    assertEquals(listOf(listOf("Planet.VENUS", "Planet.MARS")), d.circles)
-    assertEquals(setOf(listOf("Planet.SUN", "Planet.MARS"), listOf("Planet.MERCURY", "Planet.VENUS")), d.paths.toSet())
+    assertEquals(listOf(listOf(Planet.VENUS, Planet.MARS)), d.circles)
+    assertEquals(setOf(listOf(Planet.SUN, Planet.MARS), listOf(Planet.MERCURY, Planet.VENUS)), d.paths.toSet())
     assertEquals(emptyList(), d.terminals)
   }
 
@@ -195,8 +195,8 @@ class HoroscopeChartDtoTest {
     ))
 
     val d = natal.toHoroscopeChartDto(ChartDensity.COMPACT).dispositors!!
-    assertEquals(listOf("Planet.SUN"), d.terminals)
-    assertEquals(listOf("Planet.MARS"), d.isolated)
+    assertEquals(listOf(Planet.SUN), d.terminals)
+    assertEquals(listOf(Planet.MARS), d.isolated)
   }
 
   /** 沒有算（空圖），或圖裡有星不在盤面上 —— 寧可不給，也不給一張連到空氣的圖 */
@@ -225,13 +225,13 @@ class HoroscopeChartDtoTest {
     val dto = fakeNatal(extraStars = withTSquare, patterns = listOf(tSquare)).toHoroscopeChartDto(ChartDensity.FULL)
 
     val p = dto.patterns.single()
-    assertEquals("T_SQUARE", p.type)
-    assertEquals("Planet.MOON", p.apex)
+    assertEquals(HoroscopePatternType.T_SQUARE, p.type)
+    assertEquals(Planet.MOON, p.apex)
     assertEquals(
       setOf(
-        LegRow(setOf("Planet.SUN", "Planet.JUPITER"), "OPPOSITION", 4.0),
-        LegRow(setOf("Planet.SUN", "Planet.MOON"), "SQUARE", 2.0),
-        LegRow(setOf("Planet.JUPITER", "Planet.MOON"), "SQUARE", 2.0),
+        LegRow(setOf(Planet.SUN, Planet.JUPITER), Aspect.OPPOSITION, 4.0),
+        LegRow(setOf(Planet.SUN, Planet.MOON), Aspect.SQUARE, 2.0),
+        LegRow(setOf(Planet.JUPITER, Planet.MOON), Aspect.SQUARE, 2.0),
       ),
       p.legs.map { LegRow(setOf(it.from, it.to), it.aspect, it.orb) }.toSet()
     )
@@ -245,9 +245,9 @@ class HoroscopeChartDtoTest {
     val dto = fakeNatal(extraStars = stars, patterns = listOf(AstroPattern.DoubleT(setOf(tSquare, second))))
       .toHoroscopeChartDto(ChartDensity.FULL)
 
-    val doubleT = dto.patterns.single { it.type == "DOUBLE_T" }
+    val doubleT = dto.patterns.single { it.type == HoroscopePatternType.DOUBLE_T }
     assertEquals(2, doubleT.parts.size)
-    assertTrue(doubleT.parts.all { dto.patterns[it].type == "T_SQUARE" })
+    assertTrue(doubleT.parts.all { dto.patterns[it].type == HoroscopePatternType.T_SQUARE })
     assertEquals(6, doubleT.legs.size)
   }
 
@@ -271,8 +271,8 @@ class HoroscopeChartDtoTest {
     val dto = fakeNatal(midPoints = listOf(mid)).toHoroscopeChartDto(ChartDensity.FULL)
 
     val m = dto.midpoints.single()
-    assertEquals(setOf("Planet.SUN", "Planet.MARS"), setOf(m.a, m.b))
-    assertEquals("Planet.MERCURY", m.focal)
+    assertEquals(setOf(Planet.SUN, Planet.MARS), setOf(m.a, m.b))
+    assertEquals(Planet.MERCURY, m.focal)
     assertEquals(25.0, m.zDeg)
     assertEquals(0.5, m.orb)
   }
@@ -293,9 +293,9 @@ class HoroscopeChartDtoTest {
     ).toHoroscopeChartDto(ChartDensity.FULL)
     assertEquals(3, dto.patterns.size)
 
-    val noMoon = dto.keepingPoints { it.point != "Planet.MOON" }
-    assertEquals(listOf("T_SQUARE"), noMoon.patterns.map { it.type }, "月亮那組 T 與雙 T 都拿掉")
-    assertEquals(setOf("Planet.MERCURY", "Planet.SATURN", "Planet.VENUS"), noMoon.patterns.single().points.toSet())
+    val noMoon = dto.keepingPoints { it.point != Planet.MOON }
+    assertEquals(listOf(HoroscopePatternType.T_SQUARE), noMoon.patterns.map { it.type }, "月亮那組 T 與雙 T 都拿掉")
+    assertEquals(setOf(Planet.MERCURY, Planet.SATURN, Planet.VENUS), noMoon.patterns.single().points.toSet())
     assertEquals(emptyList(), noMoon.midpoints)
     assertEquals(null, noMoon.dispositors)
 
@@ -321,7 +321,7 @@ class HoroscopeChartDtoTest {
     assertEquals("SQUARE", JsonPath.read<String>(json, "$.classicalFacts[0].after.aspect"))
     assertEquals(dto, Json.decodeFromString(HoroscopeChartDto.serializer(), json), "來回不失真")
 
-    assertEquals(emptyList(), dto.keepingPoints { it.point != "Planet.MARS" }.classicalFacts)
+    assertEquals(emptyList(), dto.keepingPoints { it.point != Planet.MARS }.classicalFacts)
   }
 
   /** 居上投影成 `kind = overcoming`；居上者、被居上者都要在盤上 */
@@ -363,11 +363,11 @@ class HoroscopeChartDtoTest {
 
   // ---- fixtures ----
 
-  private data class LegRow(val ends: Set<String>, val aspect: String, val orb: Double)
+  private data class LegRow(val ends: Set<AstroPoint>, val aspect: Aspect, val orb: Double)
 
   /** 測試用的相位投影，避免逐欄位斷言 */
   private data class AspectRow(
-    val from: String, val to: String, val aspect: String,
+    val from: AstroPoint, val to: AstroPoint, val aspect: Aspect,
     val angle: Double, val orb: Double, val major: Boolean
   )
 
@@ -396,7 +396,7 @@ class HoroscopeChartDtoTest {
     )
     val positions: Map<AstroPoint, ZodiacDegree> = mapOf(Planet.SUN to 10.0, Planet.MERCURY to 25.5, Planet.MARS to 40.0).mapValues { (_, d) -> d.toZodiacDegree() }
     val base = fakeNatal().toHoroscopeChartDto(ChartDensity.FULL)
-    fun of(dto: HoroscopeChartDto, p: Planet) = dto.points.single { it.point == p.nameKey }.dignities
+    fun of(dto: HoroscopeChartDto, p: Planet) = dto.points.single { it.point == p }.dignities
     val day = base.withDignities(essential, positions, destiny.core.DayNight.DAY)
     val night = base.withDignities(essential, positions, destiny.core.DayNight.NIGHT)
     assertEquals(listOf(Dignity.EXALTATION, Dignity.TRIPLICITY, Dignity.FACE), of(day, Planet.SUN))

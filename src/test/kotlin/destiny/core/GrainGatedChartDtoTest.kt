@@ -3,7 +3,11 @@
  */
 package destiny.core
 
+import destiny.core.Gender
+import destiny.core.astrology.Aspect
+import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.Axis
+import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.BirthDataGrain
 import destiny.core.astrology.HoroscopeAspectDto
 import destiny.core.astrology.PointKind
@@ -50,19 +54,19 @@ class GrainGatedChartDtoTest {
     }
   }
 
-  private fun point(key: String, kind: PointKind) = HoroscopePointDto(
-    point = key, label = key, glyph = null, zDeg = 10.0, sign = "ARIES", signDegree = 10.0, house = 1, retrograde = false, kind = kind)
+  private fun point(key: AstroPoint, kind: PointKind) = HoroscopePointDto(
+    point = key, label = key.nameKey, glyph = null, zDeg = 10.0, sign = ZodiacSign.ARIES, signDegree = 10.0, house = 1, retrograde = false, kind = kind)
 
-  private fun aspect(from: String, to: String) = HoroscopeAspectDto(from, to, "CONJUNCTION", 0.0, 1.0, true, null)
+  private fun aspect(from: AstroPoint, to: AstroPoint) = HoroscopeAspectDto(from, to, Aspect.CONJUNCTION, 0.0, 1.0, true, null)
 
-  private val sun = Planet.SUN.nameKey
-  private val moon = Planet.MOON.nameKey
-  private val rising = Axis.RISING.nameKey
+  private val sun = Planet.SUN
+  private val moon = Planet.MOON
+  private val rising = Axis.RISING
 
   private val horo = HoroscopeChartDto(
-    meta = HoroscopeMetaDto(gender = "F", ascDeg = 123.0, mcDeg = 33.0),
+    meta = HoroscopeMetaDto(gender = Gender.F, ascDeg = 123.0, mcDeg = 33.0),
     points = listOf(point(sun, PointKind.PLANET), point(moon, PointKind.PLANET), point(rising, PointKind.AXIS)),
-    houses = listOf(HoroscopeHouseDto(1, 123.0, "LEO", "SUN", "太陽")),
+    houses = listOf(HoroscopeHouseDto(1, 123.0, ZodiacSign.LEO, Planet.SUN, "太陽")),
     aspects = listOf(aspect(sun, moon), aspect(sun, rising)),
   )
 

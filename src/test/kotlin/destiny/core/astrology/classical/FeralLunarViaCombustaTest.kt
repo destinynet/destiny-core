@@ -124,6 +124,6 @@ class FeralLunarViaCombustaTest {
       Json.parseToJsonElement(json).let { (it as kotlinx.serialization.json.JsonObject).getValue("kind").toString().trim('"') }
     }
     assertEquals(listOf("phasis", "feral", "lunar_connection", "via_combusta"), kinds)
-    assertEquals(listOf("Planet.MOON", "Planet.SATURN", "Planet.VENUS"), facts[2].toChartDto()!!.members)
+    assertEquals(listOf(Planet.MOON, Planet.SATURN, Planet.VENUS), facts[2].toChartDto()!!.members)
   }
 }

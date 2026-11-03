@@ -65,8 +65,8 @@ class CombustionTest {
   @Test
   fun `DTO 的 kind 是 combustion`() {
     val dto = Combustion(VENUS, Combustion.Zone.COMBUST, 3.98, true, CombustionOptions.LILLY.limits).toChartDto()!!
-    assertEquals(HoroscopeCombustionDto("Planet.VENUS", Combustion.Zone.COMBUST, 3.98, true, 17.0 / 60.0, 8.5, 17.0), dto)
-    assertEquals(listOf("Planet.VENUS", "Planet.SUN"), dto.members)
+    assertEquals(HoroscopeCombustionDto(Planet.VENUS, Combustion.Zone.COMBUST, 3.98, true, 17.0 / 60.0, 8.5, 17.0), dto)
+    assertEquals(listOf(Planet.VENUS, Planet.SUN), dto.members)
     val json = Json.encodeToString(HoroscopeClassicalFactDto.serializer(), dto)
     assertTrue(""""kind":"combustion"""" in json && """"zone":"COMBUST"""" in json, json)
     // 數字照 DTO 慣例捨去到兩位小數（DoubleTwoDecimalSerializer）：日心的 17′ ＝ 0.2833… 在 JSON 裡是 0.28

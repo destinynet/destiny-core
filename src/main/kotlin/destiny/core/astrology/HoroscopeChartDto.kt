@@ -12,6 +12,10 @@
  *    且星體以 [AstroPoint] 當 map key（序列化為 nameKey），client 拿不到字形與分類。
  *    mapper 明確把 `zDeg`、`glyph`、`kind` 帶出來，renderer 才不必自維護對照表。
  *
+ * 識別欄位一律用型別（[AstroPoint]、[Aspect]、[ZodiacSign]…），JSON 照樣是 nameKey 或 enum 名稱 —— 網頁端與凍結的 JSON 不受影響
+ * （core-impl `HoroscopeChartDtoJsonCompatTest` 守著）。已翻譯的顯示文字另放 `label` 結尾的欄位，符號放 `glyph`。
+ * ⚠️ [AstroPoint] 與 [ZodiacSign] 的 `toString()` 是中文名稱：要字串 id 一律寫 `.nameKey`／`.name`，不要靠插值。
+ *
  * ⚠️ 命名規則：本檔案內**不得出現名為 `name` / `time` / `place` / `location` 的欄位**，
  * 人可讀字串一律叫 `label`。這讓「DTO 不含身分欄位」可以用欄位名精確比對來自動驗證（見對應測試）。
  *
@@ -41,8 +45,8 @@ private val ZH = Lang.ZH_TW
 
 @Serializable
 data class HoroscopePointDto(
-  /** 點位識別鍵（[AstroPoint.nameKey]，如 `Planet.SUN`） */
-  val point: String,
+  /** 點位；JSON 是 [AstroPoint.nameKey]（如 `Planet.SUN`） */
+  val point: AstroPoint,
   /** 顯示名（繁中） */
   val label: String,
   /** unicode 字形（如 ☉），無則 null —— renderer 退回顯示 [label] */
@@ -50,8 +54,8 @@ data class HoroscopePointDto(
   /** **絕對黃經 0–360**，圓盤唯一需要的座標 */
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val zDeg: Double,
-  /** 星座（[ZodiacSign] 名稱） */
-  val sign: String,
+  /** 星座；JSON 是名稱（如 `ARIES`） */
+  val sign: ZodiacSign,
   /** 星座內度數 0–30 */
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val signDegree: Double,
@@ -92,12 +96,12 @@ data class HoroscopeHouseDto(
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val cuspDeg: Double,
   /** 宮頭所在星座 */
-  val cuspSign: String,
+  val cuspSign: ZodiacSign,
   /** 宮主星（傳統七星） */
-  val ruler: String,
+  val ruler: AstroPoint,
   val rulerLabel: String,
   /** 現代的共同主星（水瓶：天王星、雙魚：海王星、天蠍：冥王星）；其他星座為 null */
-  val coRuler: String? = null,
+  val coRuler: AstroPoint? = null,
   val coRulerLabel: String? = null,
 )
 
@@ -108,9 +112,9 @@ data class HoroscopeHouseDto(
  */
 @Serializable
 data class HoroscopeApplicationDto(
-  val planet: String,
-  val to: String,
-  val aspect: String,
+  val planet: AstroPoint,
+  val to: AstroPoint,
+  val aspect: Aspect,
   val glyph: String? = null,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val degrees: Double,
@@ -119,7 +123,7 @@ data class HoroscopeApplicationDto(
 /** [planet] 照目前的行進方向，離開所在星座之前會越過第 [house] 宮的宮頭，還要走 [degrees] 度（宮頭視為不動） */
 @Serializable
 data class HoroscopeCuspIngressDto(
-  val planet: String,
+  val planet: AstroPoint,
   val house: Int,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val degrees: Double,
@@ -131,9 +135,9 @@ data class HoroscopeCuspIngressDto(
  */
 @Serializable
 data class HoroscopeReceptionDto(
-  val a: String,
+  val a: AstroPoint,
   val aIn: Dignity,
-  val b: String,
+  val b: AstroPoint,
   val bIn: Dignity,
   /** [aIn]／[bIn] 的顯示文字，語系由 [withReceptions] 的 lang 決定（繁中：廟、旺、界…；英文：Ruler、Term…） */
   val aInLabel: String,
@@ -142,11 +146,11 @@ data class HoroscopeReceptionDto(
 
 @Serializable
 data class HoroscopeAspectDto(
-  /** 兩端點的 [AstroPoint.nameKey] */
-  val from: String,
-  val to: String,
-  /** [Aspect] 名稱，如 `CONJUNCTION` */
-  val aspect: String,
+  /** 兩端點；JSON 是 [AstroPoint.nameKey] */
+  val from: AstroPoint,
+  val to: AstroPoint,
+  /** 相位；JSON 是名稱（如 `CONJUNCTION`） */
+  val aspect: Aspect,
   /** 該相位的**標準**角度（0/60/90/120/180…），非實測角 */
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val angle: Double,
@@ -166,8 +170,8 @@ data class HoroscopeAspectDto(
 
 @Serializable
 data class HoroscopeMetaDto(
-  /** M | F */
-  val gender: String,
+  /** 性別；JSON 是 `M`／`F` */
+  val gender: Gender,
   /** 上升點的絕對黃經 */
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val ascDeg: Double,
@@ -187,7 +191,7 @@ data class HoroscopeMetaDto(
 fun HoroscopeChartDto.withSect(sect: DayNight?): HoroscopeChartDto = copy(meta = meta.copy(sect = sect))
 
 /**
- * 定位星關係 —— [Graph] 的呈現層投影，星體一律是 [AstroPoint.nameKey]。只含傳統七星（[Planet.classicalList]）。
+ * 定位星關係 —— [Graph] 的呈現層投影，星體在 JSON 裡一律是 [AstroPoint.nameKey]。只含傳統七星（[Planet.classicalList]）。
  *
  * 圖已在 server 算好（[IHoroscopeModel.getGraph]）；client 只需把相鄰兩顆連成箭頭，不必重跑圖演算法。
  * 每條鏈與每個環都依**定位方向**排列：前一顆由後一顆定位（落在後一顆守護的星座）。
@@ -195,29 +199,36 @@ fun HoroscopeChartDto.withSect(sect: DayNight?): HoroscopeChartDto = copy(meta =
 @Serializable
 data class HoroscopeDispositorDto(
   /** 循環：每顆由下一顆定位，最後一顆由第一顆定位 */
-  val circles: List<List<String>>,
+  val circles: List<List<AstroPoint>>,
   /** 最長的定位鏈；終點是 [terminals] 之一，或某個 [circles] 上的星 */
-  val paths: List<List<String>>,
+  val paths: List<List<AstroPoint>>,
   /** 最終定位星：落在自己守護的星座，鏈條在此收斂 */
-  val terminals: List<String>,
+  val terminals: List<AstroPoint>,
   /** 落在自己守護的星座、但沒有其他星由它定位 */
-  val isolated: List<String>,
+  val isolated: List<AstroPoint>,
 ) {
   /** 圖上出現的每一顆星 */
-  val allPoints: List<String> get() = circles.flatten() + paths.flatten() + terminals + isolated
+  val allPoints: List<AstroPoint> get() = circles.flatten() + paths.flatten() + terminals + isolated
 }
 
 /** 格局的一條邊：兩端、相位與實際容許度（server 依兩星的黃經算好，renderer 不必自己算角距） */
 @Serializable
 data class HoroscopePatternLegDto(
-  val from: String,
-  val to: String,
-  /** [Aspect] 名稱 */
-  val aspect: String,
+  val from: AstroPoint,
+  val to: AstroPoint,
+  /** 相位；JSON 是名稱 */
+  val aspect: Aspect,
   val glyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val orb: Double,
 )
+
+/** 格局的種類（[HoroscopePatternDto.type]）；JSON 就是名稱 */
+@Serializable
+enum class HoroscopePatternType {
+  GRAND_TRINE, KITE, T_SQUARE, YOD, BOOMERANG, GOLDEN_YOD, GRAND_CROSS, DOUBLE_T, HEXAGON,
+  WEDGE, MYSTIC_RECTANGLE, PENTAGRAM, STELLIUM_SIGN, STELLIUM_HOUSE, CONFRONTATION,
+}
 
 /**
  * 格局（[AstroPattern] 的呈現層投影）。判定已在 server 做完（格局的容許度比 [HoroscopeChartDto.aspects] 寬，
@@ -229,17 +240,17 @@ data class HoroscopePatternDto(
    * GRAND_TRINE、KITE、T_SQUARE、YOD、BOOMERANG、GOLDEN_YOD、GRAND_CROSS、DOUBLE_T、HEXAGON、
    * WEDGE、MYSTIC_RECTANGLE、PENTAGRAM、STELLIUM_SIGN、STELLIUM_HOUSE、CONFRONTATION
    */
-  val type: String,
-  /** 全部成員（[AstroPoint.nameKey]） */
-  val points: List<String>,
+  val type: HoroscopePatternType,
+  /** 全部成員；JSON 是 [AstroPoint.nameKey] */
+  val points: List<AstroPoint>,
   /** 頂點：T 三角的四分點、Yod／回力鏢的頂點、黃金 Yod 的指向點、風箏的頭、楔形的調停者 */
-  val apex: String? = null,
+  val apex: AstroPoint? = null,
   /** 大三角的元素（[Element]） */
-  val element: String? = null,
+  val element: Element? = null,
   /** 大十字的三方性（[Quality]） */
-  val quality: String? = null,
+  val quality: Quality? = null,
   /** 星群的星座／宮位 */
-  val sign: String? = null,
+  val sign: ZodiacSign? = null,
   val house: Int? = null,
   val legs: List<HoroscopePatternLegDto>,
   /** 組合格局（雙 T、六芒星、回力鏢）的組成：[HoroscopeChartDto.patterns] 的索引 */
@@ -251,11 +262,11 @@ data class HoroscopePatternDto(
 /** 中點：[a]／[b] 的中點落在 [zDeg]，[focal] 就在那裡（容許度 [orb]） */
 @Serializable
 data class HoroscopeMidpointDto(
-  val a: String,
-  val b: String,
+  val a: AstroPoint,
+  val b: AstroPoint,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val zDeg: Double,
-  val focal: String,
+  val focal: AstroPoint,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val orb: Double,
 )
@@ -268,7 +279,7 @@ data class HoroscopeMidpointDto(
 @Serializable
 @JsonClassDiscriminator("kind")
 sealed interface HoroscopeClassicalFactDto {
-  val members: List<String>
+  val members: List<AstroPoint>
 }
 
 /**
@@ -279,24 +290,24 @@ sealed interface HoroscopeClassicalFactDto {
 @Serializable
 @SerialName("translation")
 data class HoroscopeTranslationDto(
-  val by: String,
-  val from: String,
-  val fromAspect: String,
+  val by: AstroPoint,
+  val from: AstroPoint,
+  val fromAspect: Aspect,
   /** [fromAspect] 的符號（[Aspect.glyph]） */
   val fromGlyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val fromOrb: Double,
-  val to: String,
-  val toAspect: String,
+  val to: AstroPoint,
+  val toAspect: Aspect,
   val toGlyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val toOrb: Double,
-  val between: String? = null,
+  val between: Aspect? = null,
   val betweenGlyph: String? = null,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val arrivalDays: Double? = null,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(by, from, to)
+  override val members: List<AstroPoint> get() = listOf(by, from, to)
 }
 
 /**
@@ -306,23 +317,23 @@ data class HoroscopeTranslationDto(
 @Serializable
 @SerialName("collection")
 data class HoroscopeCollectionDto(
-  val by: String,
-  val a: String,
-  val aAspect: String,
+  val by: AstroPoint,
+  val a: AstroPoint,
+  val aAspect: Aspect,
   val aGlyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val aOrb: Double,
-  val b: String,
-  val bAspect: String,
+  val b: AstroPoint,
+  val bAspect: Aspect,
   val bGlyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val bOrb: Double,
-  val between: String? = null,
+  val between: Aspect? = null,
   val betweenGlyph: String? = null,
-  val aReception: String? = null,
-  val bReception: String? = null,
+  val aReception: destiny.core.astrology.classical.Dignity? = null,
+  val bReception: destiny.core.astrology.classical.Dignity? = null,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(by, a, b)
+  override val members: List<AstroPoint> get() = listOf(by, a, b)
 }
 
 /** 臨陣退縮軌跡的一個取樣點：盤面時刻後 [days] 日，退縮者 [byLng] 與對方 [otherLng] 的黃經 */
@@ -344,13 +355,13 @@ data class HoroscopeRefranationSampleDto(
 @Serializable
 @SerialName("refranation")
 data class HoroscopeRefranationDto(
-  val by: String,
-  val other: String,
-  val aspect: String,
+  val by: AstroPoint,
+  val other: AstroPoint,
+  val aspect: Aspect,
   val glyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val orb: Double,
-  val station: String,
+  val station: StationaryType,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val stationDays: Double,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
@@ -358,9 +369,9 @@ data class HoroscopeRefranationDto(
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val closestOrb: Double,
   val track: List<HoroscopeRefranationSampleDto>,
-  val ingress: String? = null,
+  val ingress: AstroPoint? = null,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(by, other)
+  override val members: List<AstroPoint> get() = listOf(by, other)
 }
 
 /**
@@ -386,22 +397,22 @@ data class HoroscopeOutcomeSampleDto(
 @Serializable
 @SerialName("prohibition")
 data class HoroscopeProhibitionDto(
-  val applying: String,
-  val applied: String,
-  val aspect: String,
+  val applying: AstroPoint,
+  val applied: AstroPoint,
+  val aspect: Aspect,
   val glyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val orb: Double,
-  val by: String,
-  val with: String,
-  val byAspect: String,
+  val by: AstroPoint,
+  val with: AstroPoint,
+  val byAspect: Aspect,
   val byGlyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val eventDays: Double,
   val track: List<HoroscopeOutcomeSampleDto>,
-  val ingress: String? = null,
+  val ingress: AstroPoint? = null,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(applying, applied, by)
+  override val members: List<AstroPoint> get() = listOf(applying, applied, by)
 }
 
 /**
@@ -411,28 +422,28 @@ data class HoroscopeProhibitionDto(
 @Serializable
 @SerialName("frustration")
 data class HoroscopeFrustrationDto(
-  val applying: String,
-  val applied: String,
-  val aspect: String,
+  val applying: AstroPoint,
+  val applied: AstroPoint,
+  val aspect: Aspect,
   val glyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val orb: Double,
-  val by: String,
-  val byAspect: String,
+  val by: AstroPoint,
+  val byAspect: Aspect,
   val byGlyph: String,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val eventDays: Double,
   val track: List<HoroscopeOutcomeSampleDto>,
-  val ingress: String? = null,
+  val ingress: AstroPoint? = null,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(applying, applied, by)
+  override val members: List<AstroPoint> get() = listOf(applying, applied, by)
 }
 
 /** 包夾的一側：[by] 的星體（[aspect] 為 null）或以 [aspect] 投射的光線，離被夾的星 [distance] 度 */
 @Serializable
 data class HoroscopeBesiegeSideDto(
-  val by: String,
-  val aspect: String? = null,
+  val by: AstroPoint,
+  val aspect: Aspect? = null,
   /** [aspect] 的符號；星體那一側為 null */
   val glyph: String? = null,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
@@ -443,11 +454,11 @@ data class HoroscopeBesiegeSideDto(
 @Serializable
 @SerialName("besiegement")
 data class HoroscopeBesiegementDto(
-  val planet: String,
+  val planet: AstroPoint,
   val before: HoroscopeBesiegeSideDto,
   val after: HoroscopeBesiegeSideDto,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(planet, before.by, after.by)
+  override val members: List<AstroPoint> get() = listOf(planet, before.by, after.by)
 }
 
 /**
@@ -457,15 +468,15 @@ data class HoroscopeBesiegementDto(
 @Serializable
 @SerialName("overcoming")
 data class HoroscopeOvercomingDto(
-  val superior: String,
-  val inferior: String,
-  val aspect: String,
+  val superior: AstroPoint,
+  val inferior: AstroPoint,
+  val aspect: Aspect,
   val glyph: String? = null,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val orb: Double,
   val byDegree: Boolean,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(superior, inferior)
+  override val members: List<AstroPoint> get() = listOf(superior, inferior)
 }
 
 /**
@@ -475,25 +486,25 @@ data class HoroscopeOvercomingDto(
 @Serializable
 @SerialName("aversion")
 data class HoroscopeAversionDto(
-  val planet: String,
-  val from: String,
+  val planet: AstroPoint,
+  val from: AstroPoint,
   val place: Int,
   val basis: destiny.core.astrology.classical.Aversion.Basis,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(planet, from)
+  override val members: List<AstroPoint> get() = listOf(planet, from)
 }
 
 /** 映點（[destiny.core.astrology.classical.Antiscion]）：[planet] 與 [other] 互為映點（[contra] ＝ 反映點），相差 [orb] 度 */
 @Serializable
 @SerialName("antiscia")
 data class HoroscopeAntisciaDto(
-  val planet: String,
-  val other: String,
+  val planet: AstroPoint,
+  val other: AstroPoint,
   val contra: Boolean,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val orb: Double,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(planet, other)
+  override val members: List<AstroPoint> get() = listOf(planet, other)
 }
 
 /**
@@ -503,14 +514,14 @@ data class HoroscopeAntisciaDto(
 @Serializable
 @SerialName("doryphoria")
 data class HoroscopeDoryphoriaDto(
-  val light: String,
-  val bearer: String,
+  val light: AstroPoint,
+  val bearer: AstroPoint,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val distance: Double,
   val preceding: Boolean,
   val inSect: Boolean? = null,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(light, bearer)
+  override val members: List<AstroPoint> get() = listOf(light, bearer)
 }
 
 /**
@@ -521,7 +532,7 @@ data class HoroscopeDoryphoriaDto(
 @Serializable
 @SerialName("combustion")
 data class HoroscopeCombustionDto(
-  val planet: String,
+  val planet: AstroPoint,
   val zone: destiny.core.astrology.classical.Combustion.Zone,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val distance: Double,
@@ -533,7 +544,7 @@ data class HoroscopeCombustionDto(
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val beamsLimit: Double,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(planet, Planet.SUN.nameKey)
+  override val members: List<AstroPoint> get() = listOf(planet, Planet.SUN)
 }
 
 /**
@@ -544,13 +555,13 @@ data class HoroscopeCombustionDto(
 @SerialName("sect")
 data class HoroscopeSectDto(
   val sect: DayNight,
-  val light: String,
-  val inSect: List<String>,
-  val contrary: List<String>,
-  val beneficOfSect: String,
-  val maleficContrary: String,
+  val light: AstroPoint,
+  val inSect: List<AstroPoint>,
+  val contrary: List<AstroPoint>,
+  val beneficOfSect: AstroPoint,
+  val maleficContrary: AstroPoint,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = inSect + contrary
+  override val members: List<AstroPoint> get() = inSect + contrary
 }
 
 /**
@@ -560,7 +571,7 @@ data class HoroscopeSectDto(
 @Serializable
 @SerialName("hayz")
 data class HoroscopeHayzDto(
-  val planet: String,
+  val planet: AstroPoint,
   val chartSect: DayNight,
   val planetSect: DayNight,
   val aboveHorizon: Boolean,
@@ -568,7 +579,7 @@ data class HoroscopeHayzDto(
   val masculineSign: Boolean,
   val wantMasculine: Boolean,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(planet)
+  override val members: List<AstroPoint> get() = listOf(planet)
 }
 
 /**
@@ -578,7 +589,7 @@ data class HoroscopeHayzDto(
 @Serializable
 @SerialName("phasis")
 data class HoroscopePhasisDto(
-  val planet: String,
+  val planet: AstroPoint,
   val type: destiny.core.astrology.classical.Phasis.Type,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val days: Double,
@@ -586,24 +597,24 @@ data class HoroscopePhasisDto(
   val lng: Double,
   val oriental: Boolean,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(planet)
+  override val members: List<AstroPoint> get() = listOf(planet)
 }
 
 /** 野生（[destiny.core.astrology.classical.Feral]）：[planet] 與其餘古典行星都沒有相位；[basis]：以星芒容許度或以星座判 */
 @Serializable
 @SerialName("feral")
 data class HoroscopeFeralDto(
-  val planet: String,
+  val planet: AstroPoint,
   val basis: destiny.core.astrology.classical.FeralOptions.Basis,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(planet)
+  override val members: List<AstroPoint> get() = listOf(planet)
 }
 
 /** 月亮離與合的一端：與 [planet] 的 [aspect]，盤面時刻離準確 [orb] 度、距準確 [days] 天 */
 @Serializable
 data class HoroscopeLunarLinkDto(
-  val planet: String,
-  val aspect: String,
+  val planet: AstroPoint,
+  val aspect: Aspect,
   val glyph: String?,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val orb: Double,
@@ -618,18 +629,18 @@ data class HoroscopeLunarConnectionDto(
   val separating: HoroscopeLunarLinkDto? = null,
   val applying: HoroscopeLunarLinkDto? = null,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(Planet.MOON.nameKey) + listOfNotNull(separating?.planet, applying?.planet)
+  override val members: List<AstroPoint> get() = listOf(Planet.MOON) + listOfNotNull(separating?.planet, applying?.planet)
 }
 
 /** 燃燒路（[destiny.core.astrology.classical.ViaCombusta]）：[planet] 在黃經 [lng]，落在天秤後半到天蠍前半那一段 */
 @Serializable
 @SerialName("via_combusta")
 data class HoroscopeViaCombustaDto(
-  val planet: String,
+  val planet: AstroPoint,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val lng: Double,
 ) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = listOf(planet)
+  override val members: List<AstroPoint> get() = listOf(planet)
 }
 
 /** 受剋／受扶的一條條件；JSON 以 `type` 區分 */
@@ -637,52 +648,52 @@ data class HoroscopeViaCombustaDto(
 @Serializable
 @JsonClassDiscriminator("type")
 sealed interface HoroscopeMaltreatmentConditionDto {
-  val by: List<String>
+  val by: List<AstroPoint>
 
   /** 被 [superior] 以 [aspect] 居上 */
   @Serializable @SerialName("overcome")
-  data class Overcome(val superior: String, val aspect: String, val glyph: String? = null) : HoroscopeMaltreatmentConditionDto {
-    override val by: List<String> get() = listOf(superior)
+  data class Overcome(val superior: AstroPoint, val aspect: Aspect, val glyph: String? = null) : HoroscopeMaltreatmentConditionDto {
+    override val by: List<AstroPoint> get() = listOf(superior)
   }
 
   /** 與 [source] 對沖；[orb]：與 180° 的差 */
   @Serializable @SerialName("opposed")
-  data class Opposed(val source: String, @Serializable(with = DoubleTwoDecimalSerializer::class) val orb: Double) : HoroscopeMaltreatmentConditionDto {
-    override val by: List<String> get() = listOf(source)
+  data class Opposed(val source: AstroPoint, @Serializable(with = DoubleTwoDecimalSerializer::class) val orb: Double) : HoroscopeMaltreatmentConditionDto {
+    override val by: List<AstroPoint> get() = listOf(source)
   }
 
   /** 與 [source] 貼合（合相） */
   @Serializable @SerialName("adherence")
-  data class Adherence(val source: String, @Serializable(with = DoubleTwoDecimalSerializer::class) val orb: Double) : HoroscopeMaltreatmentConditionDto {
-    override val by: List<String> get() = listOf(source)
+  data class Adherence(val source: AstroPoint, @Serializable(with = DoubleTwoDecimalSerializer::class) val orb: Double) : HoroscopeMaltreatmentConditionDto {
+    override val by: List<AstroPoint> get() = listOf(source)
   }
 
   /** 被 [source] 以 [aspect] 的光線打中；[dexter]：光線逆黃道方向投射 */
   @Serializable @SerialName("ray")
-  data class Ray(val source: String, val aspect: String, val glyph: String? = null,
+  data class Ray(val source: AstroPoint, val aspect: Aspect, val glyph: String? = null,
                  @Serializable(with = DoubleTwoDecimalSerializer::class) val orb: Double, val dexter: Boolean) : HoroscopeMaltreatmentConditionDto {
-    override val by: List<String> get() = listOf(source)
+    override val by: List<AstroPoint> get() = listOf(source)
   }
 
   /** 被 [before]、[after] 包夾 */
   @Serializable @SerialName("besieged")
   data class Besieged(val before: HoroscopeBesiegeSideDto, val after: HoroscopeBesiegeSideDto) : HoroscopeMaltreatmentConditionDto {
-    override val by: List<String> get() = listOf(before.by, after.by)
+    override val by: List<AstroPoint> get() = listOf(before.by, after.by)
   }
 }
 
 /** 受剋（[destiny.core.astrology.classical.Maltreatment]，施予者是凶星）：[planet] 符合的 [conditions] */
 @Serializable
 @SerialName("maltreatment")
-data class HoroscopeMaltreatmentDto(val planet: String, val conditions: List<HoroscopeMaltreatmentConditionDto>) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = (listOf(planet) + conditions.flatMap { it.by }).distinct()
+data class HoroscopeMaltreatmentDto(val planet: AstroPoint, val conditions: List<HoroscopeMaltreatmentConditionDto>) : HoroscopeClassicalFactDto {
+  override val members: List<AstroPoint> get() = (listOf(planet) + conditions.flatMap { it.by }).distinct()
 }
 
 /** 受扶（施予者是吉星）：與 [HoroscopeMaltreatmentDto] 同一套條件 */
 @Serializable
 @SerialName("bonification")
-data class HoroscopeBonificationDto(val planet: String, val conditions: List<HoroscopeMaltreatmentConditionDto>) : HoroscopeClassicalFactDto {
-  override val members: List<String> get() = (listOf(planet) + conditions.flatMap { it.by }).distinct()
+data class HoroscopeBonificationDto(val planet: AstroPoint, val conditions: List<HoroscopeMaltreatmentConditionDto>) : HoroscopeClassicalFactDto {
+  override val members: List<AstroPoint> get() = (listOf(planet) + conditions.flatMap { it.by }).distinct()
 }
 
 @Serializable
@@ -720,7 +731,7 @@ fun HoroscopeChartDto.withReceptions(
   lang: Lang = ZH,
 ): HoroscopeChartDto {
   val keys = points.mapTo(HashSet()) { it.point }
-  val planets = positions.filterKeys { it is Planet && it.nameKey in keys }
+  val planets = positions.filterKeys { it is Planet && it in keys }
   val list = essential.getMutualReceptionMap(planets, null, dignities)
     .map { md ->
       // MutualData：p 以 dignityMap[p] 接納另一顆 ⇒ 另一顆落在 p 的那個 dignity 裡
@@ -728,12 +739,12 @@ fun HoroscopeChartDto.withReceptions(
       val aIn = md.getDignityOf(p2)
       val bIn = md.getDignityOf(p1)
       HoroscopeReceptionDto(
-        a = p1.nameKey, aIn = aIn, b = p2.nameKey, bIn = bIn,
+        a = p1, aIn = aIn, b = p2, bIn = bIn,
         aInLabel = aIn.dignityToString(lang), bInLabel = bIn.dignityToString(lang),
       )
     }
     .distinct()
-    .sortedWith(compareBy({ it.a }, { it.b }, { it.aIn }, { it.bIn }))
+    .sortedWith(compareBy({ it.a.nameKey }, { it.b.nameKey }, { it.aIn }, { it.bIn }))
   return copy(receptions = list)
 }
 
@@ -750,7 +761,7 @@ fun HoroscopeChartDto.withDignities(
 ): HoroscopeChartDto {
   val degrees: Map<AstroPoint, Double> = positions.mapValues { (_, d) -> d.value }
   return copy(points = points.map { p ->
-    val planet = Planet.classicalList.firstOrNull { it.nameKey == p.point } ?: return@map p
+    val planet = (p.point as? Planet)?.takeIf { it in Planet.classicalList } ?: return@map p
     val dignities = with(essential) { planet.getDignities(degrees, sect) }
     p.copy(dignities = dignities, dignityLabels = dignities.map { it.dignityToString(lang) })
   })
@@ -768,101 +779,101 @@ fun HoroscopeChartDto.withClassicalFacts(facts: List<destiny.core.astrology.clas
 /** 呈現層投影；成形（[destiny.core.astrology.classical.ApplicationOutcome.Perfected]）沒有投影，回 null */
 fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassicalFactDto? = when (this) {
   is destiny.core.astrology.classical.TranslationOfLight -> HoroscopeTranslationDto(
-    by = translator.nameKey,
-    from = from.nameKey, fromAspect = separating.aspect.name, fromGlyph = separating.aspect.glyph, fromOrb = separating.orb,
-    to = to.nameKey, toAspect = applying.aspect.name, toGlyph = applying.aspect.glyph, toOrb = applying.orb,
-    between = between?.aspect?.name, betweenGlyph = between?.aspect?.glyph,
+    by = translator,
+    from = from, fromAspect = separating.aspect, fromGlyph = separating.aspect.glyph, fromOrb = separating.orb,
+    to = to, toAspect = applying.aspect, toGlyph = applying.aspect.glyph, toOrb = applying.orb,
+    between = between?.aspect, betweenGlyph = between?.aspect?.glyph,
     arrivalDays = arrival?.eventDays,
   )
 
   is destiny.core.astrology.classical.CollectionOfLight -> {
     val (pa, pb) = planets
     HoroscopeCollectionDto(
-      by = collector.nameKey,
-      a = pa.nameKey, aAspect = first.aspect.name, aGlyph = first.aspect.glyph, aOrb = first.orb,
-      b = pb.nameKey, bAspect = second.aspect.name, bGlyph = second.aspect.glyph, bOrb = second.orb,
-      between = between?.aspect?.name, betweenGlyph = between?.aspect?.glyph,
-      aReception = firstReception?.name,
-      bReception = secondReception?.name,
+      by = collector,
+      a = pa, aAspect = first.aspect, aGlyph = first.aspect.glyph, aOrb = first.orb,
+      b = pb, bAspect = second.aspect, bGlyph = second.aspect.glyph, bOrb = second.orb,
+      between = between?.aspect, betweenGlyph = between?.aspect?.glyph,
+      aReception = firstReception,
+      bReception = secondReception,
     )
   }
 
   is destiny.core.astrology.classical.ApplicationOutcome.Perfected -> null
 
   is destiny.core.astrology.classical.ApplicationOutcome.Refranation -> HoroscopeRefranationDto(
-    by = refranator.nameKey, other = other.nameKey,
-    aspect = pattern.aspect.name, glyph = pattern.aspect.glyph, orb = pattern.orb,
-    station = stationary.type.name, stationDays = stationDays,
+    by = refranator, other = other,
+    aspect = pattern.aspect, glyph = pattern.aspect.glyph, orb = pattern.orb,
+    station = stationary.type, stationDays = stationDays,
     closestDays = closestDays, closestOrb = closestOrb,
     track = track.map {
       if (refranator === applying) HoroscopeRefranationSampleDto(it.days, it.applyingLng, it.appliedLng)
       else HoroscopeRefranationSampleDto(it.days, it.appliedLng, it.applyingLng)
     },
-    ingress = ingress?.nameKey,
+    ingress = ingress,
   )
 
   is destiny.core.astrology.classical.ApplicationOutcome.Prohibition -> HoroscopeProhibitionDto(
-    applying = applying.nameKey, applied = applied.nameKey, aspect = pattern.aspect.name, glyph = pattern.aspect.glyph, orb = pattern.orb,
-    by = prohibitor.nameKey, with = with.nameKey, byAspect = interruption.aspect.name, byGlyph = interruption.aspect.glyph, eventDays = eventDays,
+    applying = applying, applied = applied, aspect = pattern.aspect, glyph = pattern.aspect.glyph, orb = pattern.orb,
+    by = prohibitor, with = with, byAspect = interruption.aspect, byGlyph = interruption.aspect.glyph, eventDays = eventDays,
     track = track.map { it.toChartDto() },
-    ingress = ingress?.nameKey,
+    ingress = ingress,
   )
 
   is destiny.core.astrology.classical.ApplicationOutcome.Frustration -> HoroscopeFrustrationDto(
-    applying = applying.nameKey, applied = applied.nameKey, aspect = pattern.aspect.name, glyph = pattern.aspect.glyph, orb = pattern.orb,
-    by = frustrator.nameKey, byAspect = interruption.aspect.name, byGlyph = interruption.aspect.glyph, eventDays = eventDays,
+    applying = applying, applied = applied, aspect = pattern.aspect, glyph = pattern.aspect.glyph, orb = pattern.orb,
+    by = frustrator, byAspect = interruption.aspect, byGlyph = interruption.aspect.glyph, eventDays = eventDays,
     track = track.map { it.toChartDto() },
-    ingress = ingress?.nameKey,
+    ingress = ingress,
   )
 
   is destiny.core.astrology.classical.Besiegement -> HoroscopeBesiegementDto(
-    planet = planet.nameKey,
-    before = HoroscopeBesiegeSideDto(before.by.nameKey, before.aspect?.name, before.aspect?.glyph, before.distance),
-    after = HoroscopeBesiegeSideDto(after.by.nameKey, after.aspect?.name, after.aspect?.glyph, after.distance),
+    planet = planet,
+    before = HoroscopeBesiegeSideDto(before.by, before.aspect, before.aspect?.glyph, before.distance),
+    after = HoroscopeBesiegeSideDto(after.by, after.aspect, after.aspect?.glyph, after.distance),
   )
 
-  is destiny.core.astrology.classical.Aversion -> HoroscopeAversionDto(planet.nameKey, from.nameKey, place, basis)
+  is destiny.core.astrology.classical.Aversion -> HoroscopeAversionDto(planet, from, place, basis)
 
-  is destiny.core.astrology.classical.Antiscion -> HoroscopeAntisciaDto(planet.nameKey, other.nameKey, contra, orb)
+  is destiny.core.astrology.classical.Antiscion -> HoroscopeAntisciaDto(planet, other, contra, orb)
 
-  is destiny.core.astrology.classical.Doryphoria -> HoroscopeDoryphoriaDto(light.nameKey, bearer.nameKey, distance, preceding, inSect)
+  is destiny.core.astrology.classical.Doryphoria -> HoroscopeDoryphoriaDto(light, bearer, distance, preceding, inSect)
 
-  is destiny.core.astrology.classical.Sect -> HoroscopeSectDto(sect, light.nameKey, inSect.map { it.nameKey }, contrary.map { it.nameKey }, beneficOfSect.nameKey, maleficContrary.nameKey)
+  is destiny.core.astrology.classical.Sect -> HoroscopeSectDto(sect, light, inSect, contrary, beneficOfSect, maleficContrary)
 
-  is destiny.core.astrology.classical.Hayz -> HoroscopeHayzDto(planet.nameKey, chartSect, planetSect, aboveHorizon, sign, masculineSign, wantMasculine)
+  is destiny.core.astrology.classical.Hayz -> HoroscopeHayzDto(planet, chartSect, planetSect, aboveHorizon, sign, masculineSign, wantMasculine)
 
-  is destiny.core.astrology.classical.Combustion -> HoroscopeCombustionDto(planet.nameKey, zone, distance, approaching, limits.cazimi, limits.combust, limits.underBeams)
+  is destiny.core.astrology.classical.Combustion -> HoroscopeCombustionDto(planet, zone, distance, approaching, limits.cazimi, limits.combust, limits.underBeams)
 
-  is destiny.core.astrology.classical.Phasis -> HoroscopePhasisDto(planet.nameKey, type, days, lngDeg.value, oriental)
+  is destiny.core.astrology.classical.Phasis -> HoroscopePhasisDto(planet, type, days, lngDeg.value, oriental)
 
-  is destiny.core.astrology.classical.Feral -> HoroscopeFeralDto(planet.nameKey, basis)
+  is destiny.core.astrology.classical.Feral -> HoroscopeFeralDto(planet, basis)
 
   is destiny.core.astrology.classical.LunarConnection -> HoroscopeLunarConnectionDto(separating?.toChartDto(), applying?.toChartDto())
 
-  is destiny.core.astrology.classical.ViaCombusta -> HoroscopeViaCombustaDto(planet.nameKey, lngDeg.value)
+  is destiny.core.astrology.classical.ViaCombusta -> HoroscopeViaCombustaDto(planet, lngDeg.value)
 
   is destiny.core.astrology.classical.Maltreatment -> {
     val list = conditions.map { it.toChartDto() }
-    if (polarity == destiny.core.astrology.classical.Maltreatment.Polarity.MALTREATMENT) HoroscopeMaltreatmentDto(planet.nameKey, list)
-    else HoroscopeBonificationDto(planet.nameKey, list)
+    if (polarity == destiny.core.astrology.classical.Maltreatment.Polarity.MALTREATMENT) HoroscopeMaltreatmentDto(planet, list)
+    else HoroscopeBonificationDto(planet, list)
   }
 
   is destiny.core.astrology.classical.Overcoming -> HoroscopeOvercomingDto(
-    superior = superior.nameKey, inferior = inferior.nameKey,
-    aspect = aspect.name, glyph = aspect.glyph, orb = orb, byDegree = byDegree,
+    superior = superior, inferior = inferior,
+    aspect = aspect, glyph = aspect.glyph, orb = orb, byDegree = byDegree,
   )
 }
 
 private fun destiny.core.astrology.classical.Maltreatment.Condition.toChartDto(): HoroscopeMaltreatmentConditionDto = when (this) {
   is destiny.core.astrology.classical.Maltreatment.Condition.Overcome ->
-    HoroscopeMaltreatmentConditionDto.Overcome(overcoming.superior.nameKey, overcoming.aspect.name, overcoming.aspect.glyph)
-  is destiny.core.astrology.classical.Maltreatment.Condition.Opposed -> HoroscopeMaltreatmentConditionDto.Opposed(source.nameKey, orb)
-  is destiny.core.astrology.classical.Maltreatment.Condition.Adherence -> HoroscopeMaltreatmentConditionDto.Adherence(source.nameKey, orb)
+    HoroscopeMaltreatmentConditionDto.Overcome(overcoming.superior, overcoming.aspect, overcoming.aspect.glyph)
+  is destiny.core.astrology.classical.Maltreatment.Condition.Opposed -> HoroscopeMaltreatmentConditionDto.Opposed(source, orb)
+  is destiny.core.astrology.classical.Maltreatment.Condition.Adherence -> HoroscopeMaltreatmentConditionDto.Adherence(source, orb)
   is destiny.core.astrology.classical.Maltreatment.Condition.RayHurled ->
-    HoroscopeMaltreatmentConditionDto.Ray(source.nameKey, aspect.name, aspect.glyph, orb, dexter)
+    HoroscopeMaltreatmentConditionDto.Ray(source, aspect, aspect.glyph, orb, dexter)
   is destiny.core.astrology.classical.Maltreatment.Condition.Besieged -> HoroscopeMaltreatmentConditionDto.Besieged(
-    HoroscopeBesiegeSideDto(besiegement.before.by.nameKey, besiegement.before.aspect?.name, besiegement.before.aspect?.glyph, besiegement.before.distance),
-    HoroscopeBesiegeSideDto(besiegement.after.by.nameKey, besiegement.after.aspect?.name, besiegement.after.aspect?.glyph, besiegement.after.distance),
+    HoroscopeBesiegeSideDto(besiegement.before.by, besiegement.before.aspect, besiegement.before.aspect?.glyph, besiegement.before.distance),
+    HoroscopeBesiegeSideDto(besiegement.after.by, besiegement.after.aspect, besiegement.after.aspect?.glyph, besiegement.after.distance),
   )
 }
 
@@ -882,7 +893,7 @@ fun HoroscopeClassicalFactDto.withoutTrack(): HoroscopeClassicalFactDto = when (
 }
 
 private fun destiny.core.astrology.classical.LunarConnection.Link.toChartDto() =
-  HoroscopeLunarLinkDto(planet.nameKey, aspect.name, aspect.glyph, orb, days)
+  HoroscopeLunarLinkDto(planet, aspect, aspect.glyph, orb, days)
 
 /** 格局可能用到的相位；組合格局（雙 T、六芒星、回力鏢）另外併入組成部分的邊 */
 private val AstroPattern.legAspects: Set<Aspect>
@@ -904,23 +915,23 @@ private val AstroPattern.legAspects: Set<Aspect>
     is AstroPattern.Confrontation   -> setOf(Aspect.OPPOSITION)
   }
 
-private val AstroPattern.typeKey: String
+private val AstroPattern.typeKey: HoroscopePatternType
   get() = when (this) {
-    is AstroPattern.GrandTrine      -> "GRAND_TRINE"
-    is AstroPattern.Kite            -> "KITE"
-    is AstroPattern.TSquared        -> "T_SQUARE"
-    is AstroPattern.Yod             -> "YOD"
-    is AstroPattern.Boomerang       -> "BOOMERANG"
-    is AstroPattern.GoldenYod       -> "GOLDEN_YOD"
-    is AstroPattern.GrandCross      -> "GRAND_CROSS"
-    is AstroPattern.DoubleT         -> "DOUBLE_T"
-    is AstroPattern.Hexagon         -> "HEXAGON"
-    is AstroPattern.Wedge           -> "WEDGE"
-    is AstroPattern.MysticRectangle -> "MYSTIC_RECTANGLE"
-    is AstroPattern.Pentagram       -> "PENTAGRAM"
-    is AstroPattern.StelliumSign    -> "STELLIUM_SIGN"
-    is AstroPattern.StelliumHouse   -> "STELLIUM_HOUSE"
-    is AstroPattern.Confrontation   -> "CONFRONTATION"
+    is AstroPattern.GrandTrine      -> HoroscopePatternType.GRAND_TRINE
+    is AstroPattern.Kite            -> HoroscopePatternType.KITE
+    is AstroPattern.TSquared        -> HoroscopePatternType.T_SQUARE
+    is AstroPattern.Yod             -> HoroscopePatternType.YOD
+    is AstroPattern.Boomerang       -> HoroscopePatternType.BOOMERANG
+    is AstroPattern.GoldenYod       -> HoroscopePatternType.GOLDEN_YOD
+    is AstroPattern.GrandCross      -> HoroscopePatternType.GRAND_CROSS
+    is AstroPattern.DoubleT         -> HoroscopePatternType.DOUBLE_T
+    is AstroPattern.Hexagon         -> HoroscopePatternType.HEXAGON
+    is AstroPattern.Wedge           -> HoroscopePatternType.WEDGE
+    is AstroPattern.MysticRectangle -> HoroscopePatternType.MYSTIC_RECTANGLE
+    is AstroPattern.Pentagram       -> HoroscopePatternType.PENTAGRAM
+    is AstroPattern.StelliumSign    -> HoroscopePatternType.STELLIUM_SIGN
+    is AstroPattern.StelliumHouse   -> HoroscopePatternType.STELLIUM_HOUSE
+    is AstroPattern.Confrontation   -> HoroscopePatternType.CONFRONTATION
   }
 
 private val AstroPattern.apexPoint: AstroPoint?
@@ -946,7 +957,7 @@ private val AstroPattern.partPatterns: List<AstroPattern>
 private const val LEG_TOLERANCE = 12.0
 
 /** [patterns] → 呈現層投影；有成員不在盤上（或是恆星）的格局，連同用到它的組合格局一起略過 */
-private fun List<AstroPattern>.toPatternDtos(zDegOf: (AstroPoint) -> Double?, visibleKeys: Set<String>): List<HoroscopePatternDto> {
+private fun List<AstroPattern>.toPatternDtos(zDegOf: (AstroPoint) -> Double?, visibleKeys: Set<AstroPoint>): List<HoroscopePatternDto> {
   val out = mutableListOf<HoroscopePatternDto>()
   val indexOf = mutableMapOf<AstroPattern, Int?>()
 
@@ -957,23 +968,23 @@ private fun List<AstroPattern>.toPatternDtos(zDegOf: (AstroPoint) -> Double?, vi
       aspects.map { it to it.orbOf(za, zb) }
         .filter { (_, orb) -> orb <= LEG_TOLERANCE }
         .minByOrNull { (_, orb) -> orb }
-        ?.let { (aspect, orb) -> HoroscopePatternLegDto(a.nameKey, b.nameKey, aspect.name, aspect.glyph, orb) }
+        ?.let { (aspect, orb) -> HoroscopePatternLegDto(a, b, aspect, aspect.glyph, orb) }
     }
 
   fun add(pattern: AstroPattern): Int? = indexOf.getOrPut(pattern) {
     val members = pattern.points.toList()
-    if (members.any { it is FixedStar || it.nameKey !in visibleKeys }) return@getOrPut null
+    if (members.any { it is FixedStar || it !in visibleKeys }) return@getOrPut null
     val parts = pattern.partPatterns.map { add(it) ?: return@getOrPut null }
     val partLegs = parts.flatMap { out[it].legs }
     val ownLegs = legsAmong(members, pattern.legAspects)
       .filter { leg -> partLegs.none { setOf(it.from, it.to) == setOf(leg.from, leg.to) } }
     out += HoroscopePatternDto(
       type = pattern.typeKey,
-      points = members.map { it.nameKey },
-      apex = pattern.apexPoint?.nameKey,
-      element = (pattern as? AstroPattern.GrandTrine)?.element?.name,
-      quality = (pattern as? AstroPattern.GrandCross)?.quality?.name,
-      sign = (pattern as? AstroPattern.StelliumSign)?.sign?.name,
+      points = members,
+      apex = pattern.apexPoint,
+      element = (pattern as? AstroPattern.GrandTrine)?.element,
+      quality = (pattern as? AstroPattern.GrandCross)?.quality,
+      sign = (pattern as? AstroPattern.StelliumSign)?.sign,
       house = (pattern as? AstroPattern.StelliumHouse)?.house,
       legs = partLegs + ownLegs,
       parts = parts,
@@ -988,14 +999,14 @@ private fun List<AstroPattern>.toPatternDtos(zDegOf: (AstroPoint) -> Double?, vi
 
 
 /** [Graph] → 呈現層投影；圖是空的（沒有算）或有星不在盤面上時回 null */
-private fun Graph<Planet>.toDispositorDto(visibleKeys: Set<String>): HoroscopeDispositorDto? {
+private fun Graph<Planet>.toDispositorDto(visibleKeys: Set<AstroPoint>): HoroscopeDispositorDto? {
   val planets = circles.flatMap { it.toList() } + paths.flatten() + terminals + isolated
-  if (planets.isEmpty() || planets.any { it.nameKey !in visibleKeys }) return null
+  if (planets.isEmpty() || planets.any { it !in visibleKeys }) return null
   return HoroscopeDispositorDto(
-    circles = circles.map { c -> c.toList().map { it.nameKey } },
-    paths = paths.map { p -> p.map { it.nameKey } },
-    terminals = terminals.map { it.nameKey },
-    isolated = isolated.map { it.nameKey },
+    circles = circles.map { c -> c.toList() },
+    paths = paths.toList(),
+    terminals = terminals.toList(),
+    isolated = isolated.toList(),
   )
 }
 
@@ -1019,10 +1030,10 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
     HoroscopeHouseDto(
       id = h.id,
       cuspDeg = h.cusp.zDeg,
-      cuspSign = h.cusp.sign.name,
-      ruler = h.ruler.nameKey,
+      cuspSign = h.cusp.sign,
+      ruler = h.ruler,
       rulerLabel = h.ruler.pointToString(ZH),
-      coRuler = MODERN_CO_RULER[h.cusp.sign]?.nameKey,
+      coRuler = MODERN_CO_RULER[h.cusp.sign],
       coRulerLabel = MODERN_CO_RULER[h.cusp.sign]?.pointToString(ZH),
     )
   }
@@ -1040,11 +1051,11 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
     .filter { (point, _) -> point.visibleIn(density) }
     .map { (point, info) ->
       HoroscopePointDto(
-        point = point.nameKey,
+        point = point,
         label = point.pointToString(ZH),
         glyph = point.unicode?.toString(),
         zDeg = info.signDegree.zDeg,
-        sign = info.signDegree.sign.name,
+        sign = info.signDegree.sign,
         signDegree = info.signDegree.signDegree.second,
         house = info.house,
         retrograde = info.isRetrograde,
@@ -1062,7 +1073,7 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
 
   return HoroscopeChartDto(
     meta = HoroscopeMetaDto(
-      gender = gender.name,
+      gender = gender,
       ascDeg = axisDeg(Axis.RISING, 1),
       mcDeg = axisDeg(Axis.MERIDIAN, 10),
     ),
@@ -1072,16 +1083,16 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
       val ends = pattern.points.take(2)
       if (ends.size < 2) return@mapNotNull null
       // 兩端點都必須在盤面上，否則會畫出連到空氣的線
-      if (ends.any { it.nameKey !in visibleKeys }) return@mapNotNull null
+      if (ends.any { it !in visibleKeys }) return@mapNotNull null
       val aspect = Aspect.getAspect(pattern.angle) ?: return@mapNotNull null
       val major = aspect in majorAspects
       // 次要相位只在 ALL 出現 —— 全開會把圓盤糊成一團
       if (!major && density != ChartDensity.ALL) return@mapNotNull null
 
       HoroscopeAspectDto(
-        from = ends[0].nameKey,
-        to = ends[1].nameKey,
-        aspect = aspect.name,
+        from = ends[0],
+        to = ends[1],
+        aspect = aspect,
         glyph = aspect.glyph,
         angle = aspect.degree,
         orb = pattern.orb,
@@ -1093,8 +1104,8 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
     dispositors = graphPatterns.toDispositorDto(visibleKeys),
     patterns = astroPatterns.toPatternDtos({ stars[it]?.signDegree?.zDeg }, visibleKeys),
     midpoints = midPoints
-      .filter { m -> (m.points + m.focal).all { it !is FixedStar && it.nameKey in visibleKeys } }
-      .map { m -> HoroscopeMidpointDto(m.p1.nameKey, m.p2.nameKey, m.degree.zDeg, m.focal.nameKey, m.orb) },
+      .filter { m -> (m.points + m.focal).all { it !is FixedStar && it in visibleKeys } }
+      .map { m -> HoroscopeMidpointDto(m.p1, m.p2, m.degree.zDeg, m.focal, m.orb) },
     applications = applicationsOf(pointDtos),
     cuspIngresses = cuspIngressesOf(pointDtos, houseDtos),
   )
@@ -1131,7 +1142,7 @@ private fun applicationsOf(points: List<HoroscopePointDto>): List<HoroscopeAppli
     targets.filter { it.point != m.point }.flatMap { t ->
       MAJOR_ANGLES.flatMap { aspect ->
         aspect.rays(t.zDeg).mapNotNull { c ->
-          degreesAhead(m, c)?.let { HoroscopeApplicationDto(m.point, t.point, aspect.name, aspect.glyph, it) }
+          degreesAhead(m, c)?.let { HoroscopeApplicationDto(m.point, t.point, aspect, aspect.glyph, it) }
         }
       }
     }.sortedBy { it.degrees }
@@ -1181,7 +1192,7 @@ fun HoroscopeChartDto.keepingPoints(keep: (HoroscopePointDto) -> Boolean): Horos
  * 相位、格局、中點、定位星關係的連帶處理見 [keepingPoints]。
  */
 fun HoroscopeChartDto.gatedBy(grain: BirthDataGrain): HoroscopeChartDto {
-  val gated: Set<String> = grain.gatedNatalTargets().map { it.nameKey }.toSet()
+  val gated: Set<AstroPoint> = grain.gatedNatalTargets().toSet()
   val kept = keepingPoints { it.point !in gated }
   return if (grain.includeAxis) kept
   else kept.copy(
