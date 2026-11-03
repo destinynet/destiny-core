@@ -43,13 +43,21 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val combustionImpl: ICombustion? = null,
                               /** 區分與得時（[ISect]）：古典事實列不列由它決定（null ＝ 不列）。prompt 的得時（[hayz]）尚未改用它，仍是舊判法 */
                               private val sectImpl: ISect? = null,
+                              /** 顯現（停滯、出入光束，[IPhasis]）：古典事實列不列由它決定（null ＝ 不列）；要星曆 */
+                              private val phasisImpl: IPhasis? = null,
+                              /** 野生（[IFeral]）；null ＝ 不列 */
+                              private val feralImpl: IFeral? = null,
+                              /** 月亮的離與合（[ILunarConnection]）；null ＝ 不列 */
+                              private val lunarConnectionImpl: ILunarConnection? = null,
+                              /** 燃燒路（[IViaCombusta]）；null ＝ 不列 */
+                              private val viaCombustaImpl: IViaCombusta? = null,
                               /** 本命居上收哪幾種（[natalOvercomings]）；只在有 [overcomingImpl] 時有作用 */
                               private val natalOvercomingOptions: NatalOvercomingOptions = NatalOvercomingOptions.DEFAULT,
 ) {
 
   /**
    * 全盤的古典事實（判斷層之前的那一層）：光線傳遞、光線收集、受阻的入相位（臨陣退縮／插隊／撲空）、包夾、本命的居上（[natalOvercomings]）、
-   * 不相見、受剋與受扶、持矛者、映點、灼傷、區分與得時（後六種只在這份 context 有對應的 Impl 時）。
+   * 不相見、受剋與受扶、持矛者、映點、灼傷、區分與得時、顯現、野生、月亮的離與合、燃燒路（後十種只在這份 context 有對應的 Impl 時）。
    * 判準與本 context 的格局相同（同一組 Impl、同一份 [OutcomeOptions]）。成形的入相位不列 —— 那就是一般的入相位
    */
   fun classicalFacts(h: IHoroscopeModel): List<ClassicalFact> =
@@ -63,7 +71,11 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       doryphoriaImpl?.getResults(h, sectOf(h)).orEmpty() +
       antisciaImpl?.getResults(h).orEmpty() +
       combustionImpl?.getResults(h).orEmpty() +
-      sectFacts(h)
+      sectFacts(h) +
+      phasisImpl?.getResults(h).orEmpty() +
+      feralImpl?.getResults(h).orEmpty() +
+      lunarConnectionImpl?.getResults(h).orEmpty() +
+      viaCombustaImpl?.getResults(h).orEmpty()
 
   /** 區分（一筆）與得時；這份 context 沒有 [sectImpl] 時為空 */
   private fun sectFacts(h: IHoroscopeModel): List<ClassicalFact> {

@@ -571,6 +571,67 @@ data class HoroscopeHayzDto(
   override val members: List<String> get() = listOf(planet)
 }
 
+/**
+ * 顯現（[destiny.core.astrology.classical.Phasis]）：[planet] 在出生前後 [days] 天（負數 ＝ 出生前）有一次 [type] 的轉折，
+ * 那一刻在黃經 [lng]，位於太陽東方（晨星）為 [oriental]
+ */
+@Serializable
+@SerialName("phasis")
+data class HoroscopePhasisDto(
+  val planet: String,
+  val type: destiny.core.astrology.classical.Phasis.Type,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val days: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val lng: Double,
+  val oriental: Boolean,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(planet)
+}
+
+/** 野生（[destiny.core.astrology.classical.Feral]）：[planet] 與其餘古典行星都沒有相位；[basis]：以星芒容許度或以星座判 */
+@Serializable
+@SerialName("feral")
+data class HoroscopeFeralDto(
+  val planet: String,
+  val basis: destiny.core.astrology.classical.FeralOptions.Basis,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(planet)
+}
+
+/** 月亮離與合的一端：與 [planet] 的 [aspect]，盤面時刻離準確 [orb] 度、距準確 [days] 天 */
+@Serializable
+data class HoroscopeLunarLinkDto(
+  val planet: String,
+  val aspect: String,
+  val glyph: String?,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val orb: Double,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val days: Double,
+)
+
+/** 月亮的離與合（[destiny.core.astrology.classical.LunarConnection]）：最後離開的 [separating]、下一個入的 [applying]（至少一個） */
+@Serializable
+@SerialName("lunar_connection")
+data class HoroscopeLunarConnectionDto(
+  val separating: HoroscopeLunarLinkDto? = null,
+  val applying: HoroscopeLunarLinkDto? = null,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(Planet.MOON.nameKey) + listOfNotNull(separating?.planet, applying?.planet)
+}
+
+/** 燃燒路（[destiny.core.astrology.classical.ViaCombusta]）：[planet] 在黃經 [lng]，落在天秤後半到天蠍前半那一段 */
+@Serializable
+@SerialName("via_combusta")
+data class HoroscopeViaCombustaDto(
+  val planet: String,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val lng: Double,
+) : HoroscopeClassicalFactDto {
+  override val members: List<String> get() = listOf(planet)
+}
+
 /** 受剋／受扶的一條條件；JSON 以 `type` 區分 */
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -638,7 +699,7 @@ data class HoroscopeChartDto(
   val patterns: List<HoroscopePatternDto> = emptyList(),
   /** 有焦點星的中點；三顆都在 [points] 內 */
   val midpoints: List<HoroscopeMidpointDto> = emptyList(),
-  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上、不相見、受剋、受扶、持矛者、映點、灼傷、區分、得時）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
+  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上、不相見、受剋、受扶、持矛者、映點、灼傷、區分、得時、顯現、野生、月亮的離與合、燃燒路）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
   val classicalFacts: List<HoroscopeClassicalFactDto> = emptyList(),
   /** 各行星離開所在星座前的入相位（依 planet、再依 degrees 排序）；兩端都在 [points] 內，不含 LOT */
   val applications: List<HoroscopeApplicationDto> = emptyList(),
@@ -772,6 +833,14 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
 
   is destiny.core.astrology.classical.Combustion -> HoroscopeCombustionDto(planet.nameKey, zone, distance, approaching, limits.cazimi, limits.combust, limits.underBeams)
 
+  is destiny.core.astrology.classical.Phasis -> HoroscopePhasisDto(planet.nameKey, type, days, lngDeg.value, oriental)
+
+  is destiny.core.astrology.classical.Feral -> HoroscopeFeralDto(planet.nameKey, basis)
+
+  is destiny.core.astrology.classical.LunarConnection -> HoroscopeLunarConnectionDto(separating?.toChartDto(), applying?.toChartDto())
+
+  is destiny.core.astrology.classical.ViaCombusta -> HoroscopeViaCombustaDto(planet.nameKey, lngDeg.value)
+
   is destiny.core.astrology.classical.Maltreatment -> {
     val list = conditions.map { it.toChartDto() }
     if (polarity == destiny.core.astrology.classical.Maltreatment.Polarity.MALTREATMENT) HoroscopeMaltreatmentDto(planet.nameKey, list)
@@ -808,8 +877,12 @@ fun HoroscopeClassicalFactDto.withoutTrack(): HoroscopeClassicalFactDto = when (
   is HoroscopeFrustrationDto -> copy(track = emptyList())
   is HoroscopeTranslationDto, is HoroscopeCollectionDto, is HoroscopeBesiegementDto, is HoroscopeOvercomingDto, is HoroscopeAversionDto,
   is HoroscopeMaltreatmentDto, is HoroscopeBonificationDto, is HoroscopeDoryphoriaDto, is HoroscopeAntisciaDto, is HoroscopeCombustionDto,
-  is HoroscopeSectDto, is HoroscopeHayzDto -> this
+  is HoroscopeSectDto, is HoroscopeHayzDto, is HoroscopePhasisDto, is HoroscopeFeralDto, is HoroscopeLunarConnectionDto,
+  is HoroscopeViaCombustaDto -> this
 }
+
+private fun destiny.core.astrology.classical.LunarConnection.Link.toChartDto() =
+  HoroscopeLunarLinkDto(planet.nameKey, aspect.name, aspect.glyph, orb, days)
 
 /** 格局可能用到的相位；組合格局（雙 T、六芒星、回力鏢）另外併入組成部分的邊 */
 private val AstroPattern.legAspects: Set<Aspect>
