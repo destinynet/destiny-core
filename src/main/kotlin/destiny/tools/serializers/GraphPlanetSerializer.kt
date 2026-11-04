@@ -6,7 +6,6 @@ package destiny.tools.serializers
 import destiny.core.Circular
 import destiny.core.Graph
 import destiny.core.astrology.Planet
-import destiny.core.toString
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
@@ -41,7 +40,7 @@ object GraphPlanetSerializer : KSerializer<Graph<Planet>> {
         append("This chart contains ${circulars.size} closed cycle through rulership : ")
         append(
           circulars.joinToString(", ") { circular: Circular<Planet> ->
-            circular.toList().joinToString("→", postfix = (if (circular.size == 2) "(mutual reception)" else "")) { it.toString(locale) }
+            circular.toList().joinToString("→", postfix = (if (circular.size == 2) "(mutual reception)" else "")) { it.getTitle(locale) }
           }
         )
       }
@@ -50,7 +49,7 @@ object GraphPlanetSerializer : KSerializer<Graph<Planet>> {
     val pathsDesc = value.paths.takeIf { it.isNotEmpty() }
       ?.joinToString(", ", prefix = "This chart shows ${value.paths.size} path(s) through rulership : ") {
         it.joinToString("→") { planet ->
-          planet.toString(locale)
+          planet.getTitle(locale)
         }
       }
 
@@ -60,7 +59,7 @@ object GraphPlanetSerializer : KSerializer<Graph<Planet>> {
         ?.also { isolatedPlanets ->
           append("The following planets are in the signs they rule, with no connections to other planets through rulership: ")
           isolatedPlanets.forEach { p ->
-            append(p.toString(locale))
+            append(p.getTitle(locale))
           }
         }
     }.takeIf { it.isNotBlank() }
@@ -68,7 +67,7 @@ object GraphPlanetSerializer : KSerializer<Graph<Planet>> {
     val terminalsDesc = value.terminals.takeIf { it.isNotEmpty() }
       ?.let { terminals: Set<Planet> ->
         terminals.joinToString(",", prefix = "final dispositor (path terminal, which is not connected to a circle) : ") {
-          it.toString(locale)
+          it.getTitle(locale)
         }
       }
 

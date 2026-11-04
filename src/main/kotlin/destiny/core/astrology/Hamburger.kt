@@ -6,7 +6,6 @@ package destiny.core.astrology
 
 import destiny.core.IPoints
 import destiny.core.Point
-import destiny.core.toString
 import destiny.tools.serializers.astrology.HamburgerSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -51,7 +50,7 @@ sealed class Hamburger(nameKey: String) : Star(nameKey, Star::class.qualifiedNam
 
     override fun fromString(value: String, locale: Locale): Hamburger? {
       return values.firstOrNull {
-        it.toString(locale).equals(value, ignoreCase = true)
+        it.getTitle(locale).equals(value, ignoreCase = true)
       }
     }
 

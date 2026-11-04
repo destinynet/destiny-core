@@ -19,7 +19,6 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.lunarStation.ILunarStationConfig
 import destiny.core.chinese.lunarStation.LunarStationConfig
 import destiny.core.chinese.lunarStation.LunarStationFeature
-import destiny.core.toString
 import destiny.tools.*
 import destiny.tools.location.ReverseGeocodingService
 import destiny.tools.serializers.LocaleSerializer
@@ -147,7 +146,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     val listTransPoints: List<TimeDesc> = TransPoint.entries.flatMap { tp ->
       listOf(SUN, MOON).map { planet ->
         val gmt = riseTransFeature.getGmtTrans(fromGmt, planet, tp, loc, hourBranchConfig.transConfig)!!
-        TimeDesc.TypeTransPoint(gmt, planet.toString(Locale.TAIWAN) + tp.getTitle(Locale.TAIWAN), planet, tp)
+        TimeDesc.TypeTransPoint(gmt, planet.getTitle(Locale.TAIWAN) + tp.getTitle(Locale.TAIWAN), planet, tp)
       }
     }
 

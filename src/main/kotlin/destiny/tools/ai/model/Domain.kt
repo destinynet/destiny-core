@@ -17,6 +17,12 @@ import destiny.tools.toLang
 @Serializable(with = DomainSerializer::class)
 sealed class Domain {
 
+  /**
+   * 識別字（＝類別名，例如 `EW`、`ICHING_RAND`）：JSON、map、bundle key 都用它，[DomainObjectFinder] 也是用它找回物件。
+   * 刻意不依賴 toString —— data object 的 toString 雖然剛好也是類別名，但哪天被覆寫成顯示名稱，存下來的資料就讀不回來了。
+   */
+  val code: String = this::class.simpleName!!
+
   sealed class Bdnp : Domain() {
     /** 八字 */
     data object EW : Bdnp()
@@ -82,7 +88,7 @@ sealed class Domain {
 
 fun Domain.getTitle(locale: Locale): String {
   val resource = Domain::class.qualifiedName!!
-  return I18nBundles.string(resource, locale.toLang(), "$this.title") ?: this.toString()
+  return I18nBundles.string(resource, locale.toLang(), "$code.title") ?: code
 }
 
 object DomainConverter : MapConverter<Domain> {
@@ -92,7 +98,7 @@ object DomainConverter : MapConverter<Domain> {
   override val key: String = "domain"
 
   override fun getMap(context: Domain): Map<String, String> {
-    return mapOf(key to context.toString())
+    return mapOf(key to context.code)
   }
 
   override fun getContext(map: Map<String, String>): Domain? {
@@ -107,7 +113,7 @@ object DomainSerializer: KSerializer<Domain> {
   override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Domain", PrimitiveKind.STRING)
 
   override fun serialize(encoder: Encoder, value: Domain) {
-    encoder.encodeString(value.toString())
+    encoder.encodeString(value.code)
   }
 
   override fun deserialize(decoder: Decoder): Domain {

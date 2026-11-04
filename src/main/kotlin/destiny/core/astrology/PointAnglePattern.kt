@@ -1,6 +1,5 @@
 package destiny.core.astrology
 
-import destiny.core.toString
 import destiny.tools.JSerializable
 import destiny.tools.Lang
 
@@ -28,9 +27,9 @@ data class PointAnglePattern(
   override fun getName(lang: Lang): String {
     return buildString {
       points.iterator().also { iterator ->
-        append(iterator.next().toString(lang))
+        append(iterator.next().getTitle(lang))
         append(" 與 ")
-        append(iterator.next().toString(lang))
+        append(iterator.next().getTitle(lang))
       }
       append(" 形成 ")
       append(angle.toInt())

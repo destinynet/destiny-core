@@ -7,8 +7,6 @@ import destiny.core.Descriptive
 import destiny.core.IPattern
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.Dignity
-import destiny.core.astrology.classical.toString
-import destiny.core.toString
 
 /**
  * 利用 properties 檔案，將 [IPattern] 轉換成 [Descriptive]
@@ -51,11 +49,11 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
         is Score -> (it.value * 100).toInt().toString()
         is ILocaleString -> it.getTitle(lang)
         is Double -> String.format( doubleFormat?:"%.1f", it)
-        is AstroPoint -> it.toString(lang)
+        is AstroPoint -> it.getTitle(lang)
         is Element -> it.getTitle(lang)
         is Quality -> it.getTitle(lang)
         is Aspect -> it.getTitle(lang)
-        is Dignity -> it.toString(lang)
+        is Dignity -> it.getTitle(lang)
         is ZodiacSign -> it.getTitle(lang)
         is Collection<*> -> it.joinToString(",") { item -> objectToString(item?:"")  }
         else -> it.toString()

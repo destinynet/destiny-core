@@ -25,15 +25,6 @@ internal class HouseSystemI18nTest {
     assertEquals("Whole Sign", HouseSystem.WHOLE_SIGN.getTitle(Lang.ZH_TW))
   }
 
-  /** 既有呼叫端用的是 `toString(lang)`／`asLocaleString()`，必須與上面同源 */
-  @Test
-  fun `既有入口與 getTitle 同源`() {
-    HouseSystem.entries.forEach {
-      assertEquals(it.getTitle(Lang.ZH_TW), it.toString(Lang.ZH_TW), "$it 的兩條路徑不同源")
-      assertEquals(it.getTitle(Lang.ZH_TW), it.asLocaleString().getTitle(Lang.ZH_TW))
-    }
-  }
-
   /**
    * 每一個都查得到 —— `getTitle` 查不到時退回列舉名，不會拋例外也不會有人發現。
    * 分宮法是專有名詞，各語系相同，因此只有一份 bundle。

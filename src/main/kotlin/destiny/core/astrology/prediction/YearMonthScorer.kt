@@ -22,7 +22,6 @@ import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.eclipse.IEclipse
 import destiny.core.astrology.eclipse.ILunarEclipse
 import destiny.core.astrology.eclipse.ISolarEclipse
-import destiny.core.toString
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
 import kotlin.math.ln
@@ -282,7 +281,7 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     if (profection.lord in significators) {
       out += PeriodHit(
         PeriodSource.PROFECTION,
-        "year-lord ${profection.lord.toString(Locale.ENGLISH)} is significator",
+        "year-lord ${profection.lord.getTitle(Locale.ENGLISH)} is significator",
         config.profectionLordMultiplier,
       )
     }
@@ -308,7 +307,7 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     if (profection.lord in significators) {
       out += PeriodHit(
         PeriodSource.MONTHLY_PROFECTION,
-        "month-lord ${profection.lord.toString(Locale.ENGLISH)} is significator",
+        "month-lord ${profection.lord.getTitle(Locale.ENGLISH)} is significator",
         multiplier,
       )
     }
@@ -339,7 +338,7 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     targetHouses.firstNotNullOfOrNull { house ->
       ret.houseOverlay[house]?.firstOrNull { it in significators }?.let { house to it }
     }?.let { (house, planet) ->
-      return listOf(PeriodHit(source, "$source ${planet.toString(Locale.ENGLISH)} in natal ${house}th house", multiplier))
+      return listOf(PeriodHit(source, "$source ${planet.getTitle(Locale.ENGLISH)} in natal ${house}th house", multiplier))
     }
 
     // B. 回歸行星與本命 significator/lot 成相位
@@ -348,7 +347,7 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
       return listOf(
         PeriodHit(
           source,
-          "$source ${asp.outerPoint.toString(Locale.ENGLISH)} ${asp.aspect.name} natal ${asp.innerPoint.toString(Locale.ENGLISH)}",
+          "$source ${asp.outerPoint.getTitle(Locale.ENGLISH)} ${asp.aspect.name} natal ${asp.innerPoint.getTitle(Locale.ENGLISH)}",
           multiplier,
         )
       )
@@ -364,9 +363,9 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     val multiplier = config.periodMultipliers[PeriodSource.FIRDARIA] ?: return emptyList()
     return when {
       firdaria.majorRuler in significators ->
-        listOf(PeriodHit(PeriodSource.FIRDARIA, "firdaria major-lord ${firdaria.majorRuler.toString(Locale.ENGLISH)} is significator", multiplier))
+        listOf(PeriodHit(PeriodSource.FIRDARIA, "firdaria major-lord ${firdaria.majorRuler.getTitle(Locale.ENGLISH)} is significator", multiplier))
       firdaria.subRuler in significators ->
-        listOf(PeriodHit(PeriodSource.FIRDARIA, "firdaria sub-lord ${firdaria.subRuler.toString(Locale.ENGLISH)} is significator", multiplier))
+        listOf(PeriodHit(PeriodSource.FIRDARIA, "firdaria sub-lord ${firdaria.subRuler.getTitle(Locale.ENGLISH)} is significator", multiplier))
       else -> emptyList()
     }
   }

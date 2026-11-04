@@ -36,9 +36,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonClassDiscriminator
-import destiny.core.toString as pointToString
 import destiny.core.astrology.classical.Dignity
-import destiny.core.astrology.classical.toString as dignityToString
 
 /** 星名的查表語系 —— 固定繁中，不對外開放為參數 */
 private val ZH = Lang.ZH_TW
@@ -757,7 +755,7 @@ fun HoroscopeChartDto.withReceptions(
       val bIn = md.getDignityOf(p1)
       HoroscopeReceptionDto(
         a = p1, aIn = aIn, b = p2, bIn = bIn,
-        aInLabel = aIn.dignityToString(lang), bInLabel = bIn.dignityToString(lang),
+        aInLabel = aIn.getTitle(lang), bInLabel = bIn.getTitle(lang),
       )
     }
     .distinct()
@@ -780,7 +778,7 @@ fun HoroscopeChartDto.withDignities(
   return copy(points = points.map { p ->
     val planet = (p.point as? Planet)?.takeIf { it in Planet.classicalList } ?: return@map p
     val dignities = with(essential) { planet.getDignities(degrees, sect) }
-    p.copy(dignities = dignities, dignityLabels = dignities.map { it.dignityToString(lang) })
+    p.copy(dignities = dignities, dignityLabels = dignities.map { it.getTitle(lang) })
   })
 }
 
@@ -1051,9 +1049,9 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
       cuspDeg = h.cusp.zDeg,
       cuspSign = h.cusp.sign,
       ruler = h.ruler,
-      rulerLabel = h.ruler.pointToString(ZH),
+      rulerLabel = h.ruler.getTitle(ZH),
       coRuler = MODERN_CO_RULER[h.cusp.sign],
-      coRulerLabel = MODERN_CO_RULER[h.cusp.sign]?.pointToString(ZH),
+      coRulerLabel = MODERN_CO_RULER[h.cusp.sign]?.getTitle(ZH),
     )
   }
 
@@ -1071,7 +1069,7 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
     .map { (point, info) ->
       HoroscopePointDto(
         point = point,
-        label = point.pointToString(ZH),
+        label = point.getTitle(ZH),
         glyph = point.unicode?.toString(),
         zDeg = info.signDegree.zDeg,
         sign = info.signDegree.sign,

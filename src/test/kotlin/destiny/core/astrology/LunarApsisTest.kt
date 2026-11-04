@@ -3,7 +3,6 @@
  */
 package destiny.core.astrology
 
-import destiny.core.toString
 import destiny.tools.KotlinLogging
 import kotlinx.serialization.json.Json
 import java.util.*
@@ -41,7 +40,7 @@ class LunarApsisTest {
       logger.info("{}", each.toString())
     }
 
-    val set = LunarApsis.values.map { it.toString(Locale.TAIWAN) }.toSet()
+    val set = LunarApsis.values.map { it.getTitle(Locale.TAIWAN) }.toSet()
     assertTrue(set.contains("遠地點"))
     assertTrue(set.contains("近地點"))
   }

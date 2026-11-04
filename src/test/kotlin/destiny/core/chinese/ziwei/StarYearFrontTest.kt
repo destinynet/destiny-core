@@ -6,7 +6,6 @@ package destiny.core.chinese.ziwei
 import destiny.core.AbstractPointTest
 import destiny.core.chinese.Branch.*
 import destiny.core.getAbbreviation
-import destiny.core.toString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.Json.Default.decodeFromString
 import java.util.*
@@ -27,9 +26,9 @@ class StarYearFrontTest : AbstractPointTest(StarYearFront::class) {
 
   @Test
   fun testToString() {
-    assertEquals("龍德", StarYearFront.龍德.toString(Locale.TAIWAN))
-    assertEquals("龙德", StarYearFront.龍德.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("龍德", StarYearFront.龍德.toString(Locale.ENGLISH))
+    assertEquals("龍德", StarYearFront.龍德.getTitle(Locale.TAIWAN))
+    assertEquals("龙德", StarYearFront.龍德.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("龍德", StarYearFront.龍德.getTitle(Locale.ENGLISH))
   }
 
   @Test

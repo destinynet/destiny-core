@@ -5,7 +5,6 @@ package destiny.core.astrology
 
 import destiny.core.IPoints
 import destiny.core.Point
-import destiny.core.toString
 import destiny.tools.serializers.astrology.AxisSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -30,7 +29,7 @@ sealed class Axis(nameKey: String, abbrKey: String) : AstroPoint(nameKey, Axis::
 
     override fun fromString(value: String, locale: Locale): Axis? {
       return values.firstOrNull {
-        it.toString(locale).equals(value, ignoreCase = true)
+        it.getTitle(locale).equals(value, ignoreCase = true)
       }
     }
 

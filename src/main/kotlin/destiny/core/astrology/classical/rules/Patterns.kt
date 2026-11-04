@@ -11,7 +11,6 @@ import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.MutualDataWithSign
 import destiny.core.calendar.GmtJulDay
 import destiny.core.chinese.YinYang
-import destiny.core.toString
 import destiny.tools.serializers.IZodiacDegreeSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -272,7 +271,7 @@ sealed class Misc : IPlanetPattern {
     override val star: Star = planet
 
     override fun getTitle(lang: Lang): String {
-      return planet.toString(defaultLocale) + " 空亡"
+      return planet.getTitle(defaultLocale) + " 空亡"
     }
 
     override fun getDescription(lang: Lang): String {

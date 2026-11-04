@@ -4,7 +4,6 @@
 package destiny.core.astrology
 
 import destiny.core.News
-import destiny.core.toString
 import destiny.tools.KotlinLogging
 import kotlinx.serialization.json.Json
 import java.util.*
@@ -35,19 +34,19 @@ class LunarNodeTest {
 
   @Test
   fun testToStringLocale() {
-    assertEquals("北交點" , LunarNode.NORTH.toString(Locale.TAIWAN))
-    assertEquals("北交点" , LunarNode.NORTH.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("North" , LunarNode.NORTH.toString(Locale.ENGLISH))
+    assertEquals("北交點" , LunarNode.NORTH.getTitle(Locale.TAIWAN))
+    assertEquals("北交点" , LunarNode.NORTH.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("North" , LunarNode.NORTH.getTitle(Locale.ENGLISH))
 
     for (each in LunarNode.values) {
-      assertNotNull(each.toString(Locale.TAIWAN))
-      assertNotNull(each.toString(Locale.SIMPLIFIED_CHINESE))
-      assertNotNull(each.toString(Locale.ENGLISH))
+      assertNotNull(each.getTitle(Locale.TAIWAN))
+      assertNotNull(each.getTitle(Locale.SIMPLIFIED_CHINESE))
+      assertNotNull(each.getTitle(Locale.ENGLISH))
       logger.info("{}", each.toString())
     }
 
 
-    val set = LunarNode.values.map { it.toString(Locale.TAIWAN) }.toSet()
+    val set = LunarNode.values.map { it.getTitle(Locale.TAIWAN) }.toSet()
     assertTrue(set.contains("北交點"))
     assertTrue(set.contains("南交點"))
   }
@@ -61,8 +60,8 @@ class LunarNodeTest {
   @Test
   fun testStringConvert() {
     LunarNode.values.forEach { star ->
-      logger.info { "$star = ${star.toString(Locale.ENGLISH)}" }
-      assertSame(star, LunarNode.fromString(star.toString(Locale.ENGLISH)))
+      logger.info { "$star = ${star.getTitle(Locale.ENGLISH)}" }
+      assertSame(star, LunarNode.fromString(star.getTitle(Locale.ENGLISH)))
     }
   }
 }

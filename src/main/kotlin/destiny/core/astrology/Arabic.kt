@@ -5,7 +5,6 @@ package destiny.core.astrology
 
 import destiny.core.IPoints
 import destiny.core.Point
-import destiny.core.toString
 import destiny.tools.serializers.astrology.ArabicSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -55,7 +54,7 @@ sealed class Arabic(nameKey: String, abbrKey: String, unicode: Char? = null) : S
 
     override fun fromString(value: String, locale: Locale): Arabic? {
       return values.firstOrNull {
-        it.toString(locale).equals(value, ignoreCase = true)
+        it.getTitle(locale).equals(value, ignoreCase = true)
       }
     }
   }

@@ -83,18 +83,18 @@ class PatternTranslatorKtTest {
 
     EssentialDignity.MutualReception(VENUS, CAPRICORN , RULER, SATURN, TAURUS , RULER).also {
       assertEquals("互容", it.title)
-      assertEquals("金星 位於 摩羯，與其 廟 (RULER, 土星) 飛至 金牛，形成 廟廟互容。", it.twDesc)
-      assertEquals("Venus is in Capricorn, with its Ruler (RULER, Saturn) flying to Taurus, forming a Ruler/Ruler mutual reception.", it.enDesc)
+      assertEquals("金星 位於 摩羯，與其 廟 (Ruler, 土星) 飛至 金牛，形成 廟廟互容。", it.twDesc)
+      assertEquals("Venus is in Capricorn, with its Ruler (Ruler, Saturn) flying to Taurus, forming a Ruler/Ruler mutual reception.", it.enDesc)
     }
     EssentialDignity.MutualReception(VENUS, CAPRICORN , EXALTATION, MARS, PISCES , EXALTATION).also {
       assertEquals("互容", it.title)
-      assertEquals("金星 位於 摩羯，與其 旺 (EXALTATION, 火星) 飛至 雙魚，形成 旺旺互容。", it.twDesc)
-      assertEquals("Venus is in Capricorn, with its Exaltation (EXALTATION, Mars) flying to Pisces, forming a Exaltation/Exaltation mutual reception.", it.enDesc)
+      assertEquals("金星 位於 摩羯，與其 旺 (Exaltation, 火星) 飛至 雙魚，形成 旺旺互容。", it.twDesc)
+      assertEquals("Venus is in Capricorn, with its Exaltation (Exaltation, Mars) flying to Pisces, forming a Exaltation/Exaltation mutual reception.", it.enDesc)
     }
     EssentialDignity.MutualReception(MOON, CAPRICORN , EXALTATION, SATURN, TAURUS, RULER).also {
       assertEquals("互容", it.title)
-      assertEquals("月亮 位於 摩羯，與其 廟 (RULER, 土星) 飛至 金牛，形成 旺廟互容。", it.twDesc)
-      assertEquals("Moon is in Capricorn, with its Ruler (RULER, Saturn) flying to Taurus, forming a Exaltation/Ruler mutual reception.", it.enDesc)
+      assertEquals("月亮 位於 摩羯，與其 廟 (Ruler, 土星) 飛至 金牛，形成 旺廟互容。", it.twDesc)
+      assertEquals("Moon is in Capricorn, with its Ruler (Ruler, Saturn) flying to Taurus, forming a Exaltation/Ruler mutual reception.", it.enDesc)
     }
   }
 

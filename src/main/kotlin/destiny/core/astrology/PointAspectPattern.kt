@@ -1,7 +1,6 @@
 package destiny.core.astrology
 
 import destiny.core.astrology.IPointAspectPattern.AspectType
-import destiny.core.toString
 import destiny.tools.AlignTools
 import destiny.tools.Score
 import destiny.tools.serializers.DoubleTwoDecimalSerializer
@@ -55,7 +54,7 @@ interface IPointAspectPattern : IPointAnglePattern, Comparable<IPointAspectPatte
 
   fun brief(): String {
     val typeString = aspectType?.toString()?.take(1) ?: "?"
-    val pointsString = points.joinToString(", ") { it.toString(Locale.TRADITIONAL_CHINESE) }
+    val pointsString = points.joinToString(", ") { it.getTitle(Locale.TRADITIONAL_CHINESE) }
     val orbString = AlignTools.leftPad(orb.toString(), 4)
     val scoreString = score?.let { " ，得分：${(it.value * 100).toString().take(5)}" } ?: ""
 

@@ -5,29 +5,13 @@
 package destiny.core.astrology.classical
 
 import destiny.tools.ILocaleString
-import java.util.*
 import destiny.tools.I18nBundles
-import destiny.tools.toLang
 import destiny.tools.Lang
-
-fun Dignity.asLocaleString() = object : ILocaleString {
-  private val resource = "destiny.core.astrology.classical.Classical"
-  override fun getTitle(lang: Lang): String {
-    return I18nBundles.string(resource, lang, this@asLocaleString.nameKey) ?: this@asLocaleString.nameKey
-  }
-}
-
-fun Dignity.toString(lang: Lang): String {
-  return this.asLocaleString().getTitle(lang)
-}
-
-/** 橋接，說明見 [destiny.tools.ILocaleString] */
-fun Dignity.toString(locale: Locale): String = toString(locale.toLang())
 
 /**
  * 行星落入星座的 , 廟 旺 陷 落
  */
-enum class Dignity(val nameKey: String) : Comparator<Dignity> {
+enum class Dignity(val nameKey: String) : Comparator<Dignity>, ILocaleString {
 
   /** 廟 (+5) , 守護  */
   RULER("Dignity.RULER"),
@@ -49,6 +33,10 @@ enum class Dignity(val nameKey: String) : Comparator<Dignity> {
 
   /** 陷 (-5) , 自己守護星座的對立面 */
   DETRIMENT("Dignity.DETRIMENT");
+
+  override fun getTitle(lang: Lang): String {
+    return I18nBundles.string("destiny.core.astrology.classical.Classical", lang, nameKey) ?: nameKey
+  }
 
   override fun compare(o1: Dignity?, o2: Dignity?): Int {
     return entries.toTypedArray().let { array ->

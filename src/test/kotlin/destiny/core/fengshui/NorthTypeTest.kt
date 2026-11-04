@@ -12,13 +12,13 @@ class NorthTypeTest {
   @Test
   fun testToString() {
     Locale.TAIWAN.also { locale ->
-      assertEquals("正北", NorthType.TRUE.toString(locale))
-      assertEquals("磁北", NorthType.MAGNETIC.toString(locale))
+      assertEquals("正北", NorthType.TRUE.getTitle(locale))
+      assertEquals("磁北", NorthType.MAGNETIC.getTitle(locale))
     }
 
     Locale.SIMPLIFIED_CHINESE.also { locale ->
-      assertEquals("正北", NorthType.TRUE.toString(locale))
-      assertEquals("磁北", NorthType.MAGNETIC.toString(locale))
+      assertEquals("正北", NorthType.TRUE.getTitle(locale))
+      assertEquals("磁北", NorthType.MAGNETIC.getTitle(locale))
     }
   }
 }

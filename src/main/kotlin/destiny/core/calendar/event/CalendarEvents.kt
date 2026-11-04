@@ -20,7 +20,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.IAnchoredEvent
 import destiny.core.calendar.IEventSpan
 import destiny.core.calendar.SolarTerms
-import destiny.core.toString
 import destiny.tools.Lang
 import destiny.tools.getTitle
 import destiny.tools.serializers.astrology.PlanetSerializer
@@ -76,7 +75,7 @@ data class RetrogradeCycleEvent(
    */
   fun inShadowZone(lng: ZodiacDegree): Boolean = lng.between(returningLng, retrogradingLng)
 
-  override fun getTitle(lang: Lang): String = planet.toString(lang) + RetrogradePhase.RETROGRADING.getTitle(lang)
+  override fun getTitle(lang: Lang): String = planet.getTitle(lang) + RetrogradePhase.RETROGRADING.getTitle(lang)
 
   companion object {
     fun of(cycle: RetrogradeCycle): RetrogradeCycleEvent {
@@ -224,5 +223,5 @@ data class OutOfBoundsEvent(
     OutOfBoundsPhase.LEAVING  -> end
   }
 
-  override fun getTitle(lang: Lang): String = planet.toString(lang) + OutOfBoundsPhase.ENTERING.getTitle(lang)
+  override fun getTitle(lang: Lang): String = planet.getTitle(lang) + OutOfBoundsPhase.ENTERING.getTitle(lang)
 }

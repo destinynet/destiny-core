@@ -66,7 +66,7 @@ sealed class LunarStation(
 
   /** 角木蛟 , 亢金龍 ... 這樣的完整名稱 :  星 + 行星星曜 + 動物 , 共三字元 */
   fun getFullName(locale: Locale): String {
-    return "${this.toString(locale)}${this.planet.getAbbreviation(locale)}${this.animal.getTitle(locale)}"
+    return "${this.getTitle(locale)}${this.planet.getAbbreviation(locale)}${this.animal.getTitle(locale)}"
   }
 
   override fun next(n: Int): LunarStation {
@@ -98,7 +98,7 @@ sealed class LunarStation(
     override fun fromString(value: String, locale: Locale): LunarStation? {
       return values.firstOrNull {
         // 不能用 英文比 , 因為 壁,畢 兩者相同
-        it.toString(Locale.TRADITIONAL_CHINESE).equals(value, ignoreCase = true)
+        it.getTitle(Locale.TRADITIONAL_CHINESE).equals(value, ignoreCase = true)
       }
     }
   }

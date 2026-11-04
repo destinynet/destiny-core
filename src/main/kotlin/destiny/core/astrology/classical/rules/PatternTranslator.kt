@@ -2,7 +2,6 @@ package destiny.core.astrology.classical.rules
 
 import destiny.core.DayNight
 import destiny.core.Descriptive
-import destiny.core.toString
 import destiny.core.IPatternDescriptor
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.FixedStar
@@ -219,9 +218,9 @@ internal class SpearBearers(
   private val sect: DayNight?,
 ) : ILocaleString {
   override fun getTitle(lang: Lang): String {
-    val lightName = light.toString(lang)
+    val lightName = light.getTitle(lang)
     return bearers.joinToString(if (lang.language == "en") "; " else "、") { d ->
-      val name = d.bearer.toString(lang)
+      val name = d.bearer.getTitle(lang)
       val dist = "%.2f°".format(d.distance)
       val sectWord = if (sect == null || d.inSect == null) null else when (lang.language) {
         "en" -> (if (d.inSect) "of the sect" else "contrary to the sect") + " of this ${if (sect == DayNight.DAY) "day" else "night"} chart"
@@ -241,7 +240,7 @@ internal class SpearBearers(
 internal class MaltreatmentConditions(private val conditions: List<destiny.core.astrology.classical.Maltreatment.Condition>) : ILocaleString {
 
   override fun getTitle(lang: Lang): String {
-    val name = { p: destiny.core.astrology.AstroPoint -> p.toString(lang) }
+    val name = { p: destiny.core.astrology.AstroPoint -> p.getTitle(lang) }
     val deg = { d: Double -> "%.2f°".format(d) }
     val zhAspect = mapOf(SEXTILE to "六分", SQUARE to "四分", TRINE to "三分", OPPOSITION to "對沖", CONJUNCTION to "合")
     return conditions.joinToString(when (lang.language) { "en" -> "; "; else -> "、" }) { c ->

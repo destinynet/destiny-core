@@ -14,10 +14,10 @@ class HemisphereByTest {
 
   @Test
   fun testToString() {
-    assertEquals("赤道" , HemisphereBy.EQUATOR.toString(Locale.TAIWAN))
-    assertEquals("赤緯" , HemisphereBy.DECLINATION.toString(Locale.TAIWAN))
+    assertEquals("赤道" , HemisphereBy.EQUATOR.getTitle(Locale.TAIWAN))
+    assertEquals("赤緯" , HemisphereBy.DECLINATION.getTitle(Locale.TAIWAN))
 
-    assertEquals("赤纬" , HemisphereBy.DECLINATION.toString(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("赤纬" , HemisphereBy.DECLINATION.getTitle(Locale.SIMPLIFIED_CHINESE))
   }
 
   @Test
@@ -27,8 +27,8 @@ class HemisphereByTest {
       assertNotSame('!', each.toString()[0])
 
       val locale = Locale.ENGLISH
-      assertNotNull(each.toString(locale))
-      assertNotSame('!', each.toString(locale)[0])
+      assertNotNull(each.getTitle(locale))
+      assertNotSame('!', each.getTitle(locale)[0])
 
     }
   }

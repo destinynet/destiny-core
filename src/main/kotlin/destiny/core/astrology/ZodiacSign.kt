@@ -81,6 +81,10 @@ enum class ZodiacSign(val abbrKey: String,
     map.getValue(this)
   }
 
+  /**
+   * ⚠️ 回傳**預設語系的顯示名稱**（例如「獅子」），不是識別字。
+   * 要識別字用 [name]（kotlinx／Jackson／JPA 也都走 [name]），要顯示名稱用 [getTitle] 並明確帶語系。
+   */
   override fun toString(): String {
     return this.getTitle(defaultLocale)
   }

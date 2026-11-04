@@ -7,7 +7,6 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.impls.TianyiZiweiBookImpl
 import destiny.core.getAbbreviation
-import destiny.core.toString
 import destiny.tools.KotlinLogging
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.Json.Default.decodeFromString
@@ -33,9 +32,9 @@ class StarLuckyTest {
 
   @Test
   fun testToString() {
-    assertEquals("左輔", StarLucky.左輔.toString(Locale.TAIWAN))
-    assertEquals("左辅", StarLucky.左輔.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("左輔", StarLucky.左輔.toString(Locale.ENGLISH))
+    assertEquals("左輔", StarLucky.左輔.getTitle(Locale.TAIWAN))
+    assertEquals("左辅", StarLucky.左輔.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("左輔", StarLucky.左輔.getTitle(Locale.ENGLISH))
   }
 
   @Test
@@ -50,11 +49,11 @@ class StarLuckyTest {
   fun testToStrings() {
     for (star in StarLucky.values) {
       assertNotNull(star.toString())
-      assertNotNull(star.toString(Locale.TAIWAN))
-      assertNotNull(star.toString(Locale.CHINA))
+      assertNotNull(star.getTitle(Locale.TAIWAN))
+      assertNotNull(star.getTitle(Locale.CHINA))
       logger.info("tw = {}({}) , cn = {}({})",
-                  star.toString(Locale.TAIWAN), star.getAbbreviation(Locale.TAIWAN),
-                  star.toString(Locale.CHINA), star.getAbbreviation(Locale.CHINA))
+                  star.getTitle(Locale.TAIWAN), star.getAbbreviation(Locale.TAIWAN),
+                  star.getTitle(Locale.CHINA), star.getAbbreviation(Locale.CHINA))
     }
   }
 

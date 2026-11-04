@@ -5,20 +5,20 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Descriptive
 import destiny.core.chinese.Stem
-import java.util.*
+import destiny.tools.ILocaleString
 import destiny.tools.I18nBundles
-import destiny.tools.toLang
+import destiny.tools.Lang
 import destiny.tools.bundleName
 
-enum class T4Value {
+enum class T4Value : ILocaleString {
 
   祿,
   權,
   科,
   忌;
 
-  fun toString(locale: Locale): String {
-    return I18nBundles.string(ZStar::class.bundleName(), locale.toLang(), name) ?: name
+  override fun getTitle(lang: Lang): String {
+    return I18nBundles.string(ZStar::class.bundleName(), lang, name) ?: name
   }
 }
 /**

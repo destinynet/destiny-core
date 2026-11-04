@@ -8,7 +8,6 @@ package destiny.core.astrology
 import destiny.core.AbstractPointTest
 import destiny.core.astrology.Planet.Companion.aheadOf
 import destiny.core.getAbbreviation
-import destiny.core.toString
 import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.test.*
@@ -47,14 +46,14 @@ class PlanetTest : AbstractPointTest(Planet::class) {
 
   @Test
   fun testToStringLocale() {
-    assertEquals("太陽", Planet.SUN.toString(Locale.TAIWAN))
-    assertEquals("太阳", Planet.SUN.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("Sun", Planet.SUN.toString(Locale.ENGLISH))
+    assertEquals("太陽", Planet.SUN.getTitle(Locale.TAIWAN))
+    assertEquals("太阳", Planet.SUN.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("Sun", Planet.SUN.getTitle(Locale.ENGLISH))
 
     assertEquals("日", Planet.SUN.getAbbreviation(Locale.TAIWAN))
 
     val locale = Locale.ENGLISH
-    assertEquals("Sun", Planet.SUN.toString(locale))
+    assertEquals("Sun", Planet.SUN.getTitle(locale))
     assertEquals("Su", Planet.SUN.getAbbreviation(locale))
   }
 

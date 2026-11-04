@@ -30,7 +30,6 @@ import destiny.core.chinese.AgeType
 import destiny.core.getAbbreviation
 import destiny.tools.Lang
 import kotlinx.serialization.Serializable
-import destiny.core.toString as pointToString
 
 /** 星名的查表語系 —— 紫微固定繁中，不對外開放為參數 */
 private val ZH = Lang.ZH_TW
@@ -182,8 +181,8 @@ fun IPlate.toZiweiPlateDto(density: ChartDensity, yearsBy: AgeType? = null): Ziw
       dayNight = dayNight.name,
       fiveElement = fiveElement.toString(),
       state = state,
-      mainStarLabel = mainStar.pointToString(ZH),
-      bodyStarLabel = bodyStar.pointToString(ZH),
+      mainStarLabel = mainStar.getTitle(ZH),
+      bodyStarLabel = bodyStar.getTitle(ZH),
       mingBranch = houseDataSet.firstOrNull { it.natal() == House.命宮 }?.stemBranch?.branch?.name ?: "",
       bodyBranch = bodyHouse.branch.name,
     ),
@@ -203,7 +202,7 @@ fun IPlate.toZiweiPlateDto(density: ChartDensity, yearsBy: AgeType? = null): Ziw
           val strength = starStrengthMap[star]
           val t4 = transFours[star].orEmpty()
           ZiweiStarDto(
-            label = star.pointToString(ZH),
+            label = star.getTitle(ZH),
             abbr = star.getAbbreviation(ZH),
             tier = star.tierLabel,
             strength = strength,
@@ -214,7 +213,7 @@ fun IPlate.toZiweiPlateDto(density: ChartDensity, yearsBy: AgeType? = null): Ziw
         },
         flowHouseLabels = layers.mapNotNull { type -> houseData.flowHouseMap[type]?.let { type to it.value } }.toMap(),
         flowHouseAbbrs = layers.mapNotNull { type -> houseData.flowHouseMap[type]?.let { type to it.abbr.toString() } }.toMap(),
-        flies = houseData.flies.map { (v, star, branch) -> ZiweiFlyDto(v, star.pointToString(ZH), branch.name) }
+        flies = houseData.flies.map { (v, star, branch) -> ZiweiFlyDto(v, star.getTitle(ZH), branch.name) }
           .sortedBy { it.value.ordinal },
         smallRanges = houseData.smallRanges,
         fortuneFromYear = westYearOfAge(houseData.rangeFromAge),

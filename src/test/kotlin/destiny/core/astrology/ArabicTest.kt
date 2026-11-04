@@ -5,7 +5,6 @@ package destiny.core.astrology
 
 import destiny.core.AbstractPointTest
 import destiny.core.getAbbreviation
-import destiny.core.toString
 import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.test.Test
@@ -27,21 +26,21 @@ class ArabicTest : AbstractPointTest(Arabic::class) {
   @Test
   fun testToStringLocale() {
 
-    assertEquals("福點", Arabic.Fortune.toString(Locale.TAIWAN))
-    assertEquals("精神點", Arabic.Spirit.toString(Locale.TAIWAN))
-    assertEquals("愛情點", Arabic.Eros.toString(Locale.TAIWAN))
-    assertEquals("勝利點", Arabic.Victory.toString(Locale.TAIWAN))
-    assertEquals("必要點", Arabic.Necessity.toString(Locale.TAIWAN))
-    assertEquals("勇氣點", Arabic.Courage.toString(Locale.TAIWAN))
-    assertEquals("復仇點", Arabic.Nemesis.toString(Locale.TAIWAN))
+    assertEquals("福點", Arabic.Fortune.getTitle(Locale.TAIWAN))
+    assertEquals("精神點", Arabic.Spirit.getTitle(Locale.TAIWAN))
+    assertEquals("愛情點", Arabic.Eros.getTitle(Locale.TAIWAN))
+    assertEquals("勝利點", Arabic.Victory.getTitle(Locale.TAIWAN))
+    assertEquals("必要點", Arabic.Necessity.getTitle(Locale.TAIWAN))
+    assertEquals("勇氣點", Arabic.Courage.getTitle(Locale.TAIWAN))
+    assertEquals("復仇點", Arabic.Nemesis.getTitle(Locale.TAIWAN))
 
-    assertEquals("福点", Arabic.Fortune.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("精神点", Arabic.Spirit.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("爱情点", Arabic.Eros.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("胜利点", Arabic.Victory.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("必要点", Arabic.Necessity.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("勇气点", Arabic.Courage.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("复仇点", Arabic.Nemesis.toString(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("福点", Arabic.Fortune.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("精神点", Arabic.Spirit.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("爱情点", Arabic.Eros.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("胜利点", Arabic.Victory.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("必要点", Arabic.Necessity.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("勇气点", Arabic.Courage.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("复仇点", Arabic.Nemesis.getTitle(Locale.SIMPLIFIED_CHINESE))
   }
 
   @Test

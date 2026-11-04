@@ -6,7 +6,6 @@ package destiny.core.astrology
 import destiny.core.DayNight
 import destiny.core.IPoints
 import destiny.core.Point
-import destiny.core.toString
 import destiny.tools.serializers.astrology.PlanetSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -80,7 +79,7 @@ sealed class Planet(nameKey: String,
 
     override fun fromString(value: String, locale: Locale): Planet? {
       return values.firstOrNull {
-        it.toString(locale).equals(value, ignoreCase = true)
+        it.getTitle(locale).equals(value, ignoreCase = true)
       }
     }
   }

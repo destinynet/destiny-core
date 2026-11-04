@@ -5,7 +5,6 @@ package destiny.core.astrology
 
 import destiny.core.AbstractPointTest
 import destiny.core.getAbbreviation
-import destiny.core.toString
 import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.test.*
@@ -25,10 +24,10 @@ class AxisTest : AbstractPointTest(Axis::class) {
   @Test
   fun testString() {
 
-    assertEquals("Rising" , Axis.RISING.toString(Locale.ENGLISH))
+    assertEquals("Rising" , Axis.RISING.getTitle(Locale.ENGLISH))
     assertEquals("AC" , Axis.RISING.getAbbreviation(Locale.ENGLISH))
-    assertEquals("東昇" , Axis.RISING.toString(Locale.TRADITIONAL_CHINESE))
-    assertEquals("東昇" , Axis.RISING.toString(Locale.TAIWAN))
+    assertEquals("東昇" , Axis.RISING.getTitle(Locale.TRADITIONAL_CHINESE))
+    assertEquals("東昇" , Axis.RISING.getTitle(Locale.TAIWAN))
     assertEquals("昇" , Axis.RISING.getAbbreviation(Locale.TAIWAN))
 
     Axis.array.forEach { p ->
@@ -39,7 +38,7 @@ class AxisTest : AbstractPointTest(Axis::class) {
       }
 
 
-      p.toString(Locale.ENGLISH).also {
+      p.getTitle(Locale.ENGLISH).also {
         assertNotNull(it)
         logger.info("{} abbreviation (ENGLISH) -> {}", it, p.getAbbreviation(Locale.getDefault()))
         assertNotSame('!', it[0])

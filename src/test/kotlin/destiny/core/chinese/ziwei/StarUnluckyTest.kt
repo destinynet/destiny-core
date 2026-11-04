@@ -13,7 +13,6 @@ import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun火星_全集
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun鈴星_全集
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun陀羅
 import destiny.core.getAbbreviation
-import destiny.core.toString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.Json.Default.decodeFromString
 import java.util.*
@@ -35,9 +34,9 @@ class StarUnluckyTest : AbstractPointTest(StarUnlucky::class) {
 
   @Test
   fun testToString() {
-    assertEquals("鈴星" , StarUnlucky.鈴星.toString(Locale.TAIWAN))
-    assertEquals("铃星" , StarUnlucky.鈴星.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("鈴星" , StarUnlucky.鈴星.toString(Locale.ENGLISH))
+    assertEquals("鈴星" , StarUnlucky.鈴星.getTitle(Locale.TAIWAN))
+    assertEquals("铃星" , StarUnlucky.鈴星.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("鈴星" , StarUnlucky.鈴星.getTitle(Locale.ENGLISH))
   }
 
   @Test
@@ -51,11 +50,11 @@ class StarUnluckyTest : AbstractPointTest(StarUnlucky::class) {
   fun testToStrings() {
     for (star in StarUnlucky.values) {
       assertNotNull(star.toString())
-      assertNotNull(star.toString(Locale.TAIWAN))
-      assertNotNull(star.toString(Locale.CHINA))
+      assertNotNull(star.getTitle(Locale.TAIWAN))
+      assertNotNull(star.getTitle(Locale.CHINA))
       logger.info("tw = {}({}) , cn = {}({})",
-                  star.toString(Locale.TAIWAN), star.getAbbreviation(Locale.TAIWAN),
-                  star.toString(Locale.CHINA), star.getAbbreviation(Locale.CHINA))
+                  star.getTitle(Locale.TAIWAN), star.getAbbreviation(Locale.TAIWAN),
+                  star.getTitle(Locale.CHINA), star.getAbbreviation(Locale.CHINA))
     }
   }
 

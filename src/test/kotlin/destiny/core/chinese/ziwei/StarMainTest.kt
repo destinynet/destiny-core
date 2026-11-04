@@ -6,7 +6,6 @@ package destiny.core.chinese.ziwei
 import destiny.core.AbstractPointTest
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.getAbbreviation
-import destiny.core.toString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.Json.Default.decodeFromString
 import java.util.*
@@ -33,13 +32,13 @@ class StarMainTest : AbstractPointTest(StarMain::class) {
 
   @Test
   fun testToString() {
-    assertEquals("天機", 天機.toString(Locale.TAIWAN))
-    assertEquals("天机", 天機.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("天機", 天機.toString(Locale.ENGLISH))
+    assertEquals("天機", 天機.getTitle(Locale.TAIWAN))
+    assertEquals("天机", 天機.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("天機", 天機.getTitle(Locale.ENGLISH))
 
-    assertEquals("太陰", 太陰.toString(Locale.TAIWAN))
-    assertEquals("太阴", 太陰.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("太陰", 太陰.toString(Locale.ENGLISH))
+    assertEquals("太陰", 太陰.getTitle(Locale.TAIWAN))
+    assertEquals("太阴", 太陰.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("太陰", 太陰.getTitle(Locale.ENGLISH))
   }
 
   @Test

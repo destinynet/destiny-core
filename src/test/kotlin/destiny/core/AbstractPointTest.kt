@@ -22,7 +22,7 @@ abstract class AbstractPointTest(private val kClass: KClass<out Point>) {
 
   private fun ensureToStringLocale(point: Point) {
     locales.forEach { locale ->
-      point.toString(locale).also {
+      point.getTitle(locale).also {
         assertTrue(it.isNotBlank())
         assertNotSame('!', it[0])
         logger.info { "$locale of $point = $it" }
@@ -61,7 +61,7 @@ abstract class AbstractPointTest(private val kClass: KClass<out Point>) {
         kClass.sealedSubclasses.map { it.objectInstance }.forEach { p ->
           assertNotNull(p)
 
-          locales.map { it to p.toString(it) }
+          locales.map { it to p.getTitle(it) }
             .map { (locale, string) ->
               Triple(locale, string, iPoints.fromString(string, locale))
             }.filter { (_, _, point) -> point != null }

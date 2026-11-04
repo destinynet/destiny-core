@@ -6,7 +6,6 @@ package destiny.core.astrology
 
 import destiny.core.AbstractPointTest
 import destiny.core.getAbbreviation
-import destiny.core.toString
 import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.test.Test
@@ -31,11 +30,11 @@ class HamburgerTest : AbstractPointTest(Hamburger::class) {
     Hamburger.values.forEach {
       assertNotNull(it)
     }
-    assertEquals("Zeus", Hamburger.ZEUS.toString(Locale.of("zh", "TW")))
+    assertEquals("Zeus", Hamburger.ZEUS.getTitle(Locale.of("zh", "TW")))
     //assertEquals("Ze", Hamburger.ZEUS.getAbbreviation(Locale("zh", "TW")))
 
     val locale = Locale.of("en")
-    assertEquals("Zeus", Hamburger.ZEUS.toString(locale))
+    assertEquals("Zeus", Hamburger.ZEUS.getTitle(locale))
     assertEquals("Ze", Hamburger.ZEUS.getAbbreviation(locale))
   }
 

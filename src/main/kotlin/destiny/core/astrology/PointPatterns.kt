@@ -4,7 +4,6 @@
 package destiny.core.astrology
 
 import destiny.core.IPattern
-import destiny.core.toString
 import destiny.tools.Lang
 
 interface IAstroPattern : IPattern
@@ -18,7 +17,7 @@ data class PointSignPattern(override val point: AstroPoint,
                             override val sign: ZodiacSign) : IPointSignPattern {
   override fun getName(lang: Lang): String {
     return buildString {
-      append(point.toString(lang))
+      append(point.getTitle(lang))
       append(" 在 ")
       append(sign)
       append("座")
@@ -35,7 +34,7 @@ data class PointHousePattern(override val point: AstroPoint,
                              override val house : Int) : IPointHousePattern {
   override fun getName(lang: Lang): String {
     return buildString {
-      append(point.toString(lang))
+      append(point.getTitle(lang))
       append(" 在 第")
       append(house)
       append("宮")

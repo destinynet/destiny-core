@@ -3,7 +3,6 @@
  */
 package destiny.core.astrology
 
-import destiny.core.asLocaleString
 import destiny.core.astrology.prediction.IPrimaryDirection
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -59,8 +58,8 @@ class EventsTraversalPrimaryDirectionImpl(
     return events.asSequence()
       .filter { it.eventGmt in fromGmtJulDay..toGmtJulDay }
       .map { ev ->
-        val promissorName = ev.promissor.asLocaleString().getTitle(Locale.ENGLISH)
-        val significatorName = ev.significator.asLocaleString().getTitle(Locale.ENGLISH)
+        val promissorName = ev.promissor.getTitle(Locale.ENGLISH)
+        val significatorName = ev.significator.getTitle(Locale.ENGLISH)
         val description = "[PD $promissorName] ${ev.aspect} [natal $significatorName]" +
           if (ev.forward) " (direct)" else " (converse)"
 

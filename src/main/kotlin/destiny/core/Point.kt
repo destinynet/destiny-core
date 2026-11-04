@@ -6,7 +6,6 @@ import destiny.tools.ILocaleString
 import destiny.tools.JSerializable
 import destiny.tools.toLang
 import java.util.*
-import destiny.tools.defaultLocale
 import destiny.tools.Lang
 
 /**
@@ -43,7 +42,7 @@ abstract class Point(
   val nameKey: String,
   val resource: String,
   /** 縮寫key , 為了輸出美觀所用 , 限定兩個 bytes , 例如 : 日(SU) , 月(MO) , 冥(PL) , 升(No) , 強(So) , 穀 , 灶 ... */
-  val abbrKey: String? = null) : JSerializable
+  val abbrKey: String? = null) : ILocaleString, JSerializable
 {
 
   init {
@@ -55,14 +54,24 @@ abstract class Point(
     return getByNameKey(nameKey) ?: throw IllegalArgumentException("$nameKey does not exist")
   }
 
-  /** 名稱  */
-  private val name: String by lazy {
-    I18nBundles.string(resource, defaultLocale.toLang(), nameKey) ?: nameKey
+  override fun getTitle(lang: Lang): String {
+    return I18nBundles.string(resource, lang, nameKey) ?: nameKey
   }
 
-  /** toString 直接取名稱  */
+  /** 預設語系（[Lang.DEFAULT]）的名稱，toString 用 */
+  private val defaultTitle: String by lazy { getTitle(Lang.DEFAULT) }
+
+  /**
+   * ⚠️ 回傳**預設語系的顯示名稱**（例如「太陽」），不是識別字。
+   *
+   * - 要識別字（JSON、map key、比對、去重、URL、SQL）一律用 [nameKey]
+   * - 要顯示名稱一律用 [getTitle]，明確帶語系
+   *
+   * 顯示名稱不是一對一的（紫微的陽空、陰空都叫「旬空」），拿它當 key 會悄悄合併兩顆星；
+   * Jackson／Gson 遇到非 enum 的 Map key 也會呼叫 toString。序列化請走各自的 serializer（寫 [nameKey]）。
+   */
   override fun toString(): String {
-    return name
+    return defaultTitle
   }
 
   override fun equals(other: Any?): Boolean {
@@ -86,19 +95,6 @@ abstract class Point(
     fun getByNameKey(name : String) : Point? = instances[name]
   }
 }
-
-fun Point.asLocaleString() = object : ILocaleString {
-  override fun getTitle(lang: Lang): String {
-    return I18nBundles.string(resource, lang, nameKey) ?: nameKey
-  }
-}
-
-fun Point.toString(lang: Lang): String {
-  return this.asLocaleString().getTitle(lang)
-}
-
-/** 橋接，說明見 [destiny.tools.ILocaleString] */
-fun Point.toString(locale: Locale): String = toString(locale.toLang())
 
 /** 取得縮寫 , 如果沒有傳入縮寫，則把 name 取前兩個 bytes  */
 fun Point.getAbbreviation(lang: Lang): String {

@@ -9,7 +9,6 @@ import destiny.core.astrology.eclipse.EclipseTime
 import destiny.core.astrology.eclipse.LunarType
 import destiny.core.astrology.eclipse.SolarType
 import destiny.core.chinese.Branch
-import destiny.core.toString
 import destiny.tools.getTitle
 import java.util.*
 import destiny.tools.defaultLocale
@@ -63,7 +62,7 @@ sealed class TimeDesc(override val begin: GmtJulDay, open val descs: List<String
   /** 逆行 開始/結束 */
   sealed class Retrograde(star: Star , type : StationaryType , begin: GmtJulDay) : TimeDesc(
     begin,
-    star.toString(defaultLocale) + " " + type.getTitle(defaultLocale)
+    star.getTitle(defaultLocale) + " " + type.getTitle(defaultLocale)
   ) {
 
     data class Begin(val stationary: Stationary) : Retrograde(stationary.star, StationaryType.DIRECT_TO_RETROGRADE, stationary.begin)

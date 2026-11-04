@@ -18,7 +18,6 @@ import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
-import destiny.core.toString
 import destiny.tools.*
 import destiny.tools.JSerializable
 import jakarta.inject.Inject
@@ -606,7 +605,7 @@ class ZiweiFeature(
         append("命宮在")
         append(mainHouse.branch).append(",")
 
-        append(StarMain.紫微.toString(defaultLocale)).append("在")
+        append(StarMain.紫微.getTitle(defaultLocale)).append("在")
         starMap[StarMain.紫微]?.also { ziweiHouse: HouseData ->
           append(ziweiHouse.stemBranch.branch)
           append("(").append(ziweiHouse.house).append("宮)")
@@ -620,10 +619,10 @@ class ZiweiFeature(
 
       val line3 = buildString {
         append("命主：")
-        append(mainStar.toString(locale))
+        append(mainStar.getTitle(locale))
         append("，")
         append("身主：")
-        append(bodyStar.toString(locale))
+        append(bodyStar.getTitle(locale))
       }
 
 

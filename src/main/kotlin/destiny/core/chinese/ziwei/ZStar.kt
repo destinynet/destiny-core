@@ -5,7 +5,6 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.IPoints
 import destiny.core.Point
-import destiny.core.toString
 import destiny.tools.serializers.ZStarSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -72,7 +71,7 @@ sealed class ZStar : Point, Comparable<ZStar> {
     return if (typeCompare != 0)
       typeCompare
     else {
-      this.toString(Locale.TAIWAN).compareTo(other.toString(Locale.TAIWAN))
+      this.getTitle(Locale.TAIWAN).compareTo(other.getTitle(Locale.TAIWAN))
     }
   }
 

@@ -21,6 +21,16 @@ import java.util.*
  * 代價是本檔仍相依 `java.util.Locale` —— 但那正是刻意的收斂：
  * **整個 destiny-core 的 Locale 相依集中在這一個方法**（同 [I18nBundles] 之於 ResourceBundle）。
  * 轉 KMP 時把它移到 jvmMain 的 extension，屆時再由編譯器帶著做一次 import 掃描。
+ *
+ * ## 不要再寫 `toString(locale)`／`asLocaleString()`
+ *
+ * 2008 年的 Java 版本方法名就叫 `toString(Locale)`，後來改成 [getTitle]，但 `Point`、`Dignity` 等
+ * 留著 `fun X.toString(locale)` extension 與 `asLocaleString()` 轉接（2026-11-04 全部收掉）。
+ * 有名稱的型別請**直接實作本介面**：member 永遠勝過 extension，不會像 `Enum.getTitle` 那樣
+ * 在 bundle 格式不同時靜默退回列舉名。
+ *
+ * 無參數的 `toString()` 若回傳顯示名稱，它只是 debug／預設語系的方便；識別字（JSON、map key、比對、
+ * 去重、URL、SQL）一律用 `nameKey`／`name`。
  */
 interface ILocaleString : JSerializable {
 

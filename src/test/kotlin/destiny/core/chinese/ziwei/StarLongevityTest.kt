@@ -16,7 +16,6 @@ import destiny.core.chinese.ziwei.StarLongevity.Companion.fun胎
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun長生
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun養
 import destiny.core.getAbbreviation
-import destiny.core.toString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.Json.Default.decodeFromString
 import java.util.*
@@ -37,9 +36,9 @@ class StarLongevityTest : AbstractPointTest(StarLongevity::class) {
 
   @Test
   fun testToString() {
-    assertEquals("長生", StarLongevity.長生.toString(Locale.TAIWAN))
-    assertEquals("长生", StarLongevity.長生.toString(Locale.SIMPLIFIED_CHINESE))
-    assertEquals("長生", StarLongevity.長生.toString(Locale.ENGLISH))
+    assertEquals("長生", StarLongevity.長生.getTitle(Locale.TAIWAN))
+    assertEquals("长生", StarLongevity.長生.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("長生", StarLongevity.長生.getTitle(Locale.ENGLISH))
   }
 
   @Test

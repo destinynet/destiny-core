@@ -6,7 +6,6 @@ package destiny.core.astrology
 
 import destiny.core.IPoints
 import destiny.core.Point
-import destiny.core.toString
 import destiny.tools.serializers.astrology.FixedStarSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -96,7 +95,7 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
 
     override fun fromString(value: String, locale: Locale): FixedStar? {
       return values.firstOrNull {
-        it.toString(locale).equals(value, ignoreCase = true)
+        it.getTitle(locale).equals(value, ignoreCase = true)
       }
     }
   }

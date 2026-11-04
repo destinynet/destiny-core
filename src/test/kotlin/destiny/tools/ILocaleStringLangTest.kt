@@ -8,7 +8,6 @@ import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacSign
 import destiny.core.calendar.eightwords.Direction
 import destiny.core.chinese.FortuneOutput
-import destiny.core.toString
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -64,15 +63,15 @@ class ILocaleStringLangTest {
 
   /**
    * `Point` 本身不實作 [ILocaleString]（它是 `Planet` / `ZStar` 的共同基底），
-   * 對外的入口是 `Point.toString(lang)` extension。
+   * 對外的入口是 `Point.getTitle(lang)` extension。
    */
   @Test
   fun `Point toString 吃 Lang 且與 Locale 版等價`() {
-    assertEquals("火星", Planet.MARS.toString(Lang.ZH_TW))
-    assertEquals("Mars", Planet.MARS.toString(Lang.EN))
+    assertEquals("火星", Planet.MARS.getTitle(Lang.ZH_TW))
+    assertEquals("Mars", Planet.MARS.getTitle(Lang.EN))
 
     for (locale in listOf(Locale.TAIWAN, Locale.ENGLISH, Locale.JAPANESE)) {
-      assertEquals(Planet.MARS.toString(locale.toLang()), Planet.MARS.toString(locale), "Planet.MARS @ $locale")
+      assertEquals(Planet.MARS.getTitle(locale.toLang()), Planet.MARS.getTitle(locale), "Planet.MARS @ $locale")
     }
   }
 }

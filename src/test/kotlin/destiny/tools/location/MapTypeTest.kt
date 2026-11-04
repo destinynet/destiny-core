@@ -13,17 +13,17 @@ class MapTypeTest {
   @Test
   fun testToString() {
     Locale.TAIWAN.also { locale ->
-      assertEquals("道路" , MapType.roadmap.toString(locale))
-      assertEquals("衛星" , MapType.satellite.toString(locale))
-      assertEquals("混合" , MapType.hybrid.toString(locale))
-      assertEquals("地形" , MapType.terrain.toString(locale))
+      assertEquals("道路" , MapType.roadmap.getTitle(locale))
+      assertEquals("衛星" , MapType.satellite.getTitle(locale))
+      assertEquals("混合" , MapType.hybrid.getTitle(locale))
+      assertEquals("地形" , MapType.terrain.getTitle(locale))
     }
 
     Locale.SIMPLIFIED_CHINESE.also { locale ->
-      assertEquals("道路" , MapType.roadmap.toString(locale))
-      assertEquals("卫星" , MapType.satellite.toString(locale))
-      assertEquals("混合" , MapType.hybrid.toString(locale))
-      assertEquals("地形" , MapType.terrain.toString(locale))
+      assertEquals("道路" , MapType.roadmap.getTitle(locale))
+      assertEquals("卫星" , MapType.satellite.getTitle(locale))
+      assertEquals("混合" , MapType.hybrid.getTitle(locale))
+      assertEquals("地形" , MapType.terrain.getTitle(locale))
     }
 
   }
