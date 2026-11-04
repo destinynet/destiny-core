@@ -38,14 +38,14 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonClassDiscriminator
 import destiny.core.astrology.classical.Dignity
 
-/** 星名的查表語系 —— 固定繁中，不對外開放為參數 */
+/** 顯示文字（`label` 結尾的欄位、[HoroscopePointDto.abbr]）的預設語系；呼叫端可另給 */
 private val ZH = Lang.ZH_TW
 
 @Serializable
 data class HoroscopePointDto(
   /** 點位；JSON 是 [AstroPoint.nameKey]（如 `Planet.SUN`） */
   val point: AstroPoint,
-  /** 顯示名（繁中） */
+  /** 顯示名（依 [toHoroscopeChartDto] 的 `lang`，預設繁中） */
   val label: String,
   /** unicode 字形（如 ☉），無則 null —— renderer 退回顯示 [label] */
   val glyph: String?,
@@ -62,7 +62,7 @@ data class HoroscopePointDto(
   val retrograde: Boolean,
   /** 分類（[PointKind]）：renderer 以它分層 */
   val kind: PointKind,
-  /** 縮寫（繁中，如 日、月、昇）—— 小空間的標籤用它，[label] 是全名 */
+  /** 縮寫（與 [label] 同語系：繁中如 日、月、昇，英文如 Su、Mo、As）—— 小空間的標籤用它，[label] 是全名 */
   val abbr: String = "",
   /** 英文縮寫（如 Su、Mo、AC；取自英文 bundle） */
   val abbrEn: String = "",
@@ -1034,24 +1034,27 @@ private fun AstroPoint.visibleIn(density: ChartDensity): Boolean = when (density
   ChartDensity.ALL          -> true
 }
 
-/** 有性別的盤（[Natal]／[NatalV2] 皆可） */
-fun IPersonHoroscopeDto.toHoroscopeChartDto(density: ChartDensity): HoroscopeChartDto =
-  toHoroscopeChartDto(density, gender)
+/** 有性別的盤（[Natal]／[NatalV2] 皆可）；[lang] 見另一個多載 */
+fun IPersonHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, lang: Lang = ZH): HoroscopeChartDto =
+  toHoroscopeChartDto(density, gender, lang)
 
 /**
  * 只讀 [stars]、[houses]、[tightestAspects] —— V1 的 [IHoroscopeDto] 就夠，不必先轉 V2。
  * 盤本身不帶性別時（非 person 的 [IHoroscopeDto]），由呼叫端給。
+ *
+ * [lang] 只決定顯示文字：點位的 `label`／`abbr`、宮主星的 `rulerLabel`／`coRulerLabel`。
+ * 識別欄位（點位、星座、相位）與字形不分語系，`abbrEn` 永遠是英文。
  */
-fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): HoroscopeChartDto {
+fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender, lang: Lang = ZH): HoroscopeChartDto {
   val houseDtos = houses.map { h ->
     HoroscopeHouseDto(
       id = h.id,
       cuspDeg = h.cusp.zDeg,
       cuspSign = h.cusp.sign,
       ruler = h.ruler,
-      rulerLabel = h.ruler.getTitle(ZH),
+      rulerLabel = h.ruler.getTitle(lang),
       coRuler = MODERN_CO_RULER[h.cusp.sign],
-      coRulerLabel = MODERN_CO_RULER[h.cusp.sign]?.getTitle(ZH),
+      coRulerLabel = MODERN_CO_RULER[h.cusp.sign]?.getTitle(lang),
     )
   }
 
@@ -1069,7 +1072,7 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
     .map { (point, info) ->
       HoroscopePointDto(
         point = point,
-        label = point.getTitle(ZH),
+        label = point.getTitle(lang),
         glyph = point.unicode?.toString(),
         zDeg = info.signDegree.zDeg,
         sign = info.signDegree.sign,
@@ -1077,7 +1080,7 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender): Ho
         house = info.house,
         retrograde = info.isRetrograde,
         kind = point.kind,
-        abbr = point.getAbbreviation(ZH),
+        abbr = point.getAbbreviation(lang),
         abbrEn = point.getAbbreviation(Lang.EN),
         declination = info.declination,
         retrogradePhase = info.retrogradePhase,
