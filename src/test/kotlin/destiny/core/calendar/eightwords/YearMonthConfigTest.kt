@@ -3,12 +3,13 @@
  */
 package destiny.core.calendar.eightwords
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
 import destiny.core.calendar.eightwords.YearConfigBuilder.Companion.yearConfig
 import destiny.core.calendar.eightwords.YearMonthConfigBuilder.Companion.yearMonthConfig
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class YearMonthConfigTest : AbstractConfigTest<YearMonthConfig>() {
 
@@ -43,10 +44,10 @@ internal class YearMonthConfigTest : AbstractConfigTest<YearMonthConfig>() {
     }
 
   override val assertion = { raw: String ->
-    assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
-    assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
-    assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))
-    assertTrue(raw.contains(""""monthImpl":\s*"SunSign"""".toRegex()))
+    assertEquals(270.0, JsonPath.read<Double>(raw, "$.yearConfig.changeYearDegree"))
+    assertEquals(true, JsonPath.read<Boolean>(raw, "$.monthConfig.southernHemisphereOpposition"))
+    assertEquals("DECLINATION", JsonPath.read<String>(raw, "$.monthConfig.hemisphereBy"))
+    assertEquals("SunSign", JsonPath.read<String>(raw, "$.monthConfig.monthImpl"))
   }
 
 }

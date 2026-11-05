@@ -3,12 +3,13 @@
  */
 package destiny.core.chinese.eightwords
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.IntAgeNote
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.chinese.eightwords.FortuneSmallConfigBuilder.Companion.fortuneSmall
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class FortuneSmallConfigTest : AbstractConfigTest<FortuneSmallConfig>() {
 
@@ -29,8 +30,8 @@ internal class FortuneSmallConfigTest : AbstractConfigTest<FortuneSmallConfig>()
     }
 
   override val assertion: (String) -> Unit = { raw ->
-    assertTrue(raw.contains(""""impl":\s*"Star"""".toRegex()))
-    assertTrue(raw.contains(""""count":\s*90""".toRegex()))
-    assertTrue(raw.contains(""""intAgeNotes":\s*\[\s*"Minguo"\s*]""".toRegex()))
+    assertEquals("Star", JsonPath.read<String>(raw, "$.impl"))
+    assertEquals(90, JsonPath.read<Int>(raw, "$.count"))
+    assertEquals(listOf("Minguo"), JsonPath.read<List<String>>(raw, "$.intAgeNotes"))
   }
 }

@@ -3,14 +3,14 @@
  */
 package destiny.core.chinese.lunarStation
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.chinese.YearType
 import destiny.core.chinese.lunarStation.LunarStationConfigBuilder.Companion.lunarStation
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class LunarStationConfigTest : AbstractConfigTest<LunarStationConfig>() {
 
@@ -39,26 +39,15 @@ internal class LunarStationConfigTest : AbstractConfigTest<LunarStationConfig>()
     }
 
   override val assertion: (String) -> Unit = { raw ->
-    assertTrue(raw.contains(""""yearType":\s*"YEAR_LUNAR"""".toRegex()))
-    assertFalse(raw.contains(""""yearType":\s*"YEAR_SOLAR"""".toRegex()))
-
-    assertTrue(raw.contains(""""yearEpoch":\s*"EPOCH_1864"""".toRegex()))
-    assertFalse(raw.contains(""""yearEpoch":\s*"EPOCH_1564"""".toRegex()))
-
-    assertTrue(raw.contains(""""monthlyImpl":\s*"AnimalExplained"""".toRegex()))
-    assertTrue(raw.contains(""""monthAlgo":\s*"MONTH_FIXED_THIS"""".toRegex()))
-
-    assertTrue(raw.contains(""""hourlyImpl":\s*"Fixed"""".toRegex()))
-    assertFalse(raw.contains(""""hourlyImpl":\s*"Yuan"""".toRegex()))
-
-    assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))
-    assertTrue(raw.contains(""""refraction":\s*false""".toRegex()))
-    assertTrue(raw.contains(""""temperature":\s*23.0""".toRegex()))
-    assertTrue(raw.contains(""""pressure":\s*1000.0""".toRegex()))
-
-    // FIXME : 以下 failed
-    assertFalse(raw.contains(""""discCenter":\s*false""".toRegex()))
-    assertFalse(raw.contains(""""refraction":\s*true""".toRegex()))
+    assertEquals("YEAR_LUNAR", JsonPath.read<String>(raw, "$.yearType"))
+    assertEquals("EPOCH_1864", JsonPath.read<String>(raw, "$.yearEpoch"))
+    assertEquals("AnimalExplained", JsonPath.read<String>(raw, "$.monthlyImpl"))
+    assertEquals("MONTH_FIXED_THIS", JsonPath.read<String>(raw, "$.monthAlgo"))
+    assertEquals("Fixed", JsonPath.read<String>(raw, "$.hourlyImpl"))
+    assertEquals(true, JsonPath.read<Boolean>(raw, "$.ewConfig.dayHourConfig.hourBranchConfig.transConfig.discCenter"))
+    assertEquals(false, JsonPath.read<Boolean>(raw, "$.ewConfig.dayHourConfig.hourBranchConfig.transConfig.refraction"))
+    assertEquals(23.0, JsonPath.read<Double>(raw, "$.ewConfig.dayHourConfig.hourBranchConfig.transConfig.temperature"))
+    assertEquals(1000.0, JsonPath.read<Double>(raw, "$.ewConfig.dayHourConfig.hourBranchConfig.transConfig.pressure"))
   }
 
 }

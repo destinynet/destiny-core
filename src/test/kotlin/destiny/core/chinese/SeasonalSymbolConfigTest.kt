@@ -3,10 +3,11 @@
  */
 package destiny.core.chinese
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.chinese.SeasonalSymbolConfigBuilder.Companion.seasonalSymbolConfig
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class SeasonalSymbolConfigTest : AbstractConfigTest<SeasonalSymbolConfig>() {
   override val serializer: KSerializer<SeasonalSymbolConfig> = SeasonalSymbolConfig.serializer()
@@ -21,8 +22,7 @@ internal class SeasonalSymbolConfigTest : AbstractConfigTest<SeasonalSymbolConfi
   }
 
   override val assertion: (String) -> Unit = { raw: String ->
-
-    assertTrue(raw.contains(""""type":\s*"Holo"""".toRegex()))
-    assertTrue(raw.contains(""""endSeasonSymbolSpan":\s*"FULL_MONTH"""".toRegex()))
+    assertEquals("Holo", JsonPath.read<String>(raw, "$.impl.type"))
+    assertEquals("FULL_MONTH", JsonPath.read<String>(raw, "$.impl.endSeasonSymbolSpan"))
   }
 }

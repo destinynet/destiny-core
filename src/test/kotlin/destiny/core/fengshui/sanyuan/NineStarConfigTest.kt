@@ -3,12 +3,13 @@
  */
 package destiny.core.fengshui.sanyuan
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.Scale
 import destiny.core.calendar.eightwords.*
 import destiny.core.fengshui.sanyuan.NineStarConfigBuilder.Companion.nineStarConfig
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class NineStarConfigTest : AbstractConfigTest<NineStarConfig>() {
 
@@ -49,15 +50,13 @@ internal class NineStarConfigTest : AbstractConfigTest<NineStarConfig>() {
       }
     }
   override val assertion: (String) -> Unit = { raw: String ->
-    assertTrue { raw.contains("YEAR") }
-    assertTrue { raw.contains("DAY") }
-    assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
-    assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
-    assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))
-    assertTrue(raw.contains(""""monthImpl":\s*"SunSign"""".toRegex()))
-
-    assertTrue(raw.contains(""""changeDay":\s*"ZI_MIDDLE"""".toRegex()))
-    assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))
-    assertTrue(raw.contains(""""hourImpl":\s*"LMT"""".toRegex()))
+    assertEquals(listOf("YEAR", "DAY"), JsonPath.read<List<String>>(raw, "$.scales"))
+    assertEquals(270.0, JsonPath.read<Double>(raw, "$.ewConfig.yearMonthConfig.yearConfig.changeYearDegree"))
+    assertEquals(true, JsonPath.read<Boolean>(raw, "$.ewConfig.yearMonthConfig.monthConfig.southernHemisphereOpposition"))
+    assertEquals("DECLINATION", JsonPath.read<String>(raw, "$.ewConfig.yearMonthConfig.monthConfig.hemisphereBy"))
+    assertEquals("SunSign", JsonPath.read<String>(raw, "$.ewConfig.yearMonthConfig.monthConfig.monthImpl"))
+    assertEquals("ZI_MIDDLE", JsonPath.read<String>(raw, "$.ewConfig.dayHourConfig.dayConfig.changeDay"))
+    assertEquals("CLOCK0", JsonPath.read<String>(raw, "$.ewConfig.dayHourConfig.dayConfig.midnight"))
+    assertEquals("LMT", JsonPath.read<String>(raw, "$.ewConfig.dayHourConfig.hourBranchConfig.hourImpl"))
   }
 }

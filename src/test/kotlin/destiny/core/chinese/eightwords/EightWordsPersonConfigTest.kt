@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.eightwords
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.IntAgeNote
 import destiny.core.astrology.*
@@ -12,8 +13,8 @@ import destiny.core.calendar.eightwords.RisingSignConfigBuilder.Companion.rising
 import destiny.core.chinese.eightwords.PersonConfigBuilder.Companion.ewPersonConfig
 import kotlinx.serialization.KSerializer
 import java.util.*
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonConfig>() {
 
@@ -114,39 +115,29 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
     }
 
   override val assertion: (String) -> Unit = { raw ->
-    assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
-    assertFalse(raw.contains(""""changeYearDegree":\s*315.0""".toRegex()))
+    // 三份 eightWordsConfig（命盤、大運、小運）都要是同一組設定
+    listOf(
+      "$.eightwordsContextConfig.eightWordsConfig",
+      "$.fortuneLargeConfig.eightWordsConfig",
+      "$.fortuneSmallConfig.eightWordsConfig",
+    ).forEach { ew ->
+      assertEquals(270.0, JsonPath.read<Double>(raw, "$ew.yearMonthConfig.yearConfig.changeYearDegree"))
+      assertEquals(true, JsonPath.read<Boolean>(raw, "$ew.yearMonthConfig.monthConfig.southernHemisphereOpposition"))
+      assertEquals("DECLINATION", JsonPath.read<String>(raw, "$ew.yearMonthConfig.monthConfig.hemisphereBy"))
+      assertEquals("SunSign", JsonPath.read<String>(raw, "$ew.yearMonthConfig.monthConfig.monthImpl"))
+      assertEquals("ZI_MIDDLE", JsonPath.read<String>(raw, "$ew.dayHourConfig.dayConfig.changeDay"))
+      assertEquals("CLOCK0", JsonPath.read<String>(raw, "$ew.dayHourConfig.dayConfig.midnight"))
+      assertEquals("LMT", JsonPath.read<String>(raw, "$ew.dayHourConfig.hourBranchConfig.hourImpl"))
+    }
 
-    assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
-    assertFalse(raw.contains(""""southernHemisphereOpposition":\s*false""".toRegex()))
-
-    assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))
-    assertFalse(raw.contains(""""hemisphereBy":\s*"EQUATOR"""".toRegex()))
-
-    assertTrue(raw.contains(""""monthImpl":\s*"SunSign"""".toRegex()))
-    assertFalse(raw.contains(""""monthImpl":\s*"SolarTerms"""".toRegex()))
-
-    assertTrue(raw.contains(""""changeDay":\s*"ZI_MIDDLE"""".toRegex()))
-    assertFalse(raw.contains(""""changeDay":\s*"ZI_BEGIN"""".toRegex()))
-
-    assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))
-    assertFalse(raw.contains(""""midnight":\s*"NADIR"""".toRegex()))
-
-    assertTrue(raw.contains(""""hourImpl":\s*"LMT"""".toRegex()))
-    assertFalse(raw.contains(""""hourImpl":\s*"TST"""".toRegex()))
-
-    assertTrue(raw.contains(""""tradChineseRisingSignConfig""".toRegex()))
-
-    assertTrue(raw.contains(""""impl":\s*"SolarTermsSpan"""".toRegex()))
-    assertTrue(raw.contains(""""span":\s*90.0""".toRegex()))
-
-
-    assertTrue(raw.contains(""""impl":\s*"SixGia"""".toRegex()))
-    assertTrue(raw.contains(""""count":\s*90""".toRegex()))
-    assertTrue(raw.contains("""\[\s*"Minguo"\s*]""".toRegex()))
-
-    assertTrue(raw.contains(""""ewContextScore":\s*"OctaDivide46"""".toRegex()))
-    assertTrue(raw.contains(""""locale":\s*"ja"""".toRegex()))
-
+    assertNotNull(JsonPath.read<Any>(raw, "$.eightwordsContextConfig.risingSignConfig.tradChineseRisingSignConfig"))
+    assertEquals("LMT", JsonPath.read<String>(raw, "$.eightwordsContextConfig.risingSignConfig.tradChineseRisingSignConfig.hourImpl"))
+    assertEquals("SolarTermsSpan", JsonPath.read<String>(raw, "$.fortuneLargeConfig.impl"))
+    assertEquals(90.0, JsonPath.read<Double>(raw, "$.fortuneLargeConfig.span"))
+    assertEquals("SixGia", JsonPath.read<String>(raw, "$.fortuneSmallConfig.impl"))
+    assertEquals(90, JsonPath.read<Int>(raw, "$.fortuneSmallConfig.count"))
+    assertEquals(listOf("Minguo"), JsonPath.read<List<String>>(raw, "$.fortuneSmallConfig.intAgeNotes"))
+    assertEquals("OctaDivide46", JsonPath.read<String>(raw, "$.ewContextScore"))
+    assertEquals("ja", JsonPath.read<String>(raw, "$.locale"))
   }
 }

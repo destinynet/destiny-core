@@ -3,10 +3,11 @@
  */
 package destiny.core.astrology
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.PlanetaryHourConfigBuilder.Companion.planetaryHour
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class PlanetaryHourConfigTest : AbstractConfigTest<PlanetaryHourConfig>() {
 
@@ -30,11 +31,11 @@ internal class PlanetaryHourConfigTest : AbstractConfigTest<PlanetaryHourConfig>
   }
 
   override val assertion: (String) -> Unit = { raw ->
-    assertTrue(raw.contains(""""type":\s*"CLOCK"""".toRegex()))
-    assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))
-    assertTrue(raw.contains(""""refraction":\s*false""".toRegex()))
-    assertTrue(raw.contains(""""temperature":\s*12\.3""".toRegex()))
-    assertTrue(raw.contains(""""pressure":\s*1000\.0""".toRegex()))
+    assertEquals("CLOCK", JsonPath.read<String>(raw, "$.type"))
+    assertEquals(true, JsonPath.read<Boolean>(raw, "$.transConfig.discCenter"))
+    assertEquals(false, JsonPath.read<Boolean>(raw, "$.transConfig.refraction"))
+    assertEquals(12.3, JsonPath.read<Double>(raw, "$.transConfig.temperature"))
+    assertEquals(1000.0, JsonPath.read<Double>(raw, "$.transConfig.pressure"))
   }
 
 }

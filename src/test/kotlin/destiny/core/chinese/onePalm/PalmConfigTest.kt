@@ -3,13 +3,14 @@
  */
 package destiny.core.chinese.onePalm
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.RisingSignConfig
 import destiny.core.chinese.onePalm.PalmConfigBuilder.Companion.palmConfig
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class PalmConfigTest : AbstractConfigTest<PalmConfig>() {
 
@@ -35,9 +36,9 @@ internal class PalmConfigTest : AbstractConfigTest<PalmConfig>() {
     }
 
   override val assertion: (String) -> Unit = { raw: String ->
-    assertTrue(raw.contains(""""positiveImpl":\s*"GenderYinYang"""".toRegex()))
-    assertTrue(raw.contains(""""monthAlgo":\s*"MONTH_SOLAR_TERMS"""".toRegex()))
-    assertTrue(raw.contains(""""trueRisingSign":\s*true""".toRegex()))
-    assertTrue(raw.contains(""""clockwiseHouse":\s*false""".toRegex()))
+    assertEquals("GenderYinYang", JsonPath.read<String>(raw, "$.positiveImpl"))
+    assertEquals("MONTH_SOLAR_TERMS", JsonPath.read<String>(raw, "$.monthAlgo"))
+    assertEquals(true, JsonPath.read<Boolean>(raw, "$.trueRisingSign"))
+    assertEquals(false, JsonPath.read<Boolean>(raw, "$.clockwiseHouse"))
   }
 }

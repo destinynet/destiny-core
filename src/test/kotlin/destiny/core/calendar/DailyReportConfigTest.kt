@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.Centric
 import destiny.core.astrology.Planet
@@ -14,8 +15,7 @@ import destiny.core.chinese.lunarStation.HourlyImpl
 import destiny.core.chinese.lunarStation.LunarStationConfig
 import destiny.core.chinese.lunarStation.MonthlyImpl
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class DailyReportConfigTest : AbstractConfigTest<DailyReportConfig>() {
 
@@ -50,22 +50,15 @@ internal class DailyReportConfigTest : AbstractConfigTest<DailyReportConfig>() {
 
 
   override val assertion: (String) -> Unit = { raw ->
-    assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))
-    assertTrue(raw.contains(""""refraction":\s*false""".toRegex()))
-    assertTrue(raw.contains(""""temperature":\s*23.0""".toRegex()))
-    assertTrue(raw.contains(""""pressure":\s*1000.0""".toRegex()))
-
-    assertTrue(raw.contains(""""yearType":\s*"YEAR_LUNAR"""".toRegex()))
-    assertTrue(raw.contains(""""monthlyImpl":\s*"AnimalExplained"""".toRegex()))
-    assertTrue(raw.contains(""""hourlyImpl":\s*"Fixed"""".toRegex()))
-    assertTrue(raw.contains(""""planet":\s*"Planet.VENUS"""".toRegex()))
-    assertTrue(raw.contains(""""centric":\s*"TOPO"""".toRegex()))
-    assertTrue(raw.contains(""""vocImpl":\s*"WilliamLilly"""".toRegex()))
-
-
-
-    // FIXME 以下 failed , 與 IMonthlyConfig 沒有 extend IDayHourConfig 有關
-    assertFalse(raw.contains(""""discCenter":\s*false""".toRegex()))
-    assertFalse(raw.contains(""""refraction":\s*true""".toRegex()))
+    assertEquals(true, JsonPath.read<Boolean>(raw, "$.lunarStationConfig.ewConfig.dayHourConfig.hourBranchConfig.transConfig.discCenter"))
+    assertEquals(false, JsonPath.read<Boolean>(raw, "$.lunarStationConfig.ewConfig.dayHourConfig.hourBranchConfig.transConfig.refraction"))
+    assertEquals(23.0, JsonPath.read<Double>(raw, "$.lunarStationConfig.ewConfig.dayHourConfig.hourBranchConfig.transConfig.temperature"))
+    assertEquals(1000.0, JsonPath.read<Double>(raw, "$.lunarStationConfig.ewConfig.dayHourConfig.hourBranchConfig.transConfig.pressure"))
+    assertEquals("YEAR_LUNAR", JsonPath.read<String>(raw, "$.lunarStationConfig.yearType"))
+    assertEquals("AnimalExplained", JsonPath.read<String>(raw, "$.lunarStationConfig.monthlyImpl"))
+    assertEquals("Fixed", JsonPath.read<String>(raw, "$.lunarStationConfig.hourlyImpl"))
+    assertEquals("Planet.VENUS", JsonPath.read<String>(raw, "$.vocConfig.planet"))
+    assertEquals("TOPO", JsonPath.read<String>(raw, "$.vocConfig.centric"))
+    assertEquals("WilliamLilly", JsonPath.read<String>(raw, "$.vocConfig.vocImpl"))
   }
 }

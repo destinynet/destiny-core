@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.liuren.golden
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.DayNightConfig
 import destiny.core.astrology.DayNightImpl
@@ -15,7 +16,7 @@ import destiny.core.chinese.liuren.GeneralSeq
 import destiny.core.chinese.liuren.GeneralStemBranch
 import destiny.core.chinese.liuren.golden.PithyConfigBuilder.Companion.pithyConfig
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class PithyConfigTest : AbstractConfigTest<PithyConfig>() {
 
@@ -47,12 +48,12 @@ internal class PithyConfigTest : AbstractConfigTest<PithyConfig>() {
     }
 
   override val assertion: (String) -> Unit = { raw ->
-    assertTrue(raw.contains(""""direction":\s*"丑"""".toRegex()))
-    assertTrue(raw.contains(""""monthMaster":\s*"Combined"""".toRegex()))
-    assertTrue(raw.contains(""""clockwise":\s*"DayNightFixed"""".toRegex()))
-    assertTrue(raw.contains(""""dayNightImpl":\s*"Half"""".toRegex()))
-    assertTrue(raw.contains(""""tianyi":\s*"ZiweiBook"""".toRegex()))
-    assertTrue(raw.contains(""""generalSeq":\s*"Zhao"""".toRegex()))
-    assertTrue(raw.contains(""""generalStemBranch":\s*"Liuren"""".toRegex()))
+    assertEquals("丑", JsonPath.read<String>(raw, "$.direction"))
+    assertEquals("Combined", JsonPath.read<String>(raw, "$.monthMaster"))
+    assertEquals("DayNightFixed", JsonPath.read<String>(raw, "$.clockwise"))
+    assertEquals("Half", JsonPath.read<String>(raw, "$.dayNightConfig.dayNightImpl"))
+    assertEquals("ZiweiBook", JsonPath.read<String>(raw, "$.tianyi"))
+    assertEquals("Zhao", JsonPath.read<String>(raw, "$.generalSeq"))
+    assertEquals("Liuren", JsonPath.read<String>(raw, "$.generalStemBranch"))
   }
 }

@@ -3,12 +3,12 @@
  */
 package destiny.core.astrology
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.DayNightConfigBuilder.Companion.dayNight
 import destiny.core.astrology.TransConfigBuilder.Companion.trans
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class DayNightConfigTest : AbstractConfigTest<DayNightConfig>() {
   override val serializer: KSerializer<DayNightConfig> = DayNightConfig.serializer()
@@ -42,16 +42,10 @@ internal class DayNightConfigTest : AbstractConfigTest<DayNightConfig>() {
     }
 
   override val assertion: (String) -> Unit = { raw ->
-    assertTrue(raw.contains(""""dayNightImpl":\s*"Half"""".toRegex()))
-    assertFalse(raw.contains(""""dayNightImpl":\s*"StarPos"""".toRegex()))
-
-    assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))
-    assertFalse(raw.contains(""""discCenter":\s*false""".toRegex()))
-
-    assertTrue(raw.contains(""""refraction":\s*false""".toRegex()))
-    assertFalse(raw.contains(""""refraction":\s*true""".toRegex()))
-
-    assertTrue(raw.contains(""""temperature":\s*23.0""".toRegex()))
-    assertTrue(raw.contains(""""pressure":\s*1000.0""".toRegex()))
+    assertEquals("Half", JsonPath.read<String>(raw, "$.dayNightImpl"))
+    assertEquals(true, JsonPath.read<Boolean>(raw, "$.transConfig.discCenter"))
+    assertEquals(false, JsonPath.read<Boolean>(raw, "$.transConfig.refraction"))
+    assertEquals(23.0, JsonPath.read<Double>(raw, "$.transConfig.temperature"))
+    assertEquals(1000.0, JsonPath.read<Double>(raw, "$.transConfig.pressure"))
   }
 }

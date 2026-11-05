@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.TransConfig
 import destiny.core.astrology.TransConfigBuilder.Companion.trans
@@ -10,8 +11,7 @@ import destiny.core.calendar.eightwords.DayConfigBuilder.Companion.dayConfig
 import destiny.core.calendar.eightwords.DayHourConfigBuilder.Companion.dayHour
 import destiny.core.calendar.eightwords.HourBranchConfigBuilder.Companion.hourBranchConfig
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class DayHourConfigTest : AbstractConfigTest<DayHourConfig>() {
 
@@ -62,19 +62,12 @@ internal class DayHourConfigTest : AbstractConfigTest<DayHourConfig>() {
     }
 
   override val assertion = { raw: String ->
-    assertTrue(raw.contains(""""changeDay":\s*"ZI_MIDDLE"""".toRegex()))
-    assertFalse(raw.contains(""""changeDay":\s*"ZI_BEGIN"""".toRegex()))
-
-    assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))
-    assertTrue(raw.contains(""""hourImpl":\s*"LMT"""".toRegex()))
-
-    assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))
-    assertFalse(raw.contains(""""discCenter":\s*false""".toRegex()))
-
-    assertTrue(raw.contains(""""refraction":\s*false""".toRegex()))
-    assertFalse(raw.contains(""""refraction":\s*true""".toRegex()))
-
-    assertTrue(raw.contains(""""temperature":\s*23.0""".toRegex()))
-    assertTrue(raw.contains(""""pressure":\s*1000.0""".toRegex()))
+    assertEquals("ZI_MIDDLE", JsonPath.read<String>(raw, "$.dayConfig.changeDay"))
+    assertEquals("CLOCK0", JsonPath.read<String>(raw, "$.dayConfig.midnight"))
+    assertEquals("LMT", JsonPath.read<String>(raw, "$.hourBranchConfig.hourImpl"))
+    assertEquals(true, JsonPath.read<Boolean>(raw, "$.hourBranchConfig.transConfig.discCenter"))
+    assertEquals(false, JsonPath.read<Boolean>(raw, "$.hourBranchConfig.transConfig.refraction"))
+    assertEquals(23.0, JsonPath.read<Double>(raw, "$.hourBranchConfig.transConfig.temperature"))
+    assertEquals(1000.0, JsonPath.read<Double>(raw, "$.hourBranchConfig.transConfig.pressure"))
   }
 }

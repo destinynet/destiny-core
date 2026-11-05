@@ -3,10 +3,11 @@
  */
 package destiny.core.astrology
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.HouseConfigBuilder.Companion.houseCusp
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class HouseConfigTest : AbstractConfigTest<HouseConfig>() {
 
@@ -20,7 +21,7 @@ internal class HouseConfigTest : AbstractConfigTest<HouseConfig>() {
   }
 
   override val assertion: (String) -> Unit = { raw: String ->
-    assertTrue(raw.contains(""""houseSystem":\s*"EQUAL"""".toRegex()))
-    assertTrue(raw.contains(""""coordinate":\s*"SIDEREAL"""".toRegex()))
+    assertEquals("EQUAL", JsonPath.read<String>(raw, "$.houseSystem"))
+    assertEquals("SIDEREAL", JsonPath.read<String>(raw, "$.coordinate"))
   }
 }

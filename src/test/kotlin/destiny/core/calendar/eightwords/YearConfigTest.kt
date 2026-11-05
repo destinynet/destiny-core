@@ -3,12 +3,14 @@
  */
 package destiny.core.calendar.eightwords
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.eightwords.YearConfigBuilder.Companion.yearConfig
 import kotlinx.serialization.KSerializer
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
@@ -23,7 +25,7 @@ internal class YearConfigTest : AbstractConfigTest<YearConfig>() {
   }
 
   override val assertion = { raw: String ->
-    assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
+    assertEquals(270.0, JsonPath.read<Double>(raw, "$.changeYearDegree"))
   }
 
   /**

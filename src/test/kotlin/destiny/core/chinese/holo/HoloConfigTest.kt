@@ -3,13 +3,14 @@
  */
 package destiny.core.chinese.holo
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.chinese.SeasonalSymbolConfig
 import destiny.core.chinese.SeasonalSymbolConfig.Impl.Holo
 import destiny.core.chinese.SeasonalSymbolConfig.Impl.Holo.EndSeasonSymbolSpan
 import destiny.core.chinese.holo.HoloConfigBuilder.Companion.holoConfig
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class HoloConfigTest : AbstractConfigTest<HoloConfig>() {
 
@@ -31,10 +32,10 @@ internal class HoloConfigTest : AbstractConfigTest<HoloConfig>() {
   }
 
   override val assertion: (String) -> Unit = { raw: String ->
-    assertTrue(raw.contains(""""type":\s*"Holo"""".toRegex()))
-    assertTrue(raw.contains(""""endSeasonSymbolSpan":\s*"FULL_MONTH"""".toRegex()))
-    assertTrue(raw.contains(""""threeKings":\s*"MONTH_BRANCH"""".toRegex()))
-    assertTrue(raw.contains(""""hexChange":\s*"SRC"""".toRegex()))
-    assertTrue(raw.contains(""""monthlyHexagram":\s*"Branch"""".toRegex()))
+    assertEquals("Holo", JsonPath.read<String>(raw, "$.seasonalSymbolConfig.impl.type"))
+    assertEquals("FULL_MONTH", JsonPath.read<String>(raw, "$.seasonalSymbolConfig.impl.endSeasonSymbolSpan"))
+    assertEquals("MONTH_BRANCH", JsonPath.read<String>(raw, "$.threeKings"))
+    assertEquals("SRC", JsonPath.read<String>(raw, "$.hexChange"))
+    assertEquals("Branch", JsonPath.read<String>(raw, "$.monthlyHexagram"))
   }
 }

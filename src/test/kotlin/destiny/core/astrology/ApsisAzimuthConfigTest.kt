@@ -3,10 +3,11 @@
  */
 package destiny.core.astrology
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.ApsisAzimuthConfigBuilder.Companion.apsisAzimuth
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class ApsisAzimuthConfigTest : AbstractConfigTest<ApsisAzimuthConfig>() {
 
@@ -27,10 +28,10 @@ internal class ApsisAzimuthConfigTest : AbstractConfigTest<ApsisAzimuthConfig>()
   }
 
   override val assertion: (String) -> Unit = { raw ->
-    assertTrue(raw.contains(""""star":\s*"Planet.VENUS"""".toRegex()))
-    assertTrue(raw.contains(""""coordinate":\s*"SIDEREAL"""".toRegex()))
-    assertTrue(raw.contains(""""nodeType":\s*"TRUE"""".toRegex()))
-    assertTrue(raw.contains(""""temperature":\s*23.5""".toRegex()))
-    assertTrue(raw.contains(""""pressure":\s*1000.0""".toRegex()))
+    assertEquals("Planet.VENUS", JsonPath.read<String>(raw, "$.star"))
+    assertEquals("SIDEREAL", JsonPath.read<String>(raw, "$.coordinate"))
+    assertEquals("TRUE", JsonPath.read<String>(raw, "$.nodeType"))
+    assertEquals(23.5, JsonPath.read<Double>(raw, "$.temperature"))
+    assertEquals(1000.0, JsonPath.read<Double>(raw, "$.pressure"))
   }
 }

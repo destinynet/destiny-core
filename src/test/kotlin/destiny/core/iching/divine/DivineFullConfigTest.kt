@@ -3,6 +3,7 @@
  */
 package destiny.core.iching.divine
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsNullable
@@ -13,7 +14,7 @@ import destiny.core.chinese.Stem.甲
 import destiny.core.chinese.StemBranchOptional
 import destiny.core.iching.divine.DivineFullConfigBuilder.Companion.divineFullConfig
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class DivineFullConfigTest : AbstractConfigTest<DivineFullConfig>() {
 
@@ -47,9 +48,9 @@ internal class DivineFullConfigTest : AbstractConfigTest<DivineFullConfig>() {
     }
 
   override val assertion: (String) -> Unit = {raw : String ->
-    assertTrue(raw.contains(""""eightWordsNullable":\s*"1,0,0,12,3,3,0,0"""".toRegex()))
-    assertTrue(raw.contains(""""question":\s*"請問..."""".toRegex()))
-    assertTrue(raw.contains(""""approach":\s*"RANDOM"""".toRegex()))
+    assertEquals("1,0,0,12,3,3,0,0", JsonPath.read<String>(raw, "$.eightWordsNullable"))
+    assertEquals("請問...", JsonPath.read<String>(raw, "$.question"))
+    assertEquals("RANDOM", JsonPath.read<String>(raw, "$.approach"))
   }
 
 }

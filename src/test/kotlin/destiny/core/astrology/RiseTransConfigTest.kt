@@ -3,10 +3,11 @@
  */
 package destiny.core.astrology
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.RiseTransConfigBuilder.Companion.riseTrans
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class RiseTransConfigTest : AbstractConfigTest<RiseTransConfig>() {
 
@@ -32,11 +33,11 @@ internal class RiseTransConfigTest : AbstractConfigTest<RiseTransConfig>() {
   }
 
   override val assertion: (String) -> Unit = {raw ->
-    assertTrue(raw.contains(""""star":\s*"Planet.MOON"""".toRegex()))
-    assertTrue(raw.contains(""""transPoint":\s*"MERIDIAN"""".toRegex()))
-    assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))
-    assertTrue(raw.contains(""""refraction":\s*false""".toRegex()))
-    assertTrue(raw.contains(""""temperature":\s*23.0""".toRegex()))
-    assertTrue(raw.contains(""""pressure":\s*1000.0""".toRegex()))
+    assertEquals("Planet.MOON", JsonPath.read<String>(raw, "$.star"))
+    assertEquals("MERIDIAN", JsonPath.read<String>(raw, "$.transPoint"))
+    assertEquals(true, JsonPath.read<Boolean>(raw, "$.transConfig.discCenter"))
+    assertEquals(false, JsonPath.read<Boolean>(raw, "$.transConfig.refraction"))
+    assertEquals(23.0, JsonPath.read<Double>(raw, "$.transConfig.temperature"))
+    assertEquals(1000.0, JsonPath.read<Double>(raw, "$.transConfig.pressure"))
   }
 }

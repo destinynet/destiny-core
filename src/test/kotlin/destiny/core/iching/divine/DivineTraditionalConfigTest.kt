@@ -3,6 +3,7 @@
  */
 package destiny.core.iching.divine
 
+import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.chinese.Tianyi
@@ -10,7 +11,7 @@ import destiny.core.chinese.YangBlade
 import destiny.core.iching.Hexagram
 import destiny.core.iching.divine.DivineTraditionalConfigBuilder.Companion.divineTraditionalConfig
 import kotlinx.serialization.KSerializer
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class DivineTraditionalConfigTest : AbstractConfigTest<DivineTraditionalConfig>() {
 
@@ -36,11 +37,11 @@ internal class DivineTraditionalConfigTest : AbstractConfigTest<DivineTraditiona
     }
 
   override val assertion: (String) -> Unit = { raw: String ->
-    assertTrue(raw.contains(""""src":\s*"101010"""".toRegex()))
-    assertTrue(raw.contains(""""dst":\s*"010101"""".toRegex()))
-    assertTrue(raw.contains(""""settings":\s*"TsangShan"""".toRegex()))
-    assertTrue(raw.contains(""""hiddenEnergy":\s*"GingFang"""".toRegex()))
-    assertTrue(raw.contains(""""tianyi":\s*"ZiweiBook"""".toRegex()))
-    assertTrue(raw.contains(""""yangBlade":\s*"RobCash"""".toRegex()))
+    assertEquals("101010", JsonPath.read<String>(raw, "$.src"))
+    assertEquals("010101", JsonPath.read<String>(raw, "$.dst"))
+    assertEquals("TsangShan", JsonPath.read<String>(raw, "$.settings"))
+    assertEquals("GingFang", JsonPath.read<String>(raw, "$.hiddenEnergy"))
+    assertEquals("ZiweiBook", JsonPath.read<String>(raw, "$.tianyi"))
+    assertEquals("RobCash", JsonPath.read<String>(raw, "$.yangBlade"))
   }
 }
