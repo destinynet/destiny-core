@@ -221,13 +221,6 @@ data class HoroscopePatternLegDto(
   val orb: Double,
 )
 
-/** 格局的種類（[HoroscopePatternDto.type]）；JSON 就是名稱 */
-@Serializable
-enum class HoroscopePatternType {
-  GRAND_TRINE, KITE, T_SQUARE, YOD, BOOMERANG, GOLDEN_YOD, GRAND_CROSS, DOUBLE_T, HEXAGON,
-  WEDGE, MYSTIC_RECTANGLE, PENTAGRAM, STELLIUM_SIGN, STELLIUM_HOUSE, CONFRONTATION,
-}
-
 /**
  * 格局（[AstroPattern] 的呈現層投影）。判定已在 server 做完（格局的容許度比 [HoroscopeChartDto.aspects] 寬，
  * 所以邊不一定在 aspects 裡）；renderer 照 [legs] 畫線即可。恆星不參與（輪盤不畫恆星）。
@@ -932,25 +925,6 @@ private val AstroPattern.legAspects: Set<Aspect>
     is AstroPattern.Confrontation   -> setOf(Aspect.OPPOSITION)
   }
 
-private val AstroPattern.typeKey: HoroscopePatternType
-  get() = when (this) {
-    is AstroPattern.GrandTrine      -> HoroscopePatternType.GRAND_TRINE
-    is AstroPattern.Kite            -> HoroscopePatternType.KITE
-    is AstroPattern.TSquared        -> HoroscopePatternType.T_SQUARE
-    is AstroPattern.Yod             -> HoroscopePatternType.YOD
-    is AstroPattern.Boomerang       -> HoroscopePatternType.BOOMERANG
-    is AstroPattern.GoldenYod       -> HoroscopePatternType.GOLDEN_YOD
-    is AstroPattern.GrandCross      -> HoroscopePatternType.GRAND_CROSS
-    is AstroPattern.DoubleT         -> HoroscopePatternType.DOUBLE_T
-    is AstroPattern.Hexagon         -> HoroscopePatternType.HEXAGON
-    is AstroPattern.Wedge           -> HoroscopePatternType.WEDGE
-    is AstroPattern.MysticRectangle -> HoroscopePatternType.MYSTIC_RECTANGLE
-    is AstroPattern.Pentagram       -> HoroscopePatternType.PENTAGRAM
-    is AstroPattern.StelliumSign    -> HoroscopePatternType.STELLIUM_SIGN
-    is AstroPattern.StelliumHouse   -> HoroscopePatternType.STELLIUM_HOUSE
-    is AstroPattern.Confrontation   -> HoroscopePatternType.CONFRONTATION
-  }
-
 private val AstroPattern.apexPoint: AstroPoint?
   get() = when (this) {
     is AstroPattern.TSquared  -> squared.point
@@ -996,7 +970,7 @@ private fun List<AstroPattern>.toPatternDtos(zDegOf: (AstroPoint) -> Double?, vi
     val ownLegs = legsAmong(members, pattern.legAspects)
       .filter { leg -> partLegs.none { setOf(it.from, it.to) == setOf(leg.from, leg.to) } }
     out += HoroscopePatternDto(
-      type = pattern.typeKey,
+      type = pattern.type,
       points = members,
       apex = pattern.apexPoint,
       element = (pattern as? AstroPattern.GrandTrine)?.element,

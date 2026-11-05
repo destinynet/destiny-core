@@ -32,11 +32,16 @@ sealed class AstroPattern(
   open val score: Score? = null
 ) : IAstroPattern {
 
+  /** 格局的種類；顯示名是 `type.getTitle(lang)`（[HoroscopePatternType]） */
+  abstract val type: HoroscopePatternType
+
   /**
    * [GrandTrine] : 大三角
    */
   @KSerializable(with = GrandTrineSerializer::class)
   data class GrandTrine(override val points: Set<AstroPoint>, val element: Element, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.GRAND_TRINE
+
     init {
       require(points.size == 3) {
         "points must have three elements."
@@ -63,6 +68,8 @@ sealed class AstroPattern(
    */
   @KSerializable(with = KiteSerializer::class)
   data class Kite(val head: PointSignHouse, val wings: Set<AstroPoint>, val tail: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.KITE
+
     init {
       require(wings.size == 2) {
         "wings must have two elements."
@@ -94,6 +101,8 @@ sealed class AstroPattern(
    */
   @KSerializable(with = TSquaredSerializer::class)
   data class TSquared(val oppoPoints: Set<AstroPoint>, val squared: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.T_SQUARE
+
 
     init {
       require(oppoPoints.size == 2) {
@@ -125,6 +134,8 @@ sealed class AstroPattern(
    * */
   @KSerializable(with = YodSerializer::class)
   data class Yod(val bottoms: Set<AstroPoint>, val apex: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.YOD
+
     init {
       require(bottoms.size == 2) {
         "Bottoms must have 2 bottoms"
@@ -155,6 +166,8 @@ sealed class AstroPattern(
    * */
   @KSerializable(with = BoomerangSerializer::class)
   data class Boomerang(val yod: Yod, val oppoPoint: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.BOOMERANG
+
     override val points: Set<AstroPoint>
       get() = yod.points.plus(oppoPoint.point)
 
@@ -178,6 +191,8 @@ sealed class AstroPattern(
    * */
   @KSerializable(with = GoldenYodSerializer::class)
   data class GoldenYod(val bottoms: Set<AstroPoint>, val pointer: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.GOLDEN_YOD
+
     init {
       require(bottoms.size == 2) {
         "bottoms must have two elements."
@@ -208,6 +223,8 @@ sealed class AstroPattern(
    */
   @KSerializable(with = GrandCrossSerializer::class)
   data class GrandCross(override val points: Set<AstroPoint>, val quality: Quality, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.GRAND_CROSS
+
     init {
       require(points.size == 4) {
         "points must have 4 elements."
@@ -233,6 +250,8 @@ sealed class AstroPattern(
    */
   @KSerializable(with = DoubleTSerializer::class)
   data class DoubleT(val tSquares: Set<TSquared>, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.DOUBLE_T
+
     init {
       require(tSquares.size == 2) {
         "tSquares must have two elements."
@@ -259,6 +278,8 @@ sealed class AstroPattern(
    */
   @KSerializable(with = HexagonSerializer::class)
   data class Hexagon(val grandTrines: Set<GrandTrine>, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.HEXAGON
+
 
     init {
       require(grandTrines.size == 2) {
@@ -301,6 +322,8 @@ sealed class AstroPattern(
    */
   @KSerializable(with = WedgeSerializer::class)
   data class Wedge(val oppoPoints: Set<AstroPoint>, val mediator: PointSignHouse, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.WEDGE
+
 
     init {
       require(oppoPoints.size == 2) {
@@ -333,6 +356,8 @@ sealed class AstroPattern(
    */
   @KSerializable(with = MysticRectangleSerializer::class)
   data class MysticRectangle(val oppoGroups: Set<Set<AstroPoint>>, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.MYSTIC_RECTANGLE
+
 
     init {
       require(oppoGroups.size == 2 && oppoGroups.all { it.size == 2 } && oppoGroups.flatten().toSet().size == 4) {
@@ -361,6 +386,8 @@ sealed class AstroPattern(
    * */
   @KSerializable(with = PentagramSerializer::class)
   data class Pentagram(override val points: Set<AstroPoint>, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.PENTAGRAM
+
 
     init {
       require(points.size == 5) {
@@ -385,6 +412,8 @@ sealed class AstroPattern(
    */
   @KSerializable(with = StelliumSignSerializer::class)
   data class StelliumSign(override val points: Set<AstroPoint>, val sign: ZodiacSign, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.STELLIUM_SIGN
+
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is StelliumSign) return false
@@ -405,6 +434,8 @@ sealed class AstroPattern(
    */
   @KSerializable(with = StelliumHouseSerializer::class)
   data class StelliumHouse(override val points: Set<AstroPoint>, val house: Int, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.STELLIUM_HOUSE
+
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is StelliumHouse) return false
@@ -426,6 +457,8 @@ sealed class AstroPattern(
    */
   @KSerializable(with = ConfrontationSerializer::class)
   data class Confrontation(val clusters: Set<Set<AstroPoint>>, override val score: Score? = null) : AstroPattern() {
+    override val type: HoroscopePatternType get() = HoroscopePatternType.CONFRONTATION
+
     override val points: Set<AstroPoint>
       get() = clusters.flatten().toSet()
 

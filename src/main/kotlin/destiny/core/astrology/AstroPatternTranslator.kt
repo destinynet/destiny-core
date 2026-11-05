@@ -4,23 +4,26 @@
 package destiny.core.astrology
 
 import destiny.core.Descriptive
-import destiny.core.IPattern
 import destiny.core.IPatternDescriptor
 import destiny.tools.AbstractPropertyBasedPatternDescriptor
 import destiny.tools.KotlinLogging
+import destiny.tools.Lang
+import destiny.tools.getTitle
 
 /**
  * maybe merged with [destiny.core.astrology.classical.rules.AbstractPlanetPatternDescriptor]
  */
 class AstroPatternDescriptor(
-  pattern: IPattern,
+  private val astroPattern: AstroPattern,
   commentKey: String,
   parameters: List<Any>
 ) :
-  AbstractPropertyBasedPatternDescriptor(pattern, commentKey, parameters) {
+  AbstractPropertyBasedPatternDescriptor(astroPattern, commentKey, parameters) {
 
   override val resource = AstroPattern::class.qualifiedName!!
 
+  /** 名稱只有一份：[HoroscopePatternType] 的語系檔（`AstroPattern*.properties` 只放說明的模板） */
+  override fun getTitle(lang: Lang): String = astroPattern.type.getTitle(lang)
 }
 
 
