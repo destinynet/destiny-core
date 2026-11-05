@@ -156,7 +156,7 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
             OvercomingClause.superior(pattern), OvercomingClause.inferior(pattern)))
         }
         is Misc.InAntiscia -> MiscDescriptor(pattern, if (pattern.antiscion.contra) "commentContra" else "comment",
-          listOf(pattern.antiscion.planet, pattern.antiscion.other, "%.2f°".format(pattern.antiscion.orb)))
+          listOf(pattern.antiscion.planet, pattern.antiscion.other, "%.2f°".format(Locale.ROOT, pattern.antiscion.orb)))
         is Misc.SpearBearing -> MiscDescriptor(pattern, "comment", listOf(pattern.planet, SpearBearers(pattern.planet, pattern.bearers, pattern.sect)))
         is Misc.Maltreated -> {
           val m = pattern.maltreatment
@@ -221,7 +221,7 @@ internal class SpearBearers(
     val lightName = light.getTitle(lang)
     return bearers.joinToString(if (lang.language == "en") "; " else "、") { d ->
       val name = d.bearer.getTitle(lang)
-      val dist = "%.2f°".format(d.distance)
+      val dist = "%.2f°".format(Locale.ROOT, d.distance)
       val sectWord = if (sect == null || d.inSect == null) null else when (lang.language) {
         "en" -> (if (d.inSect) "of the sect" else "contrary to the sect") + " of this ${if (sect == DayNight.DAY) "day" else "night"} chart"
         "ja" -> (if (sect == DayNight.DAY) "昼" else "夜") + "の生まれで" + (if (d.inSect) "同じセクト" else "異なるセクト")
@@ -241,7 +241,7 @@ internal class MaltreatmentConditions(private val conditions: List<destiny.core.
 
   override fun getTitle(lang: Lang): String {
     val name = { p: destiny.core.astrology.AstroPoint -> p.getTitle(lang) }
-    val deg = { d: Double -> "%.2f°".format(d) }
+    val deg = { d: Double -> "%.2f°".format(Locale.ROOT, d) }
     val zhAspect = mapOf(SEXTILE to "六分", SQUARE to "四分", TRINE to "三分", OPPOSITION to "對沖", CONJUNCTION to "合")
     return conditions.joinToString(when (lang.language) { "en" -> "; "; else -> "、" }) { c ->
       when (c) {
@@ -341,7 +341,7 @@ internal class OvercomingClause private constructor(
 /** 顯現的時間：出生前／後幾天（一位小數）；不到 0.05 天算出生當下 */
 internal class FromBirth(private val days: Double) : ILocaleString {
   override fun getTitle(lang: Lang): String {
-    val d = "%.1f".format(kotlin.math.abs(days))
+    val d = "%.1f".format(Locale.ROOT, kotlin.math.abs(days))
     val now = kotlin.math.abs(days) < 0.05
     return when (lang.language) {
       "en" -> if (now) "at birth" else if (days < 0) "$d days before birth" else "$d days after birth"
@@ -363,7 +363,7 @@ internal class MorningEvening(private val oriental: Boolean) : ILocaleString {
 /** 月亮離合的時間：幾天前離開、幾天後成形（一位小數） */
 internal class LinkWhen(private val days: Double, private val past: Boolean) : ILocaleString {
   override fun getTitle(lang: Lang): String {
-    val d = "%.1f".format(days)
+    val d = "%.1f".format(Locale.ROOT, days)
     return when (lang.language) {
       "en" -> if (past) "$d days ago" else "in $d days"
       "ja" -> if (past) "${d}日前" else "${d}日後"

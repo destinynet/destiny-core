@@ -23,7 +23,7 @@ private val zh = {sb : StringBuilder , lat : Lat ->
   sb.append("%02d".format(lat.deg)).append("度")
   sb.append("%02d".format(lat.min)).append("分")
 
-  val secString = "%02.2f".format(lat.sec).let {
+  val secString = "%02.2f".format(Locale.ROOT, lat.sec).let {
     // 可能是 "0.00"
     if (it.length == 4) "0$it"
     else it
@@ -74,7 +74,7 @@ class LatDecoratorEnglish : Decorator<Lat> {
     return with(StringBuilder()) {
       append("%02d".format(value.deg)).append("°")
       append("%02d".format(value.min)).append("'")
-      val secString = "%02.3f".format(value.sec).let {
+      val secString = "%02.3f".format(Locale.ROOT, value.sec).let {
         // 可能是 "0.000"
         if (it.length == 5) "0$it"
         else it
