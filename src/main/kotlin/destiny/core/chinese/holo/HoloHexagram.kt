@@ -51,7 +51,7 @@ data class HoloHexagram(
   override val endExclusive: GmtJulDay) : IHoloHexagram, IHexagram by hexagram, JSerializable {
 
   override fun toString(): String {
-    return "$${Hexagram.of(hexagram)} 之 $yuanTang"
+    return "${Hexagram.of(hexagram)} 之 $yuanTang"
   }
 }
 

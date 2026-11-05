@@ -224,17 +224,22 @@ interface IHoloFeature : PersonFeature<HoloConfig, IHolo> {
 
   }
 
-  /** 先天卦 (with 元堂 : 1~6) */
-  fun getHexagramCongenital(ew: IEightWords, gender: Gender, yuan: Yuan, yearHalfYinYang: IYinYang): Pair<Hexagram, Int> {
-    if (yearHalfYinYang.booleanValue) {
-      require(!(未..亥).contains(ew.month.branch)) {
-        "前半年，月支 ${ew.month.branch} 不可以出現在 未~亥 當中"
+  /**
+   * 先天卦 (with 元堂 : 1~6)
+   * @param monthOpposable 八字設定開了「南半球月令對沖」：月支可能已被沖轉，不再與 [yearHalfYinYang]（依太陽而定）一致，故不檢查
+   */
+  fun getHexagramCongenital(ew: IEightWords, gender: Gender, yuan: Yuan, yearHalfYinYang: IYinYang, monthOpposable: Boolean = false): Pair<Hexagram, Int> {
+    if (!monthOpposable) {
+      if (yearHalfYinYang.booleanValue) {
+        require(!(未..亥).contains(ew.month.branch)) {
+          "前半年，月支 ${ew.month.branch} 不可以出現在 未~亥 當中"
+        }
+      } else {
+        require(!(丑..巳).contains(ew.month.branch)) {
+          "後半年，月支 ${ew.month.branch} 不可以出現在 丑~巳 當中"
+        }
+        // 冬至、夏至 平分 子月、午月 ，無法從八字中判斷
       }
-    } else {
-      require(!(丑..巳).contains(ew.month.branch)) {
-        "後半年，月支 ${ew.month.branch} 不可以出現在 丑~巳 當中"
-      }
-      // 冬至、夏至 平分 子月、午月 ，無法從八字中判斷
     }
     val hex = getHexagram(ew, gender, yuan)
     val yuanTang = getYuanTang(hex, ew.hour.branch, gender, yearHalfYinYang)
@@ -390,22 +395,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
 
   /** 天數 -> 卦 */
   override fun getHeavenSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
-    fun shrink(value: Int): Int {
-      return when {
-        value > 25 -> shrink(value % 25)
-        value == 25 -> 5
-        else -> (value % 10).let { reminder ->
-          if (reminder != 0)
-            reminder
-          else
-            value / 10
-        }
-        //else -> (value % 10)
-      }
-    }
-
-    val value = shrink(getHeavenNumber(ew))
-
+    val value = shrink(getHeavenNumber(ew), 25)
     return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, ew.year.stem)
   }
 
@@ -419,21 +409,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
 
   /** 地數 -> 卦 */
   override fun getEarthSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
-    fun shrink(value: Int): Int {
-      return if (value > 30) {
-        shrink(value % 30)
-      } else {
-        (value % 10).let { reminder ->
-          if (reminder != 0)
-            reminder
-          else
-            value / 10
-        }
-      }
-    }
-
-    val value = shrink(getEarthNumber(ew))
-
+    val value = shrink(getEarthNumber(ew), 30)
     return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, ew.year.stem)
   }
 
@@ -603,7 +579,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
 
     val settingsImpl = settingsMap[config.divineTraditionalConfig.settings]!!
     // 先天命卦 , 以及六爻大運、流年 等資訊
-    val hexagramCongenital: ILifeHoloHexagram = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang).let { (hex, yuanTang) ->
+    val hexagramCongenital: ILifeHoloHexagram = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang, config.eightWordsConfig.southernHemisphereOpposition).let { (hex, yuanTang) ->
       val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, gmtJulDay, ew.year, config.divineTraditionalConfig.settings, config.hexChange)
       val stemBranches = (1..6).map { settingsImpl.getStemBranch(hex, it) }.toList()
       val dutyDaysMap = dailyHexagramService.getDutyDays(hex, startOfYear - 0.01, true)
@@ -912,12 +888,12 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
 
     // 流月 (depends on 流年)
     val monthlyHexagram: IHoloHexagramWithStemBranch? = yearlyHexagram?.let { yearly: IHoloHexagramWithStemBranch ->
-      getMonthlyHexagram(yearly.stemBranch.stem, yearly, yearly.yuanTang, gmt)
+      getMonthlyHexagram(yearly.stemBranch.stem, yearly, yearly.yuanTang, gmt, config.divineTraditionalConfig.settings)
     }
 
     // 流日
     val dailyHexagram: IHoloHexagramWithStemBranch? = monthlyHexagram?.let { monthly ->
-      getDailyHexagram(monthly, monthly.yuanTang, gmt, loc).also {
+      getDailyHexagram(monthly, monthly.yuanTang, gmt, loc, config.divineTraditionalConfig.settings, config.eightWordsConfig.dayHourConfig).also {
         logger.debug("流日 , start = {}", it.start)
       }
     }
@@ -935,5 +911,19 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
 
   companion object {
     private val logger = KotlinLogging.logger { }
+
+    /**
+     * 天數（[limit] = 25）、地數（[limit] = 30）化為起卦之數：
+     * 大於 [limit] 則減去 [limit]（反覆減，直到不大於 [limit]）；剛好等於 [limit] 不減。
+     * 之後取個位數；個位為 0 則取十位（10 → 1、20 → 2、30 → 3）。
+     *
+     * 所以天數 25 → 5、50 → 25 → 5；地數 30 → 3、60 → 30 → 3。
+     * 得 5 者由呼叫端寄宮。
+     */
+    internal fun shrink(value: Int, limit: Int): Int {
+      require(value > 0) { "天數／地數必須為正：$value" }
+      val reduced = (value - 1) % limit + 1   // 1..limit
+      return (reduced % 10).takeIf { it != 0 } ?: (reduced / 10)
+    }
   }
 }

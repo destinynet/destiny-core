@@ -54,7 +54,9 @@ class HoloFullFeature(private val holoFeature: HoloFeature,
   override val key: String = "holoFullFeature"
 
 
-  override val defaultConfig: HoloFullConfig = HoloFullConfig()
+  /** 每次取用都重建：[HoloFullConfig.viewGmtJulDay] 的「現在」不可凍結在建 bean 的那一刻 */
+  override val defaultConfig: HoloFullConfig
+    get() = HoloFullConfig()
 
   private fun getCongenital(holo: IHolo, locale: Locale): LifeHoloPoemHexagram {
     return LifeHoloPoemHexagram(holo.hexagramCongenital,
