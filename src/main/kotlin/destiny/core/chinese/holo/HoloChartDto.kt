@@ -5,7 +5,9 @@ package destiny.core.chinese.holo
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.chinese.StemBranch
+import destiny.core.chinese.StemBranchYearTool
 import destiny.core.iching.Hexagram
+import destiny.core.iching.IHexData
 import destiny.core.iching.Symbol
 import kotlinx.serialization.Serializable
 
@@ -112,12 +114,12 @@ fun IHolo.toHoloChartDto(
   birthYear: Int,
   now: GmtJulDay,
   fullName: (Hexagram) -> String,
-  poemOf: (Hexagram) -> IPoemHexagram,
-  lifeDescOf: (Hexagram) -> IHoloLifeDescHexagram,
+  poemOf: (Hexagram) -> IHexData<List<String>, ILinePoem>,
+  lifeDescOf: (Hexagram) -> IHexData<String, String>,
 ): HoloChartDto {
 
   // 出生在立春前（一月、二月初），年柱還是前一年
-  val firstYear = if (StemBranch[(birthYear - 4).mod(60)] == StemBranch[ew.year.stem, ew.year.branch]) birthYear else birthYear - 1
+  val firstYear = if (StemBranchYearTool.getYearStemBranch(birthYear) == StemBranch[ew.year.stem, ew.year.branch]) birthYear else birthYear - 1
 
   // 先天、後天所有流年依時間排，第 k 年 ⇒ 西元 firstYear + k、虛歲 k + 1
   val ordinal: Map<GmtJulDay, Int> = (hexagramCongenital.lines + hexagramAcquired.lines)
