@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import kotlin.reflect.KClass
 import destiny.core.DayNight
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.IHoroscopeModel
@@ -190,4 +191,6 @@ interface IApplicationOutcome : IClassicalFactSource {
   /** 受阻的入相位（臨陣退縮／插隊／撲空）。成形的不列 —— 那就是一般的入相位 */
   override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> =
     getOutcomes(h).filterNot { it is ApplicationOutcome.Perfected }
+
+  override val produces: Set<KClass<out ClassicalFact>> get() = setOf(ApplicationOutcome.Refranation::class, ApplicationOutcome.Prohibition::class, ApplicationOutcome.Frustration::class)
 }

@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import kotlin.reflect.KClass
 import destiny.core.DayNight
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.IHoroscopeModel
@@ -77,4 +78,6 @@ interface IAversion : IClassicalFactSource {
   fun getResults(h: IHoroscopeModel): List<Aversion>
 
   override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h)
+
+  override val produces: Set<KClass<out ClassicalFact>> get() = setOf(Aversion::class)
 }

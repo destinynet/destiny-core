@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical.rules
 
+import kotlin.reflect.KClass
 import destiny.core.DayNight
 import destiny.core.DayNight.DAY
 import destiny.core.DayNight.NIGHT
@@ -65,6 +66,15 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     return factSources.flatMap { it.getFacts(h, sect) }
   }
 
+  /** 本命看的居上（[natalOvercomings]）當成一個來源；沒有 [overcomingImpl] 的 context 不列 */
+  private val natalOvercomingSource = object : IClassicalFactSource {
+    override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = natalOvercomings(h).map { it.overcoming }
+    override val produces: Set<KClass<out ClassicalFact>> get() = setOf(Overcoming::class)
+  }
+
+  /** 這份 context 會列出的事實型別（各來源 [IClassicalFactSource.produces] 的聯集）—— 涵蓋檢查用 */
+  val factTypes: Set<KClass<out ClassicalFact>> by lazy { factSources.flatMapTo(LinkedHashSet()) { it.produces } }
+
   /**
    * 古典事實的來源（[IClassicalFactSource]），依列出的順序攤平；這份 context 沒有的技法（null）不列。
    * 新增一種技法：實作介面、加進這一串 —— [classicalFacts] 不必改
@@ -74,7 +84,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     collectionOfLightImpl,
     applicationOutcomeImpl,
     besiegementImpl,
-    IClassicalFactSource { h, _ -> natalOvercomings(h).map { it.overcoming } },
+    natalOvercomingSource.takeIf { overcomingImpl != null },
     aversionImpl,
     maltreatmentImpl,
     doryphoriaImpl,

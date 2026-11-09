@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import kotlin.reflect.KClass
 import destiny.core.DayNight
 import destiny.core.astrology.Axis
 import destiny.core.astrology.IHoroscopeModel
@@ -135,6 +136,8 @@ interface ISect : IClassicalFactSource {
   /** 區分（一筆）與得時；日夜不明（[sect] 為 null）就沒有 */
   override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> =
     sect?.let { listOfNotNull<ClassicalFact>(getSect(h, it)) + getHayzResults(h, it) }.orEmpty()
+
+  override val produces: Set<KClass<out ClassicalFact>> get() = setOf(Sect::class, Hayz::class)
 }
 
 class SectImpl(

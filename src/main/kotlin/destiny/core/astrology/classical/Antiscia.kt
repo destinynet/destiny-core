@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import kotlin.reflect.KClass
 import destiny.core.DayNight
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
@@ -46,4 +47,6 @@ interface IAntiscia : IClassicalFactSource {
   fun getResults(h: IHoroscopeModel): List<Antiscion>
 
   override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h)
+
+  override val produces: Set<KClass<out ClassicalFact>> get() = setOf(Antiscion::class)
 }
