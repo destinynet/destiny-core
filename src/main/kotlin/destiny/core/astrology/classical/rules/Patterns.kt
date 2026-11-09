@@ -10,7 +10,6 @@ import destiny.core.astrology.classical.Besiegement
 import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.MutualDataWithSign
 import destiny.core.calendar.GmtJulDay
-import destiny.core.chinese.YinYang
 import destiny.tools.serializers.IZodiacDegreeSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -80,7 +79,10 @@ sealed class AccidentalDignity : IPlanetPattern {
   data class Partile_Conj_Regulus(override val planet: Planet) : AccidentalDignity()
   data class Partile_Conj_Spica(override val planet: Planet) : AccidentalDignity()
   data class JoyHouse(override val planet: Planet, val house: Int) : AccidentalDignity()
-  data class Hayz(override val planet: Planet, val dayNight: DayNight, val yinYang: YinYang, val sign: ZodiacSign) : AccidentalDignity()
+  /** 得時：持有事實 [fact]（與古典事實清單同一筆判定），不另存一份攤平的欄位 */
+  data class Hayz(val fact: destiny.core.astrology.classical.Hayz) : AccidentalDignity() {
+    override val planet: Planet get() = fact.planet
+  }
   data class Besieged_Jupiter_Venus(override val planet: Planet) : AccidentalDignity()
   data class Translation_of_Light(override val planet: Planet, val from: Planet, val to: Planet, val angle: Double, val aspectType: IPointAspectPattern.AspectType?) :
     AccidentalDignity()
@@ -115,7 +117,10 @@ sealed class Debility : IPlanetPattern {
   data class Partile_Oppo_Mars_Saturn(override val planet: Planet, val marsOrSaturn: Planet) : Debility()
   data class Partile_Square_Mars_Saturn(override val planet: Planet, val marsOrSaturn: Planet) : Debility()
   data class Conj_Algol(override val planet: Planet) : Debility()
-  data class Out_of_Sect(override val planet: Planet, val dayNight: DayNight, val yinYang: YinYang, val sign: ZodiacSign) : Debility()
+  /** 不得時：持有 [fact]（與得時同一份判準，見 [destiny.core.astrology.classical.OutOfSect]） */
+  data class Out_of_Sect(val fact: destiny.core.astrology.classical.OutOfSect) : Debility() {
+    override val planet: Planet get() = fact.planet
+  }
   data class Refrain_from_Venus_Jupiter(override val planet: Planet, val venusOrJupiter: Planet, val aspect: Aspect) : Debility()
 
   data class MutualDeception(override val planet: Planet,

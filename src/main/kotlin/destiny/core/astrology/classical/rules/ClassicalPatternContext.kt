@@ -11,7 +11,6 @@ import destiny.core.astrology.*
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.classical.*
-import destiny.core.chinese.YinYang
 import destiny.tools.KotlinLogging
 import destiny.tools.getTitle
 import java.util.*
@@ -41,7 +40,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val aversionImpl: IAversion? = null,
                               /** 灼傷（[ICombustion]）：古典事實列不列由它決定（null ＝ 不列）；prompt 的日心／灼傷／光束下判斷一律用它，null 時用 [CombustionOptions.LILLY] */
                               private val combustionImpl: ICombustion? = null,
-                              /** 區分與得時（[ISect]）：古典事實列不列由它決定（null ＝ 不列）。prompt 的得時（[hayz]）尚未改用它，仍是舊判法 */
+                              /** 區分與得時（[ISect]）：古典事實列不列由它決定（null ＝ 不列）；prompt 的得時／不得時（[hayz]、[outOfSect]）一律用它，null 時用 [HayzOptions.IN_SECT_ABOVE] */
                               private val sectImpl: ISect? = null,
                               /** 顯現（停滯、出入光束，[IPhasis]）：古典事實列不列由它決定（null ＝ 不列）；要星曆 */
                               private val phasisImpl: IPhasis? = null,
@@ -565,35 +564,16 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
+  /** 得時／不得時的判法（prompt 的兩個判斷與古典事實共用；判準只在 [HayzOptions]）。沒有 [sectImpl] 的 context（卜卦）沿用舊判法 */
+  private val sectJudge: ISect = sectImpl ?: SectImpl(HayzOptions.IN_SECT_ABOVE)
+
   /**
-   * 判斷得時 (Hayz) : 白天 , 晝星位於地平面上，落入陽性星座；或是晚上，夜星在地平面上，落入陰性星座
-   * 晝星 : 日 , 木 , 土
-   * 夜星 : 月 , 金 , 火
+   * 得時（Hayz）：晝夜歸屬、地平線上下、星座陰陽三者都合宜，判準見 [sectJudge]。與 [classicalFacts] 列的得時是同一筆判定。
    *
    * 相對於得時的，是「不得時」 [outOfSect]
-   *
    */
   val hayz = IPlanetPatternFactory.single { planet, h ->
-    val dayNight = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
-
-    h.getZodiacSign(planet)?.let { sign ->
-      h.getHouse(planet)?.let { house ->
-        when (dayNight) {
-          DAY -> planet.takeIf { it.sect == DAY }
-            ?.takeIf { house >= 7 && sign.booleanValue }
-            ?.let {
-              logger.debug("晝星 {} 於白天在地平面上，落入陽性星座 {} , 得時", planet, sign)
-              AccidentalDignity.Hayz(planet, dayNight, YinYang.陽, sign)
-            }
-          NIGHT -> planet.takeIf { it.sect == NIGHT }
-            ?.takeIf { house >= 7 && !sign.booleanValue }
-            ?.let {
-              logger.debug("夜星 {} 於夜晚在地平面上，落入陰性星座 {} , 得時", planet, sign)
-              AccidentalDignity.Hayz(planet, dayNight, YinYang.陰, sign)
-            }
-        }
-      }
-    }
+    sectJudge.getHayz(h, sectOf(h), planet)?.let { AccidentalDignity.Hayz(it) }
   }
 
   /**
@@ -903,31 +883,10 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   }
 
   /**
-   * 判斷不得時 (Out of sect) : 白天 , 夜星位於地平面上，落入陽性星座；或是晚上，晝星在地平面上，落入陰性星座
-   * 晝星 : 日 , 木 , 土
-   * 夜星 : 月 , 金 , 火
-   *
-   * 相對於不得時的，是「得時」 [hayz]
+   * 不得時（Out of sect）：與盤異隊、在地平上、星座陰陽不合，三者皆是；判準與 [hayz] 同一份（[sectJudge]）
    */
   val outOfSect = IPlanetPatternFactory.single { planet, h ->
-    h.getZodiacSign(planet)?.let { sign ->
-      h.getHouse(planet)?.let { house ->
-        when (val dayNight = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)) {
-          DAY -> if (planet.sect == NIGHT && house >= 7 && sign.booleanValue) {
-            logger.debug("夜星 {} 於白天在地平面上，落入陽性星座 {} , 不得時", planet, sign.getTitle(Locale.TAIWAN))
-            Debility.Out_of_Sect(planet, dayNight, YinYang.陽, sign)
-          } else {
-            null
-          }
-          NIGHT -> if (planet.sect == DAY && house >= 7 && !sign.booleanValue) {
-            logger.debug("晝星 {} 於夜晚在地平面上，落入陰性星座 {} , 不得時", planet, sign.getTitle(Locale.TAIWAN))
-            Debility.Out_of_Sect(planet, dayNight, YinYang.陰, sign)
-          } else {
-            null
-          }
-        }
-      }
-    }
+    sectJudge.getOutOfSect(h, sectOf(h), planet)?.let { Debility.Out_of_Sect(it) }
   }
 
   val refrainFromVenusJupiter = IPlanetPatternFactory { planet, h ->

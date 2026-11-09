@@ -31,25 +31,54 @@ data class Sect(
 ) : ClassicalFact
 
 /**
- * 得時（hayz）：[planet] 的晝夜歸屬（[planetSect]）、它在地平線上下（[aboveHorizon]）、所在星座的陰陽（[sign]）三者都合宜。
+ * 一顆星在區分上的三個條件：晝夜歸屬、地平線上下、所在星座的陰陽。[Hayz]（三者都合宜）與 [OutOfSect]（三者都相反）共用這組欄位。
  *
  * - [chartSect]：盤的日夜
  * - [planetSect]：這顆星的晝夜歸屬（水星依東出西入）
  * - [aboveHorizon]：在地平線上（以上升／下降點的黃經判，不看宮位制）
  * - [masculineSign]：所在星座是陽性；[wantMasculine] 是這顆星要的陰陽（由 [HayzOptions.gender] 決定）
  */
-data class Hayz(
-  val planet: Planet,
-  val chartSect: DayNight,
-  val planetSect: DayNight,
-  val aboveHorizon: Boolean,
-  val sign: ZodiacSign,
-  val masculineSign: Boolean,
-  val wantMasculine: Boolean,
-) : ClassicalFact
+interface ISectCondition {
+  val planet: Planet
+  val chartSect: DayNight
+  val planetSect: DayNight
+  val aboveHorizon: Boolean
+  val sign: ZodiacSign
+  val masculineSign: Boolean
+  val wantMasculine: Boolean
+}
 
 /**
- * 得時的判準（定義分歧，見 KDoc；實務只用一組）。
+ * 得時（hayz）：[planet] 的晝夜歸屬（[planetSect]）、它在地平線上下（[aboveHorizon]）、所在星座的陰陽（[sign]）三者都合宜。欄位見 [ISectCondition]
+ */
+data class Hayz(
+  override val planet: Planet,
+  override val chartSect: DayNight,
+  override val planetSect: DayNight,
+  override val aboveHorizon: Boolean,
+  override val sign: ZodiacSign,
+  override val masculineSign: Boolean,
+  override val wantMasculine: Boolean,
+) : ClassicalFact, ISectCondition
+
+/**
+ * 不得時（contrary to hayz）：三項都相反 —— [planet] 與盤異隊、卻在地平線上（異隊的星該在地平下）、所在星座的陰陽也不合。
+ * 判準與 [Hayz] 同一份 [HayzOptions]（星座陰陽依什麼對照、水星算不算）。
+ *
+ * 只給判斷層（扣分與敘述）用，不是 [ClassicalFact]：古典事實清單只列得時。欄位見 [ISectCondition]
+ */
+data class OutOfSect(
+  override val planet: Planet,
+  override val chartSect: DayNight,
+  override val planetSect: DayNight,
+  override val aboveHorizon: Boolean,
+  override val sign: ZodiacSign,
+  override val masculineSign: Boolean,
+  override val wantMasculine: Boolean,
+) : ISectCondition
+
+/**
+ * 得時與不得時的判準（定義分歧，見 KDoc；實務只用一組）。
  *
  * - [hemisphere]：地平線上下怎麼算合宜
  * - [gender]：星座陰陽依什麼對照
@@ -78,7 +107,7 @@ data class HayzOptions(
     /** Abu Ma'shar《Great Introduction》：ḥalb 加上星座陰陽與星的陰陽相合；水星東出為晝、陽 */
     val ABU_MASHAR = HayzOptions(Hemisphere.HALB, Gender.PLANET, mercury = true)
 
-    /** 舊版 core 的判法：與盤同隊、在地平上、晝星陽性星座／夜星陰性星座；不判水星 */
+    /** 舊版 core 的判法：與盤同隊、在地平上、晝星陽性星座／夜星陰性星座；不判水星。卜卦的敘述與計分沿用這組 */
     val IN_SECT_ABOVE = HayzOptions(Hemisphere.IN_SECT_ABOVE, Gender.SECT, mercury = false)
   }
 }
@@ -93,6 +122,9 @@ interface ISect {
 
   /** [planet] 得時；不得時（或缺上升點）為 null */
   fun getHayz(h: IHoroscopeModel, sect: DayNight, planet: Planet): Hayz?
+
+  /** [planet] 不得時（[OutOfSect]：異隊、在地平上、星座陰陽不合，三者皆是）；否則（或缺上升點）為 null */
+  fun getOutOfSect(h: IHoroscopeModel, sect: DayNight, planet: Planet): OutOfSect?
 
   /** 全盤得時的星，依古典行星順序 */
   fun getHayzResults(h: IHoroscopeModel, sect: DayNight): List<Hayz> =
@@ -114,6 +146,28 @@ class SectImpl(
   }
 
   override fun getHayz(h: IHoroscopeModel, sect: DayNight, planet: Planet): Hayz? {
+    val c = condition(h, planet) ?: return null
+    val inSect = c.planetSect == sect
+    val hemisphereOk = when (options.hemisphere) {
+      HayzOptions.Hemisphere.HALB          -> c.above == inSect
+      HayzOptions.Hemisphere.IN_SECT_ABOVE -> inSect && c.above
+    }
+    if (!hemisphereOk) return null
+    if (c.sign.booleanValue != c.wantMasculine) return null
+    return Hayz(planet, sect, c.planetSect, c.above, c.sign, c.sign.booleanValue, c.wantMasculine)
+  }
+
+  override fun getOutOfSect(h: IHoroscopeModel, sect: DayNight, planet: Planet): OutOfSect? {
+    val c = condition(h, planet) ?: return null
+    // 三項都相反才算：與盤異隊、在地平上（兩種 hemisphere 判法下，異隊的星在地平上都不合宜）、星座陰陽不合
+    if (c.planetSect == sect || !c.above || c.sign.booleanValue == c.wantMasculine) return null
+    return OutOfSect(planet, sect, c.planetSect, c.above, c.sign, c.sign.booleanValue, c.wantMasculine)
+  }
+
+  /** [planet] 的晝夜歸屬、地平線上下、所在星座與它要的陰陽；不在判斷範圍（非古典七星、[HayzOptions.mercury] 關掉的水星）或缺位置時為 null */
+  private class Condition(val planetSect: DayNight, val above: Boolean, val sign: ZodiacSign, val wantMasculine: Boolean)
+
+  private fun condition(h: IHoroscopeModel, planet: Planet): Condition? {
     if (planet !in Planet.classicalList) return null
     if (planet === Planet.MERCURY && !options.mercury) return null
     val planetSect = (if (planet === Planet.MERCURY) mercurySect(h) else planet.sect) ?: return null
@@ -121,12 +175,6 @@ class SectImpl(
     val asc = h.positionMap[Axis.RISING]?.lngDeg ?: return null
     // 從上升點順黃道走 0–180° 是地平線下（第 1–6 宮那一半），180–360° 是地平線上
     val above = deg.aheadOf(asc) > 180.0
-    val inSect = planetSect == sect
-    val hemisphereOk = when (options.hemisphere) {
-      HayzOptions.Hemisphere.HALB          -> above == inSect
-      HayzOptions.Hemisphere.IN_SECT_ABOVE -> inSect && above
-    }
-    if (!hemisphereOk) return null
     val wantMasculine = when (options.gender) {
       HayzOptions.Gender.PLANET -> when (planet) {
         Planet.MOON, Planet.VENUS -> false
@@ -135,9 +183,7 @@ class SectImpl(
       }
       HayzOptions.Gender.SECT   -> planetSect == DayNight.DAY
     }
-    val sign = deg.sign
-    if (sign.booleanValue != wantMasculine) return null
-    return Hayz(planet, sect, planetSect, above, sign, sign.booleanValue, wantMasculine)
+    return Condition(planetSect, above, deg.sign, wantMasculine)
   }
 
   /** 水星先於太陽升起（黃經在太陽之前、180° 內）＝ 東出 ＝ 晝星 */

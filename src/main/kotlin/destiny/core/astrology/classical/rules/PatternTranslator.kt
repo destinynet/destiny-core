@@ -78,13 +78,7 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
         is AccidentalDignity.Partile_Conj_Regulus -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, FixedStar.REGULUS, CONJUNCTION))
         is AccidentalDignity.Partile_Conj_Spica -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, FixedStar.SPICA, CONJUNCTION))
         is AccidentalDignity.JoyHouse -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.house))
-        is AccidentalDignity.Hayz -> {
-          if (pattern.dayNight == DayNight.DAY) {
-            AccidentalDignityDescriptor(pattern, "commentDay", listOf(pattern.planet, pattern.sign))
-          } else {
-            AccidentalDignityDescriptor(pattern, "commentNight", listOf(pattern.planet, pattern.sign))
-          }
-        }
+        is AccidentalDignity.Hayz -> AccidentalDignityDescriptor(pattern, "comment", sectParams(pattern.fact))
         is AccidentalDignity.Besieged_Jupiter_Venus -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, VENUS, JUPITER))
         is AccidentalDignity.Translation_of_Light -> {
           if (pattern.aspectType != null)
@@ -119,13 +113,7 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
         is Debility.Partile_Oppo_Mars_Saturn ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.marsOrSaturn, OPPOSITION))
         is Debility.Partile_Square_Mars_Saturn ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.marsOrSaturn, SQUARE))
         is Debility.Conj_Algol ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet, FixedStar.ALGOL, CONJUNCTION))
-        is Debility.Out_of_Sect -> {
-          if (pattern.dayNight == DayNight.DAY) {
-            DebilityDescriptor(pattern, "commentNight", listOf(pattern.planet, pattern.sign))
-          } else {
-            DebilityDescriptor(pattern, "commentDay", listOf(pattern.planet, pattern.sign))
-          }
-        }
+        is Debility.Out_of_Sect -> DebilityDescriptor(pattern, "comment", sectParams(pattern.fact))
         is Debility.Refrain_from_Venus_Jupiter -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.venusOrJupiter, pattern.aspect))
         is Debility.MutualDeception -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign1, pattern.dig2, pattern.p2, pattern.sign2, pattern.dig1, pattern.dig2))
       }
@@ -209,6 +197,25 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
       }
     }
   }
+}
+
+/**
+ * 得時／不得時句子的參數，兩種句子共用：`{0}` 晝星／夜星、`{1}` 星、`{2}` 白天／夜晚、`{3}` 地平面上／下、`{4}` 陽性／陰性星座、`{5}` 星座。
+ * 句子由事實的欄位組出來，所以 ḥalb 的「異隊的星在地平下」也講得出來（舊句子寫死「在地平面上」）
+ */
+private fun sectParams(c: destiny.core.astrology.classical.ISectCondition): List<Any> = listOf(
+  SectWord("planet." + c.planetSect.name),
+  c.planet,
+  SectWord("chart." + c.chartSect.name),
+  SectWord(if (c.aboveHorizon) "above" else "below"),
+  SectWord(if (c.masculineSign) "masculine" else "feminine"),
+  c.sign,
+)
+
+/** 得時／不得時句子裡的詞：字在 AccidentalDignities 語系檔的 `Hayz.word.*`，得時與不得時共用一份 */
+internal class SectWord(private val key: String) : ILocaleString {
+  override fun getTitle(lang: Lang): String =
+    destiny.tools.I18nBundles.string("destiny.core.astrology.classical.rules.AccidentalDignities", lang, "Hayz.word.$key") ?: key
 }
 
 /** 持矛者清單：「水星（先於太陽升起，相距 25.53°，與日盤同區分）」 */

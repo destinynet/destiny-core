@@ -20,6 +20,8 @@ import destiny.core.astrology.Stationary
 import destiny.core.astrology.StationaryType
 import destiny.core.astrology.classical.ApplicationOutcome
 import destiny.core.astrology.classical.Besiegement
+import destiny.core.astrology.classical.Hayz as HayzFact
+import destiny.core.astrology.classical.OutOfSect
 import destiny.core.calendar.GmtJulDay
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign.*
@@ -29,7 +31,6 @@ import destiny.core.astrology.classical.rules.AccidentalDignity.Occidental
 import destiny.core.astrology.classical.rules.AccidentalDignity.Oriental
 import destiny.core.astrology.classical.rules.Debility.*
 import destiny.core.astrology.classical.rules.Debility.MutualDeception
-import destiny.core.chinese.YinYang
 import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
@@ -198,15 +199,20 @@ class PatternTranslatorKtTest {
       assertEquals("水星 位於第 1 宮，為其喜樂宮（Joy House）" , it.twDesc)
     }
 
-    Hayz(SUN , DayNight.DAY , YinYang.陽 , ARIES).also {
+    Hayz(HayzFact(SUN, DayNight.DAY, DayNight.DAY, aboveHorizon = true, ARIES, masculineSign = true, wantMasculine = true)).also {
       assertEquals("得時" , it.title)
       assertEquals("晝星 太陽 於白天在地平面上，落入陽性星座 牡羊，得時。" , it.twDesc)
-      assertEquals("Hayz : Day star Sun is in the Yang sign Aries and above the horizon during the day." , it.enDesc)
+      assertEquals("Hayz : Day star Sun is in the masculine sign Aries and above the horizon during the day." , it.enDesc)
     }
-    Hayz(MOON, DayNight.NIGHT, YinYang.陰 , TAURUS).also {
+    Hayz(HayzFact(MOON, DayNight.NIGHT, DayNight.NIGHT, aboveHorizon = true, TAURUS, masculineSign = false, wantMasculine = false)).also {
       assertEquals("得時" , it.title)
       assertEquals("夜星 月亮 於夜晚在地平面上，落入陰性星座 金牛，得時。" , it.twDesc)
-      assertEquals("Hayz : Night Star Moon is in the Ying sign Taurus and above the horizon at night." , it.enDesc)
+      assertEquals("Hayz : Night star Moon is in the feminine sign Taurus and above the horizon at night." , it.enDesc)
+    }
+    // ḥalb：異隊的星在地平下才合宜 —— 舊句子寫死「在地平面上」，講不出這一種
+    Hayz(HayzFact(SATURN, DayNight.NIGHT, DayNight.DAY, aboveHorizon = false, GEMINI, masculineSign = true, wantMasculine = true)).also {
+      assertEquals("晝星 土星 於夜晚在地平面下，落入陽性星座 雙子，得時。" , it.twDesc)
+      assertEquals("Hayz : Day star Saturn is in the masculine sign Gemini and below the horizon at night." , it.enDesc)
     }
 
     Besieged_Jupiter_Venus(SUN).also {
@@ -339,15 +345,15 @@ class PatternTranslatorKtTest {
       assertEquals("Mercury and Algol forms Conjunction." , it.enDesc)
     }
 
-    Out_of_Sect(SUN , DayNight.NIGHT, YinYang.陰 , TAURUS).also {
+    Out_of_Sect(OutOfSect(SUN, DayNight.NIGHT, DayNight.DAY, aboveHorizon = true, TAURUS, masculineSign = false, wantMasculine = true)).also {
       assertEquals("不得時" , it.title)
       assertEquals("晝星 太陽 於夜晚在地平面上，落入陰性星座 金牛，不得時。" , it.twDesc)
-      assertEquals("Day Star Sun is in the Ying sign Taurus and above the horizon at night. Out of Sect." , it.enDesc)
+      assertEquals("Day star Sun is in the feminine sign Taurus and above the horizon at night. Out of Sect." , it.enDesc)
     }
-    Out_of_Sect(MOON, DayNight.DAY, YinYang.陽 , ARIES).also {
+    Out_of_Sect(OutOfSect(MOON, DayNight.DAY, DayNight.NIGHT, aboveHorizon = true, ARIES, masculineSign = true, wantMasculine = false)).also {
       assertEquals("不得時" , it.title)
       assertEquals("夜星 月亮 於白天在地平面上，落入陽性星座 牡羊，不得時。" , it.twDesc)
-      assertEquals("Night Star Moon is in the Yang sign Aries and above the horizon during the day, Out of Sect." , it.enDesc)
+      assertEquals("Night star Moon is in the masculine sign Aries and above the horizon during the day. Out of Sect." , it.enDesc)
     }
 
     Refrain_from_Venus_Jupiter(JUPITER , VENUS , TRINE).also {

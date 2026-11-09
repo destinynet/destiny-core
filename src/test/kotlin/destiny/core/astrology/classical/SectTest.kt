@@ -80,6 +80,32 @@ class SectTest {
     assertNull(SectImpl().getHayz(model(), DayNight.DAY, SATURN))
   }
 
+  /**
+   * 不得時＝三項都相反（異隊、在地平上、星座陰陽不合）。同一張盤改成日盤：夜星是月、金、火（水星東出歸晝隊），三顆都在地平上。
+   * - 月亮 200° 天秤（陽）：月亮要陰性 ⇒ 兩種判法都不得時
+   * - 金星 220° 天蠍（陰）：陰陽合宜 ⇒ 不算
+   * - 火星 250° 射手（陽）：依星的陰陽（火星陽）合宜 ⇒ 不算；依晝夜歸屬（夜星要陰）⇒ 不得時
+   */
+  @Test
+  fun `不得時：與得時同一份判準`() {
+    val h = model()
+    fun outOfSect(options: HayzOptions) = Planet.classicalList.mapNotNull { SectImpl(options).getOutOfSect(h, DayNight.DAY, it) }.map { it.planet }
+    assertEquals(listOf(MOON), outOfSect(HayzOptions.ABU_MASHAR))
+    assertEquals(listOf(MOON, MARS), outOfSect(HayzOptions.IN_SECT_ABOVE))
+    // 同隊的星永遠不算不得時；地平下的異隊星也不算（夜盤：土星 60° 異隊、在地平下）
+    assertNull(SectImpl().getOutOfSect(h, DayNight.NIGHT, SATURN))
+    assertNull(SectImpl().getOutOfSect(h, DayNight.NIGHT, VENUS))
+  }
+
+  @Test
+  fun `同一顆星不會既得時又不得時`() {
+    val h = model()
+    for (options in listOf(HayzOptions.ABU_MASHAR, HayzOptions.IN_SECT_ABOVE)) for (sect in DayNight.entries) for (p in Planet.classicalList) {
+      val impl = SectImpl(options)
+      assertFalse(impl.getHayz(h, sect, p) != null && impl.getOutOfSect(h, sect, p) != null, "$options $sect $p")
+    }
+  }
+
   @Test
   fun `DTO 序列化帶 kind`() {
     val h = model()
