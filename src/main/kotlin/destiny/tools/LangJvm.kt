@@ -21,6 +21,9 @@ fun Locale.toLang(): Lang = Lang.of(this.toLanguageTag()) ?: Lang.ROOT
 /** [Lang] → [Locale]。[Lang.ROOT] 轉為 `Locale.ROOT` */
 fun Lang.toLocale(): Locale = if (isRoot) Locale.ROOT else Locale.forLanguageTag(tag)
 
+/** [locale] 的中文變體（[ChineseVariant.of] 的 `Locale` 形式）；不是中文回 null */
+fun ChineseVariant.Companion.of(locale: Locale): ChineseVariant? = of(locale.toLang())
+
 /**
  * 本專案的預設語系 —— [Lang.DEFAULT] 的 `Locale` 形式（`zh_TW`）。
  *

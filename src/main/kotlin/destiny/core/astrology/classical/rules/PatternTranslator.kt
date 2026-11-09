@@ -11,6 +11,7 @@ import destiny.core.astrology.StationaryType
 import destiny.tools.AbstractPropertyBasedPatternDescriptor
 import destiny.tools.ILocaleString
 import destiny.tools.Lang
+import destiny.tools.StringTools.toEnglishOrdinal
 import destiny.tools.getTitle
 import java.util.*
 
@@ -290,7 +291,7 @@ internal class MaltreatmentConditions(private val conditions: List<destiny.core.
 /** 「從某星座起算的第 n 個星座」：zh／ja 用中文數詞的寫法，en 用序數 */
 internal class SignPlace(private val n: Int) : ILocaleString {
   override fun getTitle(lang: Lang): String = when (lang.language) {
-    "en" -> n.toString() + when { n % 100 in 11..13 -> "th"; n % 10 == 1 -> "st"; n % 10 == 2 -> "nd"; n % 10 == 3 -> "rd"; else -> "th" }
+    "en" -> n.toEnglishOrdinal()
     "ja" -> "${n}番目"
     else -> "第 $n 個"
   }
@@ -311,9 +312,9 @@ internal class OvercomingClause private constructor(
     val ja = lang.language == "ja"
     val en = lang.language == "en"
     val parts = buildList {
-      house?.let { add(when { en -> "in the ${ordinal(it)} house"; ja -> "第${it}ハウス"; else -> "第 $it 宮" }) }
+      house?.let { add(when { en -> "in the ${it.toEnglishOrdinal()} house"; ja -> "第${it}ハウス"; else -> "第 $it 宮" }) }
       if (house != null && rules.isNotEmpty()) add(when {
-        en -> "ruling the " + rules.joinToString(" and ") { ordinal(it) }
+        en -> "ruling the " + rules.joinToString(" and ") { it.toEnglishOrdinal() }
         ja -> "第" + rules.joinToString("・") + "ハウスの支配星"
         else -> "守護第 " + rules.joinToString("、") + " 宮"
       })
@@ -334,14 +335,6 @@ internal class OvercomingClause private constructor(
   companion object {
     fun superior(p: Misc.Overcoming) = OvercomingClause(p.houses?.superiorHouse, p.houses?.superiorRules.orEmpty(), p.sect, p.superiorInSect)
     fun inferior(p: Misc.Overcoming) = OvercomingClause(p.houses?.inferiorHouse, p.houses?.inferiorRules.orEmpty(), null, null)
-
-    private fun ordinal(n: Int): String = n.toString() + when {
-      n % 100 in 11..13 -> "th"
-      n % 10 == 1 -> "st"
-      n % 10 == 2 -> "nd"
-      n % 10 == 3 -> "rd"
-      else -> "th"
-    }
   }
 }
 

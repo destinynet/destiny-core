@@ -164,4 +164,15 @@ class BirthDataGrainTest {
     }
   }
 
+  /** 位置誤差：軸點用天球自轉，星體用黃經日速（不分順逆），不是軸點又沒有速度的不判 */
+  @Test
+  fun positionError() {
+    assertEquals(15.0, BirthDataGrain.HOUR2.axisErrorDeg)
+    assertEquals(1.0, BirthDataGrain.MINUTE.axisErrorDeg)
+    assertEquals(6.5, BirthDataGrain.DAY.starErrorDeg(13.0))
+    assertEquals(6.5, BirthDataGrain.DAY.starErrorDeg(-13.0))
+    assertEquals(BirthDataGrain.HOUR2.axisErrorDeg, BirthDataGrain.HOUR2.positionErrorDeg(Axis.RISING, null))
+    assertEquals(BirthDataGrain.DAY.starErrorDeg(13.0), BirthDataGrain.DAY.positionErrorDeg(Planet.MOON, 13.0))
+    assertNull(BirthDataGrain.DAY.positionErrorDeg(LunarNode.NORTH, null))
+  }
 }

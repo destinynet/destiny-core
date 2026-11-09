@@ -83,6 +83,13 @@ value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree 
     return value.aheadOf(other.value)
   }
 
+  /**
+   * 位置有 ±[error] 度的誤差時，星座會不會變（壓線）：看誤差區間的兩端落在哪個星座。
+   * 往後剛好碰到下一個星座的 0° 算會變，往前剛好退到本星座的 0° 不算。
+   * 要知道是哪個相鄰的星座，用 [ZodiacSign.neighborWithin]（以離邊界的距離判斷，剛好等於誤差時不算）
+   */
+  fun signChangesWithin(error: Double): Boolean = (this - error).sign != sign || (this + error).sign != sign
+
   /** 映點（antiscion）：以夏至、冬至軸（巨蟹 0°／摩羯 0°）對稱的度數，180° − λ */
   val antiscion: ZodiacDegree
     get() = (180.0 - value).toZodiacDegree()

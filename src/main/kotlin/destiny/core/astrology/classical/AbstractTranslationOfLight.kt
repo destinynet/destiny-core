@@ -22,6 +22,8 @@ import kotlin.math.abs
  *   不會再往後找比它慢的那顆。七顆古典行星的本命盤裡，這是兩版差異的大宗
  * - 不排除「兩個徵象星彼此本來就入相位」（例：火星六合土星 0.6° 入相位，太陽夾在中間也被算成傳遞）
  *
+ * 相位要不要「依星座也成立」由注入的 [aspectCalculator] 決定（要的話給 [AspectCalculatorSignBoundImpl]），這裡不帶開關。
+ *
  * 本版只在當下的容許度內找，前後順序依「離成形還要／已經多久」（容許度 ÷ 兩星的相對速度）排；
  * 結果直接帶出兩邊的 [IPointAspectPattern]（相位、容許度、出入相位）
  *
@@ -33,12 +35,10 @@ abstract class AbstractTranslationOfLight(
   protected val aspectCalculator: IAspectCalculator,
   protected val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
   private val allowBetweenApplying: Boolean = false,
-  /** 相位要依星座也成立才算（[fitsSigns]），見 [OutcomeOptions.signBoundAspects] */
-  private val signBound: Boolean = false,
 ) : ITranslationOfLight {
 
   private fun pattern(h: IHoroscopeModel, a: Planet, b: Planet): IPointAspectPattern? =
-    with(aspectCalculator) { h.getAspectPattern(setOf(a, b), aspects) }?.takeIf { !signBound || it.fitsSigns(h) }
+    with(aspectCalculator) { h.getAspectPattern(setOf(a, b), aspects) }
 
   /** 在容許度內、比傳遞者慢的一顆古典行星；[days] ＝ 離成形（入相位）或離開成形（出相位）的估算日數 ＝ 容許度 ÷ 相對速度 */
   protected data class Contact(val other: Planet, val pattern: IPointAspectPattern, val days: Double)

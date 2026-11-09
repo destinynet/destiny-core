@@ -13,6 +13,8 @@ import kotlin.math.abs
  * 2. 兩者都比收集者快，且都在容許度內（古典：兩星光芒半徑相加）入相位到收集者
  * 3. 傳統上還要求兩者都以 essential dignities 接納收集者 —— 各自以哪一種接納記在結果裡，[ICollectionOfLight.getResult] 的 receivedOnly 篩選
  *
+ * 相位要不要「依星座也成立」由注入的 [aspectCalculator] 決定（要的話給 [AspectCalculatorSignBoundImpl]），這裡不帶開關。
+ *
  * 同一顆收集者有三顆以上的快星入相位時，取最先成形的兩顆（容許度 ÷ 相對速度）。
  *
  * 2026-10-31 取代 2014 年的舊版（依 IBesieged（現 [destiny.core.astrology.IAspectNeighbors]） 找時間上前後兩顆星）。舊版的問題：
@@ -25,12 +27,10 @@ class CollectionOfLightImpl(
   private val essentialImpl: IEssential,
   private val aspectCalculator: IAspectCalculator,
   private val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
-  /** 相位要依星座也成立才算（[fitsSigns]），見 [OutcomeOptions.signBoundAspects] */
-  private val signBound: Boolean = false,
 ) : ICollectionOfLight {
 
   private fun pattern(h: IHoroscopeModel, a: Planet, b: Planet): IPointAspectPattern? =
-    with(aspectCalculator) { h.getAspectPattern(setOf(a, b), aspects) }?.takeIf { !signBound || it.fitsSigns(h) }
+    with(aspectCalculator) { h.getAspectPattern(setOf(a, b), aspects) }
 
   override fun getResult(planet: Planet, h: IHoroscopeModel, receivedOnly: Boolean): CollectionOfLight? {
     if (planet !in Planet.classicalSet) return null

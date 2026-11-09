@@ -10,6 +10,7 @@ import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.IPointAspectPattern
 import destiny.core.astrology.Planet
 import destiny.core.astrology.Stationary
+import destiny.core.astrology.ZodiacSign
 import kotlinx.serialization.Serializable
 
 /**
@@ -40,7 +41,7 @@ data class OutcomeOptions(
    */
   val interruptionAspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
   /**
-   * 相位要依星座也成立才算（[fitsSigns]）：希臘化的相位以星座為單位。關掉是 Lilly 的做法：依容許度計，跨星座也算。
+   * 相位要依星座也成立才算（[fitsSigns]，引擎以 [AspectCalculatorSignBoundImpl] 實作）：希臘化的相位以星座為單位。關掉是 Lilly 的做法：依容許度計，跨星座也算。
    * 例：摩羯 26° 與牡羊 4° 相距 68°，依容許度是六合，依星座是四分
    */
   val signBoundAspects: Boolean = false,
@@ -66,9 +67,15 @@ data class OutcomeOptions(
 fun IPointAspectPattern.fitsSigns(h: IHoroscopeModel): Boolean {
   val signs = points.map { h.getZodiacSign(it) ?: return false }
   if (signs.size != 2) return false
-  if (aspect.degree % 30.0 != 0.0) return true
-  return signs[0].stepsTo(signs[1]) == (aspect.degree / 30.0).toInt()
+  return aspect.fitsSigns(signs[0], signs[1])
 }
+
+/**
+ * 落在 [a]、[b] 兩個星座的兩個點成此相位時，依星座也成立：兩星座的距離正是此相位該有的距離。
+ * 不是 30° 倍數的交角沒有對應的星座距離，一律成立
+ */
+fun Aspect.fitsSigns(a: ZodiacSign, b: ZodiacSign): Boolean =
+  degree % 30.0 != 0.0 || a.stepsTo(b) == (degree / 30.0).toInt()
 
 /**
  * 入相位軌跡的一個取樣點：盤面時刻後 [days] 日，[ApplicationOutcome.applying] 與 [ApplicationOutcome.applied] 的黃經。

@@ -53,6 +53,9 @@ sealed class Planet(nameKey: String,
     val classicalList by lazy { listOf(*classicalArray) }
     val classicalSet by lazy { setOf(*classicalArray) }
 
+    /** 古典七曜去掉日月的五顆（水金火木土），也就是古典行星裡會停滯、逆行的那幾顆（[isStationaryPossible]） */
+    val classicalNonLuminaryList by lazy { classicalList.filter { it.isStationaryPossible } }
+
     override val values by lazy { arrayOf(*classicalArray, URANUS, NEPTUNE, PLUTO) }
     val list by lazy { listOf(*values) }
     val planetSet by lazy { setOf(*values) }

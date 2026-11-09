@@ -35,7 +35,7 @@ object ZiweiLunisolarNote {
     val next = chineseDateFeature.nextMonthOf(chineseDateFeature.monthOf(gmt, loc, dateConfig), loc, dateConfig)
     val start = chineseDateFeature.monthStart(next, loc, dateConfig).toLocalDateTime(loc.zoneId)
     val name = (if (next.leap) "閏" else "") + next.number.toChineseMonthString() + "初一"
-    val nextStart = "${name}自 ${start.monthValue}月${start.dayOfMonth}日 ${"%02d:%02d".format(start.hour, start.minute)} 起"
+    val nextStart = "${name}自 ${start.monthValue}月${start.dayOfMonth}日 ${start.hour.toString().padStart(2, '0')}:${start.minute.toString().padStart(2, '0')} 起"
     return "（依「$title」；萬年曆為${civil.display(appendDay = true)}；$nextStart）"
   }
 }

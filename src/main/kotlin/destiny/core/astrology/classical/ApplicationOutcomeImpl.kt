@@ -35,11 +35,15 @@ import kotlin.math.sign
  * - 只要在交角容許度內入相位就判斷，停滯若發生在兩星早已分離之後也算
  */
 class ApplicationOutcomeImpl(
-  private val aspectCalculator: IAspectCalculator,
+  aspectCalculator: IAspectCalculator,
   private val starPositionImpl: IStarPosition<*>,
   private val retrogradeImpl: IRetrograde,
   private val options: OutcomeOptions = OutcomeOptions.HORARY,
 ) : IApplicationOutcome {
+
+  /** [OutcomeOptions.signBoundAspects]：相位要依星座也成立時，換成只留這種相位的 calculator，其餘判斷不必再分 */
+  private val aspectCalculator: IAspectCalculator =
+    if (options.signBoundAspects) AspectCalculatorSignBoundImpl(aspectCalculator) else aspectCalculator
 
   private fun pos(p: Planet, t: GmtJulDay) = starPositionImpl.getPosition(p, t, GEO, ECLIPTIC, StarTypeOptions.MEAN)
 
@@ -93,10 +97,6 @@ class ApplicationOutcomeImpl(
     return if (gap < PERFECT_ORB) Approach.Perfects(GmtJulDay(t)) else Approach.TurnsAway(GmtJulDay(t), gap)
   }
 
-  /** 盤面時刻正在入相位，且符合 [OutcomeOptions.signBoundAspects] */
-  private fun IPointAspectPattern.isApplying(h: IHoroscopeModel) =
-    aspectType == APPLYING && (!options.signBoundAspects || fitsSigns(h))
-
   /** 插隊：第三顆星 [by] 在 [t] 先與 [with] 成形（[pattern] 是盤面時刻兩者的入相位） */
   private data class Interruption(val by: Planet, val with: Planet, val pattern: IPointAspectPattern, val t: GmtJulDay)
 
@@ -106,7 +106,7 @@ class ApplicationOutcomeImpl(
       val targets = if (options.targetAppliedOnly) listOf(b) else listOf(a, b)
       Planet.classicalList.filter { it !== a && it !== b && it !in options.excludedInterrupters }.flatMap { c ->
         targets.mapNotNull { x ->
-          val p = h.getAspectPattern(setOf(c, x), options.interruptionAspects)?.takeIf { it.isApplying(h) } ?: return@mapNotNull null
+          val p = h.getAspectPattern(setOf(c, x), options.interruptionAspects)?.takeIf { it.aspectType == APPLYING } ?: return@mapNotNull null
           (approach(Gap(c, x, p.aspect.degree, t0), t0, mutableListOf(), before) as? Approach.Perfects)
             ?.takeIf { it.t < before }
             ?.let { Interruption(c, x, p, it.t) }
@@ -117,7 +117,7 @@ class ApplicationOutcomeImpl(
   override fun getOutcome(h: IHoroscopeModel, p1: Planet, p2: Planet): ApplicationOutcome? {
     if (p1 === p2) return null
     val pattern = with(aspectCalculator) { h.getAspectPattern(setOf(p1, p2), options.aspects) }
-      ?.takeIf { it.isApplying(h) } ?: return null
+      ?.takeIf { it.aspectType == APPLYING } ?: return null
 
     val speedOf = { p: Planet -> abs(h.getStarPosition(p)?.speedLng ?: 0.0) }
     val (a, b) = if (speedOf(p1) >= speedOf(p2)) p1 to p2 else p2 to p1

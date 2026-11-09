@@ -18,8 +18,7 @@ class TranslationOfLightEphemerisImpl(
   private val applicationOutcome: IApplicationOutcome,
   aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
   allowBetweenApplying: Boolean = false,
-  signBound: Boolean = false,
-) : AbstractTranslationOfLight(aspectCalculator, aspects, allowBetweenApplying, signBound) {
+) : AbstractTranslationOfLight(aspectCalculator, aspects, allowBetweenApplying) {
 
   override fun pickApplying(planet: Planet, h: IHoroscopeModel, applying: List<Contact>): Pair<Contact, ApplicationOutcome.Perfected?>? =
     applying.mapNotNull { c ->

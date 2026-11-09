@@ -201,7 +201,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * A planet in its own day or night triplicity (not to be confused with the modern triplicities).
    */
   val triplicity = IPlanetPatternFactory.single { planet, h ->
-    val dayNight = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
+    val dayNight = sectOf(h)
     h.getZodiacSign(planet)?.takeIf { sign ->
       with(triplicityImpl) {
         (dayNight == DAY && planet === sign.getTriplicityPoint(DAY) ||
@@ -677,7 +677,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    */
   val peregrine = IPlanetPatternFactory.single { planet, h ->
     h.getPosition(planet)?.lngDeg?.let { planetDeg ->
-      val dayNight = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
+      val dayNight = sectOf(h)
       h.getZodiacSign(planet)?.takeIf { sign ->
 
         planet !== with(rulerImpl) { sign.getRulerPoint() } &&
@@ -988,7 +988,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   val overcome = IPlanetPatternFactory { planet, h ->
     val list = natalOvercomings(h).filter { it.target === planet }
     if (list.isEmpty()) return@IPlanetPatternFactory emptyList()
-    val sect = h.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)
+    val sect = sectOf(h)
     list.map { n ->
       Misc.Overcoming(planet, n.overcoming, n.ascRuler, overcomingHouses(h, n.overcoming.superior as Planet, planet), sect)
     }

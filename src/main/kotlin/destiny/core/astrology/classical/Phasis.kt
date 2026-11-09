@@ -53,7 +53,7 @@ data class PhasisOptions(
   val beams: Double = 15.0,
   val stationBy: StationBy = StationBy.WINDOW,
   val speedRatio: Double = 0.1,
-  val planets: List<Planet> = listOf(Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN),
+  val planets: List<Planet> = Planet.classicalNonLuminaryList,
 ) {
   init {
     // 同一顆星兩次停滯至少相隔約 20 天（水星），窗開到 10 天以內，窗內至多一次停滯（實作依賴這一點）

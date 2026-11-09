@@ -210,4 +210,16 @@ class ZodiacSignTest : EnumTest() {
       }
     }
   }
+
+  /** 壓線：離星座尾端不到誤差回下一個星座，離開頭不到回上一個；剛好等於不算 */
+  @Test
+  fun neighborWithin() {
+    assertEquals(TAURUS, ARIES.neighborWithin(29.5, 1.0))
+    assertEquals(PISCES, ARIES.neighborWithin(0.5, 1.0))
+    assertEquals(null, ARIES.neighborWithin(15.0, 1.0))
+    assertEquals(null, ARIES.neighborWithin(29.0, 1.0))
+    assertEquals(null, ARIES.neighborWithin(1.0, 1.0))
+    // 誤差超過半個星座，兩邊都夠得到：取下一個
+    assertEquals(TAURUS, ARIES.neighborWithin(15.0, 20.0))
+  }
 }

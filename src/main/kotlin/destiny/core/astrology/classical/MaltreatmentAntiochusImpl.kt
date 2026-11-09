@@ -75,25 +75,21 @@ class MaltreatmentAntiochusImpl(
     return conditions.takeIf { it.isNotEmpty() }?.let { Maltreatment(planet, polarity, it) }
   }
 
-  /** 黃經速度；速度不明時用平均日速 */
-  private fun speed(h: IHoroscopeModel, p: Planet): Double? = h.getStarPosition(p)?.speedLng ?: AverageDailyMotionMap.getAvgDailySpeed(p)
-
   /**
    * 離開一顆、迎上另一顆：在其餘古典行星裡，找 [planet] 容許度內（[MaltreatmentOptions.aspectEffective]）最近一次離開與下一個迎上的相位，
    * 兩者分別是 [sources] 裡不同的兩顆才成立。離合以兩星的黃經速度線性外推（只看盤面附近幾天，不需要星曆）；
    * [MaltreatmentOptions.sequenceSameSign]：兩次準確時這顆星都還在目前的星座
    */
   private fun sequence(h: IHoroscopeModel, planet: Planet, deg: ZodiacDegree, sources: Set<Planet>): Maltreatment.Condition.Sequence? {
-    val v = speed(h, planet) ?: return null
+    val v = h.lngSpeedOrAverage(planet) ?: return null
     data class Hit(val other: Planet, val aspect: Aspect, val orb: Double, val days: Double)
     val hits = (Planet.classicalList - planet).flatMap { o ->
       val oDeg = h.positionMap[o]?.lngDeg ?: return@flatMap emptyList()
-      val rel = v - (speed(h, o) ?: return@flatMap emptyList())
+      val rel = v - (h.lngSpeedOrAverage(o) ?: return@flatMap emptyList())
       if (rel == 0.0) return@flatMap emptyList()
       val r = (deg.value - oDeg.value).mod(360.0)
       options.sequenceAspects.filter { options.aspectEffective.isEffective(planet, deg, o, oDeg, it) }.map { a ->
-        val targets = if (a.degree == 0.0 || a.degree == 180.0) listOf(a.degree) else listOf(a.degree, 360 - a.degree)
-        val signed = targets.map { t -> (r - t + 540).mod(360.0) - 180 }.minBy { abs(it) }
+        val signed = a.exactSeparations.map { t -> signedOffset(r, t) }.minBy { abs(it) }
         // signed 以 rel 的速度變化：準確的時刻是 -signed / rel（負數 ＝ 已經過去 ＝ 離開）
         Hit(o, a, abs(signed), -signed / rel)
       }

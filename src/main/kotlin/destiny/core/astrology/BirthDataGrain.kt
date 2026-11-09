@@ -10,6 +10,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlin.math.abs
 
 /**
  * 出生資料的時刻精度。總序：[DAY] < [DayNightOnly] < [HOUR2] < [MINUTE]。
@@ -156,7 +157,8 @@ val BirthDataGrain.includeAxis: Boolean
  * | [BirthDataGrain.HOUR2] | 1 小時 | 時辰兩小時，儲存的是中點 |
  * | [BirthDataGrain.MINUTE] | 4 分鐘 | 抄錄與四捨五入的誤差；天球自轉 4 分鐘約 1°，即上升點與宮頭約 1° |
  *
- * 一個點的位置誤差 ≈ 它的速度 × 這個半寬：行星用黃經日速度，軸點與宮頭用天球自轉（約 15°／小時）。
+ * 一個點的位置誤差 ≈ 它的速度 × 這個半寬：行星用黃經日速度（[starErrorDeg]），軸點與宮頭用天球自轉（[axisErrorDeg]）；
+ * 依點的種類挑其中一個是 [positionErrorDeg]。誤差內星座會不會變：[ZodiacDegree.signChangesWithin]／[ZodiacSign.neighborWithin]。
  */
 val BirthDataGrain.timeToleranceHours: Double
   get() = when (this) {
@@ -165,6 +167,26 @@ val BirthDataGrain.timeToleranceHours: Double
     BirthDataGrain.HOUR2           -> 1.0
     BirthDataGrain.MINUTE          -> 4.0 / 60
   }
+
+/** 天球自轉速率（度／小時）：軸點與宮頭隨出生時刻移動的速度 */
+const val DIURNAL_DEG_PER_HOUR: Double = 15.0
+
+/** 軸點、宮頭在這個精度下的黃經誤差半寬（度）：天球自轉 × [timeToleranceHours] */
+val BirthDataGrain.axisErrorDeg: Double
+  get() = DIURNAL_DEG_PER_HOUR * timeToleranceHours
+
+/** 黃經日速為 [speedLng]（度／日，順逆皆可）的星體，在這個精度下的黃經誤差半寬（度）：|日速| × [timeToleranceHours] */
+fun BirthDataGrain.starErrorDeg(speedLng: Double): Double = abs(speedLng) * timeToleranceHours / 24
+
+/**
+ * [point] 在這個精度下的黃經誤差半寬（度）：軸點用天球自轉（[axisErrorDeg]），其餘用黃經日速 [speedLng]（[starErrorDeg]）；
+ * 不是軸點又不知道速度（虛點）回 null
+ */
+fun BirthDataGrain.positionErrorDeg(point: AstroPoint, speedLng: Double?): Double? = when {
+  point is Axis    -> axisErrorDeg
+  speedLng != null -> starErrorDeg(speedLng)
+  else             -> null
+}
 
 /**
  * 是否計算 Profection (小限)

@@ -836,8 +836,8 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
 
   is destiny.core.astrology.classical.Besiegement -> HoroscopeBesiegementDto(
     planet = planet,
-    before = HoroscopeBesiegeSideDto(before.by, before.aspect, before.aspect?.glyph, before.distance),
-    after = HoroscopeBesiegeSideDto(after.by, after.aspect, after.aspect?.glyph, after.distance),
+    before = before.toChartDto(),
+    after = after.toChartDto(),
   )
 
   is destiny.core.astrology.classical.Aversion -> HoroscopeAversionDto(planet, from, place, basis)
@@ -879,13 +879,14 @@ private fun destiny.core.astrology.classical.Maltreatment.Condition.toChartDto()
   is destiny.core.astrology.classical.Maltreatment.Condition.Adherence -> HoroscopeMaltreatmentConditionDto.Adherence(source, orb)
   is destiny.core.astrology.classical.Maltreatment.Condition.RayHurled ->
     HoroscopeMaltreatmentConditionDto.Ray(source, aspect, aspect.glyph, orb, dexter)
-  is destiny.core.astrology.classical.Maltreatment.Condition.Besieged -> HoroscopeMaltreatmentConditionDto.Besieged(
-    HoroscopeBesiegeSideDto(besiegement.before.by, besiegement.before.aspect, besiegement.before.aspect?.glyph, besiegement.before.distance),
-    HoroscopeBesiegeSideDto(besiegement.after.by, besiegement.after.aspect, besiegement.after.aspect?.glyph, besiegement.after.distance),
-  )
+  is destiny.core.astrology.classical.Maltreatment.Condition.Besieged ->
+    HoroscopeMaltreatmentConditionDto.Besieged(besiegement.before.toChartDto(), besiegement.after.toChartDto())
   is destiny.core.astrology.classical.Maltreatment.Condition.Sequence ->
     HoroscopeMaltreatmentConditionDto.Sequence(from, fromAspect, fromAspect.glyph, fromOrb, to, toAspect, toAspect.glyph, toOrb)
 }
+
+/** 包夾的一側 */
+private fun destiny.core.astrology.classical.Besiegement.Side.toChartDto() = HoroscopeBesiegeSideDto(by, aspect, aspect?.glyph, distance)
 
 /** 插隊／撲空的取樣點；這兩種結局的軌跡一定帶第三顆星的位置 */
 private fun destiny.core.astrology.classical.OutcomeSample.toChartDto() =

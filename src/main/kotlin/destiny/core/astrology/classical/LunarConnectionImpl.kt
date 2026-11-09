@@ -3,7 +3,6 @@
  */
 package destiny.core.astrology.classical
 
-import destiny.core.astrology.Aspect
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
 
@@ -15,21 +14,18 @@ class LunarConnectionImpl(
   val options: LunarConnectionOptions = LunarConnectionOptions.HELLENISTIC,
 ) : ILunarConnection {
 
-  private fun speed(h: IHoroscopeModel, p: Planet): Double? =
-    h.getStarPosition(p)?.speedLng ?: AverageDailyMotionMap.getAvgDailySpeed(p)
-
   override fun getConnection(h: IHoroscopeModel): LunarConnection? {
     val moon = h.positionMap[Planet.MOON]?.lngDeg ?: return null
-    val vMoon = speed(h, Planet.MOON) ?: return null
+    val vMoon = h.lngSpeedOrAverage(Planet.MOON) ?: return null
     if (vMoon <= 0) return null
     val degInSign = moon.value.mod(30.0)
 
     val links = (Planet.classicalList - Planet.MOON).flatMap { p ->
       val deg = h.positionMap[p]?.lngDeg ?: return@flatMap emptyList()
-      val v = vMoon - (speed(h, p) ?: return@flatMap emptyList())
+      val v = vMoon - (h.lngSpeedOrAverage(p) ?: return@flatMap emptyList())
       val r = (moon.value - deg.value).mod(360.0)
       options.aspects.flatMap { a ->
-        targets(a).flatMap { t ->
+        a.exactSeparations.flatMap { t ->
           val forward = (t - r).mod(360.0)
           val backward = (r - t).mod(360.0)
           listOf(
@@ -49,10 +45,4 @@ class LunarConnectionImpl(
   }
 
   private data class Candidate(val past: Boolean, val link: LunarConnection.Link)
-
-  /** 月亮減去對方的黃經（0–360）在準確時應為哪些值 */
-  private fun targets(a: Aspect): List<Double> = when (a.degree) {
-    0.0, 180.0 -> listOf(a.degree)
-    else       -> listOf(a.degree, 360.0 - a.degree)
-  }
 }

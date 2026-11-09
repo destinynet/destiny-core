@@ -103,6 +103,17 @@ enum class ZodiacSign(val abbrKey: String,
    */
   fun placeFrom(from: ZodiacSign): Int = (index - from.index).mod(12) + 1
 
+  /**
+   * 落在本星座 [degInSign] 度（0–30）的點，位置有 ±[error] 度的誤差時，可能其實落在哪個相鄰的星座（壓線）：
+   * 離星座尾端不到 [error] 度回下一個星座，否則離開頭不到 [error] 度回上一個；兩邊都夠不到回 null。「不到」不含剛好等於。
+   * 只問會不會變、手上有 [ZodiacDegree] 時，用 [ZodiacDegree.signChangesWithin]
+   */
+  fun neighborWithin(degInSign: Double, error: Double): ZodiacSign? = when {
+    30 - degInSign < error -> next(1)
+    degInSign < error      -> next(-1)
+    else                   -> null
+  }
+
   /** 與 [other] 相隔幾個星座，不分方向（0–6）：同星座 0、對面 6 */
   fun stepsTo(other: ZodiacSign): Int = (other.index - index).mod(12).let { minOf(it, 12 - it) }
 

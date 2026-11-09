@@ -94,8 +94,8 @@ enum class RayDirection { DEXTER, SINISTER, EITHER }
  *   （Abu Ma'shar 的「在同一星座裡」）、相位的容許度（兩星星芒半徑相加，與古典格局其餘判斷同一份）
  */
 data class MaltreatmentOptions(
-  val malefics: Set<Planet> = setOf(Planet.MARS, Planet.SATURN),
-  val benefics: Set<Planet> = setOf(Planet.VENUS, Planet.JUPITER),
+  val malefics: Set<Planet> = IBesiegement.MALEFICS,
+  val benefics: Set<Planet> = IBesiegement.BENEFICS,
   val maleficOvercoming: Set<Aspect> = NatalOvercomingOptions.MALEFIC_ASPECTS,
   val beneficOvercoming: Set<Aspect> = NatalOvercomingOptions.BENEFIC_ASPECTS,
   val overcomingBasis: OvercomingBasis = OvercomingBasis.SIGN,

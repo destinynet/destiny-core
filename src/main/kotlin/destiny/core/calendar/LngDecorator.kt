@@ -33,8 +33,8 @@ class LngDecoratorTaiwan : Decorator<Lng> {
 
 private val zh = {sb : StringBuilder , lng : Lng ->
   sb.append("：")
-  sb.append("%03d".format(lng.deg)).append("度")
-  sb.append("%02d".format(lng.min)).append("分")
+  sb.append("%03d".format(Locale.ROOT, lng.deg)).append("度")
+  sb.append("%02d".format(Locale.ROOT, lng.min)).append("分")
 
   val secString = "%02.2f".format(Locale.ROOT, lng.sec).let {
     // 可能是 "0.00"
@@ -72,7 +72,7 @@ class LngDecoratorEnglish : Decorator<Lng> {
 
     return with(StringBuilder()) {
       append(value.deg).append("°")
-      append("%02d".format(value.min)).append("'")
+      append("%02d".format(Locale.ROOT, value.min)).append("'")
       val secString = "%02.2f".format(Locale.ROOT, value.sec).let {
         // 可能是 "0.00"
         if (it.length == 4) "0$it"

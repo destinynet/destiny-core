@@ -38,7 +38,7 @@ data class DoryphoriaOptions(
   val sunPreceding: Boolean = true,
   val moonPreceding: Boolean = false,
   val sameSectOnly: Boolean = false,
-  val bearers: Set<Planet> = setOf(Planet.MERCURY, Planet.VENUS, Planet.MARS, Planet.JUPITER, Planet.SATURN),
+  val bearers: Set<Planet> = Planet.classicalNonLuminaryList.toSet(),
 ) {
   companion object {
     /** Ptolemy《四書》：太陽由先於它升起的星護衛、月亮由在它之後升起的星護衛；一個星座寬 */
