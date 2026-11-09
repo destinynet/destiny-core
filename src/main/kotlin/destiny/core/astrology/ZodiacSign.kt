@@ -103,6 +103,24 @@ enum class ZodiacSign(val abbrKey: String,
    */
   fun placeFrom(from: ZodiacSign): Int = (index - from.index).mod(12) + 1
 
+  /** 與 [other] 相隔幾個星座，不分方向（0–6）：同星座 0、對面 6 */
+  fun stepsTo(other: ZodiacSign): Int = (other.index - index).mod(12).let { minOf(it, 12 - it) }
+
+  /**
+   * **以星座計**，本星座與 [other] 成什麼相位（托勒密五相位）：同星座＝合、隔 2＝六合、隔 3＝刑、隔 4＝拱、對面＝沖；
+   * 隔 1 或 5 個星座（從對方起算第 2／6／8／12 個）彼此不相見（aversion），回 null。不分方向。
+   *
+   * 「以星座計的相位」只有這一個定義 —— 野生、居上、不相見、受剋的對沖、依星座也成立的入相位都由它推，不要各自再列一張星座位置表
+   */
+  fun aspectTo(other: ZodiacSign): Aspect? = when (stepsTo(other)) {
+    0    -> Aspect.CONJUNCTION
+    2    -> Aspect.SEXTILE
+    3    -> Aspect.SQUARE
+    4    -> Aspect.TRINE
+    6    -> Aspect.OPPOSITION
+    else -> null
+  }
+
   /** 映點星座：以巨蟹／摩羯軸對稱（雙子↔巨蟹、金牛↔獅子…），古典說這兩個星座彼此「看得見」（beholding）；度數版見 [ZodiacDegree.antiscion] */
   val antiscionSign: ZodiacSign
     get() = get(5 - index)

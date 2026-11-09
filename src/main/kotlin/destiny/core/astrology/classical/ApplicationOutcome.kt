@@ -66,9 +66,7 @@ fun IPointAspectPattern.fitsSigns(h: IHoroscopeModel): Boolean {
   val signs = points.map { h.getZodiacSign(it) ?: return false }
   if (signs.size != 2) return false
   if (aspect.degree % 30.0 != 0.0) return true
-  val expected = (aspect.degree / 30.0).toInt()
-  val actual = signs[1].placeFrom(signs[0]) - 1
-  return actual == expected || actual == 12 - expected
+  return signs[0].stepsTo(signs[1]) == (aspect.degree / 30.0).toInt()
 }
 
 /**

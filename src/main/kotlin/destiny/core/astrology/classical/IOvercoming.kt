@@ -84,15 +84,15 @@ interface IOvercoming {
 
   companion object {
 
-    /** 居上者在被居上者起算的第幾個星座（[ZodiacSign.placeFrom]）→ 居上相位 */
-    internal val placeAspectMap: Map<Int, Aspect> = mapOf(11 to SEXTILE, 10 to SQUARE, 9 to TRINE)
-
     internal val overcomingAspects: List<Aspect> = listOf(SEXTILE, SQUARE, TRINE)
 
 
-    /** [superior] 星座 往後數到 [inferior] 星座 的步數 , 對應的居上相位 */
+    /**
+     * [superior] 以星座計居上 [inferior] 的相位：居上者要在被居上者起算的第 9／10／11 個星座（黃道次序的後方、周日運動的右方），
+     * 相位照 [ZodiacSign.aspectTo]（拱／刑／六合）；不在那三個位置為 null
+     */
     internal fun signAspect(superior: ZodiacDegree, inferior: ZodiacDegree): Aspect? =
-      placeAspectMap[superior.sign.placeFrom(inferior.sign)]
+      superior.sign.takeIf { it.placeFrom(inferior.sign) in 9..11 }?.aspectTo(inferior.sign)
   }
 }
 

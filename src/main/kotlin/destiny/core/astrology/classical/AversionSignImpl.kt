@@ -10,7 +10,7 @@ import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacSign
 
 /**
- * 以星座計的不相見：落在對方星座起算的第 2、6、8、12 個星座（[Aversion.AVERSE_PLACES]）。只看盤面時刻的位置
+ * 以星座計的不相見：落在對方星座起算的第 2、6、8、12 個星座（[destiny.core.astrology.ZodiacSign.aspectTo] 為 null）。只看盤面時刻的位置
  */
 class AversionSignImpl(
   private val rulerImpl: IRuler,
@@ -23,7 +23,9 @@ class AversionSignImpl(
 
     /** [planet]（在 [sign]）與 [from]（在 [fromSign]）不相見，且沒有被 [AversionOptions.exceptions] 抵銷 */
     fun averse(planet: Planet, sign: ZodiacSign, from: AstroPoint, fromSign: ZodiacSign, basis: Aversion.Basis): Aversion? {
-      val place = sign.placeFrom(fromSign).takeIf { it in Aversion.AVERSE_PLACES } ?: return null
+      // 以星座計不成任何相位（從對方起算第 2／6／8／12 個星座）才是不相見
+      if (sign.aspectTo(fromSign) != null) return null
+      val place = sign.placeFrom(fromSign)
       val linked = (SignLink.BEHOLDING in options.exceptions && sign.antiscionSign == fromSign) ||
         (SignLink.COMMANDING in options.exceptions && sign.contraAntiscionSign == fromSign)
       return if (linked) null else Aversion(planet, from, place, basis)

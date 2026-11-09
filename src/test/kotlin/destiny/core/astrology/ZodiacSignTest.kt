@@ -188,4 +188,26 @@ class ZodiacSignTest : EnumTest() {
     assertEquals("Aqu", AQUARIUS.getAbbreviation(Locale.US))
     assertEquals("Pis", PISCES.getAbbreviation(Locale.US))
   }
+
+  /** 以星座計的相位：同星座＝合、隔 2＝六合、隔 3＝刑、隔 4＝拱、對面＝沖；隔 1、5（第 2／6／8／12 個星座）不相見 */
+  @Test
+  fun aspectTo() {
+    assertEquals(Aspect.CONJUNCTION, ARIES.aspectTo(ARIES))
+    assertEquals(Aspect.SEXTILE, ARIES.aspectTo(GEMINI))
+    assertEquals(Aspect.SEXTILE, ARIES.aspectTo(AQUARIUS))
+    assertEquals(Aspect.SQUARE, ARIES.aspectTo(CANCER))
+    assertEquals(Aspect.SQUARE, ARIES.aspectTo(CAPRICORN))
+    assertEquals(Aspect.TRINE, ARIES.aspectTo(LEO))
+    assertEquals(Aspect.TRINE, ARIES.aspectTo(SAGITTARIUS))
+    assertEquals(Aspect.OPPOSITION, ARIES.aspectTo(LIBRA))
+    // 不相見的四個位置
+    listOf(TAURUS, VIRGO, SCORPIO, PISCES).forEach { assertEquals(null, ARIES.aspectTo(it), it.name) }
+    // 不分方向；與 placeFrom 的對應：第 2／6／8／12 個星座才是 null
+    ZodiacSign.entries.forEach { a ->
+      ZodiacSign.entries.forEach { b ->
+        assertEquals(a.aspectTo(b), b.aspectTo(a))
+        assertEquals(b.placeFrom(a) in setOf(2, 6, 8, 12), a.aspectTo(b) == null, "$a $b")
+      }
+    }
+  }
 }

@@ -28,11 +28,6 @@ data class Aversion(
 ) : ClassicalFact {
 
   enum class Basis { RULER, EXALTATION, ASCENDANT }
-
-  companion object {
-    /** 起算的星座算第 1 個：相隔第 2、6、8、12 個星座即不相見 */
-    val AVERSE_PLACES: Set<Int> = setOf(2, 6, 8, 12)
-  }
 }
 
 /**

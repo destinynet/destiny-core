@@ -49,7 +49,7 @@ class MaltreatmentAntiochusImpl(
 
         val opposed = ConditionType.OPPOSED in on && run {
           val orb = abs(180 - angle)
-          (options.oppositionOrb?.let { orb <= it } ?: (srcDeg.sign.placeFrom(deg.sign) == 7))
+          (options.oppositionOrb?.let { orb <= it } ?: (deg.sign.aspectTo(srcDeg.sign) == Aspect.OPPOSITION))
             .also { if (it) add(Maltreatment.Condition.Opposed(src, orb)) }
         }
 

@@ -25,10 +25,7 @@ class FeralImpl(
       FeralOptions.Basis.BY_ORB  -> others.any { (o, oDeg) ->
         options.aspects.any { a -> options.aspectEffective.isEffective(planet, deg, o, oDeg, a) }
       }
-      FeralOptions.Basis.BY_SIGN -> {
-        val places = options.aspects.flatMap { SIGN_PLACES[it].orEmpty() }.toSet()
-        others.any { (_, oDeg) -> oDeg.sign.placeFrom(deg.sign) in places }
-      }
+      FeralOptions.Basis.BY_SIGN -> others.any { (_, oDeg) -> deg.sign.aspectTo(oDeg.sign) in options.aspects }
     }
     return if (aspected) null else Feral(planet, options.basis)
   }
@@ -36,14 +33,4 @@ class FeralImpl(
   override fun getResults(h: IHoroscopeModel): List<Feral> =
     options.planets.mapNotNull { getFeral(h, it) }
 
-  companion object {
-    /** 以星座計，各相位對應的星座位置（從自己的星座起算第幾個） */
-    private val SIGN_PLACES: Map<Aspect, Set<Int>> = mapOf(
-      Aspect.CONJUNCTION to setOf(1),
-      Aspect.SEXTILE to setOf(3, 11),
-      Aspect.SQUARE to setOf(4, 10),
-      Aspect.TRINE to setOf(5, 9),
-      Aspect.OPPOSITION to setOf(7),
-    )
-  }
 }
