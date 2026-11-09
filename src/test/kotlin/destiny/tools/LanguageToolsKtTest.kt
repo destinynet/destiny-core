@@ -16,6 +16,39 @@ import kotlin.test.assertTrue
 
 class LanguageToolsKtTest {
 
+  /** [truncate]：JSON 裡的數字的唯一定義（serializer、驗證器、提示詞共用） */
+  @Nested
+  inner class TruncateTest {
+
+    @Test
+    fun `無條件捨去，負數往下`() {
+      assertEquals(12.34, 12.349.truncate(2))
+      assertEquals(-6.47, (-6.4634).truncate(2))
+      assertEquals(0.0, 0.004.truncate(2))
+    }
+
+    @Test
+    fun `乘積只差浮點誤差時不多捨一位`() {
+      // 16.58 × 100 = 1657.9999999999998，純 floor 會得到 16.57
+      assertEquals(16.58, 16.58.truncate(2))
+      assertEquals(0.29, 0.29.truncate(2))
+    }
+
+    @Test
+    fun `重複套用結果不變`() {
+      (-3000..3000).map { it * 0.0137 }.forEach { v ->
+        val once = v.truncate(2)
+        assertEquals(once, once.truncate(2), "v=$v")
+      }
+    }
+
+    @Test
+    fun `真正的小數差距照樣捨去`() {
+      // 離 16.58 差 5e-10：不是浮點誤差，該捨成 16.57（固定 epsilon 的寫法會誤判成 16.58）
+      assertEquals(16.57, 16.5799999995.truncate(2))
+    }
+  }
+
   @Nested
   inner class DoubleTruncateTest {
 

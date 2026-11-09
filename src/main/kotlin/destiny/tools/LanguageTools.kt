@@ -9,8 +9,10 @@ import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.net.URLConnection
 import java.time.LocalDateTime
+import java.util.Locale
 import kotlin.math.floor
 import kotlin.math.pow
+import kotlin.math.ulp
 import kotlin.reflect.KType
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
@@ -129,11 +131,27 @@ fun Double.round(epsilon: Double = 1e-5): Double {
   return if (kotlin.math.abs(this - nearest) < epsilon) nearest else this
 }
 
+/**
+ * 無條件捨去到 [decimals] 位小數（負數也往下捨：-6.466 → -6.47）。**重複套用結果不變**：捨過的值再捨一次不會變小。
+ *
+ * 直接 `floor(this * factor)` 做不到：16.58 × 100 在浮點數裡是 1657.9999999999998，會捨成 16.57。
+ * 所以乘積離整數只差浮點誤差（幾個 ulp）時，當作那個整數。
+ *
+ * 「JSON 裡的數字」只有這一個定義：[destiny.tools.serializers.DoubleTruncateSerializer] 就是呼叫它，
+ * 要拿程式裡的值去對 JSON／畫面上的值（驗證器、提示詞）也呼叫它，不要另寫一份 epsilon 版本。
+ * 給人看的字串另有 [truncateToString]（容許度較寬、可調，用途不同）
+ */
 fun Double.truncate(decimals: Int): Double {
   require(decimals >= 0) { "Decimal places must be non-negative" }
   val factor = 10.0.pow(decimals)
-  return floor(this * factor) / factor
+  val scaled = this * factor
+  val nearest = kotlin.math.round(scaled)
+  val whole = if (kotlin.math.abs(scaled - nearest) <= scaled.ulp * TRUNCATE_ULPS) nearest else floor(scaled)
+  return whole / factor
 }
+
+/** 乘上 10 的次方最多差約 1 ulp；留一點餘裕，但遠小於任何真正的小數差距 */
+private const val TRUNCATE_ULPS = 4
 
 /** [truncateToString] 容許的最大小數位數。`internal` 是為了讓測試引用它而非寫死字面值 —— 曾因此失準過。 */
 internal const val MAX_PRECISION = 10
@@ -151,7 +169,7 @@ fun Double.truncateToString(n: Int, epsilon: Double = 1e-5): String {
   } else {
     floor(scaled) / factor
   }
-  return FORMAT_TEMPLATES[n].format(result)
+  return FORMAT_TEMPLATES[n].format(Locale.ROOT, result)
 }
 
 fun LocalDateTime.roundToNearestSecond(): LocalDateTime {
