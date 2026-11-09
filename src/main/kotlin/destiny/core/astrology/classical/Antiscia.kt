@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.DayNight
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
 
@@ -39,8 +40,10 @@ data class AntisciaOptions(
 /**
  * 映點。實作決定映點落在對方上的判法（目前只有以度數容許度判的 [AntisciaImpl]）
  */
-interface IAntiscia {
+interface IAntiscia : IClassicalFactSource {
 
   /** 全盤的映點、反映點；一對星一筆，[Antiscion.planet] 是 [AntisciaOptions.points] 裡排在前面的那顆 */
   fun getResults(h: IHoroscopeModel): List<Antiscion>
+
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h)
 }

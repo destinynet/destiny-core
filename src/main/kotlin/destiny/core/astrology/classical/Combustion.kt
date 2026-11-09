@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.DayNight
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
 
@@ -55,11 +56,13 @@ data class CombustionOptions(
 /**
  * 灼傷。實作決定判法（目前只有以黃經距離分三圈的 [CombustionImpl]；以星座為界、或依星的光度給不同容許度，可另寫實作）
  */
-interface ICombustion {
+interface ICombustion : IClassicalFactSource {
 
   /** [planet] 落在哪一圈；不在任何一圈（離太陽夠遠）為 null */
   fun getCombustion(h: IHoroscopeModel, planet: Planet): Combustion?
 
   /** 全盤：依距離由近到遠 */
   fun getResults(h: IHoroscopeModel): List<Combustion>
+
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h)
 }

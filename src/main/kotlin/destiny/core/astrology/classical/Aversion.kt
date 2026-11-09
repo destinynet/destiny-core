@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.DayNight
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
@@ -77,6 +78,8 @@ data class AversionOptions(
 /**
  * 不相見。實作決定「看不到」的判法（目前只有以星座計的 [AversionSignImpl]；以度數計 —— 容許度內沒有任何相位 —— 可另寫一個實作）
  */
-interface IAversion {
+interface IAversion : IClassicalFactSource {
   fun getResults(h: IHoroscopeModel): List<Aversion>
+
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h)
 }

@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.DayNight
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacDegree
@@ -40,12 +41,14 @@ data class ViaCombustaOptions(
 }
 
 /** 燃燒路 */
-interface IViaCombusta {
+interface IViaCombusta : IClassicalFactSource {
 
   /** [planet] 在燃燒路上；不在（或不判這顆星）為 null */
   fun getViaCombusta(h: IHoroscopeModel, planet: Planet): ViaCombusta?
 
   fun getResults(h: IHoroscopeModel): List<ViaCombusta>
+
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h)
 }
 
 class ViaCombustaImpl(

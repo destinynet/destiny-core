@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.DayNight
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacDegree
@@ -81,11 +82,13 @@ data class PhasisOptions(
 }
 
 /** 顯現。需要星曆（出生前後的位置與停滯），由實作的建構子取得 */
-interface IPhasis {
+interface IPhasis : IClassicalFactSource {
 
   /** [planet] 在出生前後的轉折（依時間先後）；沒有就是空的 */
   fun getPhases(h: IHoroscopeModel, planet: Planet): List<Phasis>
 
   /** 全盤：依古典行星順序、再依時間先後 */
   fun getResults(h: IHoroscopeModel): List<Phasis>
+
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h)
 }

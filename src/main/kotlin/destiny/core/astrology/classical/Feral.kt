@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.DayNight
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
@@ -47,11 +48,13 @@ data class FeralOptions(
 }
 
 /** 野生 */
-interface IFeral {
+interface IFeral : IClassicalFactSource {
 
   /** [planet] 是否野生；不是（或盤上缺位置）為 null */
   fun getFeral(h: IHoroscopeModel, planet: Planet): Feral?
 
   /** 全盤，依古典行星順序 */
   fun getResults(h: IHoroscopeModel): List<Feral>
+
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h)
 }

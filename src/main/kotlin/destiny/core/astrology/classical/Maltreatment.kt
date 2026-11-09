@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.DayNight
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
@@ -124,7 +125,7 @@ data class MaltreatmentOptions(
 /**
  * 受剋與受扶。實作決定「條件清單」；同一清單的細節由 [MaltreatmentOptions] 調整
  */
-interface IMaltreatment {
+interface IMaltreatment : IClassicalFactSource {
 
   /** [planet] 在 [polarity] 方向符合的條件；一條都沒有則為 null */
   fun getMaltreatment(h: IHoroscopeModel, planet: Planet, polarity: Maltreatment.Polarity): Maltreatment?
@@ -134,4 +135,6 @@ interface IMaltreatment {
     Maltreatment.Polarity.entries.flatMap { polarity ->
       Planet.classicalList.mapNotNull { getMaltreatment(h, it, polarity) }
     }
+
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h)
 }

@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.DayNight
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
@@ -48,10 +49,12 @@ data class LunarConnectionOptions(
 }
 
 /** 月亮的離與合 */
-interface ILunarConnection {
+interface ILunarConnection : IClassicalFactSource {
 
   /** 盤上月亮的離與合；兩者都沒有（或缺月亮位置）為 null */
   fun getConnection(h: IHoroscopeModel): LunarConnection?
 
   fun getResults(h: IHoroscopeModel): List<LunarConnection> = listOfNotNull(getConnection(h))
+
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h)
 }

@@ -59,29 +59,33 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * 不相見、受剋與受扶、持矛者、映點、灼傷、區分與得時、顯現、野生、月亮的離與合、燃燒路（後十種只在這份 context 有對應的 Impl 時）。
    * 判準與本 context 的格局相同（同一組 Impl、同一份 [OutcomeOptions]）。成形的入相位不列 —— 那就是一般的入相位
    */
-  fun classicalFacts(h: IHoroscopeModel): List<ClassicalFact> =
-    translationOfLightImpl.getResults(h) +
-      collectionOfLightImpl.getResults(h) +
-      applicationOutcomeImpl.getOutcomes(h).filterNot { it is ApplicationOutcome.Perfected } +
-      besiegementImpl.getResults(h) +
-      natalOvercomings(h).map { it.overcoming } +
-      aversions(h) +
-      maltreatmentImpl?.getResults(h).orEmpty() +
-      doryphoriaImpl?.getResults(h, sectOf(h)).orEmpty() +
-      antisciaImpl?.getResults(h).orEmpty() +
-      combustionImpl?.getResults(h).orEmpty() +
-      sectFacts(h) +
-      phasisImpl?.getResults(h).orEmpty() +
-      feralImpl?.getResults(h).orEmpty() +
-      lunarConnectionImpl?.getResults(h).orEmpty() +
-      viaCombustaImpl?.getResults(h).orEmpty()
-
-  /** 區分（一筆）與得時；這份 context 沒有 [sectImpl] 時為空 */
-  private fun sectFacts(h: IHoroscopeModel): List<ClassicalFact> {
-    val impl = sectImpl ?: return emptyList()
-    val sect = sectOf(h)
-    return listOfNotNull(impl.getSect(h, sect)) + impl.getHayzResults(h, sect)
+  fun classicalFacts(h: IHoroscopeModel): List<ClassicalFact> {
+    // 沒有來源看日夜時不現算（呼叫端有給就照傳）
+    val sect = if (factSources.any { it.usesSect }) sectOf(h) else (h as? ClassicalInput)?.sect
+    return factSources.flatMap { it.getFacts(h, sect) }
   }
+
+  /**
+   * 古典事實的來源（[IClassicalFactSource]），依列出的順序攤平；這份 context 沒有的技法（null）不列。
+   * 新增一種技法：實作介面、加進這一串 —— [classicalFacts] 不必改
+   */
+  private val factSources: List<IClassicalFactSource> = listOfNotNull(
+    translationOfLightImpl,
+    collectionOfLightImpl,
+    applicationOutcomeImpl,
+    besiegementImpl,
+    IClassicalFactSource { h, _ -> natalOvercomings(h).map { it.overcoming } },
+    aversionImpl,
+    maltreatmentImpl,
+    doryphoriaImpl,
+    antisciaImpl,
+    combustionImpl,
+    sectImpl,
+    phasisImpl,
+    feralImpl,
+    lunarConnectionImpl,
+    viaCombustaImpl,
+  )
 
   /** 盤的日夜：呼叫端給的（[ClassicalInput.sect]）優先，否則以盤面時刻現算 */
   private fun sectOf(h: IHoroscopeModel): DayNight = (h as? ClassicalInput)?.sect ?: dayNightImpl.getDayNight(h.lmt, h.location)

@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.DayNight
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.IPointAspectPattern
 import destiny.core.astrology.Planet
@@ -28,7 +29,7 @@ data class CollectionOfLight(
   val planets: List<Planet> get() = listOf(first, second).map { p -> p.points.first { it != collector } as Planet }
 }
 
-interface ICollectionOfLight {
+interface ICollectionOfLight : IClassicalFactSource {
 
   /**
    * 此星盤中，[planet] 是否在收集光線；沒有則為 null。
@@ -39,4 +40,6 @@ interface ICollectionOfLight {
   /** 全盤的光線收集（收集者只看七顆古典行星） */
   fun getResults(h: IHoroscopeModel, receivedOnly: Boolean = false): List<CollectionOfLight> =
     Planet.classicalList.mapNotNull { getResult(it, h, receivedOnly) }
+
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h)
 }

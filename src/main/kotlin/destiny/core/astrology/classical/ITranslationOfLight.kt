@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.DayNight
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.IPointAspectPattern
 import destiny.core.astrology.Planet
@@ -25,7 +26,7 @@ data class TranslationOfLight(
   val to: Planet get() = applying.points.first { it != translator } as Planet
 }
 
-interface ITranslationOfLight {
+interface ITranslationOfLight : IClassicalFactSource {
 
   /** 此星盤中，[planet] 是否在傳遞光線；沒有則為 null */
   fun getResult(planet: Planet, h: IHoroscopeModel): TranslationOfLight?
@@ -33,4 +34,6 @@ interface ITranslationOfLight {
   /** 全盤的光線傳遞（傳遞者只看七顆古典行星） */
   fun getResults(h: IHoroscopeModel): List<TranslationOfLight> =
     Planet.classicalList.mapNotNull { getResult(it, h) }
+
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h)
 }

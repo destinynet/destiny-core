@@ -48,7 +48,7 @@ data class DoryphoriaOptions(
 /**
  * 持矛者。實作決定定義（Ptolemy、Porphyry…）
  */
-interface IDoryphoria {
+interface IDoryphoria : IClassicalFactSource {
 
   /** [light]（太陽或月亮）的持矛者；盤的日夜由呼叫端給（[sect]），null ＝ 不判同區分 */
   fun getBearers(h: IHoroscopeModel, light: Planet, sect: DayNight?): List<Doryphoria>
@@ -56,4 +56,8 @@ interface IDoryphoria {
   /** 太陽與月亮的全部持矛者 */
   fun getResults(h: IHoroscopeModel, sect: DayNight?): List<Doryphoria> =
     listOf(Planet.SUN, Planet.MOON).flatMap { getBearers(h, it, sect) }
+
+  override val usesSect: Boolean get() = true
+
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h, sect)
 }

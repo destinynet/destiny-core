@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.DayNight
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.IPointAspectPattern
@@ -177,7 +178,7 @@ sealed interface ApplicationOutcome : ClassicalFact {
  *
  * TODO : antiscia / antiscion (映點) 的入相位
  */
-interface IApplicationOutcome {
+interface IApplicationOutcome : IClassicalFactSource {
 
   /** [p1] 與 [p2]（不分順序）若正在容許度內入相位，回傳其結局；不在入相位、或無從判定（例：快星減速被甩開）為 null */
   fun getOutcome(h: IHoroscopeModel, p1: Planet, p2: Planet): ApplicationOutcome?
@@ -187,4 +188,8 @@ interface IApplicationOutcome {
     Planet.classicalList.flatMapIndexed { i, p1 ->
       Planet.classicalList.drop(i + 1).mapNotNull { p2 -> getOutcome(h, p1, p2) }
     }
+
+  /** 受阻的入相位（臨陣退縮／插隊／撲空）。成形的不列 —— 那就是一般的入相位 */
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> =
+    getOutcomes(h).filterNot { it is ApplicationOutcome.Perfected }
 }

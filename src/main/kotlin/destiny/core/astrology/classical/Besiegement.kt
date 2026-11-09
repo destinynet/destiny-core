@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.DayNight
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
@@ -76,7 +77,7 @@ data class BesiegementOptions(
 /**
  * 包夾。只看盤面時刻的位置，不需要星曆
  */
-interface IBesiegement {
+interface IBesiegement : IClassicalFactSource {
 
   /** [planet] 是否被 [enclosers]（兩顆星，例：火土）包夾；沒有則為 null */
   fun getBesiegement(h: IHoroscopeModel, planet: Planet, enclosers: Set<Planet>): Besiegement?
@@ -96,4 +97,6 @@ interface IBesiegement {
     val BENEFICS: Set<Planet> = setOf(Planet.VENUS, Planet.JUPITER)
     val ENCLOSER_PAIRS: List<Set<Planet>> = listOf(MALEFICS, BENEFICS)
   }
+
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> = getResults(h)
 }

@@ -115,7 +115,7 @@ data class HayzOptions(
 /**
  * 區分與得時。盤的日夜一律由呼叫端給（日夜的判定要看出生時刻精度，見 DayNightSourceResolver），這裡不判
  */
-interface ISect {
+interface ISect : IClassicalFactSource {
 
   /** 區分；盤上缺日、月、水星的位置時為 null */
   fun getSect(h: IHoroscopeModel, sect: DayNight): Sect?
@@ -129,6 +129,12 @@ interface ISect {
   /** 全盤得時的星，依古典行星順序 */
   fun getHayzResults(h: IHoroscopeModel, sect: DayNight): List<Hayz> =
     Planet.classicalList.mapNotNull { getHayz(h, sect, it) }
+
+  override val usesSect: Boolean get() = true
+
+  /** 區分（一筆）與得時；日夜不明（[sect] 為 null）就沒有 */
+  override fun getFacts(h: IHoroscopeModel, sect: DayNight?): List<ClassicalFact> =
+    sect?.let { listOfNotNull<ClassicalFact>(getSect(h, it)) + getHayzResults(h, it) }.orEmpty()
 }
 
 class SectImpl(
