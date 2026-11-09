@@ -37,18 +37,37 @@ data class OutcomeOptions(
    * 而兩顆徵象星之間仍照 [aspects] 判斷。預設托勒密五相位
    */
   val interruptionAspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
+  /**
+   * 相位要依星座也成立才算（[fitsSigns]）：希臘化的相位以星座為單位。關掉是 Lilly 的做法：依容許度計，跨星座也算。
+   * 例：摩羯 26° 與牡羊 4° 相距 68°，依容許度是六合，依星座是四分
+   */
+  val signBoundAspects: Boolean = false,
 ) {
   companion object {
     /** 卜卦：不排除任何插隊者 */
     val HORARY = OutcomeOptions()
 
-    /** 本命盤存表：排除月亮插隊；相位明寫托勒密五相位（引擎可以更寬，存表固定這個子集） */
+    /** 本命盤存表：排除月亮插隊；相位明寫托勒密五相位（引擎可以更寬，存表固定這個子集）；相位要依星座也成立 */
     val NATAL_DB = OutcomeOptions(
       excludedInterrupters = setOf(Planet.MOON),
       aspects = Aspect.getAspects(Aspect.Importance.HIGH),
       interruptionAspects = Aspect.getAspects(Aspect.Importance.HIGH),
+      signBoundAspects = true,
     )
   }
+}
+
+/**
+ * 這個相位依星座也成立：兩星所在星座的距離正是 [IPointAspectPattern.aspect] 該有的距離。
+ * 不是 30° 倍數的交角沒有對應的星座距離，一律成立；不是兩個點、或盤上找不到星座的，不成立
+ */
+fun IPointAspectPattern.fitsSigns(h: IHoroscopeModel): Boolean {
+  val signs = points.map { h.getZodiacSign(it) ?: return false }
+  if (signs.size != 2) return false
+  if (aspect.degree % 30.0 != 0.0) return true
+  val expected = (aspect.degree / 30.0).toInt()
+  val actual = signs[1].placeFrom(signs[0]) - 1
+  return actual == expected || actual == 12 - expected
 }
 
 /**

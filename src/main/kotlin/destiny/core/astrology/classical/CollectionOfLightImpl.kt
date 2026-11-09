@@ -25,7 +25,12 @@ class CollectionOfLightImpl(
   private val essentialImpl: IEssential,
   private val aspectCalculator: IAspectCalculator,
   private val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
+  /** 相位要依星座也成立才算（[fitsSigns]），見 [OutcomeOptions.signBoundAspects] */
+  private val signBound: Boolean = false,
 ) : ICollectionOfLight {
+
+  private fun pattern(h: IHoroscopeModel, a: Planet, b: Planet): IPointAspectPattern? =
+    with(aspectCalculator) { h.getAspectPattern(setOf(a, b), aspects) }?.takeIf { !signBound || it.fitsSigns(h) }
 
   override fun getResult(planet: Planet, h: IHoroscopeModel, receivedOnly: Boolean): CollectionOfLight? {
     if (planet !in Planet.classicalSet) return null
@@ -35,19 +40,17 @@ class CollectionOfLightImpl(
     data class Approach(val planet: Planet, val pattern: IPointAspectPattern, val days: Double)
 
     // 比收集者快、在容許度內、正在入相位的古典行星，依成形先後排
-    val approaching = with(aspectCalculator) {
-      Planet.classicalList.filter { it !== planet }.mapNotNull { other ->
-        val otherSpeed = speedOf(other) ?: return@mapNotNull null
-        if (abs(otherSpeed) <= abs(speed)) return@mapNotNull null
-        h.getAspectPattern(setOf(planet, other), aspects)
-          ?.takeIf { it.aspectType == APPLYING }
-          ?.let { Approach(other, it, it.orb / abs(otherSpeed - speed)) }
-      }
+    val approaching = Planet.classicalList.filter { it !== planet }.mapNotNull { other ->
+      val otherSpeed = speedOf(other) ?: return@mapNotNull null
+      if (abs(otherSpeed) <= abs(speed)) return@mapNotNull null
+      pattern(h, planet, other)
+        ?.takeIf { it.aspectType == APPLYING }
+        ?.let { Approach(other, it, it.orb / abs(otherSpeed - speed)) }
     }.sortedBy { it.days }
 
     val pairs = approaching.flatMapIndexed { i, a -> approaching.drop(i + 1).map { b -> a to b } }
     return pairs.asSequence().mapNotNull { (a, b) ->
-      val between = with(aspectCalculator) { h.getAspectPattern(setOf(a.planet, b.planet), aspects) }
+      val between = pattern(h, a.planet, b.planet)
       // 兩顆快星自己就會成形：不需要收集者
       if (between?.aspectType == APPLYING) return@mapNotNull null
       val (ra, rb) = with(essentialImpl) { a.planet.receivingDignityOf(planet, h) to b.planet.receivingDignityOf(planet, h) }

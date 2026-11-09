@@ -33,7 +33,12 @@ abstract class AbstractTranslationOfLight(
   protected val aspectCalculator: IAspectCalculator,
   protected val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
   private val allowBetweenApplying: Boolean = false,
+  /** 相位要依星座也成立才算（[fitsSigns]），見 [OutcomeOptions.signBoundAspects] */
+  private val signBound: Boolean = false,
 ) : ITranslationOfLight {
+
+  private fun pattern(h: IHoroscopeModel, a: Planet, b: Planet): IPointAspectPattern? =
+    with(aspectCalculator) { h.getAspectPattern(setOf(a, b), aspects) }?.takeIf { !signBound || it.fitsSigns(h) }
 
   /** 在容許度內、比傳遞者慢的一顆古典行星；[days] ＝ 離成形（入相位）或離開成形（出相位）的估算日數 ＝ 容許度 ÷ 相對速度 */
   protected data class Contact(val other: Planet, val pattern: IPointAspectPattern, val days: Double)
@@ -46,22 +51,18 @@ abstract class AbstractTranslationOfLight(
     val speedOf = { p: Planet -> h.getStarPosition(p)?.speedLng }
     val speed = speedOf(planet) ?: return null
 
-    val contacts = with(aspectCalculator) {
-      Planet.classicalList.filter { it !== planet }.mapNotNull { other ->
-        val otherSpeed = speedOf(other) ?: return@mapNotNull null
-        if (abs(otherSpeed) >= abs(speed)) return@mapNotNull null
-        h.getAspectPattern(setOf(planet, other), aspects)
-          ?.takeIf { it.aspectType != null }
-          ?.let { Contact(other, it, it.orb / abs(speed - otherSpeed)) }
-      }
+    val contacts = Planet.classicalList.filter { it !== planet }.mapNotNull { other ->
+      val otherSpeed = speedOf(other) ?: return@mapNotNull null
+      if (abs(otherSpeed) >= abs(speed)) return@mapNotNull null
+      pattern(h, planet, other)
+        ?.takeIf { it.aspectType != null }
+        ?.let { Contact(other, it, it.orb / abs(speed - otherSpeed)) }
     }
 
     val from = contacts.filter { it.pattern.aspectType == SEPARATING }.minByOrNull { it.days } ?: return null
     val (to, arrival) = pickApplying(planet, h, contacts.filter { it.pattern.aspectType == APPLYING }) ?: return null
 
-    val between = with(aspectCalculator) {
-      h.getAspectPattern(setOf(from.other, to.other), aspects)
-    }
+    val between = pattern(h, from.other, to.other)
     if (between?.aspectType == APPLYING && !allowBetweenApplying) return null
 
     return TranslationOfLight(planet, separating = from.pattern, applying = to.pattern, between = between, arrival = arrival)
