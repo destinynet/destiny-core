@@ -248,6 +248,14 @@ data class HoroscopePatternDto(
   val parts: List<Int> = emptyList(),
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val score: Double? = null,
+  /**
+   * 群星聚集（STELLIUM_SIGN、STELLIUM_HOUSE）的成員跨了幾度：成員（四軸除外）的黃經排序後，整圈扣掉最大的那段空隙（跨過 0° 也對）。
+   * 其餘格局為 null。衍生欄位，定義與填法見 [withDerivedDegrees]；null 不輸出
+   */
+  @OptIn(ExperimentalSerializationApi::class)
+  @EncodeDefault(EncodeDefault.Mode.NEVER)
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val span: Double? = null,
 )
 
 /** 中點：[a]／[b] 的中點落在 [zDeg]，[focal] 就在那裡（容許度 [orb]） */
@@ -297,6 +305,13 @@ data class HoroscopeTranslationDto(
   val betweenGlyph: String? = null,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val arrivalDays: Double? = null,
+  /**
+   * [from] 與 [to] 兩端在盤面上的實際角距（0–180）。衍生欄位，定義與填法見 [withDerivedDegrees]；null 不輸出。
+   * 兩位小數（見 [withDerivedDegrees]）；圖上標一位小數時由它四捨五入
+   */
+  @OptIn(ExperimentalSerializationApi::class)
+  @EncodeDefault(EncodeDefault.Mode.NEVER)
+  val endsGap: Double? = null,
 ) : HoroscopeClassicalFactDto {
   override val members: List<AstroPoint> get() = listOf(by, from, to)
 }
@@ -323,6 +338,13 @@ data class HoroscopeCollectionDto(
   val betweenGlyph: String? = null,
   val aReception: destiny.core.astrology.classical.Dignity? = null,
   val bReception: destiny.core.astrology.classical.Dignity? = null,
+  /**
+   * [a] 與 [b] 兩顆快星在盤面上的實際角距（0–180）。衍生欄位，定義與填法見 [withDerivedDegrees]；null 不輸出。
+   * 兩位小數（見 [withDerivedDegrees]）；圖上標一位小數時由它四捨五入
+   */
+  @OptIn(ExperimentalSerializationApi::class)
+  @EncodeDefault(EncodeDefault.Mode.NEVER)
+  val endsGap: Double? = null,
 ) : HoroscopeClassicalFactDto {
   override val members: List<AstroPoint> get() = listOf(by, a, b)
 }
@@ -402,6 +424,14 @@ data class HoroscopeProhibitionDto(
   val eventDays: Double,
   val track: List<HoroscopeOutcomeSampleDto>,
   val ingress: AstroPoint? = null,
+  /**
+   * 第三顆星先成形的那一刻（[eventDays] 日後），[applying] 與 [applied] 離 [aspect] 還差幾度 —— 原本的相位就停在這個差距落空。
+   * 衍生欄位，定義與填法見 [withDerivedDegrees]；[track] 是空的就算不出來（null），null 不輸出
+   */
+  @OptIn(ExperimentalSerializationApi::class)
+  @EncodeDefault(EncodeDefault.Mode.NEVER)
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val gapAtEvent: Double? = null,
 ) : HoroscopeClassicalFactDto {
   override val members: List<AstroPoint> get() = listOf(applying, applied, by)
 }
@@ -426,6 +456,14 @@ data class HoroscopeFrustrationDto(
   val eventDays: Double,
   val track: List<HoroscopeOutcomeSampleDto>,
   val ingress: AstroPoint? = null,
+  /**
+   * 第三顆星先成形的那一刻（[eventDays] 日後），[applying] 與 [applied] 離 [aspect] 還差幾度 —— 原本的相位就停在這個差距落空。
+   * 衍生欄位，定義與填法見 [withDerivedDegrees]；[track] 是空的就算不出來（null），null 不輸出
+   */
+  @OptIn(ExperimentalSerializationApi::class)
+  @EncodeDefault(EncodeDefault.Mode.NEVER)
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val gapAtEvent: Double? = null,
 ) : HoroscopeClassicalFactDto {
   override val members: List<AstroPoint> get() = listOf(applying, applied, by)
 }
@@ -494,6 +532,19 @@ data class HoroscopeAntisciaDto(
   val contra: Boolean,
   @Serializable(with = DoubleTwoDecimalSerializer::class)
   val orb: Double,
+  /**
+   * [planet] 離對稱軸幾度。對稱軸取離 [planet] 較近的那一端：映點是夏至（90°）或冬至（270°），反映點是春分（0°）或秋分（180°）。
+   * 衍生欄位，定義與填法見 [withDerivedDegrees]；null 不輸出
+   */
+  @OptIn(ExperimentalSerializationApi::class)
+  @EncodeDefault(EncodeDefault.Mode.NEVER)
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val planetOffAxis: Double? = null,
+  /** [other] 離同一個軸端（[planetOffAxis] 量的那一端）幾度；與 [planetOffAxis] 的差就是 [orb]（捨位誤差之內） */
+  @OptIn(ExperimentalSerializationApi::class)
+  @EncodeDefault(EncodeDefault.Mode.NEVER)
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val otherOffAxis: Double? = null,
 ) : HoroscopeClassicalFactDto {
   override val members: List<AstroPoint> get() = listOf(planet, other)
 }
@@ -777,14 +828,18 @@ fun HoroscopeChartDto.withDignities(
 
 /**
  * 附上古典占星的結構化事實（[destiny.core.astrology.classical.ClassicalFact]）；有星不在盤上的略過。
- * 成形（[destiny.core.astrology.classical.ApplicationOutcome.Perfected]）不附 —— 那就是一般的入相位，相位線已經畫了
+ * 成形（[destiny.core.astrology.classical.ApplicationOutcome.Perfected]）不附 —— 那就是一般的入相位，相位線已經畫了。
+ * 事實的衍生度數（[withDerivedDegrees]）在這裡一併填好
  */
 fun HoroscopeChartDto.withClassicalFacts(facts: List<destiny.core.astrology.classical.ClassicalFact>): HoroscopeChartDto {
   val keys = points.mapTo(HashSet()) { it.point }
-  return copy(classicalFacts = facts.mapNotNull { it.toChartDto() }.filter { f -> f.members.all { it in keys } })
+  return copy(classicalFacts = facts.mapNotNull { it.toChartDto() }.filter { f -> f.members.all { it in keys } }).withDerivedDegrees()
 }
 
-/** 呈現層投影；成形（[destiny.core.astrology.classical.ApplicationOutcome.Perfected]）沒有投影，回 null */
+/**
+ * 呈現層投影；成形（[destiny.core.astrology.classical.ApplicationOutcome.Perfected]）沒有投影，回 null。
+ * 單獨一筆事實看不到整張盤，衍生度數留空 —— 要它們就走 [withClassicalFacts]，或對組好的盤呼叫 [withDerivedDegrees]
+ */
 fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassicalFactDto? = when (this) {
   is destiny.core.astrology.classical.TranslationOfLight -> HoroscopeTranslationDto(
     by = translator,
@@ -1103,7 +1158,7 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender, lan
       .map { m -> HoroscopeMidpointDto(m.p1, m.p2, m.degree.zDeg, m.focal, m.orb) },
     applications = applicationsOf(pointDtos),
     cuspIngresses = cuspIngressesOf(pointDtos, houseDtos),
-  )
+  ).withDerivedDegrees()
 }
 
 /** 現代的共同主星 */
