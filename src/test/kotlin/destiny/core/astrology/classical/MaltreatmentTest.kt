@@ -58,7 +58,7 @@ class MaltreatmentTest {
     assertTrue(ben.conditions.any { it is Condition.RayHurled && it.source == VENUS && it.dexter })
 
     val zh = PatternTranslator.getDescriptor(Misc.Maltreated(SUN, mal)).getDescription(Locale.TAIWAN)
-    assertTrue("太陽 受剋" in zh && "被 土星 四分居上" in zh && "與 火星 對沖" in zh, zh)
+    assertTrue("太陽 受剋" in zh && "被 土星 刑居上" in zh && "與 火星 對沖" in zh, zh)
     val en = PatternTranslator.getDescriptor(Misc.Maltreated(SUN, ben)).getDescription(Locale.ENGLISH)
     assertTrue("Sun is bonified" in en && "in adherence with Jupiter" in en, en)
   }

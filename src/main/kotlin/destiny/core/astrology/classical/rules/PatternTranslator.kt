@@ -244,19 +244,21 @@ internal class SpearBearers(
   }
 }
 
-/** 受剋／受扶的條件清單，依語言組成一串（zh「被 土星 四分居上、與 火星 對沖」） */
+/**
+ * 受剋／受扶的條件清單，依語言組成一串（zh「被 土星 刑居上、與 火星 對沖」）。
+ * 相位的名稱三種語言都走 [destiny.core.astrology.Aspect] 的語系檔（中文：六合、刑、三合），與同一份敘述裡其他句子同一套用語
+ */
 internal class MaltreatmentConditions(private val conditions: List<destiny.core.astrology.classical.Maltreatment.Condition>) : ILocaleString {
 
   override fun getTitle(lang: Lang): String {
     val name = { p: destiny.core.astrology.AstroPoint -> p.getTitle(lang) }
     val deg = { d: Double -> "%.2f°".format(Locale.ROOT, d) }
-    val zhAspect = mapOf(SEXTILE to "六分", SQUARE to "四分", TRINE to "三分", OPPOSITION to "對沖", CONJUNCTION to "合")
     return conditions.joinToString(when (lang.language) { "en" -> "; "; else -> "、" }) { c ->
       when (c) {
         is destiny.core.astrology.classical.Maltreatment.Condition.Overcome -> when (lang.language) {
           "en" -> "overcome by ${name(c.overcoming.superior)} by ${c.overcoming.aspect.getTitle(lang).lowercase()}"
           "ja" -> "${name(c.overcoming.superior)}に${c.overcoming.aspect.getTitle(lang)}でオーバーカミングされる"
-          else -> "被 ${name(c.overcoming.superior)} ${zhAspect[c.overcoming.aspect]}居上"
+          else -> "被 ${name(c.overcoming.superior)} ${c.overcoming.aspect.getTitle(lang)}居上"
         }
         is destiny.core.astrology.classical.Maltreatment.Condition.Opposed -> when (lang.language) {
           "en" -> "opposed by ${name(c.source)}"
@@ -271,7 +273,7 @@ internal class MaltreatmentConditions(private val conditions: List<destiny.core.
         is destiny.core.astrology.classical.Maltreatment.Condition.RayHurled -> when (lang.language) {
           "en" -> "struck by the ${c.aspect.getTitle(lang).lowercase()} ray of ${name(c.source)} (${deg(c.orb)} off)"
           "ja" -> "${name(c.source)}の${c.aspect.getTitle(lang)}の光線を受ける（${deg(c.orb)}）"
-          else -> "被 ${name(c.source)} 以${zhAspect[c.aspect]}光線射中（差 ${deg(c.orb)}）"
+          else -> "被 ${name(c.source)} 以${c.aspect.getTitle(lang)}光線射中（差 ${deg(c.orb)}）"
         }
         is destiny.core.astrology.classical.Maltreatment.Condition.Besieged -> when (lang.language) {
           "en" -> "besieged between ${name(c.besiegement.before.by)} and ${name(c.besiegement.after.by)}"
@@ -281,7 +283,7 @@ internal class MaltreatmentConditions(private val conditions: List<destiny.core.
         is destiny.core.astrology.classical.Maltreatment.Condition.Sequence -> when (lang.language) {
           "en" -> "separating from the ${c.fromAspect.getTitle(lang).lowercase()} of ${name(c.from)} (${deg(c.fromOrb)} past) and applying to the ${c.toAspect.getTitle(lang).lowercase()} of ${name(c.to)} (${deg(c.toOrb)} to go)"
           "ja" -> "${name(c.from)}との${c.fromAspect.getTitle(lang)}から離れ（${deg(c.fromOrb)}）、${name(c.to)}との${c.toAspect.getTitle(lang)}へ接近する（${deg(c.toOrb)}）"
-          else -> "離開 ${name(c.from)} 的${zhAspect[c.fromAspect]}（已過 ${deg(c.fromOrb)}）、迎上 ${name(c.to)} 的${zhAspect[c.toAspect]}（還差 ${deg(c.toOrb)}）"
+          else -> "離開 ${name(c.from)} 的${c.fromAspect.getTitle(lang)}（已過 ${deg(c.fromOrb)}）、迎上 ${name(c.to)} 的${c.toAspect.getTitle(lang)}（還差 ${deg(c.toOrb)}）"
         }
       }
     }
