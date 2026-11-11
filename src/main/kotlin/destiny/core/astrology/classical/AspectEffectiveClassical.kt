@@ -10,7 +10,6 @@ import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.IAspectEffective
 import destiny.core.astrology.ZodiacDegree
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
-import destiny.tools.DestinyMarker
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
 import destiny.tools.JSerializable
@@ -83,27 +82,5 @@ class AspectEffectiveClassical(
     result = 31 * result + defaultThreshold.hashCode()
     result = 31 * result + applicableAspects.hashCode()
     return result
-  }
-}
-
-/**
- * builder for 古典占星 [AspectEffectiveClassical] 交角容許度
- */
-@DestinyMarker
-class AspectEffectiveClassicalBuilder {
-  var planetOrbsImpl: IPointDiameter = PointDiameterAlBiruniImpl()
-  var defaultThreshold: Double = 0.6
-  operator fun invoke(block: AspectEffectiveClassicalBuilder.() -> Unit = {}): AspectEffectiveClassical {
-    block.invoke(this)
-    return AspectEffectiveClassical(planetOrbsImpl, defaultThreshold)
-  }
-
-  companion object {
-    fun aspectEffectiveClassical(block: AspectEffectiveClassicalBuilder.() -> Unit = {}): AspectEffectiveClassical {
-      val builder = AspectEffectiveClassicalBuilder()
-      return builder {
-        block()
-      }
-    }
   }
 }

@@ -8,11 +8,6 @@ import destiny.core.calendar.ILocation
 import java.time.chrono.ChronoLocalDateTime
 
 
-interface Builder<Model> {
-
-  fun build(): Model
-}
-
 interface Feature<out Config : Any, Model : Any?> {
 
   val key: String
