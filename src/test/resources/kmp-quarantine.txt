@@ -275,7 +275,6 @@ destiny/tools/LocaleComparator.kt
 destiny/tools/LocaleTools.kt
 destiny/tools/Localeable.kt
 destiny/tools/PersonFeature.kt
-destiny/tools/SearchableI18n.kt
 destiny/tools/ai/model/Domain.kt
 destiny/tools/config/Holder.kt
 destiny/tools/config/Reloader.kt
