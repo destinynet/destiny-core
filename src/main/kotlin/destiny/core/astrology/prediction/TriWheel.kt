@@ -143,6 +143,9 @@ data class TriWheelFilter(
   val cohortDays: Int = 30,
   val aspects: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH),
 ) {
+  /** 中 → 內（背景）那一段的篩選規則，與 [BiWheelDto] 同一套 */
+  val arc: ArcFilter get() = ArcFilter(backgroundOrb, cohortDays, aspects)
+
   /**
    * 外環 [mover] 打本命 [target] 時適用的容許度；null ＝ 這一對不列（快星只看打到 [fastTargets]）。
    * 依 mover 的類別分級：月亮與軸點（事件時刻級）、外行星、火星、日水金
