@@ -31,6 +31,7 @@ data class MonthMasterConfig(val impl: Impl = Impl.SunSign ,
   }
 }
 
+@Deprecated("config DSL 將移除：改用 MonthMasterConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class MonthMasterConfigBuilder : Builder<MonthMasterConfig> {
   var impl: Impl = Impl.SunSign

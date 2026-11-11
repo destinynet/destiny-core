@@ -36,6 +36,7 @@ data class VoidCourseConfig(@Serializable(with = PlanetSerializer::class)
                             override var centric: Centric = Centric.GEO,
                             override var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval): IVoidCourseConfig
 
+@Deprecated("config DSL 將移除：改用 VoidCourseConfig(...) 具名參數或 copy()。")
 class VoidCourseConfigBuilder : Builder<VoidCourseConfig> {
   var planet: Planet = Planet.MOON
   var centric: Centric = Centric.GEO

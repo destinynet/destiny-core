@@ -39,6 +39,7 @@ data class DivineTraditionalConfig(@Serializable(with = IHexagramSerializer::cla
                                    @Serializable(with = LocaleSerializer::class)
                                    val locale: Locale = Locale.TAIWAN,
                                    val eightWordsConfig: EightWordsConfig = EightWordsConfig()): JSerializable
+@Deprecated("config DSL 將移除：改用 DivineTraditionalConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class DivineTraditionalConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<DivineTraditionalConfig> {
 

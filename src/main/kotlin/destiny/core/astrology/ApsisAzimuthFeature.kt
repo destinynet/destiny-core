@@ -21,6 +21,7 @@ data class ApsisAzimuthConfig(@Serializable(with = StarSerializer::class)
                               val temperature: Double = 0.0,
                               val pressure: Double = 1013.25) : JSerializable
 
+@Deprecated("config DSL 將移除：改用 ApsisAzimuthConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class ApsisAzimuthConfigBuilder : Builder<ApsisAzimuthConfig> {
   var star: Star = Planet.MOON

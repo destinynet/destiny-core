@@ -37,6 +37,7 @@ data class FortuneSmallConfig(val impl: Impl = Impl.Hour,
   }
 }
 
+@Deprecated("config DSL 將移除：改用 FortuneSmallConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class FortuneSmallConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<FortuneSmallConfig> {
   var impl: FortuneSmallConfig.Impl = FortuneSmallConfig.Impl.Hour

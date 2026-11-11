@@ -27,6 +27,7 @@ data class LunarStationModernConfig(
   override var specifiedGmtJulDay: GmtJulDay? = null,
   override var description: String? = null): ILunarStationModernConfig, ILunarStationConfig by lunarStationConfig
 
+@Deprecated("config DSL 將移除：改用 LunarStationModernConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class LunarStationModernConfigBuilder(val config : ILunarStationConfig) : Builder<LunarStationModernConfig> {
 

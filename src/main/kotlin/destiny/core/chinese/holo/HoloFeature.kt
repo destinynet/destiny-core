@@ -35,6 +35,7 @@ data class HoloConfig(val divineTraditionalConfig: DivineTraditionalConfig = Div
                       val hexChange: HexChange = HexChange.DST,
                       val monthlyHexagram: MonthlyHexagram = MonthlyHexagram.Sign): JSerializable
 
+@Deprecated("config DSL 將移除：改用 HoloConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class HoloConfigBuilder : Builder<HoloConfig> {
 

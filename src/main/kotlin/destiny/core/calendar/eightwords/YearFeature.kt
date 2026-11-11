@@ -27,6 +27,7 @@ data class YearConfig(override var changeYearDegree: Double = 315.0): IYearConfi
   }
 }
 
+@Deprecated("config DSL 將移除：改用 YearConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class YearConfigBuilder : Builder<IYearConfig> {
 

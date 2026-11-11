@@ -32,6 +32,7 @@ data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContext
                                   @Serializable(with = LocaleSerializer::class)
                                   val locale : Locale = defaultLocale): IEightWordsPersonConfig , IEightWordsContextConfig by eightwordsContextConfig
 
+@Deprecated("config DSL 將移除：改用 EightWordsPersonConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class PersonConfigBuilder(val iEwConfig : IEightWordsContextConfig) : Builder<EightWordsPersonConfig> {
 

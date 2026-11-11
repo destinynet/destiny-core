@@ -25,6 +25,7 @@ data class DayNightConfig(override val dayNightImpl : DayNightImpl = DayNightImp
                           /** for [DayNightImpl.StarPos] and [DayNightImpl.Half] */
                           override val transConfig: TransConfig = TransConfig()): IDayNightConfig,
                                                                                   ITransConfig by transConfig
+@Deprecated("config DSL 將移除：改用 DayNightConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class DayNightConfigBuilder(val config : ITransConfig) : Builder<DayNightConfig> {
 

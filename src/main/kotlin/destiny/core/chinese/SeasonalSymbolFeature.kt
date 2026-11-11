@@ -45,6 +45,7 @@ data class SeasonalSymbolConfig(val impl: Impl = Impl.Chinese) : JSerializable {
   }
 }
 
+@Deprecated("config DSL 將移除：改用 SeasonalSymbolConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class SeasonalSymbolConfigBuilder : Builder<SeasonalSymbolConfig> {
 

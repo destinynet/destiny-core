@@ -24,6 +24,7 @@ data class RiseTransConfig(@Serializable(with = StarSerializer::class)
                            val transPoint: TransPoint = TransPoint.RISING,
                            val transConfig: TransConfig = TransConfig()): JSerializable
 
+@Deprecated("config DSL 將移除：改用 RiseTransConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class RiseTransConfigBuilder : Builder<RiseTransConfig> {
 

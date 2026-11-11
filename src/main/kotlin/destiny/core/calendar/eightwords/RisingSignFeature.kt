@@ -27,11 +27,13 @@ data class RisingSignConfig(
   override var risingSignImpl: RisingSignImpl = RisingSignImpl.HouseCusp
 ): IRisingSignConfig , IHouseConfig by houseConfig
 
+@Deprecated("config DSL 將移除：改用 RisingSignConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class RisingSignConfigBuilder(val iHouseConfig : IHouseConfig) : Builder<RisingSignConfig> {
 
   var risingSignImpl: RisingSignImpl = RisingSignImpl.HouseCusp
 
+  @Deprecated("config DSL 將移除：改用 TradChineseRisingSignConfig(...) 具名參數或 copy()。")
   @DestinyMarker
   class TradChineseRisingSignConfigBuilder : Builder<TradChineseRisingSignConfig> {
 

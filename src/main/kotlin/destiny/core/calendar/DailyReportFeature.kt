@@ -45,6 +45,7 @@ data class DailyReportConfig(
   @Serializable(with = LocaleSerializer::class)
   override var locale: Locale = Locale.TAIWAN) : IDailyReportConfig, ILunarStationConfig by lunarStationConfig , IVoidCourseConfig by vocConfig
 
+@Deprecated("config DSL 將移除：改用 DailyReportConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class DailyReportConfigBuilder(val iLunarConfig: ILunarStationConfig, val iVocConfig: IVoidCourseConfig) : Builder<DailyReportConfig> {
 

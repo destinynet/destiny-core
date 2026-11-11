@@ -39,6 +39,7 @@ data class LunarStationConfig(
   override val ewConfig: EightWordsConfig = EightWordsConfig(),
 ) : ILunarStationConfig, IEightWordsConfig by ewConfig
 
+@Deprecated("config DSL 將移除：改用 LunarStationConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class LunarStationConfigBuilder(val iEwConfig: IEightWordsConfig) : Builder<LunarStationConfig> {
   var yearType: YearType = YearType.YEAR_SOLAR

@@ -19,6 +19,7 @@ data class ClassicalConfig(
   override val sect: DayNight? = null,
 ) : IClassicalConfig
 
+@Deprecated("config DSL 將移除：改用 ClassicalConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class ClassicalConfigBuilder(val ctx: ClassicalPatternContext) : Builder<ClassicalConfig> {
 

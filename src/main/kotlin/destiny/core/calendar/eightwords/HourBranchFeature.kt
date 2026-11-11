@@ -35,6 +35,7 @@ data class HourBranchConfig(
   override var hourImpl : HourImpl = HourImpl.TST,
   override val transConfig: TransConfig = TransConfig()): IHourBranchConfig , ITransConfig by transConfig
 
+@Deprecated("config DSL 將移除：改用 HourBranchConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class HourBranchConfigBuilder(val iTransConfig: ITransConfig) : Builder<HourBranchConfig> {
 

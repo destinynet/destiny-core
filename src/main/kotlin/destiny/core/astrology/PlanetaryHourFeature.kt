@@ -26,6 +26,7 @@ enum class PlanetaryHourType {
 data class PlanetaryHourConfig(val type: PlanetaryHourType = PlanetaryHourType.ASTRO,
                                val transConfig: TransConfig = TransConfig()): JSerializable
 
+@Deprecated("config DSL 將移除：改用 PlanetaryHourConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class PlanetaryHourConfigBuilder : Builder<PlanetaryHourConfig> {
 

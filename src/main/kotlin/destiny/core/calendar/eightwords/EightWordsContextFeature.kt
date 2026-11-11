@@ -24,6 +24,7 @@ data class EightWordsContextConfig(
   //override var houseConfig : HouseConfig = HouseConfig(HouseSystem.MERIDIAN, Coordinate.ECLIPTIC),
 ): IEightWordsContextConfig , IEightWordsConfig by eightWordsConfig , IRisingSignConfig by risingSignConfig
 
+@Deprecated("config DSL 將移除：改用 EightWordsContextConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class EightWordsContextConfigBuilder(val iEwConfig : IEightWordsConfig, val iRsConfig : IRisingSignConfig) : Builder<EightWordsContextConfig> {
 

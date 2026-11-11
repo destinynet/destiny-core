@@ -84,6 +84,7 @@ data class DayConfig(
 ) : IDayConfig
 
 
+@Deprecated("config DSL 將移除：改用 DayConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class DayConfigBuilder : Builder<DayConfig> {
 
@@ -109,6 +110,7 @@ data class DayHourConfig(
   override val hourBranchConfig: HourBranchConfig = HourBranchConfig()
 ) : IDayHourConfig, IDayConfig by dayConfig, IHourBranchConfig by hourBranchConfig
 
+@Deprecated("config DSL 將移除：改用 DayHourConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class DayHourConfigBuilder(val dayConfig: IDayConfig, val hourBranchConfig : IHourBranchConfig) : Builder<DayHourConfig> {
 

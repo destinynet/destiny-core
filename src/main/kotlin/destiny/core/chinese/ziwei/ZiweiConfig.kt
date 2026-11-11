@@ -280,6 +280,7 @@ data class ZiweiConfig(
   override var purpleFixedBranch : Branch? = null
 ) : IZiweiConfig , IEightWordsConfig by ewConfig
 
+@Deprecated("config DSL 將移除：改用 ZiweiConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class ZiweiConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<ZiweiConfig> {
 

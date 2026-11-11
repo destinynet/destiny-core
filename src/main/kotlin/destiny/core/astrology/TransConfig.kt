@@ -16,6 +16,7 @@ data class TransConfig(override var discCenter: Boolean = false,
                        override var pressure: Double = 1013.25,
                        override var starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN): ITransConfig
 
+@Deprecated("config DSL 將移除：改用 TransConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class TransConfigBuilder : Builder<TransConfig> {
 

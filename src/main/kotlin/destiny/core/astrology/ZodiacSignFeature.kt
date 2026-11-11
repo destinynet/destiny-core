@@ -17,6 +17,7 @@ data class ZodiacSignConfig(@Serializable(with = StarSerializer::class)
                             val star: Star = Planet.SUN,
                             val starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN): JSerializable
 
+@Deprecated("config DSL 將移除：改用 ZodiacSignConfig(...) 具名參數或 copy()。")
 class ZodiacSignBuilder : Builder<ZodiacSignConfig> {
 
   var star: Star = Planet.SUN

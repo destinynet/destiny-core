@@ -37,6 +37,7 @@ data class PalmConfig(
   val clockwiseHouse: Boolean = true
 ) : JSerializable
 
+@Deprecated("config DSL 將移除：改用 PalmConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class PalmConfigBuilder(val iEwConfig : IEightWordsConfig , val iRsConfig : IRisingSignConfig) : Builder<PalmConfig> {
 

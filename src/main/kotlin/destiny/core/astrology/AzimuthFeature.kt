@@ -23,6 +23,7 @@ data class AzimuthConfig(@Serializable(with = StarSerializer::class)
                          val starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN
                          ): JSerializable
 
+@Deprecated("config DSL 將移除：改用 AzimuthConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class AzimuthConfigBuilder : Builder<AzimuthConfig> {
 

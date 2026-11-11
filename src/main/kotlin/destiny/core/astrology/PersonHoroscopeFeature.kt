@@ -28,6 +28,7 @@ data class PersonHoroscopeConfig(
   override val horoscopeConfig: HoroscopeConfig = HoroscopeConfig(),
 ) : IPersonHoroscopeConfig, IHoroscopeConfig by horoscopeConfig
 
+@Deprecated("config DSL 將移除：改用 PersonHoroscopeConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class PersonHoroscopeConfigBuilder(val config : IHoroscopeConfig) : Builder<PersonHoroscopeConfig> {
 

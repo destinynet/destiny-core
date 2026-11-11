@@ -25,6 +25,7 @@ data class PersonPresentConfig(val personContextConfig: EightWordsPersonConfig =
                                override var viewGmt: GmtJulDay = GmtJulDay.nowCeilingToNoon()) : IPersonPresentConfig,
                                                                                                  IEightWordsPersonConfig by personContextConfig
 
+@Deprecated("config DSL 將移除：改用 PersonPresentConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class PersonPresentConfigBuilder(val config: IEightWordsPersonConfig) : Builder<PersonPresentConfig> {
 

@@ -15,6 +15,7 @@ data class HouseConfig(
   override var coordinate: Coordinate = Coordinate.ECLIPTIC
 ): IHouseConfig
 
+@Deprecated("config DSL 將移除：改用 HouseConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class HouseConfigBuilder : Builder<HouseConfig> {
   var houseSystem: HouseSystem = HouseSystem.PLACIDUS

@@ -38,6 +38,7 @@ data class MonthConfig(
 ) : IMonthConfig
 
 
+@Deprecated("config DSL 將移除：改用 MonthConfig(...) 具名參數或 copy()。")
 class MonthConfigBuilder : Builder<MonthConfig> {
 
   /** 南半球月令是否對沖  */
@@ -69,6 +70,7 @@ data class YearMonthConfig(
   override val monthConfig: MonthConfig = MonthConfig()
 ) : IYearMonthConfig , IYearConfig by yearConfig , IMonthConfig by monthConfig
 
+@Deprecated("config DSL 將移除：改用 YearMonthConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class YearMonthConfigBuilder(val iYearConfig : IYearConfig, val iMonthConfig: IMonthConfig) : Builder<YearMonthConfig> {
 

@@ -30,6 +30,7 @@ import java.time.chrono.ChronoLocalDateTime
 data class NineStarConfig(val scales: List<Scale> = listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR),
                           val ewConfig: EightWordsConfig = EightWordsConfig()): JSerializable
 
+@Deprecated("config DSL 將移除：改用 NineStarConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class NineStarConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<NineStarConfig> {
 

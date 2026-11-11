@@ -41,6 +41,7 @@ data class HoroscopeConfig(
 ) : IHoroscopeConfig
 
 
+@Deprecated("config DSL 將移除：改用 HoroscopeConfig(...) 具名參數或 copy()。注意：此 builder 的 points 預設值不含 Axis.RISING／Axis.MERIDIAN，與 HoroscopeConfig() 的預設不同。")
 @DestinyMarker
 class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
   var points: Set<AstroPoint> = setOf(*Planet.values, *LunarNode.values)

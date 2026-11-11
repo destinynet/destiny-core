@@ -31,6 +31,7 @@ data class DivineFullConfig(val traditionalConfig: DivineTraditionalConfig = Div
                             val question: String? = null,
                             val approach: DivineApproach? = null): JSerializable
 
+@Deprecated("config DSL 將移除：改用 DivineFullConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class DivineFullConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<DivineFullConfig> {
 

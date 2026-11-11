@@ -34,6 +34,7 @@ data class PithyConfig(val direction: Branch = Branch.子,
                        val generalStemBranch : GeneralStemBranch = GeneralStemBranch.Pithy
                        ) : JSerializable
 
+@Deprecated("config DSL 將移除：改用 PithyConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class PithyConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<PithyConfig> {
 

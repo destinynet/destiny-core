@@ -36,6 +36,7 @@ data class FortuneLargeConfig(val impl: FortuneLargeImpl = FortuneLargeImpl.Defa
                               val intAgeNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
                               val eightWordsConfig: EightWordsConfig = EightWordsConfig()): JSerializable
 
+@Deprecated("config DSL 將移除：改用 FortuneLargeConfig(...) 具名參數或 copy()。")
 @DestinyMarker
 class FortuneLargeConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<FortuneLargeConfig> {
 
