@@ -45,24 +45,6 @@ data class DailyReportConfig(
   @Serializable(with = LocaleSerializer::class)
   override var locale: Locale = Locale.TAIWAN) : IDailyReportConfig, ILunarStationConfig by lunarStationConfig , IVoidCourseConfig by vocConfig
 
-@Deprecated("config DSL 將移除：改用 DailyReportConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class DailyReportConfigBuilder(val iLunarConfig: ILunarStationConfig, val iVocConfig: IVoidCourseConfig) : Builder<DailyReportConfig> {
-
-  var locale : Locale = Locale.TAIWAN
-
-  override fun build(): DailyReportConfig {
-    return DailyReportConfig(iLunarConfig.lunarStationConfig, iVocConfig.vocConfig, locale)
-  }
-
-  companion object {
-    context(lunarConfig: ILunarStationConfig, vocConfig: IVoidCourseConfig)
-    fun dailyReport(block: DailyReportConfigBuilder.() -> Unit = {}): DailyReportConfig {
-      return DailyReportConfigBuilder(lunarConfig, vocConfig).apply(block).build()
-    }
-  }
-}
-
 
 @Named
 class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
@@ -80,7 +62,7 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
 
   override val key: String = "dailyReport"
 
-  override val defaultConfig: DailyReportConfig = DailyReportConfigBuilder(LunarStationConfig(), VoidCourseConfig()).build()
+  override val defaultConfig: DailyReportConfig = DailyReportConfig()
 
 
   @Suppress("UNCHECKED_CAST")
@@ -163,8 +145,6 @@ class DailyReportFeature(private val hourBranchFeature: IHourBranchFeature,
     set.addAll(listTransPoints)
     set.addAll(listSolarTerms)
     set.addAll(listSunMoonAngle)
-
-
 
 
     // 日食

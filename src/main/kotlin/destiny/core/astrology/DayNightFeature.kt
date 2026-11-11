@@ -9,8 +9,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDayNightConfig
 import destiny.core.calendar.eightwords.ITransConfig
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
@@ -25,23 +23,6 @@ data class DayNightConfig(override val dayNightImpl : DayNightImpl = DayNightImp
                           /** for [DayNightImpl.StarPos] and [DayNightImpl.Half] */
                           override val transConfig: TransConfig = TransConfig()): IDayNightConfig,
                                                                                   ITransConfig by transConfig
-@Deprecated("config DSL 將移除：改用 DayNightConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class DayNightConfigBuilder(val config : ITransConfig) : Builder<DayNightConfig> {
-
-  var dayNightImpl : DayNightImpl = DayNightImpl.StarPos
-
-  override fun build(): DayNightConfig {
-    return DayNightConfig(dayNightImpl, config.transConfig)
-  }
-
-  companion object {
-    context(config: ITransConfig)
-    fun dayNight(block : DayNightConfigBuilder.() -> Unit = {}) : DayNightConfig {
-      return DayNightConfigBuilder(config).apply(block).build()
-    }
-  }
-}
 
 @Named
 class DayNightFeature(private val dayNightImplMap: Map<DayNightImpl, IDayNight>) : AbstractCachedFeature<IDayNightConfig, DayNight>() {

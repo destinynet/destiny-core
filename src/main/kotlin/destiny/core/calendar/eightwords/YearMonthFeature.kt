@@ -9,8 +9,6 @@ import destiny.core.calendar.*
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -37,54 +35,11 @@ data class MonthConfig(
   override var monthImpl: MonthImpl = MonthImpl.SolarTerms
 ) : IMonthConfig
 
-
-@Deprecated("config DSL 將移除：改用 MonthConfig(...) 具名參數或 copy()。")
-class MonthConfigBuilder : Builder<MonthConfig> {
-
-  /** 南半球月令是否對沖  */
-  var southernHemisphereOpposition: Boolean = false
-
-  /**
-   * 南半球的判定方法
-   * 依據 赤道 [HemisphereBy.EQUATOR] , 還是 赤緯 [HemisphereBy.DECLINATION] 來界定南北半球
-   * 舉例，夏至時，太陽在北回歸線，北回歸線過嘉義，則此時，嘉義以南是否算南半球？
-   */
-  var hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
-
-  var monthImpl: MonthImpl = MonthImpl.SolarTerms
-
-  override fun build(): MonthConfig {
-    return MonthConfig(southernHemisphereOpposition, hemisphereBy, monthImpl)
-  }
-
-  companion object {
-    fun monthConfig(block: MonthConfigBuilder.() -> Unit = {}): MonthConfig {
-      return MonthConfigBuilder().apply(block).build()
-    }
-  }
-}
-
 @Serializable
 data class YearMonthConfig(
   override val yearConfig: YearConfig = YearConfig(),
   override val monthConfig: MonthConfig = MonthConfig()
 ) : IYearMonthConfig , IYearConfig by yearConfig , IMonthConfig by monthConfig
-
-@Deprecated("config DSL 將移除：改用 YearMonthConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class YearMonthConfigBuilder(val iYearConfig : IYearConfig, val iMonthConfig: IMonthConfig) : Builder<YearMonthConfig> {
-
-  override fun build(): YearMonthConfig {
-    return YearMonthConfig(iYearConfig.yearConfig, iMonthConfig.monthConfig)
-  }
-
-  companion object {
-    context(yearConfig: IYearConfig, monthConfig : IMonthConfig)
-    fun yearMonthConfig(block: YearMonthConfigBuilder.() -> Unit = {}): YearMonthConfig {
-      return YearMonthConfigBuilder(yearConfig, monthConfig).apply(block).build()
-    }
-  }
-}
 
 data class MonthRange(val year: IStemBranch, val month: IStemBranch, override val begin: GmtJulDay, override val end: GmtJulDay) : IEventSpan
 

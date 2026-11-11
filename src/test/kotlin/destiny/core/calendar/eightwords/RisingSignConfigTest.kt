@@ -6,7 +6,6 @@ package destiny.core.calendar.eightwords
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.HouseConfig
-import destiny.core.calendar.eightwords.RisingSignConfigBuilder.Companion.risingSign
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -20,17 +19,6 @@ internal class RisingSignConfigTest : AbstractConfigTest<RisingSignConfig>() {
     TradChineseRisingSignConfig(HourImpl.LMT),
     RisingSignImpl.TradChinese
   )
-
-  override val configByFunction: RisingSignConfig
-    get() {
-      return with(HouseConfig()) {
-        risingSign {
-          tradChinese {
-            hourImpl = HourImpl.LMT
-          }
-        }
-      }
-    }
 
   override val assertion = { raw: String ->
     assertNotNull(JsonPath.read<Any>(raw, "$.tradChineseRisingSignConfig"))

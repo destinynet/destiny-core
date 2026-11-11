@@ -9,8 +9,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
@@ -24,23 +22,6 @@ data class YearConfig(override var changeYearDegree: Double = 315.0): IYearConfi
   init {
     require(changeYearDegree > 180 && changeYearDegree < 360)
     { "degree should between 180 and 360" }
-  }
-}
-
-@Deprecated("config DSL 將移除：改用 YearConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class YearConfigBuilder : Builder<IYearConfig> {
-
-  var changeYearDegree = 315.0
-
-  override fun build(): YearConfig {
-    return YearConfig(changeYearDegree)
-  }
-
-  companion object {
-    fun yearConfig(block:  YearConfigBuilder.() -> Unit = {}): YearConfig {
-      return YearConfigBuilder().apply(block).build()
-    }
   }
 }
 

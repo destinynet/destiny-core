@@ -5,7 +5,6 @@ package destiny.core.astrology
 
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
-import destiny.core.astrology.HouseConfigBuilder.Companion.houseCusp
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -14,11 +13,6 @@ internal class HouseConfigTest : AbstractConfigTest<HouseConfig>() {
   override val serializer: KSerializer<HouseConfig> = HouseConfig.serializer()
 
   override val configByConstructor = HouseConfig(HouseSystem.EQUAL, Coordinate.SIDEREAL)
-
-  override val configByFunction = houseCusp {
-    houseSystem = HouseSystem.EQUAL
-    coordinate = Coordinate.SIDEREAL
-  }
 
   override val assertion: (String) -> Unit = { raw: String ->
     assertEquals("EQUAL", JsonPath.read<String>(raw, "$.houseSystem"))

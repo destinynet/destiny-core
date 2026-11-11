@@ -9,8 +9,6 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import destiny.tools.JSerializable
 import destiny.tools.serializers.astrology.StarSerializer
@@ -23,29 +21,6 @@ data class RiseTransConfig(@Serializable(with = StarSerializer::class)
                            val star: Star = Planet.SUN,
                            val transPoint: TransPoint = TransPoint.RISING,
                            val transConfig: TransConfig = TransConfig()): JSerializable
-
-@Deprecated("config DSL 將移除：改用 RiseTransConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class RiseTransConfigBuilder : Builder<RiseTransConfig> {
-
-  var star: Star = Planet.SUN
-  var transPoint: TransPoint = TransPoint.RISING
-
-  var transConfig: TransConfig = TransConfig()
-  fun trans(block: TransConfigBuilder.() -> Unit) {
-    transConfig = TransConfigBuilder.trans(block)
-  }
-
-  override fun build(): RiseTransConfig {
-    return RiseTransConfig(star, transPoint, transConfig)
-  }
-
-  companion object {
-    fun riseTrans(block : RiseTransConfigBuilder.() -> Unit ={}) : RiseTransConfig {
-      return RiseTransConfigBuilder().apply(block).build()
-    }
-  }
-}
 
 interface IRiseTransFeature : Feature<RiseTransConfig, GmtJulDay?> {
 

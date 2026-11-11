@@ -7,8 +7,6 @@ import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.chinese.MonthAlgo
 import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.RisingSignConfig
-import destiny.core.chinese.onePalm.PalmConfigBuilder.Companion.palmConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -21,19 +19,6 @@ internal class PalmConfigTest : AbstractConfigTest<PalmConfig>() {
                                                             MonthAlgo.MONTH_SOLAR_TERMS,
                                                             trueRisingSign = true,
                                                             clockwiseHouse = false)
-  override val configByFunction: PalmConfig
-    get() {
-      return with(EightWordsConfig()) {
-        with(RisingSignConfig()) {
-          palmConfig {
-            positiveImpl = PositiveImpl.GenderYinYang
-            monthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
-            trueRisingSign = true
-            clockwiseHouse = false
-          }
-        }
-      }
-    }
 
   override val assertion: (String) -> Unit = { raw: String ->
     assertEquals("GenderYinYang", JsonPath.read<String>(raw, "$.positiveImpl"))

@@ -5,9 +5,6 @@ package destiny.core.calendar.eightwords
 
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
-import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
-import destiny.core.calendar.eightwords.YearConfigBuilder.Companion.yearConfig
-import destiny.core.calendar.eightwords.YearMonthConfigBuilder.Companion.yearMonthConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -23,25 +20,6 @@ internal class YearMonthConfigTest : AbstractConfigTest<YearMonthConfig>() {
       monthImpl = MonthImpl.SunSign
     )
   )
-
-  override val configByFunction: YearMonthConfig
-    get() {
-
-      val yearConfig = yearConfig {
-        changeYearDegree = 270.0
-      }
-      val monthConfig = monthConfig {
-        southernHemisphereOpposition = true
-        hemisphereBy = HemisphereBy.DECLINATION
-        monthImpl = MonthImpl.SunSign
-      }
-
-      return with(yearConfig) {
-        with(monthConfig) {
-          yearMonthConfig {  }
-        }
-      }
-    }
 
   override val assertion = { raw: String ->
     assertEquals(270.0, JsonPath.read<Double>(raw, "$.yearConfig.changeYearDegree"))

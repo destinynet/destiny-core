@@ -10,13 +10,10 @@ import destiny.core.astrology.Planet
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.MonthConfig
-import destiny.core.calendar.eightwords.MonthConfigBuilder
 import destiny.core.calendar.eightwords.YearMonthConfig
 import destiny.core.calendar.eightwords.YearMonthFeature
 import destiny.core.chinese.MonthMasterConfig.Impl
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.JSerializable
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -28,27 +25,6 @@ data class MonthMasterConfig(val impl: Impl = Impl.SunSign ,
   enum class Impl {
     SunSign,  // 星體觀測（過中氣）
     Combined  // 月支六合（過節）
-  }
-}
-
-@Deprecated("config DSL 將移除：改用 MonthMasterConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class MonthMasterConfigBuilder : Builder<MonthMasterConfig> {
-  var impl: Impl = Impl.SunSign
-
-  var monthConfig: MonthConfig = MonthConfig()
-  fun month(block: MonthConfigBuilder.() -> Unit = {}) {
-    this.monthConfig = MonthConfigBuilder.monthConfig(block)
-  }
-
-  override fun build(): MonthMasterConfig {
-    return MonthMasterConfig(impl, monthConfig)
-  }
-
-  companion object {
-    fun monthMaster(block: MonthMasterConfigBuilder.() -> Unit = {}): MonthMasterConfig {
-      return MonthMasterConfigBuilder().apply(block).build()
-    }
   }
 }
 

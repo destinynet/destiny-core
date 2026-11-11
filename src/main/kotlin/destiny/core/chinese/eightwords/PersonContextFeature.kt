@@ -13,9 +13,7 @@ import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.eightwords.hazards.IHazardService
 import destiny.tools.AbstractCachedPersonFeature
-import destiny.tools.Builder
 import destiny.tools.CacheGrain
-import destiny.tools.DestinyMarker
 import destiny.tools.serializers.LocaleSerializer
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -31,36 +29,6 @@ data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContext
                                   override var ewContextScore: EwContextScore = EwContextScore.OctaDivide316,
                                   @Serializable(with = LocaleSerializer::class)
                                   val locale : Locale = defaultLocale): IEightWordsPersonConfig , IEightWordsContextConfig by eightwordsContextConfig
-
-@Deprecated("config DSL 將移除：改用 EightWordsPersonConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class PersonConfigBuilder(val iEwConfig : IEightWordsContextConfig) : Builder<EightWordsPersonConfig> {
-
-  var fortuneLargeConfig: FortuneLargeConfig = FortuneLargeConfig()
-  fun fortuneLarge(block: FortuneLargeConfigBuilder.() -> Unit = {}) {
-    this.fortuneLargeConfig = with(iEwConfig) { FortuneLargeConfigBuilder.fortuneLarge(block) }
-  }
-
-  var fortuneSmallConfig: FortuneSmallConfig = FortuneSmallConfig()
-  fun fortuneSmall(block: FortuneSmallConfigBuilder.() -> Unit = {}) {
-    this.fortuneSmallConfig = with(iEwConfig) { FortuneSmallConfigBuilder.fortuneSmall(block) }
-  }
-
-  var ewContextScore: EwContextScore = EwContextScore.OctaDivide316
-
-  var locale: Locale = defaultLocale
-
-  override fun build(): EightWordsPersonConfig {
-    return EightWordsPersonConfig(iEwConfig.ewContextConfig, fortuneLargeConfig, fortuneSmallConfig, ewContextScore, locale)
-  }
-
-  companion object {
-    context(config: IEightWordsContextConfig)
-    fun ewPersonConfig(block: PersonConfigBuilder.() -> Unit = {}) : EightWordsPersonConfig {
-      return PersonConfigBuilder(config).apply(block).build()
-    }
-  }
-}
 
 @Named
 class PersonContextFeature(private val eightWordsContextFeature: EightWordsContextFeature,

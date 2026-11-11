@@ -8,9 +8,6 @@ import destiny.core.AbstractConfigTest
 import destiny.core.IntAgeNote
 import destiny.core.astrology.*
 import destiny.core.calendar.eightwords.*
-import destiny.core.calendar.eightwords.EightWordsContextConfigBuilder.Companion.ewContext
-import destiny.core.calendar.eightwords.RisingSignConfigBuilder.Companion.risingSign
-import destiny.core.chinese.eightwords.PersonConfigBuilder.Companion.ewPersonConfig
 import kotlinx.serialization.KSerializer
 import java.util.*
 import kotlin.test.assertEquals
@@ -20,98 +17,39 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
 
   override val serializer: KSerializer<EightWordsPersonConfig> = EightWordsPersonConfig.serializer()
 
-  override val configByConstructor: EightWordsPersonConfig? = null
-
-  override val configByFunction: EightWordsPersonConfig
+  override val configByConstructor: EightWordsPersonConfig
     get() {
+      val ewConfig = EightWordsConfig(
+        YearMonthConfig(
+          YearConfig(changeYearDegree = 270.0),
+          MonthConfig(southernHemisphereOpposition = true, hemisphereBy = HemisphereBy.DECLINATION, monthImpl = MonthImpl.SunSign)
+        ),
+        DayHourConfig(
+          DayConfig(changeDay = ChangeDay.ZI_MIDDLE, midnight = MidnightImpl.CLOCK0),
+          HourBranchConfig(
+            hourImpl = HourImpl.LMT,
+            transConfig = TransConfig(discCenter = true, refraction = false, temperature = 23.0, pressure = 1000.0)
+          )
+        )
+      )
 
-      val yearConfig = YearConfigBuilder.yearConfig {
-        changeYearDegree = 270.0
-      }
-      val monthConfig = MonthConfigBuilder.monthConfig {
-        southernHemisphereOpposition = true
-        hemisphereBy = HemisphereBy.DECLINATION
-        monthImpl = MonthImpl.SunSign
-      }
+      val ewContextConfig = EightWordsContextConfig(
+        ewConfig,
+        RisingSignConfig(
+          HouseConfig(houseSystem = HouseSystem.EQUAL, coordinate = Coordinate.SIDEREAL),
+          TradChineseRisingSignConfig(hourImpl = HourImpl.LMT),
+          RisingSignImpl.TradChinese
+        ),
+        ZodiacSignConfig(star = Planet.SUN)
+      )
 
-      val yearMonthConfig = with(yearConfig) {
-        with(monthConfig) {
-          YearMonthConfigBuilder.yearMonthConfig {
-          }
-        }
-      }
-
-
-      val transConfig = TransConfigBuilder.trans {
-        discCenter = true
-        refraction = false
-        temperature = 23.0
-        pressure = 1000.0
-      }
-
-      val hourBranchConfig = with(transConfig) {
-        HourBranchConfigBuilder.hourBranchConfig {
-          hourImpl = HourImpl.LMT
-        }
-      }
-
-      val dayConfig = DayConfigBuilder.dayConfig {
-        changeDay = ChangeDay.ZI_MIDDLE
-        midnight = MidnightImpl.CLOCK0
-      }
-
-
-      val dayHourConfig = with(dayConfig) {
-        with(hourBranchConfig) {
-          DayHourConfigBuilder.dayHour {
-          }
-        }
-      }
-
-      val ewConfig = with(yearMonthConfig) {
-        with(dayHourConfig) {
-          EightWordsConfigBuilder.ewConfig {
-          }
-        }
-      }
-
-      val risingSignConfig = with(HouseConfig()) {
-        houseSystem = HouseSystem.EQUAL
-        coordinate = Coordinate.SIDEREAL
-        risingSign {
-          tradChinese {
-            hourImpl = HourImpl.LMT
-          }
-        }
-      }
-
-      val ewContextConfig = with(ewConfig) {
-        with(risingSignConfig) {
-          ewContext {
-            zodiacSign {
-              star = Planet.SUN
-            }
-          }
-        }
-      }
-
-
-      return with(ewContextConfig) {
-        ewPersonConfig {
-          fortuneLarge {
-            impl = FortuneLargeImpl.SolarTermsSpan
-            span = 90.0
-          }
-          fortuneSmall {
-            impl = FortuneSmallConfig.Impl.SixGia
-            count = 90
-            intAgeNotes(listOf(IntAgeNote.Minguo))
-          }
-          ewContextScore = EwContextScore.OctaDivide46
-          locale = Locale.JAPANESE
-        }
-      }
-
+      return EightWordsPersonConfig(
+        ewContextConfig,
+        FortuneLargeConfig(impl = FortuneLargeImpl.SolarTermsSpan, span = 90.0, eightWordsConfig = ewConfig),
+        FortuneSmallConfig(impl = FortuneSmallConfig.Impl.SixGia, count = 90, intAgeNotes = listOf(IntAgeNote.Minguo), eightWordsConfig = ewConfig),
+        EwContextScore.OctaDivide46,
+        Locale.JAPANESE
+      )
     }
 
   override val assertion: (String) -> Unit = { raw ->

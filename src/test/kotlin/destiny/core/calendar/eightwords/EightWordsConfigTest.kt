@@ -6,14 +6,6 @@ package destiny.core.calendar.eightwords
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.TransConfig
-import destiny.core.astrology.TransConfigBuilder.Companion.trans
-import destiny.core.calendar.eightwords.DayConfigBuilder.Companion.dayConfig
-import destiny.core.calendar.eightwords.DayHourConfigBuilder.Companion.dayHour
-import destiny.core.calendar.eightwords.EightWordsConfigBuilder.Companion.ewConfig
-import destiny.core.calendar.eightwords.HourBranchConfigBuilder.Companion.hourBranchConfig
-import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
-import destiny.core.calendar.eightwords.YearConfigBuilder.Companion.yearConfig
-import destiny.core.calendar.eightwords.YearMonthConfigBuilder.Companion.yearMonthConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -45,60 +37,6 @@ internal class EightWordsConfigTest : AbstractConfigTest<EightWordsConfig>() {
       )
     )
   )
-
-  override val configByFunction: EightWordsConfig
-    get() {
-
-      val yearConfig = yearConfig {
-        changeYearDegree = 270.0
-      }
-      val monthConfig = monthConfig {
-        southernHemisphereOpposition = true
-        hemisphereBy = HemisphereBy.DECLINATION
-        monthImpl = MonthImpl.SunSign
-      }
-
-      val yearMonthConfig = with(yearConfig) {
-        with(monthConfig) {
-          yearMonthConfig {
-          }
-        }
-      }
-
-
-      val transConfig = trans {
-        discCenter = true
-        refraction = false
-        temperature = 23.0
-        pressure = 1000.0
-      }
-
-      val hourBranchConfig = with(transConfig) {
-        hourBranchConfig {
-          hourImpl = HourImpl.LMT
-        }
-      }
-
-      val dayConfig = dayConfig {
-        changeDay = ChangeDay.ZI_MIDDLE
-        midnight = MidnightImpl.CLOCK0
-      }
-
-
-      val dayHourConfig = with(dayConfig) {
-        with(hourBranchConfig) {
-          dayHour {
-          }
-        }
-      }
-
-      return with(yearMonthConfig) {
-        with(dayHourConfig) {
-          ewConfig {
-          }
-        }
-      }
-    }
 
   override val assertion = { raw: String ->
     val docCtx = JsonPath.parse(raw)

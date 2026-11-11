@@ -6,7 +6,6 @@ package destiny.core.astrology
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
 import destiny.tools.JSerializable
 import destiny.tools.serializers.astrology.StarSerializer
 import jakarta.inject.Named
@@ -16,23 +15,6 @@ import kotlinx.serialization.Serializable
 data class ZodiacSignConfig(@Serializable(with = StarSerializer::class)
                             val star: Star = Planet.SUN,
                             val starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN): JSerializable
-
-@Deprecated("config DSL 將移除：改用 ZodiacSignConfig(...) 具名參數或 copy()。")
-class ZodiacSignBuilder : Builder<ZodiacSignConfig> {
-
-  var star: Star = Planet.SUN
-  var starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN
-
-  override fun build(): ZodiacSignConfig {
-    return ZodiacSignConfig(star, starTypeOptions)
-  }
-
-  companion object {
-    fun zodiacSign(block: ZodiacSignBuilder.() -> Unit = {}): ZodiacSignConfig {
-      return ZodiacSignBuilder().apply(block).build()
-    }
-  }
-}
 
 @Named
 class ZodiacSignFeature(private val zodiacSignImpl : IZodiacSign) : AbstractCachedFeature<ZodiacSignConfig, ZodiacSignModel>() {

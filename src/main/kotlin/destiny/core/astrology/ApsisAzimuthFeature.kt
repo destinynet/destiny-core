@@ -6,8 +6,6 @@ package destiny.core.astrology
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.JSerializable
 import destiny.tools.serializers.astrology.StarSerializer
 import jakarta.inject.Named
@@ -20,26 +18,6 @@ data class ApsisAzimuthConfig(@Serializable(with = StarSerializer::class)
                               val nodeType: NodeType = NodeType.MEAN,
                               val temperature: Double = 0.0,
                               val pressure: Double = 1013.25) : JSerializable
-
-@Deprecated("config DSL 將移除：改用 ApsisAzimuthConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class ApsisAzimuthConfigBuilder : Builder<ApsisAzimuthConfig> {
-  var star: Star = Planet.MOON
-  var coordinate: Coordinate = Coordinate.ECLIPTIC
-  var nodeType: NodeType = NodeType.MEAN
-  var temperature: Double = 0.0
-  var pressure: Double = 1013.25
-
-  override fun build(): ApsisAzimuthConfig {
-    return ApsisAzimuthConfig(star, coordinate, nodeType, temperature, pressure)
-  }
-
-  companion object {
-    fun apsisAzimuth(block: ApsisAzimuthConfigBuilder.() -> Unit = {}): ApsisAzimuthConfig {
-      return ApsisAzimuthConfigBuilder().apply(block).build()
-    }
-  }
-}
 
 @Named
 class ApsisAzimuthFeature(private val apsisImpl: IApsis,

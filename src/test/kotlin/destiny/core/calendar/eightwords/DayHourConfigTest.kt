@@ -6,10 +6,6 @@ package destiny.core.calendar.eightwords
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.TransConfig
-import destiny.core.astrology.TransConfigBuilder.Companion.trans
-import destiny.core.calendar.eightwords.DayConfigBuilder.Companion.dayConfig
-import destiny.core.calendar.eightwords.DayHourConfigBuilder.Companion.dayHour
-import destiny.core.calendar.eightwords.HourBranchConfigBuilder.Companion.hourBranchConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -29,37 +25,6 @@ internal class DayHourConfigTest : AbstractConfigTest<DayHourConfig>() {
       )
     )
   )
-
-  override val configByFunction: DayHourConfig
-    get() {
-
-      val transConfig = trans {
-        discCenter = true
-        refraction = false
-        temperature = 23.0
-        pressure = 1000.0
-      }
-
-      val hourBranchConfig = with(transConfig) {
-        hourBranchConfig {
-          hourImpl = HourImpl.LMT
-        }
-      }
-
-      val dayConfig = dayConfig {
-        changeDay = ChangeDay.ZI_MIDDLE
-        midnight = MidnightImpl.CLOCK0
-      }
-
-      return with(dayConfig) {
-        with(hourBranchConfig) {
-          dayHour {
-
-          }
-        }
-      }
-
-    }
 
   override val assertion = { raw: String ->
     assertEquals("ZI_MIDDLE", JsonPath.read<String>(raw, "$.dayConfig.changeDay"))

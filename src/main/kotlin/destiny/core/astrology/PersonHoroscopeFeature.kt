@@ -15,8 +15,6 @@ import destiny.core.astrology.classical.OvercomingSignImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedPersonFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -27,22 +25,6 @@ data class PersonHoroscopeConfig(
   // 暫時只有此 horoscopeConfig , 未來再依情形添加其他可能的設定
   override val horoscopeConfig: HoroscopeConfig = HoroscopeConfig(),
 ) : IPersonHoroscopeConfig, IHoroscopeConfig by horoscopeConfig
-
-@Deprecated("config DSL 將移除：改用 PersonHoroscopeConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class PersonHoroscopeConfigBuilder(val config : IHoroscopeConfig) : Builder<PersonHoroscopeConfig> {
-
-  override fun build(): PersonHoroscopeConfig {
-    return PersonHoroscopeConfig(config.horoscopeConfig)
-  }
-
-  companion object {
-    context(config: IHoroscopeConfig)
-    fun personHoroscope(block: PersonHoroscopeConfigBuilder.() -> Unit = {}): PersonHoroscopeConfig {
-      return PersonHoroscopeConfigBuilder(config).apply(block).build()
-    }
-  }
-}
 
 interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPersonHoroscopeModel> {
 
@@ -154,7 +136,6 @@ class PersonHoroscopeFeature(
 
     return SynastryRequestDto(modelInner, modelOuter, grain, relationship, synastryAspects, midpointTrees, synastry.houseOverlayMap, overcomings)
   }
-
 
 
 }

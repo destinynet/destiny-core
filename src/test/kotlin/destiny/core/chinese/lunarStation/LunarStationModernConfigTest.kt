@@ -4,13 +4,15 @@
 package destiny.core.chinese.lunarStation
 
 import com.jayway.jsonpath.JsonPath
+import destiny.core.astrology.TransConfig
 import destiny.core.calendar.eightwords.ChangeDay
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.eightwords.DayConfig
+import destiny.core.calendar.eightwords.DayHourConfig
 import destiny.core.calendar.eightwords.EightWordsConfig
+import destiny.core.calendar.eightwords.HourBranchConfig
 import destiny.core.chinese.YearType
-import destiny.core.chinese.lunarStation.LunarStationConfigBuilder.Companion.lunarStation
-import destiny.core.chinese.lunarStation.LunarStationModernConfigBuilder.Companion.lunarStationModern
 import kotlinx.serialization.KSerializer
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
@@ -18,39 +20,23 @@ import kotlin.test.assertEquals
 internal class LunarStationModernConfigTest : AbstractConfigTest<LunarStationModernConfig>() {
   override val serializer: KSerializer<LunarStationModernConfig> = LunarStationModernConfig.serializer()
 
-  override val configByConstructor: LunarStationModernConfig? = null
-//    LunarStationModernConfig(
-//    method = IModernContextModel.Method.SPECIFIED,
-//    specifiedGmtJulDay = TimeTools.getGmtJulDay(LocalDateTime.of(2021, 8, 22, 12, 0)),
-//    description = "test123"
-//  )
-
-  override val configByFunction: LunarStationModernConfig
-    get() {
-
-      val lsConfig = with(EightWordsConfig()) {
-        lunarStation {
-          discCenter = true
-          refraction = false
-
-          yearType = YearType.YEAR_LUNAR
-          yearEpoch = YearEpoch.EPOCH_1864
-
-          changeDay = ChangeDay.ZI_MIDDLE
-          monthlyImpl = MonthlyImpl.AnimalExplained
-          hourlyImpl = HourlyImpl.Fixed
-        }
-      }
-
-
-      return with(lsConfig) {
-        lunarStationModern {
-          method = IModernContextModel.Method.SPECIFIED
-          specifiedGmtJulDay = TimeTools.getGmtJulDay(LocalDateTime.of(2021, 8, 22, 12, 0))
-          description = "test123"
-        }
-      }
-    }
+  override val configByConstructor: LunarStationModernConfig = LunarStationModernConfig(
+    LunarStationConfig(
+      yearType = YearType.YEAR_LUNAR,
+      yearEpoch = YearEpoch.EPOCH_1864,
+      monthlyImpl = MonthlyImpl.AnimalExplained,
+      hourlyImpl = HourlyImpl.Fixed,
+      ewConfig = EightWordsConfig(
+        dayHourConfig = DayHourConfig(
+          DayConfig(changeDay = ChangeDay.ZI_MIDDLE),
+          HourBranchConfig(transConfig = TransConfig(discCenter = true, refraction = false))
+        )
+      )
+    ),
+    method = IModernContextModel.Method.SPECIFIED,
+    specifiedGmtJulDay = TimeTools.getGmtJulDay(LocalDateTime.of(2021, 8, 22, 12, 0)),
+    description = "test123"
+  )
 
   override val assertion: (String) -> Unit = { raw ->
     logger.info { raw }

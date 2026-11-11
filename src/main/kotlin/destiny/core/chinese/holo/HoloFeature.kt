@@ -35,33 +35,6 @@ data class HoloConfig(val divineTraditionalConfig: DivineTraditionalConfig = Div
                       val hexChange: HexChange = HexChange.DST,
                       val monthlyHexagram: MonthlyHexagram = MonthlyHexagram.Sign): JSerializable
 
-@Deprecated("config DSL 將移除：改用 HoloConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class HoloConfigBuilder : Builder<HoloConfig> {
-
-  var divineTraditionalConfig: DivineTraditionalConfig = DivineTraditionalConfig()
-
-  var eightWordsConfig: EightWordsConfig = EightWordsConfig()
-
-  var seasonalSymbolConfig: SeasonalSymbolConfig = SeasonalSymbolConfig(SeasonalSymbolConfig.Impl.Holo())
-
-  var threeKings: ThreeKingsAlgo? = ThreeKingsAlgo.HALF_YEAR
-
-  var hexChange: HexChange = HexChange.DST
-
-  var monthlyHexagram: MonthlyHexagram = MonthlyHexagram.Sign
-
-  override fun build(): HoloConfig {
-    return HoloConfig(divineTraditionalConfig, eightWordsConfig, seasonalSymbolConfig, threeKings, hexChange, monthlyHexagram)
-  }
-
-  companion object {
-    fun holoConfig(block : HoloConfigBuilder.() -> Unit = {}) : HoloConfig {
-      return HoloConfigBuilder().apply(block).build()
-    }
-  }
-}
-
 
 interface IHoloFeature : PersonFeature<HoloConfig, IHolo> {
 

@@ -14,7 +14,6 @@ import destiny.core.chinese.Tianyi
 import destiny.core.chinese.liuren.Clockwise
 import destiny.core.chinese.liuren.GeneralSeq
 import destiny.core.chinese.liuren.GeneralStemBranch
-import destiny.core.chinese.liuren.golden.PithyConfigBuilder.Companion.pithyConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -32,20 +31,6 @@ internal class PithyConfigTest : AbstractConfigTest<PithyConfig>() {
     generalSeq = GeneralSeq.Zhao,
     generalStemBranch = GeneralStemBranch.Liuren
   )
-  override val configByFunction: PithyConfig
-    get() {
-      return with(EightWordsConfig()) {
-        pithyConfig {
-          direction = Branch.丑
-          monthMaster = MonthMaster.Combined
-          clockwise = Clockwise.DayNightFixed
-          dayNightConfig = DayNightConfig(dayNightImpl = DayNightImpl.Half)
-          tianyi = Tianyi.ZiweiBook
-          generalSeq = GeneralSeq.Zhao
-          generalStemBranch = GeneralStemBranch.Liuren
-        }
-      }
-    }
 
   override val assertion: (String) -> Unit = { raw ->
     assertEquals("丑", JsonPath.read<String>(raw, "$.direction"))

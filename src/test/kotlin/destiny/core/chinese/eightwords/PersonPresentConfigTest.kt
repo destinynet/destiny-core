@@ -7,7 +7,6 @@ import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.eightwords.*
-import destiny.core.chinese.eightwords.PersonPresentConfigBuilder.Companion.ewPersonPresent
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -28,19 +27,6 @@ internal class PersonPresentConfigTest : AbstractConfigTest<PersonPresentConfig>
     ),
     viewGmt = GmtJulDay(0.0)
   )
-
-  override val configByFunction: PersonPresentConfig
-    get() {
-      return with(EightWordsPersonConfig()) {
-        ewPersonPresent {
-          changeYearDegree = 270.0
-          southernHemisphereOpposition = true
-          hemisphereBy = HemisphereBy.DECLINATION
-          monthImpl = MonthImpl.SunSign
-          viewGmt = GmtJulDay(0.0)
-        }
-      }
-    }
 
   override val assertion: (String) -> Unit = { raw ->
     // 三份 eightWordsConfig（命盤、大運、小運）都要是同一組設定

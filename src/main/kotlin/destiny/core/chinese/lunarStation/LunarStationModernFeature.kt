@@ -11,8 +11,6 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IHourBranchFeature
 import destiny.core.chinese.Branch
 import destiny.tools.AbstractCachedPersonFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.random.RandomService
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -26,26 +24,6 @@ data class LunarStationModernConfig(
   override var method: IModernContextModel.Method = IModernContextModel.Method.NOW,
   override var specifiedGmtJulDay: GmtJulDay? = null,
   override var description: String? = null): ILunarStationModernConfig, ILunarStationConfig by lunarStationConfig
-
-@Deprecated("config DSL 將移除：改用 LunarStationModernConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class LunarStationModernConfigBuilder(val config : ILunarStationConfig) : Builder<LunarStationModernConfig> {
-
-  var method: IModernContextModel.Method = IModernContextModel.Method.NOW
-  var specifiedGmtJulDay: GmtJulDay? = null
-  var description: String? = null
-
-  override fun build(): LunarStationModernConfig {
-    return LunarStationModernConfig(config.lunarStationConfig, method, specifiedGmtJulDay, description)
-  }
-
-  companion object {
-    context(config : ILunarStationConfig)
-    fun lunarStationModern(block: LunarStationModernConfigBuilder.() -> Unit = {}): LunarStationModernConfig {
-      return LunarStationModernConfigBuilder(config).apply(block).build()
-    }
-  }
-}
 
 @Named
 class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFeature,

@@ -5,7 +5,6 @@ package destiny.core.calendar.eightwords
 
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
-import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -18,12 +17,6 @@ class MonthConfigTest : AbstractConfigTest<MonthConfig>() {
     hemisphereBy = HemisphereBy.DECLINATION,
     monthImpl = MonthImpl.SunSign
   )
-
-  override val configByFunction: MonthConfig = monthConfig {
-    southernHemisphereOpposition = true
-    hemisphereBy = HemisphereBy.DECLINATION
-    monthImpl = MonthImpl.SunSign
-  }
 
   override val assertion: (String) -> Unit = { raw: String ->
     assertEquals(true, JsonPath.read<Boolean>(raw, "$.southernHemisphereOpposition"))

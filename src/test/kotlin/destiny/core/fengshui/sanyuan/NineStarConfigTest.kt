@@ -7,7 +7,6 @@ import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.Scale
 import destiny.core.calendar.eightwords.*
-import destiny.core.fengshui.sanyuan.NineStarConfigBuilder.Companion.nineStarConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -33,22 +32,6 @@ internal class NineStarConfigTest : AbstractConfigTest<NineStarConfig>() {
     )
   )
 
-  override val configByFunction: NineStarConfig
-    get() {
-      return with(EightWordsConfig()) {
-        nineStarConfig {
-          scales = listOf(Scale.YEAR, Scale.DAY)
-
-          changeYearDegree = 270.0
-          southernHemisphereOpposition = true
-          hemisphereBy = HemisphereBy.DECLINATION
-          monthImpl = MonthImpl.SunSign
-          changeDay = ChangeDay.ZI_MIDDLE
-          midnight = MidnightImpl.CLOCK0
-          hourImpl = HourImpl.LMT
-        }
-      }
-    }
   override val assertion: (String) -> Unit = { raw: String ->
     assertEquals(listOf("YEAR", "DAY"), JsonPath.read<List<String>>(raw, "$.scales"))
     assertEquals(270.0, JsonPath.read<Double>(raw, "$.ewConfig.yearMonthConfig.yearConfig.changeYearDegree"))

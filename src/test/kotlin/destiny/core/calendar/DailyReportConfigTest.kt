@@ -7,9 +7,12 @@ import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.Centric
 import destiny.core.astrology.Planet
+import destiny.core.astrology.TransConfig
 import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseImpl
-import destiny.core.calendar.DailyReportConfigBuilder.Companion.dailyReport
+import destiny.core.calendar.eightwords.DayHourConfig
+import destiny.core.calendar.eightwords.EightWordsConfig
+import destiny.core.calendar.eightwords.HourBranchConfig
 import destiny.core.chinese.YearType
 import destiny.core.chinese.lunarStation.HourlyImpl
 import destiny.core.chinese.lunarStation.LunarStationConfig
@@ -21,32 +24,30 @@ internal class DailyReportConfigTest : AbstractConfigTest<DailyReportConfig>() {
 
   override val serializer: KSerializer<DailyReportConfig> = DailyReportConfig.serializer()
 
-  override val configByConstructor = null
-
-  override val configByFunction: DailyReportConfig
-    get() {
-
-      return with(LunarStationConfig()) {
-        yearType = YearType.YEAR_LUNAR
-        monthlyImpl = MonthlyImpl.AnimalExplained
-        hourlyImpl = HourlyImpl.Fixed
-        with(VoidCourseConfig()) {
-          dailyReport {
-            discCenter = true
-            refraction = false
-            temperature = 23.0
-            pressure = 1000.0
-
-            planet = Planet.VENUS
-            centric = Centric.TOPO
-            vocImpl = VoidCourseImpl.WilliamLilly
-          }
-        }
-
-      }
-
-
-    }
+  override val configByConstructor: DailyReportConfig = DailyReportConfig(
+    LunarStationConfig(
+      yearType = YearType.YEAR_LUNAR,
+      monthlyImpl = MonthlyImpl.AnimalExplained,
+      hourlyImpl = HourlyImpl.Fixed,
+      ewConfig = EightWordsConfig(
+        dayHourConfig = DayHourConfig(
+          hourBranchConfig = HourBranchConfig(
+            transConfig = TransConfig(
+              discCenter = true,
+              refraction = false,
+              temperature = 23.0,
+              pressure = 1000.0
+            )
+          )
+        )
+      )
+    ),
+    VoidCourseConfig(
+      planet = Planet.VENUS,
+      centric = Centric.TOPO,
+      vocImpl = VoidCourseImpl.WilliamLilly
+    )
+  )
 
 
   override val assertion: (String) -> Unit = { raw ->

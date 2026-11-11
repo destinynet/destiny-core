@@ -13,8 +13,6 @@ import destiny.core.chinese.SeasonalSymbolConfig.Impl.Holo.EndSeasonSymbolSpan.D
 import destiny.core.chinese.SeasonalSymbolConfig.Impl.Holo.EndSeasonSymbolSpan.FULL_MONTH
 import destiny.core.iching.Symbol
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.JSerializable
 import jakarta.inject.Named
 import kotlinx.serialization.SerialName
@@ -41,23 +39,6 @@ data class SeasonalSymbolConfig(val impl: Impl = Impl.Chinese) : JSerializable {
         FULL_MONTH, // 整月
         DAYS_18 // 月份「結尾」 18天
       }
-    }
-  }
-}
-
-@Deprecated("config DSL 將移除：改用 SeasonalSymbolConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class SeasonalSymbolConfigBuilder : Builder<SeasonalSymbolConfig> {
-
-  var impl: SeasonalSymbolConfig.Impl = SeasonalSymbolConfig.Impl.Chinese
-
-  override fun build(): SeasonalSymbolConfig {
-    return SeasonalSymbolConfig(impl)
-  }
-
-  companion object {
-    fun seasonalSymbolConfig(block: SeasonalSymbolConfigBuilder.() -> Unit = {}): SeasonalSymbolConfig {
-      return SeasonalSymbolConfigBuilder().apply(block).build()
     }
   }
 }

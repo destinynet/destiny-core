@@ -10,8 +10,6 @@ import destiny.core.astrology.ZodiacSign
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
@@ -26,41 +24,6 @@ data class RisingSignConfig(
   override var tradChineseRisingSignConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig(),
   override var risingSignImpl: RisingSignImpl = RisingSignImpl.HouseCusp
 ): IRisingSignConfig , IHouseConfig by houseConfig
-
-@Deprecated("config DSL 將移除：改用 RisingSignConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class RisingSignConfigBuilder(val iHouseConfig : IHouseConfig) : Builder<RisingSignConfig> {
-
-  var risingSignImpl: RisingSignImpl = RisingSignImpl.HouseCusp
-
-  @Deprecated("config DSL 將移除：改用 TradChineseRisingSignConfig(...) 具名參數或 copy()。")
-  @DestinyMarker
-  class TradChineseRisingSignConfigBuilder : Builder<TradChineseRisingSignConfig> {
-
-    var hourImpl : HourImpl = HourImpl.TST
-
-    override fun build(): TradChineseRisingSignConfig {
-      return TradChineseRisingSignConfig(hourImpl)
-    }
-  }
-
-  private var tradChineseRisingSignConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig()
-  fun tradChinese(block: TradChineseRisingSignConfigBuilder.() -> Unit = {}) {
-    tradChineseRisingSignConfig = TradChineseRisingSignConfigBuilder().apply(block).build()
-    risingSignImpl = RisingSignImpl.TradChinese
-  }
-
-  override fun build(): RisingSignConfig {
-    return RisingSignConfig(iHouseConfig.houseConfig, tradChineseRisingSignConfig, risingSignImpl)
-  }
-
-  companion object {
-    context(config : IHouseConfig)
-    fun risingSign(block: RisingSignConfigBuilder.() -> Unit = {}): RisingSignConfig {
-      return RisingSignConfigBuilder(config).apply(block).build()
-    }
-  }
-}
 
 
 @Named

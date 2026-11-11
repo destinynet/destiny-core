@@ -13,8 +13,6 @@ import destiny.core.calendar.chinese.*
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
 import destiny.tools.AbstractCachedPersonFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.JSerializable
 import destiny.tools.PersonFeature
 import jakarta.inject.Named
@@ -36,30 +34,6 @@ data class PalmConfig(
   val trueRisingSign: Boolean = false,
   val clockwiseHouse: Boolean = true
 ) : JSerializable
-
-@Deprecated("config DSL 將移除：改用 PalmConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class PalmConfigBuilder(val iEwConfig : IEightWordsConfig , val iRsConfig : IRisingSignConfig) : Builder<PalmConfig> {
-
-  var positiveImpl: PositiveImpl = PositiveImpl.Gender
-
-  var monthAlgo: MonthAlgo = MonthAlgo.MONTH_FIXED_THIS
-
-  var trueRisingSign: Boolean = false
-
-  var clockwiseHouse: Boolean = true
-
-  override fun build(): PalmConfig {
-    return PalmConfig(iEwConfig.ewConfig, positiveImpl, monthAlgo, iRsConfig.risingSignConfig, trueRisingSign, clockwiseHouse)
-  }
-
-  companion object {
-    context(ewConfig : IEightWordsConfig, rsConfig : IRisingSignConfig)
-    fun palmConfig(block: PalmConfigBuilder.() -> Unit = {}): PalmConfig {
-      return PalmConfigBuilder(ewConfig, rsConfig).apply(block).build()
-    }
-  }
-}
 
 
 @Named

@@ -4,8 +4,6 @@
 package destiny.core.astrology
 
 import destiny.core.AbstractConfigTest
-import destiny.core.astrology.HoroscopeConfigBuilder.Companion.horoscope
-import destiny.core.astrology.PersonHoroscopeConfigBuilder.Companion.personHoroscope
 import destiny.core.astrology.classical.VoidCourseImpl
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
@@ -33,28 +31,6 @@ internal class PersonHoroscopeConfigTest : AbstractConfigTest<PersonHoroscopeCon
       starTypeOptions = StarTypeOptions.PRECISE
     )
   )
-
-  override val configByFunction: PersonHoroscopeConfig
-    get() {
-      val horoscopeConfig = horoscope {
-        points = setOf(Planet.MOON, Asteroid.CERES, FixedStar.ALGOL, Hamburger.ADMETOS)
-        houseSystem = HouseSystem.MERIDIAN
-        coordinate = Coordinate.EQUATORIAL
-        centric = Centric.TOPO
-        temperature = 23.0
-        pressure = 1000.0
-        vocImpl = VoidCourseImpl.Hellenistic
-        relocations = mapOf(
-          Planet.MOON to 60.0,
-          Asteroid.CERES to 120.0
-        )
-        starTypeOptions = StarTypeOptions.PRECISE
-      }
-      return with(horoscopeConfig) {
-        personHoroscope {
-        }
-      }
-    }
 
   override val assertion: (String) -> Unit = { raw: String ->
     val actual = Json.decodeFromString<JsonElement>(raw)

@@ -4,7 +4,6 @@
 package destiny.core.astrology
 
 import destiny.core.AbstractConfigTest
-import destiny.core.astrology.TransConfigBuilder.Companion.trans
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -21,14 +20,6 @@ class TransConfigTest : AbstractConfigTest<TransConfig>() {
                                                               temperature = 23.0,
                                                               pressure = 1000.0,
                                                               starTypeOptions = StarTypeOptions(NodeType.TRUE, MeanOscu.OSCU))
-
-  override val configByFunction: TransConfig = trans {
-    discCenter = true
-    refraction = false
-    temperature = 23.0
-    pressure = 1000.0
-    starTypeOptions = StarTypeOptions(NodeType.TRUE, MeanOscu.OSCU)
-  }
 
   override val assertion: (String) -> Unit = { raw ->
     logger.info { raw }

@@ -15,8 +15,6 @@ import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUtils.toAnimal
 import destiny.tools.AbstractCachedPersonFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.JSerializable
 import destiny.tools.PersonFeature
 import jakarta.inject.Named
@@ -35,31 +33,6 @@ data class FortuneLargeConfig(val impl: FortuneLargeImpl = FortuneLargeImpl.Defa
                               val span : Double = 120.0,
                               val intAgeNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo),
                               val eightWordsConfig: EightWordsConfig = EightWordsConfig()): JSerializable
-
-@Deprecated("config DSL 將移除：改用 FortuneLargeConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class FortuneLargeConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<FortuneLargeConfig> {
-
-  var impl: FortuneLargeImpl = FortuneLargeImpl.DefaultSpan
-
-  var span : Double = 120.0
-
-  var intAgeNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo)
-  fun intAgeNotes(impls: List<IntAgeNote>) {
-    intAgeNotes = impls
-  }
-
-  override fun build(): FortuneLargeConfig {
-    return FortuneLargeConfig(impl, span, intAgeNotes, iEwConfig.ewConfig)
-  }
-
-  companion object {
-    context(config: IEightWordsConfig)
-    fun fortuneLarge(block: FortuneLargeConfigBuilder.() -> Unit = {}) : FortuneLargeConfig {
-      return FortuneLargeConfigBuilder(config).apply(block).build()
-    }
-  }
-}
 
 interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneData>> {
   /**

@@ -8,7 +8,6 @@ import destiny.core.astrology.classical.rules.Misc.VoidCourseSpan
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
 import destiny.tools.Feature
 import destiny.tools.JSerializable
 import destiny.tools.serializers.astrology.PlanetSerializer
@@ -35,24 +34,6 @@ data class VoidCourseConfig(@Serializable(with = PlanetSerializer::class)
                             override var planet: Planet = Planet.MOON,
                             override var centric: Centric = Centric.GEO,
                             override var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval): IVoidCourseConfig
-
-@Deprecated("config DSL 將移除：改用 VoidCourseConfig(...) 具名參數或 copy()。")
-class VoidCourseConfigBuilder : Builder<VoidCourseConfig> {
-  var planet: Planet = Planet.MOON
-  var centric: Centric = Centric.GEO
-  var impl: VoidCourseImpl = VoidCourseImpl.Medieval
-
-  override fun build(): VoidCourseConfig {
-    return VoidCourseConfig(planet, centric, impl)
-  }
-
-  companion object {
-    fun voidCourse(block : VoidCourseConfigBuilder.() -> Unit = {}) : VoidCourseConfig {
-      return VoidCourseConfigBuilder().apply(block).build()
-    }
-  }
-
-}
 
 /**
  * 星體空亡 interface

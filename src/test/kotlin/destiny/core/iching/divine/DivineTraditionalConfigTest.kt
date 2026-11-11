@@ -5,11 +5,9 @@ package destiny.core.iching.divine
 
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
-import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.chinese.Tianyi
 import destiny.core.chinese.YangBlade
 import destiny.core.iching.Hexagram
-import destiny.core.iching.divine.DivineTraditionalConfigBuilder.Companion.divineTraditionalConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -21,20 +19,6 @@ internal class DivineTraditionalConfigTest : AbstractConfigTest<DivineTraditiona
     Hexagram.既濟, Hexagram.未濟,
     SettingsOfStemBranch.TsangShan, HiddenEnergy.GingFang, Tianyi.ZiweiBook, YangBlade.RobCash
   )
-
-  override val configByFunction: DivineTraditionalConfig
-    get() {
-      return with(EightWordsConfig()) {
-        divineTraditionalConfig {
-          src = Hexagram.既濟
-          dst = Hexagram.未濟
-          settings = SettingsOfStemBranch.TsangShan
-          hiddenEnergy = HiddenEnergy.GingFang
-          tianyi = Tianyi.ZiweiBook
-          yangBlade = YangBlade.RobCash
-        }
-      }
-    }
 
   override val assertion: (String) -> Unit = { raw: String ->
     assertEquals("101010", JsonPath.read<String>(raw, "$.src"))

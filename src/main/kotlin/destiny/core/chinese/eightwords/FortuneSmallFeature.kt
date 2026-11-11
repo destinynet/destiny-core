@@ -12,13 +12,10 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWords
-import destiny.core.calendar.eightwords.IEightWordsConfig
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranch.*
 import destiny.core.chinese.StemBranchCycle
 import destiny.tools.AbstractCachedPersonFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.JSerializable
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -34,29 +31,6 @@ data class FortuneSmallConfig(val impl: Impl = Impl.Hour,
     Hour,   // 以時柱推算小運
     Star,   // 《星學大成》
     SixGia, // 六甲起行年法
-  }
-}
-
-@Deprecated("config DSL 將移除：改用 FortuneSmallConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class FortuneSmallConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<FortuneSmallConfig> {
-  var impl: FortuneSmallConfig.Impl = FortuneSmallConfig.Impl.Hour
-  var count: Int = 120
-
-  var intAgeNotes: List<IntAgeNote> = listOf(IntAgeNote.WestYear, IntAgeNote.Minguo)
-  fun intAgeNotes(impls: List<IntAgeNote>) {
-    intAgeNotes = impls
-  }
-
-  override fun build(): FortuneSmallConfig {
-    return FortuneSmallConfig(impl, count, intAgeNotes, iEwConfig.ewConfig)
-  }
-
-  companion object {
-    context(config: IEightWordsConfig)
-    fun fortuneSmall(block: FortuneSmallConfigBuilder.() -> Unit = {}) : FortuneSmallConfig {
-      return FortuneSmallConfigBuilder(config).apply(block).build()
-    }
   }
 }
 

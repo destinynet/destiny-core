@@ -5,7 +5,6 @@ package destiny.core.astrology
 
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
-import destiny.core.astrology.ApsisAzimuthConfigBuilder.Companion.apsisAzimuth
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -18,14 +17,6 @@ internal class ApsisAzimuthConfigTest : AbstractConfigTest<ApsisAzimuthConfig>()
                                                                             NodeType.TRUE,
                                                                             temperature = 23.5,
                                                                             pressure = 1000.0)
-
-  override val configByFunction: ApsisAzimuthConfig = apsisAzimuth {
-    star = Planet.VENUS
-    coordinate = Coordinate.SIDEREAL
-    nodeType = NodeType.TRUE
-    temperature = 23.5
-    pressure = 1000.0
-  }
 
   override val assertion: (String) -> Unit = { raw ->
     assertEquals("Planet.VENUS", JsonPath.read<String>(raw, "$.star"))

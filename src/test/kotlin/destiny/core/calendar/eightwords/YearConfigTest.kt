@@ -5,7 +5,6 @@ package destiny.core.calendar.eightwords
 
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
-import destiny.core.calendar.eightwords.YearConfigBuilder.Companion.yearConfig
 import kotlinx.serialization.KSerializer
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -19,10 +18,6 @@ internal class YearConfigTest : AbstractConfigTest<YearConfig>() {
   override val serializer: KSerializer<YearConfig> = YearConfig.serializer()
 
   override val configByConstructor: YearConfig = YearConfig(270.0)
-
-  override val configByFunction: YearConfig = yearConfig {
-    changeYearDegree = 270.0
-  }
 
   override val assertion = { raw: String ->
     assertEquals(270.0, JsonPath.read<Double>(raw, "$.changeYearDegree"))
@@ -40,9 +35,7 @@ internal class YearConfigTest : AbstractConfigTest<YearConfig>() {
   fun testInvalidChangeYearDegree(degree: Double) {
 
     try {
-      yearConfig {
-        changeYearDegree = degree
-      }
+      YearConfig(changeYearDegree = degree)
       fail()
     } catch (e: RuntimeException) {
       assertTrue(true)

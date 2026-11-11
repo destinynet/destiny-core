@@ -5,7 +5,6 @@ package destiny.core.astrology
 
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
-import destiny.core.astrology.PlanetaryHourConfigBuilder.Companion.planetaryHour
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -19,16 +18,6 @@ internal class PlanetaryHourConfigTest : AbstractConfigTest<PlanetaryHourConfig>
     temperature = 12.3,
     pressure = 1000.0
   ))
-
-  override val configByFunction: PlanetaryHourConfig = planetaryHour {
-    type = PlanetaryHourType.CLOCK
-    transConfig {
-      discCenter = true
-      refraction = false
-      temperature = 12.3
-      pressure = 1000.0
-    }
-  }
 
   override val assertion: (String) -> Unit = { raw ->
     assertEquals("CLOCK", JsonPath.read<String>(raw, "$.type"))

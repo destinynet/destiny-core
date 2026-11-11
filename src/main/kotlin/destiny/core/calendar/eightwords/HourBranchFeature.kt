@@ -13,8 +13,6 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.亥
 import destiny.core.chinese.Branch.子
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -34,24 +32,6 @@ enum class HourImpl {
 data class HourBranchConfig(
   override var hourImpl : HourImpl = HourImpl.TST,
   override val transConfig: TransConfig = TransConfig()): IHourBranchConfig , ITransConfig by transConfig
-
-@Deprecated("config DSL 將移除：改用 HourBranchConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class HourBranchConfigBuilder(val iTransConfig: ITransConfig) : Builder<HourBranchConfig> {
-
-  var hourImpl = HourImpl.TST
-
-  override fun build(): HourBranchConfig {
-    return HourBranchConfig(hourImpl, iTransConfig.transConfig)
-  }
-
-  companion object {
-    context(config: ITransConfig)
-    fun hourBranchConfig(block : HourBranchConfigBuilder.() -> Unit = {}) : HourBranchConfig {
-      return HourBranchConfigBuilder(config).apply(block).build()
-    }
-  }
-}
 
 
 interface IHourBranchFeature : Feature<IHourBranchConfig, Branch> {

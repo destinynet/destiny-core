@@ -6,8 +6,6 @@ package destiny.core.chinese.eightwords
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
 import destiny.core.IntAgeNote
-import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.chinese.eightwords.FortuneLargeConfigBuilder.Companion.fortuneLarge
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -16,17 +14,6 @@ internal class FortuneLargeConfigTest : AbstractConfigTest<FortuneLargeConfig>()
   override val serializer: KSerializer<FortuneLargeConfig> = FortuneLargeConfig.serializer()
 
   override val configByConstructor: FortuneLargeConfig = FortuneLargeConfig(FortuneLargeImpl.SolarTermsSpan, 90.0, listOf(IntAgeNote.Minguo))
-
-  override val configByFunction: FortuneLargeConfig
-    get() {
-      return with(EightWordsConfig()) {
-        fortuneLarge {
-          impl = FortuneLargeImpl.SolarTermsSpan
-          span = 90.0
-          intAgeNotes(listOf(IntAgeNote.Minguo))
-        }
-      }
-    }
 
   override val assertion: (String) -> Unit = { raw ->
     assertEquals("SolarTermsSpan", JsonPath.read<String>(raw, "$.impl"))

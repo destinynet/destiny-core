@@ -2,7 +2,6 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.IPresentConfig
 import destiny.core.astrology.DayNightConfig
-import destiny.core.astrology.DayNightConfigBuilder
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.chinese.LunisolarConfig
 import destiny.core.calendar.chinese.MonthAlgo
@@ -12,11 +11,8 @@ import destiny.core.chinese.AgeType
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Tianyi
 import destiny.core.chinese.YearType
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.JSerializable
 import destiny.tools.serializers.ZStarSerializer
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 /** 命宮、身宮 演算法  */
@@ -279,125 +275,6 @@ data class ZiweiConfig(
   /** 紫微強制地支 */
   override var purpleFixedBranch : Branch? = null
 ) : IZiweiConfig , IEightWordsConfig by ewConfig
-
-@Deprecated("config DSL 將移除：改用 ZiweiConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class ZiweiConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<ZiweiConfig> {
-
-  private val defaultConfig: IZiweiConfig = ZiweiConfig()
-
-  var stars: Set<@Contextual ZStar> = defaultConfig.stars
-
-  /** 命宮、身宮 演算法  */
-  var mainBodyHouse: MainBodyHouse = defaultConfig.mainBodyHouse
-
-  /** 紫微星，在閏月時，該如何處理  */
-  var purpleStarBranch: PurpleStarBranch = defaultConfig.purpleStarBranch
-
-  /**
-   * 命宮、身宮、紫微等14顆主星 對於月份，如何計算 . 若 [mainBodyHouse] 為占星實作 [MainBodyHouse.Astro] , 此值會被忽略
-   * 注意，此值可能為 null , 因為若是 '命宮、身宮 演算法' 是占星實作的話 , client 端會把此值填為 null
-   * */
-  var mainStarsAlgo: MonthAlgo? = defaultConfig.mainStarsAlgo
-
-  /** 月系星，如何計算月令  */
-  var monthStarsAlgo: MonthAlgo = defaultConfig.monthStarsAlgo
-
-  /** 年系星系 , 初一為界，還是 [destiny.core.calendar.SolarTerms.立春] 為界 */
-  var yearType: YearType = defaultConfig.yearType
-
-  /** 宮位名字  */
-  var houseSeq: HouseSeq = defaultConfig.houseSeq
-
-  /** [StarLucky.天魁] , [StarLucky.天鉞] (貴人) 算法  */
-  var tianyi: Tianyi = defaultConfig.tianyi
-
-  /** 火鈴 */
-  var fireBell: FireBell = defaultConfig.fireBell
-
-  /** 天馬 */
-  var skyHorse: SkyHorse = defaultConfig.skyHorse
-
-  /** 天使天傷 */
-  var hurtAngel: HurtAngel = defaultConfig.hurtAngel
-
-  /** 紅豔 */
-  var redBeauty: RedBeauty = defaultConfig.redBeauty
-
-  /** 四化設定 */
-  var transFour: TransFour = defaultConfig.transFour
-
-  /** 廟旺弱陷 */
-  var strength: Strength = defaultConfig.strength
-
-  /** 流年 */
-  var flowYear: FlowYear = defaultConfig.flowYear
-
-  /** 流月 */
-  var flowMonth: FlowMonth = defaultConfig.flowMonth
-
-  /** 流日 */
-  var flowDay: FlowDay = defaultConfig.flowDay
-
-  /** 流時 */
-  var flowHour: FlowHour = defaultConfig.flowHour
-
-  /** 大限計算方式 */
-  var bigRange: BigRange = defaultConfig.bigRange
-
-  /** 大限歲數 , 實歲 or 虛歲 */
-  var sectionAgeType: AgeType = defaultConfig.sectionAgeType
-
-  /** 晝夜區分 */
-  var dayNightConfig: DayNightConfig = defaultConfig.dayNightConfig
-
-
-  fun dayNightConfig(block: DayNightConfigBuilder.() -> Unit = {}) {
-    this.dayNightConfig = with(iEwConfig) {
-      DayNightConfigBuilder.dayNight(block)
-    }
-  }
-
-  var lunisolar: LunisolarConfig = defaultConfig.lunisolar
-
-  var purpleFixedBranch: Branch? = defaultConfig.purpleFixedBranch
-
-  override fun build(): ZiweiConfig {
-    return ZiweiConfig(
-      stars,
-      mainBodyHouse,
-      purpleStarBranch,
-      mainStarsAlgo,
-      monthStarsAlgo,
-      yearType,
-      houseSeq,
-      tianyi,
-      fireBell,
-      skyHorse,
-      hurtAngel,
-      redBeauty,
-      transFour,
-      strength,
-      flowYear,
-      flowMonth,
-      flowDay,
-      flowHour,
-      bigRange,
-      sectionAgeType,
-      iEwConfig.ewConfig,
-      dayNightConfig,
-      lunisolar,
-      purpleFixedBranch
-    )
-  }
-
-  companion object {
-    context(ctx: IEightWordsConfig)
-    fun ziweiConfig(block: ZiweiConfigBuilder.() -> Unit = {}): ZiweiConfig {
-      return ZiweiConfigBuilder(ctx).apply(block).build()
-    }
-  }
-}
 
 interface IZiweiPresentConfig : IZiweiConfig , IPresentConfig
 

@@ -7,7 +7,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsFeature
-import destiny.core.calendar.eightwords.IEightWordsConfig
 import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.chinese.*
 import destiny.core.iching.Hexagram
@@ -17,8 +16,6 @@ import destiny.core.iching.Symbol
 import destiny.core.iching.contentProviders.IHexNameFull
 import destiny.core.iching.contentProviders.IHexNameShort
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import destiny.tools.JSerializable
 import destiny.tools.serializers.IHexagramSerializer
@@ -39,35 +36,6 @@ data class DivineTraditionalConfig(@Serializable(with = IHexagramSerializer::cla
                                    @Serializable(with = LocaleSerializer::class)
                                    val locale: Locale = Locale.TAIWAN,
                                    val eightWordsConfig: EightWordsConfig = EightWordsConfig()): JSerializable
-@Deprecated("config DSL 將移除：改用 DivineTraditionalConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class DivineTraditionalConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<DivineTraditionalConfig> {
-
-  var src: IHexagram = Hexagram.乾
-
-  var dst: IHexagram = Hexagram.乾
-
-  var settings: SettingsOfStemBranch = SettingsOfStemBranch.GingFang
-
-  var hiddenEnergy: HiddenEnergy = HiddenEnergy.Wang
-
-  var tianyi: Tianyi = Tianyi.Authorized
-
-  var yangBlade: YangBlade = YangBlade.NextBliss
-
-  var locale: Locale = Locale.TAIWAN
-
-  override fun build(): DivineTraditionalConfig {
-    return DivineTraditionalConfig(src, dst, settings, hiddenEnergy, tianyi, yangBlade, locale, iEwConfig.ewConfig)
-  }
-
-  companion object {
-    context(config : IEightWordsConfig)
-    fun divineTraditionalConfig(block: DivineTraditionalConfigBuilder.() -> Unit = {}) : DivineTraditionalConfig {
-      return DivineTraditionalConfigBuilder(config).apply(block).build()
-    }
-  }
-}
 
 
 /**

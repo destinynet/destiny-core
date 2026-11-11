@@ -5,7 +5,6 @@ package destiny.core.astrology
 
 import com.jayway.jsonpath.JsonPath
 import destiny.core.AbstractConfigTest
-import destiny.core.astrology.RiseTransConfigBuilder.Companion.riseTrans
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -21,16 +20,6 @@ internal class RiseTransConfigTest : AbstractConfigTest<RiseTransConfig>() {
                                                                         temperature = 23.0,
                                                                         pressure = 1000.0
                                                                       ))
-  override val configByFunction: RiseTransConfig = riseTrans {
-    star = Planet.MOON
-    transPoint = TransPoint.MERIDIAN
-    trans {
-      discCenter = true
-      refraction = false
-      temperature = 23.0
-      pressure = 1000.0
-    }
-  }
 
   override val assertion: (String) -> Unit = {raw ->
     assertEquals("Planet.MOON", JsonPath.read<String>(raw, "$.star"))

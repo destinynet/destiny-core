@@ -8,14 +8,11 @@ import destiny.core.calendar.*
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.EightWordsNullable
-import destiny.core.calendar.eightwords.IEightWordsConfig
 import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.iching.HexagramTextContext
 import destiny.core.iching.IHexagramText
 import destiny.core.iching.contentProviders.*
 import destiny.tools.AbstractCachedPersonFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.JSerializable
 import destiny.tools.PersonFeature
 import destiny.tools.serializers.IEightWordsNullableSerializer
@@ -30,33 +27,6 @@ data class DivineFullConfig(val traditionalConfig: DivineTraditionalConfig = Div
                             val eightWordsNullable: IEightWordsNullable = EightWordsNullable.empty(),
                             val question: String? = null,
                             val approach: DivineApproach? = null): JSerializable
-
-@Deprecated("config DSL 將移除：改用 DivineFullConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class DivineFullConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<DivineFullConfig> {
-
-  var traditionalConfig = DivineTraditionalConfig()
-  fun tradConfig(block : DivineTraditionalConfigBuilder.() -> Unit = {}) {
-    traditionalConfig = with(iEwConfig) { DivineTraditionalConfigBuilder.divineTraditionalConfig(block) }
-  }
-
-  var eightWordsNullable: IEightWordsNullable = EightWordsNullable.empty()
-
-  var question: String? = null
-
-  var approach : DivineApproach? = null
-
-  override fun build(): DivineFullConfig {
-    return DivineFullConfig(traditionalConfig, eightWordsNullable, question, approach)
-  }
-
-  companion object {
-    context(config : IEightWordsConfig)
-    fun divineFullConfig(block : DivineFullConfigBuilder.() -> Unit = {}) : DivineFullConfig {
-      return DivineFullConfigBuilder(config).apply(block).build()
-    }
-  }
-}
 
 interface IDivineFullFeature : PersonFeature<DivineFullConfig, ICombinedFull> {
 

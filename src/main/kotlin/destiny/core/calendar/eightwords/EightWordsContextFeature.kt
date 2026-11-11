@@ -24,27 +24,6 @@ data class EightWordsContextConfig(
   //override var houseConfig : HouseConfig = HouseConfig(HouseSystem.MERIDIAN, Coordinate.ECLIPTIC),
 ): IEightWordsContextConfig , IEightWordsConfig by eightWordsConfig , IRisingSignConfig by risingSignConfig
 
-@Deprecated("config DSL 將移除：改用 EightWordsContextConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class EightWordsContextConfigBuilder(val iEwConfig : IEightWordsConfig, val iRsConfig : IRisingSignConfig) : Builder<EightWordsContextConfig> {
-
-  private var zodiacSignConfig: ZodiacSignConfig = ZodiacSignConfig()
-  fun zodiacSign(block : ZodiacSignBuilder.() -> Unit = {}) {
-    this.zodiacSignConfig = ZodiacSignBuilder.zodiacSign(block)
-  }
-
-  override fun build(): EightWordsContextConfig {
-    return EightWordsContextConfig(iEwConfig.ewConfig, iRsConfig.risingSignConfig, zodiacSignConfig)
-  }
-
-  companion object {
-    context(ewConfig: IEightWordsConfig, rsConfig: IRisingSignConfig)
-    fun ewContext(block : EightWordsContextConfigBuilder.() -> Unit = {}) : EightWordsContextConfig {
-      return EightWordsContextConfigBuilder(ewConfig, rsConfig).apply(block).build()
-    }
-  }
-}
-
 class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
                                private val chineseDateFeature: ChineseDateFeature,
                                private val risingSignFeature: RisingSignFeature,
@@ -141,7 +120,6 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
       rsmiMap,
       aspectDataSet
     )
-
 
 
   }

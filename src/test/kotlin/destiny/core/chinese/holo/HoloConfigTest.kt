@@ -8,7 +8,6 @@ import destiny.core.AbstractConfigTest
 import destiny.core.chinese.SeasonalSymbolConfig
 import destiny.core.chinese.SeasonalSymbolConfig.Impl.Holo
 import destiny.core.chinese.SeasonalSymbolConfig.Impl.Holo.EndSeasonSymbolSpan
-import destiny.core.chinese.holo.HoloConfigBuilder.Companion.holoConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertEquals
 
@@ -23,13 +22,6 @@ internal class HoloConfigTest : AbstractConfigTest<HoloConfig>() {
     hexChange = HexChange.SRC,
     monthlyHexagram = MonthlyHexagram.Branch
   )
-
-  override val configByFunction: HoloConfig = holoConfig {
-    seasonalSymbolConfig = SeasonalSymbolConfig(Holo(EndSeasonSymbolSpan.FULL_MONTH))
-    threeKings = ThreeKingsAlgo.MONTH_BRANCH
-    hexChange = HexChange.SRC
-    monthlyHexagram = MonthlyHexagram.Branch
-  }
 
   override val assertion: (String) -> Unit = { raw: String ->
     assertEquals("Holo", JsonPath.read<String>(raw, "$.seasonalSymbolConfig.impl.type"))

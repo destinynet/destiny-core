@@ -22,8 +22,6 @@ import destiny.core.chinese.YearType
 import destiny.core.chinese.lunarStation.ILunarStationFeature.Companion.getOppoHouse
 import destiny.core.chinese.lunarStation.ILunarStationFeature.Companion.getSelfHouse
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -38,27 +36,6 @@ data class LunarStationConfig(
   override var hourlyImpl: HourlyImpl = HourlyImpl.Fixed,
   override val ewConfig: EightWordsConfig = EightWordsConfig(),
 ) : ILunarStationConfig, IEightWordsConfig by ewConfig
-
-@Deprecated("config DSL 將移除：改用 LunarStationConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class LunarStationConfigBuilder(val iEwConfig: IEightWordsConfig) : Builder<LunarStationConfig> {
-  var yearType: YearType = YearType.YEAR_SOLAR
-  var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564
-  var monthlyImpl: MonthlyImpl = MonthlyImpl.AoHead
-  var monthAlgo: MonthAlgo = MonthAlgo.MONTH_SOLAR_TERMS
-  var hourlyImpl: HourlyImpl = HourlyImpl.Fixed
-
-  override fun build(): LunarStationConfig {
-    return LunarStationConfig(yearType, yearEpoch, monthlyImpl, monthAlgo, hourlyImpl, iEwConfig.ewConfig)
-  }
-
-  companion object {
-    context(config: IEightWordsConfig)
-    fun lunarStation(block: LunarStationConfigBuilder.() -> Unit = {}): LunarStationConfig {
-      return LunarStationConfigBuilder(config).apply(block).build()
-    }
-  }
-}
 
 
 /**

@@ -7,8 +7,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import destiny.tools.JSerializable
 import jakarta.inject.Named
@@ -25,29 +23,6 @@ enum class PlanetaryHourType {
 @Serializable
 data class PlanetaryHourConfig(val type: PlanetaryHourType = PlanetaryHourType.ASTRO,
                                val transConfig: TransConfig = TransConfig()): JSerializable
-
-@Deprecated("config DSL 將移除：改用 PlanetaryHourConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class PlanetaryHourConfigBuilder : Builder<PlanetaryHourConfig> {
-
-  var type = PlanetaryHourType.ASTRO
-
-  var transConfig : TransConfig = TransConfig()
-  fun transConfig(block: TransConfigBuilder.() -> Unit = {}) {
-    transConfig = TransConfigBuilder.trans(block)
-  }
-
-
-  override fun build(): PlanetaryHourConfig {
-    return PlanetaryHourConfig(type, transConfig)
-  }
-
-  companion object {
-    fun planetaryHour(block : PlanetaryHourConfigBuilder.() -> Unit = {}) : PlanetaryHourConfig {
-      return PlanetaryHourConfigBuilder().apply(block).build()
-    }
-  }
-}
 
 interface IPlanetaryHourFeature : Feature<PlanetaryHourConfig, PlanetaryHour?> {
 

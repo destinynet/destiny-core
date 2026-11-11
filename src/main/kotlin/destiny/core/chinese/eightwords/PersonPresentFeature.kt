@@ -14,8 +14,6 @@ import destiny.core.calendar.eightwords.YearFeature
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedPersonFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import javax.cache.Cache
@@ -24,28 +22,6 @@ import javax.cache.Cache
 data class PersonPresentConfig(val personContextConfig: EightWordsPersonConfig = EightWordsPersonConfig(),
                                override var viewGmt: GmtJulDay = GmtJulDay.nowCeilingToNoon()) : IPersonPresentConfig,
                                                                                                  IEightWordsPersonConfig by personContextConfig
-
-@Deprecated("config DSL 將移除：改用 PersonPresentConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class PersonPresentConfigBuilder(val config: IEightWordsPersonConfig) : Builder<PersonPresentConfig> {
-
-  /**
-   * 內定讓 viewGmt 取整數 GmtJulDay+1 (明日) , 因此，接連兩次 ewPersonPresent{} , 應該會出現相同的 config 物件
-   * 增加 cache 效率
-   */
-  var viewGmt: GmtJulDay = GmtJulDay.nowCeilingToNoon()
-
-  override fun build(): PersonPresentConfig {
-    return PersonPresentConfig(config.ewPersonConfig, viewGmt)
-  }
-
-  companion object {
-    context(config: IEightWordsPersonConfig)
-    fun ewPersonPresent(block: PersonPresentConfigBuilder.() -> Unit = {}) : PersonPresentConfig {
-      return PersonPresentConfigBuilder(config).apply(block).build()
-    }
-  }
-}
 
 
 @Named

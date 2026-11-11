@@ -13,8 +13,6 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import jakarta.inject.Named
 import kotlinx.serialization.Serializable
@@ -84,47 +82,11 @@ data class DayConfig(
 ) : IDayConfig
 
 
-@Deprecated("config DSL 將移除：改用 DayConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class DayConfigBuilder : Builder<DayConfig> {
-
-  var changeDay: ChangeDay = ChangeDay.ZI_BEGIN
-
-  var midnight: MidnightImpl = MidnightImpl.NADIR
-
-  override fun build(): DayConfig {
-    return DayConfig(changeDay, midnight)
-  }
-
-  companion object {
-    fun dayConfig(block: DayConfigBuilder.() -> Unit = {}): DayConfig {
-      return DayConfigBuilder().apply(block).build()
-    }
-  }
-}
-
-
 @Serializable
 data class DayHourConfig(
   override val dayConfig: DayConfig = DayConfig(),
   override val hourBranchConfig: HourBranchConfig = HourBranchConfig()
 ) : IDayHourConfig, IDayConfig by dayConfig, IHourBranchConfig by hourBranchConfig
-
-@Deprecated("config DSL 將移除：改用 DayHourConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class DayHourConfigBuilder(val dayConfig: IDayConfig, val hourBranchConfig : IHourBranchConfig) : Builder<DayHourConfig> {
-
-  override fun build(): DayHourConfig {
-    return DayHourConfig(dayConfig.dayConfig, hourBranchConfig.hourBranchConfig)
-  }
-
-  companion object {
-    context(dayConfig : IDayConfig, hourBranchConfig: IHourBranchConfig)
-    fun dayHour(block: DayHourConfigBuilder.() -> Unit = {}): DayHourConfig {
-      return DayHourConfigBuilder(dayConfig, hourBranchConfig).apply(block).build()
-    }
-  }
-}
 
 
 interface IDayHourFeature : Feature<IDayHourConfig, Pair<StemBranch, StemBranch>>

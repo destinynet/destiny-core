@@ -12,12 +12,9 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWords
-import destiny.core.calendar.eightwords.IEightWordsConfig
 import destiny.core.chinese.*
 import destiny.core.chinese.liuren.*
 import destiny.tools.AbstractCachedFeature
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.JSerializable
 import destiny.tools.KotlinLogging
 import jakarta.inject.Named
@@ -33,36 +30,6 @@ data class PithyConfig(val direction: Branch = Branch.子,
                        val generalSeq : GeneralSeq = GeneralSeq.Default,
                        val generalStemBranch : GeneralStemBranch = GeneralStemBranch.Pithy
                        ) : JSerializable
-
-@Deprecated("config DSL 將移除：改用 PithyConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class PithyConfigBuilder(val iEwConfig : IEightWordsConfig) : Builder<PithyConfig> {
-
-  var direction: Branch = Branch.子
-
-  var monthMaster : MonthMaster = MonthMaster.StarPosition
-
-  var clockwise: Clockwise = Clockwise.XinRenKuiReverse
-
-  var dayNightConfig : DayNightConfig = DayNightConfig(dayNightImpl = DayNightImpl.StarPos)
-
-  var tianyi: Tianyi = Tianyi.LiurenPithy
-
-  var generalSeq : GeneralSeq = GeneralSeq.Default
-
-  var generalStemBranch : GeneralStemBranch = GeneralStemBranch.Pithy
-
-  override fun build(): PithyConfig {
-    return PithyConfig(direction, iEwConfig.ewConfig, monthMaster, clockwise, dayNightConfig, tianyi, generalSeq, generalStemBranch)
-  }
-
-  companion object {
-    context(config: IEightWordsConfig)
-    fun pithyConfig(block : PithyConfigBuilder.() -> Unit = {}) : PithyConfig {
-      return PithyConfigBuilder(config).apply(block).build()
-    }
-  }
-}
 
 
 @Named

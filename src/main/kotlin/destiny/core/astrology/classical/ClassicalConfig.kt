@@ -2,10 +2,7 @@ package destiny.core.astrology.classical
 
 import destiny.core.DayNight
 import destiny.core.astrology.IClassicalConfig
-import destiny.core.astrology.classical.rules.ClassicalPatternContext
 import destiny.core.astrology.classical.rules.IPlanetPatternFactory
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import kotlinx.serialization.Serializable
 
 
@@ -18,23 +15,3 @@ data class ClassicalConfig(
   override val factories: List<IPlanetPatternFactory>,
   override val sect: DayNight? = null,
 ) : IClassicalConfig
-
-@Deprecated("config DSL 將移除：改用 ClassicalConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class ClassicalConfigBuilder(val ctx: ClassicalPatternContext) : Builder<ClassicalConfig> {
-
-  var factories: MutableList<IPlanetPatternFactory> = buildList {
-    addAll(ctx.essentialDignities)
-  }.toMutableList()
-
-  override fun build(): ClassicalConfig {
-    return ClassicalConfig(factories)
-  }
-
-  companion object {
-    context(ctx: ClassicalPatternContext)
-    fun classical(block: ClassicalConfigBuilder.() -> Unit = {}): ClassicalConfig {
-      return ClassicalConfigBuilder(ctx).apply(block).build()
-    }
-  }
-}

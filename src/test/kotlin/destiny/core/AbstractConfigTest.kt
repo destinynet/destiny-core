@@ -16,8 +16,7 @@ abstract class AbstractConfigTest<T> {
 
   abstract val serializer: KSerializer<T>
 
-  abstract val configByConstructor: T?
-  abstract val configByFunction: T?
+  abstract val configByConstructor: T
 
   abstract val assertion: (String) -> Unit
 
@@ -50,25 +49,9 @@ abstract class AbstractConfigTest<T> {
   }
 
   @Test
-  fun testEquals() {
-    if (configByConstructor != null && configByFunction != null) {
-      assertEquals(configByConstructor, configByFunction)
-    } else {
-      logger.info { "configByConstructor is null or configByFunction is null, skipped." }
-    }
-  }
-
-  @Test
   fun testSerialize() {
-    if (configByConstructor != null) {
-      logger.info { "configByConstructor..." }
-      assertAndCompareDecoded(prettyJson, configByConstructor!!, assertion, serializer)
-    }
-
-    if (configByFunction != null) {
-      logger.info { "configByFunction..." }
-      assertAndCompareDecoded(condenseJson, configByFunction!!, assertion, serializer)
-    }
+    assertAndCompareDecoded(prettyJson, configByConstructor, assertion, serializer)
+    assertAndCompareDecoded(condenseJson, configByConstructor, assertion, serializer)
   }
 }
 

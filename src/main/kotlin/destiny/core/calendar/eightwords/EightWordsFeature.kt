@@ -22,22 +22,6 @@ data class EightWordsConfig(
   override val dayHourConfig: DayHourConfig = DayHourConfig()
 ) : IEightWordsConfig, IYearMonthConfig by yearMonthConfig, IDayHourConfig by dayHourConfig
 
-@Deprecated("config DSL 將移除：改用 EightWordsConfig(...) 具名參數或 copy()。")
-@DestinyMarker
-class EightWordsConfigBuilder(val ymConfig : IYearMonthConfig, val dhConfig: IDayHourConfig) : Builder<EightWordsConfig> {
-
-  override fun build(): EightWordsConfig {
-    return EightWordsConfig(ymConfig.yearMonthConfig, dhConfig.dayHourConfig)
-  }
-
-  companion object {
-    context(ymConfig : IYearMonthConfig, dhConfig : IDayHourConfig)
-    fun ewConfig(block: EightWordsConfigBuilder.() -> Unit = {}): EightWordsConfig {
-      return EightWordsConfigBuilder(ymConfig, dhConfig).apply(block).build()
-    }
-  }
-}
-
 
 interface IEightWordsFeature : Feature<IEightWordsConfig , IEightWords> {
 

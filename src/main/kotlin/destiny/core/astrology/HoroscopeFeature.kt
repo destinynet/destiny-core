@@ -40,31 +40,6 @@ data class HoroscopeConfig(
   override val starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN
 ) : IHoroscopeConfig
 
-
-@Deprecated("config DSL 將移除：改用 HoroscopeConfig(...) 具名參數或 copy()。注意：此 builder 的 points 預設值不含 Axis.RISING／Axis.MERIDIAN，與 HoroscopeConfig() 的預設不同。")
-@DestinyMarker
-class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
-  var points: Set<AstroPoint> = setOf(*Planet.values, *LunarNode.values)
-  var houseSystem: HouseSystem = HouseSystem.PLACIDUS
-  var coordinate: Coordinate = Coordinate.ECLIPTIC
-  var centric: Centric = Centric.GEO
-  var temperature: Double = 0.0
-  var pressure: Double = 1013.25
-  var vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval
-  var relocations: Map<AstroPoint, Double> = emptyMap()
-  var starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN
-
-  override fun build(): HoroscopeConfig {
-    return HoroscopeConfig(points, houseSystem, coordinate, centric, temperature, pressure, vocImpl, relocations, starTypeOptions)
-  }
-
-  companion object {
-    fun horoscope(block: HoroscopeConfigBuilder.() -> Unit = {}): HoroscopeConfig {
-      return HoroscopeConfigBuilder().apply(block).build()
-    }
-  }
-}
-
 interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
 
   /**
