@@ -180,17 +180,19 @@ object Congenital {
      * 以時序求出下一個卦 (or 上一個卦)
      */
     fun IHexagram.next(forward: Boolean = true): Hexagram {
-      return this.toInt().let {
+      // 先正規化成 enum：非 enum 的 IHexagram（例如 HexagramText）與 Hexagram.乾 永遠不相等
+      val self = Hexagram.of(this)
+      return self.toInt().let {
         if (it >= 32) {
           // 乾、兌、離、震
           if (forward) {
-            if (this == Hexagram.乾)
+            if (self == Hexagram.乾)
               Hexagram.姤
             else {
               (it + 1).toHexagram()
             }
           } else {
-            if (this == Hexagram.復) {
+            if (self == Hexagram.復) {
               Hexagram.坤
             } else {
               (it - 1).toHexagram()
@@ -199,12 +201,12 @@ object Congenital {
         } else {
           // 1~31 : 巽、坎、艮、坤
           if (forward) {
-            if (this == Hexagram.坤)
+            if (self == Hexagram.坤)
               Hexagram.復
             else
               (it - 1).toHexagram()
           } else {
-            if (this == Hexagram.姤)
+            if (self == Hexagram.姤)
               Hexagram.乾
             else {
               (it + 1).toHexagram()

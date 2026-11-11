@@ -10,14 +10,12 @@ import destiny.core.chinese.StemBranch
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
 import destiny.tools.asDescriptive
-import destiny.tools.JSerializable
 
 /**
  * 伏神系統，京房之《京房易卦》 , 一定不會傳回 null
  */
 class HiddenEnergyGingFangImpl : IHiddenEnergy,
-                                 Descriptive by HiddenEnergy.GingFang.asDescriptive(),
-                                 JSerializable {
+                                 Descriptive by HiddenEnergy.GingFang.asDescriptive() {
 
   override fun getStemBranch(hexagram: IHexagram, settings: ISettingsOfStemBranch, lineIndex: Int): StemBranch {
     val comparator = HexagramDivinationComparator()
@@ -48,8 +46,9 @@ class HiddenEnergyGingFangImpl : IHiddenEnergy,
     val 對宮首卦 = Hexagram.of((7 - 宮位) * 8 + 1, sequence)
     //System.out.println("首宮卦:" + 首宮卦 + " , 對宮首卦為:" + 對宮首卦);
 
-    when {
-      hexagram == 首宮卦     ->
+    // 以宮序判斷，不用 hexagram == 首宮卦：傳入的 IHexagram 可能不是 enum Hexagram（例如 HexagramText），equals 會不成立
+    return when (宮序) {
+      1    ->
         /**
          * 如果是八純卦，則往(先天八卦的)對宮尋找伏神
          * 乾 <-> 坤
@@ -58,31 +57,31 @@ class HiddenEnergyGingFangImpl : IHiddenEnergy,
          * 震 <-> 巽
          */
 
-        return settings.getStemBranch(對宮首卦, lineIndex)
-      (2..4).contains(宮序) ->
+        settings.getStemBranch(對宮首卦, lineIndex)
+      in 2..4 ->
         /**
          * 如果是初爻變 , 二爻變 , 或是三爻變
          */
-        return if ((1..3).contains(lineIndex)) {
+        if (lineIndex in 1..3) {
           settings.getStemBranch(首宮卦, lineIndex)
         } else {
           settings.getStemBranch(對宮首卦, lineIndex)
         }
-      (5..7).contains(宮序) ->
+      in 5..7 ->
         /**
          * 如果四爻變 , 五爻變 , 四爻又變(遊魂卦)
          */
-        return settings.getStemBranch(首宮卦, lineIndex)
-      宮序 == 8             ->
+        settings.getStemBranch(首宮卦, lineIndex)
+      8    ->
         /**
          * 如果下三爻再變 (歸魂卦)
          */
-        return if ((1..3).contains(lineIndex)) {
+        if (lineIndex in 1..3) {
           settings.getStemBranch(對宮首卦, lineIndex)
         } else {
           settings.getStemBranch(首宮卦, lineIndex)
         }
-      else                -> throw IllegalStateException("impossible")
+      else -> throw IllegalStateException("宮序 = $宮序 , hexagram = ${Hexagram.of(hexagram)}")
     }
   }
 

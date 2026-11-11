@@ -4,7 +4,11 @@
 package destiny.core.iching.divine
 
 import destiny.core.chinese.StemBranch
+import destiny.core.iching.Hexagram
 import destiny.core.iching.Hexagram.*
+import destiny.core.iching.IHexagram
+import destiny.core.chinese.IYinYang
+import kotlin.test.assertEquals
 import kotlin.test.Test
 import kotlin.test.assertSame
 
@@ -108,6 +112,22 @@ class HiddenEnergyGingFangImplTest {
       assertSame(StemBranch.丁丑, getStemBranch(大有, SettingsGingFang(), 3))
       assertSame(StemBranch.丁卯, getStemBranch(大有, SettingsGingFang(), 2))
       assertSame(StemBranch.丁巳, getStemBranch(大有, SettingsGingFang(), 1))
+    }
+  }
+
+  /**
+   * 傳入非 enum 的 [IHexagram]（例如 wicket 經文頁的 HexagramText）時，八純卦不能落到 else 分支。
+   * 以前用 `hexagram == 首宮卦` 判斷，data class 與 enum 永遠不相等 → IllegalStateException
+   */
+  @Test
+  fun `非 enum 的 IHexagram 也要算得出伏神`() {
+    Hexagram.entries.forEach { hex ->
+      val wrapped = object : IHexagram {
+        override val yinYangs: List<IYinYang> = hex.yinYangs
+      }
+      (1..6).forEach { line ->
+        assertEquals(impl.getStemBranch(hex, SettingsGingFang(), line), impl.getStemBranch(wrapped, SettingsGingFang(), line), "$hex 第 $line 爻")
+      }
     }
   }
 }
