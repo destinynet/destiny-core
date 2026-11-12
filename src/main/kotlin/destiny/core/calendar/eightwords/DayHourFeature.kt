@@ -75,6 +75,17 @@ val HourImpl.coherentMidnight: MidnightImpl
 val IDayHourConfig.isTimeSystemCoherent: Boolean
   get() = midnight == hourImpl.coherentMidnight
 
+/**
+ * 這組設定的子正定義是否可能讓日柱（或時干）偏掉 —— 給警告與介面提示用的唯一判準。
+ *
+ * 不成對（[isTimeSystemCoherent] 為 false）**而且**不是「平太陽時＋子初換日」。
+ * 平太陽時以 23:00 為子初、又在子初換日，子正落在哪裡都不參與日柱推算；
+ * 真太陽時＋子初換日則不然：遠離時區中線處，配錯的子正仍會改變部分時段的結果。
+ * 兩者都由 `MidnightHourImplCoherenceTest` 的掃描釘住。
+ */
+val IDayHourConfig.midnightMayShiftDay: Boolean
+  get() = !isTimeSystemCoherent && !(hourImpl == HourImpl.LMT && changeDay == ChangeDay.ZI_BEGIN)
+
 @Serializable
 data class DayConfig(
   override var changeDay: ChangeDay = ChangeDay.ZI_BEGIN,
@@ -110,13 +121,13 @@ class DayHourFeature(
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IDayHourConfig): Pair<StemBranch, StemBranch> {
 
-    if (!config.isTimeSystemCoherent) {
+    if (config.midnightMayShiftDay) {
       // 不擋下也不自動修正：擋下會讓既有的連結 500，自動修正則是靜默覆蓋使用者的輸入。
-      // 但要留下痕跡 —— 這個組合在經度遠離時區中線處會讓日柱整天偏一柱（見 coherentMidnight）
+      // 但要留下痕跡 —— 這個組合在經度遠離時區中線處會讓日柱偏一柱（見 coherentMidnight、midnightMayShiftDay）
       logger.warn(
-        "時刻系統不自洽：時辰切割={} 但子正={}（自洽的是 {}）。" +
-          "經度遠離時區中線處，日柱可能整天偏一柱。lmt={} loc={}",
-        config.hourImpl, config.midnight, config.hourImpl.coherentMidnight, lmt, loc)
+        "時刻系統不自洽：時辰切割={} 但子正={}（自洽的是 {}），換日={}。" +
+          "經度遠離時區中線處，日柱可能偏一柱。lmt={} loc={}",
+        config.hourImpl, config.midnight, config.hourImpl.coherentMidnight, config.changeDay, lmt, loc)
     }
 
     // 下個子初時刻
