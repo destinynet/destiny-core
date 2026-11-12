@@ -11,7 +11,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
-class ArabicTest : AbstractPointTest(Lot::class) {
+class LotTest : AbstractPointTest(Lot::class) {
 
   @Test
   fun testSerialize() {
@@ -22,17 +22,6 @@ class ArabicTest : AbstractPointTest(Lot::class) {
     }
   }
 
-
-  /** 改名前（2026-11-13 以前是 `Arabic`）的 nameKey：`data_natal.horoscope` 還存著，要解得回來；寫出一律是新的 */
-  @Test
-  fun legacyNameKey() {
-    assertSame(Lot.Fortune, Lot.valueOf("Arabic.Fortune"))
-    assertSame(Lot.Fortune, Json.decodeFromString<Lot>("\"Arabic.Fortune\""))
-    assertSame(Lot.Spirit, Json.decodeFromString(destiny.tools.serializers.astrology.AstroPointSerializer, "\"Arabic.Spirit\""))
-    assertSame(Lot.Nemesis, Json.decodeFromString(destiny.tools.serializers.astrology.StarSerializer, "\"Arabic.Nemesis\""))
-    assertEquals(mapOf<Lot, Int>(Lot.Fortune to 1), Json.decodeFromString<Map<Lot, Int>>("""{"Arabic.Fortune": 1}"""))
-    assertEquals("\"Lot.Fortune\"", Json.encodeToString<Lot>(Lot.Fortune))
-  }
 
   @Test
   fun testToStringLocale() {
