@@ -12,13 +12,13 @@ import destiny.core.calendar.GmtJulDay
 /**
  * Generate Zodiacal Releasing periods from a given Lot (Fortune or Spirit).
  *
- * @param lot the Arabic Lot to use as the starting point (typically [Arabic.Fortune] or [Arabic.Spirit])
+ * @param lot the Lot to use as the starting point (typically [Lot.Fortune] or [Lot.Spirit])
  * @param endTime how far into the future to calculate
  * @param maxLevel maximum depth (1 = L1 only, 2 = L1+L2, etc.)
  * @return flat list of all periods, or null if the Lot's position is not found in this chart
  */
 fun IHoroscopeModel.getZodiacalReleasing(
-  lot: Arabic,
+  lot: Lot,
   endTime: GmtJulDay,
   maxLevel: Int = 2
 ): List<ZodiacalReleasing>? {
@@ -30,14 +30,14 @@ fun IHoroscopeModel.getZodiacalReleasing(
  * Generate Zodiacal Releasing periods within a specific time range.
  * Only returns periods that overlap with [fromTime]..[toTime].
  *
- * @param lot the Arabic Lot to use as the starting point
+ * @param lot the Lot to use as the starting point
  * @param fromTime start of the query range
  * @param toTime end of the query range
  * @param maxLevel maximum depth (1 = L1 only, 2 = L1+L2, etc.)
  * @return filtered list of periods overlapping the range, or null if the Lot's position is not found
  */
 fun IHoroscopeModel.getRangeZodiacalReleasing(
-  lot: Arabic,
+  lot: Lot,
   fromTime: GmtJulDay,
   toTime: GmtJulDay,
   maxLevel: Int = 2

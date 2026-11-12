@@ -691,6 +691,47 @@ data class HoroscopeViaCombustaDto(
   override val members: List<AstroPoint> get() = listOf(planet)
 }
 
+/**
+ * Lot（[destiny.core.astrology.classical.LotPlacement]，以星座計）：[lot] 在黃經 [lng]、從上升星座起算第 [house] 個星座；
+ * 這張盤的公式是 上升 ＋ [plus] − [minus]（夜盤已對調）；
+ * 主星 [lord] 落在從 Lot 起算第 [lordPlace] 個星座，兩者的星座相位 [lordAspect]（null ＝ 不相見）。
+ * [places]：從 Lot 起算的四角與第 11 個星座上有哪些古典行星（只列有星的）。
+ * [lng] 是事實那邊依 Lot 判準算的，與盤上 [lot] 點位的 `zDeg` 在預設判準下相同
+ */
+@Serializable
+@SerialName("lot")
+data class HoroscopeLotDto(
+  val lot: AstroPoint,
+  @Serializable(with = DoubleTwoDecimalSerializer::class)
+  val lng: Double,
+  val plus: AstroPoint,
+  val minus: AstroPoint,
+  val house: Int,
+  val lord: AstroPoint,
+  val lordPlace: Int,
+  val lordAspect: Aspect? = null,
+  val lordGlyph: String? = null,
+  val places: List<HoroscopeLotPlaceDto> = emptyList(),
+) : HoroscopeClassicalFactDto {
+  override val members: List<AstroPoint> get() = (listOf(lot, plus, minus, lord) + places.flatMap { it.planets }).distinct()
+}
+
+/** 從 Lot 起算第 [place] 個星座上的行星 */
+@Serializable
+data class HoroscopeLotPlaceDto(val place: Int, val planets: List<AstroPoint>)
+
+/** 兩個 Lot（[destiny.core.astrology.classical.LotPair]）的星座相位 [aspect]；null ＝ 不相見 */
+@Serializable
+@SerialName("lot_pair")
+data class HoroscopeLotPairDto(
+  val a: AstroPoint,
+  val b: AstroPoint,
+  val aspect: Aspect? = null,
+  val glyph: String? = null,
+) : HoroscopeClassicalFactDto {
+  override val members: List<AstroPoint> get() = listOf(a, b)
+}
+
 /** 受剋／受扶的一條條件；JSON 以 `type` 區分 */
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -915,6 +956,14 @@ fun destiny.core.astrology.classical.ClassicalFact.toChartDto(): HoroscopeClassi
 
   is destiny.core.astrology.classical.ViaCombusta -> HoroscopeViaCombustaDto(planet, lngDeg.value, from, to)
 
+  is destiny.core.astrology.classical.LotPlacement -> HoroscopeLotDto(
+    lot = lot, lng = lng.value, plus = operands.plus, minus = operands.minus, house = house, lord = lord, lordPlace = lordPlace,
+    lordAspect = lordAspect, lordGlyph = lordAspect?.glyph,
+    places = planetsByPlace.map { (place, planets) -> HoroscopeLotPlaceDto(place, planets) },
+  )
+
+  is destiny.core.astrology.classical.LotPair -> HoroscopeLotPairDto(a, b, aspect, aspect?.glyph)
+
   is destiny.core.astrology.classical.Maltreatment -> {
     val list = conditions.map { it.toChartDto() }
     if (polarity == destiny.core.astrology.classical.Maltreatment.Polarity.MALTREATMENT) HoroscopeMaltreatmentDto(planet, list)
@@ -955,7 +1004,7 @@ fun HoroscopeClassicalFactDto.withoutTrack(): HoroscopeClassicalFactDto = when (
   is HoroscopeTranslationDto, is HoroscopeCollectionDto, is HoroscopeBesiegementDto, is HoroscopeOvercomingDto, is HoroscopeAversionDto,
   is HoroscopeMaltreatmentDto, is HoroscopeBonificationDto, is HoroscopeDoryphoriaDto, is HoroscopeAntisciaDto, is HoroscopeCombustionDto,
   is HoroscopeSectDto, is HoroscopeHayzDto, is HoroscopePhasisDto, is HoroscopeFeralDto, is HoroscopeLunarConnectionDto,
-  is HoroscopeViaCombustaDto -> this
+  is HoroscopeViaCombustaDto, is HoroscopeLotDto, is HoroscopeLotPairDto -> this
 }
 
 private fun destiny.core.astrology.classical.LunarConnection.Link.toChartDto() =
@@ -1120,6 +1169,8 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender, lan
 
   val majorAspects = Aspect.getAspects(Aspect.Importance.HIGH)
   val visibleKeys = pointDtos.map { it.point }.toSet()
+  // 西洋的格局與中點不收 Lot：Lot 是算出來的點，「福點是 T 三角的頂點」「精神點落在中點」都不是任何一派的讀法
+  val westernKeys = visibleKeys.filterNot { it is Lot }.toSet()
 
   return HoroscopeChartDto(
     meta = HoroscopeMetaDto(
@@ -1152,9 +1203,9 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender, lan
       )
     },
     dispositors = graphPatterns.toDispositorDto(visibleKeys),
-    patterns = astroPatterns.toPatternDtos({ stars[it]?.signDegree?.zDeg }, visibleKeys),
+    patterns = astroPatterns.toPatternDtos({ stars[it]?.signDegree?.zDeg }, westernKeys),
     midpoints = midPoints
-      .filter { m -> (m.points + m.focal).all { it !is FixedStar && it in visibleKeys } }
+      .filter { m -> (m.points + m.focal).all { it !is FixedStar && it in westernKeys } }
       .map { m -> HoroscopeMidpointDto(m.p1, m.p2, m.degree.zDeg, m.focal, m.orb) },
     applications = applicationsOf(pointDtos),
     cuspIngresses = cuspIngressesOf(pointDtos, houseDtos),
@@ -1235,7 +1286,7 @@ fun HoroscopeChartDto.keepingPoints(keep: (HoroscopePointDto) -> Boolean): Horos
 
 /**
  * 依出生時刻精度拿掉算不準的部分，判準同 [BirthDataGrain.allowsNatalTarget]：
- * - 沒有分鐘（[BirthDataGrain.includeAxis] 為 false）⇒ 軸點、宮位、各點所在的宮位。
+ * - 沒有分鐘（[BirthDataGrain.includeAxis] 為 false）⇒ 軸點、Lot、宮位、各點所在的宮位。
  *   上升／天頂度數歸零 —— 0° 是 renderer 對「沒有上升」的退路，而不是一個捏造的上升。
  * - 沒有時辰 ⇒ 再拿掉月亮。
  *

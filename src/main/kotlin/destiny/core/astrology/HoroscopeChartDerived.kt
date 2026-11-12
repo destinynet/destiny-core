@@ -81,7 +81,7 @@ private fun HoroscopeClassicalFactDto.withDerivedDegrees(lngs: Map<AstroPoint, D
   is HoroscopeRefranationDto, is HoroscopeBesiegementDto, is HoroscopeOvercomingDto, is HoroscopeAversionDto,
   is HoroscopeMaltreatmentDto, is HoroscopeBonificationDto, is HoroscopeDoryphoriaDto, is HoroscopeCombustionDto,
   is HoroscopeSectDto, is HoroscopeHayzDto, is HoroscopePhasisDto, is HoroscopeFeralDto, is HoroscopeLunarConnectionDto,
-  is HoroscopeViaCombustaDto -> this
+  is HoroscopeViaCombustaDto, is HoroscopeLotDto, is HoroscopeLotPairDto -> this
 }
 
 private fun endsGap(a: Double?, b: Double?): Double? = if (a == null || b == null) null else angleGap(a, b).toHundredths()

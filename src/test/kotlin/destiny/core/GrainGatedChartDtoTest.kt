@@ -9,6 +9,7 @@ import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.Axis
 import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.BirthDataGrain
+import destiny.core.astrology.Lot
 import destiny.core.astrology.HoroscopeAspectDto
 import destiny.core.astrology.PointKind
 import destiny.core.astrology.HoroscopeChartDto
@@ -103,5 +104,18 @@ class GrainGatedChartDtoTest {
   fun `占星：定位星關係 —— 只知時辰照留，只知日期（月亮沒了）整個拿掉`() {
     assertEquals(withDispositors.dispositors, withDispositors.gatedBy(BirthDataGrain.HOUR2).dispositors)
     assertNull(withDispositors.gatedBy(BirthDataGrain.DAY).dispositors)
+  }
+
+  @Test
+  fun `占星：Lot 由上升起算 —— 只知時辰就跟軸點一起拿掉`() {
+    val withLot = horo.copy(
+      points = horo.points + point(Lot.Fortune, PointKind.LOT),
+      aspects = horo.aspects + aspect(sun, Lot.Fortune),
+    )
+    assertEquals(withLot, withLot.gatedBy(BirthDataGrain.MINUTE))
+    withLot.gatedBy(BirthDataGrain.HOUR2).also {
+      assertTrue(it.points.none { p -> p.kind == PointKind.LOT })
+      assertTrue(it.aspects.none { a -> a.to == Lot.Fortune })
+    }
   }
 }

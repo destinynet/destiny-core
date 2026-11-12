@@ -24,7 +24,7 @@ import kotlin.reflect.KClass
  *                                        |
  *     +-----------+---------+------------+-----------------+--------------+---------------+
  *     |           |         |            |                 |              |               |
- * [Planet]  [Asteroid]  [FixedStar]  [LunarPoint] (A)  [Hamburger]     [Arabic]     [LunarStation]
+ * [Planet]  [Asteroid]  [FixedStar]  [LunarPoint] (A)  [Hamburger]     [Lot]     [LunarStation]
  *    行星     小行星         恆星        日月交點            漢堡虛星        阿拉伯點         二十八宿
  *                                        |
  *                                        |
@@ -46,7 +46,7 @@ sealed class Star(nameKey: String, abbrKey: String?, resource: String, unicode: 
     override val type: KClass<out Point> = Star::class
 
     override val values: Array<Star> by lazy {
-      arrayOf(*Planet.values, *Asteroid.values, *FixedStar.values, *LunarPoint.values, *Hamburger.values, *Arabic.values, *LunarStation.values)
+      arrayOf(*Planet.values, *Asteroid.values, *FixedStar.values, *LunarPoint.values, *Hamburger.values, *Lot.values, *LunarStation.values)
     }
 
     override fun fromString(value: String, locale: Locale): Star? {
@@ -55,7 +55,7 @@ sealed class Star(nameKey: String, abbrKey: String?, resource: String, unicode: 
         ?: FixedStar.fromString(value, locale)
         ?: LunarPoint.fromString(value, locale)
         ?: Hamburger.fromString(value, locale)
-        ?: Arabic.fromString(value, locale)
+        ?: Lot.fromString(value, locale)
         ?: LunarStation.fromString(value, locale)
     }
   }

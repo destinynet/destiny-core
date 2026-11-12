@@ -5,7 +5,7 @@
 package destiny.core.astrology.prediction
 
 import destiny.core.Scale
-import destiny.core.astrology.Arabic
+import destiny.core.astrology.Lot
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.AspectData
 import destiny.core.astrology.AstroEvent
@@ -270,9 +270,9 @@ internal class YearMonthScorerTest {
 
     @Test
     fun lotMatch() {
-      val e = aspectEvent(EventSource.TRANSIT, Planet.SATURN, Arabic.Eros, Aspect.CONJUNCTION, 0.5, true)
-      val hit = scorer.extractHits(e, emptySet(), setOf(Arabic.Eros), emptyMap()).single()
-      assertEquals(HitTarget.Lot(Arabic.Eros), hit.target)
+      val e = aspectEvent(EventSource.TRANSIT, Planet.SATURN, Lot.Eros, Aspect.CONJUNCTION, 0.5, true)
+      val hit = scorer.extractHits(e, emptySet(), setOf(Lot.Eros), emptyMap()).single()
+      assertEquals(HitTarget.Lot(Lot.Eros), hit.target)
     }
 
     @Test

@@ -15,7 +15,7 @@ package destiny.core.astrology.prediction
 
 import destiny.core.RequestDto
 import destiny.core.astrology.Aspect
-import destiny.core.astrology.Arabic
+import destiny.core.astrology.Lot
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.AstrologyTraversalConfig
 import destiny.core.astrology.SolarArcConfig
@@ -116,8 +116,8 @@ data class YearMonthSearchRequest(
   val significators: List<AstroPoint>,
   /** 目標宮位 e.g. [5, 7];引擎會解出其宮主當作 target */
   val targetHouses: List<Int> = emptyList(),
-  /** 目標阿拉伯點 e.g. [Arabic.Eros] */
-  val targetLots: List<Arabic> = emptyList(),
+  /** 目標阿拉伯點 e.g. [Lot.Eros] */
+  val targetLots: List<Lot> = emptyList(),
   val combine: Combine = Combine.OR,
   val grain: SearchGrain = SearchGrain.MONTH,
 )
@@ -135,7 +135,7 @@ sealed class HitTarget {
 
   /** 打中某阿拉伯點。 */
   @Serializable
-  data class Lot(val lot: Arabic) : HitTarget()
+  data class Lot(val lot: destiny.core.astrology.Lot) : HitTarget()
 }
 
 /**

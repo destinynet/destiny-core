@@ -212,7 +212,8 @@ fun IHoroscopeModel.getTightAspects(aspectCalculator: IAspectCalculator, thresho
 
   return with(aspectCalculator) { getAspectPatterns(points) }
     .filter { p -> p.score != null && p.score!!.value >= threshold }
-    .filterNot { pattern -> pattern.points.contains(Arabic.Fortune) && pattern.aspect != Aspect.CONJUNCTION }
+    // Lot（福點、精神點…）只留合相：古典讀 Lot 是看星座（從 Lot 起算第幾宮、主星），度數相位只是雜訊
+    .filterNot { pattern -> pattern.points.any { it is Lot } && pattern.aspect != Aspect.CONJUNCTION }
     .sortedByDescending { it.score }
 }
 

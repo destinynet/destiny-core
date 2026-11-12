@@ -36,7 +36,7 @@ object PlanetSerializer : PointSerializer<Planet>(Planet)
 object AsteroidSerializer : PointSerializer<Asteroid>(Asteroid)
 object FixedStarSerializer : PointSerializer<FixedStar>(FixedStar)
 object HamburgerSerializer : PointSerializer<Hamburger>(Hamburger)
-object ArabicSerializer : PointSerializer<Arabic>(Arabic)
+object LotSerializer : PointSerializer<Lot>(Lot)
 object LunarStationSerializer : PointSerializer<LunarStation>(LunarStation)
 
 object LunarNodeSerializer : PointSerializer<LunarNode>(LunarNode)

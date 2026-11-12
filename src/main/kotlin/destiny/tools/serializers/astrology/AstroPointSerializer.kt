@@ -31,7 +31,7 @@ object AstroPointSerializer : KSerializer<AstroPoint> {
       || value.startsWith(LunarNode::class.simpleName!!)
       || value.startsWith(LunarApsis::class.simpleName!!)
       || value.startsWith(Hamburger::class.simpleName!!)
-      || value.startsWith(Arabic::class.simpleName!!)
+      || value.startsWith("Lot.") || value.startsWith(Lot.LEGACY_PREFIX)
       ) {
       Json.decodeFromString(StarSerializer, wrappedValue)
     } else if (value.startsWith(Axis::class.simpleName!!)) {

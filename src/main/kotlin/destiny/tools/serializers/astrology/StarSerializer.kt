@@ -19,7 +19,7 @@ object StarSerializer : KSerializer<Star> {
       is FixedStar    -> FixedStarSerializer.serialize(encoder, value)
       is LunarPoint   -> LunarPointSerializer.serialize(encoder, value)
       is Hamburger    -> HamburgerSerializer.serialize(encoder, value)
-      is Arabic       -> ArabicSerializer.serialize(encoder, value)
+      is Lot       -> LotSerializer.serialize(encoder, value)
       is LunarStation -> LunarStationSerializer.serialize(encoder, value)
     }
   }
@@ -33,7 +33,8 @@ object StarSerializer : KSerializer<Star> {
       value.startsWith(FixedStar::class.simpleName!!)                   -> Json.decodeFromString(FixedStarSerializer, wrappedValue)
       value.startsWith("LunarNode.") || value.startsWith("LunarApsis.") -> Json.decodeFromString(LunarPointSerializer, wrappedValue)
       value.startsWith(Hamburger::class.simpleName!!)                   -> Json.decodeFromString(HamburgerSerializer, wrappedValue)
-      value.startsWith(Arabic::class.simpleName!!)                      -> Json.decodeFromString(ArabicSerializer, wrappedValue)
+      // 改名前的 `Arabic.Fortune` 也是 Lot（[Lot.LEGACY_PREFIX]）
+      value.startsWith("Lot.") || value.startsWith(Lot.LEGACY_PREFIX) -> Json.decodeFromString(LotSerializer, wrappedValue)
       value.startsWith(LunarStation::class.simpleName!!)                -> Json.decodeFromString(LunarStationSerializer, wrappedValue)
       else                                                              -> throw IllegalArgumentException("Unexpected value: $value")
     }

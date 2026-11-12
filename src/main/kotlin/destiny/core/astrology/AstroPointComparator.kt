@@ -18,7 +18,7 @@ object AstroPointComparator : Comparator<AstroPoint>, JSerializable {
     LunarPoint::class.java,
     Asteroid::class.java,
     FixedStar::class.java,
-    Arabic::class.java,
+    Lot::class.java,
     Hamburger::class.java,
     LunarStation::class.java)
 

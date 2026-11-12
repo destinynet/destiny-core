@@ -34,8 +34,8 @@ class AzimuthTransitImpl(
     pressure: Double,
     options: StarTypeOptions
   ): AzimuthTransit? {
-    // 星種守衛：Arabic (阿拉伯點) / LunarStation (二十八宿) 無法解析出單一星體位置
-    if (star is Arabic || star is LunarStation)
+    // 星種守衛：Lot（阿拉伯點） / LunarStation (二十八宿) 無法解析出單一星體位置
+    if (star is Lot || star is LunarStation)
       return null
 
     val target = targetAzimuthDeg.normalize()

@@ -13,7 +13,7 @@ import destiny.core.calendar.ILocation
  * swisseph 內部的「南=0」轉換已封裝於底層實作，呼叫端無需處理。
  *
  * 只支援可解析出星體位置者：[Planet]、[Asteroid]、[FixedStar]、[LunarNode]、
- * [LunarApsis]、[Hamburger]。傳入 [Arabic]、[LunarStation] 一律回 null / 空序列。
+ * [LunarApsis]、[Hamburger]。傳入 [Lot]、[LunarStation] 一律回 null / 空序列。
  *
  * @see IStarTransit 黃道經度逆解
  * @see IRiseTrans 東昇/天頂/西落/天底四角點逆解

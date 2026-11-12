@@ -22,7 +22,7 @@ import destiny.tools.JSerializable
  * as well as the exaltations of the planets in his system of triplicity rulers.
  * The sect of the planets is also of paramount importance.
  *
- * it appears that either Dorotheus or his Arabic translators considered
+ * it appears that either Dorotheus or his Lot translators considered
  * the idea of Mercury as a triplicity ruler of the earth signs.
  * 土象 的 ruler 也可考慮水星！
  *

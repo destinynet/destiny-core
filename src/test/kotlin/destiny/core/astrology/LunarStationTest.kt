@@ -14,7 +14,7 @@ internal class LunarStationTest : AbstractPointTest(LunarStation::class) {
 
   @Test
   fun testSerialize() {
-    Arabic.values.forEach { p ->
+    Lot.values.forEach { p ->
       val rawJson = Json.encodeToString(p)
       assertEquals("\"${p.nameKey}\"", rawJson)
       assertSame(p, Json.decodeFromString(rawJson))

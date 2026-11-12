@@ -13,7 +13,7 @@
  */
 package destiny.core.astrology.prediction
 
-import destiny.core.astrology.Arabic
+import destiny.core.astrology.Lot
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.Axis
@@ -31,7 +31,7 @@ data class SearchProfile(
   val significators: Set<AstroPoint> = emptySet(),
   val rulerOfHouses: Set<Int> = emptySet(),
   val targetHouses: Set<Int> = emptySet(),
-  val targetLots: Set<Arabic> = emptySet(),
+  val targetLots: Set<Lot> = emptySet(),
   val aspectWeights: Map<Aspect, Double> = emptyMap(),
 ) {
 

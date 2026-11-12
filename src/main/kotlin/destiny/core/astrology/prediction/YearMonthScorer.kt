@@ -9,7 +9,7 @@
  */
 package destiny.core.astrology.prediction
 
-import destiny.core.astrology.Arabic
+import destiny.core.astrology.Lot
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.AspectData
 import destiny.core.astrology.AstroEvent
@@ -102,7 +102,7 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
   fun extractHits(
     event: ITimeLineEvent,
     significators: Set<AstroPoint>,
-    targetLots: Set<Arabic>,
+    targetLots: Set<Lot>,
     houseRulers: Map<AstroPoint, Int>,
     targetHouses: Set<Int> = emptySet(),
     houseOf: (IZodiacDegree) -> Int? = { null },
@@ -199,7 +199,7 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     source: EventSource,
     ad: AspectData,
     significators: Set<AstroPoint>,
-    targetLots: Set<Arabic>,
+    targetLots: Set<Lot>,
     houseRulers: Map<AstroPoint, Int>,
   ): InstantHit.AstroPointHit? {
     if (ad.points.size != 2) return null
@@ -234,7 +234,7 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     source: EventSource,
     syn: SynastryAspect,
     significators: Set<AstroPoint>,
-    targetLots: Set<Arabic>,
+    targetLots: Set<Lot>,
     houseRulers: Map<AstroPoint, Int>,
   ): ContactHit? {
     val target = classifyTarget(syn.innerPoint, significators, targetLots, houseRulers) ?: return null
@@ -251,11 +251,11 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
   private fun classifyTarget(
     point: AstroPoint,
     significators: Set<AstroPoint>,
-    targetLots: Set<Arabic>,
+    targetLots: Set<Lot>,
     houseRulers: Map<AstroPoint, Int>,
   ): HitTarget? = when {
     point in significators                 -> HitTarget.Significator(point)
-    point is Arabic && point in targetLots -> HitTarget.Lot(point)
+    point is Lot && point in targetLots -> HitTarget.Lot(point)
     houseRulers.containsKey(point)         -> HitTarget.House(houseRulers.getValue(point), point)
     else                                   -> null
   }
@@ -325,7 +325,7 @@ class YearMonthScorer(val config: YearMonthScoringConfig = YearMonthScoringConfi
     ret: ReturnCoverageDto,
     significators: Set<AstroPoint>,
     targetHouses: Set<Int>,
-    targetLots: Set<Arabic>,
+    targetLots: Set<Lot>,
   ): List<PeriodHit> {
     val source = when (ret.returnType) {
       ReturnType.SOLAR -> PeriodSource.SOLAR_RETURN

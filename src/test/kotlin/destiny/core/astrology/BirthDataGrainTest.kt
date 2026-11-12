@@ -175,4 +175,17 @@ class BirthDataGrainTest {
     assertEquals(BirthDataGrain.DAY.starErrorDeg(13.0), BirthDataGrain.DAY.positionErrorDeg(Planet.MOON, 13.0))
     assertNull(BirthDataGrain.DAY.positionErrorDeg(LunarNode.NORTH, null))
   }
+
+  /** Lot 由上升起算：跟軸點同一道閘門，沒有分鐘就不可信 */
+  @Test
+  fun lotsGatedLikeAxis() {
+    Lot.values.forEach { lot ->
+      assertTrue(BirthDataGrain.MINUTE.allowsNatalTarget(lot))
+      assertFalse(BirthDataGrain.HOUR2.allowsNatalTarget(lot))
+      assertFalse(BirthDataGrain.DAY.allowsNatalTarget(lot))
+    }
+    assertTrue(BirthDataGrain.HOUR2.gatedNatalTargets().containsAll(Lot.values.asList()))
+    assertTrue(BirthDataGrain.MINUTE.gatedNatalTargets().none { it is Lot })
+    assertEquals(BirthDataGrain.HOUR2.axisErrorDeg, BirthDataGrain.HOUR2.positionErrorDeg(Lot.Fortune, null))
+  }
 }

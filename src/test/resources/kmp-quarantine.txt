@@ -21,7 +21,7 @@ destiny/core/News.kt
 destiny/core/Point.kt
 destiny/core/TimeRange.kt
 destiny/core/astrology/ApsisAzimuthFeature.kt
-destiny/core/astrology/Arabic.kt
+destiny/core/astrology/Lot.kt
 destiny/core/astrology/Aspect.kt
 destiny/core/astrology/AspectCalculatorImpl.kt
 destiny/core/astrology/AspectEffectiveModern.kt

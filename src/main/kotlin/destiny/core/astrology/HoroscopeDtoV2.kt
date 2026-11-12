@@ -44,11 +44,11 @@ data class MundanePosition(
 )
 
 /**
- * Information about an Arabic Lot (Hellenistic Part).
+ * Information about a Lot (Hellenistic Part).
  */
 @Serializable
-data class ArabicLotInfo(
-  val lot: Arabic,
+data class LotInfo(
+  val lot: Lot,
   @Serializable(with = IZodiacDegreeSerializer::class)
   val signDegree: IZodiacDegree,
   /** House (1-12), null if grain is DAY or not computable */
@@ -74,7 +74,7 @@ data class AntisciaPair(
  */
 interface IHoroscopeDtoV2 : IHoroscopeDto {
   val mundanePositions: Map<AstroPoint, MundanePosition>
-  val arabicLots: Map<Arabic, ArabicLotInfo>
+  val arabicLots: Map<Lot, LotInfo>
   /** Phase 1.5 — default empty until activated */
   val antiscia: Map<AstroPoint, AntisciaPair>
 }
@@ -107,7 +107,7 @@ data class HoroscopeDtoV2(
   override val harmonics: Map<Int, Harmonic>,
   // ===== V2 新增 =====
   override val mundanePositions: Map<AstroPoint, MundanePosition> = emptyMap(),
-  override val arabicLots: Map<Arabic, ArabicLotInfo> = emptyMap(),
+  override val arabicLots: Map<Lot, LotInfo> = emptyMap(),
   override val antiscia: Map<AstroPoint, AntisciaPair> = emptyMap(),
 ) : IHoroscopeDtoV2 {
 
@@ -115,7 +115,7 @@ data class HoroscopeDtoV2(
   constructor(
     v1: IHoroscopeDto,
     mundanePositions: Map<AstroPoint, MundanePosition>,
-    arabicLots: Map<Arabic, ArabicLotInfo>,
+    arabicLots: Map<Lot, LotInfo>,
     antiscia: Map<AstroPoint, AntisciaPair> = emptyMap(),
   ) : this(
     v1.time, v1.utc, v1.location, v1.place,
@@ -160,14 +160,14 @@ data class NatalV2(
   override val harmonics: Map<Int, Harmonic>,
   // V2 extras
   override val mundanePositions: Map<AstroPoint, MundanePosition> = emptyMap(),
-  override val arabicLots: Map<Arabic, ArabicLotInfo> = emptyMap(),
+  override val arabicLots: Map<Lot, LotInfo> = emptyMap(),
   override val antiscia: Map<AstroPoint, AntisciaPair> = emptyMap(),
 ) : IPersonHoroscopeDtoV2 {
 
   constructor(
     gender: Gender, age: Int?, name: String?, v1: IHoroscopeDto,
     mundanePositions: Map<AstroPoint, MundanePosition>,
-    arabicLots: Map<Arabic, ArabicLotInfo>,
+    arabicLots: Map<Lot, LotInfo>,
     antiscia: Map<AstroPoint, AntisciaPair> = emptyMap(),
   ) : this(
     gender, age, name,

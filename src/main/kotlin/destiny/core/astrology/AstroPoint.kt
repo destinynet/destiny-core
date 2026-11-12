@@ -20,7 +20,7 @@ import kotlin.reflect.KClass
  *                                        |
  *     +-----------+---------+------------+-----------------+--------------+---------------+
  *     |           |         |            |                 |              |               |
- * [Planet]  [Asteroid]  [FixedStar]  [LunarPoint] (A)  [Hamburger]     [Arabic]     [LunarStation]
+ * [Planet]  [Asteroid]  [FixedStar]  [LunarPoint] (A)  [Hamburger]     [Lot]     [LunarStation]
  *    行星     小行星         恆星        日月交點            漢堡虛星        阿拉伯點         二十八宿
  *                                        |
  *                                        |
@@ -39,7 +39,7 @@ abstract class AstroPoint(nameKey: String, resource: String, abbrKey: String?, v
       is LunarNode -> PointKind.NODE
       is Asteroid  -> PointKind.ASTEROID
       is FixedStar -> PointKind.FIXED_STAR
-      is Arabic    -> PointKind.LOT
+      is Lot    -> PointKind.LOT
       is Axis      -> PointKind.AXIS
       else         -> PointKind.OTHER
     }

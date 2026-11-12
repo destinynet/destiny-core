@@ -179,11 +179,12 @@ val BirthDataGrain.axisErrorDeg: Double
 fun BirthDataGrain.starErrorDeg(speedLng: Double): Double = abs(speedLng) * timeToleranceHours / 24
 
 /**
- * [point] 在這個精度下的黃經誤差半寬（度）：軸點用天球自轉（[axisErrorDeg]），其餘用黃經日速 [speedLng]（[starErrorDeg]）；
+ * [point] 在這個精度下的黃經誤差半寬（度）：軸點與 Lot 用天球自轉（[axisErrorDeg]；Lot 由上升起算，跟著上升走），其餘用黃經日速 [speedLng]（[starErrorDeg]）；
  * 不是軸點又不知道速度（虛點）回 null
  */
 fun BirthDataGrain.positionErrorDeg(point: AstroPoint, speedLng: Double?): Double? = when {
   point is Axis    -> axisErrorDeg
+  point is Lot  -> axisErrorDeg
   speedLng != null -> starErrorDeg(speedLng)
   else             -> null
 }
@@ -269,6 +270,8 @@ val BirthDataGrain.includeLunarPosition: Boolean
 fun BirthDataGrain.allowsNatalTarget(point: AstroPoint): Boolean = when {
   point == Planet.MOON -> includeLunarPosition
   point is Axis        -> includeAxis
+  // Lot（福點＝上升＋月−日…）由上升起算，約 4 分鐘 1°，跟軸點同一道閘門
+  point is Lot      -> includeAxis
   else                 -> true
 }
 
@@ -329,10 +332,10 @@ fun BirthDataGrain.allowsMovingPoint(source: EventSource, point: AstroPoint): Bo
  * ⚠️ 因此凡是把閘門施加在建置端的資料結構，都應該把**這份清單**一起存下來
  * （而不是存 grain 讓消費端重推一次述詞 —— 那會讓述詞有兩個施加點）。
  *
- * 涵蓋的點集＝本命側標的的全集（行星＋月交點＋軸點）。
+ * 涵蓋的點集＝本命側標的的全集（行星＋月交點＋軸點＋Lot）。
  */
 fun BirthDataGrain.gatedNatalTargets(): List<AstroPoint> =
-  (Planet.values.asList() + LunarNode.values + Axis.values).filterNot { allowsNatalTarget(it) }
+  (Planet.values.asList() + LunarNode.values + Axis.values + Lot.values).filterNot { allowsNatalTarget(it) }
 
 /**
  * 能自報時刻精度的出生資料。

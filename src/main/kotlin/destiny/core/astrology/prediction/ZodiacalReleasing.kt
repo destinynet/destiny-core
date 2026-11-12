@@ -22,12 +22,12 @@
  */
 package destiny.core.astrology.prediction
 
-import destiny.core.astrology.Arabic
+import destiny.core.astrology.Lot
 import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.classical.AbstractPtolemy
 import destiny.core.calendar.GmtJulDay
-import destiny.tools.serializers.astrology.ArabicSerializer
+import destiny.tools.serializers.astrology.LotSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlin.math.min
@@ -269,8 +269,8 @@ fun ZodiacalReleasing.angularityFrom(lotSign: ZodiacSign): ZrAngularity =
  */
 @Serializable
 data class ZrByLot(
-  @Serializable(with = ArabicSerializer::class)
-  val lot: Arabic,
+  @Serializable(with = LotSerializer::class)
+  val lot: Lot,
   /** Natal sign of [lot] — the reference for every period's [ZodiacalReleasing.angularity] */
   val lotSign: ZodiacSign,
   val periods: List<ZodiacalReleasing>
@@ -290,7 +290,7 @@ data class ZrByLot(
  * @param maxLevel depth; L4 periods run ~5 hours and mean nothing at day precision
  */
 fun zrByLotAt(
-  lot: Arabic,
+  lot: Lot,
   lotSign: ZodiacSign,
   natalGmt: GmtJulDay,
   gmt: GmtJulDay,
@@ -312,7 +312,7 @@ fun zrByLotAt(
  * and states it here.
  */
 fun zrByLotRange(
-  lot: Arabic,
+  lot: Lot,
   lotSign: ZodiacSign,
   natalGmt: GmtJulDay,
   fromTime: GmtJulDay,
