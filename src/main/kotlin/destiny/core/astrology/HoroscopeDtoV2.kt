@@ -3,7 +3,7 @@
  *
  * V2 Horoscope DTO — strict superset of V1, adds:
  *  - mundane    : horizon-based positions for each point (alt/az/HA/declination)
- *  - arabicLots : Hellenistic Lots (Fortune, Spirit, Eros, Victory, Necessity, Courage, Nemesis)
+ *  - lots : Hellenistic Lots (Fortune, Spirit, Eros, Victory, Necessity, Courage, Nemesis)
  *  - antiscia   : Phase 1.5 placeholder (default emptyMap)
  *
  * Azimuth convention: N=0, E=90, S=180, W=270 (post-normalize, matches destiny-core AzimuthImpl).
@@ -74,7 +74,7 @@ data class AntisciaPair(
  */
 interface IHoroscopeDtoV2 : IHoroscopeDto {
   val mundanePositions: Map<AstroPoint, MundanePosition>
-  val arabicLots: Map<Lot, LotInfo>
+  val lots: Map<Lot, LotInfo>
   /** Phase 1.5 — default empty until activated */
   val antiscia: Map<AstroPoint, AntisciaPair>
 }
@@ -107,7 +107,7 @@ data class HoroscopeDtoV2(
   override val harmonics: Map<Int, Harmonic>,
   // ===== V2 新增 =====
   override val mundanePositions: Map<AstroPoint, MundanePosition> = emptyMap(),
-  override val arabicLots: Map<Lot, LotInfo> = emptyMap(),
+  override val lots: Map<Lot, LotInfo> = emptyMap(),
   override val antiscia: Map<AstroPoint, AntisciaPair> = emptyMap(),
 ) : IHoroscopeDtoV2 {
 
@@ -115,7 +115,7 @@ data class HoroscopeDtoV2(
   constructor(
     v1: IHoroscopeDto,
     mundanePositions: Map<AstroPoint, MundanePosition>,
-    arabicLots: Map<Lot, LotInfo>,
+    lots: Map<Lot, LotInfo>,
     antiscia: Map<AstroPoint, AntisciaPair> = emptyMap(),
   ) : this(
     v1.time, v1.utc, v1.location, v1.place,
@@ -123,7 +123,7 @@ data class HoroscopeDtoV2(
     v1.houseStarDistribution, v1.elementPercentage, v1.qualityPercentage,
     v1.tightestAspects, v1.astroPatterns,
     v1.graphPatterns, v1.midPoints, v1.harmonics,
-    mundanePositions, arabicLots, antiscia,
+    mundanePositions, lots, antiscia,
   )
 }
 
@@ -160,14 +160,14 @@ data class NatalV2(
   override val harmonics: Map<Int, Harmonic>,
   // V2 extras
   override val mundanePositions: Map<AstroPoint, MundanePosition> = emptyMap(),
-  override val arabicLots: Map<Lot, LotInfo> = emptyMap(),
+  override val lots: Map<Lot, LotInfo> = emptyMap(),
   override val antiscia: Map<AstroPoint, AntisciaPair> = emptyMap(),
 ) : IPersonHoroscopeDtoV2 {
 
   constructor(
     gender: Gender, age: Int?, name: String?, v1: IHoroscopeDto,
     mundanePositions: Map<AstroPoint, MundanePosition>,
-    arabicLots: Map<Lot, LotInfo>,
+    lots: Map<Lot, LotInfo>,
     antiscia: Map<AstroPoint, AntisciaPair> = emptyMap(),
   ) : this(
     gender, age, name,
@@ -176,6 +176,6 @@ data class NatalV2(
     v1.houseStarDistribution, v1.elementPercentage, v1.qualityPercentage,
     v1.tightestAspects, v1.astroPatterns,
     v1.graphPatterns, v1.midPoints, v1.harmonics,
-    mundanePositions, arabicLots, antiscia,
+    mundanePositions, lots, antiscia,
   )
 }

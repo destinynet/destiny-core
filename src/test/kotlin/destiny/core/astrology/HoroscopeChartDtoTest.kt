@@ -470,7 +470,7 @@ private class FakeNatal(
   override val qualityPercentage: Map<Quality, Double> = emptyMap()
   override val harmonics: Map<Int, Harmonic> = emptyMap()
   override val mundanePositions: Map<AstroPoint, MundanePosition> = emptyMap()
-  override val arabicLots: Map<Lot, LotInfo> = emptyMap()
+  override val lots: Map<Lot, LotInfo> = emptyMap()
   override val antiscia: Map<AstroPoint, AntisciaPair> = emptyMap()
 
 }
