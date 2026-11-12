@@ -97,6 +97,22 @@ data class RetrogradeCycle(
 
 
 
+/** 判定留的種類時，留前後各取一點比對速度的間隔（日）：1 分鐘、60 分鐘、1 天 */
+private val STATIONARY_PROBE_INTERVALS = listOf(1.0 / 1440.0, 60.0 / 1440.0, 1.0)
+
+/** 留的種類判定結果；[speeds] 是每個間隔（日）留前、留後的黃經速度 */
+private data class StationaryProbe(
+  val type: StationaryType?,
+  val speeds: List<Triple<Double, Double, Double>>
+) {
+  /** 足以在別處重現的輸入與讀數：起點、方向、找到的留、各間隔的速度、星曆實作 */
+  fun describe(star: Star, fromGmt: GmtJulDay, forward: Boolean, stationary: GmtJulDay, starPositionImpl: IStarPosition<*>): String =
+    "star = $star , fromGmt = ${fromGmt.value} , forward = $forward , stationary = ${stationary.value} , " +
+      "speeds (interval: prior / after) = " +
+      speeds.joinToString(" ; ") { (interval, prior, after) -> "$interval: $prior / $after" } +
+      " , starPositionImpl = ${starPositionImpl::class.simpleName}"
+}
+
 /**
  * 計算星體在黃道帶上 逆行 / Stationary (停滯) 的介面，目前 SwissEph 的實作只支援 Planet , Asteroid , Moon's Node (只有 True Node。 Mean 不會逆行！)
  * SwissEph 內定實作是 RetrogradeImpl
@@ -119,47 +135,42 @@ interface IRetrograde {
     }
   }
 
+  /**
+   * 由留前後的黃經速度判定留的種類：依序試 ±1 分鐘、±60 分鐘、±1 天，第一個「前正後負」或「前負後正」的就是答案。
+   * 都判定不出時回 [StationaryProbe.type] = null，[StationaryProbe.describe] 帶出每個間隔的速度，供 log 重現。
+   */
+  private fun probeStationaryType(star: Star, stationary: GmtJulDay, starPositionImpl: IStarPosition<*>): StationaryProbe {
+    val speeds = STATIONARY_PROBE_INTERVALS.map { interval ->
+      val prior = starPositionImpl.calculate(star, stationary - interval, GEO, ECLIPTIC, StarTypeOptions.PRECISE).speedLng
+      val after = starPositionImpl.calculate(star, stationary + interval, GEO, ECLIPTIC, StarTypeOptions.PRECISE).speedLng
+      Triple(interval, prior, after)
+    }
+    val type = speeds.firstNotNullOfOrNull { (_, prior, after) ->
+      when {
+        prior > 0 && after < 0 -> DIRECT_TO_RETROGRADE
+        prior < 0 && after > 0 -> RETROGRADE_TO_DIRECT
+        else                   -> null  // 速度變化不符合預期模式
+      }
+    }
+    return StationaryProbe(type, speeds)
+  }
+
   private fun getNextStationaryPosType(star: Star, fromGmt: GmtJulDay, forward: Boolean, starPositionImpl: IStarPosition<*>): Triple<GmtJulDay, IPos, StationaryType>? {
-    val logger = KotlinLogging.logger { }
     return if((star is Planet && !star.isStationaryPossible) || star is LunarPoint) {
       null
     } else {
       val (nextStationary, nextPos) = getNextStationaryPos(star, fromGmt, forward, starPositionImpl)
+      val probe = probeStationaryType(star, nextStationary, starPositionImpl)
 
-      val intervals = listOf(
-        1.0 / 1440.0,      // 1 分鐘
-        60.0 / 1440.0,     // 60 分鐘
-        1.0                // 1 天
-      )
-
-      intervals.firstNotNullOfOrNull { interval ->
-          val prior = nextStationary - interval
-          val after = nextStationary + interval
-
-          val pos1 = starPositionImpl.calculate(star, prior, GEO, ECLIPTIC, StarTypeOptions.PRECISE)
-          val pos2 = starPositionImpl.calculate(star, after, GEO, ECLIPTIC, StarTypeOptions.PRECISE)
-
-          if (pos1.speedLng == pos2.speedLng) {
-            null
-          } else {
-            when {
-              pos1.speedLng > 0 && pos2.speedLng < 0 -> DIRECT_TO_RETROGRADE
-              pos1.speedLng < 0 && pos2.speedLng > 0 -> RETROGRADE_TO_DIRECT
-              else                                   -> null  // 速度變化不符合預期模式
-            }
-          }
+      if (probe.type == null) {
+        KotlinLogging.logger { }.error {
+          "[getStationaryType] Failed to determine stationary type for star $star after trying all intervals , " +
+            probe.describe(star, fromGmt, forward, nextStationary, starPositionImpl)
         }
-        .also { result ->
-          // 如果所有間隔都無法得到明確結果，記錄錯誤
-          if (result == null) {
-            logger.error {
-              "[getStationaryType] Failed to determine stationary type for star $star after trying all intervals"
-            }
-          }
-        }
-        ?.let { type ->
-          Triple(nextStationary, nextPos, type)
-        }
+        null
+      } else {
+        Triple(nextStationary, nextPos, probe.type)
+      }
     }
   }
 
@@ -170,18 +181,12 @@ interface IRetrograde {
   fun getNextStationary(star: Star, fromGmt: GmtJulDay, forward: Boolean, starPositionImpl: IStarPosition<*>): Stationary {
     val nextStationary: GmtJulDay = getNextStationary(star, fromGmt, forward)
     val pos = starPositionImpl.getPosition(star, nextStationary, GEO, ECLIPTIC, StarTypeOptions.PRECISE)
-    // 分別取 滯留前、後 來比對
-    val prior = nextStationary - 1 / 1440.0
-    val after = nextStationary + 1 / 1440.0
-    val pos1 = starPositionImpl.getPosition(star, prior, GEO, ECLIPTIC, StarTypeOptions.PRECISE)
-    val pos2 = starPositionImpl.getPosition(star, after, GEO, ECLIPTIC, StarTypeOptions.PRECISE)
+    val probe = probeStationaryType(star, nextStationary, starPositionImpl)
 
-    val type = if (pos1.speedLng > 0 && pos2.speedLng < 0)
-      DIRECT_TO_RETROGRADE
-    else if (pos1.speedLng < 0 && pos2.speedLng > 0)
-      RETROGRADE_TO_DIRECT
-    else
-      throw RuntimeException("Error , star = $star , fromGmt = $fromGmt , forward = $forward , 滯留前 speed = ${pos1.speedLng} , 滯留後 speed = ${pos2.speedLng}")
+    val type = probe.type
+      ?: throw IllegalStateException(
+        "Failed to determine stationary type , " + probe.describe(star, fromGmt, forward, nextStationary, starPositionImpl)
+      )
 
     return Stationary(nextStationary, star, type, pos)
   }
