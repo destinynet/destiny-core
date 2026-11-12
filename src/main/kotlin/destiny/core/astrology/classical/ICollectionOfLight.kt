@@ -10,9 +10,9 @@ import destiny.core.astrology.IPointAspectPattern
 import destiny.core.astrology.Planet
 
 /**
- * 一次光線收集：兩顆比較快的星彼此不相見，卻都入相位到比較慢的 [collector]（[first]、[second]），由它把兩者的光收在一起。
+ * 一次光線收集：兩顆比較快的星彼此在容許度內不成相位，卻都入相位到比較慢的 [collector]（[first]、[second]），由它把兩者的光收在一起。
  *
- * [between]：兩顆快星本身的相位（null ＝ 不成相位；出相位也算「不相見」）
+ * [between]：兩顆快星本身的相位（null ＝ 不成相位；出相位也算「沒連上」。以度數計，與以星座計的不相見 [Aversion] 是兩回事）
  * [firstReception]／[secondReception]：該快星以哪一種 essential dignity 接納 [collector]（[collector] 落在它的廟旺三分界面），沒有接納為 null
  */
 data class CollectionOfLight(

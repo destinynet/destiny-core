@@ -9,7 +9,7 @@ import kotlin.math.abs
 
 /**
  * Collection of Light。定義（William Lilly, Christian Astrology）：
- * 1. 兩個徵象星彼此不相見（不成相位，或已經分離）
+ * 1. 兩個徵象星在容許度內沒有連上（不成相位，或已經分離；以度數計，不是以星座計的不相見）
  * 2. 兩者都比收集者快，且都在容許度內（古典：兩星光芒半徑相加）入相位到收集者
  * 3. 傳統上還要求兩者都以 essential dignities 接納收集者 —— 各自以哪一種接納記在結果裡，[ICollectionOfLight.getResult] 的 receivedOnly 篩選
  *

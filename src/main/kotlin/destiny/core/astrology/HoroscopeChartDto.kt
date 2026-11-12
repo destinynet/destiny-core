@@ -317,7 +317,7 @@ data class HoroscopeTranslationDto(
 }
 
 /**
- * 光線收集（[destiny.core.astrology.classical.CollectionOfLight]）：[a]、[b] 彼此不相見，都入相位到比較慢的 [by]。
+ * 光線收集（[destiny.core.astrology.classical.CollectionOfLight]）：[a]、[b] 彼此在容許度內不成相位，都入相位到比較慢的 [by]。
  * [between]：[a] 與 [b] 本身的相位，null ＝ 不成相位；[aReception]／[bReception]：以哪一種 [destiny.core.astrology.classical.Dignity] 接納 [by]，null ＝ 不接納
  */
 @Serializable
