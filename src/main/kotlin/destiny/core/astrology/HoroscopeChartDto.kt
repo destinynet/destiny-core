@@ -827,23 +827,63 @@ data class HoroscopeChartDto(
   val rings: List<HoroscopeRingDto> = emptyList(),
 )
 
+/** 外圈的種類：點位圈（行運、推運）畫另一組星，星座帶（小限、黃道釋放）只點亮星座 */
+enum class RingKind(val band: Boolean) {
+  TRANSIT(false),
+  SECONDARY(false),
+  SOLAR_ARC(false),
+  /** 年度小限：從上升星座起算，每年前進一個星座 */
+  PROFECTION(true),
+  /** 黃道釋放：從 Lot 的星座起算的 L1、L2 時主 */
+  ZODIACAL_RELEASING(true),
+}
+
 /**
- * 外圈的一層：[source] 這種推運／行運在 [time] 這一刻的點位，及它們對本命點位的相位。
+ * 外圈的一層：[kind] 這種技法在 [time] 這一刻的狀態。
  *
- * - [id]：這一圈的識別，同一張盤內唯一（如 `sa-2007-01-09`），引用外圈的一方以它對位
+ * - [id]：這一圈的識別，同一張盤內唯一（如 `sa-2007-01-09`、`zr-spirit-2007-01-09`），引用外圈的一方以它對位
  * - [time]：所在時區的當地時刻（ISO `yyyy-MM-ddTHH:mm`）
  * - [label]：顯示用的名稱（依語系，如「太陽弧 2007-01-09」）
- * - [points]：外圈的點位；`zDeg` 是推運後的黃經，`house` 是它落在**本命**的第幾宮，`retrograde` 只對行運有意義
- * - [aspects]：外圈點（`from`）對本命點（`to`）的相位；`to` 必定在本命盤的 [HoroscopeChartDto.points] 內，`from` 必定在 [points] 內
+ * - 點位圈：[points] 是外圈的點位（`zDeg` 是推運後的黃經，`house` 是它落在**本命**的第幾宮，`retrograde` 只對行運有意義）；
+ *   [aspects] 是外圈點（`from`）對本命點（`to`）的相位，`to` 必定在本命盤的 [HoroscopeChartDto.points] 內，`from` 必定在 [points] 內
+ * - 星座帶：[origin] 是起算的星座（小限是上升星座，黃道釋放是 Lot 的星座），[originLabel] 是它的名稱（「上升」「精神點」）；
+ *   [bands] 是這一刻生效的各層（小限一層；黃道釋放 L1、L2 各一層）
  */
 @Serializable
 data class HoroscopeRingDto(
   val id: String,
-  val source: destiny.core.astrology.prediction.EventSource,
+  val kind: RingKind,
   val time: String,
   val label: String,
-  val points: List<HoroscopePointDto>,
-  val aspects: List<HoroscopeAspectDto>,
+  val points: List<HoroscopePointDto> = emptyList(),
+  val aspects: List<HoroscopeAspectDto> = emptyList(),
+  val origin: ZodiacSign? = null,
+  val originLabel: String? = null,
+  val bands: List<HoroscopeRingBandDto> = emptyList(),
+)
+
+/**
+ * 星座帶的一層：[level]（小限 1；黃道釋放 1、2）在 [from]–[to]（當地 ISO 日期，含頭不含尾）是 [sign]，主星 [lord]。
+ *
+ * - [place]：從 [HoroscopeRingDto.origin] 起算是第幾個星座（1–12；小限即宮位）
+ * - [angularity]：黃道釋放才有，以 Lot 為準的角宮狀態（PEAK ＝ 第 10 個星座）
+ * - [loosingOfBond]：黃道釋放的鬆綁（子層走完一輪後跳到對宮）
+ * - [label]：畫面上的標題（依語系，如「L2 巨蟹 ☽」「第 4 宮 射手 ♃」）；[tags]：附加標記（「巔峰」「鬆綁」）
+ */
+@Serializable
+data class HoroscopeRingBandDto(
+  val level: Int,
+  val label: String,
+  val tags: List<String> = emptyList(),
+  val sign: ZodiacSign,
+  val lord: AstroPoint,
+  val lordLabel: String,
+  val lordGlyph: String?,
+  val from: String,
+  val to: String,
+  val place: Int,
+  val angularity: destiny.core.astrology.prediction.ZrAngularity? = null,
+  val loosingOfBond: Boolean = false,
 )
 
 /** 附上外圈（取代原有的）；外圈相位的本命端不在盤上的略過 */
