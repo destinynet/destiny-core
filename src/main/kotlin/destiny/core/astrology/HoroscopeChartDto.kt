@@ -860,6 +860,38 @@ data class HoroscopeRingDto(
   val origin: ZodiacSign? = null,
   val originLabel: String? = null,
   val bands: List<HoroscopeRingBandDto> = emptyList(),
+  /** 點位圈的縮時（行運從 [time] 走到 [HoroscopeRingSweepDto.to]）；沒有就是靜止的一刻 */
+  val sweep: HoroscopeRingSweepDto? = null,
+)
+
+/**
+ * 點位圈的縮時：外圈各點在 [HoroscopeRingDto.time]（起點）到 [to] 之間的位置，與期間內外圈相位的精準時刻。
+ *
+ * - [samples]：依時間排序的取樣；每筆的 `lngs` 與 [HoroscopeRingDto.points] 同順序（黃經 0–360），取樣之間由播放端內插
+ * - [hits]：外圈點（`from`）與本命點（`to`）成 [HoroscopeRingHitDto.aspect] 的精準時刻；逆行來回時同一組會有好幾次
+ * - [orb]：容許度（度）：播放端在這個範圍內把相位線畫出來
+ */
+@Serializable
+data class HoroscopeRingSweepDto(
+  val to: String,
+  val orb: Double,
+  val samples: List<HoroscopeRingSampleDto>,
+  val hits: List<HoroscopeRingHitDto>,
+)
+
+/** 縮時的一筆取樣：[t] 是當地 ISO 日期時刻 */
+@Serializable
+data class HoroscopeRingSampleDto(val t: String, val lngs: List<@Serializable(with = DoubleTwoDecimalSerializer::class) Double>)
+
+/** 縮時期間的一次精準相位：[t] 當地 ISO 日期時刻；[retrograde] 是外圈點當時是否逆行 */
+@Serializable
+data class HoroscopeRingHitDto(
+  val from: AstroPoint,
+  val to: AstroPoint,
+  val aspect: Aspect,
+  val glyph: String,
+  val t: String,
+  val retrograde: Boolean,
 )
 
 /**
