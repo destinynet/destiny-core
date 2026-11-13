@@ -836,6 +836,10 @@ enum class RingKind(val band: Boolean) {
   PROFECTION(true),
   /** 黃道釋放：從 Lot 的星座起算的 L1、L2 時主 */
   ZODIACAL_RELEASING(true),
+  /** 太陽回歸：太陽回到本命度數那一刻的盤（有自己的上升、天頂、宮頭），管到下一次回歸 */
+  SOLAR_RETURN(false),
+  /** 月亮回歸：同上，月亮一個月回歸一次 */
+  LUNAR_RETURN(false),
 }
 
 /**
@@ -862,6 +866,10 @@ data class HoroscopeRingDto(
   val bands: List<HoroscopeRingBandDto> = emptyList(),
   /** 點位圈的縮時（行運從 [time] 走到 [HoroscopeRingSweepDto.to]）；沒有就是靜止的一刻 */
   val sweep: HoroscopeRingSweepDto? = null,
+  /** 回歸盤自己的 12 個宮頭黃經（索引 0 ＝ 第 1 宮）；不是回歸盤時為空 */
+  val cusps: List<@Serializable(with = DoubleTwoDecimalSerializer::class) Double> = emptyList(),
+  /** 回歸盤管到哪一天（下一次回歸的當地 ISO 日期時刻）；[time] 是這一次回歸的精準時刻 */
+  val validTo: String? = null,
 )
 
 /**
