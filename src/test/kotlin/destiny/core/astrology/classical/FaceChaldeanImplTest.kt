@@ -10,9 +10,9 @@ import destiny.core.astrology.ZodiacSign.PISCES
 import kotlin.test.Test
 import kotlin.test.assertSame
 
-class FacePtolomyImplTest {
+class FaceChaldeanImplTest {
   
-  val impl = FacePtolomyImpl
+  val impl = FaceChaldeanImpl
 
   @Test
   fun getPointFromDegree() {

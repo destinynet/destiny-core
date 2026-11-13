@@ -5,6 +5,7 @@ package destiny.core.astrology.classical
 
 import destiny.core.DayNight
 import destiny.core.astrology.*
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.Dignity.RULER
 
 /** Ruler , +5 */
@@ -110,7 +111,7 @@ interface IFace {
   fun getPoint(degree: ZodiacDegree): AstroPoint
 
   /** 取得某星座某度，其 Face 是哪顆星 , 0<=degree<30  */
-  fun ZodiacSign.getFacePoint(degree: Double): AstroPoint
+  fun ZodiacSign.getFacePoint(degree: Double): AstroPoint = getPoint((this.degree + degree).toZodiacDegree())
 }
 
 /** 命主星：上升星座的主人（[rulerImpl] 的入廟主）；盤沒有宮位、或主人不是行星時為 null */

@@ -392,7 +392,7 @@ class HoroscopeChartDtoTest {
       destiny.core.astrology.classical.RulerPtolemyImpl, destiny.core.astrology.classical.ExaltationPtolemyImpl,
       destiny.core.astrology.classical.FallPtolemyImpl, destiny.core.astrology.classical.DetrimentPtolemyImpl,
       destiny.core.astrology.classical.TriplicityWilliamImpl, destiny.core.astrology.classical.TermPtolomyImpl,
-      destiny.core.astrology.classical.FacePtolomyImpl, DayNightSimpleImpl(destiny.core.calendar.JulDayResolver1582CutoverImpl()),
+      destiny.core.astrology.classical.FaceChaldeanImpl, DayNightSimpleImpl(destiny.core.calendar.JulDayResolver1582CutoverImpl()),
     )
     val positions: Map<AstroPoint, ZodiacDegree> = mapOf(Planet.SUN to 10.0, Planet.MERCURY to 25.5, Planet.MARS to 40.0).mapValues { (_, d) -> d.toZodiacDegree() }
     val base = fakeNatal().toHoroscopeChartDto(ChartDensity.FULL)
