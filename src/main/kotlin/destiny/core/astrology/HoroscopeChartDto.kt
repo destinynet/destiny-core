@@ -818,7 +818,42 @@ data class HoroscopeChartDto(
   val cuspIngresses: List<HoroscopeCuspIngressDto> = emptyList(),
   /** 行星之間的互相接納；由呼叫端以 [withReceptions] 附上 */
   val receptions: List<HoroscopeReceptionDto> = emptyList(),
+  /**
+   * 外圈（雙圈盤的第二層）：同一張本命盤在某個時刻的行運、次限、太陽弧…，每一圈一筆。由呼叫端以 [withRings] 附上；
+   * 空清單不輸出（不論 Json 設定），沒附的 DTO 與舊的凍結 JSON 不變
+   */
+  @OptIn(ExperimentalSerializationApi::class)
+  @EncodeDefault(EncodeDefault.Mode.NEVER)
+  val rings: List<HoroscopeRingDto> = emptyList(),
 )
+
+/**
+ * 外圈的一層：[source] 這種推運／行運在 [time] 這一刻的點位，及它們對本命點位的相位。
+ *
+ * - [id]：這一圈的識別，同一張盤內唯一（如 `sa-2007-01-09`），引用外圈的一方以它對位
+ * - [time]：所在時區的當地時刻（ISO `yyyy-MM-ddTHH:mm`）
+ * - [label]：顯示用的名稱（依語系，如「太陽弧 2007-01-09」）
+ * - [points]：外圈的點位；`zDeg` 是推運後的黃經，`house` 是它落在**本命**的第幾宮，`retrograde` 只對行運有意義
+ * - [aspects]：外圈點（`from`）對本命點（`to`）的相位；`to` 必定在本命盤的 [HoroscopeChartDto.points] 內，`from` 必定在 [points] 內
+ */
+@Serializable
+data class HoroscopeRingDto(
+  val id: String,
+  val source: destiny.core.astrology.prediction.EventSource,
+  val time: String,
+  val label: String,
+  val points: List<HoroscopePointDto>,
+  val aspects: List<HoroscopeAspectDto>,
+)
+
+/** 附上外圈（取代原有的）；外圈相位的本命端不在盤上的略過 */
+fun HoroscopeChartDto.withRings(rings: List<HoroscopeRingDto>): HoroscopeChartDto {
+  val natal = points.mapTo(HashSet()) { it.point }
+  return copy(rings = rings.map { r ->
+    val outer = r.points.mapTo(HashSet()) { it.point }
+    r.copy(aspects = r.aspects.filter { it.to in natal && it.from in outer })
+  })
+}
 
 /**
  * 附上行星之間的互相接納（[dignities] 之內，含不同 dignity 的混合接納）；有星不在盤上的略過。
