@@ -132,6 +132,10 @@ interface IHoroscopeModel : ITimeLoc {
       .mapKeys { it.key as Hamburger }
       .toMap()
 
+  /**
+   * 定位星的圖：每顆行星由它所在星座的守護星定位。圖上只有 [ruler] 這套守護裡會當守護星的行星 ——
+   * 托勒密是傳統七星；現代守護（[destiny.core.astrology.classical.RulerModernImpl]）多了天王星、海王星、冥王星
+   */
   fun getGraph(ruler : IRuler) : Graph<Planet> {
     val rulerMap: Map<ZodiacSign, Planet> = ZodiacSign.entries.associateWith { sign ->
       with(ruler) {
@@ -140,7 +144,8 @@ interface IHoroscopeModel : ITimeLoc {
     }
 
     val planetSignMap: Map<Planet, ZodiacSign> by lazy {
-      points.filterIsInstance<Planet>().filter { it in Planet.classicalList }.associateWith { p -> getZodiacSign(p)!! }
+      val rulers = rulerMap.values.toSet()
+      points.filterIsInstance<Planet>().filter { it in rulers }.associateWith { p -> getZodiacSign(p)!! }
     }
 
     return Analyzer.analyzeHoroscope(planetSignMap, rulerMap)

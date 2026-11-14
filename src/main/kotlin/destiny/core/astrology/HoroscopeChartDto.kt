@@ -37,6 +37,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonClassDiscriminator
 import destiny.core.astrology.classical.Dignity
+import destiny.core.astrology.classical.RulerModernImpl
+import destiny.core.astrology.classical.RulerPtolemyImpl
 
 /** 顯示文字（`label` 結尾的欄位、[HoroscopePointDto.abbr]）的預設語系；呼叫端可另給 */
 private val ZH = Lang.ZH_TW
@@ -95,10 +97,10 @@ data class HoroscopeHouseDto(
   val cuspDeg: Double,
   /** 宮頭所在星座 */
   val cuspSign: ZodiacSign,
-  /** 宮主星（傳統七星） */
+  /** 宮主星：照這張盤採用的守護（預設傳統七星；採現代守護時，天蠍、水瓶、雙魚是冥王星、天王星、海王星） */
   val ruler: AstroPoint,
   val rulerLabel: String,
-  /** 現代的共同主星（水瓶：天王星、雙魚：海王星、天蠍：冥王星）；其他星座為 null */
+  /** 另一套守護的主星，只有天蠍、水瓶、雙魚有：[ruler] 是傳統的那顆時，這裡是現代的；[ruler] 是現代的，這裡是傳統的。其他星座為 null */
   val coRuler: AstroPoint? = null,
   val coRulerLabel: String? = null,
 )
@@ -1247,8 +1249,8 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender, lan
       cuspSign = h.cusp.sign,
       ruler = h.ruler,
       rulerLabel = h.ruler.getTitle(lang),
-      coRuler = MODERN_CO_RULER[h.cusp.sign],
-      coRulerLabel = MODERN_CO_RULER[h.cusp.sign]?.getTitle(lang),
+      coRuler = coRulerOf(h.cusp.sign, h.ruler),
+      coRulerLabel = coRulerOf(h.cusp.sign, h.ruler)?.getTitle(lang),
     )
   }
 
@@ -1327,9 +1329,11 @@ fun IHoroscopeDto.toHoroscopeChartDto(density: ChartDensity, gender: Gender, lan
   ).withDerivedDegrees()
 }
 
-/** 現代的共同主星 */
-private val MODERN_CO_RULER: Map<ZodiacSign, Planet> =
-  mapOf(ZodiacSign.AQUARIUS to Planet.URANUS, ZodiacSign.PISCES to Planet.NEPTUNE, ZodiacSign.SCORPIO to Planet.PLUTO)
+/** 傳統與現代守護不同的三個星座：主星之外的另一顆（[ruler] 是其中一套的主星） */
+private fun coRulerOf(sign: ZodiacSign, ruler: AstroPoint): AstroPoint? {
+  val modern = RulerModernImpl.modernRulers[sign] ?: return null
+  return if (ruler == modern) with(RulerPtolemyImpl) { sign.getRulerPoint() } else modern
+}
 
 /** 主要相位（合、六合、四分、三分、對沖） */
 private val MAJOR_ANGLES: Set<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH)
