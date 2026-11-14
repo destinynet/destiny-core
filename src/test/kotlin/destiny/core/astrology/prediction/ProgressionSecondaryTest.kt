@@ -11,6 +11,7 @@ import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 internal class ProgressionSecondaryTest {
 
@@ -83,6 +84,26 @@ internal class ProgressionSecondaryTest {
         logger.info { "divergentLmt = ${divergentGmtJulDay.toLmt(loc, julDayResolver)}" }
         assertEquals(0 , nowGmtJulDay.absDuration(divergentGmtJulDay).inWholeSeconds)
       }
+    }
+  }
+
+  /** nowTime 早於出生：收斂時間也在出生之前，區間不會倒過來，且仍是 [getDivergentTime] 的反函數 */
+  @Test
+  fun beforeBirth_monotonic() {
+    val natalGmtJulDay = LocalDateTime.of(1976, 5, 15, 11, 30).toGmtJulDay(loc)
+    val from = LocalDateTime.of(50, 1, 1, 0, 0).toGmtJulDay(loc)
+    val to = LocalDateTime.of(51, 1, 1, 0, 0).toGmtJulDay(loc)
+
+    listOf(ProgressionSecondary(), ProgressionSecondary(false), ProgressionTertiary(), ProgressionMinor()).forEach { progression ->
+      val convFrom = progression.getConvergentTime(natalGmtJulDay, from)
+      val convTo = progression.getConvergentTime(natalGmtJulDay, to)
+      if (progression.forward) {
+        assertTrue(convFrom < convTo, "${progression.type} : $convFrom should < $convTo")
+        assertTrue(convTo < natalGmtJulDay)
+      } else {
+        assertTrue(convFrom > convTo, "${progression.type} converse : $convFrom should > $convTo")
+      }
+      assertEquals(0, from.absDuration(progression.getDivergentTime(natalGmtJulDay, convFrom)).inWholeSeconds)
     }
   }
 }

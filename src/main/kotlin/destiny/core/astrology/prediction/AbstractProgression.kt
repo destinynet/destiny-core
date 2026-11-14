@@ -6,7 +6,6 @@ package destiny.core.astrology.prediction
 
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.JSerializable
-import kotlin.math.absoluteValue
 
 /**
  * Progression 抽象類別，具備 Progression 演算法的 template methods
@@ -24,11 +23,13 @@ abstract class AbstractProgression : ILinear, Conversable, JSerializable {
   /** Denominator: 分母 , 假設以 [ProgressionSecondary] (一日一年)來說 , 分母是一日(有幾秒)  */
   protected abstract val denominator: Double
 
-  /** 「收斂」到的時間 */
+  /**
+   * 「收斂」到的時間，是 [getDivergentTime] 的反函數。
+   *
+   * 帶正負號：nowTime 早於出生時，收斂時間也落在出生之前，映射保持單調（from < to 映射後仍是 from < to）。
+   */
   override fun getConvergentTime(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): GmtJulDay {
-    val dur = (natalGmtJulDay - nowGmtJulDay).absoluteValue
-
-    val durDays = dur / numerator * denominator
+    val durDays = (nowGmtJulDay - natalGmtJulDay) / numerator * denominator
 
     return if (!forward) {
       natalGmtJulDay - durDays
