@@ -8,11 +8,25 @@ import destiny.core.chinese.Branch
 import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
+/**
+ * 年上起月所用的月數，與它從哪個農曆月換算而來（閏月、節氣盤的註記用）。
+ * @param lunarMonth 農曆月
+ * @param leapMonth  是否閏月
+ * @param number     實際拿來起月的月數（閏月依 [destiny.core.calendar.chinese.MonthAlgo] 換算；節氣盤是節氣月數）
+ */
+data class PalmMonthNumber(val lunarMonth: Int, val leapMonth: Boolean, val number: Int) : JSerializable
+
 interface IPalmModel {
 
   val gender: Gender
 
+  /** 順行與否（由 [PositiveImpl] 決定）；排盤與大運、小運都依此方向 */
+  val positive: Boolean
+
   val year: Branch
+
+  /** 起月所用的月數 */
+  val monthNumber: PalmMonthNumber
 
   val month: Branch
 
@@ -69,27 +83,27 @@ interface IPalmModel {
   }
 
   /**
-   * 大運從掌中年上起月，男順、女逆，輪數至本生月起運。本生月所在宮為一運，下一宮為二運，而一運管10年。
+   * 大運從掌中年上起月，順逆同排盤（[positive]；預設男順、女逆），輪數至本生月起運。本生月所在宮為一運，下一宮為二運，而一運管10年。
    *
    * 大運盤，每運10年，從 1歲起. 1~10 , 11~20 , 21~30 ...
    * Map 的 key 為「運的開始」: 1 , 11 , 21 , 31 ...
    * @param count : 要算多少組大運
    */
   fun getMajorFortunes(count: Int): Map<Int, Branch> {
-    val positive = if (gender === Gender.M) 1 else -1
+    val step = if (positive) 1 else -1
 
     return (1..count)
-      .map { i -> (i - 1) * 10 + 1 to Branch[month.index + (i - 1) * positive] }
+      .map { i -> (i - 1) * 10 + 1 to Branch[month.index + (i - 1) * step] }
       .sortedBy { pair -> pair.first }.toMap()
   }
 
   /**
-   * 小運從掌中年上起月，月上起日，男順、女逆，輪數至本生日起運。本生日所在宮為一歲運，下一宮為二歲運。
+   * 小運從掌中年上起月，月上起日，順逆同排盤（[positive]），輪數至本生日起運。本生日所在宮為一歲運，下一宮為二歲運。
    * @param age 虛歲 , 從 1 開始
    */
   fun getMinorFortunes(age: Int): Branch {
-    val positive = if (gender === Gender.M) 1 else -1
-    return Branch[day.index + (age - 1) * positive]
+    val step = if (positive) 1 else -1
+    return Branch[day.index + (age - 1) * step]
   }
 
   companion object {
@@ -135,7 +149,11 @@ data class PalmModel(
 
   override val gender: Gender,
 
+  override val positive: Boolean,
+
   override val year: Branch,
+
+  override val monthNumber: PalmMonthNumber,
 
   override val month: Branch,
 

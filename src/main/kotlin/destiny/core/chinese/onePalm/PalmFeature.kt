@@ -25,14 +25,23 @@ enum class PositiveImpl {
   GenderYinYang
 }
 
+/**
+ * 一掌經設定。
+ *
+ * 年支與月數出自同一套曆法，由 [monthAlgo] 決定：
+ * [MonthAlgo.MONTH_SOLAR_TERMS] 用節氣（立春換年、節氣月）；其餘三種用農曆（正月初一換年、農曆月數，閏月依各自規則）。
+ * 日數一律是農曆的初幾。
+ */
 @Serializable
 data class PalmConfig(
   val eightWordsConfig: EightWordsConfig = EightWordsConfig(),
   val positiveImpl: PositiveImpl = PositiveImpl.Gender,
-  val monthAlgo: MonthAlgo = MonthAlgo.MONTH_FIXED_THIS,
+  val monthAlgo: MonthAlgo = MonthAlgo.MONTH_LEAP_SPLIT15,
   val risingSignConfig: RisingSignConfig = RisingSignConfig(),
   val trueRisingSign: Boolean = false,
-  val clockwiseHouse: Boolean = true
+  val clockwiseHouse: Boolean = true,
+  /** 農曆的月表與換月規則；日界跟著 [eightWordsConfig] 的換日設定 */
+  val lunisolar: LunisolarConfig = LunisolarConfig(),
 ) : JSerializable
 
 
@@ -51,8 +60,40 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
     return getPersonModel(lmt, loc, gender, name, place, config)
   }
 
-  /** 沒帶入節氣資料 */
+  /**
+   * 沒帶入節氣資料：[yearBranch] 是農曆年支，[monthNum]／[leap] 是農曆月。
+   * [MonthAlgo.MONTH_SOLAR_TERMS] 需要節氣月，這裡不收。
+   */
   fun getPalmWithoutSolarTerms(gender: Gender, yearBranch: Branch, leap: Boolean, monthNum: Int, dayNum: Int, hourBranch: Branch, config: PalmConfig): IPalmModel {
+    val monthNumber = PalmMonthNumber(monthNum, leap, IFinalMonthNumber.getFinalMonthNumber(monthNum, leap, dayNum, config.monthAlgo))
+    return palmOf(gender, yearBranch, monthNumber, dayNum, hourBranch, null, config)
+  }
+
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: PalmConfig): IPalmModel {
+
+    val ew = eightWordsFeature.getModel(lmt, loc, config.eightWordsConfig)
+    val chineseDate: ChineseDate = chineseDateFeature.getModel(lmt, loc, ChineseDateConfig(config.lunisolar, config.eightWordsConfig.dayHourConfig))
+
+    // 年支與月數同一套曆法：節氣盤用立春年，其餘用農曆年
+    val yearBranch: Branch = when (config.monthAlgo) {
+      MonthAlgo.MONTH_SOLAR_TERMS -> ew.year.branch
+      else                        -> chineseDate.year.branch
+    }
+
+    val monthNumber = PalmMonthNumber(
+      chineseDate.month, chineseDate.leapMonth,
+      IFinalMonthNumber.getFinalMonthNumber(chineseDate.month, chineseDate.leapMonth, ew.month.branch, chineseDate.day, config.monthAlgo)
+    )
+
+    // 上升星座
+    val trueRising: Branch? = if (config.trueRisingSign) risingSignFeature.getModel(lmt, loc, config.risingSignConfig).branch else null
+
+    return palmOf(gender, yearBranch, monthNumber, chineseDate.day, ew.hour.branch, trueRising, config)
+  }
+
+  /** @param trueRising 非 null 時以它為命宮（上升星座），否則以傳統法（生時起時、數到卯） */
+  private fun palmOf(gender: Gender, yearBranch: Branch, monthNumber: PalmMonthNumber, dayNum: Int, hourBranch: Branch,
+                     trueRising: Branch?, config: PalmConfig): IPalmModel {
     val positive = when (config.positiveImpl) {
       PositiveImpl.Gender        -> gender == Gender.M
       PositiveImpl.GenderYinYang -> gender === Gender.M && yearBranch.index % 2 == 0 || gender === Gender.F && yearBranch.index % 2 == 1
@@ -60,10 +101,8 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
 
     val positiveValue = if (positive) 1 else -1
 
-    val finalMonthNum = IFinalMonthNumber.getFinalMonthNumber(monthNum, leap, dayNum, config.monthAlgo)
-
     // 年上起月
-    val month = yearBranch.next((finalMonthNum - 1) * positiveValue)
+    val month: Branch = yearBranch.next((monthNumber.number - 1) * positiveValue)
 
     // 月上起日
     val day = month.next((dayNum - 1) * positiveValue)
@@ -72,54 +111,12 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
     val hour = day.next(hourBranch.index * positiveValue)
 
     // 命宮
-    val steps = Branch.卯.getAheadOf(hourBranch)
-    val main = hour.next(steps * positiveValue)
-
-    val houseMap = (0..11).map { i -> if (config.clockwiseHouse) main.next(i) else main.prev(i) }.zip(IPalmModel.House.entries.toTypedArray()).toMap()
-
-    return PalmModel(gender, yearBranch, month, day, hour, houseMap)
-  }
-
-  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: PalmConfig): IPalmModel {
-
-    val ew = eightWordsFeature.getModel(lmt, loc)
-
-    val positive = when (config.positiveImpl) {
-      PositiveImpl.Gender        -> gender == Gender.M
-      PositiveImpl.GenderYinYang -> gender === Gender.M && ew.year.branch.index % 2 == 0 || gender === Gender.F && ew.year.branch.index % 2 == 1
-    }
-
-    val positiveValue = if (positive) 1 else -1
-
-    val chineseDate: ChineseDate = chineseDateFeature.getModel(lmt, loc)
-
-    val finalMonthNum = IFinalMonthNumber.getFinalMonthNumber(chineseDate.month, chineseDate.leapMonth, ew.month.branch, chineseDate.day, config.monthAlgo)
-
-    // 年上起月
-    val month: Branch = ew.year.branch.next((finalMonthNum - 1) * positiveValue)
-
-    // 月上起日
-    val day = month.next((chineseDate.day - 1) * positiveValue)
-
-    // 日上起時
-    val hour = day.next(ew.hour.branch.index * positiveValue)
-
-    // 上升星座
-    val trueRising: Branch = risingSignFeature.getModel(lmt, loc).branch
-
-    // 命宮
-    val main: Branch = when (config.trueRisingSign) {
-      true -> trueRising
-      false -> {
-        val steps = Branch.卯.getAheadOf(ew.hour.branch)
-        hour.next(steps * positiveValue)
-      }
-    }
+    val main: Branch = trueRising ?: hour.next(Branch.卯.getAheadOf(hourBranch) * positiveValue)
 
     val houseMap = (0..11).map { i -> if (config.clockwiseHouse) main.next(i) else main.prev(i) }
       .zip(IPalmModel.House.entries.toTypedArray()).toMap()
 
-    return PalmModel(gender, ew.year.branch, month, day, hour, houseMap)
+    return PalmModel(gender, positive, yearBranch, monthNumber, month, day, hour, houseMap)
   }
 }
 
@@ -145,7 +142,7 @@ class PalmMetaFeature(private val palmFeature: PersonFeature<PalmConfig, IPalmMo
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: PalmConfig): IPalmMetaModel {
     val palmModel: IPalmModel = palmFeature.getPersonModel(lmt, loc, gender, name, place, config)
-    val cDate = chineseDateFeature.getModel(lmt, loc)
+    val cDate = chineseDateFeature.getModel(lmt, loc, ChineseDateConfig(config.lunisolar, config.eightWordsConfig.dayHourConfig))
     val hourBranch = hourBranchFeature.getModel(lmt, loc, config.eightWordsConfig.dayHourConfig.hourBranchConfig)
 
     return PalmMetaModel(palmModel, lmt, loc, place, name, ChineseDateHour(cDate, hourBranch))
