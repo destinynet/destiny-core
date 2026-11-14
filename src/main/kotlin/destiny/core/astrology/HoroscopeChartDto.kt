@@ -880,6 +880,7 @@ data class HoroscopeRingDto(
  * - [samples]：依時間排序的取樣；每筆的 `lngs` 與 [HoroscopeRingDto.points] 同順序（黃經 0–360），取樣之間由播放端內插
  * - [hits]：外圈點（`from`）與本命點（`to`）成 [HoroscopeRingHitDto.aspect] 的精準時刻；逆行來回時同一組會有好幾次
  * - [orb]：容許度（度）：播放端在這個範圍內把相位線畫出來
+ * - [ingresses]：外圈點在期間內換星座的時刻（只有行運才有；沒有就不輸出）
  */
 @Serializable
 data class HoroscopeRingSweepDto(
@@ -887,7 +888,12 @@ data class HoroscopeRingSweepDto(
   val orb: Double,
   val samples: List<HoroscopeRingSampleDto>,
   val hits: List<HoroscopeRingHitDto>,
+  val ingresses: List<HoroscopeRingIngressDto> = emptyList(),
 )
+
+/** 縮時期間的一次入座：[point] 在 [t]（當地 ISO 日期時刻）進入 [sign]；[retrograde] ＝ 逆行退回這個星座 */
+@Serializable
+data class HoroscopeRingIngressDto(val point: AstroPoint, val sign: ZodiacSign, val t: String, val retrograde: Boolean)
 
 /** 縮時的一筆取樣：[t] 是當地 ISO 日期時刻 */
 @Serializable
