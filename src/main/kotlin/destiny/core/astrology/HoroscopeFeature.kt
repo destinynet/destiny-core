@@ -219,6 +219,13 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
     forward: Boolean = true
   ) : ISolarArcModel
 
+  /**
+   * 太陽弧在 [viewTime] 走了幾度：收斂時刻的太陽領先本命太陽的度數（[forward] 為 false 時取負值）。
+   * 太陽弧盤上每一點的黃經 ＝ 本命黃經加上這個度數（[getSolarArc] 的 [ISolarArcModel.degreeMoved] 就是它）；
+   * 只要其中幾點的位置時用這個，不必排整張盤
+   */
+  fun IHoroscopeModel.getSolarArcDegree(viewTime: GmtJulDay, config: IHoroscopeConfig, forward: Boolean = true): Double
+
 
   fun IHoroscopeModel.getHarmonic(n : Int, aspectCalculator: IAspectCalculator) : Harmonic
 
@@ -384,18 +391,9 @@ class HoroscopeFeature(
     require(viewTime >= this.gmtJulDay) { "viewTime ($viewTime) should be after model.gmtJulDay (${this.gmtJulDay})" }
 
     // 使用 Secondary Progression 來獲得精確的 convergent time
-    val progressionSecondary = ProgressionSecondary(forward)
-    val convergentJulDay = progressionSecondary.getConvergentTime(this.gmtJulDay, viewTime)
+    val convergentJulDay = ProgressionSecondary(forward).getConvergentTime(this.gmtJulDay, viewTime)
 
-    // 計算精確的太陽弧度數
-    val convergentSunPos: IStarPos = starPositionImpl.calculate(
-      Planet.SUN, convergentJulDay, config.centric, config.coordinate, config.starTypeOptions
-    )
-    val natalSunPos = this.getPosition(Planet.SUN)!!
-
-    val degreeMoved: Double = convergentSunPos.lngDeg.aheadOf(natalSunPos.lngDeg).let {
-      if (!forward) -it else it
-    }
+    val degreeMoved: Double = getSolarArcDegree(viewTime, config, forward)
 
     val innerPosMap = this.positionMap.let {
       if (innerGrain == MINUTE)
@@ -436,6 +434,23 @@ class HoroscopeFeature(
                          forward,
                          convergentJulDay, degreeMoved,
                          this.location, posMap, synastryAspects)
+  }
+
+  override fun IHoroscopeModel.getSolarArcDegree(viewTime: GmtJulDay, config: IHoroscopeConfig, forward: Boolean): Double {
+    require(viewTime >= this.gmtJulDay) { "viewTime ($viewTime) should be after model.gmtJulDay (${this.gmtJulDay})" }
+
+    // 使用 Secondary Progression 來獲得精確的 convergent time
+    val convergentJulDay = ProgressionSecondary(forward).getConvergentTime(this.gmtJulDay, viewTime)
+
+    // 計算精確的太陽弧度數
+    val convergentSunPos: IStarPos = starPositionImpl.calculate(
+      Planet.SUN, convergentJulDay, config.centric, config.coordinate, config.starTypeOptions
+    )
+    val natalSunPos = this.getPosition(Planet.SUN)!!
+
+    return convergentSunPos.lngDeg.aheadOf(natalSunPos.lngDeg).let {
+      if (!forward) -it else it
+    }
   }
 
   override fun IHoroscopeModel.getHarmonic(n: Int, aspectCalculator: IAspectCalculator): Harmonic {
