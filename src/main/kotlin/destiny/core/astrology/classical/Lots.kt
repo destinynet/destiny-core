@@ -60,8 +60,8 @@ data class LotsOptions(
 /**
  * Lot 的古典事實。要盤的日夜（[usesSect]）：日夜不明時不出任何一筆（公式日夜不同，沒有日夜就算不出）
  *
- * ⚠️ 刻意**不**掛進 [destiny.core.astrology.classical.rules.ClassicalPatternContext] 的來源清單：那一份也是本命古典事實存表的判準，
- * 多一種事實就得升版、整批重新回填。Lot 只給解說（星盤導演）用，由組盤的一方另外附上
+ * ⚠️ 刻意**不**列入 [destiny.core.astrology.classical.rules.ClassicalPatternContext] 的來源清單：那份清單決定一張盤預設有哪些古典事實，
+ * 加一種就會改變既有的輸出。Lot 的事實由需要的呼叫端另外附上
  */
 interface ILots : IClassicalFactSource {
 

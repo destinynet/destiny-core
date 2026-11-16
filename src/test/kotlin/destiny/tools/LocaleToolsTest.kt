@@ -10,35 +10,6 @@ class LocaleToolsTest {
 
   val logger = KotlinLogging.logger {  }
 
-  // ========== parseAcceptLanguageHeader tests ==========
-
-  @Test
-  fun `parseAcceptLanguageHeader with null`() {
-    assertEquals(Locale.TRADITIONAL_CHINESE, LocaleTools.parseAcceptLanguageHeader(null))
-  }
-
-  @Test
-  fun `parseAcceptLanguageHeader with blank`() {
-    assertEquals(Locale.TRADITIONAL_CHINESE, LocaleTools.parseAcceptLanguageHeader(""))
-    assertEquals(Locale.TRADITIONAL_CHINESE, LocaleTools.parseAcceptLanguageHeader("  "))
-  }
-
-  @Test
-  fun `parseAcceptLanguageHeader with simple locale`() {
-    assertEquals(Locale.of("en"), LocaleTools.parseAcceptLanguageHeader("en"))
-  }
-
-  @Test
-  fun `parseAcceptLanguageHeader with quality factors`() {
-    assertEquals(Locale.of("zh", "TW"), LocaleTools.parseAcceptLanguageHeader("zh-TW,zh;q=0.9,en;q=0.8"))
-  }
-
-  @Test
-  fun `parseAcceptLanguageHeader with custom default`() {
-    assertEquals(Locale.ENGLISH, LocaleTools.parseAcceptLanguageHeader(null, Locale.ENGLISH))
-    assertEquals(Locale.ENGLISH, LocaleTools.parseAcceptLanguageHeader("", Locale.ENGLISH))
-  }
-
   // ========== buildLocaleList tests ==========
 
   @Test

@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
 /**
  * Lot（希臘化占星的 klēros，中世紀以後俗稱「阿拉伯點」Arabic parts）：由上升與兩顆星算出來的點，公式見 [operands]／[lngOf]。
  *
- * nameKey 是 `Lot.Fortune` 這種形式（2026-11-13 以前叫 `Arabic`，DB 裡的舊字串已全數換掉）
+ * nameKey 是 `Lot.Fortune` 這種形式
  */
 @Serializable(with = LotSerializer::class)
 sealed class Lot(nameKey: String, abbrKey: String, unicode: Char? = null) : Star(nameKey, abbrKey, Star::class.java.name, unicode),

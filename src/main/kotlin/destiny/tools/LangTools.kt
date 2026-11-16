@@ -10,12 +10,6 @@ package destiny.tools
  * 本物件供新程式碼與階段 2 的遷移使用。`LangToolsTest` 對使用中的語言
  * 逐一驗證兩者行為一致，並明確標出刻意不同之處。
  *
- * ## 與 [LocaleTools] 刻意不同的地方
- *
- *  1. **`Accept-Language: *`**：[LocaleTools.parseAcceptLanguageHeader] 得到
- *     `Locale.ROOT`（等於「未定語言」），本物件視為無法解析而回傳 default ——
- *     後者才是呼叫端要的。
- *
  * ## 曾經不同、現已一致
  *
  * [LocaleTools.getLocale] 原本按位置把輸入硬塞成 language/country/variant，
@@ -32,6 +26,8 @@ object LangTools {
    * 解析 HTTP `Accept-Language` 標頭，取第一順位語言。
    *
    * 例：`"zh-TW,zh;q=0.9,en;q=0.8"` → [Lang.ZH_TW]
+   *
+   * `Accept-Language: *` 不是語言：視為無法解析，回傳 [default]
    */
   fun parseAcceptLanguageHeader(acceptLanguage: String?, default: Lang = Lang.DEFAULT): Lang {
     if (acceptLanguage.isNullOrBlank()) return default

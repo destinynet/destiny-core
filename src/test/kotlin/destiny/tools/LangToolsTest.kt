@@ -12,7 +12,7 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 
 /**
- * [LangTools] 必須與 [LocaleTools] 行為一致 —— 除了刻意修正的三處（見下方最後一節）。
+ * [LangTools] 必須與 [LocaleTools] 行為一致 —— 除了刻意不同之處（見下方最後一節）。
  *
  * 這組測試的價值在於「比照既有實作」而非「自說自話」：每個函式都同時跑
  * Locale 版與 Lang 版，斷言兩者結果相同。
@@ -27,26 +27,6 @@ class LangToolsTest {
   )
 
   // ------------------------------------------------------- parseAcceptLanguageHeader
-
-  @Test
-  fun `parseAcceptLanguageHeader 與 LocaleTools 一致`() {
-    val headers = listOf(
-      "zh-TW,zh;q=0.9,en;q=0.8",
-      "en-US,en;q=0.9",
-      "ja",
-      " en ",
-      "ko-KR",
-      "fr-FR,fr;q=0.7",
-      null,
-      "",
-      "   ",
-    )
-    for (h in headers) {
-      val viaLocale = LocaleTools.parseAcceptLanguageHeader(h, Locale.TRADITIONAL_CHINESE)
-      val viaLang = LangTools.parseAcceptLanguageHeader(h, Lang.ZH_TW)
-      assertEquals(viaLocale.toLang(), viaLang, "header = ${h?.let { "\"$it\"" }}")
-    }
-  }
 
   @Test
   fun `parseAcceptLanguageHeader 取第一順位並忽略 q 值`() {
@@ -201,13 +181,12 @@ class LangToolsTest {
   // ------------------------------------------------------- 刻意不同之處
 
   /**
-   * [LangTools] 相對 [LocaleTools] 僅存的刻意差異。
+   * `Accept-Language: *` 不當成語言。
    * 用測試釘住，避免日後被誤當成 bug「修」回去。
    */
   @Test
-  fun `刻意的行為差異 —— Accept-Language 的 asterisk`() {
-    // Locale 版得到 ROOT（未定語言），Lang 版視為無法解析而回傳 default
-    assertEquals(Locale.ROOT, LocaleTools.parseAcceptLanguageHeader("*", Locale.TRADITIONAL_CHINESE))
+  fun `Accept-Language 的 asterisk 回傳 default`() {
+    // `*` 不是語言：視為無法解析而回傳 default
     assertEquals(Lang.DEFAULT, LangTools.parseAcceptLanguageHeader("*"))
   }
 

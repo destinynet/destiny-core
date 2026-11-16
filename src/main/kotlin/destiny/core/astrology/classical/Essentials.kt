@@ -14,7 +14,7 @@ interface IRuler {
   /** @param dayNight 若有傳值，取得「日夜區分版本」的 [RULER] (nullable), 否則取得一般版本的 [RULER] (非null) */
   fun ZodiacSign.getRulerPoint(dayNight: DayNight? = null): AstroPoint?
 
-  /** 不分日夜，取得此行星為哪個星座的主人 , 傳回的為 非null值 . size 固定為 2  */
+  /** 不分日夜，取得此行星為哪些星座的主人。大小依守護系統而定：傳統守護下日、月各一個，其餘五星各兩個；現代守護下三王星各一個、讓出星座的傳統主星剩一個；不守護任何星座的回空集合 */
   fun Planet.getRulingSigns(): Set<ZodiacSign>
 
   /**

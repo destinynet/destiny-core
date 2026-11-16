@@ -33,20 +33,6 @@ object LocaleTools {
   fun getLocale(input: String?): Locale? = Lang.of(input)?.toLocale()
 
 
-  fun parseAcceptLanguageHeader(acceptLanguage: String?, default: Locale = Locale.TRADITIONAL_CHINESE): Locale {
-    if (acceptLanguage.isNullOrBlank()) return default
-    return try {
-      val primaryLang = acceptLanguage.split(',')
-        .firstOrNull()
-        ?.split(';')
-        ?.firstOrNull()
-        ?.trim()
-      primaryLang?.let { Locale.forLanguageTag(it) } ?: default
-    } catch (_: Exception) {
-      default
-    }
-  }
-
   /**
    * Converts a Locale to a priority-ordered list of locale strings for DB queries.
    *
