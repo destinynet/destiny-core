@@ -191,7 +191,8 @@ data class HoroscopeMetaDto(
 fun HoroscopeChartDto.withSect(sect: DayNight?): HoroscopeChartDto = copy(meta = meta.copy(sect = sect))
 
 /**
- * 定位星關係 —— [Graph] 的呈現層投影，星體在 JSON 裡一律是 [AstroPoint.nameKey]。只含傳統七星（[Planet.classicalList]）。
+ * 定位星關係 —— [Graph] 的呈現層投影，星體在 JSON 裡一律是 [AstroPoint.nameKey]。
+ * 含哪些星依排盤採用的守護：傳統守護只有七星（[Planet.classicalList]），現代守護另有天王星、海王星、冥王星。
  *
  * 圖已在 server 算好（[IHoroscopeModel.getGraph]）；client 只需把相鄰兩顆連成箭頭，不必重跑圖演算法。
  * 每條鏈與每個環都依**定位方向**排列：前一顆由後一顆定位（落在後一顆守護的星座）。
@@ -812,7 +813,7 @@ data class HoroscopeChartDto(
   val patterns: List<HoroscopePatternDto> = emptyList(),
   /** 有焦點星的中點；三顆都在 [points] 內 */
   val midpoints: List<HoroscopeMidpointDto> = emptyList(),
-  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上、不相見、受剋、受扶、持矛者、映點、灼傷、區分、得時、顯現、野生、月亮的離與合、燃燒路）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
+  /** 古典占星的結構化事實（光線傳遞、收集、臨陣退縮、插隊、撲空、包夾、居上、不相見、受剋、受扶、持矛者、映點、灼傷、區分、得時、顯現、野生、月亮的離與合、燃燒路、Lot）；成員都在 [points] 內。由呼叫端以 [withClassicalFacts] 附上 */
   val classicalFacts: List<HoroscopeClassicalFactDto> = emptyList(),
   /** 各行星離開所在星座前的入相位（依 planet、再依 degrees 排序）；兩端都在 [points] 內，不含 LOT */
   val applications: List<HoroscopeApplicationDto> = emptyList(),
@@ -829,11 +830,16 @@ data class HoroscopeChartDto(
   val rings: List<HoroscopeRingDto> = emptyList(),
 )
 
-/** 外圈的種類：點位圈（行運、推運）畫另一組星，星座帶（小限、黃道釋放）只點亮星座 */
-enum class RingKind(val band: Boolean) {
-  TRANSIT(false),
-  SECONDARY(false),
-  SOLAR_ARC(false),
+/**
+ * 外圈的種類：點位圈（行運、推運）畫另一組星，星座帶（小限、黃道釋放）只點亮星座。
+ *
+ * @param band true ＝ 星座帶，false ＝ 點位圈
+ * @param source 這一圈的點是哪一種推運的動點（[destiny.core.astrology.prediction.EventSource]）；星座帶與回歸盤不是動點對本命的推運，為 null
+ */
+enum class RingKind(val band: Boolean, val source: destiny.core.astrology.prediction.EventSource? = null) {
+  TRANSIT(false, destiny.core.astrology.prediction.EventSource.TRANSIT),
+  SECONDARY(false, destiny.core.astrology.prediction.EventSource.SECONDARY),
+  SOLAR_ARC(false, destiny.core.astrology.prediction.EventSource.SOLAR_ARC),
   /** 年度小限：從上升星座起算，每年前進一個星座 */
   PROFECTION(true),
   /** 黃道釋放：從 Lot 的星座起算的 L1、L2 時主 */
