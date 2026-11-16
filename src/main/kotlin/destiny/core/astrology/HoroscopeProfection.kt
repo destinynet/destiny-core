@@ -18,7 +18,20 @@ import kotlin.math.max
 
 
 /**
+ * 小限的十二個位置：第 N 個 → 從上升星座起算、順黃道的第 N 個星座。
+ *
+ * 小限法以**星座**計，與宮制無關：每一期推進一個星座，十二期走完十二個不同的星座。
+ * 不取「第 N 宮宮頭的星座」—— 象限宮制有截奪星座時，宮頭會跳過一個星座、又重複另一個。
+ */
+private fun IHoroscopeModel.profectionSigns(): Map<Int, ZodiacSign> {
+  val rising = getZodiacSign(Axis.RISING) ?: getCuspDegree(1).sign
+  return (1..12).associateWith { rising.next(it - 1) }
+}
+
+/**
  * 根據指定的尺度，高效計算特定時刻的小限法狀態。
+ *
+ * 以星座計，與宮制無關（年、月、日同一套）：[Profection.ascSign] 是從上升星座起算的第 [Profection.house] 個星座。
  * @param gmtJulDay 欲查詢的時刻。
  * @param scale 欲查詢的時間尺度（年、月等）。
  * @return 一個包含從 YEAR 到指定 scale 的所有小限法狀態的 Map。
@@ -28,9 +41,7 @@ fun IHoroscopeModel.getProfection(gmtJulDay: GmtJulDay, scale: Scale): Map<Scale
   require(this.getHouse(Axis.RISING) == 1) { "Annual Profection requires a chart with a valid Ascendant and house system." }
 
   val rulerImpl: IRuler = RulerPtolemyImpl
-  val houseCuspSigns = (1..12).associateWith { houseNumber ->
-    this.getCuspDegree(houseNumber).sign
-  }
+  val houseCuspSigns = profectionSigns()
   val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
   val dayNight = if (sunHouse in 7..12) DayNight.DAY else DayNight.NIGHT
 
@@ -71,6 +82,8 @@ fun IHoroscopeModel.getProfection(gmtJulDay: GmtJulDay, scale: Scale): Map<Scale
 
 /**
  * 根據指定的尺度，高效計算時間範圍內的小限法時段列表。
+ *
+ * 以星座計，與宮制無關（同 [getProfection]）。
  * @param fromTime 開始時間
  * @param toTime 結束時間
  * @param scale 欲查詢的時間尺度（年、月等）。
@@ -81,9 +94,7 @@ fun IHoroscopeModel.getRangeProfections(fromTime: GmtJulDay, toTime: GmtJulDay, 
   require(this.getHouse(Axis.RISING) == 1) { "Annual Profection requires a chart with a valid Ascendant and house system." }
 
   val rulerImpl: IRuler = RulerPtolemyImpl
-  val houseCuspSigns: Map<Int, ZodiacSign> = (1..12).associateWith { houseNumber ->
-    this.getCuspDegree(houseNumber).sign
-  }
+  val houseCuspSigns: Map<Int, ZodiacSign> = profectionSigns()
   val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
   val dayNight = if (sunHouse in 7..12) DayNight.DAY else DayNight.NIGHT
 

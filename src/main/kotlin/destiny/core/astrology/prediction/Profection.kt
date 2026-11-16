@@ -14,6 +14,13 @@ import destiny.core.calendar.GmtJulDay
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
+/**
+ * 小限的一期。小限法以星座計，與宮制無關。
+ *
+ * @param ascSign 這一期的小限星座
+ * @param house 小限星座是從上升星座起算的第幾個星座（1–12）；不是象限宮制的宮位
+ * @param lord 小限星座的主星
+ */
 @Serializable
 data class Profection(
   val scale: Scale,
@@ -26,6 +33,10 @@ data class Profection(
   val toTime: GmtJulDay
 )
 
+/**
+ * 計算月度小限
+ * @param houseCuspSigns 第 N 個位置 → 從上升星座起算的第 N 個星座
+ */
 fun getMonthProfection(annualFromTime: GmtJulDay, annualProfectedHouse: Int, monthIndex: Int, houseCuspSigns: Map<Int, ZodiacSign>, dayNight: DayNight): Profection {
   val monthlyPeriodDuration = TROPICAL_YEAR_DAYS / 12.0
   val monthlyFromTime = annualFromTime + (monthIndex * monthlyPeriodDuration)
@@ -44,6 +55,7 @@ fun getMonthProfection(annualFromTime: GmtJulDay, annualProfectedHouse: Int, mon
  * @param monthlyFromTime 當前月度小限的開始時間
  * @param monthlyProfectedHouse 當前月度小限的宮位
  * @param dayIndex 從月度小限開始算起的第幾天 (從 0 開始)
+ * @param houseCuspSigns 第 N 個位置 → 從上升星座起算的第 N 個星座
  */
 fun getDayProfection(monthlyFromTime: GmtJulDay, monthlyProfectedHouse: Int, dayIndex: Int, houseCuspSigns: Map<Int, ZodiacSign>, dayNight: DayNight): Profection {
   val dailyFromTime = monthlyFromTime + dayIndex
