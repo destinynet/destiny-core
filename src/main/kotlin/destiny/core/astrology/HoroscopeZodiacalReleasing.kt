@@ -6,6 +6,7 @@
 package destiny.core.astrology
 
 import destiny.core.astrology.prediction.ZodiacalReleasing
+import destiny.core.astrology.prediction.ZrYearLength
 import destiny.core.astrology.prediction.generateZodiacalReleasing
 import destiny.core.calendar.GmtJulDay
 
@@ -20,10 +21,11 @@ import destiny.core.calendar.GmtJulDay
 fun IHoroscopeModel.getZodiacalReleasing(
   lot: Lot,
   endTime: GmtJulDay,
-  maxLevel: Int = 2
+  maxLevel: Int = 2,
+  yearLength: ZrYearLength = ZrYearLength.DEFAULT,
 ): List<ZodiacalReleasing>? {
   val lotSign = getZodiacSign(lot) ?: return null
-  return generateZodiacalReleasing(lotSign, gmtJulDay, endTime, maxLevel)
+  return generateZodiacalReleasing(lotSign, gmtJulDay, endTime, maxLevel, yearLength)
 }
 
 /**
@@ -40,9 +42,10 @@ fun IHoroscopeModel.getRangeZodiacalReleasing(
   lot: Lot,
   fromTime: GmtJulDay,
   toTime: GmtJulDay,
-  maxLevel: Int = 2
+  maxLevel: Int = 2,
+  yearLength: ZrYearLength = ZrYearLength.DEFAULT,
 ): List<ZodiacalReleasing>? {
   val lotSign = getZodiacSign(lot) ?: return null
-  return generateZodiacalReleasing(lotSign, gmtJulDay, toTime, maxLevel)
+  return generateZodiacalReleasing(lotSign, gmtJulDay, toTime, maxLevel, yearLength)
     .filter { it.fromTime < toTime && fromTime < it.toTime }
 }

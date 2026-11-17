@@ -5,7 +5,9 @@
  * Starting from the sign of a Lot (typically Lot of Fortune or Lot of Spirit),
  * time is divided into periods based on the planetary years of each zodiac sign.
  *
- * Uses Egyptian years (1 year = 360 days, 1 month = 30 days).
+ * Uses Egyptian years (1 year = 360 days, 1 month = 30 days) by default. The year length is a
+ * parameter ([ZrYearLength]): Valens' ideal 360-day year is the dominant modern convention;
+ * a minority converts with the 365.25-day (Julian) year.
  *
  * Each level subdivides by 12:
  *   L1 = sign_years × 360 days
@@ -65,7 +67,22 @@ const val EGYPTIAN_MONTH_DAYS: Double = 30.0
  * L3: 2.5 days per year (30/12)
  * L4: ~0.2083 days per year (2.5/12)
  */
-fun levelUnitDays(level: Int): Double = EGYPTIAN_YEAR_DAYS / 12.0.pow(level - 1)
+fun levelUnitDays(level: Int, yearLength: ZrYearLength = ZrYearLength.DEFAULT): Double = yearLength.days / 12.0.pow(level - 1)
+
+/**
+ * How many days one "year" of Zodiacal Releasing lasts when converting periods to calendar dates.
+ * Every level scales with it (L2 = 1/12, L3 = 1/144 …).
+ */
+enum class ZrYearLength(val days: Double) {
+  /** Valens' ideal year of 360 days (a full circle of 360°); the convention most practitioners follow */
+  VALENS_360(EGYPTIAN_YEAR_DAYS),
+  /** Julian year; a minority convention. A 25-year period ends about 131 days later than with [VALENS_360] */
+  JULIAN_365_25(365.25);
+
+  companion object {
+    val DEFAULT = VALENS_360
+  }
+}
 
 @Serializable
 data class ZodiacalReleasing(
@@ -107,13 +124,13 @@ private fun rulerOf(sign: ZodiacSign): Planet = AbstractPtolemy.rulerMap.getValu
  * @param startTime birth time (GMT Julian Day)
  * @param endTime how far into the future to calculate
  */
-fun generateL1(lotSign: ZodiacSign, startTime: GmtJulDay, endTime: GmtJulDay): List<ZodiacalReleasing> {
+fun generateL1(lotSign: ZodiacSign, startTime: GmtJulDay, endTime: GmtJulDay, yearLength: ZrYearLength = ZrYearLength.DEFAULT): List<ZodiacalReleasing> {
   val periods = mutableListOf<ZodiacalReleasing>()
   var currentTime = startTime
   var sign = lotSign
 
   while (currentTime < endTime) {
-    val duration = zodiacalReleasingYears.getValue(sign) * EGYPTIAN_YEAR_DAYS
+    val duration = zodiacalReleasingYears.getValue(sign) * yearLength.days
     val periodEnd = GmtJulDay(min(currentTime.value + duration, endTime.value))
     periods.add(ZodiacalReleasing(1, sign, rulerOf(sign), zrAngularity(lotSign, sign), currentTime, periodEnd))
     currentTime = GmtJulDay(currentTime.value + duration)
@@ -147,9 +164,10 @@ fun generateSubPeriods(
   parentSign: ZodiacSign,
   parentFrom: GmtJulDay,
   parentDuration: Double,
-  level: Int
+  level: Int,
+  yearLength: ZrYearLength = ZrYearLength.DEFAULT,
 ): List<ZodiacalReleasing> {
-  val unitDays = levelUnitDays(level)
+  val unitDays = levelUnitDays(level, yearLength)
   val periods = mutableListOf<ZodiacalReleasing>()
   var currentTime = parentFrom
   var remaining = parentDuration
@@ -197,29 +215,31 @@ fun generateZodiacalReleasing(
   lotSign: ZodiacSign,
   startTime: GmtJulDay,
   endTime: GmtJulDay,
-  maxLevel: Int = 2
+  maxLevel: Int = 2,
+  /** days per year when converting to dates; default [ZrYearLength.VALENS_360] */
+  yearLength: ZrYearLength = ZrYearLength.DEFAULT,
 ): List<ZodiacalReleasing> {
   val allPeriods = mutableListOf<ZodiacalReleasing>()
 
-  val l1Periods = generateL1(lotSign, startTime, endTime)
+  val l1Periods = generateL1(lotSign, startTime, endTime, yearLength)
   allPeriods.addAll(l1Periods)
 
   if (maxLevel >= 2) {
     for (l1 in l1Periods) {
       val l1Duration = l1.toTime.value - l1.fromTime.value
-      val l2Periods = generateSubPeriods(lotSign, l1.sign, l1.fromTime, l1Duration, 2)
+      val l2Periods = generateSubPeriods(lotSign, l1.sign, l1.fromTime, l1Duration, 2, yearLength)
       allPeriods.addAll(l2Periods)
 
       if (maxLevel >= 3) {
         for (l2 in l2Periods) {
           val l2Duration = l2.toTime.value - l2.fromTime.value
-          val l3Periods = generateSubPeriods(lotSign, l2.sign, l2.fromTime, l2Duration, 3)
+          val l3Periods = generateSubPeriods(lotSign, l2.sign, l2.fromTime, l2Duration, 3, yearLength)
           allPeriods.addAll(l3Periods)
 
           if (maxLevel >= 4) {
             for (l3 in l3Periods) {
               val l3Duration = l3.toTime.value - l3.fromTime.value
-              val l4Periods = generateSubPeriods(lotSign, l3.sign, l3.fromTime, l3Duration, 4)
+              val l4Periods = generateSubPeriods(lotSign, l3.sign, l3.fromTime, l3Duration, 4, yearLength)
               allPeriods.addAll(l4Periods)
             }
           }
@@ -294,9 +314,10 @@ fun zrByLotAt(
   lotSign: ZodiacSign,
   natalGmt: GmtJulDay,
   gmt: GmtJulDay,
-  maxLevel: Int = 3
+  maxLevel: Int = 3,
+  yearLength: ZrYearLength = ZrYearLength.DEFAULT,
 ): ZrByLot {
-  val periods = generateZodiacalReleasing(lotSign, natalGmt, gmt + L1_COMPLETION_MARGIN_DAYS, maxLevel)
+  val periods = generateZodiacalReleasing(lotSign, natalGmt, gmt + L1_COMPLETION_MARGIN_DAYS, maxLevel, yearLength)
     .filter { it.fromTime <= gmt && gmt < it.toTime }
     .sortedBy { it.level }
   return ZrByLot(lot, lotSign, periods)
@@ -317,9 +338,10 @@ fun zrByLotRange(
   natalGmt: GmtJulDay,
   fromTime: GmtJulDay,
   toTime: GmtJulDay,
-  maxLevel: Int = 3
+  maxLevel: Int = 3,
+  yearLength: ZrYearLength = ZrYearLength.DEFAULT,
 ): ZrByLot {
-  val periods = generateZodiacalReleasing(lotSign, natalGmt, toTime + L1_COMPLETION_MARGIN_DAYS, maxLevel)
+  val periods = generateZodiacalReleasing(lotSign, natalGmt, toTime + L1_COMPLETION_MARGIN_DAYS, maxLevel, yearLength)
     .filter { it.fromTime < toTime && fromTime < it.toTime }
     .sortedWith(compareBy({ it.fromTime }, { it.level }))
   return ZrByLot(lot, lotSign, periods)
@@ -330,4 +352,4 @@ fun zrByLotRange(
  * [generateZodiacalReleasing] truncates its final period at `endTime`, so without this the period
  * covering the query would be reported as ending there.
  */
-private val L1_COMPLETION_MARGIN_DAYS: Double = zodiacalReleasingYears.values.max() * EGYPTIAN_YEAR_DAYS
+private val L1_COMPLETION_MARGIN_DAYS: Double = zodiacalReleasingYears.values.max() * ZrYearLength.entries.maxOf { it.days }

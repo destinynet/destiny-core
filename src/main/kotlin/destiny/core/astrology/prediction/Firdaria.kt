@@ -126,8 +126,58 @@ val majorRulerYearsMap: Map<AstroPoint, Int> = mapOf(
   LunarNode.SOUTH to 2
 )
 
-fun getMajorRulers(diurnal: Boolean): List<AstroPoint> = if (diurnal) {
+/**
+ * 法達主運的排列（Firdaria sequence）。
+ *
+ * 日生盤各派相同：日→金→水→月→土→木→火→北交→南交。
+ * 夜生盤的七星順序也相同（月→土→木→火→日→金→水），**分歧只在南北交點插在哪裡**，見 [FirdariaAbuMashar]、[FirdariaBonatti]。
+ * 副運只取七星、順序與主運相同，從該主運的主星起算；兩派一致。
+ */
+interface IFirdariaSequence {
+  val variant: FirdariaVariant
+
+  /** 一輪（75 年）的主運主星，含南北交點 */
+  fun majorRulers(diurnal: Boolean): List<AstroPoint>
+}
+
+/** 日生盤的主運順序：各派相同 */
+private val DIURNAL_RULERS: List<AstroPoint> =
   listOf(Planet.SUN, Planet.VENUS, Planet.MERCURY, Planet.MOON, Planet.SATURN, Planet.JUPITER, Planet.MARS, LunarNode.NORTH, LunarNode.SOUTH)
-} else {
-  listOf(Planet.MOON, Planet.SATURN, Planet.JUPITER, Planet.MARS, Planet.SUN, Planet.VENUS, Planet.MERCURY, LunarNode.NORTH, LunarNode.SOUTH)
+
+/**
+ * Abu Ma'shar：夜生盤的南北交點也排在最後（水星之後，70–75 歲）。
+ * al-Qabisi、al-Biruni 與多數現代譯介（Robert Hand）採此排法，一般視為最早、也最通行的版本 —— 預設值。
+ */
+data object FirdariaAbuMashar : IFirdariaSequence {
+  override val variant = FirdariaVariant.ABU_MASHAR
+
+  override fun majorRulers(diurnal: Boolean): List<AstroPoint> = if (diurnal) DIURNAL_RULERS
+  else listOf(Planet.MOON, Planet.SATURN, Planet.JUPITER, Planet.MARS, Planet.SUN, Planet.VENUS, Planet.MERCURY, LunarNode.NORTH, LunarNode.SOUTH)
+}
+
+/**
+ * Bonatti：夜生盤的南北交點緊接在火星之後（與日生盤一樣「跟在火星後面」），之後才是日、金、水。
+ * Robert Zoller 一派與部分軟體採此排法。
+ */
+data object FirdariaBonatti : IFirdariaSequence {
+  override val variant = FirdariaVariant.BONATTI
+
+  override fun majorRulers(diurnal: Boolean): List<AstroPoint> = if (diurnal) DIURNAL_RULERS
+  else listOf(Planet.MOON, Planet.SATURN, Planet.JUPITER, Planet.MARS, LunarNode.NORTH, LunarNode.SOUTH, Planet.SUN, Planet.VENUS, Planet.MERCURY)
+}
+
+/** 法達排法的識別（序列化、設定值用）；實作見 [sequence] */
+enum class FirdariaVariant {
+  ABU_MASHAR,
+  BONATTI;
+
+  val sequence: IFirdariaSequence
+    get() = when (this) {
+      ABU_MASHAR -> FirdariaAbuMashar
+      BONATTI    -> FirdariaBonatti
+    }
+
+  companion object {
+    val DEFAULT = ABU_MASHAR
+  }
 }
