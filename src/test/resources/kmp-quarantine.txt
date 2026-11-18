@@ -93,7 +93,6 @@ destiny/core/astrology/prediction/YearMonthBacktest.kt
 destiny/core/astrology/prediction/YearMonthCurve.kt
 destiny/core/astrology/prediction/YearMonthScorer.kt
 destiny/core/astrology/prediction/YearMonthSearch.kt
-destiny/core/calendar/DailyReportFeature.kt
 destiny/core/calendar/DateDecorator.kt
 destiny/core/calendar/DateHourMinDecorator.kt
 destiny/core/calendar/DateHourMinSecDecorator.kt

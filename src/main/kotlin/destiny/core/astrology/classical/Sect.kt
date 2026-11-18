@@ -9,6 +9,9 @@ import destiny.core.astrology.Axis
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacSign
+import destiny.tools.I18nBundles
+import destiny.tools.ILocaleString
+import destiny.tools.Lang
 
 /**
  * 區分（sect）：日夜盤把七顆古典行星分成兩隊。
@@ -29,7 +32,34 @@ data class Sect(
   val beneficOfSect: Planet,
   val maleficContrary: Planet,
   val mercurySect: DayNight?,
-) : ClassicalFact
+) : ClassicalFact {
+
+  /** [planet] 在這張盤的區分裡扮演的角色（非古典七星為 null） */
+  fun roleOf(planet: Planet): SectRole? = when (planet) {
+    light                         -> SectRole.LIGHT_OF_SECT
+    Planet.SUN, Planet.MOON       -> SectRole.LIGHT_CONTRARY
+    beneficOfSect                 -> SectRole.BENEFIC_OF_SECT
+    Planet.JUPITER, Planet.VENUS  -> SectRole.BENEFIC_CONTRARY
+    maleficContrary               -> SectRole.MALEFIC_CONTRARY
+    Planet.MARS, Planet.SATURN    -> SectRole.MALEFIC_OF_SECT
+    Planet.MERCURY                -> if (Planet.MERCURY in inSect) SectRole.MERCURY_OF_SECT else SectRole.MERCURY_CONTRARY
+    else                          -> null
+  }
+}
+
+/**
+ * 一顆星在區分裡的角色。日盤：太陽是區分光體、木星同區分吉星、土星同區分凶星、金星異區分吉星、火星異區分凶星；夜盤對調（月亮、金星、火星、木星、土星）。
+ * 水星依東出西入歸隊
+ */
+enum class SectRole : ILocaleString {
+  LIGHT_OF_SECT, LIGHT_CONTRARY,
+  BENEFIC_OF_SECT, BENEFIC_CONTRARY,
+  MALEFIC_OF_SECT, MALEFIC_CONTRARY,
+  MERCURY_OF_SECT, MERCURY_CONTRARY;
+
+  override fun getTitle(lang: Lang): String =
+    I18nBundles.string("destiny.core.astrology.classical.Classical", lang, "SectRole.$name") ?: name
+}
 
 /**
  * 一顆星在區分上的三個條件：晝夜歸屬、地平線上下、所在星座的陰陽。[Hayz]（三者都合宜）與 [OutOfSect]（三者都相反）共用這組欄位。
