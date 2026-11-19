@@ -205,7 +205,6 @@ destiny/core/chinese/onePalm/PalmModels.kt
 destiny/core/chinese/ziwei/IMainBodyHouse.kt
 destiny/core/chinese/ziwei/IPlate.kt
 destiny/core/chinese/ziwei/IStrength.kt
-destiny/core/chinese/ziwei/IntAgeLunarYearImpl.kt
 destiny/core/chinese/ziwei/MainBodyHouseAstroImpl.kt
 destiny/core/chinese/ziwei/MainBodyHouseTradImpl.kt
 destiny/core/chinese/ziwei/Plate.kt

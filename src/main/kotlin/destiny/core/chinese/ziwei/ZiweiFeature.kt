@@ -169,6 +169,15 @@ interface IZiweiFeature : PersonFeature<IZiweiConfig, IPlate> {
   fun getYearsOfFlowSection(plate: IPlate, section: Branch, config: IZiweiConfig): List<Triple<Int, StemBranch, Int>>
 
   /**
+   * 換歲：農曆 [westYear] 年的正月，在 [config] 的陰陽曆規則（[IZiweiConfig.lunisolar] 的月界、月表，
+   * 加上 [IZiweiConfig.ewConfig] 的日界：子初／子正、鐘面／真太陽時）下從哪一刻開始。
+   * 歲數表（[IPlate.vageMap]／[IPlate.rageMap]）、大限與流年都在這一刻換 —— 與本命農曆日期用同一條規則，
+   * 出生在這一刻的人，本命年與流年從哪一年起算是同一個答案。
+   * [loc] 是出生地（真太陽時要經度）。
+   */
+  fun newYear(westYear: Int, loc: ILocation, config: IZiweiConfig): ZiweiNewYear
+
+  /**
    * 西元年 → 該年所在的（大限干支, 流年干支）；未入大限或超出大限範圍 ⇒ null。
    * 年份以農曆年為準（同 [ChineseDate.westYear]），與 [getYearsOfFlowSection] 逐年列出流年的算法同源。
    */
@@ -203,12 +212,6 @@ class ZiweiFeature(
   private val flowDayImplMap: Map<FlowDay, IFlowDay>,
   private val flowHourImplMap: Map<FlowHour, IFlowHour>,
   private val dayNightFeature: DayNightFeature,
-
-  @param:Named("intVageZiweiImpl")
-  private val intVageImpl: IIntAge,
-
-  @param:Named("intRageZiweiImpl")
-  private val intRageImpl: IIntAge,
 
   private val purpleRelocationMutator : IHouseMutator
 ) : AbstractCachedPersonFeature<IZiweiConfig, IPlate>(), IZiweiFeature {
@@ -898,6 +901,12 @@ class ZiweiFeature(
 
 
   /** 反推大限、流年兩資訊 */
+  override fun newYear(westYear: Int, loc: ILocation, config: IZiweiConfig): ZiweiNewYear {
+    val cdc = ChineseDateConfig(config.lunisolar, config.ewConfig.dayHourConfig)
+    val first = chineseDateFeature.monthsOf(westYear, loc, cdc).first { it.number == 1 && !it.leap }
+    return ZiweiNewYear(westYear, chineseDateFeature.monthStart(first, loc, cdc), first.firstDay)
+  }
+
   override fun reverseFlows(plate: IPlate, viewGmt: GmtJulDay, config: IZiweiConfig): Flow? {
     return plate.location?.let { loc ->
       plate.localDateTime?.let { lmt ->
@@ -1024,10 +1033,11 @@ class ZiweiFeature(
 
     val dayNight = dayNightFeature.getModel(lmt, loc, config.dayNightConfig)
 
-    // 虛歲時刻 , gmt Julian Day
-    val vageMap = intVageImpl.getRangesMap(gender, lmt.toGmtJulDay(loc), loc, 1, 130)
-    // 實歲時刻 , gmt Julian Day
-    val rageMap = intRageImpl.getRangesMap(gender, lmt.toGmtJulDay(loc), loc, 0, 130)
+    // 虛歲、實歲每一歲的起訖時刻：都在正月的起點換歲（[newYear]），虛歲出生即一歲、實歲出生是零歲
+    val birth = lmt.toGmtJulDay(loc)
+    val newYears = (1..MAX_AGE + 1).associateWith { k -> newYear(cDate.westYear + k, loc, config).start }
+    val vageMap = (1..MAX_AGE).associateWith { age -> (if (age == 1) birth else newYears.getValue(age - 1)) to newYears.getValue(age) }
+    val rageMap = (0..MAX_AGE).associateWith { age -> (if (age == 0) birth else newYears.getValue(age)) to newYears.getValue(age + 1) }
 
     val appendingNotes = notesBuilders.build(defaultLocale)
 
@@ -1057,5 +1067,12 @@ class ZiweiFeature(
   companion object {
     private val logger = KotlinLogging.logger { }
     const val CACHE_ZIWEI_FEATURE = "ziweiFeatureCache"
+    /** 歲數表排到幾歲 */
+    private const val MAX_AGE = 130
   }
 }
+
+/**
+ * 換歲（[IZiweiFeature.newYear]）：農曆 [westYear] 年從 [start] 這一刻開始；[firstDay] 是正月初一的日期（以日為單位的表格用）
+ */
+data class ZiweiNewYear(val westYear: Int, val start: GmtJulDay, val firstDay: java.time.LocalDate)
