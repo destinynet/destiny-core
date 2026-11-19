@@ -315,3 +315,61 @@ private fun meridianDistanceDeg(latDeg: Double, lngDeg: Double, lineLngDeg: Doub
     90.0 - latDeg.absoluteValue
   }
 }
+
+/**
+ * Zenith：星體 [p] 正在頭頂（地平高度 90°）的地點。lat = δ，lng = 該星 MC 線的經度。
+ * 星體不在 context 內回 null。
+ */
+fun AstroGeoContext.zenith(p: AstroPoint, basis: AstroGeoBasis): ILatLng? {
+  val pos = equatorial[p]?.get(basis) ?: return null
+  return LatLng(pos.declination.toLat(), longitudeAt(pos, GeoAngle.MC, 0.0)!!.toLng())
+}
+
+/**
+ * 從 [loc] 看星體 [p] 的地平高度（度，幾何高度，不含大氣折射與視差）。
+ * sin h = sin φ · sin δ + cos φ · cos δ · cos H，H = θ + λ − α。星體不在 context 內回 null。
+ */
+fun AstroGeoContext.altitude(loc: ILatLng, p: AstroPoint, basis: AstroGeoBasis): Double? {
+  val pos = equatorial[p]?.get(basis) ?: return null
+  val phi = Math.toRadians(loc.lat.value)
+  val delta = Math.toRadians(pos.declination)
+  val h = Math.toRadians(gmstDeg + loc.lng.value - pos.rightAscension)
+  val sinAlt = sin(phi) * sin(delta) + cos(phi) * cos(delta) * cos(h)
+  return Math.toDegrees(asin(sinAlt.coerceIn(-1.0, 1.0)))
+}
+
+/**
+ * 晨昏線（幾何的，太陽中心高度 = 0，不含折射）。
+ *
+ * [curve] 由西到東（-180 → 180）每個經度一點：該經線上太陽高度為 0 的緯度。
+ * 晨昏線是大圓，每條經線恰好穿過一次，所以夜半球 ＝ 每個經度上「[curve] 到 [nightPole]」之間。
+ * [nightPole] 為 -90（太陽赤緯 ≥ 0，北半球夏季，南極在夜裡）或 +90。
+ */
+data class Terminator(
+  val subsolar: ILatLng,
+  val curve: List<ILatLng>,
+  val nightPole: Double,
+)
+
+/**
+ * 由 context 內的太陽算晨昏線：tan φ = −cos H / tan δ。
+ * 赤緯 ≈ 0（春秋分）時曲線趨近兩條垂直經線，以極小赤緯代入避免除以 0。
+ * context 內沒有 [sun] 回 null。
+ */
+fun AstroGeoContext.terminator(lngStep: Double = 1.0, sun: AstroPoint = destiny.core.astrology.Planet.SUN): Terminator? {
+  require(lngStep > 0) { "lngStep must be positive" }
+  val pos = equatorial[sun]?.get(AstroGeoBasis.IN_MUNDO) ?: return null
+  val dec = if (pos.declination.absoluteValue < 1e-6) 1e-6 else pos.declination
+  val tanDelta = tan(Math.toRadians(dec))
+  val curve = buildList {
+    var lng = -180.0
+    while (lng <= 180.0 + 1e-9) {
+      val h = Math.toRadians(gmstDeg + lng - pos.rightAscension)
+      val lat = Math.toDegrees(kotlin.math.atan(-cos(h) / tanDelta))
+      add(LatLng(lat.toLat(), lng.coerceAtMost(180.0).toLng()))
+      lng += lngStep
+    }
+  }
+  val subsolar = LatLng(pos.declination.toLat(), longitudeAt(pos, GeoAngle.MC, 0.0)!!.toLng())
+  return Terminator(subsolar, curve, if (dec > 0) -90.0 else 90.0)
+}
