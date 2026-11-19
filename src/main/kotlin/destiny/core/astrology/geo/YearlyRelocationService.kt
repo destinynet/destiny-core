@@ -13,58 +13,19 @@ import destiny.core.astrology.prediction.IReturnContext
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ILocationPlace
-import destiny.tools.Score
-import destiny.tools.Score.Companion.toScore
 import jakarta.inject.Named
 
 /**
- * 產品 A 的計分組態：natal（終身結構）與 SR（今年時效）兩層各自計分後加權。
- */
-data class YearlyRelocationConfig(
-  val basis: AstroGeoBasis = AstroGeoBasis.IN_MUNDO,
-  val scoreConfig: RelocationScoreConfig = RelocationScoreConfig(),
-  val natalWeight: Double = 0.6,
-  val srWeight: Double = 0.4,
-) {
-  init {
-    require(natalWeight + srWeight > 0.0) { "natalWeight + srWeight must be positive" }
-  }
-}
-
-/**
- * 一個候選地點的年度評估：natal 與 SR 各一張 [RelocationCandidate] 掛同一 candidate（設計 doc 5.2）。
- * [score] 為排名鍵 = 兩層 suitability 加權（**0.5 = 中性**）；
- * intensity（強度）與 suitability（吉凶）雙軸並陳，valence ⊥ intensity。
- * [validFrom]/[validTo]：此 SR 的有效期間。
- */
-data class YearlyRelocationResult(
-  val place: ILocationPlace,
-  val natal: RelocationCandidate,
-  val solarReturn: RelocationCandidate,
-  val score: Score,
-  val natalIntensity: Score,
-  val natalSuitability: Score,
-  val srIntensity: Score,
-  val srSuitability: Score,
-  val natalReasons: List<ScoreReason>,
-  val srReasons: List<ScoreReason>,
-  val validFrom: GmtJulDay,
-  val validTo: GmtJulDay,
-)
-
-/**
- * 產品 A：「今年該搬去哪」—— 換置本命盤 + relocated Solar Return 排名。
+ * 產品 A：「今年住在 A、B、C 哪裡好」—— 換置本命盤 ＋ relocated Solar Return（居住地派）。
  *
- * SR 時刻與地點無關（太陽回歸本命度數的瞬間全球同時），只解一次；
- * 兩層各自建 [AstroGeoContext]（jd 一律當參數，設計 doc 拍板）再交給 [RelocationCandidateService]。
- * 純演算法組合，置於 destiny-core。
+ * 回傳 [nowGmtJulDay] 當下生效的那一次太陽回歸（回歸時刻在 now 之前，管到下一次回歸）。
+ * 計分與月版共用 [ReturnRelocationRanker]；月版見 [MonthlyRelocationService]。
  */
 @Named
 class YearlyRelocationService(
-  private val candidateService: RelocationCandidateService,
+  private val ranker: ReturnRelocationRanker,
   @param:Named("solarReturnContext")
   private val solarReturnContext: IReturnContext,
-  private val scorer: IRelocationScorer,
 ) {
 
   /**
@@ -78,35 +39,7 @@ class YearlyRelocationService(
     baseLoc: ILocation? = null,
     stars: Collection<Star> = Planet.list,
     horoscopeConfig: IHoroscopeConfig = HoroscopeConfig(),
-    config: YearlyRelocationConfig = YearlyRelocationConfig(),
-  ): List<YearlyRelocationResult> {
-    val base = baseLoc ?: natalModel.location
-    val returnModel = solarReturnContext.getReturnHoroscope(natalModel, nowGmtJulDay, base)
-    val srJd = returnModel.horoscope.gmtJulDay
-
-    val natalCandidates = candidateService.getCandidates(natalModel.gmtJulDay, base, places, config.basis, stars, horoscopeConfig)
-    val srCandidates = candidateService.getCandidates(srJd, base, places, config.basis, stars, horoscopeConfig)
-
-    return natalCandidates.zip(srCandidates) { natal, sr ->
-      val natalSuitability = scorer.suitability(natal, config.scoreConfig)
-      val srSuitability = scorer.suitability(sr, config.scoreConfig)
-      // 排名鍵用吉凶軸：凶星正壓的地點必須沉下去，強度另陳（設計 doc 5.3 雙軸）
-      val combined = (config.natalWeight * natalSuitability.value + config.srWeight * srSuitability.value) /
-        (config.natalWeight + config.srWeight)
-      YearlyRelocationResult(
-        place = natal.place,
-        natal = natal,
-        solarReturn = sr,
-        score = combined.toScore(),
-        natalIntensity = scorer.score(natal, config.scoreConfig),
-        natalSuitability = natalSuitability,
-        srIntensity = scorer.score(sr, config.scoreConfig),
-        srSuitability = srSuitability,
-        natalReasons = scorer.reasons(natal, config.scoreConfig),
-        srReasons = scorer.reasons(sr, config.scoreConfig),
-        validFrom = returnModel.validFrom,
-        validTo = returnModel.validTo,
-      )
-    }.sortedByDescending { it.score }
-  }
+    config: ReturnRelocationConfig = ReturnRelocationConfig(),
+  ): List<ReturnRelocationResult> =
+    ranker.rank(solarReturnContext, natalModel, nowGmtJulDay, places, baseLoc, stars, horoscopeConfig, config)
 }
