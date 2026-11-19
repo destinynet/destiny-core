@@ -86,6 +86,12 @@ enum class LunisolarPreset(
   /** 萬年曆（預設）：子時依日柱換日，再查萬年曆 */
   CIVIL(DayBoundary.DAY_HOUR, MonthBoundary.DAY, MonthTable.CIVIL),
 
+  /**
+   * 民曆午夜：一天從民曆時區（[LunisolarConfig.civil]，台灣、中國是 UTC+8）的午夜開始，與出生地、夏令時間無關 —— 曆書、農民曆寫的那一套。
+   * 與「子正換日＋子正取鐘錶零時」在台灣出生、非夏令時間時相同；出生在別的時區、或台灣的夏令時間年份，兩者的日界不同
+   */
+  CIVIL_MIDNIGHT(DayBoundary.CIVIL, MonthBoundary.DAY, MonthTable.CIVIL),
+
   /** 初一隨當地日界（含合朔那一刻的那一天是初一），月名照萬年曆 */
   LOCAL_DAY(DayBoundary.DAY_HOUR, MonthBoundary.DAY, MonthTable.CIVIL_NAMES),
 
