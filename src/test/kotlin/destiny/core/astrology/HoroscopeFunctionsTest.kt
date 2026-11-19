@@ -3,12 +3,12 @@
  */
 package destiny.core.astrology
 
+import kotlin.test.BeforeTest
 import destiny.core.astrology.HoroscopeFunctions.getAxisScore
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import io.mockk.every
 import io.mockk.mockk
 import destiny.tools.KotlinLogging
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -81,7 +81,7 @@ class HoroscopeFunctionsTest {
 
     private val azimuth = Azimuth(0.0, 0.0, 0.0)
 
-    @BeforeEach
+    @BeforeTest
     fun init() {
       (1..12).forEach { houseIndex ->
         every { model.getCuspDegree(houseIndex) }.returns(((houseIndex - 1) * 30.0).toZodiacDegree())
