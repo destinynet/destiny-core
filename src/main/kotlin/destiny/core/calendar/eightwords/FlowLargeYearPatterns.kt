@@ -76,35 +76,26 @@ fun IEightWords.getFlowLargeYearPatterns(flowLarge: IStemBranch, flowYear: IStem
   }.toSet()
 }
 
+/** 偵測出來的流運格局 → 帶描述的 DTO（大運、歲運、流年流月共用同一套轉換） */
+private fun Set<FlowPattern>.toFlowDtos(): Set<EwEvent.EwFlow> = buildSet {
+  addAll(this@toFlowDtos.filterIsInstance<Affecting>().toAffectingDtos())
+  addAll(this@toFlowDtos.filterIsInstance<StemCombined>().toStemCombinedDtos())
+  addAll(this@toFlowDtos.filterIsInstance<BranchCombined>().toBranchCombinedDtos())
+  addAll(this@toFlowDtos.filterIsInstance<TrilogyToFlow>().toTrilogyToFlowDtos())
+  addAll(this@toFlowDtos.filterIsInstance<ToFlowTrilogy>().toToFlowTrilogyDtos())
+  addAll(this@toFlowDtos.filterIsInstance<BranchOpposition>().toBranchOppositionDtos())
+}
+
 /**
  * 本命四柱、大運 特徵
  */
-fun IEightWords.fortuneLargeDtos(flowLarge: IStemBranch) : Set<EwEvent.EwFlow> {
-  return getFlowLargePatterns(flowLarge).let { patterns: Set<FlowPattern> ->
-    buildSet {
-      addAll(patterns.filterIsInstance<Affecting>().toAffectingDtos())
-      addAll(patterns.filterIsInstance<StemCombined>().toStemCombinedDtos())
-      addAll(patterns.filterIsInstance<BranchCombined>().toBranchCombinedDtos())
-      addAll(patterns.filterIsInstance<TrilogyToFlow>().toTrilogyToFlowDtos())
-      addAll(patterns.filterIsInstance<ToFlowTrilogy>().toToFlowTrilogyDtos())
-      addAll(patterns.filterIsInstance<BranchOpposition>().toBranchOppositionDtos())
-    }
-  }
-}
-
+fun IEightWords.fortuneLargeDtos(flowLarge: IStemBranch) : Set<EwEvent.EwFlow> =
+  getFlowLargePatterns(flowLarge).toFlowDtos()
 
 /** 大運、流年 特徵 */
-fun IEightWords.yearDtos(flowLarge: IStemBranch, flowYear: IStemBranch): Set<EwEvent.EwFlow> {
-  return getFlowLargeYearPatterns(flowLarge, flowYear).let { patterns: Set<FlowPattern> ->
-    buildSet {
-      addAll(patterns.filterIsInstance<Affecting>().toAffectingDtos())
-      addAll(patterns.filterIsInstance<StemCombined>().toStemCombinedDtos())
-      addAll(patterns.filterIsInstance<BranchCombined>().toBranchCombinedDtos())
-      addAll(patterns.filterIsInstance<TrilogyToFlow>().toTrilogyToFlowDtos())
-      addAll(patterns.filterIsInstance<ToFlowTrilogy>().toToFlowTrilogyDtos())
-      addAll(patterns.filterIsInstance<BranchOpposition>().toBranchOppositionDtos())
-    }
-  }
-}
+fun IEightWords.yearDtos(flowLarge: IStemBranch, flowYear: IStemBranch): Set<EwEvent.EwFlow> =
+  getFlowLargeYearPatterns(flowLarge, flowYear).toFlowDtos()
 
-
+/** 流年、流月 特徵 */
+fun IEightWords.monthDtos(flowYear: IStemBranch, flowMonth: IStemBranch): Set<EwEvent.EwFlow> =
+  getFlowYearMonthPatterns(flowYear, flowMonth).toFlowDtos()
