@@ -17,6 +17,8 @@ interface ICountryPoi {
    * 轄下跨時區又沒有往下寫的節點為 null
    */
   val tzid: String?
+  /** 只給自由文字比對用的細地名（鄉鎮、區縣、市町村）：不出現在表單、不算進 [Country.levels] */
+  val aliases: List<Country.Alias>
 }
 
 data class Country(
@@ -26,6 +28,7 @@ data class Country(
   override val code: String,
   override val pois: List<Poi> = emptyList(),
   override val tzid: String? = null,
+  override val aliases: List<Alias> = emptyList(),
 ) : ICountryPoi {
 
   /**
@@ -47,6 +50,7 @@ data class Country(
     override val code: String,
     override val pois: List<Poi> = emptyList(),
     override val tzid: String? = null,
+    override val aliases: List<Alias> = emptyList(),
   ) : ICountryPoi {
     init {
       if (pois.isEmpty()) {
@@ -56,4 +60,18 @@ data class Country(
       }
     }
   }
+
+  /**
+   * 細地名：掛在所屬的 [Poi]（或一層國家本身、或另一個 [Alias]）底下，自己有座標，code 由祖先決定。
+   * 例：新北（`TW-NWT`）底下的板橋、新莊；橫濱市底下的泉區。
+   *
+   * @param tzid 生效值（繼承自祖先）
+   */
+  data class Alias(
+    val name: String,
+    val regex: Regex? = null,
+    val latLng: ILatLng,
+    val tzid: String? = null,
+    val aliases: List<Alias> = emptyList(),
+  )
 }
