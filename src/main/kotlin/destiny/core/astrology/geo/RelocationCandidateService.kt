@@ -45,7 +45,8 @@ class RelocationCandidateService(
     val ctx = AstroGeoContext.of(jd, stars, starPosition, obliquityCalculator.getObliquity(jd))
     val baseChart = horoscopeFeature.calculate(jd, baseLoc, horoscopeConfig)
     return places.map { place ->
-      val relocatedChart = horoscopeFeature.calculate(jd, place, horoscopeConfig)
+      // 同一時刻只換地點：空亡、逆行這些與地點無關的不重算（整張重算一張約 0.3 秒）
+      val relocatedChart = horoscopeFeature.relocate(baseChart, place)
       val houseShifts = stars.mapNotNull { star ->
         val from = baseChart.getHouse(star) ?: return@mapNotNull null
         val to = relocatedChart.getHouse(star) ?: return@mapNotNull null

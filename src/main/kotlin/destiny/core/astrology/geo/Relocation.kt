@@ -52,7 +52,17 @@ data class ScoreReason(
   val orbDeg: Double,
   val contribution: Double,
   val valence: Double,
-)
+) {
+  /** [orbDeg] 換成地表距離（公里）：給人看的寫法，「3°」會被讀成黃道度數 */
+  val km: Double get() = Math.toRadians(orbDeg) * EARTH_RADIUS_KM
+}
+
+/**
+ * 值得寫成理由的幾條：角距 ≤ [maxOrbDeg]（預設 5°，約 550 km）、依貢獻取前 [limit] 條。
+ * 計分的容許度更寬（[RelocationScoreConfig.orbDeg]），但上千公里外的線寫成理由會被讀成「有影響」
+ */
+fun List<ScoreReason>.notable(maxOrbDeg: Double = 5.0, limit: Int = 3): List<ScoreReason> =
+  filter { it.orbDeg <= maxOrbDeg }.sortedByDescending { it.contribution }.take(limit)
 
 /**
  * 計分權重表 —— 全部進 config，調參不改 library（設計 doc 5.3）。

@@ -85,6 +85,7 @@ destiny/core/astrology/geo/AimedSolarReturnService.kt
 destiny/core/astrology/geo/CcgTravelService.kt
 destiny/core/astrology/geo/Relocation.kt
 destiny/core/astrology/geo/RelocationCandidateService.kt
+destiny/core/astrology/geo/ReturnRelocation.kt
 destiny/core/astrology/geo/YearlyRelocationService.kt
 destiny/core/astrology/prediction/PeakSlice.kt
 destiny/core/astrology/prediction/PeriodRequestDto.kt

@@ -259,7 +259,51 @@ class HoroscopeFeature(
     get() = horoscopeFeatureCache as Cache<GmtCacheKey<IHoroscopeConfig>, IHoroscopeModel>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IHoroscopeConfig): IHoroscopeModel {
-    val positionMap: Map<AstroPoint, IPosWithAzimuth> = config.points.map { point ->
+    val positionMap = positionsOf(gmtJulDay, loc, config)
+    val cuspDegreeMap = cuspsOf(gmtJulDay, loc, config)
+
+    // 行星空亡表
+    val vocMap: Map<Planet, Misc.VoidCourseSpan> = try {
+      voidCourseFeature.getVocMap(gmtJulDay, loc, config.points, VoidCourseConfig(vocImpl = config.vocImpl))
+    } catch (e : Exception) {
+      logger.error { "無法計算行星空亡表, gmtJulDay = $gmtJulDay , loc = $loc , configPoints = ${config.points} , e = $e , e.message = ${e.message}" }
+      emptyMap()
+    }
+
+    // 星體逆行狀態
+    val retrogradePhaseMap: Map<Star, RetrogradePhase> =
+      config.points.asSequence().filter {
+        it is Planet
+          || (it is LunarNode && config.starTypeOptions.nodeType == NodeType.TRUE)
+          || (it is LunarApsis && config.starTypeOptions.apsisType == MeanOscu.OSCU)
+      }.map { it as Star }.map { star ->
+        star to retrogradeImpl.getRetrogradePhase(star, gmtJulDay, starPositionImpl, starTransitImpl)
+      }.filter { (_, v) -> v != null }.associate { (k, v) -> k to v!! }
+
+    return HoroscopeModel(gmtJulDay, loc, config, positionMap, cuspDegreeMap, vocMap, planetaryHourOf(gmtJulDay, loc, config), retrogradePhaseMap, rulingHousesOf(cuspDegreeMap))
+  }
+
+  /**
+   * 同一時刻、換一個地點的盤（換置盤）：位置（方位角、高度）、宮頭、行星時依新地點重算；
+   * 行星空亡表與逆行狀態與觀測地無關（地心），沿用 [model] 的 —— 這兩項要往前後搜尋星體運動，是整張盤最貴的部分。
+   * 不是地心（[Centric.GEO]）的盤就整張重算。
+   */
+  fun relocate(model: IHoroscopeModel, loc: ILocation): IHoroscopeModel {
+    val src = model as? HoroscopeModel
+    if (src == null || src.config.centric != Centric.GEO)
+      return calculate(model.gmtJulDay, loc, (model as? HoroscopeModel)?.config ?: defaultConfig)
+    val cuspDegreeMap = cuspsOf(src.gmtJulDay, loc, src.config)
+    return src.copy(
+      location = loc,
+      positionMap = positionsOf(src.gmtJulDay, loc, src.config),
+      cuspDegreeMap = cuspDegreeMap,
+      planetaryHour = planetaryHourOf(src.gmtJulDay, loc, src.config),
+      rulingHouseMap = rulingHousesOf(cuspDegreeMap),
+    )
+  }
+
+  private fun positionsOf(gmtJulDay: GmtJulDay, loc: ILocation, config: IHoroscopeConfig): Map<AstroPoint, IPosWithAzimuth> =
+    config.points.map { point ->
       point to pointPosFuncMap[point]?.getPosition(gmtJulDay, loc, config.centric, config.coordinate, config.temperature, config.pressure, config.starTypeOptions)
     }.filter { (_, v) -> v != null }
       .associate { (point, pos) ->
@@ -275,32 +319,15 @@ class HoroscopeFeature(
         }
       }
 
+  // [1] 到 [12] 宮首黃道度數
+  private fun cuspsOf(gmtJulDay: GmtJulDay, loc: ILocation, config: IHoroscopeConfig): Map<Int, ZodiacDegree> =
+    houseCuspFeature.getModel(gmtJulDay, loc, HouseConfig(config.houseSystem, config.coordinate))
 
-    // [1] 到 [12] 宮首黃道度數
-    val cuspDegreeMap: Map<Int, ZodiacDegree> = houseCuspFeature.getModel(gmtJulDay, loc, HouseConfig(config.houseSystem, config.coordinate))
-
-    // 行星空亡表
-    val vocMap: Map<Planet, Misc.VoidCourseSpan> = try {
-      voidCourseFeature.getVocMap(gmtJulDay, loc, config.points, VoidCourseConfig(vocImpl = config.vocImpl))
-    } catch (e : Exception) {
-      logger.error { "無法計算行星空亡表, gmtJulDay = $gmtJulDay , loc = $loc , configPoints = ${config.points} , e = $e , e.message = ${e.message}" }
-      emptyMap()
-    }
-
-    // 行星時 Planetary Hour
-    val planetaryHour =
+  // 行星時 Planetary Hour
+  private fun planetaryHourOf(gmtJulDay: GmtJulDay, loc: ILocation, config: IHoroscopeConfig) =
       planetHourFeature.getModel(gmtJulDay, loc, PlanetaryHourConfig(PlanetaryHourType.ASTRO, TransConfig(temperature = config.temperature, pressure = config.pressure)))
 
-    // 星體逆行狀態
-    val retrogradePhaseMap: Map<Star, RetrogradePhase> =
-      config.points.asSequence().filter {
-        it is Planet
-          || (it is LunarNode && config.starTypeOptions.nodeType == NodeType.TRUE)
-          || (it is LunarApsis && config.starTypeOptions.apsisType == MeanOscu.OSCU)
-      }.map { it as Star }.map { star ->
-        star to retrogradeImpl.getRetrogradePhase(star, gmtJulDay, starPositionImpl, starTransitImpl)
-      }.filter { (_, v) -> v != null }.associate { (k, v) -> k to v!! }
-
+  private fun rulingHousesOf(cuspDegreeMap: Map<Int, ZodiacDegree>): Map<Planet, Set<RulingHouse>> {
     val rulerPtolemyImpl: IRuler = RulerPtolemyImpl
     val rulingHouseMap: Map<Planet, Set<RulingHouse>> = with(rulerPtolemyImpl) {
       cuspDegreeMap.map { (house, zodiacDeg: ZodiacDegree) ->
@@ -312,8 +339,7 @@ class HoroscopeFeature(
         .mapValues { (_: Planet, v: List<Triple<Int, Planet, ZodiacDegree>>) -> v.map { triple -> RulingHouse(triple.first, triple.third.sign) }.toSet() }
         .toMap()
     }
-
-    return HoroscopeModel(gmtJulDay, loc, config, positionMap, cuspDegreeMap, vocMap, planetaryHour, retrogradePhaseMap, rulingHouseMap)
+    return rulingHouseMap
   }
 
   override fun getProgression(
