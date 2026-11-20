@@ -10,6 +10,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.Lat.Companion.toLat
 import destiny.core.calendar.LatLng
 import destiny.core.calendar.Lng.Companion.toLng
+import destiny.tools.truncate
 import kotlinx.serialization.json.Json
 import kotlin.test.*
 
@@ -107,6 +108,10 @@ class AcgMapTest {
     assertEquals(dto.lines.size, back.lines.size)
     assertEquals(dto.zeniths.map { it.point }, back.zeniths.map { it.point })
     assertEquals(dto.night.curve.size, back.night!!.curve.size)
+    // 點是二元陣列，兩位小數
+    assertTrue(Regex("""\[-?\d+(\.\d{1,2})?,-?\d+(\.\d{1,2})?]""").containsMatchIn(json))
+    assertTrue("\"lat\"" !in json)
+    assertEquals(dto.zeniths.first().pos.lat.truncate(2), back.zeniths.first().pos.lat)
   }
 
   @Test

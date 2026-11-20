@@ -7,8 +7,14 @@ import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.Planet
 import destiny.core.calendar.ILatLng
 import destiny.core.calendar.toEpochMilliseconds
-import destiny.tools.serializers.DoubleTwoDecimalSerializer
+import destiny.tools.truncate
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.DoubleArraySerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 /**
  * ACG 地圖（AstroCartography）的資料合約：某一時刻的天空投影到地表，全部伺服器算好，前端只負責投影與繪製。
@@ -31,11 +37,9 @@ data class AcgMapDto(
   val parans: List<Paran> = emptyList(),
 ) {
 
-  @Serializable
-  data class Pos(
-    @Serializable(with = DoubleTwoDecimalSerializer::class) val lat: Double,
-    @Serializable(with = DoubleTwoDecimalSerializer::class) val lng: Double,
-  )
+  /** 一個點；JSON 是二元陣列 `[lat, lng]`（兩位小數，無條件捨去）—— 一張圖有幾千個點，物件寫法的 key 佔掉一半的大小 */
+  @Serializable(with = PosSerializer::class)
+  data class Pos(val lat: Double, val lng: Double)
 
   @Serializable
   data class Line(val point: AstroPoint, val angle: GeoAngle, val segments: List<List<Pos>>)
@@ -55,6 +59,23 @@ data class AcgMapDto(
 }
 
 private fun ILatLng.toPos() = AcgMapDto.Pos(lat.value, lng.value)
+
+/** [AcgMapDto.Pos] ⇄ `[lat, lng]` */
+internal object PosSerializer : KSerializer<AcgMapDto.Pos> {
+  private val delegate = DoubleArraySerializer()
+
+  @OptIn(ExperimentalSerializationApi::class)
+  override val descriptor: SerialDescriptor = SerialDescriptor("destiny.core.astrology.geo.AcgMapDto.Pos", delegate.descriptor)
+
+  override fun serialize(encoder: Encoder, value: AcgMapDto.Pos) =
+    encoder.encodeSerializableValue(delegate, doubleArrayOf(value.lat.truncate(2), value.lng.truncate(2)))
+
+  override fun deserialize(decoder: Decoder): AcgMapDto.Pos {
+    val a = decoder.decodeSerializableValue(delegate)
+    require(a.size == 2) { "Pos 要兩個數：${a.size}" }
+    return AcgMapDto.Pos(a[0], a[1])
+  }
+}
 
 /**
  * 由 context 組出 [AcgMapDto]。
