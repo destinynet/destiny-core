@@ -71,6 +71,63 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
   /** Deneb 天津四  */
   object DENEB : FixedStar("FixedStar.DENEB", "FixedStar.DENEB_ABBR")
 
+  /** Achernar 水委一 */
+  object ACHERNAR : FixedStar("FixedStar.ACHERNAR", "FixedStar.ACHERNAR_ABBR")
+
+  /** Acrux 十字架二（南十字α） */
+  object ACRUX : FixedStar("FixedStar.ACRUX", "FixedStar.ACRUX_ABBR")
+
+  /** Alcyone 昴宿六（昴宿星團 Pleiades 最亮星） */
+  object ALCYONE : FixedStar("FixedStar.ALCYONE", "FixedStar.ALCYONE_ABBR")
+
+  /** Hamal 婁宿三 */
+  object HAMAL : FixedStar("FixedStar.HAMAL", "FixedStar.HAMAL_ABBR")
+
+  /** Polaris 勾陳一（北極星） */
+  object POLARIS : FixedStar("FixedStar.POLARIS", "FixedStar.POLARIS_ABBR")
+
+  /** Castor 北河二 */
+  object CASTOR : FixedStar("FixedStar.CASTOR", "FixedStar.CASTOR_ABBR")
+
+  /** Denebola 五帝座一 */
+  object DENEBOLA : FixedStar("FixedStar.DENEBOLA", "FixedStar.DENEBOLA_ABBR")
+
+  /** Toliman 南門二（半人馬α，Rigil Kentaurus） */
+  object TOLIMAN : FixedStar("FixedStar.TOLIMAN", "FixedStar.TOLIMAN_ABBR")
+
+  /** Agena 馬腹一（半人馬β，Hadar） */
+  object AGENA : FixedStar("FixedStar.AGENA", "FixedStar.AGENA_ABBR")
+
+  /** Alphecca 貫索四 */
+  object ALPHECCA : FixedStar("FixedStar.ALPHECCA", "FixedStar.ALPHECCA_ABBR")
+
+  /** Vindemiatrix 太微左垣四 */
+  object VINDEMIATRIX : FixedStar("FixedStar.VINDEMIATRIX", "FixedStar.VINDEMIATRIX_ABBR")
+
+  /** Markab 室宿一 */
+  object MARKAB : FixedStar("FixedStar.MARKAB", "FixedStar.MARKAB_ABBR")
+
+  /** Scheat 室宿二 */
+  object SCHEAT : FixedStar("FixedStar.SCHEAT", "FixedStar.SCHEAT_ABBR")
+
+  /** Alpheratz 壁宿二 */
+  object ALPHERATZ : FixedStar("FixedStar.ALPHERATZ", "FixedStar.ALPHERATZ_ABBR")
+
+  /** Bellatrix 參宿五 */
+  object BELLATRIX : FixedStar("FixedStar.BELLATRIX", "FixedStar.BELLATRIX_ABBR")
+
+  /** Elnath 五車五 */
+  object ELNATH : FixedStar("FixedStar.ELNATH", "FixedStar.ELNATH_ABBR")
+
+  /** Zosma 西上相 */
+  object ZOSMA : FixedStar("FixedStar.ZOSMA", "FixedStar.ZOSMA_ABBR")
+
+  /** Sadalsuud 虛宿一 */
+  object SADALSUUD : FixedStar("FixedStar.SADALSUUD", "FixedStar.SADALSUUD_ABBR")
+
+  /** Rasalhague 候（蛇夫α） */
+  object RASALHAGUE : FixedStar("FixedStar.RASALHAGUE", "FixedStar.RASALHAGUE_ABBR")
+
   override fun compareTo(other: FixedStar): Int {
     if (this == other)
       return 0
@@ -88,7 +145,11 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
         REGULUS, SPICA, ALGOL, ALDEBARAN, RIGEL,
         CAPELLA, BETELGEUSE, SIRIUS, CANOPUS, POLLUX,
         PROCYON, PRAESEPE, ALPHARD, ARCTURUS, ANTARES,
-        VEGA, ALTAIR, FOMALHAUT, DENEB
+        VEGA, ALTAIR, FOMALHAUT, DENEB,
+        ACHERNAR, ACRUX, ALCYONE, HAMAL, POLARIS,
+        CASTOR, DENEBOLA, TOLIMAN, AGENA, ALPHECCA,
+        VINDEMIATRIX, MARKAB, SCHEAT, ALPHERATZ, BELLATRIX,
+        ELNATH, ZOSMA, SADALSUUD, RASALHAGUE
       )
     }
     val list by lazy { listOf(*values) }
