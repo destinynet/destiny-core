@@ -24,6 +24,23 @@ class FixedStarTest : AbstractPointTest(FixedStar::class) {
   }
 
   @Test
+  fun testDefaultList() {
+    assertEquals(19, FixedStar.defaultList.size)
+    assertEquals(38, FixedStar.list.size)
+    // 預設組是 values 開頭那 19 顆，順序相同（下游的 points 集合依此順序組成）
+    assertEquals(FixedStar.list.take(19), FixedStar.defaultList)
+  }
+
+  @Test
+  fun testNewStarNames() {
+    assertEquals("南門二", FixedStar.TOLIMAN.getTitle(Locale.TAIWAN))
+    assertEquals("南门二", FixedStar.TOLIMAN.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("Toliman", FixedStar.TOLIMAN.getTitle(Locale.ENGLISH))
+    assertEquals("門", FixedStar.TOLIMAN.getAbbreviation(Locale.TAIWAN))
+    assertEquals("Tol", FixedStar.TOLIMAN.getAbbreviation(Locale.ENGLISH))
+  }
+
+  @Test
   fun testToStringLocale() {
 
     assertEquals("畢宿五", FixedStar.ALDEBARAN.getTitle(Locale.TAIWAN))

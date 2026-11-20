@@ -152,7 +152,21 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
         ELNATH, ZOSMA, SADALSUUD, RASALHAGUE
       )
     }
+    /** 全部恆星（[values] 的 List 版） */
     val list by lazy { listOf(*values) }
+
+    /**
+     * 預設組：盤面與解讀素材預設帶的 19 顆（四王星、Algol、Sirius…）。
+     * 需要較完整星表的計算（例如 paran）用 [list]；兩者的差別是用途，不是亮度或重要性。
+     */
+    val defaultList: List<FixedStar> by lazy {
+      listOf(
+        REGULUS, SPICA, ALGOL, ALDEBARAN, RIGEL,
+        CAPELLA, BETELGEUSE, SIRIUS, CANOPUS, POLLUX,
+        PROCYON, PRAESEPE, ALPHARD, ARCTURUS, ANTARES,
+        VEGA, ALTAIR, FOMALHAUT, DENEB
+      )
+    }
 
     override fun fromString(value: String, locale: Locale): FixedStar? {
       return values.firstOrNull {
