@@ -11,7 +11,9 @@ open class PositionRsmiImpl(private val axis: Axis,
                             private val houseCuspImpl: IHouseCusp) : AbstractPositionImpl<Axis>(axis) {
 
   override fun getPosition(gmtJulDay: GmtJulDay, loc: ILocation, centric: Centric, coordinate: Coordinate, temperature: Double, pressure: Double, starTypeOptions: StarTypeOptions): IPos {
-    return houseCuspImpl.getHouseCuspMap(gmtJulDay , loc , HouseSystem.PLACIDUS , coordinate).let { map: Map<Int, ZodiacDegree> ->
+    // 只取四個角（1、4、7、10 宮頭）：各種象限宮制的四角都相同。用 Porphyry 而不是 Placidus ——
+    // Placidus 在極圈內有些時刻無解（整張盤跟著失敗），Porphyry 永遠有解、四角的值一樣
+    return houseCuspImpl.getHouseCuspMap(gmtJulDay , loc , HouseSystem.PORPHYRIUS , coordinate).let { map: Map<Int, ZodiacDegree> ->
       val pos = when(axis) {
         Axis.RISING -> Pos(map.getValue(1).value , 0.0)
         Axis.SETTING-> Pos(map.getValue(7).value , 0.0)

@@ -14,6 +14,7 @@ import destiny.core.astrology.Star
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ILocationPlace
+import destiny.tools.KotlinLogging
 import jakarta.inject.Named
 
 /**
@@ -44,9 +45,13 @@ class RelocationCandidateService(
   ): List<RelocationCandidate> {
     val ctx = AstroGeoContext.of(jd, stars, starPosition, obliquityCalculator.getObliquity(jd))
     val baseChart = horoscopeFeature.calculate(jd, baseLoc, horoscopeConfig)
-    return places.map { place ->
-      // 同一時刻只換地點：空亡、逆行這些與地點無關的不重算（整張重算一張約 0.3 秒）
-      val relocatedChart = horoscopeFeature.relocate(baseChart, place)
+    return places.mapNotNull { place ->
+      // 同一時刻只換地點：空亡、逆行這些與地點無關的不重算（整張重算一張約 0.3 秒）。
+      // 極圈附近有些時刻 Placidus 等宮制無解（宮頭算不出來）：那座城市跳過，不讓整批失敗
+      val relocatedChart = runCatching { horoscopeFeature.relocate(baseChart, place) }.getOrElse {
+        logger.debug { "略過 ${place.place}（${place.lat.value}, ${place.lng.value}）：${it.message}" }
+        return@mapNotNull null
+      }
       val houseShifts = stars.mapNotNull { star ->
         val from = baseChart.getHouse(star) ?: return@mapNotNull null
         val to = relocatedChart.getHouse(star) ?: return@mapNotNull null
@@ -60,5 +65,9 @@ class RelocationCandidateService(
         relocatedChart = relocatedChart,
       )
     }
+  }
+
+  private companion object {
+    private val logger = KotlinLogging.logger { }
   }
 }

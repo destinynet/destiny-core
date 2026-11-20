@@ -57,6 +57,15 @@ data class ReturnRelocationResult(
   val validTo: GmtJulDay,
 )
 
+/** 一批城市起好的盤（[ReturnRelocationRanker.candidates]）：兩張換置盤，與同一次回歸的有效期間 */
+data class ReturnCandidates(
+  val returnPlanet: Planet,
+  val natal: List<RelocationCandidate>,
+  val returnChart: List<RelocationCandidate>,
+  val validFrom: GmtJulDay,
+  val validTo: GmtJulDay,
+)
+
 /**
  * 換置本命盤 ＋ relocated 回歸盤的排名，年版與月版共用。
  *
@@ -83,22 +92,47 @@ class ReturnRelocationRanker(
     stars: Collection<Star>,
     horoscopeConfig: IHoroscopeConfig,
     config: ReturnRelocationConfig,
-  ): List<ReturnRelocationResult> {
+  ): List<ReturnRelocationResult> =
+    score(candidates(returnContext, natalModel, nowGmtJulDay, places, baseLoc, stars, horoscopeConfig, config.basis), config)
+
+  /**
+   * 只起盤、不計分：每座城市的換置本命盤與換置回歸盤。同一批城市要用好幾組權重排名（多個主題）時，盤只起一次，再各自 [score]
+   */
+  fun candidates(
+    returnContext: IReturnContext,
+    natalModel: IHoroscopeModel,
+    nowGmtJulDay: GmtJulDay,
+    places: List<ILocationPlace>,
+    baseLoc: ILocation?,
+    stars: Collection<Star>,
+    horoscopeConfig: IHoroscopeConfig,
+    basis: AstroGeoBasis = AstroGeoBasis.IN_MUNDO,
+  ): ReturnCandidates {
     val base = baseLoc ?: natalModel.location
     val returnModel = returnContext.getReturnHoroscope(natalModel, nowGmtJulDay, base)
     val returnJd = returnModel.horoscope.gmtJulDay
+    return ReturnCandidates(
+      returnPlanet = returnContext.planet,
+      natal = candidateService.getCandidates(natalModel.gmtJulDay, base, places, basis, stars, horoscopeConfig),
+      returnChart = candidateService.getCandidates(returnJd, base, places, basis, stars, horoscopeConfig),
+      validFrom = returnModel.validFrom,
+      validTo = returnModel.validTo,
+    )
+  }
 
-    val natalCandidates = candidateService.getCandidates(natalModel.gmtJulDay, base, places, config.basis, stars, horoscopeConfig)
-    val returnCandidates = candidateService.getCandidates(returnJd, base, places, config.basis, stars, horoscopeConfig)
-
-    return natalCandidates.zip(returnCandidates) { natal, ret ->
+  /** 一組權重的排名（依綜合分數降冪）；[config] 的 basis 要與起盤時相同 */
+  fun score(c: ReturnCandidates, config: ReturnRelocationConfig): List<ReturnRelocationResult> {
+    // 依城市對齊（不依順序）：極圈附近的城市可能只有一張盤算得出來（RelocationCandidateService 會略過算不出宮的）
+    val returns = c.returnChart.associateBy { it.place }
+    return c.natal.mapNotNull { natal ->
+      val ret = returns[natal.place] ?: return@mapNotNull null
       val natalSuitability = scorer.suitability(natal, config.scoreConfig)
       val returnSuitability = scorer.suitability(ret, config.scoreConfig)
       // 排名鍵用吉凶軸：凶星正壓的地點必須沉下去，強度另陳（設計 doc 5.3 雙軸）
       val combined = (config.natalWeight * natalSuitability.value + config.returnWeight * returnSuitability.value) /
         (config.natalWeight + config.returnWeight)
       ReturnRelocationResult(
-        returnPlanet = returnContext.planet,
+        returnPlanet = c.returnPlanet,
         place = natal.place,
         natal = natal,
         returnChart = ret,
@@ -109,8 +143,8 @@ class ReturnRelocationRanker(
         returnSuitability = returnSuitability,
         natalReasons = scorer.reasons(natal, config.scoreConfig),
         returnReasons = scorer.reasons(ret, config.scoreConfig),
-        validFrom = returnModel.validFrom,
-        validTo = returnModel.validTo,
+        validFrom = c.validFrom,
+        validTo = c.validTo,
       )
     }.sortedByDescending { it.score }
   }

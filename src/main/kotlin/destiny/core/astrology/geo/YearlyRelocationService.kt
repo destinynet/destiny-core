@@ -42,4 +42,16 @@ class YearlyRelocationService(
     config: ReturnRelocationConfig = ReturnRelocationConfig(),
   ): List<ReturnRelocationResult> =
     ranker.rank(solarReturnContext, natalModel, nowGmtJulDay, places, baseLoc, stars, horoscopeConfig, config)
+
+  /** 只起盤（多個主題共用同一批盤）；再用 [score] 各自排名 */
+  fun candidates(
+    natalModel: IHoroscopeModel,
+    nowGmtJulDay: GmtJulDay,
+    places: List<ILocationPlace>,
+    baseLoc: ILocation? = null,
+    stars: Collection<Star> = Planet.list,
+    horoscopeConfig: IHoroscopeConfig = HoroscopeConfig(),
+  ): ReturnCandidates = ranker.candidates(solarReturnContext, natalModel, nowGmtJulDay, places, baseLoc, stars, horoscopeConfig)
+
+  fun score(c: ReturnCandidates, config: ReturnRelocationConfig = ReturnRelocationConfig()): List<ReturnRelocationResult> = ranker.score(c, config)
 }
