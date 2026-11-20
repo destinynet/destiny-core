@@ -216,45 +216,4 @@ class AstroGeoTest {
     // loc λ=−140 → H = −90 , δ=0 → 正東
     assertEquals(90.0, ctx2.localSpace(loc(25.0, -140.0), basis).getValue(MOON), 1e-9)
   }
-
-  // ========== parans ==========
-
-  /** 兩條 MC/IC 線（垂直平行線）永不相交 */
-  @Test
-  fun testParansMeridianOnlyIsEmpty() {
-    val ctx2 = ctx(100.0, Triple(SUN, 50.0, 20.0), Triple(MOON, 80.0, 10.0))
-    assertTrue(ctx2.parans(SUN, GeoAngle.MC, MOON, GeoAngle.IC, basis).isEmpty())
-    assertTrue(ctx2.parans(SUN, GeoAngle.MC, MOON, GeoAngle.MC, basis).isEmpty())
-  }
-
-  /**
-   * MC × ASC：s1 的 MC 線在 λ=−50（垂直），s2 (α=80, δ=10) 的 ASC 線與之交於
-   * H₂ = 30° → tan φ = −cos30°/tan10° → φ ≈ −78.496°
-   */
-  @Test
-  fun testParansMcAsc() {
-    val ctx2 = ctx(100.0, Triple(SUN, 50.0, 20.0), Triple(MOON, 80.0, 10.0))
-    val points = ctx2.parans(SUN, GeoAngle.MC, MOON, GeoAngle.ASC, basis)
-    assertEquals(1, points.size)
-    val pt = points[0]
-    assertEquals(-78.496, pt.lat.value, 0.01)
-    assertEquals(-50.0, pt.lng.value, 0.01)
-    // 交點代回兩條線方程皆成立
-    assertEquals(-50.0, ctx2.longitudeAt(SUN, GeoAngle.MC, pt.lat.value, basis)!!, 1e-9)
-    assertEquals(-50.0, ctx2.longitudeAt(MOON, GeoAngle.ASC, pt.lat.value, basis)!!, 0.01)
-  }
-
-  /** ASC × ASC：解析預估根在 φ ≈ −15.2 附近，且每個交點須同時滿足兩線方程 */
-  @Test
-  fun testParansAscAscSelfConsistent() {
-    val ctx2 = ctx(100.0, Triple(SUN, 50.0, 20.0), Triple(MOON, 60.0, -15.0))
-    val points = ctx2.parans(SUN, GeoAngle.ASC, MOON, GeoAngle.ASC, basis)
-    assertTrue(points.isNotEmpty())
-    for (pt in points) {
-      val l1 = ctx2.longitudeAt(SUN, GeoAngle.ASC, pt.lat.value, basis)!!
-      val l2 = ctx2.longitudeAt(MOON, GeoAngle.ASC, pt.lat.value, basis)!!
-      assertEquals(l1, l2, 0.01)
-      assertEquals(l1, pt.lng.value, 0.01)
-    }
-  }
 }

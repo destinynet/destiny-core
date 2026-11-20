@@ -11,6 +11,7 @@ import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 class FixedStarTest : AbstractPointTest(FixedStar::class) {
 
@@ -29,6 +30,13 @@ class FixedStarTest : AbstractPointTest(FixedStar::class) {
     assertEquals(38, FixedStar.list.size)
     // 預設組是 values 開頭那 19 顆，順序相同（下游的 points 集合依此順序組成）
     assertEquals(FixedStar.list.take(19), FixedStar.defaultList)
+  }
+
+  @Test
+  fun testNature() {
+    FixedStar.list.forEach { assertTrue(it.nature.size in 1..2, "$it") }
+    assertEquals(listOf(Planet.MARS, Planet.JUPITER), FixedStar.REGULUS.nature)
+    assertEquals(listOf(Planet.SATURN, Planet.JUPITER), FixedStar.ALGOL.nature)
   }
 
   @Test

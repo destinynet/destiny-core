@@ -128,6 +128,15 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
   /** Rasalhague 候（蛇夫α） */
   object RASALHAGUE : FixedStar("FixedStar.RASALHAGUE", "FixedStar.RASALHAGUE_ABBR")
 
+  /**
+   * 恆星的「行星性質」：托勒密《四書》以行星描述每顆亮星的性質（例如 Regulus＝火星＋木星），
+   * 托勒密未列的星依後世通行的說法（Robson）。前者為主、後者為次。
+   *
+   * 只是性質，不是吉凶：Algol 是土星＋木星，傳統上卻是最凶的恆星之一。
+   */
+  val nature: List<Planet>
+    get() = NATURES.getValue(this)
+
   override fun compareTo(other: FixedStar): Int {
     if (this == other)
       return 0
@@ -154,6 +163,49 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
     }
     /** 全部恆星（[values] 的 List 版） */
     val list by lazy { listOf(*values) }
+
+    private val NATURES: Map<FixedStar, List<Planet>> by lazy {
+      mapOf(
+        REGULUS to listOf(Planet.MARS, Planet.JUPITER),
+        SPICA to listOf(Planet.VENUS, Planet.MARS),
+        ALGOL to listOf(Planet.SATURN, Planet.JUPITER),
+        ALDEBARAN to listOf(Planet.MARS),
+        RIGEL to listOf(Planet.JUPITER, Planet.SATURN),
+        CAPELLA to listOf(Planet.MARS, Planet.MERCURY),
+        BETELGEUSE to listOf(Planet.MARS, Planet.MERCURY),
+        SIRIUS to listOf(Planet.JUPITER, Planet.MARS),
+        CANOPUS to listOf(Planet.SATURN, Planet.JUPITER),
+        POLLUX to listOf(Planet.MARS),
+        PROCYON to listOf(Planet.MERCURY, Planet.MARS),
+        PRAESEPE to listOf(Planet.MARS, Planet.MOON),
+        ALPHARD to listOf(Planet.SATURN, Planet.VENUS),
+        ARCTURUS to listOf(Planet.MARS, Planet.JUPITER),
+        ANTARES to listOf(Planet.MARS, Planet.JUPITER),
+        VEGA to listOf(Planet.VENUS, Planet.MERCURY),
+        ALTAIR to listOf(Planet.MARS, Planet.JUPITER),
+        FOMALHAUT to listOf(Planet.VENUS, Planet.MERCURY),
+        DENEB to listOf(Planet.VENUS, Planet.MERCURY),
+        ACHERNAR to listOf(Planet.JUPITER),
+        ACRUX to listOf(Planet.JUPITER),
+        ALCYONE to listOf(Planet.MOON, Planet.MARS),
+        HAMAL to listOf(Planet.MARS, Planet.SATURN),
+        POLARIS to listOf(Planet.SATURN, Planet.VENUS),
+        CASTOR to listOf(Planet.MERCURY),
+        DENEBOLA to listOf(Planet.SATURN, Planet.VENUS),
+        TOLIMAN to listOf(Planet.VENUS, Planet.JUPITER),
+        AGENA to listOf(Planet.VENUS, Planet.JUPITER),
+        ALPHECCA to listOf(Planet.VENUS, Planet.MERCURY),
+        VINDEMIATRIX to listOf(Planet.SATURN, Planet.MERCURY),
+        MARKAB to listOf(Planet.MARS, Planet.MERCURY),
+        SCHEAT to listOf(Planet.MARS, Planet.MERCURY),
+        ALPHERATZ to listOf(Planet.JUPITER, Planet.VENUS),
+        BELLATRIX to listOf(Planet.MARS, Planet.MERCURY),
+        ELNATH to listOf(Planet.MARS),
+        ZOSMA to listOf(Planet.SATURN, Planet.VENUS),
+        SADALSUUD to listOf(Planet.SATURN, Planet.MERCURY),
+        RASALHAGUE to listOf(Planet.SATURN, Planet.VENUS),
+      )
+    }
 
     /**
      * 預設組：盤面與解讀素材預設帶的 19 顆（四王星、Algol、Sirius…）。

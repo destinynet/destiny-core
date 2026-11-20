@@ -247,60 +247,6 @@ fun AstroGeoContext.localSpace(loc: ILatLng, basis: AstroGeoBasis = AstroGeoBasi
   }.toMap()
 
 /**
- * paran：兩星同時角宮化的地點（兩條角線的交點），對緯度做一維求根。
- * MC/IC 線是垂直平行線，兩條都是 MC/IC 時永不相交 → 直接回空。
- */
-fun AstroGeoContext.parans(p1: AstroPoint, a1: GeoAngle, p2: AstroPoint, a2: GeoAngle, basis: AstroGeoBasis): List<ILatLng> {
-  val meridian = setOf(GeoAngle.MC, GeoAngle.IC)
-  if (a1 in meridian && a2 in meridian)
-    return emptyList()
-  val pos1 = equatorial[p1]?.get(basis) ?: return emptyList()
-  val pos2 = equatorial[p2]?.get(basis) ?: return emptyList()
-
-  fun diff(lat: Double): Double? {
-    val l1 = longitudeAt(pos1, a1, lat) ?: return null
-    val l2 = longitudeAt(pos2, a2, lat) ?: return null
-    return (l1 - l2).normalizeSigned()
-  }
-
-  val step = 0.25
-  val maxLat = 89.75
-  val result = mutableListOf<ILatLng>()
-  var prevLat = -maxLat
-  var prevF = diff(prevLat)
-  var lat = -maxLat + step
-  while (lat <= maxLat + 1e-9) {
-    val f = diff(lat)
-    val pf = prevF
-    if (pf != null && f != null) {
-      val signChange = (pf < 0 && f >= 0) || (pf > 0 && f <= 0)
-      // |Δf| ≥ 180 是 normalizeSigned 在 ±180 的 wrap（兩線相距半圈），不是交點
-      if (signChange && (f - pf).absoluteValue < 180.0) {
-        var lo = prevLat
-        var hi = lat
-        var fLo: Double = pf
-        repeat(60) {
-          val mid = (lo + hi) / 2
-          val fMid = diff(mid) ?: return@repeat
-          if ((fLo < 0) == (fMid < 0)) {
-            lo = mid
-            fLo = fMid
-          } else {
-            hi = mid
-          }
-        }
-        val rootLat = (lo + hi) / 2
-        longitudeAt(pos1, a1, rootLat)?.also { result.add(LatLng(rootLat.toLat(), it.toLng())) }
-      }
-    }
-    prevLat = lat
-    prevF = f
-    lat += step
-  }
-  return result
-}
-
-/**
  * 點到「半」子午線（MC 線或 IC 線）的大圓角距（度），分段閉合解。
  *
  * |Δλ| ≤ 90°：垂足落在 [lineLngDeg] 這半邊，d = asin(|cos φ · sin Δλ|)。

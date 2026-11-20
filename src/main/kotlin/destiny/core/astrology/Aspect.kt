@@ -101,6 +101,9 @@ enum class Aspect(
 
   companion object {
 
+    /** 傳統的 paran：合、衝、刑（兩星同時都在角上） */
+    val PARAN: Set<Aspect> = setOf(CONJUNCTION, OPPOSITION, SQUARE)
+
     private val importanceAspects: Map<Importance, Set<Aspect>> = entries.groupBy { it.importance }.mapValues { it.value.toSet() }
 
     /** 從「英文」的 aspect name 來反找 Aspect , 找不到則傳回 null  */

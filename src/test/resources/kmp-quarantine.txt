@@ -83,6 +83,7 @@ destiny/core/astrology/classical/rules/ClassicalPatternContext.kt
 destiny/core/astrology/classical/rules/PatternTranslator.kt
 destiny/core/astrology/geo/AimedSolarReturnService.kt
 destiny/core/astrology/geo/CcgTravelService.kt
+destiny/core/astrology/geo/ParanCalculator.kt
 destiny/core/astrology/geo/Relocation.kt
 destiny/core/astrology/geo/RelocationCandidateService.kt
 destiny/core/astrology/geo/ReturnRelocation.kt

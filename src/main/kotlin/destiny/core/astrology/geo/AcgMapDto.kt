@@ -33,8 +33,11 @@ data class AcgMapDto(
   val zeniths: List<Zenith>,
   /** 晨昏線；天空內沒有太陽時為 null */
   val night: Night? = null,
-  /** 兩條角線的交點（兩星同時在角上的地點）；呼叫端要求才算 */
-  val parans: List<Paran> = emptyList(),
+  /**
+   * paran 緯線，依星體座標的基準分開（兩種都給，前端切換不必重算）；呼叫端給才有。
+   * 緯度兩位小數（無條件捨去）。
+   */
+  val parans: Map<AstroGeoBasis, List<Paran>> = emptyMap(),
 ) {
 
   /** 一個點；JSON 是二元陣列 `[lat, lng]`（兩位小數，無條件捨去）—— 一張圖有幾千個點，物件寫法的 key 佔掉一半的大小 */
@@ -53,9 +56,6 @@ data class AcgMapDto(
    */
   @Serializable
   data class Night(val subsolar: Pos, val curve: List<Pos>, val nightPole: Int)
-
-  @Serializable
-  data class Paran(val point1: AstroPoint, val angle1: GeoAngle, val point2: AstroPoint, val angle2: GeoAngle, val pos: Pos)
 }
 
 private fun ILatLng.toPos() = AcgMapDto.Pos(lat.value, lng.value)
@@ -83,14 +83,14 @@ internal object PosSerializer : KSerializer<AcgMapDto.Pos> {
  * @param points 要畫的星，預設 context 內全部
  * @param latStep AS/DS 線的緯度取樣間距（度）
  * @param lngStep 晨昏線的經度取樣間距（度）
- * @param withParans 是否算 parans（兩兩配對 × 角別組合，星多時較慢）
+ * @param parans 要帶的 paran（由 [IParanCalculator] 算好，依基準分開）；緯度在這裡截到兩位小數
  */
 fun AstroGeoContext.toAcgMapDto(
   basis: AstroGeoBasis = AstroGeoBasis.IN_MUNDO,
   points: Collection<AstroPoint> = equatorial.keys,
   latStep: Double = 1.0,
   lngStep: Double = 1.0,
-  withParans: Boolean = false,
+  parans: Map<AstroGeoBasis, List<Paran>> = emptyMap(),
 ): AcgMapDto {
   val drawn = points.filter { equatorial[it]?.containsKey(basis) == true }
 
@@ -109,17 +109,7 @@ fun AstroGeoContext.toAcgMapDto(
     AcgMapDto.Night(t.subsolar.toPos(), t.curve.map { it.toPos() }, t.nightPole.toInt())
   }
 
-  val parans = if (!withParans) emptyList() else buildList {
-    drawn.forEachIndexed { i, p1 ->
-      drawn.drop(i + 1).forEach { p2 ->
-        GeoAngle.entries.forEach { a1 ->
-          GeoAngle.entries.forEach { a2 ->
-            parans(p1, a1, p2, a2, basis).forEach { add(AcgMapDto.Paran(p1, a1, p2, a2, it.toPos())) }
-          }
-        }
-      }
-    }
-  }
+  val truncated = parans.mapValues { (_, list) -> list.map { it.copy(lat = it.lat.truncate(2)) } }
 
-  return AcgMapDto(gmtJulDay.toEpochMilliseconds(), basis, lines, zeniths, night, parans)
+  return AcgMapDto(gmtJulDay.toEpochMilliseconds(), basis, lines, zeniths, night, truncated)
 }

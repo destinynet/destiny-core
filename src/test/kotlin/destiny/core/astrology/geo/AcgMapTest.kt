@@ -94,14 +94,18 @@ class AcgMapTest {
 
   @Test
   fun testDto() {
-    val dto = summer.toAcgMapDto(withParans = true)
+    val parans = ParanCalculator().parans(summer, ParanQuery(setOf(SUN, MARS), setOf(SUN, MARS)))
+    val dto = summer.toAcgMapDto(parans = mapOf(AstroGeoBasis.IN_MUNDO to parans))
     assertEquals(setOf<AstroPoint>(SUN, MARS), dto.lines.map { it.point }.toSet())
     assertEquals(8, dto.lines.size)   // 兩星 × 四角，δ ≤ 20 的 AS/DS 線都存在
     assertEquals(2, dto.zeniths.size)
     assertNotNull(dto.night)
     assertEquals(-90, dto.night.nightPole)
-    assertTrue(dto.parans.isNotEmpty())
-    dto.parans.forEach { assertTrue(it.point1 != it.point2) }
+    val mundo = dto.parans.getValue(AstroGeoBasis.IN_MUNDO)
+    assertTrue(mundo.isNotEmpty())
+    mundo.forEach { assertTrue(it.anchor != it.partner) }
+    // 緯度截到兩位小數
+    mundo.forEach { assertEquals(it.lat.truncate(2), it.lat) }
 
     val json = Json.encodeToString(AcgMapDto.serializer(), dto)
     val back = Json.decodeFromString(AcgMapDto.serializer(), json)
@@ -110,7 +114,9 @@ class AcgMapTest {
     assertEquals(dto.night.curve.size, back.night!!.curve.size)
     // 點是二元陣列，兩位小數
     assertTrue(Regex("""\[-?\d+(\.\d{1,2})?,-?\d+(\.\d{1,2})?]""").containsMatchIn(json))
-    assertTrue("\"lat\"" !in json)
+    assertEquals(mundo, back.parans.getValue(AstroGeoBasis.IN_MUNDO))
+    // 點（Pos）不寫成物件：除了 paran 的 lat，沒有其他 "lat" key
+    assertEquals(mundo.size, Regex("\"lat\"").findAll(json).count())
     assertEquals(dto.zeniths.first().pos.lat.truncate(2), back.zeniths.first().pos.lat)
   }
 
