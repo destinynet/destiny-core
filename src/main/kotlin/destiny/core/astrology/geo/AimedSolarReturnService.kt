@@ -64,12 +64,12 @@ class AimedSolarReturnService(
     scoreConfig: RelocationScoreConfig = RelocationScoreConfig(),
   ): List<AimedSolarReturnResult> {
     val base = baseLoc ?: natalModel.location
-    // 「當下生效」SR 的 validTo 即下一次回歸時刻；在其後再取一次即得 upcoming SR
-    val current = solarReturnContext.getReturnHoroscope(natalModel, nowGmtJulDay, base)
-    val upcoming = solarReturnContext.getReturnHoroscope(natalModel, current.validTo + 0.01, base)
+    // 「當下生效」SR 的期間終點即下一次回歸時刻（只要時刻、不起盤）；在其後再取一次即得 upcoming SR
+    val (_, currentTo) = solarReturnContext.getConvergentPeriod(natalModel.gmtJulDay, nowGmtJulDay)
+    val upcoming = solarReturnContext.getReturnHoroscope(natalModel, currentTo + 0.01, base)
     val srJd = upcoming.horoscope.gmtJulDay
 
-    return candidateService.getCandidates(srJd, base, places, basis, stars, horoscopeConfig)
+    return candidateService.getCandidates(candidateService.chartAt(upcoming.horoscope, base, horoscopeConfig), places, basis, stars)
       .map { candidate ->
         AimedSolarReturnResult(
           place = candidate.place,

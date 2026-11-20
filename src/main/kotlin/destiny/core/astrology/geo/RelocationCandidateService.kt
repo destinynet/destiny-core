@@ -6,6 +6,8 @@ package destiny.core.astrology.geo
 
 import destiny.core.astrology.HoroscopeConfig
 import destiny.core.astrology.HoroscopeFeature
+import destiny.core.astrology.HoroscopeModel
+import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.IHoroscopeConfig
 import destiny.core.astrology.IObliquityCalculator
 import destiny.core.astrology.IStarPositionWithAzimuthCalculator
@@ -42,9 +44,21 @@ class RelocationCandidateService(
     basis: AstroGeoBasis = AstroGeoBasis.IN_MUNDO,
     stars: Collection<Star> = Planet.list,
     horoscopeConfig: IHoroscopeConfig = HoroscopeConfig(),
+  ): List<RelocationCandidate> =
+    getCandidates(horoscopeFeature.getModel(jd, baseLoc, horoscopeConfig), places, basis, stars)
+
+  /**
+   * 手上已經有基準盤（[baseChart]：基準地、時刻與設定都在盤上）時用這個，不必再整張起一次盤。
+   * 基準盤由別的盤換過來的，用 [chartAt]
+   */
+  fun getCandidates(
+    baseChart: IHoroscopeModel,
+    places: List<ILocationPlace>,
+    basis: AstroGeoBasis = AstroGeoBasis.IN_MUNDO,
+    stars: Collection<Star> = Planet.list,
   ): List<RelocationCandidate> {
+    val jd = baseChart.gmtJulDay
     val ctx = AstroGeoContext.of(jd, stars, starPosition, obliquityCalculator.getObliquity(jd))
-    val baseChart = horoscopeFeature.calculate(jd, baseLoc, horoscopeConfig)
     return places.mapNotNull { place ->
       // 同一時刻只換地點：空亡、逆行這些與地點無關的不重算（整張重算一張約 0.3 秒）。
       // 極圈附近有些時刻 Placidus 等宮制無解（宮頭算不出來）：那座城市跳過，不讓整批失敗
@@ -66,6 +80,17 @@ class RelocationCandidateService(
       )
     }
   }
+
+  /**
+   * [model] 那一刻在 [loc] 的盤，設定為 [config]：與 [model] 同一組設定就沿用它（同地點直接回傳、換地點 [HoroscopeFeature.relocate]，
+   * 不重算空亡與逆行），設定不同才整張起盤。結果與整張起盤相同
+   */
+  fun chartAt(model: IHoroscopeModel, loc: ILocation, config: IHoroscopeConfig): IHoroscopeModel =
+    if ((model as? HoroscopeModel)?.config == config) {
+      if (model.location == loc) model else horoscopeFeature.relocate(model, loc)
+    } else {
+      horoscopeFeature.getModel(model.gmtJulDay, loc, config)
+    }
 
   private companion object {
     private val logger = KotlinLogging.logger { }

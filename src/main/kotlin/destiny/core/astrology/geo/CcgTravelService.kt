@@ -83,7 +83,7 @@ class CcgTravelService(
   ): List<TravelRecommendation> {
     require(toGmt > fromGmt) { "toGmt must be after fromGmt" }
     val base = baseLoc ?: natalModel.location
-    val natalCandidates = candidateService.getCandidates(natalModel.gmtJulDay, base, places, config.basis, natalStars, horoscopeConfig)
+    val natalCandidates = candidateService.getCandidates(candidateService.chartAt(natalModel, base, horoscopeConfig), places, config.basis, natalStars)
 
     val obliquity = obliquityCalculator.getObliquity(natalModel.gmtJulDay)
     val grid = buildList {

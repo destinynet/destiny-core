@@ -110,11 +110,11 @@ class ReturnRelocationRanker(
   ): ReturnCandidates {
     val base = baseLoc ?: natalModel.location
     val returnModel = returnContext.getReturnHoroscope(natalModel, nowGmtJulDay, base)
-    val returnJd = returnModel.horoscope.gmtJulDay
+    // 兩張基準盤都從手上的盤換過來：本命換到基準地、回歸盤本來就起在基準地（設定相同時不再整張起盤）
     return ReturnCandidates(
       returnPlanet = returnContext.planet,
-      natal = candidateService.getCandidates(natalModel.gmtJulDay, base, places, basis, stars, horoscopeConfig),
-      returnChart = candidateService.getCandidates(returnJd, base, places, basis, stars, horoscopeConfig),
+      natal = candidateService.getCandidates(candidateService.chartAt(natalModel, base, horoscopeConfig), places, basis, stars),
+      returnChart = candidateService.getCandidates(candidateService.chartAt(returnModel.horoscope, base, horoscopeConfig), places, basis, stars),
       validFrom = returnModel.validFrom,
       validTo = returnModel.validTo,
     )
