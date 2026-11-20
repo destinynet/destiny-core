@@ -28,6 +28,14 @@ class RelocationRatingTest {
   }
 
   @Test
+  fun `單層的門檻較寬：兩層算「明顯」的分數，單層只算「略」`() {
+    assertEquals(RelocationRating.STRONGLY_FAVORABLE, RelocationRating.of(destiny.tools.Score(0.535)))
+    assertEquals(RelocationRating.FAVORABLE, RelocationRating.ofSingleLayer(destiny.tools.Score(0.535)))
+    assertEquals(RelocationRating.NEUTRAL, RelocationRating.ofSingleLayer(destiny.tools.Score(0.491)))
+    assertEquals(RelocationRating.STRONGLY_UNFAVORABLE, RelocationRating.ofSingleLayer(destiny.tools.Score(0.455)))
+  }
+
+  @Test
   fun `理由只列 5 度以內、前三條`() {
     fun r(p: Planet, orb: Double, c: Double) = ScoreReason(p, GeoAngle.MC, orb, c, 0.0)
     val reasons = listOf(

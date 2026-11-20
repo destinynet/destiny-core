@@ -6,10 +6,11 @@ package destiny.core.astrology.geo
 import destiny.tools.Score
 
 /**
- * 換置／回歸換置的五級評等：只看吉凶軸（[ReturnRelocationResult.score]，0.5 ＝ 中性），給使用者看的不是小數。
+ * 換置／回歸換置的五級評等：只看吉凶軸（0.5 ＝ 中性），給使用者看的不是小數。
  *
- * 門檻是**暫定值**：實際的分數擠在 0.5 附近（同一張盤、不同城市常落在 0.50–0.52），
- * 所以門檻窄；之後以一批出生時間精確的命例 × 精選城市跑出分布，再依分位數校正（只改 [THRESHOLDS]）。
+ * 門檻依出生時間精確的命例 × 精選城市的分數分布校正（只改 [THRESHOLDS]／[SINGLE_LAYER_THRESHOLDS]）。
+ * 門檻對 0.5 對稱，所以「什麼線都沒有」永遠是中性；吉星的線推得比凶星遠，有利的一側本來就比較多。
+ * 以兩層加權的分數為例，各級大約占：明顯有利 7%、略有利 27%、中性 39%、略不利 25%、明顯不利 2%。
  */
 enum class RelocationRating {
   STRONGLY_FAVORABLE,
@@ -19,12 +20,21 @@ enum class RelocationRating {
   STRONGLY_UNFAVORABLE;
 
   companion object {
-    /** 與 0.5 的差：≥ 第一個 ⇒ 明顯，≥ 第二個 ⇒ 略（負的一側對稱） */
+    /** 兩層加權（換置本命盤＋回歸盤，[ReturnRelocationResult.score]）：與 0.5 的差 ≥ 第一個 ⇒ 明顯，≥ 第二個 ⇒ 略（負的一側對稱） */
     val THRESHOLDS: Pair<Double, Double> = 0.03 to 0.008
 
-    fun of(score: Score): RelocationRating {
+    /**
+     * 只有一層（換置本命盤的適合度，[IRelocationScorer.suitability]）：單層的分數沒有被另一層平均掉，分布較寬，
+     * 用同樣的門檻會有兩倍多的城市落在「明顯」；這組門檻讓各級的比例與兩層加權相當
+     */
+    val SINGLE_LAYER_THRESHOLDS: Pair<Double, Double> = 0.04 to 0.01
+
+    /** 兩層加權的評等 */
+    fun of(score: Score): RelocationRating = of(score, THRESHOLDS)
+
+    fun of(score: Score, thresholds: Pair<Double, Double>): RelocationRating {
       val d = score.value - 0.5
-      val (strong, slight) = THRESHOLDS
+      val (strong, slight) = thresholds
       return when {
         d >= strong   -> STRONGLY_FAVORABLE
         d >= slight   -> FAVORABLE
@@ -33,6 +43,9 @@ enum class RelocationRating {
         else          -> STRONGLY_UNFAVORABLE
       }
     }
+
+    /** 單層（換置本命盤）的評等 */
+    fun ofSingleLayer(suitability: Score): RelocationRating = of(suitability, SINGLE_LAYER_THRESHOLDS)
   }
 }
 
@@ -41,7 +54,8 @@ enum class RelocationRating {
  * 鄰近的城市（相距一兩百公里）四角只差一兩度，排名的差距是雜訊，不該讀成「A 比 B 好」。
  *
  * 換置盤缺一張（[RelocationCandidate.relocatedChart] 為 null）就無從比較，回 false。
- * 2° 與 0.01 是初值，與 [RelocationRating.THRESHOLDS] 同一批資料校正。
+ * 2° 與 0.01 經同一批資料驗證：相距 100 km 內的城市幾乎全部併成一組、100–200 km 約八成、800 km 以上幾乎不會；
+ * 起決定作用的是 2°（分數差改成 0.02 結果幾乎不變）。
  */
 fun ReturnRelocationResult.nearlySameAs(other: ReturnRelocationResult, angleDeg: Double = 2.0, scoreDelta: Double = 0.01): Boolean {
   if (kotlin.math.abs(score.value - other.score.value) >= scoreDelta) return false
