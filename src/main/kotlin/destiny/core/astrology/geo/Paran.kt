@@ -36,6 +36,8 @@ data class ParanQuery(
  *
  * @param partnerAngle 合、衝、刑時 partner 也在角上（哪一個角）；其他相位為 null
  * @param lat 緯度（度，北緯為正）
+ * @param curve 有移動星（月亮）參與時，依經度精算的緯度（[CURVE_LNGS] 每一點一個值，解不出為 null）；
+ *              null ＝ 整條就是 [lat]。只有地圖要畫時才算（[IParanCalculator.curve]）
  */
 @Serializable
 data class Paran(
@@ -45,7 +47,14 @@ data class Paran(
   val aspect: Aspect,
   val partnerAngle: GeoAngle?,
   val lat: Double,
-)
+  val curve: List<Double?>? = null,
+) {
+  companion object {
+    /** [curve] 的經度格點：−180、−175 … 180 */
+    const val CURVE_STEP = 5.0
+    val CURVE_LNGS: List<Double> = (0..(360 / CURVE_STEP).toInt()).map { -180.0 + it * CURVE_STEP }
+  }
+}
 
 interface IParanCalculator {
 
@@ -55,4 +64,23 @@ interface IParanCalculator {
    * 同一顆星不與自己配對；context 裡沒有的星略過。
    */
   fun parans(ctx: AstroGeoContext, query: ParanQuery): List<Paran>
+
+  /**
+   * 在經度 [lng] 精算：[AstroGeoContext.tracks] 裡的星（月亮）改用「在這條經線上真的到角那一刻」的位置。
+   * 到角時刻取離出生最近的那一次（前後半個恆星日內），所以含月亮的 paran 嚴格說不是一條水平緯線，而是隨經度移動的線。
+   * 沒有移動星參與的 paran 原樣回傳；解不出（那一刻有星不升落）回 null。
+   *
+   * @param paran 由 [parans] 以同一個 [basis] 算出的（用它的緯度當起點，找最近的解）
+   */
+  fun refine(ctx: AstroGeoContext, paran: Paran, basis: AstroGeoBasis, lng: Double): Paran?
+
+  /**
+   * [refine] 沿著經度 [lngs] 連續求解（地圖畫曲線用）；沒有移動星參與回 null（整條就是 [Paran.lat]）。
+   * 到角時刻跨過「離出生半天」的那條經線時，解會跳到另一天，曲線在那裡斷開。
+   */
+  fun curve(ctx: AstroGeoContext, paran: Paran, basis: AstroGeoBasis, lngs: List<Double> = Paran.CURVE_LNGS): List<Double?>?
 }
+
+/** [IParanCalculator.refine] 一批；解不出的略過 */
+fun IParanCalculator.refineAll(ctx: AstroGeoContext, parans: List<Paran>, basis: AstroGeoBasis, lng: Double): List<Paran> =
+  parans.mapNotNull { refine(ctx, it, basis, lng) }

@@ -47,8 +47,46 @@ data class AstroGeoContext(
   val gmtJulDay: GmtJulDay,
   val gmstDeg: Double,
   val equatorial: Map<AstroPoint, Map<AstroGeoBasis, EquatorialPos>>,
+  /**
+   * 一天之內位置會明顯移動的星（月亮一天約 13°）在 [gmtJulDay] 前後的軌跡。
+   * 只有 paran 用得到（[IParanCalculator.refine]：以「在某條經線上真的到角那一刻」的位置重算）；角線、計分一律用 [equatorial]。
+   */
+  val tracks: Map<AstroPoint, EquatorialTrack> = emptyMap(),
 ) {
+
+  /**
+   * 帶上 [points] 的軌跡（[gmtJulDay] 前後各 [EquatorialTrack.HALF_SPAN_DAYS] 天、逐時取樣）。
+   * 傳入的 [obliquityDeg] 用於黃道投影（整段視為不變）。
+   */
+  fun withTracks(
+    points: Collection<Star>,
+    starPosition: IStarPosition<IStarPos>,
+    obliquityDeg: Double,
+    centric: Centric = Centric.GEO,
+    starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN,
+  ): AstroGeoContext {
+    val n = (2 * EquatorialTrack.HALF_SPAN_DAYS / EquatorialTrack.STEP_DAYS).toInt()
+    val start = gmtJulDay.value - EquatorialTrack.HALF_SPAN_DAYS
+    val built = points.mapNotNull { star ->
+      val samples = (0..n).map { i -> positionsOf(star, GmtJulDay(start + i * EquatorialTrack.STEP_DAYS), starPosition, obliquityDeg, centric, starTypeOptions) ?: return@mapNotNull null }
+      star to EquatorialTrack(start, EquatorialTrack.STEP_DAYS, AstroGeoBasis.entries.associateWith { b -> samples.map { it.getValue(b) } })
+    }.toMap()
+    return copy(tracks = tracks + built)
+  }
+
   companion object {
+
+    /** 一顆星在 [jd] 的兩種基準座標；算不出回 null */
+    private fun positionsOf(
+      star: Star, jd: GmtJulDay, starPosition: IStarPosition<IStarPos>, obliquityDeg: Double, centric: Centric, starTypeOptions: StarTypeOptions,
+    ): Map<AstroGeoBasis, EquatorialPos>? {
+      val inMundo = star.toEquatorial(jd, centric, starPosition, starTypeOptions) ?: return null
+      val eclLng = runCatching { starPosition.calculate(star, jd, centric, Coordinate.ECLIPTIC, starTypeOptions).lng }.getOrNull() ?: return null
+      return mapOf(
+        AstroGeoBasis.IN_MUNDO to inMundo,
+        AstroGeoBasis.ZODIACAL to Astronomical.eclipticToEquatorial(eclLng, 0.0, obliquityDeg),
+      )
+    }
 
     /**
      * 由星曆計算器建構 context：一次算出各星兩個 basis 的 (α, δ)。
@@ -81,19 +119,44 @@ data class AstroGeoContext(
     ): AstroGeoContext {
       val gmstDeg = (Astronomical.gmst(natalGmtJulDay) * 15.0).normalize()
       val map = buildMap<AstroPoint, Map<AstroGeoBasis, EquatorialPos>> {
-        stars.forEach { star ->
-          val inMundo = star.toEquatorial(transitGmtJulDay, centric, starPosition, starTypeOptions) ?: return@forEach
-          val eclLng = runCatching {
-            starPosition.calculate(star, transitGmtJulDay, centric, Coordinate.ECLIPTIC, starTypeOptions).lng
-          }.getOrNull() ?: return@forEach
-          put(star, mapOf(
-            AstroGeoBasis.IN_MUNDO to inMundo,
-            AstroGeoBasis.ZODIACAL to Astronomical.eclipticToEquatorial(eclLng, 0.0, obliquityDeg)
-          ))
-        }
+        stars.forEach { star -> positionsOf(star, transitGmtJulDay, starPosition, obliquityDeg, centric, starTypeOptions)?.let { put(star, it) } }
       }
       return AstroGeoContext(transitGmtJulDay, gmstDeg, map)
     }
+  }
+}
+
+/**
+ * 一顆星在一段時間內的赤道座標（等距取樣、線性內插），兩種基準各一份。
+ * 月亮一小時約走 0.5°，逐時取樣的線性內插誤差約 1"（遠小於 paran 的容許度）。
+ *
+ * @param startJd 第一個樣本的 GMT 儒略日
+ * @param stepDays 取樣間距（日）
+ */
+data class EquatorialTrack(
+  val startJd: Double,
+  val stepDays: Double,
+  val samples: Map<AstroGeoBasis, List<EquatorialPos>>,
+) {
+  /** [jd] 的位置；超出取樣範圍時以兩端外插 */
+  fun at(jd: Double, basis: AstroGeoBasis): EquatorialPos? {
+    val list = samples[basis] ?: return null
+    if (list.size < 2) return list.firstOrNull()
+    val x = (jd - startJd) / stepDays
+    val i = x.toInt().coerceIn(0, list.size - 2)
+    val f = x - i
+    val a = list[i]
+    val b = list[i + 1]
+    return EquatorialPos(
+      (a.rightAscension + (b.rightAscension - a.rightAscension).normalizeSigned() * f).normalize(),
+      a.declination + (b.declination - a.declination) * f,
+    )
+  }
+
+  companion object {
+    /** 出生前後各多久：paran 的到角時刻離出生最多半個恆星日，多取一點餘裕 */
+    const val HALF_SPAN_DAYS = 0.6
+    const val STEP_DAYS = 1.0 / 24
   }
 }
 

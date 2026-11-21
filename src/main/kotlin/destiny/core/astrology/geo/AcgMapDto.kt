@@ -83,7 +83,7 @@ internal object PosSerializer : KSerializer<AcgMapDto.Pos> {
  * @param points 要畫的星，預設 context 內全部
  * @param latStep AS/DS 線的緯度取樣間距（度）
  * @param lngStep 晨昏線的經度取樣間距（度）
- * @param parans 要帶的 paran（由 [IParanCalculator] 算好，依基準分開）；緯度在這裡截到兩位小數
+ * @param parans 要帶的 paran（由 [IParanCalculator] 算好，依基準分開；含月亮的可帶 [Paran.curve]）；緯度在這裡截到兩位小數
  */
 fun AstroGeoContext.toAcgMapDto(
   basis: AstroGeoBasis = AstroGeoBasis.IN_MUNDO,
@@ -109,7 +109,7 @@ fun AstroGeoContext.toAcgMapDto(
     AcgMapDto.Night(t.subsolar.toPos(), t.curve.map { it.toPos() }, t.nightPole.toInt())
   }
 
-  val truncated = parans.mapValues { (_, list) -> list.map { it.copy(lat = it.lat.truncate(2)) } }
+  val truncated = parans.mapValues { (_, list) -> list.map { p -> p.copy(lat = p.lat.truncate(2), curve = p.curve?.map { it?.truncate(2) }) } }
 
   return AcgMapDto(gmtJulDay.toEpochMilliseconds(), basis, lines, zeniths, night, truncated)
 }

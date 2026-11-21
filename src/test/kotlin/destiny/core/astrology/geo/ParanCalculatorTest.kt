@@ -120,4 +120,65 @@ class ParanCalculatorTest {
     assertTrue(calc.parans(two, q.of(SUN, MARS)).isEmpty())
     assertTrue(calc.parans(two, q.of(SUN, SUN)).isEmpty())
   }
+
+  /** 月亮每天 +13°（赤經），赤緯固定 15°；太陽不動 */
+  private fun moving(gmst: Double): AstroGeoContext {
+    val base = ctx(gmst, Triple(SUN, 50.0, 20.0), Triple(MOON, 80.0, 15.0))
+    val start = base.gmtJulDay.value - 0.6
+    val samples = (0..30).map { i -> EquatorialPos((80.0 + 13.0 * (i / 24.0 - 0.6)), 15.0) }
+    return base.copy(tracks = mapOf(MOON to EquatorialTrack(start, 1.0 / 24, AstroGeoBasis.entries.associateWith { samples })))
+  }
+
+  /** 沒有移動星參與：原樣回傳、沒有曲線 */
+  @Test
+  fun refineWithoutTracksIsIdentity() {
+    calc.parans(two, q.of(SUN, MOON)).forEach { p ->
+      assertEquals(p, calc.refine(two, p, AstroGeoBasis.IN_MUNDO, 120.0))
+      assertEquals(null, calc.curve(two, p, AstroGeoBasis.IN_MUNDO))
+    }
+  }
+
+  /**
+   * 月亮在動：精算後的緯度上，太陽在這條經線到角的那一刻（離出生最近的一次），月亮（取那一刻的位置）也正好在它的角上。
+   * 不同經度的解不同（不是水平線）。
+   */
+  @Test
+  fun refineMakesBothAngularAtThatMoment() {
+    val gmst = 100.0
+    val c = moving(gmst)
+    val parans = calc.parans(c, q.of(SUN, MOON))
+    var moved = 0
+    for (lng in listOf(-150.0, -60.0, 0.0, 45.0, 170.0)) {
+      parans.forEach { p ->
+        val r = calc.refine(c, p, AstroGeoBasis.IN_MUNDO, lng) ?: return@forEach
+        if ((r.lat - p.lat).absoluteValue > 0.01) moved++
+        // 太陽不動：到角時刻直接算
+        val ha = when (p.anchorAngle) {
+          GeoAngle.MC -> 0.0; GeoAngle.IC -> 180.0
+          GeoAngle.ASC -> -Math.toDegrees(acos(-tan(Math.toRadians(r.lat)) * tan(Math.toRadians(20.0))))
+          GeoAngle.DESC -> Math.toDegrees(acos(-tan(Math.toRadians(r.lat)) * tan(Math.toRadians(20.0))))
+        }
+        val dt = (50.0 + ha - gmst - lng).normalizeSigned() / 360.98564736629
+        val moon = c.tracks.getValue(MOON).at(c.gmtJulDay.value + dt, AstroGeoBasis.IN_MUNDO)!!
+        val at = AstroGeoContext(c.gmtJulDay, gmst + 360.98564736629 * dt, mapOf(
+          SUN to AstroGeoBasis.entries.associateWith { EquatorialPos(50.0, 20.0) },
+          MOON to AstroGeoBasis.entries.associateWith { moon },
+        ))
+        assertEquals(0.0, (at.longitudeAt(SUN, p.anchorAngle, r.lat, AstroGeoBasis.IN_MUNDO)!! - lng).normalizeSigned(), 1e-6, "$p @ $lng")
+        assertEquals(0.0, (at.longitudeAt(MOON, p.partnerAngle!!, r.lat, AstroGeoBasis.IN_MUNDO)!! - lng).normalizeSigned(), 1e-5, "$p @ $lng")
+      }
+    }
+    assertTrue(moved > 0)
+  }
+
+  /** 曲線：每個格點就是那個經度的精算解（同一支） */
+  @Test
+  fun curveMatchesRefine() {
+    val c = moving(100.0)
+    val p = calc.parans(c, q.of(SUN, MOON)).first { it.partnerAngle in setOf(GeoAngle.ASC, GeoAngle.DESC) }
+    val curve = calc.curve(c, p, AstroGeoBasis.IN_MUNDO)!!
+    assertEquals(Paran.CURVE_LNGS.size, curve.size)
+    assertTrue(curve.count { it != null } > curve.size / 2)
+    assertTrue(curve.filterNotNull().let { it.max() - it.min() } > 0.1, "隨經度變化")
+  }
 }
