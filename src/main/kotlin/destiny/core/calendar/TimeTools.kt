@@ -453,6 +453,18 @@ object TimeTools {
 
 }
 
+/**
+ * 同一時刻、以格里曆（proleptic）標記的 [LocalDateTime]。
+ *
+ * 儒略曆的 [JulianDateTime] 換成同一天的格里曆日期（例：儒略曆 1700-02-28 ＝ 格里曆 1700-03-10），時分秒不變；
+ * 本來就是 [LocalDateTime] 的原樣回傳。給只收 [LocalDateTime] 的地方（DTO、序列化）用，**取代 `as LocalDateTime`** ——
+ * 後者遇到儒略曆的日期會 `ClassCastException`。
+ *
+ * 代價：顯示出來的是格里曆日期，與儒略曆的原始標記相差約 10 天（時刻本身完全相同、計算不受影響）。
+ */
+fun ChronoLocalDateTime<*>.toGregorianLocalDateTime(): LocalDateTime =
+  this as? LocalDateTime ?: LocalDateTime.from(this)
+
 fun ChronoLocalDateTime<*>.fixError(): ChronoLocalDateTime<out ChronoLocalDate> {
   return if (this.get(SECOND_OF_MINUTE) == 59 && this.get(NANO_OF_SECOND) > 999_900_000) {
     this.with(NANO_OF_SECOND, 0).plus(1, ChronoUnit.SECONDS)

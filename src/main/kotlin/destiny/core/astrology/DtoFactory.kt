@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.calendar.toGregorianLocalDateTime
 import destiny.core.DayNight
 import destiny.core.astrology.classical.ClassicalConfig
 import destiny.core.astrology.classical.ClassicalFeature
@@ -149,12 +150,12 @@ class DtoFactory(
 
 
     return HoroscopeDto(
-      time as LocalDateTime,
-      (
-        gmtJulDay.toLmt(
-          ZoneId.of("UTC"),
-          JulDayResolver1582CutoverImpl()
-        ) as LocalDateTime).fixError() as LocalDateTime,
+      // 儒略曆出生的人 time 是 JulianDateTime；DTO 只收 LocalDateTime ⇒ 換成同一時刻的格里曆標記（不要 as LocalDateTime）
+      time.toGregorianLocalDateTime(),
+      gmtJulDay.toLmt(
+        ZoneId.of("UTC"),
+        JulDayResolver1582CutoverImpl()
+      ).fixError().toGregorianLocalDateTime(),
       location, place,
       bySign, byHouse, byStar,
       axisStars,
