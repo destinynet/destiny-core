@@ -3,6 +3,7 @@
  */
 package destiny.tools.serializers
 
+import destiny.tools.Lang
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ILocationPlace
 import destiny.core.calendar.LocationPlace
@@ -15,7 +16,6 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
-import java.util.*
 
 
 object ILocationPlaceSerializer : KSerializer<ILocationPlace> {
@@ -33,7 +33,7 @@ object ILocationPlaceSerializer : KSerializer<ILocationPlace> {
   }
 
   override fun deserialize(decoder: Decoder): ILocationPlace {
-    var loc: ILocation = locationOf(Locale.TAIWAN)
+    var loc: ILocation = locationOf(Lang.ZH_TW)
     var place = ""
     decoder.decodeStructure(descriptor) {
       loop@ while (true) {

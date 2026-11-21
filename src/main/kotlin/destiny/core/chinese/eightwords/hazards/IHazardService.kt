@@ -3,10 +3,10 @@
  */
 package destiny.core.chinese.eightwords.hazards
 
+import destiny.tools.Lang
 import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.tools.JSerializable
-import java.util.*
 
 data class HazardItem(
   val hazard: ChildHazard,
@@ -17,7 +17,7 @@ data class HazardItem(
 
 interface IHazardService {
 
-  fun getChildHazardNotes(eightWords: IEightWords, gender: Gender?, locale: Locale): List<HazardItem>
+  fun getChildHazardNotes(eightWords: IEightWords, gender: Gender?, lang: Lang): List<HazardItem>
 
   val hazardFactories : List<IHazardFactory>
 

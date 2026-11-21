@@ -11,6 +11,8 @@ import destiny.core.News.NorthSouth.SOUTH
 import destiny.core.calendar.Lat.Companion.toLat
 import destiny.core.calendar.Lng.Companion.toLng
 import destiny.tools.LocaleTools
+import destiny.tools.toLocale
+import destiny.tools.Lang
 import kotlinx.serialization.Serializable as KSerializable
 import destiny.tools.JSerializable
 import java.time.Instant
@@ -270,6 +272,9 @@ fun locationOf(locale: Locale): Location {
   val loc = locMap.getValue(matchedLocale)
   return Location(loc.lat, loc.lng, loc.tzid, loc.minuteOffset, loc.altitudeMeter)
 }
+
+/** [Lang] 版：依語系挑預設地點（例：zh-TW → 台北）。與 `locationOf(Locale)` 同一張表 */
+fun locationOf(lang: Lang): Location = locationOf(lang.toLocale())
 
 fun locationOf(tzid : String) : Location? {
   return locMap.entries.firstOrNull { (_, loc) -> loc.tzid == tzid }?.value

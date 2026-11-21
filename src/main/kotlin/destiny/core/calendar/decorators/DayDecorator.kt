@@ -4,21 +4,22 @@
  */
 package destiny.core.calendar.decorators
 
+import destiny.tools.Lang
+import destiny.tools.LocalizedDecorator
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
 import destiny.tools.JSerializable
-import java.util.*
 
 
-object DayDecorator {
+object DayDecorator : LocalizedDecorator<Int> {
 
-  private val implMap = mapOf<Locale , Decorator<Int>>(
-    Locale.CHINESE to DayDecoratorChinese(),
-    Locale.ENGLISH to DayDecoratorEnglish()
+  private val implMap = mapOf<Lang, Decorator<Int>>(
+    Lang.ZH to DayDecoratorChinese(),
+    Lang.EN to DayDecoratorEnglish()
   )
 
-  fun getOutputString(value: Int, locale: Locale): String {
-    return implMap.getOutputString(value , locale)
+  override fun getOutputString(value: Int, lang: Lang): String {
+    return implMap.getOutputString(value , lang)
   }
 }
 

@@ -1,5 +1,6 @@
 package destiny.core.chinese.ziwei
 
+import destiny.tools.toLang
 import destiny.core.ChartIdentityDto
 import destiny.core.DayNight
 import destiny.core.Gender
@@ -153,7 +154,7 @@ interface IPlate : JSerializable {
 
   /** 納音 */
   fun getNayin(locale: Locale): String {
-    return NaYin.getDesc(getHouseDataOf(House.命宮, FlowType.MAIN)!!.stemBranch, locale)
+    return NaYin.getDesc(getHouseDataOf(House.命宮, FlowType.MAIN)!!.stemBranch, locale.toLang())
   }
 
   /** 傳回虛歲 or 實歲 age map */

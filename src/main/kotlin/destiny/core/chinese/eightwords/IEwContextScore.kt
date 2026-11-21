@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.eightwords
 
+import destiny.tools.Lang
 import destiny.core.Scale
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.SolarTermsTimePos
@@ -11,7 +12,6 @@ import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.tools.JSerializable
 import destiny.tools.getTitle
 import destiny.tools.KotlinLogging
-import java.util.*
 
 
 interface IEwContextScore : JSerializable {
@@ -30,7 +30,7 @@ interface IEwContextScore : JSerializable {
     return Scale.entries.associateWith { scale ->
       getPillarScore(scale, ewContext.eightWords, ewContext.gmtJulDay, ewContext.solarTermsTimePos)
     }.onEach { (scale, score) ->
-      logger.trace { "\t${scale.getTitle(Locale.TAIWAN)} 貢獻 $score 分" }
+      logger.trace { "\t${scale.getTitle(Lang.ZH_TW)} 貢獻 $score 分" }
     }
   }
 

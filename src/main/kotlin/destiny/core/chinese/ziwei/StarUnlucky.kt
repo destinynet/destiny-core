@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.Lang
 import destiny.tools.bundleName
 import destiny.core.IPoints
 import destiny.core.Point
@@ -15,7 +16,6 @@ import destiny.core.chinese.trilogy
 import destiny.core.chinese.ziwei.ZStar.Type.*
 import destiny.tools.serializers.StarUnluckySerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -45,7 +45,7 @@ sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::cl
 
     override val values by lazy { arrayOf(擎羊, 陀羅, 火星, 鈴星, 地劫, 地空) }
 
-    override fun fromString(value: String, locale: Locale): StarUnlucky? {
+    override fun fromString(value: String, lang: Lang): StarUnlucky? {
       return values.firstOrNull {
         it.nameKey == value
       }

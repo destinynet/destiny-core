@@ -3,8 +3,8 @@
  */
 package destiny.core
 
+import destiny.tools.Lang
 import destiny.tools.JSerializable
-import java.util.*
 import destiny.tools.I18nBundles
 import destiny.tools.toLang
 
@@ -66,31 +66,31 @@ sealed class News : JSerializable {
 /**
  * 北緯 / 南緯
  */
-fun News.NorthSouth.toCoordinateString(locale: Locale): String {
+fun News.NorthSouth.toCoordinateString(lang: Lang): String {
   val nameKey = when (this) {
     is News.NorthSouth.NORTH -> "NORTH.Coordinate"
     is News.NorthSouth.SOUTH -> "SOUTH.Coordinate"
   }
   val resource = News::class.qualifiedName!!
-  return I18nBundles.string(resource, locale.toLang(), nameKey) ?: nameKey
+  return I18nBundles.string(resource, lang, nameKey) ?: nameKey
 }
 
 
 /**
  * 東經 / 西經
  */
-fun News.EastWest.toCoordinateString(locale: Locale): String {
+fun News.EastWest.toCoordinateString(lang: Lang): String {
   val nameKey = when (this) {
     is News.EastWest.EAST -> "EAST.Coordinate"
     is News.EastWest.WEST -> "WEST.Coordinate"
   }
   val resource = News::class.qualifiedName!!
-  return I18nBundles.string(resource, locale.toLang(), nameKey) ?: nameKey
+  return I18nBundles.string(resource, lang, nameKey) ?: nameKey
 }
 
 /** 東 / 西 / 南 / 北 */
-fun News.getTitle(locale: Locale): String {
+fun News.getTitle(lang: Lang): String {
   val nameKey = this::class.simpleName!!
   val resource = News::class.qualifiedName!!
-  return I18nBundles.string(resource, locale.toLang(), nameKey) ?: nameKey
+  return I18nBundles.string(resource, lang, nameKey) ?: nameKey
 }

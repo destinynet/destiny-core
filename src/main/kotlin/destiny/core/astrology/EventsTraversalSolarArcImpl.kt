@@ -1,5 +1,6 @@
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.core.astrology.Aspect.Companion.expand
 import destiny.core.astrology.BirthDataGrain.MINUTE
 import destiny.core.astrology.IPointAspectPattern.AspectType
@@ -14,7 +15,6 @@ import destiny.tools.KotlinLogging
 import destiny.tools.getTitle
 import destiny.tools.reverse
 import destiny.tools.truncateToString
-import java.util.*
 import kotlin.math.abs
 
 /**
@@ -171,7 +171,7 @@ class EventsTraversalSolarArcImpl(
               val newSign = signBoundary.sign
               val oldSign = newSign.prev
 
-              val desc = "[SA ${p1.getTitle(Locale.ENGLISH)}] Ingresses Sign. From ${oldSign.getTitle(Locale.ENGLISH)} to ${newSign.getTitle(Locale.ENGLISH)}"
+              val desc = "[SA ${p1.getTitle(Lang.EN)}] Ingresses Sign. From ${oldSign.getTitle(Lang.EN)} to ${newSign.getTitle(Lang.EN)}"
               yield(AstroEventDto(AstroEvent.SignIngress(desc, p1, oldSign, newSign), eventGmt, null, Span.INSTANT, Impact.PERSONAL))
             }
           }
@@ -202,7 +202,7 @@ class EventsTraversalSolarArcImpl(
               val newHouse = cuspDegreeMap.getValue(cuspBoundary)
               val oldHouse = if (newHouse == 1) 12 else newHouse - 1
 
-              val desc = "[SA ${p1.getTitle(Locale.ENGLISH)}] Ingresses House. From House $oldHouse to House $newHouse"
+              val desc = "[SA ${p1.getTitle(Lang.EN)}] Ingresses House. From House $oldHouse to House $newHouse"
               yield(AstroEventDto(AstroEvent.HouseIngress(desc, p1, oldHouse, newHouse), eventGmt, null, Span.INSTANT, Impact.PERSONAL))
             }
           }
@@ -217,7 +217,7 @@ class EventsTraversalSolarArcImpl(
         val personalAspects = searchPersonalEvents(Aspect.getAspects(Aspect.Importance.HIGH)).map { (aspectData, suffix) ->
           val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
           val description = buildString {
-            append("[SA ${outerStar.getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.getTitle(Locale.ENGLISH)}]")
+            append("[SA ${outerStar.getTitle(Lang.EN)}] ${aspectData.aspect} [natal ${innerStar.getTitle(Lang.EN)}]")
             append(suffix)
           }
           AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)

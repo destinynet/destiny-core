@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.Lang
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.EclipseTime
@@ -10,7 +11,6 @@ import destiny.core.astrology.eclipse.LunarType
 import destiny.core.astrology.eclipse.SolarType
 import destiny.core.chinese.Branch
 import destiny.tools.getTitle
-import java.util.*
 import destiny.tools.defaultLocale
 
 
@@ -74,7 +74,7 @@ sealed class TimeDesc(override val begin: GmtJulDay, open val descs: List<String
     /** 空亡開始 */
     data class Begin(val voidCourse: Misc.VoidCourseSpan) : Void(
       voidCourse.begin,
-      "${voidCourse.star}空亡開始，剛離開與 ${voidCourse.exactAspectPrior.points.first { it != voidCourse.star }} 的 ${voidCourse.exactAspectPrior.aspect.getTitle(Locale.TAIWAN)} "
+      "${voidCourse.star}空亡開始，剛離開與 ${voidCourse.exactAspectPrior.points.first { it != voidCourse.star }} 的 ${voidCourse.exactAspectPrior.aspect.getTitle(Lang.ZH_TW)} "
     )
 
     /** 空亡結束 */

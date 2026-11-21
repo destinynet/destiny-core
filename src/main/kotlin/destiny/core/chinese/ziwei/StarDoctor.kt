@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.Lang
 import destiny.tools.bundleName
 import destiny.core.Gender
 import destiny.core.IPoints
@@ -11,7 +12,6 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.tools.serializers.StarDoctorSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -53,7 +53,7 @@ sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.bundleNam
 
     override val values by lazy { arrayOf(博士, 力士, 青龍, 小耗, 將軍, 奏書, 飛廉, 喜神, 病符, 大耗, 伏兵, 官府) }
 
-    override fun fromString(value: String, locale: Locale): StarDoctor? {
+    override fun fromString(value: String, lang: Lang): StarDoctor? {
       return values.firstOrNull {
         it.nameKey == value
       }

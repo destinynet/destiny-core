@@ -612,7 +612,7 @@ class ZiweiFeature(
       }
 
       val line2 = buildString {
-        val naYin = NaYin.getDesc(mainHouse, locale)
+        val naYin = NaYin.getDesc(mainHouse, locale.toLang())
         append(naYin + " " + 五行.toString() + 五行局 + "局")
       }
 

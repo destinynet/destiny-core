@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.eightwords.hazards
 
+import destiny.tools.toLang
 import destiny.core.calendar.eightwords.EightWords
 import destiny.core.chinese.eightwords.hazards.ChildHazard.*
 import destiny.tools.KotlinLogging
@@ -52,7 +53,7 @@ internal class HazardServiceTest {
     // 每一筆都查得到該書的說明文字，且不等於關煞名稱本身
     listOf(Locale.TAIWAN, Locale.SIMPLIFIED_CHINESE).forEach { locale ->
       actual.forEach { (hazard, book) ->
-        val note = hazard.getBookNote(locale, book)
+        val note = hazard.getBookNote(locale.toLang(), book)
         logger.info { "${hazard.getName(locale)} 《$book》 $note" }
         assertNotNull(note, "${hazard.getName(locale)} 《$book》 ($locale)")
         assertNotEquals(hazard.getName(locale), note)
@@ -65,7 +66,7 @@ internal class HazardServiceTest {
     val ew = EightWords("壬寅", "丁未", "辛未", "己丑")
     val locales = listOf(Locale.TAIWAN, Locale.SIMPLIFIED_CHINESE)
     locales.forEach { locale ->
-      service.getChildHazardNotes(ew, null, locale).also { items ->
+      service.getChildHazardNotes(ew, null, locale.toLang()).also { items ->
         assertEquals(5, items.size)
         assertTrue { items.map { it.hazard }.containsAll(setOf(千日關, 水火關, 白虎關, 金鎖關, 撞命關)) }
       }.forEach { item ->

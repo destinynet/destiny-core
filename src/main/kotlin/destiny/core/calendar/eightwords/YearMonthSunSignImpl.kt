@@ -10,7 +10,6 @@ import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import destiny.tools.getDescription
 import destiny.tools.getTitle
-import java.util.*
 import destiny.tools.Lang
 
 /**
@@ -33,7 +32,7 @@ class YearMonthSunSignImpl(private val ymSolarTermsStarPositionImpl: YearMonthSo
   }
 
   override fun getTitle(lang: Lang): String {
-    return MonthImpl.SunSign.getTitle(Locale.TAIWAN)
+    return MonthImpl.SunSign.getTitle(Lang.ZH_TW)
   }
 
   override fun getDescription(lang: Lang): String {

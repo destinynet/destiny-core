@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.Lang
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.NaYin
 import destiny.core.chinese.Stem
@@ -139,6 +140,6 @@ internal class ZiweiTest {
    */
   @Test
   fun testGetNaYin() {
-    assertEquals("金箔金", NaYin.getDesc(壬寅, Locale.TAIWAN))
+    assertEquals("金箔金", NaYin.getDesc(壬寅, Lang.ZH_TW))
   }
 }

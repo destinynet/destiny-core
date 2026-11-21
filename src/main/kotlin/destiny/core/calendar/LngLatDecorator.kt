@@ -3,24 +3,25 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.Lang
+import destiny.tools.LocalizedDecorator
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
 import java.text.DecimalFormat
-import java.util.*
 
 /**
  * 純粹只有經緯度，以及時區
  */
-object LngLatDecorator {
+object LngLatDecorator : LocalizedDecorator<ILocation> {
 
-  private val implMap = mapOf<Locale, Decorator<ILocation>>(
-    Locale.TAIWAN to LngLatDecoratorTaiwan(),
-    Locale.CHINA to LngLatDecoratorChina(),
-    Locale.ENGLISH to LngLatDecoratorEnglish()
+  private val implMap = mapOf<Lang, Decorator<ILocation>>(
+    Lang.ZH_TW to LngLatDecoratorTaiwan(),
+    Lang.ZH_CN to LngLatDecoratorChina(),
+    Lang.EN to LngLatDecoratorEnglish()
   )
 
-  fun getOutputString(location: ILocation, locale: Locale): String {
-    return implMap.getOutputString(location, locale)
+  override fun getOutputString(location: ILocation, lang: Lang): String {
+    return implMap.getOutputString(location, lang)
   }
 }
 
@@ -31,9 +32,9 @@ class LngLatDecoratorTaiwan : Decorator<ILocation> {
 
   override fun getOutputString(value: ILocation): String {
     return with(StringBuilder()) {
-      append(LngDecorator.getOutputString(value.lng, Locale.TAIWAN))
+      append(LngDecorator.getOutputString(value.lng, Lang.ZH_TW))
       append(", ")
-      append(LatDecorator.getOutputString(value.lat, Locale.TAIWAN))
+      append(LatDecorator.getOutputString(value.lat, Lang.ZH_TW))
     }.toString()
   }
 }
@@ -44,9 +45,9 @@ class LngLatDecoratorChina : Decorator<ILocation> {
 
   override fun getOutputString(value: ILocation): String {
     return with(StringBuilder()) {
-      append(LngDecorator.getOutputString(value.lng, Locale.SIMPLIFIED_CHINESE))
+      append(LngDecorator.getOutputString(value.lng, Lang.ZH_CN))
       append(", ")
-      append(LatDecorator.getOutputString(value.lat, Locale.SIMPLIFIED_CHINESE))
+      append(LatDecorator.getOutputString(value.lat, Lang.ZH_CN))
     }.toString()
   }
 }
@@ -57,9 +58,9 @@ class LngLatDecoratorEnglish : Decorator<ILocation> {
   override fun getOutputString(value: ILocation): String {
 
     return with(StringBuilder()) {
-      append(LngDecorator.getOutputString(value.lng, Locale.ENGLISH))
+      append(LngDecorator.getOutputString(value.lng, Lang.EN))
       append(", ")
-      append(LatDecorator.getOutputString(value.lat, Locale.ENGLISH))
+      append(LatDecorator.getOutputString(value.lat, Lang.EN))
     }.toString()
   }
 }

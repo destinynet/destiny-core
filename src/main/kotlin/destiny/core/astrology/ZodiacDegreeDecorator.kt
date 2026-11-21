@@ -4,35 +4,37 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
+import destiny.tools.LangTools
+import destiny.tools.LocalizedDecorator
 import destiny.tools.LocaleTools
 import destiny.tools.getOutputString
 import destiny.tools.getTitle
-import java.util.*
 
-object ZodiacDegreeDecorator {
+object ZodiacDegreeDecorator : LocalizedDecorator<Double> {
   private val implMap = mapOf(
-    Locale.TAIWAN to ZodiacDegreeDecoratorTradChinese(),
-    Locale.US to ZodiacDegreeDecoratorEnglish()
+    Lang.ZH_TW to ZodiacDegreeDecoratorTradChinese(),
+    Lang.EN_US to ZodiacDegreeDecoratorEnglish()
   )
 
 
-  fun getOutputString(degree: Double, locale: Locale): String {
-    return implMap.getOutputString(degree, locale)
+  override fun getOutputString(degree: Double, lang: Lang): String {
+    return implMap.getOutputString(degree, lang)
   }
 
-  fun getSimpOutputString(degree: Double, locale: Locale): String {
-    return implMap.getValue(LocaleTools.getBestMatchingLocaleOrFirst(locale, implMap.keys)).getSimpOutString(degree)
+  fun getSimpOutputString(degree: Double, lang: Lang): String {
+    return implMap.getValue(LangTools.getBestMatchingLangOrFirst(lang, implMap.keys)).getSimpOutString(degree)
   }
 }
 
-private val commonSimpleDegToString = { sb: StringBuilder, degree: Double, locale: Locale, min: Int ->
+private val commonSimpleDegToString = { sb: StringBuilder, degree: Double, lang: Lang, min: Int ->
   val sign = ZodiacSign.of(degree)
   val degInt = (degree - sign.degree).toInt()
 
   if (degInt < 10)
     sb.append("0")
   sb.append(degInt)
-  sb.append(sign.getAbbreviation(locale))
+  sb.append(sign.getAbbreviation(lang))
   if (min < 10)
     sb.append("0")
   sb.append(min)
@@ -41,7 +43,7 @@ private val commonSimpleDegToString = { sb: StringBuilder, degree: Double, local
 
 class ZodiacDegreeDecoratorTradChinese : IZodiacDegreeDecorator {
 
-  override val locale: Locale = Locale.TAIWAN
+  override val lang: Lang = Lang.ZH_TW
 
   private var deg: Double = 0.toDouble()
 
@@ -57,7 +59,7 @@ class ZodiacDegreeDecoratorTradChinese : IZodiacDegreeDecorator {
 
     val sb = StringBuilder()
 
-    sb.append(sign.getTitle(locale)).append(" ")
+    sb.append(sign.getTitle(lang)).append(" ")
     if (getDeg() < 10)
       sb.append("0")
     sb.append(getDeg()).append("度 ")
@@ -78,7 +80,7 @@ class ZodiacDegreeDecoratorTradChinese : IZodiacDegreeDecorator {
     this.deg = degree - sign.degree
 
     val sb = StringBuilder()
-    commonSimpleDegToString(sb, degree, locale, min)
+    commonSimpleDegToString(sb, degree, lang, min)
     return sb.toString()
   }
 
@@ -91,7 +93,7 @@ class ZodiacDegreeDecoratorTradChinese : IZodiacDegreeDecorator {
 
 class ZodiacDegreeDecoratorEnglish : IZodiacDegreeDecorator {
 
-  override val locale: Locale = Locale.US
+  override val lang: Lang = Lang.EN_US
 
   private var deg: Double = 0.toDouble()
 
@@ -105,7 +107,7 @@ class ZodiacDegreeDecoratorEnglish : IZodiacDegreeDecorator {
     val sign = ZodiacSign.of(value)
     this.deg = value - sign.degree
 
-    return sign.getTitle(locale) + " " + getDeg() + "Deg " + min + "Min " + sec + "Sec"
+    return sign.getTitle(lang) + " " + getDeg() + "Deg " + min + "Min " + sec + "Sec"
   }
 
   override fun getSimpOutString(degree: Double): String {
@@ -113,7 +115,7 @@ class ZodiacDegreeDecoratorEnglish : IZodiacDegreeDecorator {
     this.deg = degree - sign.degree
 
     val sb = StringBuilder()
-    commonSimpleDegToString.invoke(sb, degree, locale, min)
+    commonSimpleDegToString.invoke(sb, degree, lang, min)
     return sb.toString()
   }
 

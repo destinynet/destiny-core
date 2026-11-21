@@ -3,12 +3,12 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.tools.bundleName
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.tools.serializers.astrology.AxisSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 @Serializable(with = AxisSerializer::class)
@@ -28,9 +28,9 @@ sealed class Axis(nameKey: String, abbrKey: String) : AstroPoint(nameKey, Axis::
 
     override val values: Array<Axis> by lazy { array }
 
-    override fun fromString(value: String, locale: Locale): Axis? {
+    override fun fromString(value: String, lang: Lang): Axis? {
       return values.firstOrNull {
-        it.getTitle(locale).equals(value, ignoreCase = true)
+        it.getTitle(lang).equals(value, ignoreCase = true)
       }
     }
 

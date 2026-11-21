@@ -3,27 +3,29 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.formatInvariant
+import destiny.tools.Lang
+import destiny.tools.LocalizedDecorator
 import destiny.core.News.NorthSouth.NORTH
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
-import java.util.*
 
-object LatDecorator {
-  private val implMap = mapOf(Locale.TAIWAN to LatDecoratorTaiwan(),
-                              Locale.SIMPLIFIED_CHINESE to LatDecoratorChina(),
-                              Locale.ENGLISH to LatDecoratorEnglish())
+object LatDecorator : LocalizedDecorator<Lat> {
+  private val implMap = mapOf(Lang.ZH_TW to LatDecoratorTaiwan(),
+                              Lang.ZH_CN to LatDecoratorChina(),
+                              Lang.EN to LatDecoratorEnglish())
 
-  fun getOutputString(value: Lat, locale: Locale): String {
-    return implMap.getOutputString(value, locale)
+  override fun getOutputString(value: Lat, lang: Lang): String {
+    return implMap.getOutputString(value, lang)
   }
 }
 
 private val zh = {sb : StringBuilder , lat : Lat ->
   sb.append("：")
-  sb.append("%02d".format(Locale.ROOT, lat.deg)).append("度")
-  sb.append("%02d".format(Locale.ROOT, lat.min)).append("分")
+  sb.append("%02d".formatInvariant(lat.deg)).append("度")
+  sb.append("%02d".formatInvariant(lat.min)).append("分")
 
-  val secString = "%02.2f".format(Locale.ROOT, lat.sec).let {
+  val secString = "%02.2f".formatInvariant(lat.sec).let {
     // 可能是 "0.00"
     if (it.length == 4) "0$it"
     else it
@@ -72,9 +74,9 @@ class LatDecoratorEnglish : Decorator<Lat> {
    */
   override fun getOutputString(value: Lat): String {
     return with(StringBuilder()) {
-      append("%02d".format(Locale.ROOT, value.deg)).append("°")
-      append("%02d".format(Locale.ROOT, value.min)).append("'")
-      val secString = "%02.3f".format(Locale.ROOT, value.sec).let {
+      append("%02d".formatInvariant(value.deg)).append("°")
+      append("%02d".formatInvariant(value.min)).append("'")
+      val secString = "%02.3f".formatInvariant(value.sec).let {
         // 可能是 "0.000"
         if (it.length == 5) "0$it"
         else it

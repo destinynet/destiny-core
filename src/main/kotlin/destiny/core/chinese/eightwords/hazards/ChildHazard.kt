@@ -131,5 +131,3 @@ fun ChildHazard.getBookNote(lang: Lang, book: Book): String? {
   return I18nBundles.string(ChildHazard::class.bundleName(), lang, key)
 }
 
-/** 橋接，說明見 [destiny.tools.ILocaleString] */
-fun ChildHazard.getBookNote(locale: Locale, book: Book): String? = getBookNote(locale.toLang(), book)

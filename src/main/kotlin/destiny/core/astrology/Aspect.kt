@@ -4,12 +4,12 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.core.astrology.Aspect.Importance.*
 import destiny.tools.CircleTools.normalize
 import destiny.tools.gcd
 import destiny.tools.getTitle
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -108,7 +108,7 @@ enum class Aspect(
 
     /** 從「英文」的 aspect name 來反找 Aspect , 找不到則傳回 null  */
     fun getAspectFromName(value: String): Aspect? {
-      return entries.firstOrNull { name -> name.getTitle(Locale.ENGLISH).equals(value.trim { it <= ' ' }, ignoreCase = true) }
+      return entries.firstOrNull { name -> name.getTitle(Lang.EN).equals(value.trim { it <= ' ' }, ignoreCase = true) }
     }
 
     /**

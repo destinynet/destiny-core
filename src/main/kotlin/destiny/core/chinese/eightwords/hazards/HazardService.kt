@@ -3,11 +3,11 @@
  */
 package destiny.core.chinese.eightwords.hazards
 
+import destiny.tools.Lang
 import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.tools.JSerializable
 import destiny.tools.getTitle
-import java.util.*
 import destiny.tools.toLang
 
 
@@ -29,17 +29,17 @@ class HazardService : IHazardService, JSerializable {
   }
 
 
-  override fun getChildHazardNotes(eightWords: IEightWords, gender: Gender?, locale: Locale): List<HazardItem> {
+  override fun getChildHazardNotes(eightWords: IEightWords, gender: Gender?, lang: Lang): List<HazardItem> {
 
     return getChildHazards(eightWords, gender)
       .groupBy { (hazard, _) -> hazard }
       .map { (hazard, list) ->
         val descriptor = ChildHazardDescriptor(hazard)
-        val title = descriptor.getTitle(locale)
+        val title = descriptor.getTitle(lang)
         val bookNotes = list.map { (_, book) ->
-          book to hazard.getBookNote(locale.toLang(), book)
+          book to hazard.getBookNote(lang, book)
         }.filter { (_, note) -> note != null }
-          .map { (book, note) -> book.getTitle(locale) to note!! }
+          .map { (book, note) -> book.getTitle(lang) to note!! }
           .toList()
         HazardItem(hazard, title, bookNotes)
       }

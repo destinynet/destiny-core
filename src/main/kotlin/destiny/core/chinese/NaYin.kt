@@ -3,10 +3,10 @@
  */
 package destiny.core.chinese
 
+import destiny.tools.Lang
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.StemBranch.*
 import destiny.tools.JSerializable
-import java.util.*
 import destiny.tools.I18nBundles
 import destiny.tools.toLang
 import destiny.tools.bundleName
@@ -136,9 +136,9 @@ enum class NaYin(override val fiveElement: FiveElement) : IFiveElement , JSerial
     }
 
     /** 詳情 , 三個字 , 例如「海中金」  */
-    fun getDesc(sb: StemBranch, locale: Locale): String {
+    fun getDesc(sb: StemBranch, lang: Lang): String {
       val resourceKey = map.getValue(sb).name
-      return I18nBundles.string(NaYin::class.bundleName(), locale.toLang(), resourceKey) ?: resourceKey
+      return I18nBundles.string(NaYin::class.bundleName(), lang, resourceKey) ?: resourceKey
     }
   }
 

@@ -3,6 +3,7 @@
  */
 package destiny.tools.serializers.astrology
 
+import destiny.tools.Lang
 import destiny.core.astrology.*
 import destiny.core.astrology.AstroPattern.*
 import destiny.tools.Score
@@ -17,7 +18,6 @@ import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
-import java.util.*
 
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -37,7 +37,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeSerializableElement(descriptor, 1, Element.serializer(), value.element)
         encodeNullableSerializableElement(descriptor, 2, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -76,7 +76,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 1, SetSerializer(AstroPoint.serializer()), value.wings)
         encodeSerializableElement(descriptor, 2, PointSignHouse.serializer(), value.tail)
         encodeNullableSerializableElement(descriptor, 3, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 4, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 4, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -115,7 +115,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.oppoPoints)
         encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.squared)
         encodeNullableSerializableElement(descriptor, 2, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -152,7 +152,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.bottoms)
         encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.apex)
         encodeNullableSerializableElement(descriptor, 2, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -189,7 +189,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, Yod.serializer(), value.yod)
         encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.oppoPoint)
         encodeNullableSerializableElement(descriptor, 2, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -226,7 +226,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.bottoms)
         encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.pointer)
         encodeNullableSerializableElement(descriptor, 2, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -263,7 +263,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeSerializableElement(descriptor, 1, Quality.serializer(), value.quality)
         encodeNullableSerializableElement(descriptor, 2, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -298,7 +298,7 @@ class AstroPatternSerializers {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(TSquared.serializer()), value.tSquares)
         encodeNullableSerializableElement(descriptor, 1, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -331,7 +331,7 @@ class AstroPatternSerializers {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(GrandTrine.serializer()), value.grandTrines)
         encodeNullableSerializableElement(descriptor, 1, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -366,7 +366,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.oppoPoints)
         encodeSerializableElement(descriptor, 1, PointSignHouse.serializer(), value.mediator)
         encodeNullableSerializableElement(descriptor, 2, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -401,7 +401,7 @@ class AstroPatternSerializers {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(SetSerializer(AstroPoint.serializer())), value.oppoGroups)
         encodeNullableSerializableElement(descriptor, 1, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -434,7 +434,7 @@ class AstroPatternSerializers {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeNullableSerializableElement(descriptor, 1, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -469,7 +469,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeSerializableElement(descriptor, 1, ZodiacSign.serializer(), value.sign)
         encodeNullableSerializableElement(descriptor, 2, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -506,7 +506,7 @@ class AstroPatternSerializers {
         encodeSerializableElement(descriptor, 0, SetSerializer(AstroPoint.serializer()), value.points)
         encodeIntElement(descriptor, 1, value.house)
         encodeNullableSerializableElement(descriptor, 2, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 3, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 
@@ -541,7 +541,7 @@ class AstroPatternSerializers {
       encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, SetSerializer(SetSerializer(AstroPoint.serializer())), value.clusters)
         encodeNullableSerializableElement(descriptor, 1, ScoreTwoDecimalSerializer, value.score)
-        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Locale.ENGLISH))
+        encodeStringElement(descriptor, 2, AstroPatternTranslator.getDescriptor(value).getDescription(Lang.EN))
       }
     }
 

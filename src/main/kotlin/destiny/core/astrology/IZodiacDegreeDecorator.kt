@@ -4,13 +4,13 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.tools.Decorator
-import java.util.*
 
 /** 黃道帶上的字串輸出  */
 interface IZodiacDegreeDecorator : Decorator<Double> {
 
-  val locale : Locale
+  val lang: Lang
 
   override fun getOutputString(value: Double): String
 

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.eightwords
 
+import destiny.tools.toLang
 import destiny.tools.KvCache
 import destiny.core.Gender
 import destiny.core.IIntAge
@@ -67,7 +68,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
     val larges: List<FortuneData> = fortuneLargeFeature.getPersonModel(lmt, loc, gender, name, place, config.fortuneLargeConfig)
     val smalls: List<FortuneData> = fortuneSmallFeature.getPersonModel(lmt, loc, gender, name, place, config.fortuneSmallConfig)
 
-    val childHazards = hazardService.getChildHazardNotes(ewModel.eightWords, gender, config.locale)
+    val childHazards = hazardService.getChildHazardNotes(ewModel.eightWords, gender, config.locale.toLang())
 
     val score = ewContextScoreImplMap[config.ewContextScore]!!.getScore(ewModel)
 

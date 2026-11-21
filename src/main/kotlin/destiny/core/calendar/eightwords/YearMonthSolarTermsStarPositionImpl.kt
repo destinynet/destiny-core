@@ -10,7 +10,6 @@ import destiny.core.calendar.*
 import destiny.core.chinese.IStemBranch
 import destiny.tools.getDescription
 import destiny.tools.getTitle
-import java.util.*
 import destiny.tools.Lang
 
 /**
@@ -31,7 +30,7 @@ class YearMonthSolarTermsStarPositionImpl(
 ) : IYearMonth, IYear by yearImpl {
 
   override fun getTitle(lang: Lang): String {
-    return MonthImpl.SolarTerms.getTitle(Locale.TAIWAN)
+    return MonthImpl.SolarTerms.getTitle(Lang.ZH_TW)
   }
 
   override fun getDescription(lang: Lang): String {

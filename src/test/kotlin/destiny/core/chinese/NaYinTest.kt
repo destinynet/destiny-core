@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese
 
+import destiny.tools.Lang
 import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test
@@ -16,9 +17,9 @@ class NaYinTest {
   fun testNaYin() {
     StemBranch.entries.forEach { sb ->
       assertNotNull(NaYin.getFiveElement(sb))
-      assertNotNull(NaYin.getDesc(sb, Locale.TAIWAN))
+      assertNotNull(NaYin.getDesc(sb, Lang.ZH_TW))
       logger.info("{} : {} , 簡體 : {} , 五行 : {}" ,
-        sb.toString() , NaYin.getDesc(sb , Locale.TAIWAN) , NaYin.getDesc(sb , Locale.SIMPLIFIED_CHINESE) , NaYin.getFiveElement(sb))
+        sb.toString() , NaYin.getDesc(sb, Lang.ZH_TW) , NaYin.getDesc(sb, Lang.ZH_CN) , NaYin.getFiveElement(sb))
     }
   }
 }

@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.tools.CircleTools.aheadOf
 import destiny.tools.CircleTools.normalize
 import destiny.tools.getTitle
@@ -150,7 +151,7 @@ value class ZodiacDegree private constructor(val value: Double) : IZodiacDegree 
       append(value)
       append(" (")
       signDegree.also { (sign,signDeg) ->
-        append(sign.getTitle(Locale.ENGLISH))
+        append(sign.getTitle(Lang.EN))
         append("/")
         append(signDeg.toString().take(5))
       }

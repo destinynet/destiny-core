@@ -6,8 +6,6 @@ package destiny.core.tarot
 import destiny.tools.ILocaleString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.*
-import java.util.Locale.*
 import destiny.tools.Lang
 
 @Serializable
@@ -24,32 +22,32 @@ data class SpreadFiveCross(
     return SpreadFiveCross.getTitle(lang)
   }
 
-  override fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>> {
+  override fun getLangPosMap(): List<Pair<CardOrientation, Map<Lang, String>>> {
     return listOf(
       center to mapOf(
-        TAIWAN to "中央",
-        JAPANESE to "中央",
-        ENGLISH to "Middle",
+        Lang.ZH_TW to "中央",
+        Lang.JA to "中央",
+        Lang.EN to "Middle",
       ),
       left to mapOf(
-        TAIWAN to "左方",
-        JAPANESE to "左",
-        ENGLISH to "Left",
+        Lang.ZH_TW to "左方",
+        Lang.JA to "左",
+        Lang.EN to "Left",
       ),
       right to mapOf(
-        TAIWAN to "右方",
-        JAPANESE to "右",
-        ENGLISH to "Right",
+        Lang.ZH_TW to "右方",
+        Lang.JA to "右",
+        Lang.EN to "Right",
       ),
       top to mapOf(
-        TAIWAN to "上方",
-        JAPANESE to "上",
-        ENGLISH to "Top",
+        Lang.ZH_TW to "上方",
+        Lang.JA to "上",
+        Lang.EN to "Top",
       ),
       bottom to mapOf(
-        TAIWAN to "下方",
-        JAPANESE to "下",
-        ENGLISH to "Bottom",
+        Lang.ZH_TW to "下方",
+        Lang.JA to "下",
+        Lang.EN to "Bottom",
       )
     )
   }

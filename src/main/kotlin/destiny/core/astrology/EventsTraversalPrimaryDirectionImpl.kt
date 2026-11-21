@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.core.astrology.prediction.IPrimaryDirection
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -10,7 +11,6 @@ import destiny.core.electional.Impact
 import destiny.core.electional.Span
 import destiny.tools.KotlinLogging
 import destiny.tools.getTitle
-import java.util.Locale
 
 /**
  * 主限法 (Primary Direction) 的推運事件遍歷。
@@ -56,8 +56,8 @@ class EventsTraversalPrimaryDirectionImpl(
     return events.asSequence()
       .filter { it.eventGmt in fromGmtJulDay..toGmtJulDay }
       .map { ev ->
-        val promissorName = ev.promissor.getTitle(Locale.ENGLISH)
-        val significatorName = ev.significator.getTitle(Locale.ENGLISH)
+        val promissorName = ev.promissor.getTitle(Lang.EN)
+        val significatorName = ev.significator.getTitle(Lang.EN)
         val description = "[PD $promissorName] ${ev.aspect} [natal $significatorName]" +
           if (ev.forward) " (direct)" else " (converse)"
 

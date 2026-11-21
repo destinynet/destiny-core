@@ -6,7 +6,6 @@ package destiny.tools
 import destiny.core.Descriptive
 import destiny.core.IPattern
 import destiny.core.astrology.*
-import java.util.Locale
 
 /**
  * 利用 properties 檔案，將 [IPattern] 轉換成 [Descriptive]
@@ -50,7 +49,7 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
         // AstroPoint、Dignity 都是 ILocaleString，走這一條
         is ILocaleString -> it.getTitle(lang)
         // 小數點固定用「.」：不帶 Locale 的話跟著 JVM 預設語系走（fr／es 會變成逗號）
-        is Double -> String.format(Locale.ROOT, doubleFormat ?: "%.1f", it)
+        is Double -> (doubleFormat ?: "%.1f").formatInvariant(it)
         is Element -> it.getTitle(lang)
         is Quality -> it.getTitle(lang)
         is Aspect -> it.getTitle(lang)

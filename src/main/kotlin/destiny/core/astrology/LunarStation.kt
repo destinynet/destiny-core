@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.tools.bundleName
 import destiny.core.*
 import destiny.core.News.EastWest.EAST
@@ -96,10 +97,10 @@ sealed class LunarStation(
       values.asList()
     }
 
-    override fun fromString(value: String, locale: Locale): LunarStation? {
+    override fun fromString(value: String, lang: Lang): LunarStation? {
       return values.firstOrNull {
         // 不能用 英文比 , 因為 壁,畢 兩者相同
-        it.getTitle(Locale.TRADITIONAL_CHINESE).equals(value, ignoreCase = true)
+        it.getTitle(Lang.ZH_TW).equals(value, ignoreCase = true)
       }
     }
   }

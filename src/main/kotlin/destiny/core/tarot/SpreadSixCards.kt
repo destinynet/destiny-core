@@ -6,8 +6,6 @@ package destiny.core.tarot
 import destiny.tools.ILocaleString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.*
-import java.util.Locale.*
 import destiny.tools.Lang
 
 @Serializable
@@ -19,37 +17,37 @@ data class SpreadSixCards(val lt: CardOrientation, val mt: CardOrientation, val 
     return SpreadSixCards.getTitle(lang)
   }
 
-  override fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>> {
+  override fun getLangPosMap(): List<Pair<CardOrientation, Map<Lang, String>>> {
     return listOf(
       lt to mapOf(
-        TAIWAN to "左上",
-        JAPANESE to "左上",
-        ENGLISH to "Upper left"
+        Lang.ZH_TW to "左上",
+        Lang.JA to "左上",
+        Lang.EN to "Upper left"
       ),
       mt to mapOf(
-        TAIWAN to "中上",
-        JAPANESE to "中上",
-        ENGLISH to "Middle top",
+        Lang.ZH_TW to "中上",
+        Lang.JA to "中上",
+        Lang.EN to "Middle top",
       ),
       rt to mapOf(
-        TAIWAN to "右上",
-        JAPANESE to "右上",
-        ENGLISH to "Top right",
+        Lang.ZH_TW to "右上",
+        Lang.JA to "右上",
+        Lang.EN to "Top right",
       ),
       lb to mapOf(
-        TAIWAN to "左下",
-        JAPANESE to "左下",
-        ENGLISH to "Left bottom",
+        Lang.ZH_TW to "左下",
+        Lang.JA to "左下",
+        Lang.EN to "Left bottom",
       ),
       mb to mapOf(
-        TAIWAN to "中下",
-        JAPANESE to "中下",
-        ENGLISH to "Middle bottom",
+        Lang.ZH_TW to "中下",
+        Lang.JA to "中下",
+        Lang.EN to "Middle bottom",
       ),
       rb to mapOf(
-        TAIWAN to "右下",
-        JAPANESE to "右下",
-        ENGLISH to "Right bottom",
+        Lang.ZH_TW to "右下",
+        Lang.JA to "右下",
+        Lang.EN to "Right bottom",
       )
     )
   }

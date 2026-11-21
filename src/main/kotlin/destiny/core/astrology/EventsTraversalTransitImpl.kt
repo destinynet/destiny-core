@@ -1,5 +1,6 @@
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
@@ -15,7 +16,6 @@ import destiny.tools.getTitle
 import destiny.tools.reverse
 import destiny.tools.round
 import destiny.tools.truncateToString
-import java.util.*
 
 /**
  * Progression-based
@@ -189,7 +189,7 @@ class EventsTraversalTransitImpl(
       ).flatMap { outer -> toNatalAspectsAt(aspectData.gmtJulDay, outer) }
 
       val description = buildString {
-        append("[transiting ${outerStar1.getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [transiting ${outerStar2.getTitle(Locale.ENGLISH)}]")
+        append("[transiting ${outerStar1.getTitle(Lang.EN)}] ${aspectData.aspect} [transiting ${outerStar2.getTitle(Lang.EN)}]")
         mutualToNatal.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
           appendLine()
           appendLine(it)
@@ -208,9 +208,9 @@ class EventsTraversalTransitImpl(
       voidCourseFeature.getVoidCourses(fromGmtJulDay, toGmtJulDay, loc, relativeTransitImpl, vocConfig)
         .map { it: Misc.VoidCourseSpan ->
           val description = buildString {
-            append("${it.planet.getTitle(Locale.ENGLISH)} Void of Course (空亡). ")
-            append("From ${it.fromPos.sign.getTitle(Locale.ENGLISH)}/${it.fromPos.signDegree.second.truncateToString(2)}° ")
-            append("to ${it.toPos.sign.getTitle(Locale.ENGLISH)}/${it.toPos.signDegree.second.truncateToString(2)}°. ")
+            append("${it.planet.getTitle(Lang.EN)} Void of Course (空亡). ")
+            append("From ${it.fromPos.sign.getTitle(Lang.EN)}/${it.fromPos.signDegree.second.truncateToString(2)}° ")
+            append("to ${it.toPos.sign.getTitle(Lang.EN)}/${it.toPos.signDegree.second.truncateToString(2)}°. ")
           }
           AstroEventDto(AstroEvent.MoonVoc(description, it), it.begin, it.end, Span.HOURS, Impact.GLOBAL)
         }
@@ -224,8 +224,8 @@ class EventsTraversalTransitImpl(
         val transitToNatalAspects = toNatalAspectsAt(s.gmtJulDay, planet)
 
         val description = buildString {
-          append("${s.star.getTitle(Locale.ENGLISH)} Stationary (滯留). ${s.type.getTitle(Locale.ENGLISH)}")
-          append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
+          append("${s.star.getTitle(Lang.EN)} Stationary (滯留). ${s.type.getTitle(Lang.EN)}")
+          append(" at ${zodiacDegree.sign.getTitle(Lang.EN)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
           if (config.includeTransitToNatalAspects) {
             transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
               appendLine()
@@ -246,7 +246,7 @@ class EventsTraversalTransitImpl(
     val planetRetrogrades = transitingStars.filterIsInstance<Planet>().asSequence().filter { it.isStationaryPossible }.flatMap { planet ->
       retrogradeImpl.getDailyRetrogrades(planet, fromGmtJulDay, toGmtJulDay, starPositionImpl, starTransitImpl).map { (gmtJulDay, progress) ->
         val description = buildString {
-          append("${planet.getTitle(Locale.ENGLISH)} Retrograding (逆行). ")
+          append("${planet.getTitle(Lang.EN)} Retrograding (逆行). ")
           append("Progress = ${(progress * 100.0).truncateToString(2)}%")
         }
         AstroEventDto(AstroEvent.PlanetRetrograde(description, planet, progress), gmtJulDay, null, Span.DAY, Impact.GLOBAL)
@@ -260,8 +260,8 @@ class EventsTraversalTransitImpl(
 
       val description = buildString {
         append("Solar Eclipse (日食). ")
-        append("Type = ${eclipse.solarType.getTitle(Locale.ENGLISH)}")
-        append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
+        append("Type = ${eclipse.solarType.getTitle(Lang.EN)}")
+        append(" at ${zodiacDegree.sign.getTitle(Lang.EN)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
         if (config.includeTransitToNatalAspects) {
           transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
             appendLine()
@@ -289,8 +289,8 @@ class EventsTraversalTransitImpl(
 
       val description = buildString {
         append("Lunar Eclipse (月食). ")
-        append("Type = ${eclipse.lunarType.getTitle(Locale.ENGLISH)}")
-        append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
+        append("Type = ${eclipse.lunarType.getTitle(Lang.EN)}")
+        append(" at ${zodiacDegree.sign.getTitle(Lang.EN)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
         if (config.includeTransitToNatalAspects) {
           transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
             appendLine()
@@ -320,7 +320,7 @@ class EventsTraversalTransitImpl(
           val transitToNatalAspects: List<SynastryAspect> =
             toNatalAspectsAt(gmtJulDay, Planet.MOON) + toNatalAspectsAt(gmtJulDay, Planet.SUN)
           val description = buildString {
-            append("${Planet.MOON.getTitle(Locale.ENGLISH)} ")
+            append("${Planet.MOON.getTitle(Lang.EN)} ")
             append(
               when (phase) {
                 LunarPhase.NEW           -> "🌑"
@@ -329,8 +329,8 @@ class EventsTraversalTransitImpl(
                 LunarPhase.LAST_QUARTER  -> "🌗"
               }
             )
-            append(phase.getTitle(Locale.ENGLISH))
-            append(" at ${zodiacDegree.sign.getTitle(Locale.ENGLISH)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
+            append(phase.getTitle(Lang.EN))
+            append(" at ${zodiacDegree.sign.getTitle(Lang.EN)}/${zodiacDegree.signDegree.second.truncateToString(2)}°")
             if (config.includeTransitToNatalAspects) {
               transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
                 appendLine()
@@ -381,8 +381,8 @@ class EventsTraversalTransitImpl(
 
         val transitToNatalAspects = aspectsAt(gmt, planet)
         val description = buildString {
-          append("${planet.getTitle(Locale.ENGLISH)} $eventType Sign. ")
-          append("From ${oldSign.getTitle(Locale.ENGLISH)} to ${newSign.getTitle(Locale.ENGLISH)}")
+          append("${planet.getTitle(Lang.EN)} $eventType Sign. ")
+          append("From ${oldSign.getTitle(Lang.EN)} to ${newSign.getTitle(Lang.EN)}")
           transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
             appendLine()
             appendLine(it)
@@ -417,9 +417,9 @@ class EventsTraversalTransitImpl(
           DeclinationAspectType.CONTRA_PARALLEL -> "Contra-parallel"
         }
         buildString {
-          append("\t(p) [transiting ${da.transitPoint.getTitle(Locale.ENGLISH)}]")
+          append("\t(p) [transiting ${da.transitPoint.getTitle(Lang.EN)}]")
           append(" $typeLabel")
-          append(" [natal ${da.natalPoint.getTitle(Locale.ENGLISH)}")
+          append(" [natal ${da.natalPoint.getTitle(Lang.EN)}")
           // 同 describeAspects：宮位需要精確出生時刻，用 [includeAxis] 不用推導。
           if (grain.includeAxis) {
             model.getHouse(da.natalPoint)?.let { append(" (H$it)") }
@@ -440,7 +440,7 @@ class EventsTraversalTransitImpl(
         val transitToNatalAspects = aspectsAt(fromGmtJulDay, planet)
         val description = buildString {
 
-          append("${planet.getTitle(Locale.ENGLISH)} is OOB at range start. ")
+          append("${planet.getTitle(Lang.EN)} is OOB at range start. ")
           append("Declination = ${initialDecl.truncateToString(2)}°")
           transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
             appendLine(); appendLine(it)
@@ -467,7 +467,7 @@ class EventsTraversalTransitImpl(
         val transitToNatalAspects = aspectsAt(crossing.gmtJulDay, planet)
         val direction = if (crossing.entering) "enters OOB" else "returns from OOB"
         val description = buildString {
-          append("${planet.getTitle(Locale.ENGLISH)} $direction. ")
+          append("${planet.getTitle(Lang.EN)} $direction. ")
           append("Declination = ${crossing.declination.truncateToString(2)}°")
           transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
             appendLine(); appendLine(it)
@@ -513,7 +513,7 @@ class EventsTraversalTransitImpl(
           // 產生更精確的文字描述
           val transitToNatalAspects = aspectsAt(gmt, planet)
           val description = buildString {
-            append("${planet.getTitle(Locale.ENGLISH)} $eventType House. ")
+            append("${planet.getTitle(Lang.EN)} $eventType House. ")
             append("From House $oldHouse to House $newHouse")
             transitToNatalAspects.describeAspects(grain).takeIf { it.isNotEmpty() }?.also {
               appendLine()
@@ -542,7 +542,7 @@ class EventsTraversalTransitImpl(
         yieldAll(searchPersonalEvents(transitingStars, natalPoints).map { aspectData ->
           val (outerStar, innerStar) = aspectData.points.let { it[0] to it[1] }
           val description = buildString {
-            append("[transiting ${outerStar.getTitle(Locale.ENGLISH)}] ${aspectData.aspect} [natal ${innerStar.getTitle(Locale.ENGLISH)}]")
+            append("[transiting ${outerStar.getTitle(Lang.EN)}] ${aspectData.aspect} [natal ${innerStar.getTitle(Lang.EN)}]")
           }
           AstroEventDto(AstroEvent.AspectEvent(description, aspectData), aspectData.gmtJulDay, null, Span.INSTANT, Impact.PERSONAL)
         })
@@ -600,21 +600,21 @@ class EventsTraversalTransitImpl(
     return this.filter { it.orb <= MUTUAL_NATAL_MAX_ORB }.sortedBy { it.orb }.joinToString("\n") { aspect: SynastryAspect ->
       buildString {
         append("\t")
-        append("(p) [transiting ${aspect.outerPoint.getTitle(Locale.ENGLISH)}")
+        append("(p) [transiting ${aspect.outerPoint.getTitle(Lang.EN)}")
         // 宮位只在有精確出生時刻時成立 —— 用 [includeAxis] 而非 `grain == MINUTE` 的推導。
         if (grain.includeAxis) {
           append(" (H${aspect.outerPointHouse})")
         }
         append("] ")
         append(aspect.aspect)
-        append(" [natal ${aspect.innerPoint.getTitle(Locale.ENGLISH)}")
+        append(" [natal ${aspect.innerPoint.getTitle(Lang.EN)}")
         if (grain.includeAxis) {
           append(" (H${aspect.innerPointHouse})")
         }
         append("] orb = ${aspect.orb.truncateToString(2)}")
         // ⭐ 入相／出相 —— 「四分、逼近」vs「對分、分離」是判讀主被動時實際被用到的區分。
         //    null ＝ 該路徑沒有提供「稍後位置」，此時**不印**（不得猜）。
-        aspect.aspectType?.also { append(" (${it.name.lowercase(Locale.ENGLISH)})") }
+        aspect.aspectType?.also { append(" (${it.name.lowercase()})") }
       }
     }
   }

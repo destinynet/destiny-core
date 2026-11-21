@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.Lang
 import destiny.tools.bundleName
 import destiny.core.Gender
 import destiny.core.Gender.F
@@ -22,7 +23,6 @@ import destiny.core.chinese.ziwei.StarLucky.Companion.fun文曲
 import destiny.core.chinese.ziwei.ZStar.Type.*
 import destiny.tools.serializers.StarMinorSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -93,7 +93,7 @@ sealed class StarMinor(nameKey: String, type: Type) : ZStar(nameKey, ZStar::clas
               天才, 天壽, 三台, 八座, 恩光, 天貴, 天使, 天傷, 陽空, 陰空, 正空, 傍空, 紅艷)
     }
 
-    override fun fromString(value: String, locale: Locale): StarMinor? {
+    override fun fromString(value: String, lang: Lang): StarMinor? {
       return values.firstOrNull {
         it.nameKey == value
       }

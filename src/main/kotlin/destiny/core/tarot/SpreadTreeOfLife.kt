@@ -6,8 +6,6 @@ package destiny.core.tarot
 import destiny.tools.ILocaleString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.*
-import java.util.Locale.*
 import destiny.tools.Lang
 
 /**
@@ -45,57 +43,57 @@ data class SpreadTreeOfLife(
     return SpreadTreeOfLife.getTitle(lang)
   }
 
-  override fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>> {
+  override fun getLangPosMap(): List<Pair<CardOrientation, Map<Lang, String>>> {
     return listOf(
       kether to mapOf(
-        TAIWAN to "王冠 (Kether)",
-        JAPANESE to "ケテル (Kether)",
-        ENGLISH to "Crown (Kether)"
+        Lang.ZH_TW to "王冠 (Kether)",
+        Lang.JA to "ケテル (Kether)",
+        Lang.EN to "Crown (Kether)"
       ),
       chokmah to mapOf(
-        TAIWAN to "智慧 (Chokmah)",
-        JAPANESE to "コクマー (Chokmah)",
-        ENGLISH to "Wisdom (Chokmah)"
+        Lang.ZH_TW to "智慧 (Chokmah)",
+        Lang.JA to "コクマー (Chokmah)",
+        Lang.EN to "Wisdom (Chokmah)"
       ),
       binah to mapOf(
-        TAIWAN to "理解 (Binah)",
-        JAPANESE to "ビナー (Binah)",
-        ENGLISH to "Understanding (Binah)"
+        Lang.ZH_TW to "理解 (Binah)",
+        Lang.JA to "ビナー (Binah)",
+        Lang.EN to "Understanding (Binah)"
       ),
       chesed to mapOf(
-        TAIWAN to "慈悲 (Chesed)",
-        JAPANESE to "ケセド (Chesed)",
-        ENGLISH to "Mercy (Chesed)"
+        Lang.ZH_TW to "慈悲 (Chesed)",
+        Lang.JA to "ケセド (Chesed)",
+        Lang.EN to "Mercy (Chesed)"
       ),
       geburah to mapOf(
-        TAIWAN to "嚴厲 (Geburah)",
-        JAPANESE to "ゲブラー (Geburah)",
-        ENGLISH to "Severity (Geburah)"
+        Lang.ZH_TW to "嚴厲 (Geburah)",
+        Lang.JA to "ゲブラー (Geburah)",
+        Lang.EN to "Severity (Geburah)"
       ),
       tiphereth to mapOf(
-        TAIWAN to "美 (Tiphereth)",
-        JAPANESE to "ティファレト (Tiphereth)",
-        ENGLISH to "Beauty (Tiphereth)"
+        Lang.ZH_TW to "美 (Tiphereth)",
+        Lang.JA to "ティファレト (Tiphereth)",
+        Lang.EN to "Beauty (Tiphereth)"
       ),
       netzach to mapOf(
-        TAIWAN to "勝利 (Netzach)",
-        JAPANESE to "ネツァク (Netzach)",
-        ENGLISH to "Victory (Netzach)"
+        Lang.ZH_TW to "勝利 (Netzach)",
+        Lang.JA to "ネツァク (Netzach)",
+        Lang.EN to "Victory (Netzach)"
       ),
       hod to mapOf(
-        TAIWAN to "榮耀 (Hod)",
-        JAPANESE to "ホド (Hod)",
-        ENGLISH to "Glory (Hod)"
+        Lang.ZH_TW to "榮耀 (Hod)",
+        Lang.JA to "ホド (Hod)",
+        Lang.EN to "Glory (Hod)"
       ),
       yesod to mapOf(
-        TAIWAN to "基礎 (Yesod)",
-        JAPANESE to "イェソド (Yesod)",
-        ENGLISH to "Foundation (Yesod)"
+        Lang.ZH_TW to "基礎 (Yesod)",
+        Lang.JA to "イェソド (Yesod)",
+        Lang.EN to "Foundation (Yesod)"
       ),
       malkuth to mapOf(
-        TAIWAN to "王國 (Malkuth)",
-        JAPANESE to "マルクト (Malkuth)",
-        ENGLISH to "Kingdom (Malkuth)"
+        Lang.ZH_TW to "王國 (Malkuth)",
+        Lang.JA to "マルクト (Malkuth)",
+        Lang.EN to "Kingdom (Malkuth)"
       )
     )
   }

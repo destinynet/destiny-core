@@ -4,6 +4,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.core.ILoop
 import destiny.core.astrology.Element.*
 import destiny.core.astrology.Quality.*
@@ -13,15 +14,14 @@ import destiny.core.chinese.IYinYang
 import destiny.tools.CircleTools.normalize
 import destiny.tools.getTitle
 import kotlinx.serialization.Serializable
-import java.util.*
 import destiny.tools.I18nBundles
 import destiny.tools.toLang
 import destiny.tools.defaultLocale
 
 
-fun ZodiacSign.getAbbreviation(locale: Locale): String {
+fun ZodiacSign.getAbbreviation(lang: Lang): String {
   val resource = ZodiacSign::class.qualifiedName!!
-  return I18nBundles.string(resource, locale.toLang(), this.abbrKey) ?: this.abbrKey
+  return I18nBundles.string(resource, lang, this.abbrKey) ?: this.abbrKey
 }
 
 
@@ -64,7 +64,7 @@ enum class ZodiacSign(val abbrKey: String,
 
   /** 縮寫  */
   val abbreviation: String
-    get() = I18nBundles.string(resource, defaultLocale.toLang(), abbrKey) ?: abbrKey
+    get() = I18nBundles.string(resource, Lang.DEFAULT, abbrKey) ?: abbrKey
 
   /** 取得對沖的星座  */
   val oppositeSign: ZodiacSign
@@ -86,7 +86,7 @@ enum class ZodiacSign(val abbrKey: String,
    * 要識別字用 [name]（kotlinx／Jackson／JPA 也都走 [name]），要顯示名稱用 [getTitle] 並明確帶語系。
    */
   override fun toString(): String {
-    return this.getTitle(defaultLocale)
+    return this.getTitle(Lang.DEFAULT)
   }
 
 //  fun getAbbreviation(locale: Locale): String {

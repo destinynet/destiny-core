@@ -1,5 +1,6 @@
 package destiny.tools.ai.model
 
+import destiny.tools.Lang
 import destiny.core.DomainObjectFinder
 import destiny.tools.converters.MapConverter
 import kotlinx.serialization.KSerializer
@@ -9,7 +10,6 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import java.util.*
 import destiny.tools.I18nBundles
 import destiny.tools.toLang
 
@@ -86,9 +86,9 @@ sealed class Domain {
   }
 }
 
-fun Domain.getTitle(locale: Locale): String {
+fun Domain.getTitle(lang: Lang): String {
   val resource = Domain::class.qualifiedName!!
-  return I18nBundles.string(resource, locale.toLang(), "$code.title") ?: code
+  return I18nBundles.string(resource, lang, "$code.title") ?: code
 }
 
 object DomainConverter : MapConverter<Domain> {

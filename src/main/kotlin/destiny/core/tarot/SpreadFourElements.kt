@@ -7,8 +7,6 @@ import destiny.core.astrology.Element
 import destiny.tools.ILocaleString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.*
-import java.util.Locale.*
 import destiny.tools.Lang
 
 
@@ -34,27 +32,27 @@ data class SpreadFourElements(
     }
   }
 
-  override fun getLocalePosMap(): List<Pair<CardOrientation, Map<Locale, String>>> {
+  override fun getLangPosMap(): List<Pair<CardOrientation, Map<Lang, String>>> {
     return listOf(
       fire to mapOf(
-        TAIWAN to "左上",
-        JAPANESE to "左上",
-        ENGLISH to "Left top",
+        Lang.ZH_TW to "左上",
+        Lang.JA to "左上",
+        Lang.EN to "Left top",
       ),
       water to mapOf(
-        TAIWAN to "右上",
-        JAPANESE to "右上",
-        ENGLISH to "Right top",
+        Lang.ZH_TW to "右上",
+        Lang.JA to "右上",
+        Lang.EN to "Right top",
       ),
       earth to mapOf(
-        TAIWAN to "左下",
-        JAPANESE to "左下",
-        ENGLISH to "Left bottom",
+        Lang.ZH_TW to "左下",
+        Lang.JA to "左下",
+        Lang.EN to "Left bottom",
       ),
       air to mapOf(
-        TAIWAN to "右下",
-        JAPANESE to "右下",
-        ENGLISH to "Right bottom",
+        Lang.ZH_TW to "右下",
+        Lang.JA to "右下",
+        Lang.EN to "Right bottom",
       )
     )
   }

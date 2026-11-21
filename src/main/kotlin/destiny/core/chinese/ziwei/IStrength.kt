@@ -7,7 +7,6 @@ import destiny.core.Descriptive
 import destiny.core.chinese.Branch
 import destiny.tools.Lang
 import destiny.tools.toLang
-import java.util.*
 
 /**
  * 廟◎－星曜所在宮位是亮度最為光亮時，稱為入廟；任何星曜以入廟為最佳。
@@ -32,8 +31,6 @@ interface IStrength : Descriptive {
      * 南派依序分成               →廟、旺、    得地     、平和、   閒地      、陷    ，等六級。
      * 北派依序分成（即紫微斗數全書）→廟、旺、    得地、利益、平和、   不得地(失地)、陷    ，等七級。
      */
-    /** 將 1轉成「廟」 , 2轉成「旺」...  */
-    fun getString(value: Int, locale: Locale): String = getString(value, locale.toLang())
 
     /** 將 1轉成「廟」 , 2轉成「旺」...  */
     fun getString(value: Int, lang: Lang): String {

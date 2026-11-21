@@ -4,11 +4,11 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.tools.serializers.astrology.StarSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -49,14 +49,14 @@ sealed class Star(nameKey: String, abbrKey: String?, resource: String, unicode: 
       arrayOf(*Planet.values, *Asteroid.values, *FixedStar.values, *LunarPoint.values, *Hamburger.values, *Lot.values, *LunarStation.values)
     }
 
-    override fun fromString(value: String, locale: Locale): Star? {
-      return Planet.fromString(value, locale)
-        ?: Asteroid.fromString(value, locale)
-        ?: FixedStar.fromString(value, locale)
-        ?: LunarPoint.fromString(value, locale)
-        ?: Hamburger.fromString(value, locale)
-        ?: Lot.fromString(value, locale)
-        ?: LunarStation.fromString(value, locale)
+    override fun fromString(value: String, lang: Lang): Star? {
+      return Planet.fromString(value, lang)
+        ?: Asteroid.fromString(value, lang)
+        ?: FixedStar.fromString(value, lang)
+        ?: LunarPoint.fromString(value, lang)
+        ?: Hamburger.fromString(value, lang)
+        ?: Lot.fromString(value, lang)
+        ?: LunarStation.fromString(value, lang)
     }
   }
 }

@@ -3,27 +3,29 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.Lang
+import destiny.tools.LangTools
+import destiny.tools.LocalizedDecorator
 import destiny.tools.Decorator
 import destiny.tools.LocaleTools
 import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField.HOUR_OF_DAY
 import java.time.temporal.ChronoField.MINUTE_OF_HOUR
-import java.util.*
 
 
 /** 只輸出到「分」  */
-object DateHourMinDecorator {
+object DateHourMinDecorator : LocalizedDecorator<ChronoLocalDateTime<*>> {
 
-  private val implMap = mapOf<Locale, Decorator<ChronoLocalDateTime<*>>>(
-    Locale.TAIWAN to DateHourMinDecoratorTradChinese,
-    Locale.CHINA to DateHourMinDecoratorSimpChinese,
-    Locale.ENGLISH to DateHourMinDecoratorEnglish,
-    Locale.JAPAN to DateHourMinDecoratorJapanese
+  private val implMap = mapOf<Lang, Decorator<ChronoLocalDateTime<*>>>(
+    Lang.ZH_TW to DateHourMinDecoratorTradChinese,
+    Lang.ZH_CN to DateHourMinDecoratorSimpChinese,
+    Lang.EN to DateHourMinDecoratorEnglish,
+    Lang.JA_JP to DateHourMinDecoratorJapanese
   )
 
-  fun getOutputString(time: ChronoLocalDateTime<*>, locale: Locale): String {
-    val bestMatchingLocale = LocaleTools.getBestMatchingLocaleOrFirst(locale, implMap.keys)
+  override fun getOutputString(time: ChronoLocalDateTime<*>, lang: Lang): String {
+    val bestMatchingLocale = LangTools.getBestMatchingLangOrFirst(lang, implMap.keys)
     return implMap.getValue(bestMatchingLocale).getOutputString(time)
   }
 }
@@ -41,9 +43,9 @@ object DateHourMinDecoratorTradChinese : Decorator<ChronoLocalDateTime<*>>, JSer
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
     return buildString {
-      append(DateDecorator.getOutputString(value.toLocalDate() , Locale.TRADITIONAL_CHINESE))
+      append(DateDecorator.getOutputString(value.toLocalDate() , Lang.ZH_TW))
       append("　")
-      append(HourMinDecorator.getOutputString(value.get(HOUR_OF_DAY) to value.get(MINUTE_OF_HOUR) , Locale.TRADITIONAL_CHINESE))
+      append(HourMinDecorator.getOutputString(value.get(HOUR_OF_DAY) to value.get(MINUTE_OF_HOUR) , Lang.ZH_TW))
     }
   }
 }
@@ -54,9 +56,9 @@ object DateHourMinDecoratorSimpChinese : Decorator<ChronoLocalDateTime<*>>, JSer
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
     return buildString {
-      append(DateDecorator.getOutputString(value.toLocalDate() , Locale.SIMPLIFIED_CHINESE))
+      append(DateDecorator.getOutputString(value.toLocalDate() , Lang.ZH_CN))
       append("　")
-      append(HourMinDecorator.getOutputString(value.get(HOUR_OF_DAY) to value.get(MINUTE_OF_HOUR), Locale.SIMPLIFIED_CHINESE))
+      append(HourMinDecorator.getOutputString(value.get(HOUR_OF_DAY) to value.get(MINUTE_OF_HOUR), Lang.ZH_CN))
     }
   }
 }
@@ -67,9 +69,9 @@ object DateHourMinDecoratorEnglish : Decorator<ChronoLocalDateTime<*>>, JSeriali
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
     return buildString {
-      append(DateDecorator.getOutputString(value.toLocalDate() , Locale.ENGLISH))
+      append(DateDecorator.getOutputString(value.toLocalDate() , Lang.EN))
       append(" ")
-      append(HourMinDecorator.getOutputString(value.get(HOUR_OF_DAY) to value.get(MINUTE_OF_HOUR), Locale.ENGLISH))
+      append(HourMinDecorator.getOutputString(value.get(HOUR_OF_DAY) to value.get(MINUTE_OF_HOUR), Lang.EN))
     }
   }
 }
@@ -80,9 +82,9 @@ object DateHourMinDecoratorJapanese : Decorator<ChronoLocalDateTime<*>>, JSerial
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
     return buildString {
-      append(DateDecorator.getOutputString(value.toLocalDate(), Locale.JAPAN))
+      append(DateDecorator.getOutputString(value.toLocalDate(), Lang.JA_JP))
       append("　")
-      append(HourMinDecorator.getOutputString(value.get(HOUR_OF_DAY) to value.get(MINUTE_OF_HOUR), Locale.TRADITIONAL_CHINESE))
+      append(HourMinDecorator.getOutputString(value.get(HOUR_OF_DAY) to value.get(MINUTE_OF_HOUR), Lang.ZH_TW))
     }
   }
 }

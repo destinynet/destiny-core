@@ -4,13 +4,13 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.astrology.Apsis.APHELION
 import destiny.core.astrology.Apsis.PERIHELION
 import destiny.tools.serializers.astrology.LunarApsisSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 
@@ -55,7 +55,7 @@ sealed class LunarApsis(nameKey: String, abbrKey: String,
 
     override val values by lazy { arrayOf(APOGEE, PERIGEE) }
 
-    override fun fromString(value: String, locale: Locale) : LunarApsis? {
+    override fun fromString(value: String, lang: Lang) : LunarApsis? {
       return values.firstOrNull { it::class.simpleName == value }
     }
   }

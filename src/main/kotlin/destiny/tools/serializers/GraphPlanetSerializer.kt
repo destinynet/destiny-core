@@ -3,6 +3,7 @@
  */
 package destiny.tools.serializers
 
+import destiny.tools.Lang
 import destiny.core.Circular
 import destiny.core.Graph
 import destiny.core.astrology.Planet
@@ -14,7 +15,6 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.*
-import java.util.*
 
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -33,7 +33,7 @@ object GraphPlanetSerializer : KSerializer<Graph<Planet>> {
 
   override fun serialize(encoder: Encoder, value: Graph<Planet>) {
 
-    val locale = Locale.ENGLISH
+    val locale = Lang.EN
 
     val circlesDesc: String? = value.circles.takeIf { it.isNotEmpty() }?.let { circulars: Set<Circular<Planet>> ->
       buildString {

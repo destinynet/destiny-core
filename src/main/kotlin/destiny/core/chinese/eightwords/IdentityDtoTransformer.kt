@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.eightwords
 
+import destiny.tools.Lang
 import destiny.core.Scale
 import destiny.core.calendar.eightwords.IdentityPattern
 import destiny.core.calendar.eightwords.IdentityPattern.*
@@ -13,7 +14,6 @@ import destiny.core.chinese.eightwords.EwEvent.NatalBranches
 import destiny.core.chinese.eightwords.EwEvent.NatalStems
 import destiny.core.chinese.trilogy
 import destiny.tools.getTitle
-import java.util.*
 
 
 /**
@@ -21,7 +21,7 @@ import java.util.*
  */
 object IdentityDtoTransformer {
 
-  private val locale = Locale.TAIWAN
+  private val locale = Lang.ZH_TW
 
   /**
    * 天干五合

@@ -3,11 +3,11 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.Lang
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.tools.serializers.ZStarSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -71,7 +71,7 @@ sealed class ZStar : Point, Comparable<ZStar> {
     return if (typeCompare != 0)
       typeCompare
     else {
-      this.getTitle(Locale.TAIWAN).compareTo(other.getTitle(Locale.TAIWAN))
+      this.getTitle(Lang.ZH_TW).compareTo(other.getTitle(Lang.ZH_TW))
     }
   }
 
@@ -106,15 +106,15 @@ sealed class ZStar : Point, Comparable<ZStar> {
     }
 
 
-    override fun fromString(value: String, locale: Locale): ZStar? {
-      return StarMain.fromString(value, locale)
-        ?: StarLucky.fromString(value, locale)
-        ?: StarUnlucky.fromString(value, locale)
-        ?: StarMinor.fromString(value, locale)
-        ?: StarDoctor.fromString(value, locale)
-        ?: StarGeneralFront.fromString(value, locale)
-        ?: StarLongevity.fromString(value, locale)
-        ?: StarYearFront.fromString(value, locale)
+    override fun fromString(value: String, lang: Lang): ZStar? {
+      return StarMain.fromString(value, lang)
+        ?: StarLucky.fromString(value, lang)
+        ?: StarUnlucky.fromString(value, lang)
+        ?: StarMinor.fromString(value, lang)
+        ?: StarDoctor.fromString(value, lang)
+        ?: StarGeneralFront.fromString(value, lang)
+        ?: StarLongevity.fromString(value, lang)
+        ?: StarYearFront.fromString(value, lang)
     }
 
   }

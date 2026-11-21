@@ -3,21 +3,21 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.Lang
 import destiny.tools.Decorator
 import destiny.tools.JSerializable
-import destiny.tools.LocaleTools
-import java.util.*
+import destiny.tools.LocalizedDecorator
+import destiny.tools.getOutputString
 
-object HourMinDecorator {
-  private val implMap = mapOf<Locale, Decorator<Pair<Int, Int>>>(
-    Locale.TAIWAN to HourMinDecoratorTradChinese,
-    Locale.CHINA to HourMinDecoratorSimplifiedChinese,
-    Locale.ENGLISH to HourMinDecoratorEnglish
+object HourMinDecorator : LocalizedDecorator<Pair<Int, Int>> {
+  private val implMap = mapOf<Lang, Decorator<Pair<Int, Int>>>(
+    Lang.ZH_TW to HourMinDecoratorTradChinese,
+    Lang.ZH_CN to HourMinDecoratorSimplifiedChinese,
+    Lang.EN to HourMinDecoratorEnglish
   )
 
-  fun getOutputString(hourMin: Pair<Int, Int>, locale: Locale): String {
-    val bestMatchingLocale = LocaleTools.getBestMatchingLocaleOrFirst(locale, implMap.keys)
-    return implMap.getValue(bestMatchingLocale).getOutputString(hourMin)
+  override fun getOutputString(value: Pair<Int, Int>, lang: Lang): String {
+    return implMap.getOutputString(value, lang)
   }
 }
 

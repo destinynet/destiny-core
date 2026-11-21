@@ -3,18 +3,20 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.formatInvariant
+import destiny.tools.Lang
+import destiny.tools.LocalizedDecorator
 import destiny.core.News
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
-import java.util.*
 
-object LngDecorator {
-  private val implMap = mapOf(Locale.TAIWAN to LngDecoratorTaiwan(),
-                              Locale.SIMPLIFIED_CHINESE to LngDecoratorChina(),
-                              Locale.ENGLISH to LngDecoratorEnglish())
+object LngDecorator : LocalizedDecorator<Lng> {
+  private val implMap = mapOf(Lang.ZH_TW to LngDecoratorTaiwan(),
+                              Lang.ZH_CN to LngDecoratorChina(),
+                              Lang.EN to LngDecoratorEnglish())
 
-  fun getOutputString(value: Lng, locale: Locale): String {
-    return implMap.getOutputString(value, locale)
+  override fun getOutputString(value: Lng, lang: Lang): String {
+    return implMap.getOutputString(value, lang)
   }
 }
 
@@ -33,10 +35,10 @@ class LngDecoratorTaiwan : Decorator<Lng> {
 
 private val zh = {sb : StringBuilder , lng : Lng ->
   sb.append("：")
-  sb.append("%03d".format(Locale.ROOT, lng.deg)).append("度")
-  sb.append("%02d".format(Locale.ROOT, lng.min)).append("分")
+  sb.append("%03d".formatInvariant(lng.deg)).append("度")
+  sb.append("%02d".formatInvariant(lng.min)).append("分")
 
-  val secString = "%02.2f".format(Locale.ROOT, lng.sec).let {
+  val secString = "%02.2f".formatInvariant(lng.sec).let {
     // 可能是 "0.00"
     if (it.length == 4) "0$it"
     else it
@@ -72,8 +74,8 @@ class LngDecoratorEnglish : Decorator<Lng> {
 
     return with(StringBuilder()) {
       append(value.deg).append("°")
-      append("%02d".format(Locale.ROOT, value.min)).append("'")
-      val secString = "%02.2f".format(Locale.ROOT, value.sec).let {
+      append("%02d".formatInvariant(value.min)).append("'")
+      val secString = "%02.2f".formatInvariant(value.sec).let {
         // 可能是 "0.00"
         if (it.length == 4) "0$it"
         else it

@@ -3,13 +3,13 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.Lang
 import destiny.tools.bundleName
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.chinese.Branch
 import destiny.tools.serializers.StarYearFrontSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -45,7 +45,7 @@ sealed class StarYearFront(nameKey: String) : ZStar(nameKey, StarYearFront::clas
 
     override val values by lazy { arrayOf(歲建, 晦氣, 喪門, 貫索, 官符, 小耗, 歲破, 龍德, 白虎, 天德, 吊客, 病符) }
 
-    override fun fromString(value: String, locale: Locale): StarYearFront? {
+    override fun fromString(value: String, lang: Lang): StarYearFront? {
       return values.firstOrNull {
         it.nameKey == value
       }

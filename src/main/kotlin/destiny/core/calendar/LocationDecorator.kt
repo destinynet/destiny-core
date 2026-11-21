@@ -4,21 +4,23 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.Lang
+import destiny.tools.LangTools
+import destiny.tools.LocalizedDecorator
 import destiny.tools.Decorator
 import destiny.tools.LocaleTools
 import java.time.Instant
-import java.util.*
 
-object LocationDecorator {
-  private val implMap = mapOf<Locale, Decorator<ILocation>>(
-    Locale.TAIWAN to LocationDecoratorTaiwan(),
-    Locale.CHINA to LocationDecoratorChina(),
-    Locale.ENGLISH to LocationDecoratorEnglish()
+object LocationDecorator : LocalizedDecorator<ILocation> {
+  private val implMap = mapOf<Lang, Decorator<ILocation>>(
+    Lang.ZH_TW to LocationDecoratorTaiwan(),
+    Lang.ZH_CN to LocationDecoratorChina(),
+    Lang.EN to LocationDecoratorEnglish()
   )
 
-  fun getOutputString(location: ILocation, locale: Locale): String {
+  override fun getOutputString(location: ILocation, lang: Lang): String {
 
-    val bestMatchingLocale = LocaleTools.getBestMatchingLocaleOrFirst(locale, implMap.keys)
+    val bestMatchingLocale = LangTools.getBestMatchingLangOrFirst(lang, implMap.keys)
     return implMap.getValue(bestMatchingLocale).getOutputString(location)
   }
 
@@ -30,7 +32,7 @@ class LocationDecoratorTaiwan : Decorator<ILocation> {
   override fun getOutputString(value: ILocation): String {
 
     val sb = StringBuilder()
-    sb.append(LngLatDecorator.getOutputString(value, Locale.TAIWAN))
+    sb.append(LngLatDecorator.getOutputString(value, Lang.ZH_TW))
 
     value.altitudeMeter?.also {
       sb.append("高度 ").append(it).append(" 公尺.")
@@ -49,7 +51,7 @@ class LocationDecoratorChina : Decorator<ILocation> {
 
   override fun getOutputString(value: ILocation): String {
     val sb = StringBuilder()
-    sb.append(LngLatDecorator.getOutputString(value, Locale.CHINA))
+    sb.append(LngLatDecorator.getOutputString(value, Lang.ZH_CN))
 
     value.altitudeMeter?.also {
       sb.append("高度 ").append(it).append(" 米")
@@ -68,7 +70,7 @@ class LocationDecoratorEnglish : Decorator<ILocation> {
 
   override fun getOutputString(value: ILocation): String {
     val sb = StringBuilder()
-    sb.append(LngLatDecorator.getOutputString(value, Locale.ENGLISH))
+    sb.append(LngLatDecorator.getOutputString(value, Lang.EN))
 
 
     sb.append(" GMT offset ")

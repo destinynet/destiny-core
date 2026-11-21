@@ -4,9 +4,9 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.core.IPoints
 import destiny.core.Point
-import java.util.*
 import kotlin.reflect.KClass
 
 
@@ -33,8 +33,8 @@ abstract class LunarPoint(nameKey: String, abbrKey: String, resource: String, un
       arrayOf(*LunarNode.values, *LunarApsis.values)
     }
 
-    override fun fromString(value: String, locale: Locale): LunarPoint? {
-      return LunarNode.fromString(value, locale) ?: LunarApsis.fromString(value, locale)
+    override fun fromString(value: String, lang: Lang): LunarPoint? {
+      return LunarNode.fromString(value, lang) ?: LunarApsis.fromString(value, lang)
     }
   }
 }

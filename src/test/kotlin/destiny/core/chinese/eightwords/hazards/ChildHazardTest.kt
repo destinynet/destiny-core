@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.eightwords.hazards
 
+import destiny.tools.toLang
 import destiny.tools.getTitle
 import destiny.tools.KotlinLogging
 import org.junit.jupiter.api.TestInstance
@@ -40,7 +41,7 @@ internal class ChildHazardTest {
   @MethodSource("hazards")
   fun testBookNote(row: Triple<ChildHazard, Book, Locale>) {
     val (childHazard, book, locale) = row
-    val note = childHazard.getBookNote(locale, book)
+    val note = childHazard.getBookNote(locale.toLang(), book)
     logger.info { "${childHazard.getName(locale)} :《${book.getTitle(locale)}》 $locale = $note" }
 
     if (note != null) {

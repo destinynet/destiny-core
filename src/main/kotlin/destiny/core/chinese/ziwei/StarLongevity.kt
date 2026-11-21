@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.Lang
 import destiny.tools.bundleName
 import destiny.core.Gender
 import destiny.core.IPoints
@@ -14,7 +15,6 @@ import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.IYinYang
 import destiny.tools.serializers.StarLongevitySerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 /** 長生 12 神煞  */
@@ -48,7 +48,7 @@ sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.bundle
 
     override val values by lazy { arrayOf(長生, 沐浴, 冠帶, 臨官, 帝旺, 衰, 病, 死, 墓, 絕, 胎, 養) }
 
-    override fun fromString(value: String, locale: Locale): StarLongevity? {
+    override fun fromString(value: String, lang: Lang): StarLongevity? {
       return values.firstOrNull {
         it.nameKey == value
       }

@@ -4,11 +4,11 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.tools.serializers.astrology.HamburgerSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 
@@ -48,9 +48,9 @@ sealed class Hamburger(nameKey: String) : Star(nameKey, Star::class.qualifiedNam
       listOf(*values)
     }
 
-    override fun fromString(value: String, locale: Locale): Hamburger? {
+    override fun fromString(value: String, lang: Lang): Hamburger? {
       return values.firstOrNull {
-        it.getTitle(locale).equals(value, ignoreCase = true)
+        it.getTitle(lang).equals(value, ignoreCase = true)
       }
     }
 

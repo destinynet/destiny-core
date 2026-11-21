@@ -4,13 +4,13 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.tools.bundleName
 import destiny.core.IPoints
 import destiny.core.News
 import destiny.core.Point
 import destiny.tools.serializers.astrology.LunarNodeSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 @Serializable(with = LunarNodeSerializer::class)
@@ -68,9 +68,9 @@ sealed class LunarNode(nameKey: String,
 
     override val values: Array<LunarNode> by lazy { arrayOf(NORTH, SOUTH) }
 
-    override fun fromString(value: String, locale: Locale): LunarNode? {
+    override fun fromString(value: String, lang: Lang): LunarNode? {
       return values.firstOrNull {
-        it.getTitle(locale).equals(value, ignoreCase = true)
+        it.getTitle(lang).equals(value, ignoreCase = true)
       }
     }
 

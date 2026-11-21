@@ -104,7 +104,9 @@ value class Lang private constructor(val tag: String) {
     val ZH_TW = Lang("zh-TW")
     val ZH_CN = Lang("zh-CN")
     val EN = Lang("en")
+    val EN_US = Lang("en-US")
     val JA = Lang("ja")
+    val JA_JP = Lang("ja-JP")
     val KO = Lang("ko")
 
     /**

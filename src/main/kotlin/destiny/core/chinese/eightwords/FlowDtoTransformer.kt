@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.eightwords
 
+import destiny.tools.Lang
 import destiny.core.FlowScale
 import destiny.core.Scale
 import destiny.core.calendar.eightwords.FlowPattern
@@ -15,7 +16,6 @@ import destiny.core.chinese.eightwords.EwEvent.NatalBranches
 import destiny.core.chinese.eightwords.EwEvent.NatalStems
 import destiny.core.chinese.trilogy
 import destiny.tools.getTitle
-import java.util.*
 
 
 /**
@@ -24,7 +24,7 @@ import java.util.*
  */
 object FlowDtoTransformer {
 
-  private val locale = Locale.TAIWAN
+  private val locale = Lang.ZH_TW
 
   /**
    * 大運、流年同時影響本命天干

@@ -4,11 +4,11 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.tools.serializers.astrology.AstroPointSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -52,8 +52,8 @@ abstract class AstroPoint(nameKey: String, resource: String, abbrKey: String?, v
       arrayOf(*Star.values, *Axis.values)
     }
 
-    override fun fromString(value: String, locale: Locale): AstroPoint? {
-      return Star.fromString(value, locale) ?: Axis.fromString(value, locale)
+    override fun fromString(value: String, lang: Lang): AstroPoint? {
+      return Star.fromString(value, lang) ?: Axis.fromString(value, lang)
     }
 
   }

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.Lang
 import destiny.tools.bundleName
 import destiny.core.IPoints
 import destiny.core.Point
@@ -13,7 +14,6 @@ import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.trilogy
 import destiny.tools.serializers.StarGeneralFrontSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -60,7 +60,7 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
 
     override val values by lazy { arrayOf(將星, 攀鞍, 歲驛, 息神, 華蓋, 劫煞, 災煞, 天煞, 指背, 咸池, 月煞, 亡神) }
 
-    override fun fromString(value: String, locale: Locale): StarGeneralFront? {
+    override fun fromString(value: String, lang: Lang): StarGeneralFront? {
       return values.firstOrNull {
         it.nameKey == value
       }

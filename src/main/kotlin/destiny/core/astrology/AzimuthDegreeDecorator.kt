@@ -4,20 +4,21 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
+import destiny.tools.LocalizedDecorator
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
-import java.util.*
 
 /** 將地平方位角的「度數」，轉化為亦讀的輸出，例如：北偏東10度  */
-object AzimuthDegreeDecorator {
+object AzimuthDegreeDecorator : LocalizedDecorator<Double> {
 
-  private val implMap = mapOf<Locale, Decorator<Double>>(
-    Locale.CHINESE to AzimuthDegreeTaiwanDecorator(),
-    Locale.ENGLISH to AzimuthDegreeEnglishDecorator()
+  private val implMap = mapOf<Lang, Decorator<Double>>(
+    Lang.ZH to AzimuthDegreeTaiwanDecorator(),
+    Lang.EN to AzimuthDegreeEnglishDecorator()
   )
 
-  fun getOutputString(value: Double, locale: Locale): String {
-    return implMap.getOutputString(value , locale)
+  override fun getOutputString(value: Double, lang: Lang): String {
+    return implMap.getOutputString(value , lang)
   }
 
 }

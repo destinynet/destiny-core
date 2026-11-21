@@ -3,6 +3,9 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.Lang
+import destiny.tools.LangTools
+import destiny.tools.LocalizedDecorator
 import destiny.tools.AlignTools
 import destiny.tools.Decorator
 import destiny.tools.LocaleTools
@@ -10,19 +13,18 @@ import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.IsoEra
 import java.time.temporal.ChronoField.*
-import java.util.*
 
-object DateDecorator {
+object DateDecorator : LocalizedDecorator<ChronoLocalDate> {
 
-  private val implMap = mapOf<Locale, Decorator<ChronoLocalDate>>(
-    Locale.TAIWAN to DateDecoratorChinese,
-    Locale.SIMPLIFIED_CHINESE to DateDecoratorChinese,
-    Locale.ENGLISH to DateDecoratorEnglish,
-    Locale.JAPAN to DateDecoratorJapan
+  private val implMap = mapOf<Lang, Decorator<ChronoLocalDate>>(
+    Lang.ZH_TW to DateDecoratorChinese,
+    Lang.ZH_CN to DateDecoratorChinese,
+    Lang.EN to DateDecoratorEnglish,
+    Lang.JA_JP to DateDecoratorJapan
   )
 
-  fun getOutputString(date: ChronoLocalDate, locale: Locale): String {
-    val bestMatchingLocale = LocaleTools.getBestMatchingLocaleOrFirst(locale, implMap.keys)
+  override fun getOutputString(date: ChronoLocalDate, lang: Lang): String {
+    val bestMatchingLocale = LangTools.getBestMatchingLangOrFirst(lang, implMap.keys)
     return implMap.getValue(bestMatchingLocale).getOutputString(date)
   }
 }

@@ -3,12 +3,12 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.Lang
 import destiny.core.DayNight
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.tools.serializers.astrology.PlanetSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 import kotlin.reflect.KClass
 
 @Serializable(with = PlanetSerializer::class)
@@ -80,9 +80,9 @@ sealed class Planet(nameKey: String,
 
     private fun Planet.weekIndex() = weekPlanets.indexOf(this)
 
-    override fun fromString(value: String, locale: Locale): Planet? {
+    override fun fromString(value: String, lang: Lang): Planet? {
       return values.firstOrNull {
-        it.getTitle(locale).equals(value, ignoreCase = true)
+        it.getTitle(lang).equals(value, ignoreCase = true)
       }
     }
   }

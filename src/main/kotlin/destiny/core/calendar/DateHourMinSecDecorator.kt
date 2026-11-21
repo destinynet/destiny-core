@@ -3,22 +3,24 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.Lang
+import destiny.tools.LangTools
+import destiny.tools.LocalizedDecorator
 import destiny.tools.Decorator
 import destiny.tools.LocaleTools
 import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 
 /** 輸出到「秒」  */
-object DateHourMinSecDecorator {
-  private val implMap = mapOf<Locale, Decorator<ChronoLocalDateTime<*>>>(
-    Locale.TAIWAN to DateHourMinSecDecoratorTradChinese,
-    Locale.ENGLISH to DateHourMinSecDecoratorEnglish,
-    Locale.JAPAN to DateHourMinSecDecoratorJapanese
+object DateHourMinSecDecorator : LocalizedDecorator<ChronoLocalDateTime<*>> {
+  private val implMap = mapOf<Lang, Decorator<ChronoLocalDateTime<*>>>(
+    Lang.ZH_TW to DateHourMinSecDecoratorTradChinese,
+    Lang.EN to DateHourMinSecDecoratorEnglish,
+    Lang.JA_JP to DateHourMinSecDecoratorJapanese
   )
 
-  fun getOutputString(time: ChronoLocalDateTime<*>, locale: Locale): String {
-    val bestMatchingLocale = LocaleTools.getBestMatchingLocaleOrFirst(locale, implMap.keys)
+  override fun getOutputString(time: ChronoLocalDateTime<*>, lang: Lang): String {
+    val bestMatchingLocale = LangTools.getBestMatchingLangOrFirst(lang, implMap.keys)
     return implMap.getValue(bestMatchingLocale).getOutputString(time)
   }
 }
@@ -37,9 +39,9 @@ object DateHourMinSecDecoratorTradChinese : Decorator<ChronoLocalDateTime<*>>, J
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
 
     return buildString {
-      append(DateDecorator.getOutputString(value.toLocalDate(), Locale.TAIWAN))
+      append(DateDecorator.getOutputString(value.toLocalDate(), Lang.ZH_TW))
       append('　')
-      append(HourMinSecDecorator.getOutputString(value.toLocalTime() , Locale.TAIWAN))
+      append(HourMinSecDecorator.getOutputString(value.toLocalTime() , Lang.ZH_TW))
     }
   }
 }
@@ -51,9 +53,9 @@ object DateHourMinSecDecoratorJapanese : Decorator<ChronoLocalDateTime<*>>, JSer
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
 
     return buildString {
-      append(DateDecorator.getOutputString(value.toLocalDate(), Locale.JAPAN))
+      append(DateDecorator.getOutputString(value.toLocalDate(), Lang.JA_JP))
       append('　')
-      append(HourMinSecDecorator.getOutputString(value.toLocalTime(), Locale.TAIWAN))
+      append(HourMinSecDecorator.getOutputString(value.toLocalTime(), Lang.ZH_TW))
     }
   }
 }
@@ -65,9 +67,9 @@ object DateHourMinSecDecoratorEnglish : Decorator<ChronoLocalDateTime<*>>, JSeri
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
     return buildString {
-      append(DateDecorator.getOutputString(value.toLocalDate(), Locale.ENGLISH))
+      append(DateDecorator.getOutputString(value.toLocalDate(), Lang.EN))
       append(' ')
-      append(HourMinSecDecorator.getOutputString(value.toLocalTime() , Locale.ENGLISH))
+      append(HourMinSecDecorator.getOutputString(value.toLocalTime() , Lang.EN))
     }
   }
 }

@@ -5,7 +5,6 @@ import destiny.tools.I18nBundles
 import destiny.tools.ILocaleString
 import destiny.tools.JSerializable
 import destiny.tools.toLang
-import java.util.*
 import destiny.tools.Lang
 
 /**
@@ -122,6 +121,3 @@ fun Point.getAbbreviation(lang: Lang): String {
     getAbbr(lang, name)
   }
 }
-
-/** 橋接，說明見 [destiny.tools.ILocaleString] */
-fun Point.getAbbreviation(locale: Locale): String = getAbbreviation(locale.toLang())
