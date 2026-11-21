@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.holo
 
+import destiny.tools.KvCache
 import destiny.core.Gender
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -17,7 +18,6 @@ import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
-import javax.cache.Cache
 import destiny.tools.defaultLocale
 
 
@@ -38,12 +38,12 @@ class HoloFullFeature(private val holoFeature: HoloFeature,
                       private val hexTextProvider: IHexagramProvider<IHexagramText>,
                       private val julDayResolver: JulDayResolver,
                       @Transient
-                      private val holoFullCache: Cache<LmtCacheKey<*>, Pair<*, *>>) : AbstractCachedPersonFeature<HoloFullConfig, Pair<IPoemHolo, List<HoloFullHexagram>>>(), IHoloFullFeature {
+                      private val holoFullCache: KvCache<LmtCacheKey<*>, Pair<*, *>>) : AbstractCachedPersonFeature<HoloFullConfig, Pair<IPoemHolo, List<HoloFullHexagram>>>(), IHoloFullFeature {
 
-  override val lmtPersonCache: Cache<LmtCacheKey<HoloFullConfig>, Pair<IPoemHolo, List<HoloFullHexagram>>>
+  override val lmtPersonCache: KvCache<LmtCacheKey<HoloFullConfig>, Pair<IPoemHolo, List<HoloFullHexagram>>>
     @Suppress("UNCHECKED_CAST")
     get() {
-      return holoFullCache as Cache<LmtCacheKey<HoloFullConfig> , Pair<IPoemHolo, List<HoloFullHexagram>>>
+      return holoFullCache as KvCache<LmtCacheKey<HoloFullConfig> , Pair<IPoemHolo, List<HoloFullHexagram>>>
     }
 
   override val key: String = "holoFullFeature"

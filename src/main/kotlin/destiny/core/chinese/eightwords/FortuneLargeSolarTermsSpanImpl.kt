@@ -3,8 +3,9 @@
  */
 package destiny.core.chinese.eightwords
 
-import com.github.benmanes.caffeine.cache.Cache
-import com.github.benmanes.caffeine.cache.Caffeine
+import kotlin.time.Duration.Companion.minutes
+import destiny.tools.MemoCaches
+import destiny.tools.KvCache
 import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.IIntAgeNote
@@ -27,7 +28,6 @@ import destiny.core.chinese.StemBranchUnconstrained
 import destiny.tools.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 import kotlin.math.abs
-import java.util.concurrent.TimeUnit
 
 /**
  * 節氣星座過運法
@@ -115,7 +115,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFe
 
     var i: Int = if (!reverse) 1 else -1
 
-    var hashMap: MutableMap<Int, GmtJulDay>? = cache.getIfPresent(Pair(gmtJulDay, gender))
+    var hashMap: MutableMap<Int, GmtJulDay>? = cache[Pair(gmtJulDay, gender)]
 
     if (hashMap == null) {
       hashMap = LinkedHashMap()
@@ -251,10 +251,8 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFe
   companion object {
     private val logger = KotlinLogging.logger {}
 
-    private val cache: Cache<Pair<GmtJulDay, Gender>, MutableMap<Int, GmtJulDay>> = Caffeine.newBuilder()
-      .maximumSize(100)
-      .expireAfterAccess(1, TimeUnit.MINUTES)
-      .build()
+    private val cache: KvCache<Pair<GmtJulDay, Gender>, MutableMap<Int, GmtJulDay>> =
+      MemoCaches.lru(maxSize = 100, expireAfterAccess = 1.minutes)
   }
 
 

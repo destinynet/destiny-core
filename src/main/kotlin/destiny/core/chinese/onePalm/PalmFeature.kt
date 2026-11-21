@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.onePalm
 
+import destiny.tools.KvCache
 import destiny.core.Gender
 import destiny.core.Scale
 import destiny.core.calendar.GmtJulDay
@@ -17,7 +18,6 @@ import destiny.tools.JSerializable
 import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import javax.cache.Cache
 
 enum class PositiveImpl {
   Gender,
@@ -150,15 +150,15 @@ class PalmMetaDescFeature(private val palmMetaFeature : PersonFeature<PalmConfig
                           private val branchDescImpl: IBranchDesc,
                           private val julDayResolver: JulDayResolver ,
                           @Transient
-                          private val palmMetaDescCache : Cache<LmtCacheKey<*>, IPalmMetaModelDesc>) : AbstractCachedPersonFeature<PalmConfig, IPalmMetaModelDesc>() {
+                          private val palmMetaDescCache : KvCache<LmtCacheKey<*>, IPalmMetaModelDesc>) : AbstractCachedPersonFeature<PalmConfig, IPalmMetaModelDesc>() {
 
   override val key: String = "palmMetaDescFeature"
 
   override val defaultConfig: PalmConfig = palmMetaFeature.defaultConfig
 
-  override val lmtPersonCache: Cache<LmtCacheKey<PalmConfig>, IPalmMetaModelDesc>
+  override val lmtPersonCache: KvCache<LmtCacheKey<PalmConfig>, IPalmMetaModelDesc>
     @Suppress("UNCHECKED_CAST")
-    get() = palmMetaDescCache as Cache<LmtCacheKey<PalmConfig>, IPalmMetaModelDesc>
+    get() = palmMetaDescCache as KvCache<LmtCacheKey<PalmConfig>, IPalmMetaModelDesc>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: PalmConfig): IPalmMetaModelDesc {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.eightwords
 
+import destiny.tools.KvCache
 import destiny.core.Gender
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -15,7 +16,6 @@ import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedPersonFeature
 import kotlinx.serialization.Serializable
-import javax.cache.Cache
 
 @Serializable
 data class PersonPresentConfig(val personContextConfig: EightWordsPersonConfig = EightWordsPersonConfig(),
@@ -29,15 +29,15 @@ class PersonPresentFeature(private val personContextFeature: PersonContextFeatur
                            private val chineseDateFeature: ChineseDateFeature,
                            private val julDayResolver: JulDayResolver,
                            @Transient
-                           private val ewPersonPresentFeatureCache: Cache<GmtCacheKey<*>, IPersonPresentModel>) : AbstractCachedPersonFeature<IPersonPresentConfig , IPersonPresentModel>() {
+                           private val ewPersonPresentFeatureCache: KvCache<GmtCacheKey<*>, IPersonPresentModel>) : AbstractCachedPersonFeature<IPersonPresentConfig , IPersonPresentModel>() {
 
   override val key: String = "personPresent"
 
   override val defaultConfig: IPersonPresentConfig = PersonPresentConfig()
 
   @Suppress("UNCHECKED_CAST")
-  override val gmtPersonCache: Cache<GmtCacheKey<IPersonPresentConfig>, IPersonPresentModel>
-    get() = ewPersonPresentFeatureCache as Cache<GmtCacheKey<IPersonPresentConfig>, IPersonPresentModel>
+  override val gmtPersonCache: KvCache<GmtCacheKey<IPersonPresentConfig>, IPersonPresentModel>
+    get() = ewPersonPresentFeatureCache as KvCache<GmtCacheKey<IPersonPresentConfig>, IPersonPresentModel>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: IPersonPresentConfig): IPersonPresentModel {
 

@@ -3,8 +3,8 @@
  */
 package destiny.core.calendar.chinese
 
-import com.github.benmanes.caffeine.cache.Cache
-import com.github.benmanes.caffeine.cache.Caffeine
+import destiny.tools.MemoCaches
+import destiny.tools.KvCache
 import destiny.core.astrology.LunarPhase
 import destiny.core.calendar.CalType
 import destiny.core.calendar.ConversionException
@@ -56,7 +56,7 @@ class ChineseDateAstroImpl(
     operator fun contains(key: Double): Boolean = key >= keyBegin && key < keyEnd
   }
 
-  private val cache: Cache<TableKey, List<Span>> = Caffeine.newBuilder().maximumSize(4096).build()
+  private val cache: KvCache<TableKey, List<Span>> = MemoCaches.lru(maxSize = 4096)
 
   private val civilDayOf = CivilDayOf(civil)
 
@@ -65,7 +65,7 @@ class ChineseDateAstroImpl(
     return solarTerms.getSolarTermsTime(SolarTerms.冬至, from, true)
   }
 
-  private fun sui(key: TableKey): List<Span> = cache.get(key) { buildSui(it) }!!
+  private fun sui(key: TableKey): List<Span> = cache.getOrPut(key) { buildSui(key) }
 
   private fun buildSui(key: TableKey): List<Span> {
     val dayOf = key.dayOf

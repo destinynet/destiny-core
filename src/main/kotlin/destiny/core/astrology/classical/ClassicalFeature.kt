@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.tools.KvCache
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.rules.ClassicalInput
 import destiny.core.astrology.classical.rules.ClassicalPatternContext
@@ -10,13 +11,12 @@ import destiny.core.astrology.classical.rules.IPlanetPattern
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
-import javax.cache.Cache
 
 
 class ClassicalFeature(private val horoscopeFeature: HoroscopeFeature,
                        classicalPatternContext: ClassicalPatternContext,
                        @Transient
-                       private val classicalRulesCache: Cache<GmtCacheKey<*>, Map<*,*>>) :
+                       private val classicalRulesCache: KvCache<GmtCacheKey<*>, Map<*,*>>) :
   AbstractCachedFeature<Pair<IClassicalConfig, IHoroscopeConfig>, Map<Planet, List<IPlanetPattern>>>() {
 
   override val defaultConfig = ClassicalConfig(
@@ -26,8 +26,8 @@ class ClassicalFeature(private val horoscopeFeature: HoroscopeFeature,
   ) to HoroscopeConfig()
 
   @Suppress("UNCHECKED_CAST")
-  override val gmtCache: Cache<GmtCacheKey<Pair<IClassicalConfig, IHoroscopeConfig>>, Map<Planet, List<IPlanetPattern>>>
-    get() = classicalRulesCache as Cache<GmtCacheKey<Pair<IClassicalConfig, IHoroscopeConfig>>, Map<Planet, List<IPlanetPattern>>>
+  override val gmtCache: KvCache<GmtCacheKey<Pair<IClassicalConfig, IHoroscopeConfig>>, Map<Planet, List<IPlanetPattern>>>
+    get() = classicalRulesCache as KvCache<GmtCacheKey<Pair<IClassicalConfig, IHoroscopeConfig>>, Map<Planet, List<IPlanetPattern>>>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: Pair<IClassicalConfig, IHoroscopeConfig>): Map<Planet, List<IPlanetPattern>> {
 

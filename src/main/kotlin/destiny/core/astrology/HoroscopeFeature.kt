@@ -3,7 +3,9 @@
  */
 package destiny.core.astrology
 
-import com.github.benmanes.caffeine.cache.Caffeine
+import kotlin.time.Duration.Companion.days
+import destiny.tools.MemoCaches
+import destiny.tools.KvCache
 import com.google.common.collect.Sets
 import destiny.core.DayNight
 import destiny.core.Scale
@@ -19,11 +21,9 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.tools.*
 import kotlinx.serialization.Serializable
-import javax.cache.Cache
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
-import java.util.concurrent.TimeUnit
 
 
 @Serializable
@@ -246,15 +246,15 @@ class HoroscopeFeature(
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
   @Transient
-  private val horoscopeFeatureCache: Cache<GmtCacheKey<*>, IHoroscopeModel>,
+  private val horoscopeFeatureCache: KvCache<GmtCacheKey<*>, IHoroscopeModel>,
 ) : AbstractCachedFeature<IHoroscopeConfig, IHoroscopeModel>(), IHoroscopeFeature {
   override val key: String = "horoscope"
 
   override val defaultConfig: HoroscopeConfig = HoroscopeConfig()
 
   @Suppress("UNCHECKED_CAST")
-  override val gmtCache: Cache<GmtCacheKey<IHoroscopeConfig>, IHoroscopeModel>
-    get() = horoscopeFeatureCache as Cache<GmtCacheKey<IHoroscopeConfig>, IHoroscopeModel>
+  override val gmtCache: KvCache<GmtCacheKey<IHoroscopeConfig>, IHoroscopeModel>
+    get() = horoscopeFeatureCache as KvCache<GmtCacheKey<IHoroscopeConfig>, IHoroscopeModel>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IHoroscopeConfig): IHoroscopeModel {
     val positionMap = positionsOf(gmtJulDay, loc, config)
@@ -354,7 +354,7 @@ class HoroscopeFeature(
     val param = ProgressionCalcObj(progression.type, convergentTime, progression.forward)
 
     fun performOperation(param: ProgressionCalcObj): IProgressionModel {
-      return progressionCache.get(param) {
+      return progressionCache.getOrPut(param) {
         logger.debug { "cache missed , calculating... param = $param" }
 
         val convergentModel = getModel(param.convergentTime, model.location, config)
@@ -501,10 +501,8 @@ class HoroscopeFeature(
   }
 
   companion object {
-    private val progressionCache: com.github.benmanes.caffeine.cache.Cache<ProgressionCalcObj, IProgressionModel> = Caffeine.newBuilder()
-      .maximumSize(10000)
-      .expireAfterWrite(1, TimeUnit.DAYS)
-      .build()
+    private val progressionCache: KvCache<ProgressionCalcObj, IProgressionModel> =
+      MemoCaches.lru(maxSize = 10000, expireAfterWrite = 1.days)
 
     const val CACHE_HOROSCOPE_FEATURE = "horoscopeFeatureCache"
     private val logger = KotlinLogging.logger { }

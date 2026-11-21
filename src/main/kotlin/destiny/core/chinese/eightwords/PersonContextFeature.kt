@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.eightwords
 
+import destiny.tools.KvCache
 import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.calendar.GmtJulDay
@@ -18,7 +19,6 @@ import destiny.tools.serializers.LocaleSerializer
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
-import javax.cache.Cache
 import destiny.tools.defaultLocale
 
 @Serializable
@@ -40,7 +40,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
                            private val ewContextScoreImplMap: Map<EwContextScore, IEwContextScore>,
 
                            @Transient
-                           private val ewPersonFeatureCache: Cache<LmtCacheKey<*>, IPersonContextModel>) : AbstractCachedPersonFeature<EightWordsPersonConfig, IPersonContextModel>() {
+                           private val ewPersonFeatureCache: KvCache<LmtCacheKey<*>, IPersonContextModel>) : AbstractCachedPersonFeature<EightWordsPersonConfig, IPersonContextModel>() {
 
   override val key: String = "ewPerson"
 
@@ -54,8 +54,8 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
   override var lmtCacheGrain: CacheGrain? = CacheGrain.MINUTE
 
   @Suppress("UNCHECKED_CAST")
-  override val lmtPersonCache: Cache<LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
-    get() = ewPersonFeatureCache as Cache<LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
+  override val lmtPersonCache: KvCache<LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
+    get() = ewPersonFeatureCache as KvCache<LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
 

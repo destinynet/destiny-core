@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.KvCache
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import destiny.core.DayNight
@@ -24,7 +25,6 @@ import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
-import javax.cache.Cache
 
 
 /** 某時刻對應到的 大運、流年 兩資訊 */
@@ -213,12 +213,12 @@ class ZiweiFeature(
   private val purpleRelocationMutator : IHouseMutator,
 
   @Transient
-  private val ziweiCache: Cache<LmtCacheKey<*>, IPlate>
+  private val ziweiCache: KvCache<LmtCacheKey<*>, IPlate>
 ) : AbstractCachedPersonFeature<IZiweiConfig, IPlate>(), IZiweiFeature {
 
-  override val lmtPersonCache: Cache<LmtCacheKey<IZiweiConfig>, IPlate>
+  override val lmtPersonCache: KvCache<LmtCacheKey<IZiweiConfig>, IPlate>
     @Suppress("UNCHECKED_CAST")
-    get() = ziweiCache as Cache<LmtCacheKey<IZiweiConfig>, IPlate>
+    get() = ziweiCache as KvCache<LmtCacheKey<IZiweiConfig>, IPlate>
 
   override val defaultConfig: IZiweiConfig = ZiweiConfig()
 

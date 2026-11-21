@@ -15,7 +15,6 @@ import destiny.tools.AbstractCachedFeature.Companion.grainMinute
 import destiny.tools.AbstractCachedFeature.Companion.grainSecond
 import destiny.tools.AbstractCachedFeature.Companion.toLocation
 import java.time.chrono.ChronoLocalDateTime
-import javax.cache.Cache
 
 
 abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeature<Config, Model> {
@@ -33,7 +32,7 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
     }
   }
 
-  open val gmtPersonCache: Cache<GmtCacheKey<@UnsafeVariance Config>, Model>?
+  open val gmtPersonCache: KvCache<GmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
 
   override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: @UnsafeVariance Config): Model {
@@ -71,7 +70,7 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
 
   open var lmtCacheGrain: CacheGrain? = null
 
-  open val lmtPersonCache: Cache<LmtCacheKey<@UnsafeVariance Config>, Model>?
+  open val lmtPersonCache: KvCache<LmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
 
   override fun getPersonModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: @UnsafeVariance Config): Model {

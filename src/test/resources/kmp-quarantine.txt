@@ -3,7 +3,7 @@
 # 由 KmpReadinessRatchetTest 管控。不在此清單上的 .kt 一律必須無 JVM-only 相依。
 # 這份清單只准變短：改乾淨了就刪掉該行。詳見該測試的 KDoc。
 #
-# 目前數量：268
+# 目前數量：263
 
 destiny/core/BirthData.kt
 destiny/core/Descriptive.kt
@@ -66,7 +66,6 @@ destiny/core/astrology/TransitDto.kt
 destiny/core/astrology/ZodiacDegree.kt
 destiny/core/astrology/ZodiacDegreeDecorator.kt
 destiny/core/astrology/ZodiacSign.kt
-destiny/core/astrology/classical/ClassicalFeature.kt
 destiny/core/astrology/classical/rules/ClassicalPatternContext.kt
 destiny/core/astrology/classical/rules/PatternTranslator.kt
 destiny/core/astrology/prediction/PeakSlice.kt
@@ -128,7 +127,6 @@ destiny/core/calendar/eightwords/IHour.kt
 destiny/core/calendar/eightwords/IMidnight.kt
 destiny/core/calendar/eightwords/IYearMonth.kt
 destiny/core/calendar/eightwords/IdentityPatternFactory.kt
-destiny/core/calendar/eightwords/IntAge8wImpl.kt
 destiny/core/calendar/eightwords/MidnightFeature.kt
 destiny/core/calendar/eightwords/MidnightLmtImpl.kt
 destiny/core/calendar/eightwords/Reaction.kt
@@ -149,7 +147,6 @@ destiny/core/chinese/eightwords/IEwContextScore.kt
 destiny/core/chinese/eightwords/IdentityDtoTransformer.kt
 destiny/core/chinese/eightwords/PersonContextFeature.kt
 destiny/core/chinese/eightwords/PersonContextModel.kt
-destiny/core/chinese/eightwords/PersonPresentFeature.kt
 destiny/core/chinese/eightwords/hazards/ChildHazard.kt
 destiny/core/chinese/eightwords/hazards/HazardService.kt
 destiny/core/chinese/eightwords/hazards/IHazardService.kt
@@ -216,8 +213,6 @@ destiny/tools/AbstractCachedFeature.kt
 destiny/tools/AbstractCachedPersonFeature.kt
 destiny/tools/AbstractPropertyBasedPatternDescriptor.kt
 destiny/tools/AlignTools.kt
-destiny/tools/CacheBackedSet.kt
-destiny/tools/CacheConfigProvider.kt
 destiny/tools/Decorator.kt
 destiny/tools/Extensions.kt
 destiny/tools/Feature.kt
@@ -228,7 +223,6 @@ destiny/tools/ILocaleString.kt
 destiny/tools/ITranslator.kt
 destiny/tools/ImageHosting.kt
 destiny/tools/IsoTool.kt
-destiny/tools/JCacheTools.kt
 destiny/tools/JSerializable.kt
 destiny/tools/KotlinLogging.kt
 destiny/tools/LangJvm.kt
@@ -236,6 +230,7 @@ destiny/tools/LanguageTools.kt
 destiny/tools/LocaleComparator.kt
 destiny/tools/LocaleTools.kt
 destiny/tools/Localeable.kt
+destiny/tools/MemoCaches.kt
 destiny/tools/PersonFeature.kt
 destiny/tools/ai/model/Domain.kt
 destiny/tools/config/Holder.kt

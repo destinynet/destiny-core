@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.lunarStation
 
+import destiny.tools.KvCache
 import destiny.core.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -15,7 +16,6 @@ import destiny.tools.random.RandomService
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
-import javax.cache.Cache
 
 @Serializable
 data class LunarStationModernConfig(
@@ -29,16 +29,16 @@ class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFe
                                 private val randomService: RandomService,
                                 private val julDayResolver: JulDayResolver,
                                 @Transient
-                                private val lsModernCache : Cache<GmtCacheKey<*>, IModernContextModel>
+                                private val lsModernCache : KvCache<GmtCacheKey<*>, IModernContextModel>
 ) : AbstractCachedPersonFeature<LunarStationModernConfig, IModernContextModel>() {
 
   override val key: String = "lunarStationModern"
 
   override val defaultConfig: LunarStationModernConfig = LunarStationModernConfig()
 
-  override val gmtPersonCache: Cache<GmtCacheKey<LunarStationModernConfig>, IModernContextModel>
+  override val gmtPersonCache: KvCache<GmtCacheKey<LunarStationModernConfig>, IModernContextModel>
     @Suppress("UNCHECKED_CAST")
-    get() = lsModernCache as Cache<GmtCacheKey<LunarStationModernConfig>, IModernContextModel>
+    get() = lsModernCache as KvCache<GmtCacheKey<LunarStationModernConfig>, IModernContextModel>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: LunarStationModernConfig): IModernContextModel {
     val created = LocalDateTime.now()

@@ -11,7 +11,6 @@ import destiny.core.calendar.fixError
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
-import javax.cache.Cache
 
 
 abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<Config, Model> {
@@ -26,7 +25,7 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
     }
   }
 
-  open val gmtCache: Cache<GmtCacheKey<@UnsafeVariance Config>, Model>?
+  open val gmtCache: KvCache<GmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: @UnsafeVariance Config): Model {
@@ -59,7 +58,7 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
 
   open var lmtCacheGrain: CacheGrain? = null
 
-  open val lmtCache: Cache<LmtCacheKey<@UnsafeVariance Config>, Model>?
+  open val lmtCache: KvCache<LmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: @UnsafeVariance Config): Model {

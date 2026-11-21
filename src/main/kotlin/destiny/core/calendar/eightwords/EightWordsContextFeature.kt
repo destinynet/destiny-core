@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.tools.KvCache
 import destiny.core.calendar.chinese.ChineseDateConfig
 import destiny.core.astrology.*
 import destiny.core.calendar.*
@@ -13,7 +14,6 @@ import destiny.core.chinese.StemBranchUtils
 import destiny.tools.*
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import javax.cache.Cache
 
 
 @Serializable
@@ -35,15 +35,15 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
                                private val aspectCalculator: IAspectCalculator,
                                private val julDayResolver: JulDayResolver,
                                @Transient
-                               private val ewContextFeatureCache : Cache<LmtCacheKey<*>, IEightWordsContextModel>) : AbstractCachedFeature<EightWordsContextConfig , IEightWordsContextModel>() {
+                               private val ewContextFeatureCache : KvCache<LmtCacheKey<*>, IEightWordsContextModel>) : AbstractCachedFeature<EightWordsContextConfig , IEightWordsContextModel>() {
 
   override val key: String = "ewContext"
 
   override val defaultConfig: EightWordsContextConfig = EightWordsContextConfig()
 
   @Suppress("UNCHECKED_CAST")
-  override val lmtCache: Cache<LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
-    get() = ewContextFeatureCache as Cache<LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
+  override val lmtCache: KvCache<LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
+    get() = ewContextFeatureCache as KvCache<LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
 
   override var lmtCacheGrain: CacheGrain? = CacheGrain.SECOND
 

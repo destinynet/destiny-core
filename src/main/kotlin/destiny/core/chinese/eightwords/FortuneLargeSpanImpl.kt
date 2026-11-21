@@ -3,8 +3,9 @@
  */
 package destiny.core.chinese.eightwords
 
-import com.github.benmanes.caffeine.cache.Cache
-import com.github.benmanes.caffeine.cache.Caffeine
+import kotlin.time.Duration.Companion.minutes
+import destiny.tools.MemoCaches
+import destiny.tools.KvCache
 import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.IIntAgeNote
@@ -24,7 +25,6 @@ import destiny.core.chinese.StemBranchUnconstrained
 import destiny.tools.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 import kotlin.math.abs
-import java.util.concurrent.TimeUnit
 
 
 /** 標準 , 以「出生時刻，到『節』，的固定倍數法」 (內定 120.0倍) 求得大運 . 內定 一柱十年 */
@@ -110,7 +110,7 @@ class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
 
     var i: Int = if (!reverse) 1 else -1
 
-    var hashMap: MutableMap<Int, GmtJulDay>? = cache.getIfPresent(Pair(gmtJulDay, gender))
+    var hashMap: MutableMap<Int, GmtJulDay>? = cache[Pair(gmtJulDay, gender)]
 
     if (hashMap == null) {
       hashMap = LinkedHashMap()
@@ -247,9 +247,7 @@ class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
 
   companion object {
     private val logger = KotlinLogging.logger { }
-    private val cache: Cache<Pair<GmtJulDay, Gender>, MutableMap<Int, GmtJulDay>> = Caffeine.newBuilder()
-      .maximumSize(100)
-      .expireAfterAccess(1, TimeUnit.MINUTES)
-      .build()
+    private val cache: KvCache<Pair<GmtJulDay, Gender>, MutableMap<Int, GmtJulDay>> =
+      MemoCaches.lru(maxSize = 100, expireAfterAccess = 1.minutes)
   }
 }

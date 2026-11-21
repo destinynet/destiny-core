@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.tools.KvCache
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -12,7 +13,6 @@ import destiny.core.chinese.StemBranch
 import destiny.tools.*
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import javax.cache.Cache
 
 
 @Serializable
@@ -42,7 +42,7 @@ class EightWordsFeature(
   private val hourBranchFeature: IHourBranchFeature,
   private val julDayResolver: JulDayResolver,
   @Transient
-  private val ewFeatureLmtCache: Cache<LmtCacheKey<*>, IEightWords>
+  private val ewFeatureLmtCache: KvCache<LmtCacheKey<*>, IEightWords>
 ) : AbstractCachedFeature<IEightWordsConfig, IEightWords>(), IEightWordsFeature {
 
   override val key: String = "eightWords"
@@ -50,8 +50,8 @@ class EightWordsFeature(
   override val defaultConfig: EightWordsConfig = EightWordsConfig()
 
   @Suppress("UNCHECKED_CAST")
-  override val lmtCache: Cache<LmtCacheKey<IEightWordsConfig>, IEightWords>
-    get() = ewFeatureLmtCache as Cache<LmtCacheKey<IEightWordsConfig>, IEightWords>
+  override val lmtCache: KvCache<LmtCacheKey<IEightWordsConfig>, IEightWords>
+    get() = ewFeatureLmtCache as KvCache<LmtCacheKey<IEightWordsConfig>, IEightWords>
 
   override var lmtCacheGrain: CacheGrain? = CacheGrain.SECOND
 

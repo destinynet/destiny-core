@@ -3,8 +3,9 @@
  */
 package destiny.core.calendar.eightwords
 
-import com.github.benmanes.caffeine.cache.Cache
-import com.github.benmanes.caffeine.cache.Caffeine
+import kotlin.time.Duration.Companion.seconds
+import destiny.tools.MemoCaches
+import destiny.tools.KvCache
 import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.calendar.GmtJulDay
@@ -12,7 +13,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms.立春
 import destiny.tools.JSerializable
-import java.util.concurrent.TimeUnit
 
 /**
  * 八字的「虛歲」大運
@@ -28,11 +28,8 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, JSerializ
                               val toAge: Int)
 
 
-  private val cache : Cache<CacheKey, List<Pair<GmtJulDay, GmtJulDay>>> = Caffeine.newBuilder()
-    .maximumSize(100)
-    //.expireAfterWrite(5 , TimeUnit.SECONDS)
-    .expireAfterAccess(10 , TimeUnit.SECONDS)
-    .build()
+  private val cache : KvCache<CacheKey, List<Pair<GmtJulDay, GmtJulDay>>> =
+    MemoCaches.lru(maxSize = 100, expireAfterAccess = 10.seconds)
 
   override fun getRange(gender: Gender, gmtJulDay: GmtJulDay, loc: ILocation, age: Int): Pair<GmtJulDay, GmtJulDay> {
     val age1: Pair<GmtJulDay, GmtJulDay> = Pair(gmtJulDay, solarTermsImpl.getSolarTermsTime(立春, gmtJulDay, true))
@@ -67,7 +64,7 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, JSerializ
       return getRangesInner(result, toAge - fromAge)
     }
 
-    return cache.get(key) {innerGetList()}
+    return cache.getOrPut(key) {innerGetList()}
 
   }
 
