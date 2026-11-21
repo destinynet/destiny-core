@@ -10,7 +10,6 @@ import destiny.core.calendar.TimeTools
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import destiny.tools.*
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import javax.cache.Cache
@@ -36,7 +35,6 @@ interface IEightWordsFeature : Feature<IEightWordsConfig , IEightWords> {
   fun prev(gmtJulDay: GmtJulDay, loc: ILocation, config: IEightWordsConfig): Pair<IEightWords, GmtJulDay>
 }
 
-@Named
 class EightWordsFeature(
   private val yearFeature: YearFeature,
   private val yearMonthFeature: YearMonthFeature,

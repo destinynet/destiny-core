@@ -11,7 +11,6 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
 import destiny.tools.JSerializable
 import destiny.tools.serializers.astrology.PlanetSerializer
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 interface IVoidCourseConfig : JSerializable {
@@ -55,7 +54,6 @@ interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourseSpan?> {
 /**
  * 星體空亡
  */
-@Named
 class VoidCourseFeature(private val vocMap: Map<VoidCourseImpl, IVoidCourse>,
                         private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>) : IVoidCourseFeature, AbstractCachedFeature<VoidCourseConfig , VoidCourseSpan?>() {
   

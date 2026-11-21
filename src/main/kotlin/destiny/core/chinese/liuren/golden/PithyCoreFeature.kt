@@ -17,7 +17,6 @@ import destiny.core.chinese.liuren.*
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.JSerializable
 import destiny.tools.KotlinLogging
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -32,7 +31,6 @@ data class PithyConfig(val direction: Branch = Branch.子,
                        ) : JSerializable
 
 
-@Named
 class PithyCoreFeature(private val eightWordsFeature: EightWordsFeature,
                        private val monthMasterMap: Map<MonthMaster, IMonthMaster>,
                        private val clockwiseMap: Map<Clockwise, IClockwise>,

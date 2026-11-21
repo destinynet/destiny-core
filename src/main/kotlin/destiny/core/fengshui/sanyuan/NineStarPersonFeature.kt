@@ -13,8 +13,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.tools.AbstractCachedPersonFeature
-import jakarta.inject.Inject
-import jakarta.inject.Named
 
 data class NineStarPersonModel(val bdnp: IBirthDataNamePlace, val models: List<NineStarModel>) {
 
@@ -23,13 +21,10 @@ data class NineStarPersonModel(val bdnp: IBirthDataNamePlace, val models: List<N
   }
 }
 
-@Named
-class NineStarPersonFeature(private val julDayResolver: JulDayResolver) : AbstractCachedPersonFeature<NineStarConfig, NineStarPersonModel>() {
+class NineStarPersonFeature(private val julDayResolver: JulDayResolver,
+                            private val nineStarFeature: NineStarFeature) : AbstractCachedPersonFeature<NineStarConfig, NineStarPersonModel>() {
 
   override val defaultConfig: NineStarConfig = NineStarConfig(scales = listOf(YEAR, MONTH, DAY, HOUR))
-
-  @Inject
-  private lateinit var nineStarFeature : NineStarFeature // Feature<NineStarConfig, List<NineStarModel>>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: NineStarConfig): NineStarPersonModel {
 

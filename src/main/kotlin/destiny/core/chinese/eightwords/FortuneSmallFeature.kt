@@ -17,7 +17,6 @@ import destiny.core.chinese.StemBranch.*
 import destiny.core.chinese.StemBranchCycle
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.JSerializable
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 
@@ -42,12 +41,11 @@ interface IFortuneSmall {
 }
 
 
-@Named
 class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
                           private val ageNoteImplMap: Map<IntAgeNote , IIntAgeNote>,
                           private val fortuneDirectionFeature: IFortuneDirectionFeature,
-                          @param:Named("intAge8wImpl")
-                          private val intAgeImpl: IIntAge) : AbstractCachedPersonFeature<FortuneSmallConfig, List<FortuneData>>() {
+                          /** 參數名即 bean 名：同型別有多個 bean，Spring 以參數名挑選 */
+                          private val intAge8wImpl: IIntAge) : AbstractCachedPersonFeature<FortuneSmallConfig, List<FortuneData>>() {
   override val key: String = "fortuneSmall"
 
   override val defaultConfig: FortuneSmallConfig = FortuneSmallConfig()
@@ -101,7 +99,7 @@ class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
                                 forward: Boolean,
                                 ageNoteImpls: List<IIntAgeNote>): List<FortuneData> {
       var sb = eightWords.hour
-      return intAgeImpl.getRangesMap(gender, gmtJulDay, location, 1, count).map { (age, pair) ->
+      return intAge8wImpl.getRangesMap(gender, gmtJulDay, location, 1, count).map { (age, pair) ->
         sb = if (forward) sb.next as StemBranch else sb.prev as StemBranch
         val (from, to) = pair
         val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
@@ -123,7 +121,7 @@ class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
     override fun getFortuneDataList(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IIntAgeNote>, config: EightWordsConfig): List<FortuneData> {
       var sb = if (gender == Gender.M) 丙寅.prev else 壬申.next
 
-      return intAgeImpl.getRangesMap(gender , gmtJulDay , loc , 1 , count).map { (age , pair) ->
+      return intAge8wImpl.getRangesMap(gender , gmtJulDay , loc , 1 , count).map { (age , pair) ->
         val (from , to) = pair
         val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
         val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
@@ -158,7 +156,7 @@ class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
         StemBranchCycle.甲寅 -> if (gender == Gender.M) 丙辰.prev else 壬戌.next
       }
 
-      return intAgeImpl.getRangesMap(gender , gmtJulDay , loc , 1 , count).map { (age , pair) ->
+      return intAge8wImpl.getRangesMap(gender , gmtJulDay , loc , 1 , count).map { (age , pair) ->
         val (from , to) = pair
         val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
         val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()

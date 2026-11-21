@@ -14,7 +14,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ILocationPlace
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
-import jakarta.inject.Named
 
 /**
  * 回歸盤 × 換置的計分組態：natal（終身結構）與回歸盤（時效）兩層各自計分後加權。
@@ -72,7 +71,6 @@ data class ReturnCandidates(
  * 回歸時刻與地點無關（星體回到本命度數的瞬間全球同時），只解一次；
  * 兩層各自建 [AstroGeoContext]（jd 一律當參數）再交給 [RelocationCandidateService]。
  */
-@Named
 class ReturnRelocationRanker(
   private val candidateService: RelocationCandidateService,
   private val scorer: IRelocationScorer,
@@ -159,10 +157,9 @@ class ReturnRelocationRanker(
  *
  * 月亮回歸盤的四角每次都大幅移動，結果只適合講「這段期間」，不適合拿來決定搬家（那是年版與 natal 層的事）。
  */
-@Named
 class MonthlyRelocationService(
   private val ranker: ReturnRelocationRanker,
-  @param:Named("lunarReturnContext")
+  /** 參數名即 bean 名：同型別有多個 bean，Spring 以參數名挑選 */
   private val lunarReturnContext: IReturnContext,
 ) {
 

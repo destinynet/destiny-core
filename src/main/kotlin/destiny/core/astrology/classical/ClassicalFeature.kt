@@ -10,11 +10,9 @@ import destiny.core.astrology.classical.rules.IPlanetPattern
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
-import jakarta.inject.Named
 import javax.cache.Cache
 
 
-@Named
 class ClassicalFeature(private val horoscopeFeature: HoroscopeFeature,
                        classicalPatternContext: ClassicalPatternContext,
                        @Transient

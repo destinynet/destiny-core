@@ -23,7 +23,6 @@ import destiny.core.chinese.lunarStation.ILunarStationFeature.Companion.getOppoH
 import destiny.core.chinese.lunarStation.ILunarStationFeature.Companion.getSelfHouse
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -109,7 +108,6 @@ interface ILunarStationFeature : Feature<ILunarStationConfig, ContextModel> {
 /**
  * 禽星排盤
  */
-@Named
 class LunarStationFeature(
   private val yearlyFeature: LunarStationYearlyFeature,
   private val monthlyFeature: ILunarStationMonthlyFeature,

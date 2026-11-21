@@ -4,7 +4,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
-import jakarta.inject.Named
 
 interface IHouseCuspFeature : Feature<HouseConfig, Map<Int, ZodiacDegree>> {
 
@@ -33,7 +32,6 @@ interface IHouseCuspFeature : Feature<HouseConfig, Map<Int, ZodiacDegree>> {
   }
 }
 
-@Named
 class HouseCuspFeature(private val houseCuspImpl : IHouseCusp) : IHouseCuspFeature, AbstractCachedFeature<HouseConfig, Map<Int, ZodiacDegree>>() {
 
   override val key: String = "houseCusp"

@@ -10,7 +10,6 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.JSerializable
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -19,7 +18,6 @@ data class PithyModernDetailConfig(val pithyConfig: PithyConfig = PithyConfig(),
                                    val method: IPithyDetailModel.Method = IPithyDetailModel.Method.MANUAL): JSerializable
 
 
-@Named
 class PithyModernDetailFeature(private val pithyCoreFeature: PithyCoreFeature ,
                                private val julDayResolver: JulDayResolver) : AbstractCachedPersonFeature<PithyModernDetailConfig, IPithyDetailModel>(){
 

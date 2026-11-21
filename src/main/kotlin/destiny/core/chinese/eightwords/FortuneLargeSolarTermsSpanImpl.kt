@@ -25,7 +25,6 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import destiny.tools.KotlinLogging
-import jakarta.inject.Named
 import java.time.chrono.ChronoLocalDateTime
 import kotlin.math.abs
 import java.util.concurrent.TimeUnit
@@ -38,17 +37,16 @@ import java.util.concurrent.TimeUnit
  *
  * 演算法與 [FortuneLargeSpanImpl] 類似
  */
-@Named
 class FortuneLargeSolarTermsSpanImpl(private val eightWordsFeature: EightWordsFeature,
                                      private val fortuneDirectionFeature: IFortuneDirectionFeature,
-                                     @param:Named("intAge8wImpl")
-                                     private val intAgeImpl: IIntAge,
+                                     /** 參數名即 bean 名：同型別有多個 bean，Spring 以參數名挑選 */
+                                     private val intAge8wImpl: IIntAge,
                                      ageNoteImplMap: Map<IntAgeNote , IIntAgeNote>,
                                      private val solarTermsImpl: ISolarTerms,
                                      private val starTransitImpl: IStarTransit) : AbstractFortuneLargeImpl(ageNoteImplMap) {
 
   private fun getAgeMap(toAge: Int, gmtJulDay: GmtJulDay, gender: Gender, location: ILocation): Map<Int, Pair<GmtJulDay, GmtJulDay>> {
-    return intAgeImpl.getRangesMap(gender, gmtJulDay, location, 1, toAge)
+    return intAge8wImpl.getRangesMap(gender, gmtJulDay, location, 1, toAge)
   }
 
 

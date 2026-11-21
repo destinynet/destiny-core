@@ -9,7 +9,6 @@ import destiny.core.calendar.JulDayResolver
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
 import destiny.tools.JSerializable
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
@@ -29,7 +28,6 @@ interface IPlanetaryHourFeature : Feature<PlanetaryHourConfig, PlanetaryHour?> {
   fun getDailyPlanetaryHours(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: PlanetaryHourConfig = PlanetaryHourConfig()): List<PlanetaryHour>
 }
 
-@Named
 class PlanetaryHourFeature(private val astroHourImplMap : Map<PlanetaryHourType, IPlanetaryHour> ,
                            private val julDayResolver: JulDayResolver) : AbstractCachedFeature<PlanetaryHourConfig, PlanetaryHour?>() , IPlanetaryHourFeature {
 

@@ -19,7 +19,6 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
-import jakarta.inject.Named
 import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.chrono.ChronoLocalDate
@@ -82,7 +81,6 @@ interface IChineseDateFeature : Feature<ChineseDateConfig, ChineseDate> {
  * [DayBoundary.CIVIL] 是民曆時區的午夜，[DayBoundary.DAY_HOUR] 依八字日柱的設定
  * （時辰切割 × 子初／子正換日），與日柱用同一套換日點，所以農曆的「日」就是日柱的「日」。
  */
-@Named
 class ChineseDateFeature(private val calendar: ILunisolarCalendar,
                          private val hourBranchFeature: IHourBranchFeature,
                          private val midnightFeature: MidnightFeature,

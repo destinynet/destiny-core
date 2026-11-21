@@ -8,7 +8,6 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.JSerializable
 import destiny.tools.serializers.astrology.StarSerializer
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -22,7 +21,6 @@ data class AzimuthConfig(@Serializable(with = StarSerializer::class)
                          ): JSerializable
 
 
-@Named
 class AzimuthFeature(val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator) : AbstractCachedFeature<AzimuthConfig, IStarPositionWithAzimuth>() {
   override val key: String = "azimuth"
 

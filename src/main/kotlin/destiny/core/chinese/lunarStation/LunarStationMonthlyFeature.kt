@@ -12,7 +12,6 @@ import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.YearMonthFeature
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
-import jakarta.inject.Named
 
 enum class MonthlyImpl {
   AoHead,           // 《鰲頭通書》
@@ -24,7 +23,6 @@ interface ILunarStationMonthlyFeature : Feature<ILunarStationConfig, LunarStatio
   fun getMonthly(yearStation: LunarStation, monthNumber: Int, monthlyImpl: MonthlyImpl): LunarStation
 }
 
-@Named
 class LunarStationMonthlyFeature(
   private val yearlyFeature: LunarStationYearlyFeature,
   private val monthFeature: YearMonthFeature,

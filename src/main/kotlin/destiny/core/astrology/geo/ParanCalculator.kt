@@ -7,7 +7,6 @@ import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.EquatorialPos
 import destiny.tools.CircleTools.normalizeSigned
-import jakarta.inject.Named
 import kotlin.math.absoluteValue
 import kotlin.math.acos
 import kotlin.math.atan
@@ -25,7 +24,6 @@ import kotlin.math.tan
  * - 兩顆都在 ASC／DSC、以及非合衝刑的世俗相位：在緯度上取樣找變號，再二分。
  * - 有移動星（[AstroGeoContext.tracks]，月亮）參與時，[refine]／[curve] 依經度精算：同樣對緯度求根，只是星的位置取到角那一刻的。
  */
-@Named
 class ParanCalculator : IParanCalculator {
 
   override fun parans(ctx: AstroGeoContext, query: ParanQuery): List<Paran> {

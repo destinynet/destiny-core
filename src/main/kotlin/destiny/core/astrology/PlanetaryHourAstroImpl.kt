@@ -11,7 +11,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
-import jakarta.inject.Named
 import destiny.tools.KotlinLogging
 import destiny.tools.JSerializable
 import java.time.temporal.ChronoField
@@ -24,7 +23,6 @@ import java.time.temporal.ChronoUnit
  *
  * 晝夜、分別劃分 12等分
  */
-@Named
 class PlanetaryHourAstroImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour, JSerializable {
 
 

@@ -14,7 +14,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ILocationPlace
 import destiny.tools.Score
-import jakarta.inject.Named
 
 /**
  * 一個候選城市的 Aimed SR 評估。
@@ -40,10 +39,9 @@ data class AimedSolarReturnResult(
  * 不是 A 的「當下生效」SR。SR 時刻與地點無關，解一次後把該瞬間的天空
  * 餵給 [RelocationCandidateService] 做單層雙軸排名。純演算法組合，置於 destiny-core。
  */
-@Named
 class AimedSolarReturnService(
   private val candidateService: RelocationCandidateService,
-  @param:Named("solarReturnContext")
+  /** 參數名即 bean 名：同型別有多個 bean，Spring 以參數名挑選 */
   private val solarReturnContext: IReturnContext,
   private val scorer: IRelocationScorer,
 ) {

@@ -7,7 +7,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.CircleTools.normalize
 import destiny.tools.CircleTools.normalizeSigned
-import jakarta.inject.Named
 import kotlin.math.abs
 import kotlin.math.sign
 
@@ -17,7 +16,6 @@ import kotlin.math.sign
  * 純建於既有 forward API [IStarPositionWithAzimuthCalculator] 之上（粗掃偵測變號 + 二分求根），
  * 與 swisseph 無關，故置於 destiny-core。
  */
-@Named
 class AzimuthTransitImpl(
   private val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator
 ) : IAzimuthTransit {

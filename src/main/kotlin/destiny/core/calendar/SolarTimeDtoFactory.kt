@@ -18,7 +18,6 @@ import destiny.core.calendar.eightwords.IHour
 import destiny.core.chinese.Branch
 import destiny.tools.CircleTools.normalizeSigned
 import destiny.tools.SampleTools.sampleSteps
-import jakarta.inject.Named
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -32,7 +31,6 @@ import kotlin.math.roundToInt
  * 組裝 [SolarTimeDto]。窗口 = 包含 focus 的太陽日（前一個子正 → 下一個子正）；
  * 時辰起點直接問 [IHour]（HourSolarTransImpl），與時辰確認頁的表同源。
  */
-@Named
 class SolarTimeDtoFactory(
   private val riseTransImpl: IRiseTrans,
   private val starPosWithAzimuth: IStarPositionWithAzimuthCalculator,

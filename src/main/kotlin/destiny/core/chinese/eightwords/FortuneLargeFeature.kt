@@ -17,7 +17,6 @@ import destiny.core.chinese.StemBranchUtils.toAnimal
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.JSerializable
 import destiny.tools.PersonFeature
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
@@ -81,7 +80,6 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
   }
 }
 
-@Named
 class FortuneLargeFeature(private val implMap : Map<FortuneLargeImpl, IPersonFortuneLarge>,
                           private val julDayResolver: JulDayResolver) : IFortuneLargeFeature, AbstractCachedPersonFeature<FortuneLargeConfig, List<FortuneData>>() {
 

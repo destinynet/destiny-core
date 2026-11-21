@@ -12,10 +12,8 @@ import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.chinese.display
 import destiny.core.calendar.fixError
 import destiny.core.calendar.toLmt
-import jakarta.inject.Named
 import java.time.LocalDateTime
 
-@Named
 class Ew3dDtoFactory(
   private val solarTermsImpl: ISolarTerms,
   private val riseTransImpl: IRiseTrans,

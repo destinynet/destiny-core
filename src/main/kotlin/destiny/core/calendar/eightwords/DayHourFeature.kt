@@ -14,7 +14,6 @@ import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
@@ -103,7 +102,6 @@ data class DayHourConfig(
 interface IDayHourFeature : Feature<IDayHourConfig, Pair<StemBranch, StemBranch>>
 
 
-@Named
 class DayHourFeature(
   private val midnightFeature: MidnightFeature,
   private val hourBranchFeature: IHourBranchFeature,

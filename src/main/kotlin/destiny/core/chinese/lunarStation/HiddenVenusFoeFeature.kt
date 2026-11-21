@@ -20,13 +20,11 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.tools.AbstractCachedFeature
-import jakarta.inject.Named
 import java.time.chrono.ChronoLocalDateTime
 
 /**
  * 暗金伏斷
  */
-@Named
 class HiddenVenusFoeFeature(private val yearlyFeature: LunarStationYearlyFeature,
                             private val monthlyFeature: ILunarStationMonthlyFeature,
                             private val dailyFeature: LunarStationDailyFeature,

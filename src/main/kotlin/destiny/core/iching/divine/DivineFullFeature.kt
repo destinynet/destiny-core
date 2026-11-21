@@ -16,7 +16,6 @@ import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.JSerializable
 import destiny.tools.PersonFeature
 import destiny.tools.serializers.IEightWordsNullableSerializer
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
@@ -37,15 +36,14 @@ interface IDivineFullFeature : PersonFeature<DivineFullConfig, ICombinedFull> {
 }
 
 
-@Named
 class DivineFullFeature(private val divineTraditionalFeature: DivineTraditionalFeature,
                         private val eightWordsFeature: EightWordsFeature,
                         private val julDayResolver: JulDayResolver,
                         private val hexagramNameFull: IHexNameFull,
                         private val hexagramNameShort: IHexNameShort,
                         private val hexExpressionImpl: IHexagramExpression,
-                        @param:Named("hexImageFileImpl")
-                        private val hexImageImpl: IHexProvider<String, String>,
+                        /** 參數名即 bean 名：同型別有多個 bean，Spring 以參數名挑選 */
+                        private val hexImageFileImpl: IHexProvider<String, String>,
                         private val hexJudgement: IHexJudgement) : IDivineFullFeature, AbstractCachedPersonFeature<DivineFullConfig, ICombinedFull>(){
 
   override val key: String = "divineFullFeature"
@@ -69,7 +67,7 @@ class DivineFullFeature(private val divineTraditionalFeature: DivineTraditionalF
     val divineMeta = DivineMeta(gender, question, approach, lmt.toGmtJulDay(loc), loc, place, decoratedDate, decoratedDateTime, meta, null)
 
     val textContext: IHexagramProvider<IHexagramText> =
-      HexagramTextContext(hexagramNameFull, hexagramNameShort, hexExpressionImpl, hexImageImpl, hexJudgement)
+      HexagramTextContext(hexagramNameFull, hexagramNameShort, hexExpressionImpl, hexImageFileImpl, hexJudgement)
 
     val srcText = textContext.getHexagram(config.src, config.locale)
 

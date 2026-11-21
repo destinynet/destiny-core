@@ -9,7 +9,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDayNightConfig
 import destiny.core.calendar.eightwords.ITransConfig
 import destiny.tools.AbstractCachedFeature
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 enum class DayNightImpl {
@@ -24,7 +23,6 @@ data class DayNightConfig(override val dayNightImpl : DayNightImpl = DayNightImp
                           override val transConfig: TransConfig = TransConfig()): IDayNightConfig,
                                                                                   ITransConfig by transConfig
 
-@Named
 class DayNightFeature(private val dayNightImplMap: Map<DayNightImpl, IDayNight>) : AbstractCachedFeature<IDayNightConfig, DayNight>() {
 
   override val key: String = "dayNight"

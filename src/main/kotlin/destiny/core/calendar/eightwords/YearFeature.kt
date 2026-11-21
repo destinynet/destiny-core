@@ -9,7 +9,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedFeature
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 /**
@@ -25,7 +24,6 @@ data class YearConfig(override var changeYearDegree: Double = 315.0): IYearConfi
   }
 }
 
-@Named
 class YearFeature(private val starPositionImpl: IStarPosition<*>,
                   private val julDayResolver: JulDayResolver) : AbstractCachedFeature<IYearConfig, StemBranch>() {
 

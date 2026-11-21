@@ -18,7 +18,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.tools.*
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import javax.cache.Cache
 import kotlin.math.ceil
@@ -237,7 +236,6 @@ private data class ProgressionCalcObj(
   val forward: Boolean
 )
 
-@Named
 class HoroscopeFeature(
   private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>,
   private val houseCuspFeature: IHouseCuspFeature,

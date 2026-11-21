@@ -10,10 +10,8 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.SimpleBranch
 import destiny.core.chinese.Stem
-import jakarta.inject.Named
 
 
-@Named
 class OctaDivideScore316 : AbstractOctaDivideScore() {
 
   /**

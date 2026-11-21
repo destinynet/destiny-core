@@ -10,13 +10,11 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement.土
 import destiny.core.chinese.SimpleBranch
 import destiny.core.chinese.Stem
-import jakarta.inject.Named
 
 /**
  * 八分法
  * https://destiny.to/ubbthreads/ubbthreads.php/topics/1365115
  */
-@Named
 class OctaDivideScore46 : AbstractOctaDivideScore() {
 
   /**

@@ -14,14 +14,12 @@ import destiny.tools.KotlinLogging
 import destiny.tools.getTitle
 import destiny.tools.reverse
 import destiny.tools.truncateToString
-import jakarta.inject.Named
 import java.util.*
 import kotlin.math.abs
 
 /**
  * SolarArc-based
  */
-@Named
 class EventsTraversalSolarArcImpl(
   private val horoscopeFeature: IHoroscopeFeature,
   private val modernAspectCalculator: IAspectCalculator,

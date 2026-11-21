@@ -7,10 +7,8 @@ import destiny.core.Gender
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedPersonFeature
-import jakarta.inject.Named
 
 
-@Named
 class ZiweiPresentFeature(private val ziweiFeature: IZiweiFeature) : AbstractCachedPersonFeature<IZiweiPresentConfig, Map<FlowType, IPlate>>() {
 
   override val defaultConfig: IZiweiPresentConfig

@@ -6,7 +6,6 @@ package destiny.core.astrology
 import destiny.core.astrology.prediction.*
 import destiny.tools.CircleTools.normalize
 import destiny.tools.KotlinLogging
-import jakarta.inject.Named
 
 /**
  * [IPrimaryDirection] 的實作。
@@ -26,7 +25,6 @@ import jakarta.inject.Named
  * - [PdFrame.PLACIDUS] / [PdFrame.REGIOMONTANUS] / [PdFrame.CAMPANUS]
  * - [PrimaryDirectionMethod.Mundane] (世俗主限 / rapt parallels)
  */
-@Named
 class PrimaryDirectionImpl(
   private val obliquityCalculator: IObliquityCalculator
 ) : IPrimaryDirection {

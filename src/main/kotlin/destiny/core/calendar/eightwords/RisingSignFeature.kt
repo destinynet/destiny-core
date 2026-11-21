@@ -10,7 +10,6 @@ import destiny.core.astrology.ZodiacSign
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 enum class RisingSignImpl {
@@ -26,7 +25,6 @@ data class RisingSignConfig(
 ): IRisingSignConfig , IHouseConfig by houseConfig
 
 
-@Named
 class RisingSignFeature(private val houseCuspFeature: IHouseCuspFeature,
                         private val tradChineseRisingSignFeature: TradChineseRisingSignFeature
                         ): AbstractCachedFeature<RisingSignConfig, ZodiacSign>() {

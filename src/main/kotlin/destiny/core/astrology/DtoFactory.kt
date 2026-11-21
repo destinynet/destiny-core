@@ -23,11 +23,9 @@ import destiny.core.calendar.fixError
 import destiny.core.calendar.toLmt
 import destiny.tools.KotlinLogging
 import destiny.tools.Score.Companion.toScore
-import jakarta.inject.Named
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-@Named
 class DtoFactory(
   private val horoscopeFeature: IHoroscopeFeature,
   private val classicalFeature: ClassicalFeature,

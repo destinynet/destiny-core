@@ -10,7 +10,6 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
-import jakarta.inject.Named
 import java.time.chrono.ChronoLocalDateTime
 import kotlin.math.absoluteValue
 
@@ -31,7 +30,6 @@ interface IMidnightFeature : Feature<IDayConfig, GmtJulDay> {
 }
 
 /** 取得下一個子正的時刻 */
-@Named
 class MidnightFeature(private val midnightImplMap: Map<MidnightImpl, IMidnight>,
                       private val julDayResolver: JulDayResolver) : AbstractCachedFeature<IDayConfig, GmtJulDay>() , IMidnightFeature {
 

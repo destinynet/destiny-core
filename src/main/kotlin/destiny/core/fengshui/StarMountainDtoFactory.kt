@@ -19,7 +19,6 @@ import destiny.core.calendar.toLmt
 import destiny.tools.SampleTools.sampleSteps
 import destiny.tools.location.IStaticMap
 import destiny.tools.location.MapType
-import jakarta.inject.Named
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -29,7 +28,6 @@ import destiny.tools.defaultLocale
  * 組裝 [StarMountainDto]：星曆計算（samples/transits/markers）全在伺服器，
  * 地圖 PNG 經 [IStaticMap] 取得後以 base64 data-url 內嵌，前端只做內插與繪製。
  */
-@Named
 class StarMountainDtoFactory(
   private val starMountainService: StarMountainService,
   private val starPosWithAzimuth: IStarPositionWithAzimuthCalculator,

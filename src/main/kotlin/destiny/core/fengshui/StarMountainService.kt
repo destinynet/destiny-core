@@ -6,7 +6,6 @@ package destiny.core.fengshui
 import destiny.core.astrology.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import jakarta.inject.Named
 
 /**
  * 星體 × 山：把「純天文」的方位角計算 ([IAzimuthTransit] / [IStarPositionWithAzimuthCalculator])
@@ -14,7 +13,6 @@ import jakarta.inject.Named
  *
  * 純演算法組合，不含 swisseph，故置於 destiny-core。
  */
-@Named
 class StarMountainService(
   private val azimuthTransit: IAzimuthTransit,
   private val starPosWithAzimuth: IStarPositionWithAzimuthCalculator,

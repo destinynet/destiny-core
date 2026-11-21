@@ -14,7 +14,6 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
 import destiny.tools.Feature
-import jakarta.inject.Named
 import java.time.chrono.ChronoLocalDateTime
 
 enum class HourlyImpl {
@@ -22,7 +21,6 @@ enum class HourlyImpl {
   Fixed   // 《剋擇講義》
 }
 
-@Named
 class LunarStationHourlyFeature(private val dailyFeature: LunarStationDailyFeature,
                                 private val dayHourFeature: IDayHourFeature,
                                 private val julDayResolver: JulDayResolver) : Feature<ILunarStationConfig, LunarStation> {

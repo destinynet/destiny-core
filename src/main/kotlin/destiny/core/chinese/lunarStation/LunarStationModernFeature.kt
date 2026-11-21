@@ -12,7 +12,6 @@ import destiny.core.calendar.eightwords.IHourBranchFeature
 import destiny.core.chinese.Branch
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.random.RandomService
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -25,7 +24,6 @@ data class LunarStationModernConfig(
   override var specifiedGmtJulDay: GmtJulDay? = null,
   override var description: String? = null): ILunarStationModernConfig, ILunarStationConfig by lunarStationConfig
 
-@Named
 class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFeature,
                                 private val hourBranchFeature: IHourBranchFeature,
                                 private val randomService: RandomService,

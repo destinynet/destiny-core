@@ -19,7 +19,6 @@ import destiny.core.fengshui.sanyuan.NineStarFunctions.getMonthCenterStar
 import destiny.core.fengshui.sanyuan.NineStarFunctions.getYearCenterStar
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.JSerializable
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -28,7 +27,6 @@ data class NineStarConfig(val scales: List<Scale> = listOf(Scale.YEAR, Scale.MON
                           val ewConfig: EightWordsConfig = EightWordsConfig()): JSerializable
 
 
-@Named
 class NineStarFeature(private val sanYuanImpl: ISanYuan,
                       private val ewFeature : EightWordsFeature,
                       private val starPositionImpl: IStarPosition<IStarPos>,

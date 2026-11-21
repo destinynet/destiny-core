@@ -7,7 +7,6 @@ import destiny.core.Gender
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.IStemBranch
-import jakarta.inject.Named
 import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -30,7 +29,6 @@ import java.time.chrono.ChronoLocalDateTime
  * 交運之時不外出，怕與自己屬相衝。
  * 三日不見紅白事，身旺體壯家業興。
  */
-@Named
 class FortuneLargeBlindImpl : IPersonFortuneLarge, JSerializable {
 
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, config: FortuneLargeConfig): List<FortuneData> {

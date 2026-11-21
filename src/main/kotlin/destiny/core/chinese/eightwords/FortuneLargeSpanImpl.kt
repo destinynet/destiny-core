@@ -22,24 +22,22 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import destiny.tools.KotlinLogging
-import jakarta.inject.Named
 import java.time.chrono.ChronoLocalDateTime
 import kotlin.math.abs
 import java.util.concurrent.TimeUnit
 
 
 /** 標準 , 以「出生時刻，到『節』，的固定倍數法」 (內定 120.0倍) 求得大運 . 內定 一柱十年 */
-@Named
 class FortuneLargeSpanImpl(private val eightWordsFeature: EightWordsFeature,
                            private val solarTermsImpl: ISolarTerms,
                            private val fortuneDirectionFeature: IFortuneDirectionFeature,
-                           @param:Named("intAge8wImpl")
-                           private val intAgeImpl: IIntAge,
+                           /** 參數名即 bean 名：同型別有多個 bean，Spring 以參數名挑選 */
+                           private val intAge8wImpl: IIntAge,
                            ageNoteImplMap: Map<IntAgeNote, IIntAgeNote>,
                            private val starTransitImpl: IStarTransit) : AbstractFortuneLargeImpl(ageNoteImplMap) {
 
   private fun getAgeMap(toAge: Int, gmtJulDay: GmtJulDay, gender: Gender, location: ILocation): Map<Int, Pair<GmtJulDay, GmtJulDay>> {
-    return intAgeImpl.getRangesMap(gender, gmtJulDay, location, 1, toAge)
+    return intAge8wImpl.getRangesMap(gender, gmtJulDay, location, 1, toAge)
   }
 
   /** 順推大運 , 取得該命盤的幾條大運 */

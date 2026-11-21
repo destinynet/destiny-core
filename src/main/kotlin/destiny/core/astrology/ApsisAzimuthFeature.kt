@@ -8,7 +8,6 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.JSerializable
 import destiny.tools.serializers.astrology.StarSerializer
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -19,7 +18,6 @@ data class ApsisAzimuthConfig(@Serializable(with = StarSerializer::class)
                               val temperature: Double = 0.0,
                               val pressure: Double = 1013.25) : JSerializable
 
-@Named
 class ApsisAzimuthFeature(private val apsisImpl: IApsis,
                           private val azimuthImpl: IAzimuthCalculator) : AbstractCachedFeature<ApsisAzimuthConfig, Map<Apsis, StarPosWithAzimuth>>() {
   override val key: String = "apsisAzimuth"

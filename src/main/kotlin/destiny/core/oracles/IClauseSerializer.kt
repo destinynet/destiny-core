@@ -8,7 +8,6 @@ import destiny.core.oracles.guanyin.Guanyin
 import destiny.core.oracles.sixty.Sixty
 import destiny.core.oracles.storm.Storm
 import destiny.tools.searchImpl
-import jakarta.inject.Named
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -18,7 +17,6 @@ import kotlinx.serialization.encoding.*
 import kotlin.reflect.KClass
 
 
-@Named
 class IClauseSerializer(val oracles: Set<IOracle<*>>) : KSerializer<IClause> {
 
   override val descriptor: SerialDescriptor

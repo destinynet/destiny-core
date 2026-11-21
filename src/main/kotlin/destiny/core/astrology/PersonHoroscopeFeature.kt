@@ -16,7 +16,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.PersonFeature
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 
@@ -42,7 +41,6 @@ interface IPersonHoroscopeFeature : PersonFeature<IPersonHoroscopeConfig, IPerso
 }
 
 
-@Named
 class PersonHoroscopeFeature(
   private val horoscopeFeature: IHoroscopeFeature
 ) :

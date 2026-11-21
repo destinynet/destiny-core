@@ -7,12 +7,10 @@ import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.tools.JSerializable
 import destiny.tools.getTitle
-import jakarta.inject.Named
 import java.util.*
 import destiny.tools.toLang
 
 
-@Named
 class HazardService : IHazardService, JSerializable {
 
   override val hazardFactories: List<IHazardFactory> = childHazardFactories

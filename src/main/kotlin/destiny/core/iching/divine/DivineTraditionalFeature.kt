@@ -20,7 +20,6 @@ import destiny.tools.Feature
 import destiny.tools.JSerializable
 import destiny.tools.serializers.IHexagramSerializer
 import destiny.tools.serializers.LocaleSerializer
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.util.*
 
@@ -43,7 +42,6 @@ data class DivineTraditionalConfig(@Serializable(with = IHexagramSerializer::cla
  */
 interface IDivineTraditionalFeature : Feature<DivineTraditionalConfig, ICombinedWithMetaNameDayMonth>, ICombinedWithMetaNameDayMonthContext
 
-@Named
 class DivineTraditionalFeature(private val eightWordsFeature: EightWordsFeature,
                                private val divineSettingsMap: Map<SettingsOfStemBranch, ISettingsOfStemBranch>,
                                private val hiddenEnergyMap: Map<HiddenEnergy, IHiddenEnergy>,

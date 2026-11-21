@@ -7,7 +7,6 @@ package destiny.core.astrology
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
-import jakarta.inject.Named
 import destiny.tools.JSerializable
 import kotlin.math.abs
 
@@ -16,7 +15,6 @@ import kotlin.math.abs
  * 參考資料
  * http://www.myastrologybook.com/aspects-and-orbs.htm
  */
-@Named
 class AspectEffectiveModern(
   /** 「不考慮行星」的交角容許度 */
   private val aspectOrbsImpl: IAspectOrbs = AspectOrbsDefaultImpl(),

@@ -3,7 +3,7 @@
 # 由 KmpReadinessRatchetTest 管控。不在此清單上的 .kt 一律必須無 JVM-only 相依。
 # 這份清單只准變短：改乾淨了就刪掉該行。詳見該測試的 KDoc。
 #
-# 目前數量：304
+# 目前數量：268
 
 destiny/core/BirthData.kt
 destiny/core/Descriptive.kt
@@ -20,18 +20,12 @@ destiny/core/IntAgeNoteWestYearImpl.kt
 destiny/core/News.kt
 destiny/core/Point.kt
 destiny/core/TimeRange.kt
-destiny/core/astrology/ApsisAzimuthFeature.kt
-destiny/core/astrology/Lot.kt
 destiny/core/astrology/Aspect.kt
 destiny/core/astrology/AspectCalculatorImpl.kt
-destiny/core/astrology/AspectEffectiveModern.kt
 destiny/core/astrology/Asteroid.kt
 destiny/core/astrology/AstroPoint.kt
 destiny/core/astrology/Axis.kt
 destiny/core/astrology/AzimuthDegreeDecorator.kt
-destiny/core/astrology/AzimuthFeature.kt
-destiny/core/astrology/AzimuthTransitImpl.kt
-destiny/core/astrology/DayNightFeature.kt
 destiny/core/astrology/DayNightSimpleImpl.kt
 destiny/core/astrology/DtoFactory.kt
 destiny/core/astrology/EventsTraversalPrimaryDirectionImpl.kt
@@ -43,7 +37,6 @@ destiny/core/astrology/HoroscopeDto.kt
 destiny/core/astrology/HoroscopeDtoV2.kt
 destiny/core/astrology/HoroscopeFeature.kt
 destiny/core/astrology/HoroscopeModel.kt
-destiny/core/astrology/HouseCuspFeature.kt
 destiny/core/astrology/IApsis.kt
 destiny/core/astrology/IDayNight.kt
 destiny/core/astrology/IEventPointService.kt
@@ -55,18 +48,17 @@ destiny/core/astrology/IReportFactory.kt
 destiny/core/astrology/ITrueSolarTime.kt
 destiny/core/astrology/IZodiacDegreeDecorator.kt
 destiny/core/astrology/IZodiacSign.kt
+destiny/core/astrology/Lot.kt
 destiny/core/astrology/LunarApsis.kt
 destiny/core/astrology/LunarNode.kt
 destiny/core/astrology/LunarPoint.kt
 destiny/core/astrology/LunarStation.kt
 destiny/core/astrology/PatternContext.kt
-destiny/core/astrology/PersonHoroscopeFeature.kt
 destiny/core/astrology/Planet.kt
 destiny/core/astrology/PlanetaryHourAstroImpl.kt
 destiny/core/astrology/PlanetaryHourClockImpl.kt
 destiny/core/astrology/PlanetaryHourFeature.kt
 destiny/core/astrology/PointAspectPattern.kt
-destiny/core/astrology/PrimaryDirectionImpl.kt
 destiny/core/astrology/RiseTransFeature.kt
 destiny/core/astrology/Star.kt
 destiny/core/astrology/TimeLineEventsModel.kt
@@ -74,18 +66,9 @@ destiny/core/astrology/TransitDto.kt
 destiny/core/astrology/ZodiacDegree.kt
 destiny/core/astrology/ZodiacDegreeDecorator.kt
 destiny/core/astrology/ZodiacSign.kt
-destiny/core/astrology/ZodiacSignFeature.kt
 destiny/core/astrology/classical/ClassicalFeature.kt
-destiny/core/astrology/classical/VoidCourseFeature.kt
 destiny/core/astrology/classical/rules/ClassicalPatternContext.kt
 destiny/core/astrology/classical/rules/PatternTranslator.kt
-destiny/core/astrology/geo/AimedSolarReturnService.kt
-destiny/core/astrology/geo/CcgTravelService.kt
-destiny/core/astrology/geo/ParanCalculator.kt
-destiny/core/astrology/geo/Relocation.kt
-destiny/core/astrology/geo/RelocationCandidateService.kt
-destiny/core/astrology/geo/ReturnRelocation.kt
-destiny/core/astrology/geo/YearlyRelocationService.kt
 destiny/core/astrology/prediction/PeakSlice.kt
 destiny/core/astrology/prediction/PeriodRequestDto.kt
 destiny/core/astrology/prediction/RangePeaks.kt
@@ -149,31 +132,21 @@ destiny/core/calendar/eightwords/IntAge8wImpl.kt
 destiny/core/calendar/eightwords/MidnightFeature.kt
 destiny/core/calendar/eightwords/MidnightLmtImpl.kt
 destiny/core/calendar/eightwords/Reaction.kt
-destiny/core/calendar/eightwords/RisingSignFeature.kt
-destiny/core/calendar/eightwords/TradChineseRisingSignFeature.kt
-destiny/core/calendar/eightwords/YearFeature.kt
-destiny/core/calendar/eightwords/YearMonthFeature.kt
 destiny/core/calendar/eightwords/YearMonthSolarTermsStarPositionImpl.kt
 destiny/core/calendar/eightwords/YearMonthSunSignImpl.kt
 destiny/core/chinese/IMonthMaster.kt
 destiny/core/chinese/ISeasonalSymbol.kt
 destiny/core/chinese/IYearSplitter.kt
-destiny/core/chinese/MonthMasterFeature.kt
 destiny/core/chinese/NaYin.kt
-destiny/core/chinese/SeasonalSymbolFeature.kt
 destiny/core/chinese/eightwords/EwBdnp.kt
 destiny/core/chinese/eightwords/FlowDtoTransformer.kt
-destiny/core/chinese/eightwords/FortuneDirectionFeature.kt
 destiny/core/chinese/eightwords/FortuneLargeBlindImpl.kt
 destiny/core/chinese/eightwords/FortuneLargeFeature.kt
 destiny/core/chinese/eightwords/FortuneLargeSolarTermsSpanImpl.kt
 destiny/core/chinese/eightwords/FortuneLargeSpanImpl.kt
 destiny/core/chinese/eightwords/FortuneLargeTradImpl.kt
-destiny/core/chinese/eightwords/FortuneSmallFeature.kt
 destiny/core/chinese/eightwords/IEwContextScore.kt
 destiny/core/chinese/eightwords/IdentityDtoTransformer.kt
-destiny/core/chinese/eightwords/OctaDivideScore316.kt
-destiny/core/chinese/eightwords/OctaDivideScore46.kt
 destiny/core/chinese/eightwords/PersonContextFeature.kt
 destiny/core/chinese/eightwords/PersonContextModel.kt
 destiny/core/chinese/eightwords/PersonPresentFeature.kt
@@ -182,11 +155,8 @@ destiny/core/chinese/eightwords/hazards/HazardService.kt
 destiny/core/chinese/eightwords/hazards/IHazardService.kt
 destiny/core/chinese/holo/HoloFeature.kt
 destiny/core/chinese/holo/HoloFullFeature.kt
-destiny/core/chinese/holo/Numerize.kt
 destiny/core/chinese/liuren/GeneralSeqDefaultImpl.kt
 destiny/core/chinese/liuren/golden/Pithy.kt
-destiny/core/chinese/liuren/golden/PithyCoreFeature.kt
-destiny/core/chinese/liuren/golden/PithyModernDetailFeature.kt
 destiny/core/chinese/lunarStation/ContextModel.kt
 destiny/core/chinese/lunarStation/HiddenVenusFoeFeature.kt
 destiny/core/chinese/lunarStation/IHiddenVenusFoe.kt
@@ -197,7 +167,6 @@ destiny/core/chinese/lunarStation/LunarStationDailyFeature.kt
 destiny/core/chinese/lunarStation/LunarStationFeature.kt
 destiny/core/chinese/lunarStation/LunarStationHourlyFeature.kt
 destiny/core/chinese/lunarStation/LunarStationModernFeature.kt
-destiny/core/chinese/lunarStation/LunarStationMonthlyFeature.kt
 destiny/core/chinese/lunarStation/LunarStationYearlyFeature.kt
 destiny/core/chinese/onePalm/PalmFeature.kt
 destiny/core/chinese/onePalm/PalmModels.kt
@@ -207,7 +176,6 @@ destiny/core/chinese/ziwei/IStrength.kt
 destiny/core/chinese/ziwei/MainBodyHouseAstroImpl.kt
 destiny/core/chinese/ziwei/MainBodyHouseTradImpl.kt
 destiny/core/chinese/ziwei/Plate.kt
-destiny/core/chinese/ziwei/PurpleRelocationMutator.kt
 destiny/core/chinese/ziwei/StarDoctor.kt
 destiny/core/chinese/ziwei/StarGeneralFront.kt
 destiny/core/chinese/ziwei/StarLongevity.kt
@@ -219,17 +187,14 @@ destiny/core/chinese/ziwei/StarYearFront.kt
 destiny/core/chinese/ziwei/ZStar.kt
 destiny/core/chinese/ziwei/Ziwei.kt
 destiny/core/chinese/ziwei/ZiweiFeature.kt
-destiny/core/chinese/ziwei/ZiweiPresentFeature.kt
 destiny/core/electional/DayHourService.kt
 destiny/core/electional/Electional.kt
 destiny/core/electional/EventDto.kt
 destiny/core/fengshui/CompassMapOverlayModel.kt
 destiny/core/fengshui/StarMountainDto.kt
 destiny/core/fengshui/StarMountainDtoFactory.kt
-destiny/core/fengshui/StarMountainService.kt
 destiny/core/fengshui/sanyuan/ISanYuan.kt
 destiny/core/fengshui/sanyuan/NineStarFeature.kt
-destiny/core/fengshui/sanyuan/NineStarPersonFeature.kt
 destiny/core/iching/HexagramText.kt
 destiny/core/iching/ILineNameDecoratorService.kt
 destiny/core/iching/contentProviders/providers.kt
@@ -276,7 +241,6 @@ destiny/tools/ai/model/Domain.kt
 destiny/tools/config/Holder.kt
 destiny/tools/config/Reloader.kt
 destiny/tools/converters/AbstractImpls.kt
-destiny/tools/converters/BdnpMapConverter.kt
 destiny/tools/converters/ParserCommons.kt
 destiny/tools/location/INearBy.kt
 destiny/tools/location/IStaticMap.kt

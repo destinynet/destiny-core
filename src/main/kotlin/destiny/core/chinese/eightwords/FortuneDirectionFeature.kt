@@ -10,11 +10,9 @@ import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.PersonFeature
-import jakarta.inject.Named
 
 interface IFortuneDirectionFeature : PersonFeature<EightWordsConfig, Boolean>
 
-@Named
 class FortuneDirectionFeature(private val eightWordsFeature: EightWordsFeature) : AbstractCachedPersonFeature<EightWordsConfig, Boolean>() , IFortuneDirectionFeature {
 
   override val defaultConfig: EightWordsConfig = EightWordsConfig()

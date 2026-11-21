@@ -13,10 +13,8 @@ import destiny.core.calendar.eightwords.YearFeature
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YearType
 import destiny.tools.AbstractCachedFeature
-import jakarta.inject.Named
 import java.time.temporal.ChronoField
 
-@Named
 class LunarStationYearlyFeature(private val yearFeature: YearFeature,
                                 private val chineseDateFeature: ChineseDateFeature,
                                 private val julDayResolver: JulDayResolver) : AbstractCachedFeature<ILunarStationConfig, YearIndex>() {

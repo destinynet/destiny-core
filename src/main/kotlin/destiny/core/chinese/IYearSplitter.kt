@@ -9,7 +9,6 @@ import destiny.core.astrology.StarTypeOptions
 import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.calendar.ILocation
-import jakarta.inject.Named
 import destiny.tools.JSerializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -26,7 +25,6 @@ interface IYearSplitter : IYearSplitterBySign {
  * 冬至 [ZodiacSign.CAPRICORN] 至 夏至 [ZodiacSign.GEMINI] 為 前半年 (陽) : 丑 -> 子 ... -> 酉 -> 申
  * 夏至 [ZodiacSign.GEMINI] 至 冬至 [ZodiacSign.CAPRICORN] 為 後半年 (陰) : 未 -> 午 ... -> 卯 -> 寅
  */
-@Named
 class YearSplitterSignImpl(private val zodiacSignImpl: IZodiacSign) : IYearSplitter, JSerializable {
   
   override fun getYinYang(sign: ZodiacSign): YinYang {

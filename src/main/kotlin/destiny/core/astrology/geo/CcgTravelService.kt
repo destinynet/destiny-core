@@ -16,7 +16,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ILocationPlace
 import destiny.tools.Score
 import destiny.tools.Score.Companion.toScore
-import jakarta.inject.Named
 
 /**
  * 產品 B1 的組態。行運星預設火星–冥王（Jim Lewis CCG 正統）：
@@ -62,7 +61,6 @@ data class TravelRecommendation(
  * 做時間軸取樣 + [segmentHits] 窗口切割；natal 層與行運層加權相加。
  * 純演算法組合，置於 destiny-core。
  */
-@Named
 class CcgTravelService(
   private val candidateService: RelocationCandidateService,
   private val scorer: IRelocationScorer,

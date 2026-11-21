@@ -10,7 +10,6 @@ import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 enum class MonthImpl {
@@ -62,7 +61,6 @@ interface IYearMonthFeature : Feature<IYearMonthConfig, IStemBranch> {
 /**
  * 月干支
  */
-@Named
 class YearMonthFeature(private val starPositionImpl: IStarPosition<*>,
                        private val starTransitImpl: IStarTransit,
                        private val julDayResolver: JulDayResolver) : IYearMonthFeature, AbstractCachedFeature<IYearMonthConfig, IStemBranch>() {

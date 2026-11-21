@@ -4,12 +4,10 @@
 package destiny.tools.converters
 
 import destiny.core.IBirthDataNamePlace
-import jakarta.inject.Named
 import destiny.tools.JSerializable
 
 
 // encrypted version
-@Named
 class BdnpMapConverter(private val birthDataNamePlaceConverter : IContextMap<IBirthDataNamePlace>) : BdnpConverter, JSerializable {
 
   override fun getMap(bdnp: IBirthDataNamePlace, additional: Map<String, String>): Map<String, String> {

@@ -6,7 +6,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.JSerializable
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,7 +17,6 @@ data class TradChineseRisingSignConfig(
   }
 }
 
-@Named
 class TradChineseRisingSignFeature(private val starPositionImpl: IStarPosition<*>,
                                    private val dayHourFeature: IDayHourFeature) : AbstractCachedFeature<TradChineseRisingSignConfig, ZodiacSign>() {
 

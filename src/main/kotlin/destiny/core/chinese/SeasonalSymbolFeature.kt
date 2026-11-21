@@ -14,7 +14,6 @@ import destiny.core.chinese.SeasonalSymbolConfig.Impl.Holo.EndSeasonSymbolSpan.F
 import destiny.core.iching.Symbol
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.JSerializable
-import jakarta.inject.Named
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.math.abs
@@ -44,7 +43,6 @@ data class SeasonalSymbolConfig(val impl: Impl = Impl.Chinese) : JSerializable {
 }
 
 
-@Named
 class SeasonalSymbolFeature(val solarTermsImpl: ISolarTerms) : AbstractCachedFeature<SeasonalSymbolConfig, Set<Symbol>>() {
 
   override val key: String = "seasonalSymbolFeature"

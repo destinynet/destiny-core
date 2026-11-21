@@ -14,8 +14,6 @@ import destiny.core.iching.contentProviders.IHexagramProvider
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.JSerializable
 import destiny.tools.PersonFeature
-import jakarta.inject.Inject
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
@@ -33,17 +31,14 @@ interface IHoloFullFeature : PersonFeature<HoloFullConfig, Pair<IPoemHolo, List<
   fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: HoloConfig = HoloConfig()): IPoemHolo
 }
 
-@Named
 class HoloFullFeature(private val holoFeature: HoloFeature,
                       private val poemParser: IPoemProvider,
                       private val lifeDescParser: ILifeDescProvider,
                       private val goldenKeyProvider: IGoldenKeyProvider,
                       private val hexTextProvider: IHexagramProvider<IHexagramText>,
-                      private val julDayResolver: JulDayResolver) : AbstractCachedPersonFeature<HoloFullConfig, Pair<IPoemHolo, List<HoloFullHexagram>>>(), IHoloFullFeature {
-
-  @Inject
-  @Transient
-  private lateinit var holoFullCache: Cache<LmtCacheKey<*>, Pair<*, *>>
+                      private val julDayResolver: JulDayResolver,
+                      @Transient
+                      private val holoFullCache: Cache<LmtCacheKey<*>, Pair<*, *>>) : AbstractCachedPersonFeature<HoloFullConfig, Pair<IPoemHolo, List<HoloFullHexagram>>>(), IHoloFullFeature {
 
   override val lmtPersonCache: Cache<LmtCacheKey<HoloFullConfig>, Pair<IPoemHolo, List<HoloFullHexagram>>>
     @Suppress("UNCHECKED_CAST")

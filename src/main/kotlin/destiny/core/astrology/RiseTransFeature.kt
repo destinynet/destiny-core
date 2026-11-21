@@ -12,7 +12,6 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
 import destiny.tools.JSerializable
 import destiny.tools.serializers.astrology.StarSerializer
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -59,7 +58,6 @@ interface IRiseTransFeature : Feature<RiseTransConfig, GmtJulDay?> {
 /**
  * 計算星體對地球表面某點的 東昇、天頂、西落、天底的時刻
  */
-@Named
 class RiseTransFeature(val impl : IRiseTrans) : IRiseTransFeature, AbstractCachedFeature<RiseTransConfig, GmtJulDay?>() {
 
   override val key: String = "riseTrans"

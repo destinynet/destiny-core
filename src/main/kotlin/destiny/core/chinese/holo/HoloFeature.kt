@@ -23,7 +23,6 @@ import destiny.core.iching.divine.ISettingsOfStemBranch
 import destiny.core.iching.divine.SettingsOfStemBranch
 import destiny.tools.*
 import destiny.tools.JSerializable
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -316,7 +315,6 @@ interface IHoloFeature : PersonFeature<HoloConfig, IHolo> {
   }
 }
 
-@Named
 class HoloFeature(private val solarTermsImpl: ISolarTerms,
                   private val settingsMap : Map<SettingsOfStemBranch, ISettingsOfStemBranch>,
                   private val sanYuanImpl: ISanYuan,

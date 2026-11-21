@@ -20,8 +20,6 @@ import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.*
 import destiny.tools.*
 import destiny.tools.JSerializable
-import jakarta.inject.Inject
-import jakarta.inject.Named
 import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
@@ -189,11 +187,10 @@ interface IZiweiFeature : PersonFeature<IZiweiConfig, IPlate> {
     }
 }
 
-@Named
 class ZiweiFeature(
   private val julDayResolver: JulDayResolver,
-  @param:Named("houseCuspImpl")
-  private val risingSignImpl: IRisingSign,
+  /** 參數名即 bean 名：同型別有多個 bean，Spring 以參數名挑選 */
+  private val houseCuspImpl: IRisingSign,
   private val starPositionImpl: IStarPosition<*>,
   private val chineseDateFeature: IChineseDateFeature,
   private val yearFeature: YearFeature,
@@ -213,12 +210,11 @@ class ZiweiFeature(
   private val flowHourImplMap: Map<FlowHour, IFlowHour>,
   private val dayNightFeature: DayNightFeature,
 
-  private val purpleRelocationMutator : IHouseMutator
-) : AbstractCachedPersonFeature<IZiweiConfig, IPlate>(), IZiweiFeature {
+  private val purpleRelocationMutator : IHouseMutator,
 
-  @Inject
   @Transient
-  private lateinit var ziweiCache: Cache<LmtCacheKey<*>, IPlate>
+  private val ziweiCache: Cache<LmtCacheKey<*>, IPlate>
+) : AbstractCachedPersonFeature<IZiweiConfig, IPlate>(), IZiweiFeature {
 
   override val lmtPersonCache: Cache<LmtCacheKey<IZiweiConfig>, IPlate>
     @Suppress("UNCHECKED_CAST")
@@ -262,7 +258,7 @@ class ZiweiFeature(
         /** 利用上升星座，計算命宮
          *  利用月亮星座，計算身宮 */
         val gmtJulDay = lmt.toGmtJulDay(loc)
-        val mainHouse = risingSignImpl.getRisingSign(gmtJulDay, loc, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
+        val mainHouse = houseCuspImpl.getRisingSign(gmtJulDay, loc, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
         val moonPos = starPositionImpl.calculate(Planet.MOON, lmt.toGmtJulDay(loc) , Centric.GEO, Coordinate.ECLIPTIC)
 
         val zodiacSign = moonPos.lngDeg.sign

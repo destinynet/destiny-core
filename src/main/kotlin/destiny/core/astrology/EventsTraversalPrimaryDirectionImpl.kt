@@ -10,7 +10,6 @@ import destiny.core.electional.Impact
 import destiny.core.electional.Span
 import destiny.tools.KotlinLogging
 import destiny.tools.getTitle
-import jakarta.inject.Named
 import java.util.Locale
 
 /**
@@ -22,7 +21,6 @@ import java.util.Locale
  * 主示星 / 承諾星 / 相位 / 方法 / 順逆 / 時間鑰匙 皆取自
  * [AstrologyTraversalConfig.primaryDirectionConfig] (仿 SolarArc 取自 solarArcConfig)。
  */
-@Named
 class EventsTraversalPrimaryDirectionImpl(
   private val primaryDirection: IPrimaryDirection,
 ) : IEventsTraversal {

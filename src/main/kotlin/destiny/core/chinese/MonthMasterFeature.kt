@@ -15,7 +15,6 @@ import destiny.core.calendar.eightwords.YearMonthFeature
 import destiny.core.chinese.MonthMasterConfig.Impl
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.JSerializable
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -28,7 +27,6 @@ data class MonthMasterConfig(val impl: Impl = Impl.SunSign ,
   }
 }
 
-@Named
 class MonthMasterFeature(private val starPositionImpl: IStarPosition<*>,
                          private val yearMonthFeature: YearMonthFeature) : AbstractCachedFeature<MonthMasterConfig, Branch>() {
   override val key: String = "monthMaster"

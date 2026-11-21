@@ -17,7 +17,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ILocationPlace
 import destiny.tools.KotlinLogging
-import jakarta.inject.Named
 
 /**
  * 產品層共用的 candidate 建構（設計 doc 5.1）：對每個候選城市算出
@@ -26,7 +25,6 @@ import jakarta.inject.Named
  * 純演算法組合，不含 swisseph，故置於 destiny-core（比照 [destiny.core.fengshui.StarMountainService]）。
  * 候選很多時，呼叫端可先用 [AstroGeoContext] 的純幾何量粗排，再對 top-N 呼叫本服務。
  */
-@Named
 class RelocationCandidateService(
   private val horoscopeFeature: HoroscopeFeature,
   private val starPosition: IStarPositionWithAzimuthCalculator,

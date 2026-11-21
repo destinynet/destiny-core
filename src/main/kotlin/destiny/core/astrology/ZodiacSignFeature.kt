@@ -8,7 +8,6 @@ import destiny.core.calendar.ILocation
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.JSerializable
 import destiny.tools.serializers.astrology.StarSerializer
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -16,7 +15,6 @@ data class ZodiacSignConfig(@Serializable(with = StarSerializer::class)
                             val star: Star = Planet.SUN,
                             val starTypeOptions: StarTypeOptions = StarTypeOptions.MEAN): JSerializable
 
-@Named
 class ZodiacSignFeature(private val zodiacSignImpl : IZodiacSign) : AbstractCachedFeature<ZodiacSignConfig, ZodiacSignModel>() {
 
   override val key: String = "zodiacSign"

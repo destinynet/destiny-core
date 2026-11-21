@@ -15,7 +15,6 @@ import destiny.core.chinese.Branch
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.JSerializable
 import destiny.tools.PersonFeature
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import javax.cache.Cache
@@ -45,7 +44,6 @@ data class PalmConfig(
 ) : JSerializable
 
 
-@Named
 class PalmFeature(private val eightWordsFeature: EightWordsFeature,
                   private val chineseDateFeature: ChineseDateFeature,
                   private val risingSignFeature: RisingSignFeature,
@@ -123,7 +121,6 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
 /**
  * 相同的 [PalmConfig] , 傳回 [IPalmMetaModel]
  */
-@Named
 class PalmMetaFeature(private val palmFeature: PersonFeature<PalmConfig, IPalmModel>,
                       private val chineseDateFeature: ChineseDateFeature,
                       private val hourBranchFeature: IHourBranchFeature,
@@ -149,7 +146,6 @@ class PalmMetaFeature(private val palmFeature: PersonFeature<PalmConfig, IPalmMo
   }
 }
 
-@Named
 class PalmMetaDescFeature(private val palmMetaFeature : PersonFeature<PalmConfig, IPalmMetaModel>,
                           private val branchDescImpl: IBranchDesc,
                           private val julDayResolver: JulDayResolver ,

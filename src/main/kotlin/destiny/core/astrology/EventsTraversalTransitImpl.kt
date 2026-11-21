@@ -15,13 +15,11 @@ import destiny.tools.getTitle
 import destiny.tools.reverse
 import destiny.tools.round
 import destiny.tools.truncateToString
-import jakarta.inject.Named
 import java.util.*
 
 /**
  * Progression-based
  */
-@Named
 class EventsTraversalTransitImpl(
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,

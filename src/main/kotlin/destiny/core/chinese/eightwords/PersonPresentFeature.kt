@@ -14,7 +14,6 @@ import destiny.core.calendar.eightwords.YearFeature
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import destiny.tools.AbstractCachedPersonFeature
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import javax.cache.Cache
 
@@ -24,7 +23,6 @@ data class PersonPresentConfig(val personContextConfig: EightWordsPersonConfig =
                                                                                                  IEightWordsPersonConfig by personContextConfig
 
 
-@Named
 class PersonPresentFeature(private val personContextFeature: PersonContextFeature,
                            private val personLargeFeature: IFortuneLargeFeature,
                            private val yearFeature: YearFeature,

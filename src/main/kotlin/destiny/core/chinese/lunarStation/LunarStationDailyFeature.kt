@@ -18,7 +18,6 @@ import destiny.core.calendar.eightwords.MidnightFeature
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.tools.Feature
-import jakarta.inject.Named
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
@@ -26,7 +25,6 @@ import java.time.temporal.ChronoField
 /**
  * 日禽 實作
  */
-@Named
 class LunarStationDailyFeature(private val hourBranchFeature: IHourBranchFeature,
                                private val dayHourFeature: IDayHourFeature,
                                private val midnightFeature: MidnightFeature,

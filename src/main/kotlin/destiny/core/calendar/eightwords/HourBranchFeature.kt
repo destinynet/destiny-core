@@ -14,7 +14,6 @@ import destiny.core.chinese.Branch.亥
 import destiny.core.chinese.Branch.子
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.Duration
 import java.time.LocalTime
@@ -113,7 +112,6 @@ interface IHourBranchFeature : Feature<IHourBranchConfig, Branch> {
 }
 
 
-@Named
 class HourBranchFeature(private val hourImplMap: Map<HourImpl, IHour>,
                         val julDayResolver: JulDayResolver) : IHourBranchFeature, AbstractCachedFeature<IHourBranchConfig, Branch>() {
 

@@ -15,7 +15,6 @@ import destiny.core.chinese.eightwords.hazards.IHazardService
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.CacheGrain
 import destiny.tools.serializers.LocaleSerializer
-import jakarta.inject.Named
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
@@ -30,10 +29,9 @@ data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContext
                                   @Serializable(with = LocaleSerializer::class)
                                   val locale : Locale = defaultLocale): IEightWordsPersonConfig , IEightWordsContextConfig by eightwordsContextConfig
 
-@Named
 class PersonContextFeature(private val eightWordsContextFeature: EightWordsContextFeature,
-                           @param:Named("intAge8wImpl")
-                           private val intAgeImpl: IIntAge,
+                           /** 參數名即 bean 名：同型別有多個 bean，Spring 以參數名挑選 */
+                           private val intAge8wImpl: IIntAge,
                            private val fortuneLargeFeature: IFortuneLargeFeature,
                            private val fortuneSmallFeature: FortuneSmallFeature,
                            private val julDayResolver: JulDayResolver,
@@ -64,7 +62,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
     val ewModel: IEightWordsContextModel = eightWordsContextFeature.getModel(lmt, loc, config.eightwordsContextConfig)
     val gmtJulDay = lmt.toGmtJulDay(loc)
     // 1到120歲 , 每歲的開始、以及結束
-    val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = intAgeImpl.getRangesMap(gender, gmtJulDay, loc, 1, 120)
+    val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = intAge8wImpl.getRangesMap(gender, gmtJulDay, loc, 1, 120)
 
     val larges: List<FortuneData> = fortuneLargeFeature.getPersonModel(lmt, loc, gender, name, place, config.fortuneLargeConfig)
     val smalls: List<FortuneData> = fortuneSmallFeature.getPersonModel(lmt, loc, gender, name, place, config.fortuneSmallConfig)
