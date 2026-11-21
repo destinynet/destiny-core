@@ -3,7 +3,7 @@
 # 由 KmpReadinessRatchetTest 管控。不在此清單上的 .kt 一律必須無 JVM-only 相依。
 # 這份清單只准變短：改乾淨了就刪掉該行。詳見該測試的 KDoc。
 #
-# 目前數量：201
+# 目前數量：202
 
 destiny/core/BirthData.kt
 destiny/core/Descriptive.kt
@@ -68,6 +68,7 @@ destiny/core/calendar/LocationDecorator.kt
 destiny/core/calendar/LocationTools.kt
 destiny/core/calendar/SolarTimeDtoFactory.kt
 destiny/core/calendar/TimeTools.kt
+destiny/core/calendar/TimeZoneRules.kt
 destiny/core/calendar/YearMonthRange.kt
 destiny/core/calendar/ZonedJulianDateTime.kt
 destiny/core/calendar/chinese/ChineseDateAstroImpl.kt

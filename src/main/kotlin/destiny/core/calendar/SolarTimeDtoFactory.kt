@@ -105,7 +105,7 @@ class SolarTimeDtoFactory(
     starPosWithAzimuth.getPositionWithAzimuth(Planet.SUN, gmt, loc, Centric.GEO, Coordinate.EQUATORIAL)
 
   private fun standardOffsetSeconds(loc: ILocation, atMs: Long): Int =
-    loc.minuteOffset?.let { it * 60 } ?: loc.zoneId.rules.getStandardOffset(Instant.ofEpochMilli(atMs)).totalSeconds
+    loc.minuteOffset?.let { it * 60 } ?: TimeZoneRules.standardOffsetSeconds(loc.zoneId.id, kotlin.time.Instant.fromEpochMilliseconds(atMs))
 
   /** 13 筆：子正之前那個子時起點、丑…亥、窗口尾的子時起點 */
   private fun hourStarts(dayFrom: GmtJulDay, loc: ILocation): List<SolarTimeDto.HourStart> = buildList {
@@ -149,15 +149,16 @@ class SolarTimeDtoFactory(
  */
 fun civilOffsetsOf(loc: ILocation, fromMs: Long, toMs: Long): List<SolarTimeDto.CivilOffset> {
   loc.minuteOffset?.let { return listOf(SolarTimeDto.CivilOffset(fromMs, it * 60, 0)) }
-  val rules = loc.zoneId.rules
-  fun seg(startMs: Long, at: Instant) =
-    SolarTimeDto.CivilOffset(startMs, rules.getOffset(at).totalSeconds, rules.getDaylightSavings(at).seconds.toInt())
+  val tzid = loc.zoneId.id
+  fun seg(startMs: Long, at: kotlin.time.Instant) =
+    SolarTimeDto.CivilOffset(startMs, TimeZoneRules.offsetSeconds(tzid, at), TimeZoneRules.daylightSavingSeconds(tzid, at))
   return buildList {
-    add(seg(fromMs, Instant.ofEpochMilli(fromMs)))
-    var transition = rules.nextTransition(Instant.ofEpochMilli(fromMs))
-    while (transition != null && transition.instant.toEpochMilli() < toMs) {
-      add(seg(transition.instant.toEpochMilli(), transition.instant))
-      transition = rules.nextTransition(transition.instant)
+    val from = kotlin.time.Instant.fromEpochMilliseconds(fromMs)
+    add(seg(fromMs, from))
+    var transition = TimeZoneRules.nextTransition(tzid, from)
+    while (transition != null && transition.toEpochMilliseconds() < toMs) {
+      add(seg(transition.toEpochMilliseconds(), transition))
+      transition = TimeZoneRules.nextTransition(tzid, transition)
     }
   }
 }

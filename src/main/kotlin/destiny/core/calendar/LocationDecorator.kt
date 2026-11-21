@@ -74,7 +74,7 @@ class LocationDecoratorEnglish : Decorator<ILocation> {
 
 
     sb.append(" GMT offset ")
-      .append(value.zoneId.rules.getStandardOffset(Instant.now()).totalSeconds/ (60 * 60))
+      .append(TimeZoneRules.standardOffsetSeconds(value.zoneId.id, kotlin.time.Clock.System.now()) / (60 * 60))
       .append(" hours")
     value.altitudeMeter?.also {
       sb.append(", Alt ").append(it).append(" m.")

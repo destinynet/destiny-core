@@ -216,7 +216,7 @@ object TimeTools {
    */
   fun isDst(lmt: ChronoLocalDateTime<*>, zoneId: ZoneId): Boolean {
     val zdt = lmt.atZone(zoneId)
-    return zdt.zone.rules.isDaylightSavings(zdt.toInstant())
+    return TimeZoneRules.isDaylightSaving(zdt.zone.id, zdt.toInstant().let { kotlin.time.Instant.fromEpochSeconds(it.epochSecond, it.nano) })
   }
 
   fun isDst(lmt: ChronoLocalDateTime<*>, loc: ILocation): Boolean {

@@ -139,7 +139,7 @@ interface ILocation : ILatLng {
 
   val finalMinuteOffset: Int
     get() {
-      return minuteOffset ?: (ZoneId.of(tzid).rules.getStandardOffset(Instant.now()).totalSeconds / 60)
+      return minuteOffset ?: (TimeZoneRules.standardOffsetSeconds(checkNotNull(tzid) { "沒有 minuteOffset 也沒有 tzid" }, kotlin.time.Clock.System.now()) / 60)
     }
 
   /** 高度（公尺） */
