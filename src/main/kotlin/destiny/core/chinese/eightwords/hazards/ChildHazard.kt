@@ -4,7 +4,6 @@
 package destiny.core.chinese.eightwords.hazards
 
 import destiny.core.chinese.eightwords.EwPattern
-import java.util.*
 import destiny.tools.I18nBundles
 import destiny.tools.toLang
 import destiny.tools.bundleName

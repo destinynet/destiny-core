@@ -10,7 +10,7 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.TimeTools.toGmtJulDay
 import destiny.core.calendar.toGmtJulDay
-import kotlinx.datetime.toKotlinInstant
+import kotlin.time.toKotlinInstant
 import destiny.core.calendar.eightwords.ChangeDay
 import destiny.core.calendar.eightwords.DayHourConfig
 import destiny.core.calendar.eightwords.IHourBranchFeature

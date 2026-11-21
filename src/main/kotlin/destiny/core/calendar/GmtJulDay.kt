@@ -2,9 +2,9 @@ package destiny.core.calendar
 
 import destiny.core.calendar.Constants.SECONDS_OF_DAY
 import destiny.tools.serializers.GmtJulDaySerializer
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.toJavaInstant
+import kotlin.time.Clock
+import kotlin.time.Instant
+import kotlin.time.toJavaInstant
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.serialization.Serializable as KSerializable
 import destiny.tools.JSerializable

@@ -7,7 +7,7 @@ import destiny.core.calendar.Constants.CutOver1582
 import destiny.core.calendar.Constants.JulianYear1
 import destiny.core.calendar.Constants.SECONDS_OF_DAY
 import destiny.core.calendar.Constants.UnixEpoch.JULIAN_SECONDS
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import destiny.tools.KotlinLogging
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest

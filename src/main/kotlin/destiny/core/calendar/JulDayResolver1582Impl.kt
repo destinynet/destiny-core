@@ -1,7 +1,7 @@
 package destiny.core.calendar
 
 import destiny.core.calendar.Constants.CutOver1582.FROM_UNIXEPOCH_MILLI_SECONDS
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime

@@ -3,9 +3,9 @@
  */
 package destiny.core.calendar
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.toKotlinInstant
+import kotlin.time.toKotlinInstant
 
 
 /** Experimental KMM for [JulDayResolver] */

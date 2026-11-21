@@ -4,7 +4,7 @@
 package destiny.core.calendar
 
 import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import destiny.tools.KotlinLogging
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest

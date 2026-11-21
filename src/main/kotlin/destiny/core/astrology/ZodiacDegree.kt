@@ -9,7 +9,6 @@ import destiny.tools.CircleTools.normalize
 import destiny.tools.getTitle
 import kotlinx.serialization.Serializable as KSerializable
 import destiny.tools.JSerializable
-import java.util.*
 
 interface IZodiacDegree : Comparable<IZodiacDegree>, JSerializable {
   val zDeg: Double
