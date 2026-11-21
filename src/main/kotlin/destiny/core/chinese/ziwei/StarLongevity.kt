@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.bundleName
 import destiny.core.Gender
 import destiny.core.IPoints
 import destiny.core.Point
@@ -18,7 +19,7 @@ import kotlin.reflect.KClass
 
 /** 長生 12 神煞  */
 @Serializable(with = StarLongevitySerializer::class)
-sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", Type.長生) {
+sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.bundleName(), nameKey + "_ABBR", Type.長生) {
 
   object 長生 : StarLongevity("長生")
   object 沐浴 : StarLongevity("沐浴")

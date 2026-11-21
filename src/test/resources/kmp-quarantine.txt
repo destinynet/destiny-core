@@ -3,7 +3,7 @@
 # 由 KmpReadinessRatchetTest 管控。不在此清單上的 .kt 一律必須無 JVM-only 相依。
 # 這份清單只准變短：改乾淨了就刪掉該行。詳見該測試的 KDoc。
 #
-# 目前數量：308
+# 目前數量：304
 
 destiny/core/BirthData.kt
 destiny/core/Descriptive.kt
@@ -27,7 +27,6 @@ destiny/core/astrology/AspectCalculatorImpl.kt
 destiny/core/astrology/AspectEffectiveModern.kt
 destiny/core/astrology/Asteroid.kt
 destiny/core/astrology/AstroPoint.kt
-destiny/core/astrology/AstroPointComparator.kt
 destiny/core/astrology/Axis.kt
 destiny/core/astrology/AzimuthDegreeDecorator.kt
 destiny/core/astrology/AzimuthFeature.kt
@@ -77,7 +76,6 @@ destiny/core/astrology/ZodiacDegreeDecorator.kt
 destiny/core/astrology/ZodiacSign.kt
 destiny/core/astrology/ZodiacSignFeature.kt
 destiny/core/astrology/classical/ClassicalFeature.kt
-destiny/core/astrology/classical/IVoidCourse.kt
 destiny/core/astrology/classical/VoidCourseFeature.kt
 destiny/core/astrology/classical/rules/ClassicalPatternContext.kt
 destiny/core/astrology/classical/rules/PatternTranslator.kt
@@ -101,7 +99,6 @@ destiny/core/calendar/DateHourMinSecDecorator.kt
 destiny/core/calendar/GmtJulDay.kt
 destiny/core/calendar/HourMinDecorator.kt
 destiny/core/calendar/HourMinSecDecorator.kt
-destiny/core/calendar/IEvent.kt
 destiny/core/calendar/IJulDayResolver.kt
 destiny/core/calendar/ISolarTerms.kt
 destiny/core/calendar/JulDayResolver.kt

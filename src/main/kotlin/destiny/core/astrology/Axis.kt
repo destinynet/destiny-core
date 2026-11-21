@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.bundleName
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.tools.serializers.astrology.AxisSerializer
@@ -11,7 +12,7 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Serializable(with = AxisSerializer::class)
-sealed class Axis(nameKey: String, abbrKey: String) : AstroPoint(nameKey, Axis::class.java.name , abbrKey) {
+sealed class Axis(nameKey: String, abbrKey: String) : AstroPoint(nameKey, Axis::class.bundleName() , abbrKey) {
 
   object RISING   : Axis("Axis.RISING"  , "Axis.RISING_ABBR")
   object SETTING  : Axis("Axis.SETTING" , "Axis.SETTING_ABBR")

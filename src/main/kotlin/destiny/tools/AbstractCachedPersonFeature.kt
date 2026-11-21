@@ -49,7 +49,7 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
         }
       }
     } ?: run {
-      logger.trace { "${javaClass.simpleName} : No gmtPersonCache" }
+      logger.trace { "${this::class.simpleName} : No gmtPersonCache" }
       calculate(gmtJulDay, loc, gender, name, place, config)
     }
   }
@@ -100,7 +100,7 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
         }
       }
     } ?: run {
-      logger.trace { "${javaClass.simpleName} : No lmtPersonCache" }
+      logger.trace { "${this::class.simpleName} : No lmtPersonCache" }
       calculate(errorFixedLmt, loc, gender, name, place, config)
     }
   }

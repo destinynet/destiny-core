@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.bundleName
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.chinese.Branch
@@ -17,7 +18,7 @@ import kotlin.reflect.KClass
  * resource key 存放於 [ZStar] 的 ZStar.properties 當中
  */
 @Serializable(with = StarMainSerializer::class)
-sealed class StarMain(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", Type.主星) {
+sealed class StarMain(nameKey: String) : ZStar(nameKey, ZStar::class.bundleName(), nameKey + "_ABBR", Type.主星) {
 
   object 紫微 : StarMain("紫微")
   object 天機 : StarMain("天機")

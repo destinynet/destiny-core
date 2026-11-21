@@ -577,77 +577,77 @@ class AstroPatternSerializers {
 
       when (value) {
         is GrandTrine      -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, GrandTrine::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, GrandTrine::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, GrandTrineSerializer, value)
         }
 
         is Kite            -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, Kite::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, Kite::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, KiteSerializer, value)
         }
 
         is TSquared        -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, TSquared::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, TSquared::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, TSquaredSerializer, value)
         }
 
         is Yod             -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, Yod::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, Yod::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, YodSerializer, value)
         }
 
         is Boomerang       -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, Boomerang::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, Boomerang::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, BoomerangSerializer, value)
         }
 
         is GoldenYod       -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, GoldenYod::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, GoldenYod::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, GoldenYodSerializer, value)
         }
 
         is GrandCross      -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, GrandCross::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, GrandCross::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, GrandCrossSerializer, value)
         }
 
         is DoubleT         -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, DoubleT::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, DoubleT::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, DoubleTSerializer, value)
         }
 
         is Hexagon         -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, Hexagon::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, Hexagon::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, HexagonSerializer, value)
         }
 
         is Wedge           -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, Wedge::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, Wedge::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, WedgeSerializer, value)
         }
 
         is MysticRectangle -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, MysticRectangle::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, MysticRectangle::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, MysticRectangleSerializer, value)
         }
 
         is Pentagram       -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, Pentagram::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, Pentagram::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, PentagramSerializer, value)
         }
 
         is StelliumSign    -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, StelliumSign::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, StelliumSign::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, StelliumSignSerializer, value)
         }
 
         is StelliumHouse   -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, StelliumHouse::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, StelliumHouse::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, StelliumHouseSerializer, value)
         }
 
         is Confrontation   -> {
-          compositeEncoder.encodeStringElement(descriptor, 0, Confrontation::class.java.simpleName)
+          compositeEncoder.encodeStringElement(descriptor, 0, Confrontation::class.simpleName!!)
           compositeEncoder.encodeSerializableElement(descriptor, 1, ConfrontationSerializer, value)
         }
       }
@@ -672,21 +672,21 @@ class AstroPatternSerializers {
       requireNotNull(content) { "Content should not be null" }
 
       val result = when (type) {
-        GrandTrine::class.java.simpleName      -> Json.decodeFromJsonElement(GrandTrineSerializer, content)
-        Kite::class.java.simpleName            -> Json.decodeFromJsonElement(KiteSerializer, content)
-        TSquared::class.java.simpleName        -> Json.decodeFromJsonElement(TSquaredSerializer, content)
-        Yod::class.java.simpleName             -> Json.decodeFromJsonElement(YodSerializer, content)
-        Boomerang::class.java.simpleName       -> Json.decodeFromJsonElement(BoomerangSerializer, content)
-        GoldenYod::class.java.simpleName       -> Json.decodeFromJsonElement(GoldenYodSerializer, content)
-        GrandCross::class.java.simpleName      -> Json.decodeFromJsonElement(GrandCrossSerializer, content)
-        DoubleT::class.java.simpleName         -> Json.decodeFromJsonElement(DoubleTSerializer, content)
-        Hexagon::class.java.simpleName         -> Json.decodeFromJsonElement(HexagonSerializer, content)
-        Wedge::class.java.simpleName           -> Json.decodeFromJsonElement(WedgeSerializer, content)
-        MysticRectangle::class.java.simpleName -> Json.decodeFromJsonElement(MysticRectangleSerializer, content)
-        Pentagram::class.java.simpleName       -> Json.decodeFromJsonElement(PentagramSerializer, content)
-        StelliumSign::class.java.simpleName    -> Json.decodeFromJsonElement(StelliumSignSerializer, content)
-        StelliumHouse::class.java.simpleName   -> Json.decodeFromJsonElement(StelliumHouseSerializer, content)
-        Confrontation::class.java.simpleName   -> Json.decodeFromJsonElement(ConfrontationSerializer, content)
+        GrandTrine::class.simpleName!!      -> Json.decodeFromJsonElement(GrandTrineSerializer, content)
+        Kite::class.simpleName!!            -> Json.decodeFromJsonElement(KiteSerializer, content)
+        TSquared::class.simpleName!!        -> Json.decodeFromJsonElement(TSquaredSerializer, content)
+        Yod::class.simpleName!!             -> Json.decodeFromJsonElement(YodSerializer, content)
+        Boomerang::class.simpleName!!       -> Json.decodeFromJsonElement(BoomerangSerializer, content)
+        GoldenYod::class.simpleName!!       -> Json.decodeFromJsonElement(GoldenYodSerializer, content)
+        GrandCross::class.simpleName!!      -> Json.decodeFromJsonElement(GrandCrossSerializer, content)
+        DoubleT::class.simpleName!!         -> Json.decodeFromJsonElement(DoubleTSerializer, content)
+        Hexagon::class.simpleName!!         -> Json.decodeFromJsonElement(HexagonSerializer, content)
+        Wedge::class.simpleName!!           -> Json.decodeFromJsonElement(WedgeSerializer, content)
+        MysticRectangle::class.simpleName!! -> Json.decodeFromJsonElement(MysticRectangleSerializer, content)
+        Pentagram::class.simpleName!!       -> Json.decodeFromJsonElement(PentagramSerializer, content)
+        StelliumSign::class.simpleName!!    -> Json.decodeFromJsonElement(StelliumSignSerializer, content)
+        StelliumHouse::class.simpleName!!   -> Json.decodeFromJsonElement(StelliumHouseSerializer, content)
+        Confrontation::class.simpleName!!   -> Json.decodeFromJsonElement(ConfrontationSerializer, content)
         else                                   -> error("Unknown type: $type")
       }
 

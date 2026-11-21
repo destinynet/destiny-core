@@ -81,9 +81,10 @@ sealed interface IVoidCourse : Descriptive {
   }
 
   override fun getTitle(lang: Lang): String {
-    return I18nBundles.string(IVoidCourse::class.bundleName(), lang, javaClass.simpleName) ?: run {
-      logger.trace { "missing resource : $lang , 傳回 simple name : ${javaClass.simpleName}" }
-      javaClass.simpleName
+    val simpleName = this::class.simpleName ?: ""
+    return I18nBundles.string(IVoidCourse::class.bundleName(), lang, simpleName) ?: run {
+      logger.trace { "missing resource : $lang , 傳回 simple name : $simpleName" }
+      simpleName
     }
   }
 

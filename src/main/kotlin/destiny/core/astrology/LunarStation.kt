@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.bundleName
 import destiny.core.*
 import destiny.core.News.EastWest.EAST
 import destiny.core.News.EastWest.WEST
@@ -23,7 +24,7 @@ sealed class LunarStation(
   nameKey: String,
   val animal: Animal,
   val planet: Planet
-) : Star(nameKey, LunarStation::class.java.name), ILoop<LunarStation>, Comparable<LunarStation> {
+) : Star(nameKey, LunarStation::class.bundleName()), ILoop<LunarStation>, Comparable<LunarStation> {
 
   object 角 : LunarStation(EAST, "LunarStation.角", Animal.蛟, JUPITER)
   object 亢 : LunarStation(EAST, "LunarStation.亢", Animal.龍, VENUS)

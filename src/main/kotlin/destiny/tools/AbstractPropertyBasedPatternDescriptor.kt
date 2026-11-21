@@ -10,7 +10,7 @@ import java.util.Locale
 
 /**
  * 利用 properties 檔案，將 [IPattern] 轉換成 [Descriptive]
- * 利用 [IPattern]::class.java.simpleName 作為 nameKey
+ * 利用 [IPattern]::class.simpleName 作為 nameKey
  * 而 另外帶入 commentKey (常用 "comment") 當作 commentKey
  *
  */
@@ -19,7 +19,7 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
                                                       private val parameters: List<Any>,
                                                       private val doubleFormat : String? = "%.1f") : Descriptive , JSerializable {
 
-  private val nameKey = pattern::class.java.simpleName
+  private val nameKey = pattern::class.simpleName ?: ""
 
   abstract val resource: String
 

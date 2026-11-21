@@ -8,7 +8,7 @@ import java.util.*
 interface IPattern : JSerializable {
 
   fun getName(lang: Lang = Lang.DEFAULT): String {
-    return javaClass.simpleName
+    return this::class.simpleName ?: ""
   }
 
   fun getNotes(lang: Lang): String? {

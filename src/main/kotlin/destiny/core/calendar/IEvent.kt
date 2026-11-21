@@ -9,7 +9,7 @@ interface IEvent : Comparable<IEvent> , Descriptive {
   val begin: GmtJulDay
 
   override fun getTitle(lang: Lang): String {
-    return javaClass.simpleName
+    return this::class.simpleName ?: ""
   }
 
   override fun compareTo(other: IEvent): Int {

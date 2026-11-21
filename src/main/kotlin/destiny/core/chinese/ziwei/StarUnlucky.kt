@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.bundleName
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.chinese.Branch
@@ -21,7 +22,7 @@ import kotlin.reflect.KClass
  * 六兇星
  */
 @Serializable(with = StarUnluckySerializer::class)
-sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", type) {
+sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::class.bundleName(), nameKey + "_ABBR", type) {
 
   object 擎羊 : StarUnlucky("擎羊", 年干) // 甲
   object 陀羅 : StarUnlucky("陀羅", 年干) // 甲

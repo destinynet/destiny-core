@@ -11,7 +11,7 @@ import java.time.chrono.ChronoLocalDateTime
 interface Feature<out Config : Any, Model : Any?> {
 
   val key: String
-    get() = javaClass.simpleName
+    get() = this::class.simpleName ?: ""
 
   val defaultConfig: Config
 

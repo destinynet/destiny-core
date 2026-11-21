@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.bundleName
 import destiny.core.Gender
 import destiny.core.Gender.F
 import destiny.core.Gender.M
@@ -28,7 +29,7 @@ import kotlin.reflect.KClass
  * 乙級星有總共有34顆
  */
 @Serializable(with = StarMinorSerializer::class)
-sealed class StarMinor(nameKey: String, type: Type) : ZStar(nameKey, ZStar::class.java.name, type) {
+sealed class StarMinor(nameKey: String, type: Type) : ZStar(nameKey, ZStar::class.bundleName(), type) {
 
   object 天官 : StarMinor("天官", 年干) // 吉
   object 天福 : StarMinor("天福", 年干) // 吉

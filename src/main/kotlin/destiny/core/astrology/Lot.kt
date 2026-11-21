@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.bundleName
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.tools.serializers.astrology.LotSerializer
@@ -16,7 +17,7 @@ import kotlin.reflect.KClass
  * nameKey 是 `Lot.Fortune` 這種形式
  */
 @Serializable(with = LotSerializer::class)
-sealed class Lot(nameKey: String, abbrKey: String, unicode: Char? = null) : Star(nameKey, abbrKey, Star::class.java.name, unicode),
+sealed class Lot(nameKey: String, abbrKey: String, unicode: Char? = null) : Star(nameKey, abbrKey, Star::class.bundleName(), unicode),
                                                                             Comparable<Lot> {
 
   /** 福點 (幸運點) Lot of Fortune */

@@ -4,6 +4,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.bundleName
 import destiny.core.IPoints
 import destiny.core.News
 import destiny.core.Point
@@ -17,7 +18,7 @@ sealed class LunarNode(nameKey: String,
                        abbrKey: String,
                        val northSouth: News.NorthSouth,
                        unicode: Char) :
-  LunarPoint(nameKey, abbrKey, Star::class.java.name , unicode), Comparable<LunarNode> {
+  LunarPoint(nameKey, abbrKey, Star::class.bundleName() , unicode), Comparable<LunarNode> {
 
   /**
    * 北交點，計算方法，以下兩者結果相同

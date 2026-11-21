@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.bundleName
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.core.chinese.Branch
@@ -30,7 +31,7 @@ import kotlin.reflect.KClass
  * 攀鞍歲驛並息神, 華蓋劫煞災煞輕, 天煞指背咸池續, 月煞亡神次第行
  */
 @Serializable(with = StarGeneralFrontSerializer::class)
-sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront::class.java.name, Type.將前) {
+sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront::class.bundleName(), Type.將前) {
 
   object 將星 : StarGeneralFront("將星")
   object 攀鞍 : StarGeneralFront("攀鞍")

@@ -4,6 +4,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.bundleName
 import destiny.core.IPoints
 import destiny.core.Point
 import destiny.tools.serializers.astrology.AsteroidSerializer
@@ -15,7 +16,7 @@ import kotlin.reflect.KClass
 sealed class Asteroid(nameKey: String,
                       abbrKey: String,
                       val index: Int ,
-                      unicode : Char? = null) : Star(nameKey, abbrKey, Star::class.java.name , unicode), Comparable<Asteroid> {
+                      unicode : Char? = null) : Star(nameKey, abbrKey, Star::class.bundleName() , unicode), Comparable<Asteroid> {
 
   /** 穀神星  */
   object CERES : Asteroid("Asteroid.CERES", "Asteroid.CERES_ABBR", 1 , '⚳')

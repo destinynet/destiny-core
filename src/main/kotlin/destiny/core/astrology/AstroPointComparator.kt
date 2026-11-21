@@ -13,22 +13,22 @@ object AstroPointComparator : Comparator<AstroPoint>, JSerializable {
   private fun readResolve(): Any = AstroPointComparator
 
   private val starClasses = arrayOf(
-    Planet::class.java,
-    Axis::class.java,
-    LunarPoint::class.java,
-    Asteroid::class.java,
-    FixedStar::class.java,
-    Lot::class.java,
-    Hamburger::class.java,
-    LunarStation::class.java)
+    Planet::class,
+    Axis::class,
+    LunarPoint::class,
+    Asteroid::class,
+    FixedStar::class,
+    Lot::class,
+    Hamburger::class,
+    LunarStation::class)
 
   override fun compare(p1: AstroPoint, p2: AstroPoint): Int {
     if (p1 is Planet && p2 is Planet) {
       return Planet.values.indexOf(p1) - Planet.values.indexOf(p2)
     }
 
-    val p1class = p1.javaClass
-    val p2class = p2.javaClass
+    val p1class = p1::class
+    val p2class = p2::class
     return if (p1class == p2class) {
       p1.hashCode() - p2.hashCode()
     } else {

@@ -1,5 +1,6 @@
 package destiny.core.astrology
 
+import kotlin.reflect.KClass
 import destiny.core.Graph
 import destiny.core.ITimeLoc
 import destiny.core.astrology.classical.IRuler
@@ -193,9 +194,9 @@ interface IHoroscopeModel : ITimeLoc {
   }
 
 
-  fun getPositionWithAzimuth(clazz: Class<out AstroPoint>): Map<AstroPoint, IPosWithAzimuth> {
+  fun getPositionWithAzimuth(clazz: KClass<out AstroPoint>): Map<AstroPoint, IPosWithAzimuth> {
     return positionMap
-      .filter { (k, _) -> k.javaClass == clazz }
+      .filter { (k, _) -> k::class == clazz }
       .toMap()
   }
 

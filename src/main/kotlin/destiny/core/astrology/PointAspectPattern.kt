@@ -44,8 +44,8 @@ interface IPointAspectPattern : IPointAnglePattern, Comparable<IPointAspectPatte
         it.next() to it.next()
       }
 
-    return if (thisP0.javaClass.name == thatP0.javaClass.name && thisP0 == thatP0) {
-      if (thisP1.javaClass.name == thatP1.javaClass.name) (thisP1 as Comparable<AstroPoint>).compareTo(thatP1)
+    return if (thisP0::class == thatP0::class && thisP0 == thatP0) {
+      if (thisP1::class == thatP1::class) (thisP1 as Comparable<AstroPoint>).compareTo(thatP1)
       else AstroPointComparator.compare(thisP1, thatP1)
     } else {
       AstroPointComparator.compare(thisP0, thatP0)

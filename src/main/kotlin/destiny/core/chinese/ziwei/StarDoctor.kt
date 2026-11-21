@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.bundleName
 import destiny.core.Gender
 import destiny.core.IPoints
 import destiny.core.Point
@@ -24,7 +25,7 @@ import kotlin.reflect.KClass
  *
  */
 @Serializable(with = StarDoctorSerializer::class)
-sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, Type.博士) {
+sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.bundleName(), Type.博士) {
   object 博士 : StarDoctor("博士")
   object 力士 : StarDoctor("力士")
   object 青龍 : StarDoctor("青龍")
