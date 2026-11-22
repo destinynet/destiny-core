@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.tools.combinations
+import destiny.tools.dbscan
 import destiny.tools.cartesianProduct
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
@@ -11,10 +12,8 @@ import destiny.tools.KotlinLogging
 import destiny.tools.Score
 import destiny.tools.Score.Companion.average
 import destiny.tools.Score.Companion.toScore
-import org.apache.commons.math3.ml.clustering.Cluster
-import org.apache.commons.math3.ml.clustering.Clusterable
-import org.apache.commons.math3.ml.clustering.DBSCANClusterer
 import destiny.tools.JSerializable
+import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -433,33 +432,30 @@ class PatternContext(val aspectEffective: IAspectEffective,
     }
   }
 
-  inner class PointCluster(val point: AstroPoint, val lngDeg: Double) : Clusterable {
-    override fun getPoint(): DoubleArray {
-      return arrayOf(lngDeg).toDoubleArray()
-    }
-  }
+  private class PointCluster(val point: AstroPoint, val lngDeg: Double)
 
   // 星群對峙 : 兩組 3顆星以上的合相星群 彼此對沖
   private val confrontation = object : IPatternFactory {
 
     override fun getPatterns(posMap: Map<AstroPoint, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
       val pointMap = posMap.map { (point, pos) -> PointCluster(point, pos.lng) }
-      val cluster = DBSCANClusterer<PointCluster>(6.0, 2) { arr1, arr2 -> ZodiacDegree.getAngle(arr1[0], arr2[0]) }
+      // 黃經相距 6° 內為鄰居、至少 2 個鄰居才是核心 ⇒ 一群至少 3 顆星
+      val clusters = dbscan(pointMap, 6.0, 2) { a, b -> ZodiacDegree.getAngle(a.lngDeg, b.lngDeg) }
 
-      return cluster.cluster(pointMap).let { list: List<Cluster<PointCluster>> ->
+      return clusters.let { list: List<List<PointCluster>> ->
         list
           .takeIf { clusters -> clusters.size >= 2 }
           ?.let { clusters ->
             logger.trace("clusters size >=2 !! : {}", clusters.size)
-            clusters.toSet().combinations(2).asSequence().map { twoClusters: Set<Cluster<PointCluster>> ->
-              val (cluster1: Cluster<PointCluster>, cluster2: Cluster<PointCluster>) = twoClusters.toList().let { it[0] to it[1] }
-              val group1 = cluster1.points.map { it.point }
-              val group2 = cluster2.points.map { it.point }
+            clusters.toSet().combinations(2).asSequence().map { twoClusters: Set<List<PointCluster>> ->
+              val (cluster1: List<PointCluster>, cluster2: List<PointCluster>) = twoClusters.toList().let { it[0] to it[1] }
+              val group1 = cluster1.map { it.point }
+              val group2 = cluster2.map { it.point }
 
               logger.trace { "group1 = $group1 , group2 = $group2" }
               // 兩個群組的中點是否對沖
-              val mid1 = calculateAverageAngle(cluster1.points.map { it.lngDeg }).toZodiacDegree()
-              val mid2 = calculateAverageAngle(cluster2.points.map { it.lngDeg }).toZodiacDegree()
+              val mid1 = calculateAverageAngle(cluster1.map { it.lngDeg }).toZodiacDegree()
+              val mid2 = calculateAverageAngle(cluster2.map { it.lngDeg }).toZodiacDegree()
 
               logger.trace { "mid1 = $mid1 ${mid1.signDegree}, mid2 = $mid2 ${mid2.signDegree}" }
               val effective = AspectEffectiveModern.isEffective(mid1, mid2, OPPOSITION, 12.0)
@@ -486,13 +482,13 @@ class PatternContext(val aspectEffective: IAspectEffective,
     var sumCos = 0.0
 
     angles.forEach { angle ->
-      val radians = Math.toRadians(angle)
+      val radians = angle * (PI / 180.0)   // 與 JDK 的 Math.toRadians 乘同一個常數，結果逐位元相同（DbscanTest）
       sumSin += sin(radians)
       sumCos += cos(radians)
     }
 
     val averageRadians = atan2(sumSin, sumCos)
-    return (Math.toDegrees(averageRadians) + 360) % 360
+    return (averageRadians * (180.0 / PI) + 360) % 360
   }
 
   val patterns: Set<IPatternFactory> by lazy {
