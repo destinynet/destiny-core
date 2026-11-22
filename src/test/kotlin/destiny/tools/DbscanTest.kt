@@ -6,7 +6,6 @@ package destiny.tools
 import destiny.core.astrology.ZodiacDegree
 import org.apache.commons.math3.ml.clustering.Clusterable
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer
-import kotlin.math.PI
 import kotlin.random.Random
 import kotlin.test.*
 
@@ -58,13 +57,4 @@ class DbscanTest {
     assertEquals(listOf(listOf(358.0, 1.0, 4.0)), clusters.map { c -> c.map { it.lng } })   // 180／183 只有兩顆，不成群
   }
 
-  @Test
-  fun `角度換算與 java lang Math 完全相同`() {
-    val random = Random(1)
-    repeat(100_000) {
-      val d = random.nextDouble(-720.0, 720.0)
-      assertEquals(Math.toRadians(d), d * (PI / 180.0))
-      assertEquals(Math.toDegrees(d), d * (180.0 / PI))
-    }
-  }
 }

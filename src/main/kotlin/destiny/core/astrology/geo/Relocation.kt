@@ -4,6 +4,7 @@
  */
 package destiny.core.astrology.geo
 
+import destiny.tools.toRadians
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Planet
@@ -36,7 +37,7 @@ data class RelocationCandidate(
 fun AstroGeoContext.nearestLines(loc: ILatLng, basis: AstroGeoBasis): Map<AstroPoint, LineDistance> =
   angularity(loc, basis).mapNotNull { (p, byAngle) ->
     byAngle.minByOrNull { it.value }?.let { (angle, deg) ->
-      p to LineDistance(angle, deg, Math.toRadians(deg) * EARTH_RADIUS_KM)
+      p to LineDistance(angle, deg, toRadians(deg) * EARTH_RADIUS_KM)
     }
   }.toMap()
 
@@ -53,7 +54,7 @@ data class ScoreReason(
   val valence: Double,
 ) {
   /** [orbDeg] 換成地表距離（公里）：給人看的寫法，「3°」會被讀成黃道度數 */
-  val km: Double get() = Math.toRadians(orbDeg) * EARTH_RADIUS_KM
+  val km: Double get() = toRadians(orbDeg) * EARTH_RADIUS_KM
 }
 
 /**

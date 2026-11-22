@@ -35,7 +35,7 @@ object Congenital {
   }
 
   fun IHexagram.toInt(): Int {
-    return Integer.parseInt(this.binaryCode, 2)
+    return this.binaryCode.toInt(2)
   }
 
 

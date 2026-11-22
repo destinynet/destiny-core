@@ -127,6 +127,33 @@ class KmpReadinessRatchetTest {
     assertViolates("logger.info(javaClass.name)")
   }
 
+  /**
+   * **Kotlin/JVM 自動引入 `java.lang.*`，所以這些不必 import、也不帶 `java.` 前綴**，
+   * 前兩條規則完全看不到。2026-11-22 補上時，5 個「乾淨」檔案其實有約 40 處 `Math.toRadians`、
+   * 1 處 `Integer.parseInt`。
+   */
+  @Test
+  fun `攔截 java lang 與 JVM-only stdlib`() {
+    assertViolates("val r = Math.toRadians(x)")
+    assertViolates("val n = Integer.parseInt(s, 2)")
+    assertViolates("val t = System.currentTimeMillis()")
+    assertViolates("if (Character.isDigit(c)) {")
+    assertViolates("val tl = ThreadLocal.withInitial { 0 }")
+    assertViolates("fun f(c: Class<*>) = c")
+    assertViolates("val s = String.format(\"%d\", 1)")
+    assertViolates("val s = \"%.2f\".format(x)")
+    assertViolates("synchronized(lock) { }")
+    assertViolates("@Synchronized fun f() {}")
+    assertViolates("val b = x.toBigDecimal()")
+    assertClean("val r = toRadians(x)")
+    assertClean("val n = s.toInt(2)")
+    assertClean("fun f(c: KClass<*>) = c")
+    assertClean("val m = destiny.core.Math.foo")
+    assertClean("val s = date.format(formatter)")
+    assertClean("val s = \"%.2f\".formatInvariant(x)")
+    assertClean("val x = 1 // Math.toRadians 只是註解")
+  }
+
   @Test
   fun `註解不算相依`() {
     assertClean("// val c = Planet::class.java")
@@ -174,6 +201,8 @@ class KmpReadinessRatchetTest {
         FQN_IN_BODY.find(line)?.let { out += "L${idx + 1}: ${it.value}…" }
         // JVM 反射慣用法，例如 `Planet::class.java` / `p1.javaClass`
         JVM_REFLECTION.find(line)?.let { out += "L${idx + 1}: ${it.value}" }
+        // 不必 import 的 java.lang 類別與 JVM-only 的 stdlib，例如 `Math.toRadians`、`"%.2f".format(x)`
+        JVM_IMPLICIT.find(line.substringBefore("//"))?.let { out += "L${idx + 1}: ${it.value}" }
       }
     }
     return out
@@ -243,5 +272,20 @@ class KmpReadinessRatchetTest {
      * 則要改設計。
      */
     private val JVM_REFLECTION = Regex("""(::class\.java\b|\bjavaClass\b)""")
+
+    /**
+     * Kotlin/JVM 自動引入的 `java.lang` 類別，以及只有 JVM 才有的 stdlib API。
+     * 這些不必 import、也不帶 `java.` 前綴，所以 [FORBIDDEN_IMPORT_PREFIXES] 與 [FQN_IN_BODY] 都看不到。
+     *
+     * 替代：`Math.toRadians`／`toDegrees` → `destiny.tools.toRadians`／`toDegrees`；
+     * `Integer.parseInt(s, r)` → `s.toInt(r)`；`String.format` → `formatInvariant`（接縫）；
+     * `Class<*>` → `KClass<*>`。
+     *
+     * 前面的 `(?<![\w.])` 排除 `destiny.core.Math`、`KClass` 這類自家或 Kotlin 名稱。
+     */
+    private val JVM_IMPLICIT = Regex(
+      """(?<![\w.])(Math|System|Thread|Runtime|Integer|Character|StringBuffer|ThreadLocal|ClassLoader|ProcessBuilder)\.""" +
+        """|(?<![\w.])Class<|(?<![\w.])String\.format\(|"\s*\.format\(|(?<![\w.])synchronized\s*\(|@Synchronized|\btoBigDecimal\(|\bBigDecimal\b"""
+    )
   }
 }

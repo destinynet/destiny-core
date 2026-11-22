@@ -3,6 +3,8 @@
  */
 package destiny.core.astrology.geo
 
+import destiny.tools.toRadians
+import destiny.tools.toDegrees
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.EquatorialPos
@@ -88,14 +90,14 @@ class ParanCalculator : IParanCalculator {
 
     /** 傳回 (F, Δt)；F 是 partner 離「該在的位置」差幾度（−180..180），φ 無定義時 F 為 NaN */
     private fun eval(lat: Double, lng: Double, target: Double?): DoubleArray {
-      val tanPhi = tan(Math.toRadians(lat))
+      val tanPhi = tan(toRadians(lat))
       var pa = posA(0.0)
       var dt = 0.0
       var haA = Double.NaN
       // anchor 本身在動（月亮當 anchor）時，到角時刻與它的位置互相依賴：迭代四次就收斂（月亮一小時 0.5°）
       // 哪一天由第一次決定（離出生最近的那一次），之後固定同一天 —— 否則在「離出生半天」附近會在前後兩天之間來回跳
       repeat(if (trackA != null) 4 else 1) { i ->
-        haA = hourAngle(paran.anchorAngle, tanPhi, tan(Math.toRadians(pa.declination)))
+        haA = hourAngle(paran.anchorAngle, tanPhi, tan(toRadians(pa.declination)))
         if (haA.isNaN()) return doubleArrayOf(Double.NaN, 0.0)
         val raw = pa.rightAscension + haA - ctx.gmstDeg - lng
         dt = if (i == 0) signed(raw) / SIDEREAL_DEG_PER_DAY
@@ -103,7 +105,7 @@ class ParanCalculator : IParanCalculator {
         pa = posA(dt)
       }
       val pb = posB(dt)
-      val tanB = tan(Math.toRadians(pb.declination))
+      val tanB = tan(toRadians(pb.declination))
       val f = if (target == null) {
         signed(pa.rightAscension + haA - pb.rightAscension - hourAngle(paran.partnerAngle!!, tanPhi, tanB))
       } else {
@@ -243,7 +245,7 @@ class ParanCalculator : IParanCalculator {
     /** 半日弧（度），以 tan φ、tan δ 計；永不升落（|tan φ tan δ| > 1）回 NaN */
     private fun semiArc(tanPhi: Double, tanDec: Double): Double {
       val cosD = -tanPhi * tanDec
-      return if (cosD > 1.0 || cosD < -1.0) Double.NaN else Math.toDegrees(acos(cosD))
+      return if (cosD > 1.0 || cosD < -1.0) Double.NaN else toDegrees(acos(cosD))
     }
 
     /** 在角 [a] 上的時角；ASC／DSC 在該緯度不升落時回 NaN */
@@ -271,8 +273,8 @@ class ParanCalculator : IParanCalculator {
         bMeridian -> listOfNotNull(closedForm(posB.rightAscension + hourAngle(b, 0.0, 0.0) - posA.rightAscension, a, posA.declination))
         else -> {
           val maxLat = 90.0 - maxOf(posA.declination.absoluteValue, posB.declination.absoluteValue)
-          val tanA = tan(Math.toRadians(posA.declination))
-          val tanB = tan(Math.toRadians(posB.declination))
+          val tanA = tan(toRadians(posA.declination))
+          val tanB = tan(toRadians(posB.declination))
           val dAlpha = posA.rightAscension - posB.rightAscension
           roots(maxLat) { tanPhi -> signed(dAlpha + hourAngle(a, tanPhi, tanA) - hourAngle(b, tanPhi, tanB)) }
         }
@@ -290,9 +292,9 @@ class ParanCalculator : IParanCalculator {
         GeoAngle.DESC -> if (h > 0) h else return null
         else          -> return null
       }
-      val tanDec = tan(Math.toRadians(dec))
+      val tanDec = tan(toRadians(dec))
       if (tanDec.absoluteValue < 1e-12) return null
-      return Math.toDegrees(atan(-cos(Math.toRadians(arc)) / tanDec))
+      return toDegrees(atan(-cos(toRadians(arc)) / tanDec))
     }
 
     /**
@@ -302,8 +304,8 @@ class ParanCalculator : IParanCalculator {
     internal fun mundaneLats(posA: EquatorialPos, a: GeoAngle, posB: EquatorialPos, offset: Double): List<Double> {
       val maxLat = 90.0 - maxOf(posB.declination.absoluteValue, if (a in MERIDIAN) 0.0 else posA.declination.absoluteValue)
       val target = mundaneOf(a) + offset
-      val tanA = tan(Math.toRadians(posA.declination))
-      val tanB = tan(Math.toRadians(posB.declination))
+      val tanA = tan(toRadians(posA.declination))
+      val tanB = tan(toRadians(posB.declination))
       val dAlpha = posA.rightAscension - posB.rightAscension
       return roots(maxLat) { tanPhi ->
         val dsa = semiArc(tanPhi, tanB)
@@ -335,10 +337,10 @@ class ParanCalculator : IParanCalculator {
       val step = 2 * limit / SAMPLES
       val result = mutableListOf<Double>()
       var prevLat = -limit
-      var prev = f(tan(Math.toRadians(prevLat)))
+      var prev = f(tan(toRadians(prevLat)))
       for (i in 1..SAMPLES) {
         val lat = -limit + i * step
-        val cur = f(tan(Math.toRadians(lat)))
+        val cur = f(tan(toRadians(lat)))
         val p = prev
         if (!p.isNaN() && !cur.isNaN() && (p < 0) != (cur < 0) && (cur - p).absoluteValue < 180.0) {
           var lo = prevLat
@@ -346,7 +348,7 @@ class ParanCalculator : IParanCalculator {
           var fLo = p
           for (round in 0 until BISECT_ROUNDS) {
             val mid = (lo + hi) / 2
-            val fMid = f(tan(Math.toRadians(mid)))
+            val fMid = f(tan(toRadians(mid)))
             if (fMid.isNaN()) break
             if ((fLo < 0) == (fMid < 0)) {
               lo = mid

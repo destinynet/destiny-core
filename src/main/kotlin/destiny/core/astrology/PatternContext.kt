@@ -3,6 +3,8 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.toRadians
+import destiny.tools.toDegrees
 import destiny.tools.combinations
 import destiny.tools.dbscan
 import destiny.tools.cartesianProduct
@@ -13,7 +15,6 @@ import destiny.tools.Score
 import destiny.tools.Score.Companion.average
 import destiny.tools.Score.Companion.toScore
 import destiny.tools.JSerializable
-import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -482,13 +483,13 @@ class PatternContext(val aspectEffective: IAspectEffective,
     var sumCos = 0.0
 
     angles.forEach { angle ->
-      val radians = angle * (PI / 180.0)   // 與 JDK 的 Math.toRadians 乘同一個常數，結果逐位元相同（DbscanTest）
+      val radians = toRadians(angle)
       sumSin += sin(radians)
       sumCos += cos(radians)
     }
 
     val averageRadians = atan2(sumSin, sumCos)
-    return (averageRadians * (180.0 / PI) + 360) % 360
+    return (toDegrees(averageRadians) + 360) % 360
   }
 
   val patterns: Set<IPatternFactory> by lazy {

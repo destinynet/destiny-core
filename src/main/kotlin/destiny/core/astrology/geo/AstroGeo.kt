@@ -4,6 +4,8 @@
  */
 package destiny.core.astrology.geo
 
+import destiny.tools.toRadians
+import destiny.tools.toDegrees
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.Astronomical
 import destiny.core.astrology.Centric
@@ -184,10 +186,10 @@ private fun AstroGeoContext.longitudeAt(pos: EquatorialPos, angle: GeoAngle, lat
       if (latDeg.absoluteValue >= 90.0)
         return null
       // 星體在地平線上：cos H = −tan φ · tan δ , H ∈ [0°, 180°]
-      val cosH = -tan(Math.toRadians(latDeg)) * tan(Math.toRadians(pos.declination))
+      val cosH = -tan(toRadians(latDeg)) * tan(toRadians(pos.declination))
       if (cosH.absoluteValue > 1.0)
         return null
-      val h = Math.toDegrees(acos(cosH))
+      val h = toDegrees(acos(cosH))
       // 東昇 HA = −H , 西落 HA = +H ; λ = α + HA − θ
       val lng = if (angle == GeoAngle.ASC) alpha - h - gmstDeg else alpha + h - gmstDeg
       lng.normalizeSigned()
@@ -243,16 +245,16 @@ private fun AstroGeoContext.ascDescDistanceDeg(loc: ILatLng, pos: EquatorialPos,
 
 /** 兩點間大圓角距（度），haversine */
 private fun gcDistanceDeg(lat1: Double, lng1: Double, lat2: Double, lng2: Double): Double {
-  val phi1 = Math.toRadians(lat1)
-  val phi2 = Math.toRadians(lat2)
-  val a = sin(Math.toRadians(lat2 - lat1) / 2).pow(2) +
-    cos(phi1) * cos(phi2) * sin(Math.toRadians(lng2 - lng1) / 2).pow(2)
-  return Math.toDegrees(2 * asin(sqrt(a).coerceAtMost(1.0)))
+  val phi1 = toRadians(lat1)
+  val phi2 = toRadians(lat2)
+  val a = sin(toRadians(lat2 - lat1) / 2).pow(2) +
+    cos(phi1) * cos(phi2) * sin(toRadians(lng2 - lng1) / 2).pow(2)
+  return toDegrees(2 * asin(sqrt(a).coerceAtMost(1.0)))
 }
 
 /** [angularityToLine] 的公里版：deg × (π/180) × 6371 */
 fun AstroGeoContext.kmToLine(loc: ILatLng, p: AstroPoint, angle: GeoAngle, basis: AstroGeoBasis): Double? =
-  angularityToLine(loc, p, angle, basis)?.let { Math.toRadians(it) * EARTH_RADIUS_KM }
+  angularityToLine(loc, p, angle, basis)?.let { toRadians(it) * EARTH_RADIUS_KM }
 
 /** 正解：給地點，每顆星到各角線的地表大圓角距（度） */
 fun AstroGeoContext.angularity(loc: ILatLng, basis: AstroGeoBasis): Map<AstroPoint, Map<GeoAngle, Double>> =
@@ -299,10 +301,10 @@ fun AstroGeoContext.line(p: AstroPoint, angle: GeoAngle, basis: AstroGeoBasis, l
 fun AstroGeoContext.localSpace(loc: ILatLng, basis: AstroGeoBasis = AstroGeoBasis.IN_MUNDO): Map<AstroPoint, Double> =
   equatorial.mapNotNull { (p, m) ->
     m[basis]?.let { pos ->
-      val h = Math.toRadians((gmstDeg + loc.lng.value - pos.rightAscension).normalizeSigned())
-      val phi = Math.toRadians(loc.lat.value)
-      val delta = Math.toRadians(pos.declination)
-      val az = Math.toDegrees(
+      val h = toRadians((gmstDeg + loc.lng.value - pos.rightAscension).normalizeSigned())
+      val phi = toRadians(loc.lat.value)
+      val delta = toRadians(pos.declination)
+      val az = toDegrees(
         atan2(-cos(delta) * sin(h), cos(phi) * sin(delta) - sin(phi) * cos(delta) * cos(h))
       ).normalize()
       p to az
@@ -319,7 +321,7 @@ fun AstroGeoContext.localSpace(loc: ILatLng, basis: AstroGeoBasis = AstroGeoBasi
 private fun meridianDistanceDeg(latDeg: Double, lngDeg: Double, lineLngDeg: Double): Double {
   val dLng = (lngDeg - lineLngDeg).normalizeSigned()
   return if (dLng.absoluteValue <= 90.0) {
-    Math.toDegrees(asin((cos(Math.toRadians(latDeg)) * sin(Math.toRadians(dLng))).absoluteValue))
+    toDegrees(asin((cos(toRadians(latDeg)) * sin(toRadians(dLng))).absoluteValue))
   } else {
     90.0 - latDeg.absoluteValue
   }
@@ -340,11 +342,11 @@ fun AstroGeoContext.zenith(p: AstroPoint, basis: AstroGeoBasis): ILatLng? {
  */
 fun AstroGeoContext.altitude(loc: ILatLng, p: AstroPoint, basis: AstroGeoBasis): Double? {
   val pos = equatorial[p]?.get(basis) ?: return null
-  val phi = Math.toRadians(loc.lat.value)
-  val delta = Math.toRadians(pos.declination)
-  val h = Math.toRadians(gmstDeg + loc.lng.value - pos.rightAscension)
+  val phi = toRadians(loc.lat.value)
+  val delta = toRadians(pos.declination)
+  val h = toRadians(gmstDeg + loc.lng.value - pos.rightAscension)
   val sinAlt = sin(phi) * sin(delta) + cos(phi) * cos(delta) * cos(h)
-  return Math.toDegrees(asin(sinAlt.coerceIn(-1.0, 1.0)))
+  return toDegrees(asin(sinAlt.coerceIn(-1.0, 1.0)))
 }
 
 /**
@@ -369,12 +371,12 @@ fun AstroGeoContext.terminator(lngStep: Double = 1.0, sun: AstroPoint = destiny.
   require(lngStep > 0) { "lngStep must be positive" }
   val pos = equatorial[sun]?.get(AstroGeoBasis.IN_MUNDO) ?: return null
   val dec = if (pos.declination.absoluteValue < 1e-6) 1e-6 else pos.declination
-  val tanDelta = tan(Math.toRadians(dec))
+  val tanDelta = tan(toRadians(dec))
   val curve = buildList {
     var lng = -180.0
     while (lng <= 180.0 + 1e-9) {
-      val h = Math.toRadians(gmstDeg + lng - pos.rightAscension)
-      val lat = Math.toDegrees(kotlin.math.atan(-cos(h) / tanDelta))
+      val h = toRadians(gmstDeg + lng - pos.rightAscension)
+      val lat = toDegrees(kotlin.math.atan(-cos(h) / tanDelta))
       add(LatLng(lat.toLat(), lng.coerceAtMost(180.0).toLng()))
       lng += lngStep
     }

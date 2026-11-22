@@ -3,6 +3,8 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.toRadians
+import destiny.tools.toDegrees
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.CircleTools.normalize
 import kotlin.math.asin
@@ -84,13 +86,13 @@ object Astronomical : IObliquityCalculator {
    * ```
    */
   fun eclipticToEquatorial(lng: Double, lat: Double, obliquity: Double): EquatorialPos {
-    val l = Math.toRadians(lng)
-    val b = Math.toRadians(lat)
-    val e = Math.toRadians(obliquity)
+    val l = toRadians(lng)
+    val b = toRadians(lat)
+    val e = toRadians(obliquity)
     val ra = atan2(sin(l) * cos(e) - tan(b) * sin(e), cos(l))
     val dec = asin((sin(b) * cos(e) + cos(b) * sin(e) * sin(l)).coerceIn(-1.0, 1.0))
-    val raDeg = Math.toDegrees(ra).normalize()
-    return EquatorialPos(raDeg, Math.toDegrees(dec))
+    val raDeg = toDegrees(ra).normalize()
+    return EquatorialPos(raDeg, toDegrees(dec))
   }
 
   /**
@@ -108,10 +110,10 @@ object Astronomical : IObliquityCalculator {
    * Used by zodiacal (no-latitude) primary directions to project an RA back to the zodiac.
    */
   fun raToEclipticLongitude(ra: Double, obliquity: Double): Double {
-    val a = Math.toRadians(ra)
-    val e = Math.toRadians(obliquity)
+    val a = toRadians(ra)
+    val e = toRadians(obliquity)
     val lng = atan2(sin(a), cos(a) * cos(e))
-    return Math.toDegrees(lng).normalize()
+    return toDegrees(lng).normalize()
   }
 
   /**
