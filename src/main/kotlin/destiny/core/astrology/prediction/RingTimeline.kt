@@ -5,6 +5,7 @@ package destiny.core.astrology.prediction
 
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.AstroPoint
+import destiny.core.astrology.Planet
 import destiny.core.astrology.RingKind
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.BisectionTools
@@ -128,4 +129,12 @@ fun aspectSpansOf(
       RingAspectSpan(mover, natal, aspect, enter, exactAll.filter { it >= enter && it <= leave }, leave)
     }
   }.sortedBy { it.enter }
+}
+
+/**
+ * 一次回歸（太陽回歸、月亮回歸）：[planet] 在 [at] 回到本命的黃經，這張回歸盤管到下一次回歸 [to]。
+ * [asc]：回歸那一刻在出生地的上升黃經（出生時間不夠精確、或沒有算 ⇒ null）
+ */
+data class ReturnPeriod(val planet: Planet, val at: GmtJulDay, val to: GmtJulDay, val asc: Double? = null) {
+  operator fun contains(t: GmtJulDay): Boolean = t >= at && t < to
 }
