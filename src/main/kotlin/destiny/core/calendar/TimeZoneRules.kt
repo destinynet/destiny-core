@@ -46,6 +46,19 @@ object TimeZoneRules {
   fun nextTransition(tzid: String, after: Instant): Instant? =
     rules(tzid).nextTransition(after.toJavaInstant())?.instant?.toKotlinInstant()
 
+  /** 現在與 GMT 時差為 [offsetSeconds] 的所有 tzid（依時區資料庫的順序） */
+  fun tzidsByOffsetSeconds(offsetSeconds: Int, at: Instant = kotlin.time.Clock.System.now()): List<String> {
+    val offset = ZoneOffset.ofTotalSeconds(offsetSeconds)
+    val javaAt = at.toJavaInstant()
+    return ZoneId.getAvailableZoneIds().filter { ZoneId.of(it).rules.getOffset(javaAt) == offset }
+  }
+
+  /** 承上，挑一個代表：有 `Etc/` 開頭的先用，否則取最短的；沒有就 null */
+  fun tzidByOffsetSeconds(offsetSeconds: Int): String? {
+    val list = tzidsByOffsetSeconds(offsetSeconds)
+    return list.firstOrNull { it.startsWith("Etc/") } ?: list.minByOrNull { it.length }
+  }
+
   /**
    * 本地時間 [local]（proleptic 格里曆）在 [tzid] 應採用的時差（秒）：`GMT ＝ local − 這個時差`。
    *

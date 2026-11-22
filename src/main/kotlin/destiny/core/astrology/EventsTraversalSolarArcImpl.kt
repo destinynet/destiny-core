@@ -1,5 +1,6 @@
 package destiny.core.astrology
 
+import destiny.core.calendar.zoneId
 import destiny.tools.Lang
 import destiny.core.astrology.Aspect.Companion.expand
 import destiny.core.astrology.BirthDataGrain.MINUTE
