@@ -6,16 +6,15 @@ package destiny.core
 
 import destiny.tools.ILocaleString
 import destiny.tools.Lang
-import destiny.tools.toLang
-import java.util.*
 
+/**
+ * `Locale` 版的 `getDescription(locale)` 是 JVM 橋接擴充函式（`destiny.core` 的 `LocaleBridges.kt`），
+ * 呼叫端要 `import destiny.core.getDescription`。說明見 [ILocaleString]。
+ */
 interface Descriptive : ILocaleString {
 
   /** 詳細描述  */
   fun getDescription(lang: Lang): String {
     return getTitle(lang)
   }
-
-  /** 橋接，說明見 [ILocaleString]。**實作端不要覆寫。** */
-  fun getDescription(locale: Locale): String = getDescription(locale.toLang())
 }

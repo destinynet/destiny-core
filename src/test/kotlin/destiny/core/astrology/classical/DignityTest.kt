@@ -4,6 +4,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.tools.getTitle
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

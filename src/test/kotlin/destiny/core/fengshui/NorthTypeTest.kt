@@ -3,6 +3,7 @@
  */
 package destiny.core.fengshui
 
+import destiny.tools.getTitle
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

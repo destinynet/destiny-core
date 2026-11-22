@@ -3,6 +3,8 @@
  */
 package destiny.core.astrology.classical.rules
 
+import destiny.core.getDescription
+import destiny.tools.getTitle
 import destiny.core.DayNight
 import destiny.core.astrology.Aspect.CONJUNCTION
 import destiny.core.astrology.Aspect.OPPOSITION

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.getTitle
 import destiny.core.chinese.Branch.*
 import destiny.tools.KotlinLogging
 import java.util.*

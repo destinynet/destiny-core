@@ -21,3 +21,6 @@ fun News.NorthSouth.toCoordinateString(locale: Locale): String = toCoordinateStr
 fun News.EastWest.toCoordinateString(locale: Locale): String = toCoordinateString(locale.toLang())
 
 fun News.getTitle(locale: Locale): String = getTitle(locale.toLang())
+
+/** [Descriptive] 的 `Locale` 橋接（原本是介面成員，2026-11-22 移出）。新程式請直接傳 `Lang` */
+fun Descriptive.getDescription(locale: Locale): String = getDescription(locale.toLang())

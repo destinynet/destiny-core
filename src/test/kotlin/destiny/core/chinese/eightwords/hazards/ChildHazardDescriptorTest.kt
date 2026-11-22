@@ -3,6 +3,8 @@
  */
 package destiny.core.chinese.eightwords.hazards
 
+import destiny.core.getDescription
+import destiny.tools.getTitle
 import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.reflect.full.isSubclassOf

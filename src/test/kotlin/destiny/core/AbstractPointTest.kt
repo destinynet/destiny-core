@@ -3,6 +3,7 @@
  */
 package destiny.core
 
+import destiny.tools.getTitle
 import destiny.core.astrology.AstroPoint
 import destiny.tools.KotlinLogging
 import java.util.*

@@ -39,3 +39,6 @@ fun ChineseVariant.Companion.of(locale: Locale): ChineseVariant? = of(locale.toL
  * 由 `NoAmbientLocaleTest` 擋住回歸。
  */
 val defaultLocale: Locale = Lang.DEFAULT.toLocale()
+
+/** [ILocaleString] 的 `Locale` 橋接（原本是介面成員，2026-11-22 移出）。新程式請直接傳 [Lang] */
+fun ILocaleString.getTitle(locale: Locale): String = getTitle(locale.toLang())

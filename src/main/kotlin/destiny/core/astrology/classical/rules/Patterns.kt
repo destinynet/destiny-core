@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical.rules
 
+import destiny.tools.getTitle
 import destiny.core.DayNight
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.ApplicationOutcome

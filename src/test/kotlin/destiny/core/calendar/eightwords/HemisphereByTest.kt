@@ -4,6 +4,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.tools.getTitle
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

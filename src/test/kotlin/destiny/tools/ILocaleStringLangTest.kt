@@ -3,6 +3,7 @@
  */
 package destiny.tools
 
+import destiny.core.getDescription
 import destiny.core.Descriptive
 import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacSign

@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.getDescription
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.Planet
 import destiny.core.astrology.Planet.*

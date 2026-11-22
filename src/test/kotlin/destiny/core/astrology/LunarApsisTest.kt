@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.getTitle
 import destiny.tools.KotlinLogging
 import kotlinx.serialization.json.Json
 import java.util.*

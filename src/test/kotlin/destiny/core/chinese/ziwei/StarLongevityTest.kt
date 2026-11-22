@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.getTitle
 import destiny.core.AbstractPointTest
 import destiny.core.Gender.F
 import destiny.core.Gender.M

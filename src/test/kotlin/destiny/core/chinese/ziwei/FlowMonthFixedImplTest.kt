@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.getTitle
 import destiny.tools.KotlinLogging
 import java.util.*
 import kotlin.test.Test

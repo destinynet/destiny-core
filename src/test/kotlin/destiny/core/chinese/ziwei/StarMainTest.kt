@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.getTitle
 import destiny.core.AbstractPointTest
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.getAbbreviation

@@ -3,6 +3,7 @@
  */
 package destiny.core
 
+import destiny.tools.getTitle
 import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import java.util.*

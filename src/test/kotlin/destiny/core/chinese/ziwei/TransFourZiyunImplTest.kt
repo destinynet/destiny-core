@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.getTitle
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.StarMain.太陽
 import destiny.core.chinese.ziwei.T4Value.*

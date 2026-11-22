@@ -9,6 +9,7 @@
  */
 package destiny.core.astrology.prediction
 
+import destiny.tools.getTitle
 import destiny.core.astrology.Lot
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.AspectData

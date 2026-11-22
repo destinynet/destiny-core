@@ -5,6 +5,7 @@
 package destiny.core.astrology
 
 
+import destiny.tools.getTitle
 import destiny.core.AbstractPointTest
 import destiny.core.astrology.Planet.Companion.aheadOf
 import destiny.core.getAbbreviation

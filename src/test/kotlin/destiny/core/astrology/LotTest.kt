@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.tools.getTitle
 import destiny.core.AbstractPointTest
 import destiny.core.getAbbreviation
 import kotlinx.serialization.json.Json

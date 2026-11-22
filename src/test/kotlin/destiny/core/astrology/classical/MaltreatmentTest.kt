@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.getDescription
 import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.IHoroscopeModel

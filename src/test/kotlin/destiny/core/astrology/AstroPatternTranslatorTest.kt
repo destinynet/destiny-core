@@ -3,6 +3,8 @@
  */
 package destiny.core.astrology
 
+import destiny.core.getDescription
+import destiny.tools.getTitle
 import destiny.core.astrology.AstroPattern.*
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacSign.*
