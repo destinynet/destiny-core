@@ -3,7 +3,7 @@
  */
 package destiny.core.astrology
 
-import com.google.common.collect.Sets
+import destiny.tools.combinations
 import destiny.core.astrology.IPointAspectPattern.AspectType.APPLYING
 import destiny.core.astrology.IPointAspectPattern.AspectType.SEPARATING
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
@@ -77,7 +77,7 @@ class AspectCalculatorImpl(
 
   /** 針對整體 */
   override fun IHoroscopeModel.getAspectPatterns(points: Set<AstroPoint>, aspects: Set<Aspect>): Set<IPointAspectPattern> {
-    return Sets.combinations(points.toSet(), 2)
+    return points.toSet().combinations(2)
       .asSequence()
       .mapNotNull { this.getAspectPattern(it, aspects) }
       .toSet()

@@ -3,7 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
-import com.google.common.collect.Sets
+import destiny.tools.combinations
 import destiny.core.FlowScale
 import destiny.core.Scale
 import destiny.core.calendar.eightwords.FlowPattern.*
@@ -68,7 +68,7 @@ internal fun IEightWords.detectTrilogyToFlowGeneric(
 ): Set<TrilogyToFlow> {
   return getScaleMap().entries.map { (scale, v) -> scale to v.branch }
     .let { pillars: List<Pair<Scale, Branch>> ->
-      Sets.combinations(pillars.toSet(), 2).asSequence()
+      pillars.toSet().combinations(2).asSequence()
         .filter { twoPillars: Set<Pair<Scale, Branch>> ->
           val (p1, p2) = twoPillars.toList().let { it[0] to it[1] }
           p1.second.trilogy() == p2.second.trilogy()

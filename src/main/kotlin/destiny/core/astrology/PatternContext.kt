@@ -3,7 +3,8 @@
  */
 package destiny.core.astrology
 
-import com.google.common.collect.Sets
+import destiny.tools.combinations
+import destiny.tools.cartesianProduct
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.KotlinLogging
@@ -41,12 +42,12 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .takeIf { it.size >= 3 }
         ?.let { patterns ->
 
-          return Sets.combinations(patterns, 3).asSequence().mapNotNull { threeSets ->
+          return patterns.combinations(3).asSequence().mapNotNull { threeSets ->
             val (set1, set2, set3) = threeSets.toList().let { Triple(it[0], it[1], it[2]) }
             set1.points.union(set2.points).union(set3.points)
               .takeIf { unionPoints -> unionPoints.size == 3 }
               ?.takeIf { unionPoints ->
-                Sets.combinations(unionPoints, 2).all { twoPoint ->
+                unionPoints.combinations(2).all { twoPoint ->
                   val (p1, p2) = twoPoint.toList().let { it[0] to it[1] }
                   aspectEffective.isEffective(p1, posMap.getValue(p1).lngDeg, p2, posMap.getValue(p2).lngDeg, TRINE)
                 }
@@ -104,7 +105,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
       return aspectCalculator.getAspectPatterns(posMap, aspects = twoAspects)
         .takeIf { it.size >= 3 }
         ?.let { pairs ->
-          Sets.combinations(pairs, 3).asSequence().filter { threeSet ->
+          pairs.combinations(3).asSequence().filter { threeSet ->
             threeSet.flatMap { it.points }.toSet().size == 3
           }.filter { threeSet ->
             threeSet.filter { it.aspect == OPPOSITION }.size == 1
@@ -128,7 +129,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .takeIf { it.size >= 2 }
         ?.let { patterns ->
           // 任兩個 QUINCUNX ,
-          Sets.combinations(patterns, 2).asSequence().filter { twoSets: Set<IPointAspectPattern> ->
+          patterns.combinations(2).asSequence().filter { twoSets: Set<IPointAspectPattern> ->
             // 確保組合而成的 points 若共有三顆星
             twoSets.flatMap { it.points }.toSet().size == 3
           }.map { twoSets: Set<IPointAspectPattern> ->
@@ -186,7 +187,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
       return aspectCalculator.getAspectPatterns(posMap, aspects = setOf(BIQUINTILE, QUINTILE))  // 144 , 72
         .takeIf { it.size >= 3 }
         ?.let { patterns ->
-          Sets.combinations(patterns, 3).asSequence().filter { threePairs ->
+          patterns.combinations(3).asSequence().filter { threePairs ->
             threePairs.flatMap { it.points }.toSet().size == 3
           }
             .filter { threePairs ->
@@ -258,7 +259,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
         ?.asSequence()
         ?.map { pattern -> pattern as AstroPattern.TSquared }
         ?.let { patterns: Sequence<AstroPattern.TSquared> ->
-          Sets.combinations(patterns.toSet(), 2).asSequence().filter { twoPatterns ->
+          patterns.toSet().combinations(2).asSequence().filter { twoPatterns ->
             // 先確保 有六顆星
             twoPatterns.flatMap { it.points }.toSet().size == 6
           }.filter { twoPatterns ->
@@ -287,7 +288,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
         ?.asSequence()
         ?.map { pattern -> pattern as AstroPattern.GrandTrine }
         ?.let { patterns ->
-          Sets.combinations(patterns.toSet(), 2).asSequence().filter { twoSets ->
+          patterns.toSet().combinations(2).asSequence().filter { twoSets ->
             // 先確保 有六顆星
             twoSets.flatMap { it.points }.toSet().size == 6
           }.filter { twoTrines ->
@@ -316,7 +317,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
       return patterns.takeIf { it.size >= 3 }
         ?.let {
-          Sets.combinations(patterns, 3).asSequence().filter { threePairs ->
+          patterns.combinations(3).asSequence().filter { threePairs ->
             // 確保三種交角都有
             threePairs.map { pattern -> pattern.aspect }.containsAll(threeAspects)
           }.filter { threePairs ->
@@ -344,7 +345,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
         ?.map { it as AstroPattern.Wedge }
         ?.let { patterns ->
 
-          Sets.combinations(patterns.toSet(), 2).asSequence().map { twoWedges ->
+          patterns.toSet().combinations(2).asSequence().map { twoWedges ->
             val (wedge1, wedge2) = twoWedges.toList().let { it[0] to it[1] }
             val unionPoints = twoWedges.flatMap { it.points }.toSet()
 
@@ -379,7 +380,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
       return goldenYod.getPatterns(posMap, cuspDegreeMap)
         .takeIf { patterns -> patterns.size >= 5 }
         ?.let { patterns ->
-          Sets.combinations(patterns, 5).asSequence()
+          patterns.combinations(5).asSequence()
             .filter { fiveSet -> fiveSet.flatMap { it.points }.toSet().size == 5 }
             .map { fivePatterns ->
               val score: Double? = fivePatterns.takeIf { patterns -> patterns.all { it.score != null } }?.map { it.score!!.value }?.average()
@@ -399,7 +400,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
           val points = list.map { it.key }.toSet()
           /** 分數算法： 以該星座內 [Aspect.CONJUNCTION] 分數平均 */
 
-          val score = Sets.combinations(points, 2).asSequence().map { pair ->
+          val score = points.combinations(2).asSequence().map { pair ->
             val (p1, p2) = pair.toList().let { it[0] to it[1] }
             // 對於「同一星座內，但是沒有形成合相的雙星」其分數雖然是零分，但是不要過濾 , 就給 零分
             aspectEffective.getEffectiveErrorAndScore(p1, p2, posMap, CONJUNCTION)?.second ?: 0.0.toScore()
@@ -422,7 +423,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .map { (house, list: List<Pair<AstroPoint, Int>>) ->
           val points = list.map { it.first }.toSet()
           /** 分數算法： 以該宮位內 [Aspect.CONJUNCTION] 分數平均 */
-          val score = Sets.combinations(points, 2).asSequence().map { pair ->
+          val score = points.combinations(2).asSequence().map { pair ->
             val (p1, p2) = pair.toList().let { it[0] to it[1] }
             aspectEffective.getEffectiveErrorAndScore(p1, p2, posMap, CONJUNCTION)?.second ?: 0.0.toScore()
           }.toList().average()
@@ -450,7 +451,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
           .takeIf { clusters -> clusters.size >= 2 }
           ?.let { clusters ->
             logger.trace("clusters size >=2 !! : {}", clusters.size)
-            Sets.combinations(clusters.toSet(), 2).asSequence().map { twoClusters: Set<Cluster<PointCluster>> ->
+            clusters.toSet().combinations(2).asSequence().map { twoClusters: Set<Cluster<PointCluster>> ->
               val (cluster1: Cluster<PointCluster>, cluster2: Cluster<PointCluster>) = twoClusters.toList().let { it[0] to it[1] }
               val group1 = cluster1.points.map { it.point }
               val group2 = cluster2.points.map { it.point }
@@ -466,7 +467,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             }.filter { (_, _, effective) -> effective }
               .map { (group1, group2, _) ->
                 // 分數計算 : group1 裡面所有星 , 與 group2 裡面所有星 , 取 對沖 分數 , 過門檻者，加以平均
-                val score = Sets.cartesianProduct(group1.toSet(), group2.toSet()).mapNotNull {
+                val score = cartesianProduct(group1.toSet(), group2.toSet()).mapNotNull {
                   val (p1, p2) = it[0] to it[1]
                   aspectEffective.getEffectiveErrorAndScore(p1, p2, posMap, OPPOSITION)
                 }

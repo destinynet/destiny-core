@@ -3,7 +3,7 @@
 # 由 KmpReadinessRatchetTest 管控。不在此清單上的 .kt 一律必須無 JVM-only 相依。
 # 這份清單只准變短：改乾淨了就刪掉該行。詳見該測試的 KDoc。
 #
-# 目前數量：202
+# 目前數量：196
 
 destiny/core/BirthData.kt
 destiny/core/Descriptive.kt
@@ -19,12 +19,10 @@ destiny/core/IntAgeNoteMinguoYearImpl.kt
 destiny/core/IntAgeNoteWestYearImpl.kt
 destiny/core/LocaleBridges.kt
 destiny/core/TimeRange.kt
-destiny/core/astrology/AspectCalculatorImpl.kt
 destiny/core/astrology/DayNightSimpleImpl.kt
 destiny/core/astrology/DtoFactory.kt
 destiny/core/astrology/HoroscopeDto.kt
 destiny/core/astrology/HoroscopeDtoV2.kt
-destiny/core/astrology/HoroscopeFeature.kt
 destiny/core/astrology/HoroscopeModel.kt
 destiny/core/astrology/IApsis.kt
 destiny/core/astrology/IDayNight.kt
@@ -84,9 +82,7 @@ destiny/core/calendar/eightwords/EightWordsContextModel.kt
 destiny/core/calendar/eightwords/EightWordsFeature.kt
 destiny/core/calendar/eightwords/Ew3dDto.kt
 destiny/core/calendar/eightwords/Ew3dDtoFactory.kt
-destiny/core/calendar/eightwords/FlowLargePatterns.kt
 destiny/core/calendar/eightwords/Functions.kt
-destiny/core/calendar/eightwords/GenericFlowPatternLogic.kt
 destiny/core/calendar/eightwords/HourBranchFeature.kt
 destiny/core/calendar/eightwords/HourHouseImpl.kt
 destiny/core/calendar/eightwords/HourLmtImpl.kt
@@ -95,7 +91,6 @@ destiny/core/calendar/eightwords/IDay.kt
 destiny/core/calendar/eightwords/IHour.kt
 destiny/core/calendar/eightwords/IMidnight.kt
 destiny/core/calendar/eightwords/IYearMonth.kt
-destiny/core/calendar/eightwords/IdentityPatternFactory.kt
 destiny/core/calendar/eightwords/MidnightFeature.kt
 destiny/core/calendar/eightwords/MidnightLmtImpl.kt
 destiny/core/chinese/IMonthMaster.kt
@@ -177,7 +172,6 @@ destiny/tools/PersonFeature.kt
 destiny/tools/ai/model/LocaleBridges.kt
 destiny/tools/config/Holder.kt
 destiny/tools/config/Reloader.kt
-destiny/tools/converters/AbstractImpls.kt
 destiny/tools/converters/ParserCommons.kt
 destiny/tools/location/INearBy.kt
 destiny/tools/location/IStaticMap.kt

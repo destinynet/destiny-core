@@ -4,8 +4,6 @@
 package destiny.core.chinese.ziwei
 
 import destiny.tools.KvCache
-import com.google.common.collect.BiMap
-import com.google.common.collect.HashBiMap
 import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.IIntAge
@@ -444,9 +442,8 @@ class ZiweiFeature(
         Ziwei.getStemBranchOf(mainHouse.branch.prev(steps), stemOf寅)
       }
 
-    // 地支 <-> 宮位 的 雙向 mapping
-    val branchHouseBiMap: BiMap<Branch, House> = HashBiMap.create()
-    stemBranchHouseMap.forEach { (sb, house) -> branchHouseBiMap[sb.branch] = house }
+    // 地支 → 宮位（每個宮位對到不同的地支，一對一）
+    val branchHouseMap: Map<Branch, House> = stemBranchHouseMap.entries.associate { (sb, house) -> sb.branch to house }
 
     // 為了某些流派閏月的考量 , 須在此求出「上個月」有幾天 , 才能求出紫微星
     val prevMonthDays = if (leapMonth) prevMonthDaysImpl.getPrevMonthDays(cycle, lunarYear, lunarMonth, true) else 0
@@ -535,7 +532,7 @@ class ZiweiFeature(
 
     // 計算每個地支的 大限 起訖 「歲數」時刻 (不考慮實歲或虛歲)
     val flowSectionImpl = flowSectionImplMap[config.bigRange]!!
-    val flowSectionAgeMap = flowSectionImpl.getSortedFlowSectionAgeMap(branchHouseBiMap, 五行局, lunarYear, gender, houseSeqImpl)
+    val flowSectionAgeMap = flowSectionImpl.getSortedFlowSectionAgeMap(branchHouseMap, 五行局, lunarYear, gender, houseSeqImpl)
 
     // 小限 mapping
     val branchSmallRangesMap: Map<Branch, List<Int>> = Branch.entries

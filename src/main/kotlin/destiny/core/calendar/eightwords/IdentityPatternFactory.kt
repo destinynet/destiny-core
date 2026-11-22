@@ -4,7 +4,8 @@
 package destiny.core.calendar.eightwords
 
 import arrow.core.Either
-import com.google.common.collect.Sets
+import destiny.tools.combinations
+import destiny.tools.cartesianProduct
 import destiny.core.Scale
 import destiny.core.calendar.eightwords.IdentityPattern.*
 import destiny.core.calendar.eightwords.IdentityPatterns.branchCombined
@@ -32,7 +33,7 @@ object IdentityPatterns {
   /** 天干五合 */
   val stemCombined = object : IdentityPatternFactory {
     override fun IEightWords.getPatterns(): Set<StemCombined> {
-      return Sets.combinations(getScaleMap().map { (scale, v) -> scale to v.stem }.toSet(), 2)
+      return getScaleMap().map { (scale, v) -> scale to v.stem }.toSet().combinations(2)
         .filter { pillars: Set<Pair<Scale, Stem>> ->
           val pairList = pillars.toList()
           val p1 = pairList[0]
@@ -46,7 +47,7 @@ object IdentityPatterns {
   /** 地支六合 */
   val branchCombined = object : IdentityPatternFactory {
     override fun IEightWords.getPatterns(): Set<BranchCombined> {
-      return Sets.combinations(getScaleMap().entries.map { (scale: Scale, sb: IStemBranch) -> scale to sb.branch }.toSet(), 2).filter { pairs: Set<Pair<Scale, Branch>> ->
+      return getScaleMap().entries.map { (scale: Scale, sb: IStemBranch) -> scale to sb.branch }.toSet().combinations(2).filter { pairs: Set<Pair<Scale, Branch>> ->
         val pairList = pairs.toList()
         val p1 = pairList[0]
         val p2 = pairList[1]
@@ -60,7 +61,7 @@ object IdentityPatterns {
   /** 地支三合 */
   val trilogy = object : IdentityPatternFactory {
     override fun IEightWords.getPatterns(): Set<Trilogy> {
-      return Sets.combinations(getScaleMap().entries.map { (scale: Scale, sb: IStemBranch) -> scale to sb.branch }.toSet(), 3).filter { triples: Set<Pair<Scale, Branch>> ->
+      return getScaleMap().entries.map { (scale: Scale, sb: IStemBranch) -> scale to sb.branch }.toSet().combinations(3).filter { triples: Set<Pair<Scale, Branch>> ->
         val tripleList = triples.toList()
         val pair1 = tripleList[0]
         val pair2 = tripleList[1]
@@ -75,7 +76,7 @@ object IdentityPatterns {
   /** 地支對沖 */
   val branchOpposition = object : IdentityPatternFactory {
     override fun IEightWords.getPatterns(): Set<BranchOpposition> {
-      return Sets.combinations(getScaleMap().entries.map { (scale: Scale, sb: IStemBranch) -> scale to sb.branch }.toSet(), 2).filter { pairs: Set<Pair<Scale, Branch>> ->
+      return getScaleMap().entries.map { (scale: Scale, sb: IStemBranch) -> scale to sb.branch }.toSet().combinations(2).filter { pairs: Set<Pair<Scale, Branch>> ->
         val pairList = pairs.toList()
         val p1 = pairList[0]
         val p2 = pairList[1]
@@ -91,7 +92,7 @@ object IdentityPatterns {
 
     @Suppress("UNCHECKED_CAST")
     override fun IEightWords.getPatterns(): Set<StemRooted> {
-      return Sets.cartesianProduct(
+      return cartesianProduct(
         getScaleMap().map { (scale, sb) -> scale to sb.stem }.toSet(),
         getScaleMap().map { (scale, sb) -> scale to sb.branch }.toSet()
       ).asSequence().filter { (stemPair, branchPair: Pair<Scale, Enum<*>>) ->

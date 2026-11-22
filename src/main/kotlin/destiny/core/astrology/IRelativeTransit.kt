@@ -5,7 +5,7 @@
  */
 package destiny.core.astrology
 
-import com.google.common.collect.Sets
+import destiny.tools.combinations
 import destiny.core.calendar.GmtJulDay
 import destiny.tools.Score.Companion.toScore
 import java.util.*
@@ -161,7 +161,7 @@ interface IRelativeTransit {
 
     // 1. 初始化 PriorityQueue：
     //    對於每一對星曜和每一個有效角度，計算它們在 fromGmtJulDay 之後的第一次交角時間。
-    val starPairs = Sets.combinations(stars, 2)
+    val starPairs = stars.combinations(2)
 
     for (pairSet in starPairs) {
       val pairList = pairSet.toList() // Set<Star> to List<Star>

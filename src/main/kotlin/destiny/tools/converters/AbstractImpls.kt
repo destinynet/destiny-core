@@ -3,7 +3,6 @@
  */
 package destiny.tools.converters
 
-import com.google.common.collect.HashBiMap
 import destiny.core.Descriptive
 import destiny.tools.Domain
 import destiny.tools.Impl
@@ -135,15 +134,21 @@ open class AbstractImpls<T : Any>(
     }
   }
 
-  /** T 的實作者有哪些 , 及其 參數的 value 為何  */
-  private val implValueMap = HashBiMap.create<T, String>()
+  /** T 的實作者有哪些 , 及其 參數的 value 為何（依加入順序） */
+  private val implValueMap = LinkedHashMap<T, String>()
+
+  /** 反查：參數的 value → 實作。與 [implValueMap] 一對一 */
+  private val valueImplMap = HashMap<String, T>()
 
   init {
     addImpl(defaultImpl, defaultImplKey)
   }
 
   fun addImpl(t: T, value: String) {
-    implValueMap[t] = value
+    val existing = valueImplMap[value]
+    require(existing == null || existing == t) { "value already present: $value（$existing）" }
+    implValueMap.put(t, value)?.let { old -> valueImplMap.remove(old) }
+    valueImplMap[value] = t
   }
 
   override val impls: List<T>
@@ -176,7 +181,7 @@ open class AbstractImpls<T : Any>(
 
   /** 從 parameter value 找出其對應的實作是哪一個  */
   override fun getImpl(implKey: String): T {
-    val t = implValueMap.inverse()[implKey]
+    val t = valueImplMap[implKey]
     return t ?: defaultImpl
   }
 

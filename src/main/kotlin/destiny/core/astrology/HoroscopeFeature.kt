@@ -6,7 +6,7 @@ package destiny.core.astrology
 import kotlin.time.Duration.Companion.days
 import destiny.tools.MemoCaches
 import destiny.tools.KvCache
-import com.google.common.collect.Sets
+import destiny.tools.combinations
 import destiny.core.DayNight
 import destiny.core.Scale
 import destiny.core.astrology.Aspect.Importance
@@ -489,7 +489,7 @@ class HoroscopeFeature(
     val highImportanceAspects = Aspect.getAspects(Importance.HIGH)
 
     // 遍歷所有行星配對來尋找相位
-    val aspects = Sets.combinations(harmonicStarPosMap.keys, 2)
+    val aspects = harmonicStarPosMap.keys.combinations(2)
       .asSequence()
       .mapNotNull { points ->
         val (p1, p2) = points.toList()

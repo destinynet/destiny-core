@@ -3,21 +3,16 @@
  */
 package destiny.tools.converters
 
-import com.google.common.base.Enums
 import java.net.URLDecoder
 
 object ParserCommons {
 
   /**
-   * http://stackoverflow.com/a/4014447/298430
-   * 避免 exception , 最佳解：用 Guava
-   * https://www.stubbornjava.com/posts/java-enum-lookup-by-name-or-field-without-throwing-exceptions
-   *
-   * 有 non-null 的 default value
+   * 找不到對應的名稱（大小寫須相符）時傳回 [defaulted]，不拋例外
    */
   fun <E : Enum<E>> parseEnum(key: String, clazz: Class<E>, map: Map<String, String>, defaulted: E): E {
     val name = map.getOrDefault(key, defaulted.name)
-    return Enums.getIfPresent(clazz, name).or(defaulted)
+    return clazz.enumConstants.firstOrNull { it.name == name } ?: defaulted
   }
 
   /**
