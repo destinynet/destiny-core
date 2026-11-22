@@ -7,6 +7,7 @@ import destiny.core.astrology.AstroPoint
 import destiny.core.astrology.LunarNode
 import destiny.core.astrology.Planet
 import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.ITimeSpan
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
@@ -20,15 +21,15 @@ data class Firdaria(
   val toTime: GmtJulDay
 )
 
-interface IFirdariaPeriod {
+interface IFirdariaPeriod : ITimeSpan {
   /** 此時期的主宰星 */
   val ruler: AstroPoint
 
   /** 時期的開始時間 (GMT) */
-  val fromTime: GmtJulDay
+  override val fromTime: GmtJulDay
 
   /** 時期的結束時間 (GMT) */
-  val toTime: GmtJulDay
+  override val toTime: GmtJulDay
 }
 
 

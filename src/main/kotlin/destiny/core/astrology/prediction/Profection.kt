@@ -11,6 +11,7 @@ import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.classical.IRuler
 import destiny.core.astrology.classical.RulerPtolemyImpl
 import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.ITimeSpan
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
@@ -28,10 +29,10 @@ data class Profection(
   val ascSign: ZodiacSign,
   val house: Int,
   @Contextual
-  val fromTime: GmtJulDay,
+  override val fromTime: GmtJulDay,
   @Contextual
-  val toTime: GmtJulDay
-)
+  override val toTime: GmtJulDay
+) : ITimeSpan
 
 /**
  * 計算月度小限

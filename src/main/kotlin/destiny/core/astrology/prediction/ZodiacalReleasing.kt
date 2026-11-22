@@ -29,6 +29,7 @@ import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.classical.AbstractPtolemy
 import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.ITimeSpan
 import destiny.tools.serializers.astrology.LotSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -100,12 +101,12 @@ data class ZodiacalReleasing(
    */
   val angularity: ZrAngularity,
   @Contextual
-  val fromTime: GmtJulDay,
+  override val fromTime: GmtJulDay,
   @Contextual
-  val toTime: GmtJulDay,
+  override val toTime: GmtJulDay,
   /** Whether this period is in the Loosing of the Bond phase */
   val isLoosingOfBond: Boolean = false
-)
+) : ITimeSpan
 
 /**
  * Get the traditional (Ptolemaic) domicile ruler of a zodiac sign.
