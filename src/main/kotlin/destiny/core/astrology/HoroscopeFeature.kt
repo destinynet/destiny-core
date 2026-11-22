@@ -54,6 +54,14 @@ interface IHoroscopeFeature : Feature<IHoroscopeConfig, IHoroscopeModel> {
   }
 
   /**
+   * 次限推運的上升、天頂：天頂 ＝ 本命天頂 ＋ 太陽弧（[getSolarArcDegree]），上升由推進後的天頂在出生地緯度換算（[ascendantFromMidheaven]）。
+   *
+   * 不取收斂盤（出生後一天 ＝ 一年的那張盤）的軸點：那兩個點隨地球自轉一年轉一整圈（"Mean Quotidian"），不是一般說的推運軸點。
+   * 本命沒有天頂（盤的設定沒有軸點）⇒ 空。[forward] ＝ false（逆推）時弧為負
+   */
+  fun IHoroscopeModel.getProgressedAngles(progressionTime: GmtJulDay, config: IHoroscopeConfig, forward: Boolean = true): Map<Axis, IZodiacDegree>
+
+  /**
    * Tertiary Progression calculation
    */
   fun IHoroscopeModel.getTertiaryProgression(
@@ -247,6 +255,8 @@ class HoroscopeFeature(
   private val starTransitImpl: IStarTransit,
   @Transient
   private val horoscopeFeatureCache: KvCache<GmtCacheKey<*>, IHoroscopeModel>,
+  /** 推運上升的換算用（[getProgressedAngles]）；平均黃赤交角約 0.01° 的誤差，對上升的影響可以忽略 */
+  private val obliquityCalculator: IObliquityCalculator = Astronomical,
 ) : AbstractCachedFeature<IHoroscopeConfig, IHoroscopeModel>(), IHoroscopeFeature {
   override val key: String = "horoscope"
 
@@ -365,10 +375,14 @@ class HoroscopeFeature(
         // 推運（非行運）不取收斂盤的軸點：收斂時刻差一天 = 一年（三推是一月），
         // 收斂盤的 ASC/MC 隨地球自轉一年轉一圈（即 Solar Fire 的 "Mean Quotidian"），不是一般意義的推運軸點。
         // Lots 由 ASC 導出，同理排除。本命側（inner）的軸點仍是有效的觸發標的。
-        val posMapOuter = if (param.type == ProgressionType.TRANSIT)
+        // 次限另外補上推運軸點（天頂＝本命＋太陽弧、上升由它換算，[getProgressedAngles]）；三限、minor 不補
+        val angles: (GmtJulDay) -> Map<Axis, IZodiacDegree> = { t ->
+          if (param.type == ProgressionType.SECONDARY) model.getProgressedAngles(t, config, progression.forward) else emptyMap()
+        }
+        val posMapOuter: Map<AstroPoint, IZodiacDegree> = if (param.type == ProgressionType.TRANSIT)
           convergentModel.positionMap
         else
-          convergentModel.positionMap.filterKeys { it !is Axis && it !is Lot }
+          convergentModel.positionMap.filterKeys { it !is Axis && it !is Lot } + angles(progressionTime)
 
         // 2.4 hours later
         val later = progressionTime.plus(0.1)
@@ -378,8 +392,9 @@ class HoroscopeFeature(
           val laterModel = getModel(laterConvergentTime, model.location, config)
           val posMapLater = laterModel.positionMap
 
-          // laterForP1 計算外盤星體在未來的位置
-          val laterForP1: (AstroPoint) -> IZodiacDegree? = { p -> posMapLater[p] }
+          // laterForP1 計算外盤星體在未來的位置；推運軸點不能取收斂盤的（那是一年一圈的軸點），要取同一套算法的 later
+          val anglesLater = angles(later)
+          val laterForP1: (AstroPoint) -> IZodiacDegree? = { p -> if (p is Axis && param.type != ProgressionType.TRANSIT) anglesLater[p] else posMapLater[p] }
 
           // laterForP2 應返回內盤星體「不變」的位置，以作為比較的基準點
           val laterForP2: (AstroPoint) -> IZodiacDegree? = { p -> posMapInner[p] }
@@ -388,7 +403,7 @@ class HoroscopeFeature(
             .mapNotNull { (p1, p2) ->
               aspectCalculator.getAspectPattern(p1, p2, posMapOuter, posMapInner, laterForP1, laterForP2, aspects)
                 ?.let { p: IPointAspectPattern ->
-                  val p1House = model.getHouse(posMapOuter[p1]!!.lng.toZodiacDegree())
+                  val p1House = model.getHouse(posMapOuter[p1]!!.zDeg.toZodiacDegree())
                   val p2House = model.getHouse(posMapInner[p2]!!.lng.toZodiacDegree())
                   SynastryAspect(p1, p2, p1House, p2House, p.aspect, p.orb, p.aspectType!!, p.score)
                 }
@@ -458,6 +473,14 @@ class HoroscopeFeature(
                          forward,
                          convergentJulDay, degreeMoved,
                          this.location, posMap, synastryAspects)
+  }
+
+  override fun IHoroscopeModel.getProgressedAngles(progressionTime: GmtJulDay, config: IHoroscopeConfig, forward: Boolean): Map<Axis, IZodiacDegree> {
+    val natalMc = positionMap[Axis.MERIDIAN] ?: return emptyMap()
+    val arc = if (progressionTime <= gmtJulDay) 0.0 else getSolarArcDegree(progressionTime, config, forward)
+    val mc = (natalMc.zDeg + arc).mod(360.0)
+    val asc = ascendantFromMidheaven(mc, obliquityCalculator.getObliquity(gmtJulDay), location.lat.value)
+    return mapOf(Axis.MERIDIAN to mc.toZodiacDegree(), Axis.RISING to asc.toZodiacDegree())
   }
 
   override fun IHoroscopeModel.getSolarArcDegree(viewTime: GmtJulDay, config: IHoroscopeConfig, forward: Boolean): Double {
