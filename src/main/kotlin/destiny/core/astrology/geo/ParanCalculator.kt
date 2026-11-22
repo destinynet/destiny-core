@@ -45,7 +45,7 @@ class ParanCalculator : IParanCalculator {
             angularLats(posA, a, posB, b).forEach { result += Paran(anchor, a, partner, aspect, b, it) }
           }
         }
-        for (a in query.angles) for (aspect in mundane) for (offset in offsets(aspect)) {
+        for (a in query.angles) for (aspect in mundane) for (offset in aspect.sides) {
           mundaneLats(posA, a, posB, offset).forEach { result += Paran(anchor, a, partner, aspect, null, it) }
         }
       }
@@ -117,7 +117,7 @@ class ParanCalculator : IParanCalculator {
 
     /** 在 [seed] ± [window] 內找根，取最近 [seed] 的；合衝刑之外的世俗相位兩個方向都試 */
     fun solve(lng: Double, seed: Double, window: Double): Double? {
-      val targets: List<Double?> = if (paran.partnerAngle != null) listOf(null) else offsets(paran.aspect).map { mundaneOf(paran.anchorAngle) + it }
+      val targets: List<Double?> = if (paran.partnerAngle != null) listOf(null) else paran.aspect.sides.map { mundaneOf(paran.anchorAngle) + it }
       // 先從起點試割線法（通常 4–6 次；靠近「不升落」邊界的根，等距取樣容易漏掉），失敗再掃描
       targets.mapNotNull { secant(lng, seed, window, it) }.minByOrNull { (it - seed).absoluteValue }?.let { return it }
       return targets.flatMap { target -> roots(lng, seed, window, target) }.minByOrNull { (it - seed).absoluteValue }
@@ -237,10 +237,6 @@ class ParanCalculator : IParanCalculator {
       GeoAngle.IC   -> 180.0
       GeoAngle.ASC  -> 270.0
     }
-
-    /** 世俗相位的兩個方向（合、衝只有一個） */
-    private fun offsets(aspect: Aspect): List<Double> =
-      if (aspect.degree == 0.0 || aspect.degree == 180.0) listOf(aspect.degree) else listOf(aspect.degree, -aspect.degree)
 
     /** 半日弧（度），以 tan φ、tan δ 計；永不升落（|tan φ tan δ| > 1）回 NaN */
     private fun semiArc(tanPhi: Double, tanDec: Double): Double {

@@ -89,4 +89,31 @@ class RingTimelineTest {
     assertEquals(358.0, track.lngAt(0, t0 - 3.0), 1e-9)
     assertEquals(6.0, track.lngAt(0, t0 + 99.0), 1e-9)
   }
+
+  @Test
+  fun `走得快、一步超過十度也找得到精準（不再寫死離精準十度以內）`() {
+    // 月亮約 13°／天，一天取一筆：本命 100° 的合相在第 100/13 天
+    val moon = { t: GmtJulDay -> ((t - t0) * 13.0).mod(360.0) }
+    val (times, lngs) = sample(1.0, 20, moon)
+    val exacts = exactTimesOf(100.0, 0.0, times, lngs, moon)
+    assertEquals(100.0 / 13.0, exacts.single() - t0, 1e-4)
+  }
+
+  @Test
+  fun `正對面的變號不是精準`() {
+    // 從 170° 走到 190°：對本命 0° 的合相，角距在 ±180 變號，不該算
+    val f = { t: GmtJulDay -> 170.0 + (t - t0) * 1.0 }
+    val (times, lngs) = sample(5.0, 20, f)
+    assertTrue(exactTimesOf(0.0, 0.0, times, lngs, f).isEmpty())
+    // 同一段對沖（side 180）才是精準：第 10 天
+    assertEquals(10.0, exactTimesOf(0.0, 180.0, times, lngs, f).single() - t0, 1e-4)
+  }
+
+  @Test
+  fun `相位的兩個方向：合沖一個、其餘左右各一`() {
+    assertEquals(listOf(0.0), Aspect.CONJUNCTION.sides)
+    assertEquals(listOf(180.0), Aspect.OPPOSITION.sides)
+    assertEquals(listOf(90.0, -90.0), Aspect.SQUARE.sides)
+    assertEquals(listOf(120.0, -120.0), Aspect.TRINE.sides)
+  }
 }

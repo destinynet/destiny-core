@@ -80,6 +80,13 @@ enum class Aspect(
   OPPOSITION("Aspect.OPPOSITION", 180.0, HIGH);
 
   /**
+   * 這個相位落在對方哪幾度（有號角距，度）：合、沖只有一個位置（0、180），其餘左右各一（± [degree]）。
+   * 「A 對 B 成四分相」＝ A 在 B 的 +90° 或 −90°；要逐一找精準時刻、逐一畫線的地方都用它，不要各自再判斷一次合沖
+   */
+  val sides: List<Double> get() = if (degree == 0.0 || degree == 180.0) listOf(degree) else listOf(degree, -degree)
+
+
+  /**
    * 此相位在 360° 圓上的所有等價角度。
    * 例如 TRINE(120°) → [120.0, 240.0]，SQUARE(90°) → [90.0, 270.0]。
    * CONJUNCTION(0°) → [0.0]。

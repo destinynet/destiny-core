@@ -17,7 +17,7 @@ import kotlin.math.abs
  * 播放端只查表、在相鄰兩筆之間內插，不自己算星曆。
  *
  * @param lngs 一個點一串黃經（0–360），與 [points] 同順序、每串 [size] 筆
- * @param retrograde 與 [lngs] 同形；只有行運才有（推運與太陽弧不談逆行）
+ * @param retrograde 與 [lngs] 同形：行運與次限的星體有（次限的停滯、逆行有意義；推運軸點恆為 false）；太陽弧只會順行，為 null
  */
 data class RingTrack(
   val kind: RingKind,
@@ -74,11 +74,42 @@ data class RingAspectSpan(
 }
 
 /**
+ * 一條取樣（[times]、[lngs]）上，外圈點走到「[natalLng] ＋ [side] 度」的每一個時刻（依時間排序）—— 相位精準的那一刻。
+ * [side] 是 [Aspect.sides] 的其中一個（合相 0、四分 ±90 …），所以一個相位要對每個 side 各呼叫一次。
+ *
+ * 做法：相鄰兩筆的有號角距變號 ⇒ 中間過了一次精準，再用 [lngAt] 以二分法逼近（[rounds] 輪）。
+ * 取樣只用來找「大約在哪兩筆之間」，所以 [lngAt] 可以是取樣之間的內插，也可以是真的星曆（要到分鐘就給星曆）。
+ *
+ * 角距在正對面（±180°）也會變號，那不是精準：兩筆的角距差超過半圈就是那一種，略過。
+ * 前提是相鄰兩筆之間外圈點走不到半圈（180°）—— 任何合理的取樣都滿足。
+ * 逆行來回、在同一個取樣間隔內精準兩次（變號兩次 ⇒ 兩端同號）的看不到；要抓得到就取密一點
+ */
+fun exactTimesOf(
+  natalLng: Double, side: Double, times: List<GmtJulDay>, lngs: List<Double>,
+  lngAt: (GmtJulDay) -> Double, rounds: Int = 20,
+): List<GmtJulDay> {
+  require(times.size == lngs.size) { "times 與 lngs 要一樣長" }
+  /** 外圈點距精準的有號角距 (-180, 180] */
+  fun delta(lng: Double) = (lng - natalLng - side).normalizeSigned()
+  val d = lngs.map(::delta)
+  return (0 until d.size - 1).mapNotNull { i ->
+    val d0 = d[i]; val d1 = d[i + 1]
+    // 取樣剛好落在精準上：算這一筆的（它的前一對是「非零 → 0」，乘積為 0、不會重複算）
+    if (d0 == 0.0) return@mapNotNull times[i]
+    if (d0 * d1 >= 0 || abs(d1 - d0) >= 180) return@mapNotNull null
+    // 還沒過精準的那一邊 ＝ 角距與 d0 同號
+    BisectionTools.bisect(times[i].value, times[i + 1].value, rounds) { mid -> delta(lngAt(GmtJulDay(mid))) * d0 > 0 }
+      .let { (lo, hi) -> GmtJulDay((lo + hi) / 2) }
+  }
+}
+
+/**
  * 一條取樣（[times]、[lngs]）上，外圈點 [mover] 對黃經 [natalLng] 的本命點 [natal] 成 [aspect]（容許度 [orb] 度）的全部區間。
  *
  * 取樣只用來找「大約在哪兩筆之間」：進出容許度與精準的時刻都用 [lngAt] 以二分法逼近（[rounds] 輪）。
  * 呼叫端要保證取樣夠密 —— 相鄰兩筆之間外圈點走的角度小於 2 × [orb]，否則可能整段漏掉。
- * 合相、對沖只有一個方向；其餘相位左右各一（本命點 ± 角度），分開列。結果依 [RingAspectSpan.enter] 排序。
+ * 合相、對沖只有一個方向；其餘相位左右各一（本命點 ± 角度，[Aspect.sides]），分開列。結果依 [RingAspectSpan.enter] 排序。
+ * 精準的時刻由 [exactTimesOf] 找。
  */
 fun aspectSpansOf(
   mover: AstroPoint, natal: AstroPoint, natalLng: Double, aspect: Aspect, orb: Double,
@@ -88,9 +119,7 @@ fun aspectSpansOf(
 ): List<RingAspectSpan> {
   require(times.size == lngs.size) { "times 與 lngs 要一樣長" }
   if (times.size < 2) return emptyList()
-  val sides = if (aspect.degree == 0.0 || aspect.degree == 180.0) listOf(aspect.degree) else listOf(aspect.degree, -aspect.degree)
-
-  return sides.flatMap { side ->
+  return aspect.sides.flatMap { side ->
     /** 外圈點距精準的有號角距 (-180, 180] */
     fun delta(lng: Double) = (lng - natalLng - side).normalizeSigned()
     fun deltaAt(t: GmtJulDay) = delta(lngAt(t))
@@ -101,14 +130,7 @@ fun aspectSpansOf(
     fun edge(a: GmtJulDay, b: GmtJulDay, aIn: Boolean): GmtJulDay =
       BisectionTools.bisect(a.value, b.value, rounds) { mid -> inOrb(deltaAt(GmtJulDay(mid))) == aIn }.let { (lo, hi) -> GmtJulDay((lo + hi) / 2) }
 
-    // 相鄰兩筆角距變號（且離精準不遠、排除 ±180 那一邊的跳號）⇒ 中間有一次精準
-    val exactAll: List<GmtJulDay> = (0 until d.size - 1).mapNotNull { i ->
-      val d0 = d[i]; val d1 = d[i + 1]
-      if (d0 == 0.0) return@mapNotNull times[i]
-      if (d0 * d1 >= 0 || abs(d0) > 10 || abs(d1) > 10) return@mapNotNull null
-      BisectionTools.bisect(times[i].value, times[i + 1].value, rounds) { mid -> deltaAt(GmtJulDay(mid)) * d0 > 0 }
-        .let { (lo, hi) -> GmtJulDay((lo + hi) / 2) }
-    }
+    val exactAll: List<GmtJulDay> = exactTimesOf(natalLng, side, times, lngs, lngAt, rounds)
 
     val spans = mutableListOf<Pair<GmtJulDay, GmtJulDay>>()
     var start: GmtJulDay? = if (inOrb(d[0])) times[0] else null
