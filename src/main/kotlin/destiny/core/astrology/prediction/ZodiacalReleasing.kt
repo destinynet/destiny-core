@@ -36,30 +36,16 @@ import kotlinx.serialization.Serializable
 import kotlin.math.min
 import kotlin.math.pow
 
-/** Planetary years assigned to each zodiac sign (from Vettius Valens) */
-val zodiacalReleasingYears: Map<ZodiacSign, Int> = mapOf(
-  ZodiacSign.ARIES to 15,
-  ZodiacSign.TAURUS to 8,
-  ZodiacSign.GEMINI to 20,
-  ZodiacSign.CANCER to 25,
-  ZodiacSign.LEO to 19,
-  ZodiacSign.VIRGO to 20,
-  ZodiacSign.LIBRA to 8,
-  ZodiacSign.SCORPIO to 15,
-  ZodiacSign.SAGITTARIUS to 12,
-  ZodiacSign.CAPRICORN to 27,
-  ZodiacSign.AQUARIUS to 30,
-  ZodiacSign.PISCES to 12
-)
+/**
+ * Planetary years assigned to each zodiac sign (from Vettius Valens): the least years of the
+ * sign's domicile ruler ([planetLeastYears]), except Capricorn, which Valens gives 27 instead of Saturn's 30.
+ */
+val zodiacalReleasingYears: Map<ZodiacSign, Int> = ZodiacSign.entries.associateWith { sign ->
+  if (sign == ZodiacSign.CAPRICORN) 27 else planetLeastYears.getValue(rulerOf(sign))
+}
 
 /** Sum of all planetary years = one full L1 cycle */
 val ZODIACAL_RELEASING_TOTAL_YEARS: Int = zodiacalReleasingYears.values.sum() // 211
-
-/** Egyptian year = 360 days */
-const val EGYPTIAN_YEAR_DAYS: Double = 360.0
-
-/** Egyptian month = 30 days */
-const val EGYPTIAN_MONTH_DAYS: Double = 30.0
 
 /**
  * Duration unit (in days) for each level.
@@ -69,21 +55,6 @@ const val EGYPTIAN_MONTH_DAYS: Double = 30.0
  * L4: ~0.2083 days per year (2.5/12)
  */
 fun levelUnitDays(level: Int, yearLength: ZrYearLength = ZrYearLength.DEFAULT): Double = yearLength.days / 12.0.pow(level - 1)
-
-/**
- * How many days one "year" of Zodiacal Releasing lasts when converting periods to calendar dates.
- * Every level scales with it (L2 = 1/12, L3 = 1/144 …).
- */
-enum class ZrYearLength(val days: Double) {
-  /** Valens' ideal year of 360 days (a full circle of 360°); the convention most practitioners follow */
-  VALENS_360(EGYPTIAN_YEAR_DAYS),
-  /** Julian year; a minority convention. A 25-year period ends about 131 days later than with [VALENS_360] */
-  JULIAN_365_25(365.25);
-
-  companion object {
-    val DEFAULT = VALENS_360
-  }
-}
 
 @Serializable
 data class ZodiacalReleasing(

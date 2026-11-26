@@ -19,7 +19,7 @@ import destiny.core.calendar.GmtJulDay
  * 「不知時刻但知晝夜」的情境 —— 此時盤面時刻是捏造的正午，太陽宮位不可信）；
  * null 時維持現行「太陽在地平線上（第 7~12 宮）」推導，需精確時刻。
  */
-private fun IHoroscopeModel.isDiurnal(dayNight: DayNight?): Boolean {
+internal fun IHoroscopeModel.isDiurnal(dayNight: DayNight?): Boolean {
   return dayNight?.let { it == DayNight.DAY } ?: run {
     val sunHouse = getHouse(Planet.SUN) ?: throw IllegalStateException("Cannot determine sun's house.")
     sunHouse in 7..12
