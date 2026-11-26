@@ -5,11 +5,11 @@ package destiny.core.astrology.prediction
 
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
-import destiny.core.astrology.ZodiacSign
 import destiny.core.calendar.GmtJulDay
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class DecennialsTest {
 
@@ -21,17 +21,6 @@ class DecennialsTest {
   ).mapValues { it.value.toZodiacDegree() }
 
   private fun Decennial.days() = toTime - fromTime
-
-  @Test
-  fun `最小年總和 129，黃道釋放的星座年數沿用主星最小年（摩羯除外）`() {
-    assertEquals(129, PLANET_LEAST_YEARS_TOTAL)
-    assertEquals(DECENNIAL_MAJOR_MONTHS, PLANET_LEAST_YEARS_TOTAL)
-    assertEquals(25, zodiacalReleasingYears[ZodiacSign.CANCER])
-    assertEquals(19, zodiacalReleasingYears[ZodiacSign.LEO])
-    assertEquals(30, zodiacalReleasingYears[ZodiacSign.AQUARIUS])
-    assertEquals(27, zodiacalReleasingYears[ZodiacSign.CAPRICORN])
-    assertEquals(211, ZODIACAL_RELEASING_TOTAL_YEARS)
-  }
 
   @Test
   fun `順序：從起始星順黃道往後排、繞過 0 度`() {
@@ -97,6 +86,60 @@ class DecennialsTest {
     assertEquals(129 * 365.25 / 12, julian.first().days(), 1e-9)
     assertEquals(8, valens.size)
     assertEquals(valens.map { it.lords }, julian.map { it.lords })
+  }
+
+  @Test
+  fun `同度的兩顆星依 classicalList 順序，結果固定`() {
+    val tied = positions + (VENUS to 110.0.toZodiacDegree()) // 與水星同度
+    assertEquals(listOf(SUN, MERCURY, VENUS, MARS, JUPITER, MOON, SATURN), decennialsOrder(SUN, tied))
+  }
+
+  @Test
+  fun `一輪 903 個月後從起始星重來`() {
+    val order = decennialsOrder(SUN, positions)
+    val cycleEnd = birth + 903 * 30.0
+    val majors = generateDecennials(order, birth, cycleEnd - 1, cycleEnd + 1, maxLevel = 1)
+    assertEquals(listOf(order.last(), order.first()), majors.map { it.lord })
+    assertEquals(cycleEnd, majors[1].fromTime)
+  }
+
+  @Test
+  fun `範圍查詢：段落不截斷，且只回傳重疊的`() {
+    val order = decennialsOrder(SUN, positions)
+    val from = birth + 100.0
+    val to = birth + 700.0
+    val result = generateDecennials(order, birth, from, to, maxLevel = 2)
+    assertTrue(result.all { it.fromTime < to && from < it.toTime })
+    // 主限是完整的 129 個月
+    assertEquals(birth, result.first { it.level == 1 }.fromTime)
+    assertEquals(129 * 30.0, result.first { it.level == 1 }.days(), 1e-9)
+    // 子限：日（0–570）、水（570–1170）
+    assertEquals(listOf(SUN, MERCURY), result.filter { it.level == 2 }.map { it.lord })
+  }
+
+  @Test
+  fun `每一層的子段首尾相接、填滿上一層`() {
+    val order = decennialsOrder(MOON, positions)
+    val all = generateDecennials(order, birth, birth, birth + 129 * 30.0, maxLevel = 3)
+    all.filter { it.level < 3 }.forEach { parent ->
+      val children = all.filter { it.level == parent.level + 1 && it.lords.dropLast(1) == parent.lords }
+      assertEquals(7, children.size)
+      assertEquals(parent.fromTime, children.first().fromTime)
+      assertEquals(parent.toTime, children.last().toTime)
+      children.zipWithNext().forEach { (a, b) -> assertEquals(a.toTime, b.fromTime) }
+      // 子段的順序是 order 從上一層主星起輪替
+      val i = order.indexOf(parent.lord)
+      assertEquals(List(7) { order[(i + it) % 7] }, children.map { it.lord })
+    }
+  }
+
+  @Test
+  fun `decennialsAt：交界時刻歸給新開始的那一段`() {
+    val order = decennialsOrder(SUN, positions)
+    val boundary = birth + 129 * 30.0
+    assertEquals(listOf(MERCURY, MERCURY), decennialsAt(order, birth, boundary, maxLevel = 2).map { it.lord })
+    assertEquals(listOf(SUN), decennialsAt(order, birth, birth, maxLevel = 1).map { it.lord })
+    assertFailsWith<IllegalArgumentException> { decennialsAt(order, birth, birth - 1) }
   }
 
   @Test

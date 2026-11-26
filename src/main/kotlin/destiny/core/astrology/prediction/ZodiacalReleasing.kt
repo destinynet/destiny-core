@@ -37,12 +37,26 @@ import kotlin.math.min
 import kotlin.math.pow
 
 /**
- * Planetary years assigned to each zodiac sign (from Vettius Valens): the least years of the
- * sign's domicile ruler ([planetLeastYears]), except Capricorn, which Valens gives 27 instead of Saturn's 30.
+ * Valens' table of years for each zodiac sign — primary data, listed as he gives it.
+ *
+ * Every sign carries its domicile ruler's least years ([planetLeastYears]) except Capricorn,
+ * which Valens gives 27 rather than Saturn's 30. That relationship is a property of the two
+ * tables, guarded by a test, not a rule to derive one table from the other.
  */
-val zodiacalReleasingYears: Map<ZodiacSign, Int> = ZodiacSign.entries.associateWith { sign ->
-  if (sign == ZodiacSign.CAPRICORN) 27 else planetLeastYears.getValue(rulerOf(sign))
-}
+val zodiacalReleasingYears: Map<ZodiacSign, Int> = mapOf(
+  ZodiacSign.ARIES to 15,
+  ZodiacSign.TAURUS to 8,
+  ZodiacSign.GEMINI to 20,
+  ZodiacSign.CANCER to 25,
+  ZodiacSign.LEO to 19,
+  ZodiacSign.VIRGO to 20,
+  ZodiacSign.LIBRA to 8,
+  ZodiacSign.SCORPIO to 15,
+  ZodiacSign.SAGITTARIUS to 12,
+  ZodiacSign.CAPRICORN to 27,
+  ZodiacSign.AQUARIUS to 30,
+  ZodiacSign.PISCES to 12
+)
 
 /** Sum of all planetary years = one full L1 cycle */
 val ZODIACAL_RELEASING_TOTAL_YEARS: Int = zodiacalReleasingYears.values.sum() // 211

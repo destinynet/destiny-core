@@ -12,7 +12,8 @@ import destiny.core.astrology.Planet
  *
  * 來源是各行星回到同一相位關係的週期（例：金星 8 年、火星 15 年、太陽 19 年的默冬週期、
  * 月亮 25 年的埃及曆週期、土星 30 年）。七者相加 129，正是十年限（Decennials）每段 129 個月的由來；
- * 黃道釋放（Zodiacal Releasing）各星座的年數也取自其主星的最小年（唯摩羯例外，見 [zodiacalReleasingYears]）。
+ * 黃道釋放（Zodiacal Releasing）的星座年數是另一張表（[zodiacalReleasingYears]），以星座為鍵；
+ * 兩張表除了摩羯（27，不是土星的 30）都一致，這個關係由測試看守。
  */
 val planetLeastYears: Map<Planet, Int> = mapOf(
   Planet.SATURN to 30,
