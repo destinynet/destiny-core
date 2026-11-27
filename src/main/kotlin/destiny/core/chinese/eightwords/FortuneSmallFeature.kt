@@ -62,10 +62,10 @@ class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: FortuneSmallConfig): List<FortuneData> {
 
     val ageNoteImpls: List<IIntAgeNote> = config.intAgeNotes.map { impl: IntAgeNote ->
-      ageNoteImplMap[impl]!!
+      ageNoteImplMap.getValue(impl)
     }.toList()
 
-    return implMap[config.impl]!!.getFortuneDataList(gmtJulDay, loc, gender, config.count, ageNoteImpls, config.eightWordsConfig)
+    return implMap.getValue(config.impl).getFortuneDataList(gmtJulDay, loc, gender, config.count, ageNoteImpls, config.eightWordsConfig)
 
   }
 

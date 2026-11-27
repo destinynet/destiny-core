@@ -32,7 +32,7 @@ data class SpreadSeason(
       )
 
       add(
-        map[Element.FIRE]!! to mapOf(
+        map.getValue(Element.FIRE) to mapOf(
           Lang.ZH_TW to "左方",
           Lang.JA to "左",
           Lang.EN to "Left",
@@ -40,7 +40,7 @@ data class SpreadSeason(
       )
 
       add(
-        map[Element.WATER]!! to mapOf(
+        map.getValue(Element.WATER) to mapOf(
           Lang.ZH_TW to "下方",
           Lang.JA to "下",
           Lang.EN to "Bottom",
@@ -48,7 +48,7 @@ data class SpreadSeason(
       )
 
       add(
-        map[Element.AIR]!! to mapOf(
+        map.getValue(Element.AIR) to mapOf(
           Lang.ZH_TW to "右方",
           Lang.JA to "右方",
           Lang.EN to "Right",
@@ -56,7 +56,7 @@ data class SpreadSeason(
       )
 
       add(
-        map[Element.EARTH]!! to mapOf(
+        map.getValue(Element.EARTH) to mapOf(
           Lang.ZH_TW to "上方",
           Lang.JA to "上",
           Lang.EN to "Top",

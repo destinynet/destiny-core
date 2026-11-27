@@ -8,7 +8,7 @@ abstract class AbstractFortuneLargeImpl(private val ageNoteImplMap: Map<IntAgeNo
 
   fun getAgeNoteImpls(intAgeNotes: List<IntAgeNote>): List<IIntAgeNote> {
     return intAgeNotes.map { impl: IntAgeNote ->
-      ageNoteImplMap[impl]!!
+      ageNoteImplMap.getValue(impl)
     }.toList()
   }
 }

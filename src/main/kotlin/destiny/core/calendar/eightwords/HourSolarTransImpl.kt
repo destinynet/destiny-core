@@ -246,7 +246,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, JSerial
         localDate to ( if (next) currentBranch.next else currentBranch.prev )
     }
 
-    return getDailyBranchMiddleMap(targetDate, loc, julDayResolver, config)[targetBranch]!!
+    return getDailyBranchMiddleMap(targetDate, loc, julDayResolver, config).getValue(targetBranch)
   }
 
 

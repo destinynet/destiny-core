@@ -317,7 +317,7 @@ class HoroscopeFeature(
       .associate { (point, pos) ->
         point to (pos!! as IPosWithAzimuth).let {
           if (config.relocations.containsKey(point)) {
-            val newLng = config.relocations[point]!!
+            val newLng = config.relocations.getValue(point)
             val newPos = Pos(newLng, it.lat)
             val az = Azimuth(it.azimuthDeg, it.trueAltitude, it.apparentAltitude)
             PosWithAzimuth(newPos, az)
@@ -403,8 +403,8 @@ class HoroscopeFeature(
             .mapNotNull { (p1, p2) ->
               aspectCalculator.getAspectPattern(p1, p2, posMapOuter, posMapInner, laterForP1, laterForP2, aspects)
                 ?.let { p: IPointAspectPattern ->
-                  val p1House = model.getHouse(posMapOuter[p1]!!.zDeg.toZodiacDegree())
-                  val p2House = model.getHouse(posMapInner[p2]!!.lng.toZodiacDegree())
+                  val p1House = model.getHouse(posMapOuter.getValue(p1).zDeg.toZodiacDegree())
+                  val p2House = model.getHouse(posMapInner.getValue(p2).lng.toZodiacDegree())
                   SynastryAspect(p1, p2, p1House, p2House, p.aspect, p.orb, p.aspectType!!, p.score)
                 }
             }

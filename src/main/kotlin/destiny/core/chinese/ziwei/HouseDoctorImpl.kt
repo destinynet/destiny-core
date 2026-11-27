@@ -14,10 +14,10 @@ import destiny.core.chinese.Stem
  * 故此博士十二神煞，也必須與祿存的年干設定相同
  *
  */
-class HouseDoctorImpl(star: StarDoctor) : HouseAbstractImpl<Pair<Stem, Gender>>(star) {
+class HouseDoctorImpl(override val star: StarDoctor) : HouseAbstractImpl<Pair<Stem, Gender>>(star) {
 
   override fun getBranch(t: Pair<Stem, Gender>): Branch {
-    return StarDoctor.starFuncMap[star]!!.invoke(t.first, t.second)
+    return StarDoctor.starFuncMap.getValue(star).invoke(t.first, t.second)
   }
 
   override fun getBranch(context: HouseCalContext): Branch {

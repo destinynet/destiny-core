@@ -34,12 +34,12 @@ class PlanetaryHourFeature(private val astroHourImplMap : Map<PlanetaryHourType,
   override val defaultConfig: PlanetaryHourConfig = PlanetaryHourConfig()
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: PlanetaryHourConfig): PlanetaryHour? {
-    return astroHourImplMap[config.type]!!.getPlanetaryHour(gmtJulDay, loc, julDayResolver, config.transConfig)
+    return astroHourImplMap.getValue(config.type).getPlanetaryHour(gmtJulDay, loc, julDayResolver, config.transConfig)
   }
 
   override fun getDailyPlanetaryHours(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: PlanetaryHourConfig): List<PlanetaryHour> {
     val lmtStart = lmt.with(ChronoField.HOUR_OF_DAY, 0).with(ChronoField.MINUTE_OF_HOUR, 0).with(ChronoField.SECOND_OF_MINUTE, 0).with(ChronoField.NANO_OF_SECOND, 0)
 
-    return astroHourImplMap[config.type]!!.getDailyPlanetaryHours(lmtStart.toLocalDate(), loc, julDayResolver, config.transConfig)
+    return astroHourImplMap.getValue(config.type).getDailyPlanetaryHours(lmtStart.toLocalDate(), loc, julDayResolver, config.transConfig)
   }
 }

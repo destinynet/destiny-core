@@ -43,10 +43,10 @@ class LunarStationMonthlyFeature(
       chineseDate.month, chineseDate.leapMonth, monthBranch, chineseDate.day, config.monthAlgo
     )
 
-    return lunarStationImplMap[config.monthlyImpl]!!.getMonthly(yearStation, monthNumber)
+    return lunarStationImplMap.getValue(config.monthlyImpl).getMonthly(yearStation, monthNumber)
   }
 
   override fun getMonthly(yearStation: LunarStation, monthNumber: Int, monthlyImpl: MonthlyImpl): LunarStation {
-    return lunarStationImplMap[monthlyImpl]!!.getMonthly(yearStation, monthNumber)
+    return lunarStationImplMap.getValue(monthlyImpl).getMonthly(yearStation, monthNumber)
   }
 }

@@ -427,7 +427,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
             val yearlyHex: Hexagram = hex_lineIndex_stemBranch.first
             val lineIndex = hex_lineIndex_stemBranch.second
             val stemBranch = hex_lineIndex_stemBranch.third
-            val settingsImpl = settingsMap[settings]!!
+            val settingsImpl = settingsMap.getValue(settings)
             val stemBranches = (1..6).map { settingsImpl.getStemBranch(yearlyHex, it) }.toList()
             val holoHexagram: IHoloHexagram = HoloHexagram(IHoloHexagram.Scale.YEAR, yearlyHex, lineIndex, stemBranches, fromGmt, toGmt)
             HoloHexagramWithStemBranch(holoHexagram, stemBranch)
@@ -549,7 +549,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
     // 當年立春時刻
     val startOfYear = solarTermsImpl.getSolarTermsTime(SolarTerms.立春, gmtJulDay, false)
 
-    val settingsImpl = settingsMap[config.divineTraditionalConfig.settings]!!
+    val settingsImpl = settingsMap.getValue(config.divineTraditionalConfig.settings)
     // 先天命卦 , 以及六爻大運、流年 等資訊
     val hexagramCongenital: ILifeHoloHexagram = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang, config.eightWordsConfig.southernHemisphereOpposition).let { (hex, yuanTang) ->
       val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, gmtJulDay, ew.year, config.divineTraditionalConfig.settings, config.hexChange)
@@ -619,7 +619,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
     }
 
     // 12消息卦
-    val monthlyHexagramImpl = monthlyHexagramMap[config.monthlyHexagram]!!
+    val monthlyHexagramImpl = monthlyHexagramMap.getValue(config.monthlyHexagram)
     val monthlyHexagram: Hexagram = monthlyHexagramImpl.getHexagram(solarTermsPos.solarTerms).first
 
     // 當下值日卦列表
@@ -691,7 +691,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
           Triple(hex, yuanTang, start)
         }
 
-        val settingsImpl = settingsMap[settings]!!
+        val settingsImpl = settingsMap.getValue(settings)
 
         val stemBranches: List<StemBranch> = (1..6).map { settingsImpl.getStemBranch(hex, it) }.toList()
         val end: GmtJulDay = solarTermsImpl.getSolarTermsTime(solarTerms.next().next(), start, true)
@@ -740,7 +740,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
 
     val (monthHex: IHexagram, monthYuanTang: Int) = list[monthNum - 1]
 
-    val settingsImpl = settingsMap[settings]!!
+    val settingsImpl = settingsMap.getValue(settings)
     val stemBranches = (1..6).map { settingsImpl.getStemBranch(monthHex, it) }
     val (start, end) = solarTermsImpl.getMajorSolarTermsGmtBetween(gmt).let { (from, to) ->
       from.begin to to.begin
@@ -778,7 +778,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
     }.take(diffDays).last()
 
 
-    val settingsImpl = settingsMap[settings]!!
+    val settingsImpl = settingsMap.getValue(settings)
     val stemBranches = (1..6).map { settingsImpl.getStemBranch(dayHex, it) }
 
 
@@ -816,7 +816,7 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
     }
 
 
-    val settingsImpl = settingsMap[config.divineTraditionalConfig.settings]!!
+    val settingsImpl = settingsMap.getValue(config.divineTraditionalConfig.settings)
 
     // 此時刻的大運 (6 or 9年) 的 卦象(with 元堂)
     val majorHexagram: IHoloHexagramWithStemBranch? = (holo.hexagramCongenital.let { holoHexagram: IHoloHexagram ->

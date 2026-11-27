@@ -71,7 +71,7 @@ interface IHoroscopeModel : ITimeLoc {
     get() = ZodiacSign.entries.associateWith { sign ->
       pointSignMap.filter { (k, v) -> sign == v }
         .map { (k, v) -> k }
-        .sortedBy { p -> positionMap[p]!!.lng }
+        .sortedBy { p -> positionMap.getValue(p).lng }
         .toList()
     }
 

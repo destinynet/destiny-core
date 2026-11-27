@@ -17,7 +17,7 @@ class PurpleRelocationMutator(private val prevMonthDaysImpl: IPrevMonthDays) : I
         0
 
       val newStarMainMap: Map<StarMain, Branch> = config.stars.filterIsInstance<StarMain>().associateWith { starMain ->
-        StarMain.starFuncMap[starMain]!!.invoke(
+        StarMain.starFuncMap.getValue(starMain).invoke(
           plate.state, plate.chineseDate.day, plate.chineseDate.leapMonth, prevMonthDays, purpleFixedBranch, PurpleStarBranchDefaultImpl()
         )
       }

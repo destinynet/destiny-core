@@ -60,7 +60,7 @@ data class SpreadFourElements(
   companion object : ILocaleString {
     fun of(map: Map<Element, CardOrientation>): SpreadFourElements {
       require(map.size == 4)
-      return SpreadFourElements(map[Element.FIRE]!!, map[Element.WATER]!!, map[Element.AIR]!!, map[Element.EARTH]!!)
+      return SpreadFourElements(map.getValue(Element.FIRE), map.getValue(Element.WATER), map.getValue(Element.AIR), map.getValue(Element.EARTH))
     }
 
     override fun getTitle(lang: Lang): String {

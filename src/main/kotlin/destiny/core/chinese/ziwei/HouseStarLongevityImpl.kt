@@ -17,10 +17,10 @@ import destiny.core.chinese.StemBranch
  * 重點是「五行局」， 而「五行局」又來自「命宮」
  * 但是「命宮」又有可能是依據上升星座而來，「可能」並非來自 陰曆 年份＋月份＋時辰來看
  */
-class HouseStarLongevityImpl(star: StarLongevity) : HouseAbstractImpl<Triple<FiveElement, Gender, IYinYang>>(star) {
+class HouseStarLongevityImpl(override val star: StarLongevity) : HouseAbstractImpl<Triple<FiveElement, Gender, IYinYang>>(star) {
 
   override fun getBranch(t: Triple<FiveElement, Gender, IYinYang>): Branch {
-    return StarLongevity.starFuncMap[star]!!.invoke(t.first, t.second, t.third)
+    return StarLongevity.starFuncMap.getValue(star).invoke(t.first, t.second, t.third)
   }
 
   override fun getBranch(context: HouseCalContext): Branch {

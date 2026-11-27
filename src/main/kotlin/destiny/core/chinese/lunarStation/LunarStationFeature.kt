@@ -150,8 +150,8 @@ class LunarStationFeature(
 
     return ContextModel(
       ew,
-      models[Scale.YEAR]!!,
-      models[Scale.MONTH]!!,
+      models.getValue(Scale.YEAR),
+      models.getValue(Scale.MONTH),
       dayIndex.station(),
       hourStation,
       dayIndex,

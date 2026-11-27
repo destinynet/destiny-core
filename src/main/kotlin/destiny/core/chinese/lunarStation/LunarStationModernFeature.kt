@@ -50,7 +50,7 @@ class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFe
         created.toLocalDate(),
         loc,
         config.lunarStationConfig.ewConfig.dayHourConfig.hourBranchConfig
-      )[randomService.randomEnum(Branch::class.java)]!!
+      ).getValue(randomService.randomEnum(Branch::class.java))
       IModernContextModel.Method.SPECIFIED   -> {
         config.specifiedGmtJulDay?.let { TimeTools.getLmtFromGmt(it, loc, julDayResolver) }
           ?: throw IllegalArgumentException("specifiedTime is null")

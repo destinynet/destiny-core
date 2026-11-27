@@ -45,7 +45,7 @@ class PithyCoreFeature(private val eightWordsFeature: EightWordsFeature,
 
   private fun core(config: PithyConfig, ew: IEightWords, moonMaster: Branch, dayNight: DayNight, clockwise: destiny.core.Clockwise): Pithy {
     // 天乙貴人(起點)
-    val tianYi = tianyiImplMap[config.tianyi]!!.getFirstTianyi(ew.day.stem, dayNight)
+    val tianYi = tianyiImplMap.getValue(config.tianyi).getFirstTianyi(ew.day.stem, dayNight)
 
     val steps = when (clockwise) {
       destiny.core.Clockwise.CLOCKWISE -> config.direction.getAheadOf(tianYi)
@@ -54,9 +54,9 @@ class PithyCoreFeature(private val eightWordsFeature: EightWordsFeature,
 
     logger.trace("天乙貴人 (日干 {} + {} ) = {} . 地分 = {} , 順逆 = {} , steps = {}", ew.day.stem, dayNight, tianYi, config.direction, clockwise, steps)
 
-    val generalSeqImpl = generalSeqMap[config.generalSeq]!!
+    val generalSeqImpl = generalSeqMap.getValue(config.generalSeq)
 
-    val generalStemBranchImpl = generalStemBranchMap[config.generalStemBranch]!!
+    val generalStemBranchImpl = generalStemBranchMap.getValue(config.generalStemBranch)
 
     // 貴神地支
     val kueiBranch = General.貴人.next(steps, generalSeqImpl).getStemBranch(generalStemBranchImpl).branch
@@ -73,9 +73,9 @@ class PithyCoreFeature(private val eightWordsFeature: EightWordsFeature,
     val ew = eightWordsFeature.getModel(gmtJulDay, loc)
 
     // 月將
-    val moonMaster = monthMasterMap[config.monthMaster]!!.getBranch(gmtJulDay, loc)
+    val moonMaster = monthMasterMap.getValue(config.monthMaster).getBranch(gmtJulDay, loc)
 
-    val clockwise = clockwiseMap[config.clockwise]!!.getClockwise(gmtJulDay, loc)
+    val clockwise = clockwiseMap.getValue(config.clockwise).getClockwise(gmtJulDay, loc)
     val dayNight = dayNightFeature.getModel(gmtJulDay, loc, config.dayNightConfig)
 
     return core(config, ew, moonMaster, dayNight, clockwise)

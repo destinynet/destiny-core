@@ -92,7 +92,7 @@ interface IPlate : JSerializable {
   /** 命宮  */
   val mainHouse: StemBranch
     get() {
-      return houseMap[House.命宮]!!.stemBranch
+      return houseMap.getValue(House.命宮).stemBranch
     }
 
   /** 宮位名稱 -> 宮位資料  */

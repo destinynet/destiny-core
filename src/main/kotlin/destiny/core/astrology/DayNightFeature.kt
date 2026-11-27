@@ -31,6 +31,6 @@ class DayNightFeature(private val dayNightImplMap: Map<DayNightImpl, IDayNight>)
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: IDayNightConfig): DayNight {
 
-    return dayNightImplMap[config.dayNightImpl]!!.getDayNight(gmtJulDay, loc, config.transConfig)
+    return dayNightImplMap.getValue(config.dayNightImpl).getDayNight(gmtJulDay, loc, config.transConfig)
   }
 }

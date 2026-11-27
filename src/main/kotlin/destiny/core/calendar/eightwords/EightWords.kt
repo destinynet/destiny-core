@@ -35,7 +35,7 @@ sealed interface IEightWordsNullable {
   fun getScaleMap() : Map<Scale , IStemBranchOptional>
 
   fun getScale(scale: Scale): IStemBranchOptional {
-    return getScaleMap()[scale]!!
+    return getScaleMap().getValue(scale)
   }
 }
 
@@ -91,7 +91,7 @@ interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
   }
 
   override fun getScale(scale: Scale) : IStemBranch {
-    return getScaleMap()[scale]!!
+    return getScaleMap().getValue(scale)
   }
 }
 

@@ -93,11 +93,11 @@ class FortuneLargeFeature(private val implMap : Map<FortuneLargeImpl, IPersonFor
       FortuneLargeImpl.SolarTermsSpan -> 18
     }
 
-    return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count, config)
+    return implMap.getValue(config.impl).getFortuneDataList(lmt, loc, gender, count, config)
   }
 
   override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch? {
 
-    return implMap[config.impl]!!.getStemBranch(gmtJulDay, loc, gender, julDayResolver.getLocalDateTime(maxOf(gmtJulDay , fromGmtJulDay)), config)
+    return implMap.getValue(config.impl).getStemBranch(gmtJulDay, loc, gender, julDayResolver.getLocalDateTime(maxOf(gmtJulDay , fromGmtJulDay)), config)
   }
 }

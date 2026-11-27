@@ -17,6 +17,6 @@ abstract class HouseYearStemTianyiImpl internal constructor(star: ZStar) : House
 
   override fun getBranch(context: HouseCalContext): Branch {
     val yearStem = context.year.stem
-    return getBranch(Pair(yearStem, context.tianyiImplMap[context.config.tianyi]!!))
+    return getBranch(Pair(yearStem, context.tianyiImplMap.getValue(context.config.tianyi)))
   }
 }

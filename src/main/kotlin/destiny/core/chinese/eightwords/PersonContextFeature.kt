@@ -70,7 +70,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
 
     val childHazards = hazardService.getChildHazardNotes(ewModel.eightWords, gender, config.locale.toLang())
 
-    val score = ewContextScoreImplMap[config.ewContextScore]!!.getScore(ewModel)
+    val score = ewContextScoreImplMap.getValue(config.ewContextScore).getScore(ewModel)
 
     return PersonContextModel(ewModel, gender, name, place, larges, smalls, ageMap, childHazards, score)
   }

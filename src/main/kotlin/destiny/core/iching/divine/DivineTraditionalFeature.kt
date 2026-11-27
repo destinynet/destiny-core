@@ -63,7 +63,7 @@ class DivineTraditionalFeature(private val eightWordsFeature: EightWordsFeature,
     // 世爻, 應爻
     val (self, oppo) = getSelfOppo(symbolSteps)
 
-    val settingsImpl = divineSettingsMap[settings]!!
+    val settingsImpl = divineSettingsMap.getValue(settings)
 
     val 納甲: List<StemBranch> = (1..6).map { index -> settingsImpl.getStemBranch(hexagram, index) }.toList()
 
@@ -72,7 +72,7 @@ class DivineTraditionalFeature(private val eightWordsFeature: EightWordsFeature,
     // 六親
     val relatives: List<Relative> = (0..5).map { getRelative(SimpleBranch.getFiveElement(納甲[it].branch), 本宮五行) }.toList()
 
-    val 伏神納甲: List<StemBranch?> = (1..6).map { index -> hiddenEnergyMap[hiddenEnergy]!!.getStemBranch(hexagram, settingsImpl, index) }.toList()
+    val 伏神納甲: List<StemBranch?> = (1..6).map { index -> hiddenEnergyMap.getValue(hiddenEnergy).getStemBranch(hexagram, settingsImpl, index) }.toList()
 
     val 伏神六親: List<Relative?> =
       伏神納甲.map { it?.let { sb -> getRelative(SimpleBranch.getFiveElement(sb.branch), 本宮五行) } }.toList()
@@ -130,9 +130,9 @@ class DivineTraditionalFeature(private val eightWordsFeature: EightWordsFeature,
     // 桃花
     val flower: Branch? = day?.branch?.let { Characters.getPeach(it) }
     // 貴人
-    val tianyis: Set<Branch> = day?.stem?.let { tianyiImplMap[config.tianyi]!!.getTianyis(it).toSet() } ?: emptySet()
+    val tianyis: Set<Branch> = day?.stem?.let { tianyiImplMap.getValue(config.tianyi).getTianyis(it).toSet() } ?: emptySet()
     // 羊刃
-    val yangBlade: Branch? = day?.stem?.let { yangBladeImplMap[config.yangBlade]!!.getYangBlade(it) }
+    val yangBlade: Branch? = day?.stem?.let { yangBladeImplMap.getValue(config.yangBlade).getYangBlade(it) }
     // 六獸
     val sixAnimals: List<SixAnimal> = day?.let { SixAnimal.getSixAnimals(it.stem) } ?: emptyList()
 

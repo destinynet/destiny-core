@@ -125,19 +125,19 @@ class HourBranchFeature(private val hourImplMap: Map<HourImpl, IHour>,
   }
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IHourBranchConfig): Branch {
-    return hourImplMap[config.hourImpl]!!.getHour(lmt, loc, config)
+    return hourImplMap.getValue(config.hourImpl).getHour(lmt, loc, config)
   }
 
   override fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, config: HourBranchConfig): ChronoLocalDateTime<*> {
-    return hourImplMap[config.hourImpl]!!.getLmtNextStartOf(lmt, loc, eb, julDayResolver, config)
+    return hourImplMap.getValue(config.hourImpl).getLmtNextStartOf(lmt, loc, eb, julDayResolver, config)
   }
 
   override fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, config: HourBranchConfig): ChronoLocalDateTime<*> {
-    return hourImplMap[config.hourImpl]!!.getLmtPrevStartOf(lmt, loc, eb, julDayResolver, config)
+    return hourImplMap.getValue(config.hourImpl).getLmtPrevStartOf(lmt, loc, eb, julDayResolver, config)
   }
 
   override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean, config: HourBranchConfig): ChronoLocalDateTime<*> {
-    return hourImplMap[config.hourImpl]!!.getLmtNextMiddleOf(lmt, loc, next, julDayResolver, config)
+    return hourImplMap.getValue(config.hourImpl).getLmtNextMiddleOf(lmt, loc, next, julDayResolver, config)
   }
 
 

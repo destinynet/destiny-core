@@ -43,11 +43,11 @@ class MidnightFeature(private val midnightImplMap: Map<MidnightImpl, IMidnight>,
   }
 
   override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: IDayConfig): GmtJulDay {
-    val resultLmt = midnightImplMap[config.midnight]!!.getNextMidnight(lmt, loc, julDayResolver)
+    val resultLmt = midnightImplMap.getValue(config.midnight).getNextMidnight(lmt, loc, julDayResolver)
     return resultLmt.toGmtJulDay(loc)
   }
 
   override fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation, impl: MidnightImpl): GmtJulDay {
-    return midnightImplMap[impl]!!.getNextMidnight(gmtJulDay, loc)
+    return midnightImplMap.getValue(impl).getNextMidnight(gmtJulDay, loc)
   }
 }
