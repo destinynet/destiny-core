@@ -23,6 +23,7 @@ import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
+import destiny.tools.requireAllEnumKeys
 
 
 /** 某時刻對應到的 大運、流年 兩資訊 */
@@ -213,6 +214,19 @@ class ZiweiFeature(
   @Transient
   private val ziweiCache: KvCache<LmtCacheKey<*>, IPlate>
 ) : AbstractCachedPersonFeature<IZiweiConfig, IPlate>(), IZiweiFeature {
+
+  init {
+    houseSeqImplMap.requireAllEnumKeys("houseSeqImplMap")
+    purpleStarBranchImplMap.requireAllEnumKeys("purpleStarBranchImplMap")
+    tianyiImplMap.requireAllEnumKeys("tianyiImplMap")
+    transFourImplMap.requireAllEnumKeys("transFourImplMap")
+    strengthImplMap.requireAllEnumKeys("strengthImplMap")
+    flowSectionImplMap.requireAllEnumKeys("flowSectionImplMap")
+    flowYearImplMap.requireAllEnumKeys("flowYearImplMap")
+    flowMonthImplMap.requireAllEnumKeys("flowMonthImplMap")
+    flowDayImplMap.requireAllEnumKeys("flowDayImplMap")
+    flowHourImplMap.requireAllEnumKeys("flowHourImplMap")
+  }
 
   override val lmtPersonCache: KvCache<LmtCacheKey<IZiweiConfig>, IPlate>
     @Suppress("UNCHECKED_CAST")

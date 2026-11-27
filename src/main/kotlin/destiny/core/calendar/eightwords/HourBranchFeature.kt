@@ -20,6 +20,7 @@ import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
+import destiny.tools.requireAllEnumKeys
 
 enum class HourImpl {
   TST,
@@ -114,6 +115,10 @@ interface IHourBranchFeature : Feature<IHourBranchConfig, Branch> {
 
 class HourBranchFeature(private val hourImplMap: Map<HourImpl, IHour>,
                         val julDayResolver: JulDayResolver) : IHourBranchFeature, AbstractCachedFeature<IHourBranchConfig, Branch>() {
+
+  init {
+    hourImplMap.requireAllEnumKeys("hourImplMap")
+  }
 
   override val key: String = "hourBranch"
 

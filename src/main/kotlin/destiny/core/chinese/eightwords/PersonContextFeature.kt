@@ -21,6 +21,7 @@ import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 import destiny.tools.defaultLocale
+import destiny.tools.requireAllEnumKeys
 
 @Serializable
 data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContextConfig = EightWordsContextConfig(),
@@ -42,6 +43,10 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
 
                            @Transient
                            private val ewPersonFeatureCache: KvCache<LmtCacheKey<*>, IPersonContextModel>) : AbstractCachedPersonFeature<EightWordsPersonConfig, IPersonContextModel>() {
+
+  init {
+    ewContextScoreImplMap.requireAllEnumKeys("ewContextScoreImplMap")
+  }
 
   override val key: String = "ewPerson"
 

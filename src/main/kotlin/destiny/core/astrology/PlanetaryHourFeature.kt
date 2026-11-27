@@ -12,6 +12,7 @@ import destiny.tools.JSerializable
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
+import destiny.tools.requireAllEnumKeys
 
 
 enum class PlanetaryHourType {
@@ -30,6 +31,10 @@ interface IPlanetaryHourFeature : Feature<PlanetaryHourConfig, PlanetaryHour?> {
 
 class PlanetaryHourFeature(private val astroHourImplMap : Map<PlanetaryHourType, IPlanetaryHour> ,
                            private val julDayResolver: JulDayResolver) : AbstractCachedFeature<PlanetaryHourConfig, PlanetaryHour?>() , IPlanetaryHourFeature {
+
+  init {
+    astroHourImplMap.requireAllEnumKeys("astroHourImplMap")
+  }
 
   override val defaultConfig: PlanetaryHourConfig = PlanetaryHourConfig()
 

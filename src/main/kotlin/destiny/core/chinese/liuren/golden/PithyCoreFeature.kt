@@ -18,6 +18,7 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.JSerializable
 import destiny.tools.KotlinLogging
 import kotlinx.serialization.Serializable
+import destiny.tools.requireAllEnumKeys
 
 @Serializable
 data class PithyConfig(val direction: Branch = Branch.子,
@@ -38,6 +39,14 @@ class PithyCoreFeature(private val eightWordsFeature: EightWordsFeature,
                        private val tianyiImplMap: Map<Tianyi, ITianyi>,
                        private val generalSeqMap: Map<GeneralSeq, IGeneralSeq>,
                        private val generalStemBranchMap: Map<GeneralStemBranch, IGeneralStemBranch>) : AbstractCachedFeature<PithyConfig, IPithyModel>() {
+
+  init {
+    monthMasterMap.requireAllEnumKeys("monthMasterMap")
+    clockwiseMap.requireAllEnumKeys("clockwiseMap")
+    tianyiImplMap.requireAllEnumKeys("tianyiImplMap")
+    generalSeqMap.requireAllEnumKeys("generalSeqMap")
+    generalStemBranchMap.requireAllEnumKeys("generalStemBranchMap")
+  }
 
   override val key: String = "pithyCoreFeature"
 

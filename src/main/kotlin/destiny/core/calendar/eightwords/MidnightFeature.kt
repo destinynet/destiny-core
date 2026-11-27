@@ -12,6 +12,7 @@ import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
 import java.time.chrono.ChronoLocalDateTime
 import kotlin.math.absoluteValue
+import destiny.tools.requireAllEnumKeys
 
 
 interface IMidnightFeature : Feature<IDayConfig, GmtJulDay> {
@@ -32,6 +33,10 @@ interface IMidnightFeature : Feature<IDayConfig, GmtJulDay> {
 /** 取得下一個子正的時刻 */
 class MidnightFeature(private val midnightImplMap: Map<MidnightImpl, IMidnight>,
                       private val julDayResolver: JulDayResolver) : AbstractCachedFeature<IDayConfig, GmtJulDay>() , IMidnightFeature {
+
+  init {
+    midnightImplMap.requireAllEnumKeys("midnightImplMap")
+  }
 
   override val key: String = "midnight"
 

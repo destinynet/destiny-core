@@ -18,6 +18,7 @@ import destiny.core.chinese.StemBranchCycle
 import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.JSerializable
 import kotlinx.serialization.Serializable
+import destiny.tools.requireAllEnumKeys
 
 
 @Serializable
@@ -46,6 +47,10 @@ class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
                           private val fortuneDirectionFeature: IFortuneDirectionFeature,
                           /** 參數名即 bean 名：同型別有多個 bean，Spring 以參數名挑選 */
                           private val intAge8wImpl: IIntAge) : AbstractCachedPersonFeature<FortuneSmallConfig, List<FortuneData>>() {
+
+  init {
+    ageNoteImplMap.requireAllEnumKeys("ageNoteImplMap")
+  }
   override val key: String = "fortuneSmall"
 
   override val defaultConfig: FortuneSmallConfig = FortuneSmallConfig()

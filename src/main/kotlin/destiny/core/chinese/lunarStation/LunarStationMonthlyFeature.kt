@@ -12,6 +12,7 @@ import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.YearMonthFeature
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
+import destiny.tools.requireAllEnumKeys
 
 enum class MonthlyImpl {
   AoHead,           // 《鰲頭通書》
@@ -30,6 +31,10 @@ class LunarStationMonthlyFeature(
   private val lunarStationImplMap: Map<MonthlyImpl, ILunarStationMonthly>
 ) : ILunarStationMonthlyFeature,
     AbstractCachedFeature<ILunarStationConfig, LunarStation>() {
+
+  init {
+    lunarStationImplMap.requireAllEnumKeys("lunarStationImplMap")
+  }
   override val key: String = "lsMonthly"
 
   override val defaultConfig: ILunarStationConfig = LunarStationConfig()

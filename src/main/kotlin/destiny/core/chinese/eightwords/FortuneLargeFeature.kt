@@ -21,6 +21,7 @@ import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
+import destiny.tools.requireAllEnumKeys
 
 enum class FortuneLargeImpl {
   DefaultSpan,    // 傳統、標準大運 (每柱十年)
@@ -82,6 +83,10 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
 
 class FortuneLargeFeature(private val implMap : Map<FortuneLargeImpl, IPersonFortuneLarge>,
                           private val julDayResolver: JulDayResolver) : IFortuneLargeFeature, AbstractCachedPersonFeature<FortuneLargeConfig, List<FortuneData>>() {
+
+  init {
+    implMap.requireAllEnumKeys("implMap")
+  }
 
   override val defaultConfig: FortuneLargeConfig = FortuneLargeConfig()
 

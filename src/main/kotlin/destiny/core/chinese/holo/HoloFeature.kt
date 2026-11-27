@@ -25,6 +25,7 @@ import destiny.tools.*
 import destiny.tools.JSerializable
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import destiny.tools.requireAllEnumKeys
 
 @Serializable
 data class HoloConfig(val divineTraditionalConfig: DivineTraditionalConfig = DivineTraditionalConfig(),
@@ -333,6 +334,11 @@ class HoloFeature(private val solarTermsImpl: ISolarTerms,
                   private val goldenKeyProvider: IGoldenKeyProvider,
                   private val nameFullImpl: IHexNameFull,
                   private val julDayResolver: JulDayResolver) : AbstractCachedPersonFeature<HoloConfig, IHolo>() , IHoloFeature {
+
+  init {
+    settingsMap.requireAllEnumKeys("settingsMap")
+    monthlyHexagramMap.requireAllEnumKeys("monthlyHexagramMap")
+  }
 
   override val key: String = "holoFeature"
 

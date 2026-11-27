@@ -22,6 +22,7 @@ import destiny.tools.serializers.IHexagramSerializer
 import destiny.tools.serializers.LocaleSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
+import destiny.tools.requireAllEnumKeys
 
 @Serializable
 data class DivineTraditionalConfig(@Serializable(with = IHexagramSerializer::class)
@@ -49,6 +50,13 @@ class DivineTraditionalFeature(private val eightWordsFeature: EightWordsFeature,
                                private val yangBladeImplMap: Map<YangBlade, IYangBlade>,
                                private val nameShortImpl: IHexNameShort,
                                private val nameFullImpl: IHexNameFull) : AbstractCachedFeature<DivineTraditionalConfig , ICombinedWithMetaNameDayMonth>(), IDivineTraditionalFeature {
+
+  init {
+    divineSettingsMap.requireAllEnumKeys("divineSettingsMap")
+    hiddenEnergyMap.requireAllEnumKeys("hiddenEnergyMap")
+    tianyiImplMap.requireAllEnumKeys("tianyiImplMap")
+    yangBladeImplMap.requireAllEnumKeys("yangBladeImplMap")
+  }
 
   override val key: String = "divineTraditionalFeature"
 

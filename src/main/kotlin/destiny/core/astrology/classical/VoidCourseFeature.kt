@@ -12,6 +12,7 @@ import destiny.tools.Feature
 import destiny.tools.JSerializable
 import destiny.tools.serializers.astrology.PlanetSerializer
 import kotlinx.serialization.Serializable
+import destiny.tools.requireAllEnumKeys
 
 interface IVoidCourseConfig : JSerializable {
   var planet: Planet
@@ -56,6 +57,10 @@ interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourseSpan?> {
  */
 class VoidCourseFeature(private val vocMap: Map<VoidCourseImpl, IVoidCourse>,
                         private val pointPosFuncMap: Map<AstroPoint, IPosition<*>>) : IVoidCourseFeature, AbstractCachedFeature<VoidCourseConfig , VoidCourseSpan?>() {
+
+  init {
+    vocMap.requireAllEnumKeys("vocMap")
+  }
   
   override val key: String = "voidCourse"
 

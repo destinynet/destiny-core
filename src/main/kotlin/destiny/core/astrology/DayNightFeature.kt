@@ -10,6 +10,7 @@ import destiny.core.calendar.eightwords.IDayNightConfig
 import destiny.core.calendar.eightwords.ITransConfig
 import destiny.tools.AbstractCachedFeature
 import kotlinx.serialization.Serializable
+import destiny.tools.requireAllEnumKeys
 
 enum class DayNightImpl {
   StarPos,  // 日升日落 : 太陽升起至落下，為晝；太陽落下至昇起，為夜
@@ -24,6 +25,10 @@ data class DayNightConfig(override val dayNightImpl : DayNightImpl = DayNightImp
                                                                                   ITransConfig by transConfig
 
 class DayNightFeature(private val dayNightImplMap: Map<DayNightImpl, IDayNight>) : AbstractCachedFeature<IDayNightConfig, DayNight>() {
+
+  init {
+    dayNightImplMap.requireAllEnumKeys("dayNightImplMap")
+  }
 
   override val key: String = "dayNight"
 
