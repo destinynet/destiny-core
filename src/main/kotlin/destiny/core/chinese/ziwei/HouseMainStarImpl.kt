@@ -33,7 +33,7 @@ class HouseMainStarImpl internal constructor(override val star: StarMain) : Hous
           getBranch(MainStarData(state, 30, true, prevMonthDays, config.purpleFixedBranch, defaultImpl))
         } else {
           // 閏月，且「日數＋前一個月的月數」超過 30天，就啟用注入進來的演算法 . 可能會累加日數
-          getBranch(MainStarData(state, days, true, prevMonthDays, config.purpleFixedBranch, purpleStarBranchImplMap[config.purpleStarBranch]!!))
+          getBranch(MainStarData(state, days, true, prevMonthDays, config.purpleFixedBranch, purpleStarBranchImplMap.getValue(config.purpleStarBranch)))
         }
       }
     }
